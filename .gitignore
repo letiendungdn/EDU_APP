@@ -23,9 +23,6 @@ dist/
 .next/
 out/
 
-# Database backup SQL dumps (scripts + README vẫn commit)
-infra/backups/*.sql
-
 # Stripe CLI binary (~27MB, không phải config)
 infra/stripe-cli/stripe.exe
 infra/stripe-cli/stripe.zip

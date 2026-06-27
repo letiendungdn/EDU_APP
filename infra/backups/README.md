@@ -24,7 +24,7 @@ Yêu cầu: `docker compose up -d postgres`
 | `english_learning_YYYYMMDD_HHMMSS.sql` | Full dump DB english |
 | `nihongo_schema_YYYYMMDD_HHMMSS.sql` | Schema only |
 
-File `*.sql` được gitignore — copy ra S3/Drive nếu cần lưu lâu dài.
+File `*.sql` được commit trong repo (snapshot restore). Chạy `npm run db:backup` để tạo bản mới; có thể thay file timestamp mới nhất khi cần.
 
 ## Restore
 
