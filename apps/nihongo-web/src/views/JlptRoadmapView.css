@@ -1,0 +1,658 @@
+.jlpt-roadmap {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  animation: fadeIn var(--transition-normal);
+  padding-bottom: 3rem;
+}
+
+.jlpt-roadmap .view-title {
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.jlpt-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.jlpt-subtitle {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.jlpt-level-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.jlpt-level-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  border: 2px solid var(--border-color);
+  background: var(--surface-color);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+  min-width: 110px;
+}
+
+.jlpt-level-tab:hover {
+  border-color: var(--level-color, var(--primary-color));
+}
+
+.jlpt-level-tab.active {
+  border-color: var(--level-color, var(--primary-color));
+  background: color-mix(in srgb, var(--level-color, var(--primary-color)) 18%, transparent);
+  box-shadow: 0 0 0 1px var(--level-color, var(--primary-color));
+}
+
+.jlpt-level-label {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.jlpt-level-badge {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.jlpt-overview {
+  padding: 1.5rem;
+}
+
+.jlpt-overview-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.jlpt-overview-top h3 {
+  margin: 0 0 0.5rem;
+}
+
+.jlpt-overview-top p {
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.jlpt-progress-ring {
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: conic-gradient(
+    var(--color, var(--primary-color)) calc(var(--pct) * 1%),
+    var(--border-color) 0
+  );
+  position: relative;
+}
+
+.jlpt-progress-ring::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: var(--surface-color);
+}
+
+.jlpt-progress-ring span,
+.jlpt-progress-ring small {
+  position: relative;
+  z-index: 1;
+}
+
+.jlpt-progress-ring span {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.jlpt-progress-ring small {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+}
+
+.jlpt-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.jlpt-stats div {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.jlpt-stats strong {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.jlpt-exam-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.65rem;
+}
+
+.jlpt-exam-card {
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.jlpt-exam-name {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.15rem;
+}
+
+.jlpt-section h3 {
+  margin-bottom: 1rem;
+}
+
+.jlpt-materials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.jlpt-material-card {
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.jlpt-material-card h4 {
+  margin: 0;
+}
+
+.jlpt-material-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.jlpt-scope {
+  font-size: 0.8rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.jlpt-material-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+  border-radius: 0.4rem;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.jlpt-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.jlpt-phase {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  position: relative;
+}
+
+.jlpt-phase-marker {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.jlpt-phase-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.jlpt-phase-body h4 {
+  margin: 0 0 0.25rem;
+}
+
+.jlpt-phase-sub {
+  margin: 0 0 0.85rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.jlpt-task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.jlpt-task-list li {
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.jlpt-task-list li.done {
+  opacity: 0.65;
+  border-color: color-mix(in srgb, #22c55e 40%, var(--border-color));
+}
+
+.jlpt-task-list li.done .jlpt-task-label span {
+  text-decoration: line-through;
+}
+
+.jlpt-task-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  cursor: pointer;
+  line-height: 1.45;
+}
+
+.jlpt-task-label input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
+.jlpt-task-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.45rem;
+  padding-left: 1.5rem;
+}
+
+.jlpt-task-link {
+  font-size: 0.82rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.jlpt-task-link.external {
+  color: #93c5fd;
+}
+
+.jlpt-tips ul {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.jlpt-schedule {
+  padding: 1.5rem;
+}
+
+.jlpt-schedule-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.jlpt-schedule-toolbar h3 {
+  margin: 0;
+}
+
+.jlpt-sync-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.jlpt-sync-badge {
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.jlpt-sync-badge.live {
+  background: color-mix(in srgb, #22c55e 22%, transparent);
+  color: #86efac;
+}
+
+.jlpt-sync-badge.fallback {
+  background: color-mix(in srgb, #f59e0b 22%, transparent);
+  color: #fcd34d;
+}
+
+.jlpt-sync-time {
+  color: var(--text-secondary);
+}
+
+.jlpt-schedule-loading {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0 0 1rem;
+}
+
+.jlpt-announcements {
+  margin-bottom: 1.5rem;
+}
+
+.jlpt-announcements h4 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+}
+
+.jlpt-announcement-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.jlpt-announcement {
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.jlpt-announcement-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.75rem;
+}
+
+.jlpt-announcement-kind {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--primary-color);
+}
+
+.jlpt-announcement-date {
+  color: var(--text-secondary);
+}
+
+.jlpt-announcement-title {
+  display: block;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1.45;
+  margin-bottom: 0.25rem;
+}
+
+.jlpt-announcement-title:hover {
+  color: var(--primary-color);
+}
+
+.jlpt-announcement-updated {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.jlpt-schedule-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.jlpt-schedule-intro {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+}
+
+.jlpt-schedule-sessions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.jlpt-session-card {
+  padding: 1rem 1.1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.jlpt-session-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.jlpt-session-head h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.jlpt-session-badge {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.jlpt-session-registration_open .jlpt-session-badge {
+  background: color-mix(in srgb, #22c55e 25%, transparent);
+  color: #86efac;
+}
+
+.jlpt-session-registration_closed .jlpt-session-badge {
+  background: color-mix(in srgb, #f59e0b 25%, transparent);
+  color: #fcd34d;
+}
+
+.jlpt-session-upcoming .jlpt-session-badge {
+  background: color-mix(in srgb, #3b82f6 25%, transparent);
+  color: #93c5fd;
+}
+
+.jlpt-session-details {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.jlpt-session-details div {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.jlpt-session-details dt {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.jlpt-session-details dd {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.jlpt-session-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.jlpt-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.jlpt-schedule-block h4 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+}
+
+.jlpt-venue-list,
+.jlpt-examday-list,
+.jlpt-fee-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.jlpt-venue-list li,
+.jlpt-examday-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.1);
+  font-size: 0.88rem;
+}
+
+.jlpt-venue-list strong,
+.jlpt-examday-list strong {
+  color: var(--primary-color);
+}
+
+.jlpt-venue-list small,
+.jlpt-examday-list small {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.jlpt-briefing-note,
+.jlpt-fee-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.jlpt-fee-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.88rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.jlpt-fee-list li:last-child {
+  border-bottom: none;
+}
+
+.jlpt-fee-list span {
+  color: var(--text-secondary);
+}
+
+.jlpt-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  font-style: normal;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.jlpt-contact a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.jlpt-schedule-note {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.55;
+}
+
+.jlpt-official-link {
+  display: inline-block;
+}
+
+@media (max-width: 640px) {
+  .jlpt-overview-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .jlpt-phase {
+    flex-direction: column;
+  }
+}

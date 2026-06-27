@@ -1,0 +1,28 @@
+{
+  "name": "edu-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monorepo học tiếng Nhật & tiếng Anh — micro frontends + microservices",
+  "workspaces": [
+    "apps/*",
+    "services",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:nihongo-web": "npm run dev -w @edu/nihongo-web",
+    "dev:english-web": "npm run dev -w @edu/english-web",
+    "dev:gateway": "npm run start:dev -w @edu/nihongo-services",
+    "dev:content": "npm run start:content -w @edu/nihongo-services",
+    "dev:exam": "npm run start:exam -w @edu/nihongo-services",
+    "build:services": "npm run build:all -w @edu/nihongo-services",
+    "build:nihongo-web": "npm run build -w @edu/nihongo-web",
+    "build:english-web": "npm run build -w @edu/english-web",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "seed:vocab-images": "npm run seed:vocab-images -w @edu/nihongo-services",
+    "prisma:generate": "npm run generate -w @edu/prisma-nihongo"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

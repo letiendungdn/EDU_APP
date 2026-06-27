@@ -1,0 +1,26 @@
+﻿# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Next.js
+.next/
+out/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Database backups
+infra/backups/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json

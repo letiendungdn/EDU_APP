@@ -1,0 +1,66 @@
+{
+  "monorepo": true,
+  "root": "api-gateway",
+  "sourceRoot": "api-gateway/src",
+  "compilerOptions": {
+    "webpack": false,
+    "tsConfigPath": "api-gateway/tsconfig.app.json",
+    "deleteOutDir": true
+  },
+  "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "api-gateway",
+      "sourceRoot": "api-gateway/src",
+      "entryFile": "main",
+      "compilerOptions": {
+        "tsConfigPath": "api-gateway/tsconfig.app.json"
+      }
+    },
+    "content-service": {
+      "type": "application",
+      "root": "content-service",
+      "sourceRoot": "content-service/src",
+      "entryFile": "main",
+      "compilerOptions": {
+        "tsConfigPath": "content-service/tsconfig.app.json"
+      }
+    },
+    "exam-service": {
+      "type": "application",
+      "root": "exam-service",
+      "sourceRoot": "exam-service/src",
+      "entryFile": "main",
+      "compilerOptions": {
+        "tsConfigPath": "exam-service/tsconfig.app.json"
+      }
+    },
+    "contracts": {
+      "type": "library",
+      "root": "../packages/nest-contracts",
+      "sourceRoot": "../packages/nest-contracts/src",
+      "entryFile": "index",
+      "compilerOptions": {
+        "tsConfigPath": "../packages/nest-contracts/tsconfig.lib.json"
+      }
+    },
+    "common": {
+      "type": "library",
+      "root": "../packages/nest-common",
+      "sourceRoot": "../packages/nest-common/src",
+      "entryFile": "index",
+      "compilerOptions": {
+        "tsConfigPath": "../packages/nest-common/tsconfig.lib.json"
+      }
+    },
+    "prisma": {
+      "type": "library",
+      "root": "../packages/nest-prisma",
+      "sourceRoot": "../packages/nest-prisma/src",
+      "entryFile": "index",
+      "compilerOptions": {
+        "tsConfigPath": "../packages/nest-prisma/tsconfig.lib.json"
+      }
+    }
+  }
+}

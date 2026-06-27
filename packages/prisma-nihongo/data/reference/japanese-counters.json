@@ -1,0 +1,755 @@
+{
+  "categories": [
+    {
+      "id": "numbers",
+      "label": "Số cơ bản",
+      "hint": "Hệ thập phân: 十（じゅう）= 10 · 百（ひゃく）= 100 · 千（せん）= 1.000 · 万（まん）= 10.000. Ghép số từ trái sang phải: 二十五 = 20 + 5. Một số âm đọc đặc biệt: 300 → さんびゃく, 600 → ろっぴゃく, 800 → はっぴゃく, 3.000 → さんぜん, 8.000 → はっせん.",
+      "items": [
+        {
+          "n": 0,
+          "kanji": "零",
+          "kana": "れい",
+          "romaji": "rei",
+          "vi": "không (Hán)"
+        },
+        {
+          "n": 0,
+          "kana": "ゼロ",
+          "romaji": "zero",
+          "vi": "zero"
+        },
+        {
+          "n": 1,
+          "kanji": "一",
+          "kana": "いち",
+          "romaji": "ichi",
+          "vi": "một"
+        },
+        {
+          "n": 2,
+          "kanji": "二",
+          "kana": "に",
+          "romaji": "ni",
+          "vi": "hai"
+        },
+        {
+          "n": 3,
+          "kanji": "三",
+          "kana": "さん",
+          "romaji": "san",
+          "vi": "ba"
+        },
+        {
+          "n": 4,
+          "kanji": "四",
+          "kana": "よん",
+          "romaji": "yon",
+          "vi": "bốn (thường dùng よん)"
+        },
+        {
+          "n": 5,
+          "kanji": "五",
+          "kana": "ご",
+          "romaji": "go",
+          "vi": "năm"
+        },
+        {
+          "n": 6,
+          "kanji": "六",
+          "kana": "ろく",
+          "romaji": "roku",
+          "vi": "sáu"
+        },
+        {
+          "n": 7,
+          "kanji": "七",
+          "kana": "なな",
+          "romaji": "nana",
+          "vi": "bảy (thường dùng なな)"
+        },
+        {
+          "n": 8,
+          "kanji": "八",
+          "kana": "はち",
+          "romaji": "hachi",
+          "vi": "tám"
+        },
+        {
+          "n": 9,
+          "kanji": "九",
+          "kana": "きゅう",
+          "romaji": "kyuu",
+          "vi": "chín"
+        },
+        {
+          "n": 10,
+          "kanji": "十",
+          "kana": "じゅう",
+          "romaji": "juu",
+          "vi": "mười"
+        },
+        {
+          "n": 11,
+          "kanji": "十一",
+          "kana": "じゅういち",
+          "romaji": "juuichi",
+          "vi": "mười một"
+        },
+        {
+          "n": 20,
+          "kanji": "二十",
+          "kana": "にじゅう",
+          "romaji": "nijuu",
+          "vi": "hai mươi"
+        },
+        {
+          "n": 25,
+          "kanji": "二十五",
+          "kana": "にじゅうご",
+          "romaji": "nijuugo",
+          "vi": "hai mươi lăm"
+        },
+        {
+          "n": 100,
+          "kanji": "百",
+          "kana": "ひゃく",
+          "romaji": "hyaku",
+          "vi": "một trăm"
+        },
+        {
+          "n": 200,
+          "kanji": "二百",
+          "kana": "にひゃく",
+          "romaji": "nihyaku",
+          "vi": "hai trăm"
+        },
+        {
+          "n": 300,
+          "kanji": "三百",
+          "kana": "さんびゃく",
+          "romaji": "sanbyaku",
+          "vi": "ba trăm (biến âm)"
+        },
+        {
+          "n": 600,
+          "kanji": "六百",
+          "kana": "ろっぴゃく",
+          "romaji": "roppyaku",
+          "vi": "sáu trăm (biến âm)"
+        },
+        {
+          "n": 800,
+          "kanji": "八百",
+          "kana": "はっぴゃく",
+          "romaji": "happyaku",
+          "vi": "tám trăm (biến âm)"
+        },
+        {
+          "n": 1000,
+          "kanji": "千",
+          "kana": "せん",
+          "romaji": "sen",
+          "vi": "một nghìn"
+        },
+        {
+          "n": 3000,
+          "kanji": "三千",
+          "kana": "さんぜん",
+          "romaji": "sanzen",
+          "vi": "ba nghìn (biến âm)"
+        },
+        {
+          "n": 8000,
+          "kanji": "八千",
+          "kana": "はっせん",
+          "romaji": "hassen",
+          "vi": "tám nghìn (biến âm)"
+        },
+        {
+          "n": "1万",
+          "kanji": "一万",
+          "kana": "いちまん",
+          "romaji": "ichiman",
+          "vi": "mười nghìn"
+        },
+        {
+          "n": "10万",
+          "kanji": "十万",
+          "kana": "じゅうまん",
+          "romaji": "juuman",
+          "vi": "một trăm nghìn"
+        },
+        {
+          "n": "100万",
+          "kanji": "百万",
+          "kana": "ひゃくまん",
+          "romaji": "hyakuman",
+          "vi": "một triệu"
+        },
+        {
+          "n": "?",
+          "kanji": "何",
+          "kana": "なん",
+          "romaji": "nan",
+          "vi": "mấy? bao nhiêu?"
+        }
+      ]
+    },
+    {
+      "id": "objects",
+      "label": "Đếm đồ vật",
+      "hint": "Dùng khi đếm vật thể chung (～つ). Từ 1–10 dùng âm thuần Nhật, từ 11 trở đi thường dùng số Hán + こ.",
+      "items": [
+        {
+          "n": 1,
+          "kana": "ひとつ",
+          "romaji": "hitotsu",
+          "vi": "một cái"
+        },
+        {
+          "n": 2,
+          "kana": "ふたつ",
+          "romaji": "futatsu",
+          "vi": "hai cái"
+        },
+        {
+          "n": 3,
+          "kana": "みっつ",
+          "romaji": "mittsu",
+          "vi": "ba cái"
+        },
+        {
+          "n": 4,
+          "kana": "よっつ",
+          "romaji": "yottsu",
+          "vi": "bốn cái"
+        },
+        {
+          "n": 5,
+          "kana": "いつつ",
+          "romaji": "itsutsu",
+          "vi": "năm cái"
+        },
+        {
+          "n": 6,
+          "kana": "むっつ",
+          "romaji": "muttsu",
+          "vi": "sáu cái"
+        },
+        {
+          "n": 7,
+          "kana": "ななつ",
+          "romaji": "nanatsu",
+          "vi": "bảy cái"
+        },
+        {
+          "n": 8,
+          "kana": "やっつ",
+          "romaji": "yattsu",
+          "vi": "tám cái"
+        },
+        {
+          "n": 9,
+          "kana": "ここのつ",
+          "romaji": "kokonotsu",
+          "vi": "chín cái"
+        },
+        {
+          "n": 10,
+          "kana": "とお",
+          "romaji": "too",
+          "vi": "mười cái"
+        },
+        {
+          "n": "?",
+          "kana": "いくつ",
+          "romaji": "ikutsu",
+          "vi": "mấy cái? bao nhiêu?"
+        }
+      ]
+    },
+    {
+      "id": "people",
+      "label": "Đếm người",
+      "hint": "Dùng trợ từ 人（にん／り）. 1 người và 2 người đọc đặc biệt: ひとり、ふたり.",
+      "items": [
+        {
+          "n": 1,
+          "kanji": "一人",
+          "kana": "ひとり",
+          "romaji": "hitori",
+          "vi": "1 người"
+        },
+        {
+          "n": 2,
+          "kanji": "二人",
+          "kana": "ふたり",
+          "romaji": "futari",
+          "vi": "2 người"
+        },
+        {
+          "n": 3,
+          "kanji": "三人",
+          "kana": "さんにん",
+          "romaji": "sannin",
+          "vi": "3 người"
+        },
+        {
+          "n": 4,
+          "kanji": "四人",
+          "kana": "よにん",
+          "romaji": "yonin",
+          "vi": "4 người"
+        },
+        {
+          "n": 5,
+          "kanji": "五人",
+          "kana": "ごにん",
+          "romaji": "gonin",
+          "vi": "5 người"
+        },
+        {
+          "n": 6,
+          "kanji": "六人",
+          "kana": "ろくにん",
+          "romaji": "rokunin",
+          "vi": "6 người"
+        },
+        {
+          "n": 7,
+          "kanji": "七人",
+          "kana": "しちにん",
+          "romaji": "shichinin",
+          "vi": "7 người"
+        },
+        {
+          "n": 8,
+          "kanji": "八人",
+          "kana": "はちにん",
+          "romaji": "hachinin",
+          "vi": "8 người"
+        },
+        {
+          "n": 9,
+          "kanji": "九人",
+          "kana": "きゅうにん",
+          "romaji": "kyuunin",
+          "vi": "9 người"
+        },
+        {
+          "n": 10,
+          "kanji": "十人",
+          "kana": "じゅうにん",
+          "romaji": "juunin",
+          "vi": "10 người"
+        }
+      ]
+    },
+    {
+      "id": "days",
+      "label": "Ngày trong tháng",
+      "hint": "Đọc ngày trong tháng (～日). Nhiều ngày đọc không theo quy tắc — cần học thuộc.",
+      "items": [
+        {
+          "n": 1,
+          "kanji": "一日",
+          "kana": "ついたち",
+          "romaji": "tsuitachi",
+          "vi": "mùng 1"
+        },
+        {
+          "n": 2,
+          "kanji": "二日",
+          "kana": "ふつか",
+          "romaji": "futsuka",
+          "vi": "mùng 2"
+        },
+        {
+          "n": 3,
+          "kanji": "三日",
+          "kana": "みっか",
+          "romaji": "mikka",
+          "vi": "mùng 3"
+        },
+        {
+          "n": 4,
+          "kanji": "四日",
+          "kana": "よっか",
+          "romaji": "yokka",
+          "vi": "mùng 4"
+        },
+        {
+          "n": 5,
+          "kanji": "五日",
+          "kana": "いつか",
+          "romaji": "itsuka",
+          "vi": "mùng 5"
+        },
+        {
+          "n": 6,
+          "kanji": "六日",
+          "kana": "むいか",
+          "romaji": "muika",
+          "vi": "mùng 6"
+        },
+        {
+          "n": 7,
+          "kanji": "七日",
+          "kana": "なのか",
+          "romaji": "nanoka",
+          "vi": "mùng 7"
+        },
+        {
+          "n": 8,
+          "kanji": "八日",
+          "kana": "ようか",
+          "romaji": "youka",
+          "vi": "mùng 8"
+        },
+        {
+          "n": 9,
+          "kanji": "九日",
+          "kana": "ここのか",
+          "romaji": "kokonoka",
+          "vi": "mùng 9"
+        },
+        {
+          "n": 10,
+          "kanji": "十日",
+          "kana": "とおか",
+          "romaji": "tooka",
+          "vi": "mùng 10"
+        },
+        {
+          "n": 14,
+          "kanji": "十四日",
+          "kana": "じゅうよっか",
+          "romaji": "juuyokka",
+          "vi": "ngày 14"
+        },
+        {
+          "n": 20,
+          "kanji": "二十日",
+          "kana": "はつか",
+          "romaji": "hatsuka",
+          "vi": "ngày 20"
+        },
+        {
+          "n": 24,
+          "kanji": "二十四日",
+          "kana": "にじゅうよっか",
+          "romaji": "nijuuyokka",
+          "vi": "ngày 24"
+        }
+      ]
+    },
+    {
+      "id": "months",
+      "label": "Tháng",
+      "hint": "Tháng trong năm: số + がつ. Tháng 4 đọc しがつ, tháng 7 しちがつ, tháng 9 くがつ.",
+      "items": [
+        {
+          "n": 1,
+          "kanji": "一月",
+          "kana": "いちがつ",
+          "romaji": "ichigatsu",
+          "vi": "tháng 1"
+        },
+        {
+          "n": 2,
+          "kanji": "二月",
+          "kana": "にがつ",
+          "romaji": "nigatsu",
+          "vi": "tháng 2"
+        },
+        {
+          "n": 3,
+          "kanji": "三月",
+          "kana": "さんがつ",
+          "romaji": "sangatsu",
+          "vi": "tháng 3"
+        },
+        {
+          "n": 4,
+          "kanji": "四月",
+          "kana": "しがつ",
+          "romaji": "shigatsu",
+          "vi": "tháng 4"
+        },
+        {
+          "n": 5,
+          "kanji": "五月",
+          "kana": "ごがつ",
+          "romaji": "gogatsu",
+          "vi": "tháng 5"
+        },
+        {
+          "n": 6,
+          "kanji": "六月",
+          "kana": "ろくがつ",
+          "romaji": "rokugatsu",
+          "vi": "tháng 6"
+        },
+        {
+          "n": 7,
+          "kanji": "七月",
+          "kana": "しちがつ",
+          "romaji": "shichigatsu",
+          "vi": "tháng 7"
+        },
+        {
+          "n": 8,
+          "kanji": "八月",
+          "kana": "はちがつ",
+          "romaji": "hachigatsu",
+          "vi": "tháng 8"
+        },
+        {
+          "n": 9,
+          "kanji": "九月",
+          "kana": "くがつ",
+          "romaji": "kugatsu",
+          "vi": "tháng 9"
+        },
+        {
+          "n": 10,
+          "kanji": "十月",
+          "kana": "じゅうがつ",
+          "romaji": "juugatsu",
+          "vi": "tháng 10"
+        },
+        {
+          "n": 11,
+          "kanji": "十一月",
+          "kana": "じゅういちがつ",
+          "romaji": "juuichigatsu",
+          "vi": "tháng 11"
+        },
+        {
+          "n": 12,
+          "kanji": "十二月",
+          "kana": "じゅうにがつ",
+          "romaji": "juunigatsu",
+          "vi": "tháng 12"
+        }
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Tuổi",
+      "hint": "Đếm tuổi: số + さい. 20 tuổi đọc đặc biệt はたち.",
+      "items": [
+        {
+          "n": 1,
+          "kanji": "一歳",
+          "kana": "いっさい",
+          "romaji": "issai",
+          "vi": "1 tuổi"
+        },
+        {
+          "n": 2,
+          "kanji": "二歳",
+          "kana": "にさい",
+          "romaji": "nisai",
+          "vi": "2 tuổi"
+        },
+        {
+          "n": 5,
+          "kanji": "五歳",
+          "kana": "ごさい",
+          "romaji": "gosai",
+          "vi": "5 tuổi"
+        },
+        {
+          "n": 8,
+          "kanji": "八歳",
+          "kana": "はっさい",
+          "romaji": "hassai",
+          "vi": "8 tuổi"
+        },
+        {
+          "n": 10,
+          "kanji": "十歳",
+          "kana": "じゅっさい",
+          "romaji": "jussai",
+          "vi": "10 tuổi"
+        },
+        {
+          "n": 20,
+          "kanji": "二十歳",
+          "kana": "はたち",
+          "romaji": "hatachi",
+          "vi": "20 tuổi"
+        },
+        {
+          "n": "?",
+          "kanji": "何歳",
+          "kana": "なんさい",
+          "romaji": "nansai",
+          "vi": "mấy tuổi?"
+        },
+        {
+          "n": "?",
+          "kanji": "おいくつ",
+          "kana": "おいくつ",
+          "romaji": "oikutsu",
+          "vi": "bao nhiêu tuổi? (lịch sự)"
+        }
+      ]
+    },
+    {
+      "id": "order",
+      "label": "Thứ tự",
+      "hint": "Diễn tả thứ hạng, vị trí: 第（だい）+ số. Ví dụ: 第一 = thứ nhất, hạng nhất.",
+      "items": [
+        {
+          "n": 1,
+          "kanji": "第一",
+          "kana": "だいいち",
+          "romaji": "daiichi",
+          "vi": "thứ nhất, hạng 1"
+        },
+        {
+          "n": 2,
+          "kanji": "第二",
+          "kana": "だいに",
+          "romaji": "daini",
+          "vi": "thứ hai, hạng 2"
+        },
+        {
+          "n": 3,
+          "kanji": "第三",
+          "kana": "だいさん",
+          "romaji": "daisan",
+          "vi": "thứ ba, hạng 3"
+        },
+        {
+          "n": 4,
+          "kanji": "第四",
+          "kana": "だいよん",
+          "romaji": "daiyon",
+          "vi": "thứ tư, hạng 4"
+        },
+        {
+          "n": 5,
+          "kanji": "第五",
+          "kana": "だいご",
+          "romaji": "daigo",
+          "vi": "thứ năm, hạng 5"
+        },
+        {
+          "n": 6,
+          "kanji": "第六",
+          "kana": "だいろく",
+          "romaji": "dairoku",
+          "vi": "thứ sáu, hạng 6"
+        },
+        {
+          "n": 7,
+          "kanji": "第七",
+          "kana": "だいなな",
+          "romaji": "dainana",
+          "vi": "thứ bảy, hạng 7"
+        },
+        {
+          "n": 8,
+          "kanji": "第八",
+          "kana": "だいはち",
+          "romaji": "daihachi",
+          "vi": "thứ tám, hạng 8"
+        },
+        {
+          "n": 9,
+          "kanji": "第九",
+          "kana": "だいきゅう",
+          "romaji": "daikyuu",
+          "vi": "thứ chín, hạng 9"
+        },
+        {
+          "n": 10,
+          "kanji": "第十",
+          "kana": "だいじゅう",
+          "romaji": "daijuu",
+          "vi": "thứ mười, hạng 10"
+        }
+      ]
+    },
+    {
+      "id": "time",
+      "label": "Giờ & phút",
+      "hint": "Giờ: ～じ. Phút: ～ふん／ぷん (có biến âm: いっぷん, さんぷん, ろっぷん...).",
+      "items": [
+        {
+          "n": 1,
+          "kanji": "一時",
+          "kana": "いちじ",
+          "romaji": "ichiji",
+          "vi": "1 giờ"
+        },
+        {
+          "n": 2,
+          "kanji": "二時",
+          "kana": "にじ",
+          "romaji": "niji",
+          "vi": "2 giờ"
+        },
+        {
+          "n": 3,
+          "kanji": "三時",
+          "kana": "さんじ",
+          "romaji": "sanji",
+          "vi": "3 giờ"
+        },
+        {
+          "n": 4,
+          "kanji": "四時",
+          "kana": "よじ",
+          "romaji": "yoji",
+          "vi": "4 giờ"
+        },
+        {
+          "n": 5,
+          "kanji": "五時",
+          "kana": "ごじ",
+          "romaji": "goji",
+          "vi": "5 giờ"
+        },
+        {
+          "n": 1,
+          "kanji": "一分",
+          "kana": "いっぷん",
+          "romaji": "ippun",
+          "vi": "1 phút"
+        },
+        {
+          "n": 3,
+          "kanji": "三分",
+          "kana": "さんぷん",
+          "romaji": "sanpun",
+          "vi": "3 phút"
+        },
+        {
+          "n": 6,
+          "kanji": "六分",
+          "kana": "ろっぷん",
+          "romaji": "roppun",
+          "vi": "6 phút"
+        },
+        {
+          "n": 8,
+          "kanji": "八分",
+          "kana": "はっぷん",
+          "romaji": "happun",
+          "vi": "8 phút"
+        },
+        {
+          "n": 10,
+          "kanji": "十分",
+          "kana": "じゅっぷん",
+          "romaji": "juppun",
+          "vi": "10 phút"
+        }
+      ]
+    }
+  ]
+}

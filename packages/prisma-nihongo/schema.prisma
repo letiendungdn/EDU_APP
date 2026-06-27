@@ -1,0 +1,687 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum JlptLevel {
+  N5
+  N4
+  N3
+  N2
+  N1
+}
+
+enum ExerciseType {
+  MULTIPLE_CHOICE
+  FILL_IN_BLANK
+  LISTENING
+}
+
+enum ContentType {
+  VOCABULARY
+  GRAMMAR
+  KANJI
+}
+
+enum KanaScript {
+  HIRAGANA
+  KATAKANA
+}
+
+enum JlptSessionStatus {
+  REGISTRATION_OPEN
+  REGISTRATION_CLOSED
+  UPCOMING
+  PAST
+}
+
+// ─────────────────────────────────────────────
+// Content
+// ─────────────────────────────────────────────
+
+model Lesson {
+  id           Int          @id @default(autoincrement())
+  lessonNumber Int          @unique
+  title        String?
+  description  String?
+  jlptLevel    JlptLevel?
+  thumbnailUrl String?
+  vocabularies Vocabulary[]
+  grammars     Grammar[]
+  exercises    Exercise[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([jlptLevel])
+}
+
+model Vocabulary {
+  id            Int        @id @default(autoincrement())
+  kanji         String?
+  kana          String
+  romaji        String
+  meaning       String
+  meaningEn     String?
+  partOfSpeech  String?
+  jlptLevel     JlptLevel?
+  pitchAccent   String?
+  audioUrl      String?
+  imageUrl      String?
+  frequencyRank Int?
+  lessonId      Int
+  lesson        Lesson     @relation(fields: [lessonId], references: [id])
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([lessonId])
+  @@index([jlptLevel])
+}
+
+model Grammar {
+  id             Int        @id @default(autoincrement())
+  pattern        String
+  meaning        String
+  explanation    String?
+  jlptLevel      JlptLevel?
+  formalityLevel String?
+  lessonId       Int
+  lesson         Lesson     @relation(fields: [lessonId], references: [id])
+  examples       Example[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@index([lessonId])
+  @@index([jlptLevel])
+}
+
+model Example {
+  id        Int     @id @default(autoincrement())
+  jp        String
+  romaji    String
+  en        String?
+  vi        String?
+  audioUrl  String?
+  grammarId Int
+  grammar   Grammar @relation(fields: [grammarId], references: [id], onDelete: Cascade)
+}
+
+model Exercise {
+  id          Int              @id @default(autoincrement())
+  type        ExerciseType
+  question    String
+  answer      String
+  explanation String?
+  audioUrl    String?
+  difficulty  Int              @default(1)
+  lessonId    Int
+  lesson      Lesson           @relation(fields: [lessonId], references: [id])
+  optionsList ExerciseOption[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([lessonId])
+}
+
+model ExerciseOption {
+  id         Int      @id @default(autoincrement())
+  exerciseId Int
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  text       String
+  sortOrder  Int      @default(0)
+
+  @@index([exerciseId, sortOrder])
+}
+
+// ─────────────────────────────────────────────
+// Kana charts
+// ─────────────────────────────────────────────
+
+model KanaSection {
+  id        Int         @id @default(autoincrement())
+  script    KanaScript
+  slug      String
+  title     String
+  subtitle  String?
+  columns   Int         @default(5)
+  sortOrder Int         @default(0)
+  cells     KanaCell[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([script, slug])
+  @@index([script, sortOrder])
+}
+
+model KanaCell {
+  id        Int         @id @default(autoincrement())
+  sectionId Int
+  section   KanaSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  rowIndex  Int
+  colIndex  Int
+  kana      String      @default("")
+  romaji    String      @default("")
+
+  @@unique([sectionId, rowIndex, colIndex])
+  @@index([sectionId])
+}
+
+// ─────────────────────────────────────────────
+// Japanese counters
+// ─────────────────────────────────────────────
+
+model CounterCategory {
+  id        Int           @id @default(autoincrement())
+  slug      String        @unique
+  label     String
+  hint      String
+  sortOrder Int           @default(0)
+  items     CounterItem[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model CounterItem {
+  id            Int             @id @default(autoincrement())
+  categoryId    Int
+  category      CounterCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  displayNumber String
+  kanji         String?
+  kana          String
+  romaji        String
+  meaningVi     String
+  sortOrder     Int             @default(0)
+
+  @@index([categoryId, sortOrder])
+}
+
+// ─────────────────────────────────────────────
+// Daily listening
+// ─────────────────────────────────────────────
+
+model ListeningConfig {
+  id          Int @id @default(1)
+  goalMinutes Int @default(15)
+}
+
+model PodcastResource {
+  id          Int      @id @default(autoincrement())
+  externalKey String   @unique
+  title       String
+  description String
+  url         String
+  level       String
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ListeningPreset {
+  id          Int      @id @default(autoincrement())
+  externalKey String   @unique
+  label       String
+  lessonFrom  Int
+  lessonTo    Int
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// JLPT Đà Nẵng (static fallback)
+// ─────────────────────────────────────────────
+
+model JlptOrganizer {
+  id               Int      @id @default(1)
+  name             String
+  shortName        String
+  address          String
+  phone            String
+  email            String
+  website          String
+  announcementsUrl String
+  updatedAt        DateTime @updatedAt
+}
+
+model JlptExamFeeInfo {
+  id      Int    @id @default(1)
+  formFee String
+  examFee String
+  note    String
+}
+
+model JlptExamBriefing {
+  id   Int    @id @default(1)
+  text String
+}
+
+model JlptExamSession {
+  id                 Int               @id @default(autoincrement())
+  externalKey        String            @unique
+  label              String
+  examDate           String
+  registrationPeriod String
+  status             JlptSessionStatus
+  statusLabel        String
+  announcementUrl    String?
+  sortOrder          Int               @default(0)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+}
+
+model JlptExamVenue {
+  id        Int      @id @default(autoincrement())
+  address   String
+  district  String
+  levels    String
+  note      String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model JlptExamDaySlot {
+  id        Int      @id @default(autoincrement())
+  levels    String
+  arriveAt  String
+  startAt   String
+  venue     String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// JLPT roadmap
+// ─────────────────────────────────────────────
+
+model JlptRoadmapMeta {
+  id               Int    @id @default(1)
+  examScheduleNote String
+}
+
+model StudyTip {
+  id        Int      @id @default(autoincrement())
+  text      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model JlptRoadmapLevel {
+  id           Int                      @id @default(autoincrement())
+  externalKey  String                   @unique
+  label        String
+  badge        String
+  color        String
+  duration     String
+  vocabTarget  String
+  kanjiTarget  String
+  passScore    String
+  summary      String
+  sortOrder    Int                      @default(0)
+  examSections JlptRoadmapExamSection[]
+  materials    JlptRoadmapMaterial[]
+  phases       JlptRoadmapPhase[]
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+}
+
+model JlptRoadmapExamSection {
+  id        Int              @id @default(autoincrement())
+  levelId   Int
+  level     JlptRoadmapLevel @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  name      String
+  points    Int
+  time      String
+  sortOrder Int              @default(0)
+
+  @@index([levelId, sortOrder])
+}
+
+model JlptRoadmapMaterial {
+  id            Int              @id @default(autoincrement())
+  levelId       Int
+  level         JlptRoadmapLevel @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  title         String
+  description   String
+  scope         String
+  inAppPath     String?
+  inAppLabel    String?
+  externalUrl   String?
+  externalLabel String?
+  sortOrder     Int              @default(0)
+
+  @@index([levelId, sortOrder])
+}
+
+model JlptRoadmapPhase {
+  id          Int               @id @default(autoincrement())
+  levelId     Int
+  level       JlptRoadmapLevel  @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  externalKey String
+  title       String
+  subtitle    String
+  sortOrder   Int               @default(0)
+  tasks       JlptRoadmapTask[]
+
+  @@unique([levelId, externalKey])
+  @@index([levelId, sortOrder])
+}
+
+model JlptRoadmapTask {
+  id            Int              @id @default(autoincrement())
+  phaseId       Int
+  phase         JlptRoadmapPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  externalKey   String
+  text          String
+  inAppPath     String?
+  inAppLabel    String?
+  externalUrl   String?
+  externalLabel String?
+  sortOrder     Int              @default(0)
+
+  @@unique([phaseId, externalKey])
+  @@index([phaseId, sortOrder])
+}
+
+// ─────────────────────────────────────────────
+// Kanji
+// ─────────────────────────────────────────────
+
+model KanjiLesson {
+  id           Int          @id @default(autoincrement())
+  lessonNumber Int          @unique
+  title        String?
+  jlptLevel    JlptLevel?
+  entries      KanjiEntry[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([lessonNumber])
+  @@index([jlptLevel])
+}
+
+model KanjiEntry {
+  id           Int          @id @default(autoincrement())
+  character    String
+  hanViet      String?
+  onyomi       String?
+  kunyomi      String?
+  meaningVi    String
+  meaningEn    String?
+  mnemonicJp   String?
+  mnemonicVi   String?
+  imageUrl     String?
+  jlptLevel    JlptLevel?
+  strokeCount  Int?
+  frequency    Int?
+  grade        Int?
+  sortOrder    Int          @default(0)
+  lessonId     Int
+  lesson       KanjiLesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  vocabularies KanjiVocab[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([lessonId])
+  @@index([character])
+  @@index([jlptLevel])
+}
+
+model KanjiVocab {
+  id           Int        @id @default(autoincrement())
+  word         String
+  reading      String
+  meaningVi    String
+  kanjiEntryId Int
+  kanjiEntry   KanjiEntry @relation(fields: [kanjiEntryId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([kanjiEntryId])
+}
+
+// ─────────────────────────────────────────────
+// Users
+// ─────────────────────────────────────────────
+
+model User {
+  id                Int            @id @default(autoincrement())
+  email             String         @unique
+  passwordHash      String
+  role              Role           @default(USER)
+  name              String?
+  avatarUrl         String?
+  nativeLanguage    String?        @default("vi")
+  targetJlptLevel   JlptLevel?
+  studyGoalMinutes  Int?           @default(30)
+  lastActiveAt      DateTime?
+  totalStudySeconds Int            @default(0)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  examResults   ExamResult[]
+  srsCards      SrsCard[]
+  listeningLogs ListeningLog[]
+  studySessions StudySession[]
+  dailyNotes    DailyNote[]
+  dailyGoals    DailyGoal[]
+
+  @@index([role])
+}
+
+// ─────────────────────────────────────────────
+// Progress & SRS
+// ─────────────────────────────────────────────
+
+// Thay thế ReviewLog — dùng thuật toán SM-2 cho Spaced Repetition
+model SrsCard {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contentType ContentType
+  contentId   Int
+
+  // Snapshot nhanh để hiển thị mà không cần join
+  kana        String
+  kanji       String?
+  meaning     String
+  lessonNumber Int
+
+  // SM-2 algorithm
+  easeFactor   Float     @default(2.5)
+  interval     Int       @default(0)
+  repetitions  Int       @default(0)
+  nextReviewAt DateTime?
+  lastReviewedAt DateTime?
+
+  // Statistics
+  wrongCount   Int       @default(0)
+  correctCount Int       @default(0)
+  reviewStreak Int       @default(0)
+  mastered     Boolean   @default(false)
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([userId, contentType, contentId])
+  @@index([userId, mastered])
+  @@index([userId, nextReviewAt])
+  @@index([userId, contentType])
+}
+
+model ExamResult {
+  id           Int                 @id @default(autoincrement())
+  userId       Int?
+  user         User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  examId       String
+  level        String
+  title        String
+  correctCount Int
+  total        Int
+  percent      Float
+  passed       Boolean
+  submittedAt  DateTime            @default(now())
+
+  sectionResults ExamSectionResult[]
+
+  @@index([userId])
+  @@index([level])
+}
+
+// Thay thế sectionScores Json — chuẩn hóa từng section thành row riêng
+model ExamSectionResult {
+  id           Int        @id @default(autoincrement())
+  examResultId Int
+  examResult   ExamResult @relation(fields: [examResultId], references: [id], onDelete: Cascade)
+  section      String
+  correct      Int
+  total        Int
+  percent      Float
+
+  @@index([examResultId])
+}
+
+model ListeningLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date       DateTime @db.Date
+  seconds    Int      @default(0)
+  lessonFrom Int?
+  lessonTo   Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────────
+// Reading (đọc hiểu)
+// ─────────────────────────────────────────────
+
+model ReadingPassage {
+  id           Int               @id @default(autoincrement())
+  title        String
+  content      String            @db.Text
+  jlptLevel    JlptLevel?
+  source       String?
+  estimatedMin Int               @default(3)
+  sortOrder    Int               @default(0)
+  questions    ReadingQuestion[]
+  attempts     ReadingAttempt[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([jlptLevel, sortOrder])
+}
+
+model ReadingQuestion {
+  id          Int                     @id @default(autoincrement())
+  passageId   Int
+  passage     ReadingPassage          @relation(fields: [passageId], references: [id], onDelete: Cascade)
+  question    String
+  answer      String
+  explanation String?
+  sortOrder   Int                     @default(0)
+  options     ReadingQuestionOption[]
+
+  @@index([passageId, sortOrder])
+}
+
+model ReadingQuestionOption {
+  id         Int             @id @default(autoincrement())
+  questionId Int
+  question   ReadingQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text       String
+  sortOrder  Int             @default(0)
+
+  @@index([questionId, sortOrder])
+}
+
+model ReadingAttempt {
+  id          Int            @id @default(autoincrement())
+  userId      Int?
+  passageId   Int
+  passage     ReadingPassage @relation(fields: [passageId], references: [id], onDelete: Cascade)
+  correct     Int
+  total       Int
+  percent     Float
+  submittedAt DateTime       @default(now())
+
+  @@index([userId])
+  @@index([passageId])
+}
+
+// ─────────────────────────────────────────────
+// Dictation (nghe chép chính tả)
+// ─────────────────────────────────────────────
+
+model DictationAttempt {
+  id          Int      @id @default(autoincrement())
+  userId      Int?
+  vocabId     Int
+  userInput   String
+  correct     Boolean
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([vocabId])
+}
+
+// Theo dõi thời gian học mỗi ngày
+model StudySession {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date          DateTime @db.Date
+  seconds       Int      @default(0)
+  cardsReviewed Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  @@unique([userId, date])
+  @@index([userId])
+}
+
+// Ghi chú học tập hằng ngày
+model DailyNote {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+// Mục tiêu học tập hằng ngày (danh sách checkbox JSON)
+model DailyGoal {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      String
+  items     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}

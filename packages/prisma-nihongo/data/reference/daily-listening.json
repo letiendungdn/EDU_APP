@@ -1,0 +1,60 @@
+{
+  "goalMinutes": 15,
+  "podcasts": [
+    {
+      "id": "nhk-easy",
+      "title": "NHK World — Easy Japanese",
+      "desc": "Bài ngắn N5–N4, có script tiếng Anh/Nhật. Rất phù hợp nghe hàng ngày.",
+      "url": "https://www3.nhk.or.jp/nhkworld/en/learning/easyjapanese/",
+      "level": "N5–N4"
+    },
+    {
+      "id": "nhk-learn",
+      "title": "NHK — Learn Japanese",
+      "desc": "Khóa học có audio từng bài, phát âm chuẩn.",
+      "url": "https://www3.nhk.or.jp/nhkworld/en/learnejapanese/",
+      "level": "N5+"
+    },
+    {
+      "id": "jpod101",
+      "title": "JapanesePod101 — Newbie",
+      "desc": "Podcast miễn phí cấp sơ cấp, đăng ký free tier để nghe.",
+      "url": "https://www.japanesepod101.com/japanese-podcasts/",
+      "level": "N5"
+    },
+    {
+      "id": "tofugu",
+      "title": "Tofugu Podcast",
+      "desc": "Chủ đề văn hóa & ngôn ngữ, nói chậm hơn podcast thông thường.",
+      "url": "https://www.tofugu.com/podcast/",
+      "level": "N5–N4"
+    },
+    {
+      "id": "jlpt-samples",
+      "title": "JLPT — Đề mẫu (nghe)",
+      "desc": "Audio đề thi chính thức để luyện nghe có cấu trúc.",
+      "url": "https://jlpt.jp/e/samples/forlearners.html",
+      "level": "N5"
+    }
+  ],
+  "presets": [
+    {
+      "id": "n5-early",
+      "label": "Minna N5 · Bài 1–12",
+      "lessonFrom": 1,
+      "lessonTo": 12
+    },
+    {
+      "id": "n5-mid",
+      "label": "Minna N5 · Bài 13–25",
+      "lessonFrom": 13,
+      "lessonTo": 25
+    },
+    {
+      "id": "n5-full",
+      "label": "Minna N5 · Bài 1–25",
+      "lessonFrom": 1,
+      "lessonTo": 25
+    }
+  ]
+}

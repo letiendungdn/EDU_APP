@@ -1,0 +1,252 @@
+.kana-view {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  animation: fadeIn var(--transition-normal);
+}
+
+.kana-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.view-title {
+  font-size: 2.5rem;
+  color: var(--text-primary);
+}
+
+.tab-buttons {
+  display: flex;
+  background-color: var(--surface-color);
+  padding: 0.5rem;
+  border-radius: 1rem;
+  gap: 0.5rem;
+}
+
+.tab-btn {
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.kana-main-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.kana-grid-container {
+  flex: 1;
+  max-width: 900px;
+}
+
+.kana-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.kana-section-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-left: 0.25rem;
+}
+
+.kana-section-title-jp {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.kana-section-title-sub {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.kana-card.empty-card {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.kana-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.kana-view .btn-play-all {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  padding: 0.65rem 1.1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.kana-view .btn-play-all.playing {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+.kana-card.playing {
+  border-color: var(--primary-color);
+  background-color: rgba(239, 68, 68, 0.15);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.35);
+}
+
+.kana-card.playing .kana-char,
+.kana-card.playing .kana-romaji {
+  color: var(--primary-color);
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.kana-detail-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 350px;
+  padding: 2rem;
+  background: var(--surface-color);
+  position: sticky;
+  top: 6rem;
+  z-index: 90;
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.kana-detail-panel h3 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.stroke-drawing-box {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.kana-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  background: var(--surface-color);
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+}
+
+.kana-card {
+  aspect-ratio: 1;
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.active-card {
+  background-color: var(--surface-color-light);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.active-card:hover {
+  background-color: var(--bg-color);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+}
+
+.kana-char {
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  line-height: 1.1;
+}
+
+.kana-grid[style*='repeat(3'] .kana-char {
+  font-size: 2rem;
+}
+
+.kana-romaji {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.active-card:hover .kana-char,
+.active-card:hover .kana-romaji {
+  color: var(--primary-color);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .kana-main-layout {
+    flex-direction: column;
+    align-items: center;
+  }
+  .kana-detail-panel {
+    width: 100%;
+    max-width: 500px;
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .kana-grid {
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+  .kana-char {
+    font-size: 1.5rem;
+  }
+  .kana-romaji {
+    font-size: 0.75rem;
+  }
+}

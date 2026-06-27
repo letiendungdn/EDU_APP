@@ -1,0 +1,293 @@
+.daily-notes-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .daily-notes-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.daily-notes-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.daily-notes-sidebar h2 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.daily-notes-date-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.daily-notes-date-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--surface-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.daily-notes-date-btn:hover {
+  border-color: var(--primary-color);
+}
+
+.daily-notes-date-btn.active {
+  border-color: var(--primary-color);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.daily-notes-date-btn .date-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.daily-notes-date-btn .date-preview {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.daily-notes-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.daily-notes-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.daily-notes-nav {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.daily-notes-nav button {
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.daily-notes-nav button:hover {
+  border-color: var(--primary-color);
+}
+
+.daily-notes-status {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.daily-notes-textarea {
+  width: 100%;
+  min-height: 320px;
+  padding: 1rem 1.1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.daily-notes-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+}
+
+.daily-notes-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.daily-notes-prompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.daily-notes-prompts button {
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  border: 1px dashed var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.daily-notes-prompts button:hover {
+  border-color: var(--primary-color);
+  color: var(--text-primary);
+}
+
+.daily-goals-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.daily-goals-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.daily-goals-sub {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.daily-goals-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: conic-gradient(
+    #4ade80 calc(var(--pct) * 1%),
+    var(--border-color) 0
+  );
+  position: relative;
+}
+
+.daily-goals-ring::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: var(--surface-color);
+}
+
+.daily-goals-ring span {
+  position: relative;
+  z-index: 1;
+}
+
+.daily-goals-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.daily-goal-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.daily-goal-item.done {
+  border-color: rgba(74, 222, 128, 0.35);
+  background: rgba(74, 222, 128, 0.06);
+}
+
+.daily-goal-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  cursor: pointer;
+  flex: 1;
+}
+
+.daily-goal-check input {
+  margin-top: 0.2rem;
+  accent-color: #4ade80;
+}
+
+.daily-goal-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.92rem;
+}
+
+.daily-goal-link {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.daily-goal-link:hover {
+  color: var(--primary-color);
+}
+
+.daily-goal-progress {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.daily-goal-remove {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+.daily-goal-remove:hover {
+  color: var(--primary-color);
+}
+
+.daily-goals-add {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.daily-goals-add input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.daily-goals-add input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}

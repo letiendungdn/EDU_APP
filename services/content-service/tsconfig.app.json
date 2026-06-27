@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../dist/apps/content-service"
+  },
+  "include": [
+    "src/**/*",
+    "../../packages/nest-common/src/**/*",
+    "../../packages/nest-contracts/src/**/*",
+    "../../packages/nest-prisma/src/**/*"
+  ],
+  "exclude": ["**/*.spec.ts"]
+}

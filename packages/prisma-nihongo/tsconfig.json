@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "target": "ES2020",
+    "baseUrl": ".",
+    "paths": {
+      "@edu/vocab-images": ["../vocab-images/src"]
+    }
+  },
+  "include": ["./**/*.ts"]
+}

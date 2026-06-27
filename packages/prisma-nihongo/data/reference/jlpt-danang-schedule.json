@@ -1,0 +1,70 @@
+{
+  "organizer": {
+    "name": "Trường Đại học Ngoại ngữ – Đại học Đà Nẵng",
+    "shortName": "UFL – ĐH Đà Nẵng",
+    "address": "131 Lương Nhữ Hộc, phường Cẩm Lệ, Đà Nẵng",
+    "phone": "0236 3699 324",
+    "email": "nn@ufl.udn.vn",
+    "website": "https://ufl.udn.vn/vie/",
+    "announcementsUrl": "https://ufl.udn.vn/vie/thong-tin-thong-bao/thong-bao-ve-ky-thi-nang-luc-tieng-nhat-quoc-te-jlpt-ngay-05072026.html"
+  },
+  "fees": {
+    "formFee": "30.000 đồng/bộ hồ sơ",
+    "examFee": "680.000 đồng/cấp độ",
+    "note": "Hồ sơ dùng chung cho tất cả cấp độ. Có thể đóng đăng ký sớm nếu đủ chỗ."
+  },
+  "sessions": [
+    {
+      "id": "2026-07",
+      "label": "Đợt I — Tháng 7/2026",
+      "examDate": "Chủ nhật, 05/07/2026",
+      "registrationPeriod": "02/03/2026 – 31/03/2026",
+      "status": "registration_closed",
+      "statusLabel": "Đã đóng đăng ký",
+      "announcementUrl": "https://ufl.udn.vn/vie/thong-tin-thong-bao/thong-bao-ve-viec-dang-ky-nop-ho-so-du-thi-nang-luc-tieng-nhat-quoc-jlpt-ngay-05072026.html"
+    },
+    {
+      "id": "2026-12",
+      "label": "Đợt II — Tháng 12/2026",
+      "examDate": "Chủ nhật, 06/12/2026 (dự kiến)",
+      "registrationPeriod": "Tháng 8 – đầu tháng 9/2026 (dự kiến)",
+      "status": "upcoming",
+      "statusLabel": "Chưa mở đăng ký"
+    }
+  ],
+  "venues": [
+    {
+      "address": "131 Lương Nhữ Hộc",
+      "district": "phường Cẩm Lệ",
+      "levels": "N1 – N4",
+      "note": "Hướng dẫn thí sinh: Hội trường A (tầng 2 – khu hiệu bộ)"
+    },
+    {
+      "address": "41 Lê Duẩn",
+      "district": "quận Hải Châu",
+      "levels": "N5",
+      "note": "Hướng dẫn thí sinh: Phòng DB303 (tầng 3 – khu B)"
+    }
+  ],
+  "examDay": [
+    {
+      "levels": "N1, N2",
+      "arriveAt": "07:00",
+      "startAt": "08:00",
+      "venue": "131 Lương Nhữ Hộc"
+    },
+    {
+      "levels": "N3, N4",
+      "arriveAt": "12:30",
+      "startAt": "13:30",
+      "venue": "131 Lương Nhữ Hộc"
+    },
+    {
+      "levels": "N5",
+      "arriveAt": "12:30",
+      "startAt": "13:30",
+      "venue": "41 Lê Duẩn"
+    }
+  ],
+  "briefing": "Chiều thứ Bảy trước ngày thi (14:00) — buổi hướng dẫn thí sinh tại địa điểm thi. Có thể xem sơ đồ phòng thi trên bảng thông báo lối vào."
+}

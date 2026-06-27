@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package nihongo.exam;
+
+service ExamService {
+  rpc Dispatch (DispatchRequest) returns (DispatchResponse);
+}
+
+message DispatchRequest {
+  string pattern = 1;
+  string payload = 2;
+}
+
+message DispatchResponse {
+  string result = 1;
+  string error = 2;
+}
