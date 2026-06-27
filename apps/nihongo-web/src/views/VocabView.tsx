@@ -9,7 +9,7 @@ import { usePlayAll } from '../hooks/usePlayAll';
 import { useLessonsQuery, useVocabulariesQuery } from '../hooks/queries';
 import StrokeOrder from '../components/StrokeOrder';
 import VocabPicture from '../components/VocabPicture';
-import { getStrokeText, shouldShowKanaStroke } from '../utils/japanese';
+import { getStrokeText, parseReadingVariants, shouldShowKanaStroke } from '../utils/japanese';
 import './VocabView.css';
 
 function matchesVocabSearch(
@@ -21,6 +21,129 @@ function matchesVocabSearch(
     .join(' ')
     .toLowerCase();
   return haystack.includes(query);
+}
+
+function strokeBoxSize(charCount: number, dense = false): number {
+  if (dense) {
+    if (charCount <= 1) return 165;
+    if (charCount <= 2) return 135;
+    if (charCount <= 4) return 112;
+    return 92;
+  }
+  if (charCount <= 1) return 200;
+  if (charCount <= 2) return 160;
+  if (charCount <= 4) return 130;
+  return 105;
+}
+
+function FlashcardStroke({
+  text,
+  label,
+  dense = false,
+  onCharClick,
+}: {
+  text: string;
+  label?: string;
+  dense?: boolean;
+  onCharClick: (char: string) => void;
+}) {
+  const strokeText = getStrokeText(text);
+  if (!strokeText) return null;
+  const size = strokeBoxSize([...strokeText].length, dense);
+
+  return (
+    <div className="flashcard-stroke-block" onClick={(e) => e.stopPropagation()}>
+      {label ? <p className="flashcard-stroke-label">{label}</p> : null}
+      <StrokeOrder
+        text={text}
+        width={size}
+        height={size}
+        compact
+        onCharClick={onCharClick}
+      />
+    </div>
+  );
+}
+
+function FlashcardReadingStrokes({
+  kanji,
+  kana,
+  romaji,
+  onCharClick,
+}: {
+  kanji: string | null;
+  kana: string;
+  romaji: string;
+  onCharClick: (char: string) => void;
+}) {
+  const showDual = shouldShowKanaStroke(kanji, kana);
+  const kanaVariants = parseReadingVariants(kana, romaji);
+  const kanjiVariants = kanji ? parseReadingVariants(kanji, romaji) : [];
+  const pairCount = showDual
+    ? Math.max(kanjiVariants.length, kanaVariants.length, 1)
+    : kanaVariants.length;
+
+  if (pairCount > 1) {
+    return (
+      <div className="flashcard-reading-pairs">
+        {Array.from({ length: pairCount }, (_, index) => {
+          const kanjiVariant = kanjiVariants[index];
+          const kanaVariant = kanaVariants[index];
+          const pairLabel = kanaVariant?.label ?? kanjiVariant?.label;
+
+          return (
+            <div key={index} className="flashcard-reading-pair">
+              {pairLabel ? (
+                <p className="flashcard-reading-pair-label">{pairLabel}</p>
+              ) : null}
+              <div className="flashcard-reading-pair-strokes">
+                {showDual && kanjiVariant ? (
+                  <FlashcardStroke
+                    text={kanjiVariant.text}
+                    label="Kanji"
+                    dense
+                    onCharClick={onCharClick}
+                  />
+                ) : null}
+                {kanaVariant ? (
+                  <FlashcardStroke
+                    text={kanaVariant.text}
+                    label={showDual ? 'Kana' : undefined}
+                    dense
+                    onCharClick={onCharClick}
+                  />
+                ) : null}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (showDual) {
+    return (
+      <div className="flashcard-stroke-dual">
+        <FlashcardStroke
+          text={kanji!}
+          label="Kanji"
+          onCharClick={onCharClick}
+        />
+        <FlashcardStroke
+          text={kana}
+          label="Kana"
+          onCharClick={onCharClick}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <FlashcardStroke
+      text={kanji || kana}
+      onCharClick={onCharClick}
+    />
+  );
 }
 
 export default function VocabView() {
@@ -67,6 +190,9 @@ export default function VocabView() {
   }, [currentIndex, currentLesson, searchQuery, filteredVocab, rowVirtualizer]);
 
   const currentVocab = lessonVocab[currentIndex];
+  const hasMultipleReadings =
+    currentVocab != null &&
+    parseReadingVariants(currentVocab.kana, currentVocab.romaji).length > 1;
 
   useEffect(() => {
     if (isPlayingAll || !currentVocab?.kana) return undefined;
@@ -97,11 +223,6 @@ export default function VocabView() {
 
   const handleStrokeCharClick = (char: string) => {
     playAudio(char);
-  };
-
-  const handleStrokeTextClick = (text: string) => {
-    const strokeText = getStrokeText(text);
-    if (strokeText) playAudio(strokeText);
   };
 
   const handlePlayAll = () => {
@@ -221,7 +342,9 @@ export default function VocabView() {
           <div className="vocab-main-layout">
           <div className="flashcard-container">
             <div
-              className={`flashcard ${isFlipped ? 'flipped' : ''}`}
+              className={`flashcard ${isFlipped ? 'flipped' : ''}${
+                hasMultipleReadings ? ' flashcard--multi-reading' : ''
+              }`}
               onClick={() => setIsFlipped(!isFlipped)}
             >
               <div className="flashcard-face flashcard-front">
@@ -234,13 +357,23 @@ export default function VocabView() {
                   kana={currentVocab.kana}
                   kanji={currentVocab.kanji}
                   imageUrl={currentVocab.imageUrl}
-                  size="lg"
-                  className="flashcard-vocab-picture"
+                  size="sm"
+                  className="flashcard-vocab-picture flashcard-vocab-picture-corner"
                   alt={currentVocab.kana}
                 />
-                <span className="vocab-kanji japanese-text">
-                  {currentVocab.kanji || currentVocab.kana}
-                </span>
+                <div className="flashcard-front-body">
+                  <FlashcardReadingStrokes
+                    kanji={currentVocab.kanji}
+                    kana={currentVocab.kana}
+                    romaji={currentVocab.romaji}
+                    onCharClick={handleStrokeCharClick}
+                  />
+                  {!hasMultipleReadings ? (
+                    <span className="vocab-kanji-caption japanese-text">
+                      {currentVocab.kanji || currentVocab.kana}
+                    </span>
+                  ) : null}
+                </div>
               </div>
 
               <div className="flashcard-face flashcard-back">
@@ -278,78 +411,7 @@ export default function VocabView() {
               </button>
             </div>
           </div>
-
-          <div className="stroke-order-sidepanel glass-panel">
-            <VocabPicture
-              word={currentVocab.romaji}
-              meaning={currentVocab.meaning}
-              kana={currentVocab.kana}
-              kanji={currentVocab.kanji}
-              imageUrl={currentVocab.imageUrl}
-              size="md"
-              className="stroke-panel-picture"
-              alt={currentVocab.kana}
-            />
-            <h3>Cách viết chữ:</h3>
-            {shouldShowKanaStroke(currentVocab.kanji, currentVocab.kana) ? (
-              <>
-                <div className="stroke-section">
-                  <p className="stroke-section-label">Kanji</p>
-                  <button
-                    type="button"
-                    className="stroke-kanji stroke-kanji-btn"
-                    onClick={() => handleStrokeTextClick(currentVocab.kanji!)}
-                  >
-                    {getStrokeText(currentVocab.kanji!)}
-                  </button>
-                  <div className="stroke-drawing-box">
-                    <StrokeOrder
-                      text={currentVocab.kanji!}
-                      onCharClick={handleStrokeCharClick}
-                    />
-                  </div>
-                </div>
-                <div className="stroke-section">
-                  <p className="stroke-section-label">Kana</p>
-                  <button
-                    type="button"
-                    className="stroke-kanji stroke-kanji-btn"
-                    onClick={() => handleStrokeTextClick(currentVocab.kana)}
-                  >
-                    {getStrokeText(currentVocab.kana)}
-                  </button>
-                  <div className="stroke-drawing-box">
-                    <StrokeOrder
-                      text={currentVocab.kana}
-                      width={80}
-                      height={80}
-                      onCharClick={handleStrokeCharClick}
-                    />
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  className="stroke-kanji stroke-kanji-btn"
-                  onClick={() =>
-                    handleStrokeTextClick(currentVocab.kanji || currentVocab.kana)
-                  }
-                >
-                  {getStrokeText(currentVocab.kanji || currentVocab.kana) ||
-                    currentVocab.kana}
-                </button>
-                <div className="stroke-drawing-box">
-                  <StrokeOrder
-                    text={currentVocab.kanji || currentVocab.kana}
-                    onCharClick={handleStrokeCharClick}
-                  />
-                </div>
-              </>
-            )}
           </div>
-        </div>
         </div>
       ) : (
         <div className="empty-state">

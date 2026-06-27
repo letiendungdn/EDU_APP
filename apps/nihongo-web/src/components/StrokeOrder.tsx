@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { kanjiStrokeSvgUrl, kanjivgCdnUrl } from '@edu/vocab-images';
 import { getStrokeText } from '../utils/japanese';
 
 function extractSvgMarkup(svgText: string): string {
@@ -11,9 +12,20 @@ function extractSvgMarkup(svgText: string): string {
   return svgText.slice(start, end + '</svg>'.length);
 }
 
-function kanjiVgUrl(char: string): string {
-  const hex = char.charCodeAt(0).toString(16).padStart(5, '0');
-  return `https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/${hex}.svg`;
+async function fetchStrokeSvg(char: string): Promise<string> {
+  const hex = char.codePointAt(0)?.toString(16).padStart(5, '0') ?? '00000';
+  const urls = [kanjiStrokeSvgUrl(char), kanjivgCdnUrl(hex)];
+
+  for (const url of urls) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) return res.text();
+    } catch {
+      /* thử URL tiếp theo */
+    }
+  }
+
+  throw new Error(`SVG not found for ${char}`);
 }
 
 function mountKanjiVgSvg(
@@ -148,11 +160,7 @@ export default function StrokeOrder({
 
       const handleCharClick = () => onCharClickRef.current?.(char, index);
 
-      fetch(kanjiVgUrl(char))
-        .then((res) => {
-          if (!res.ok) throw new Error('SVG not found');
-          return res.text();
-        })
+      fetchStrokeSvg(char)
         .then((svgText) =>
           mountKanjiVgSvg(charDiv, char, svgText, width, height, handleCharClick),
         )

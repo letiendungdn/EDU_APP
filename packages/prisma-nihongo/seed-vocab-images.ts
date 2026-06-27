@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { resolveVocabImage } from '@edu/vocab-images';
+import { resolveVocabImage, toLocalImageUrl } from '@edu/vocab-images';
 
 type VocabImageRow = {
   id: number;
@@ -19,23 +19,42 @@ export async function seedVocabImages(prisma: PrismaClient) {
   let updated = 0;
   let cleared = 0;
   for (const vocab of vocabList) {
-    const imageUrl = resolveVocabImage({
-      word: vocab.romaji,
-      meaning: vocab.meaning,
-      kana: vocab.kana,
-      kanji: vocab.kanji,
-    });
+    const resolved =
+      toLocalImageUrl(
+        resolveVocabImage({
+          word: vocab.romaji,
+          meaning: vocab.meaning,
+          kana: vocab.kana,
+          kanji: vocab.kanji,
+          imageUrl: vocab.imageUrl,
+        }),
+      ) ?? null;
 
-    if (imageUrl === vocab.imageUrl) continue;
+    if (resolved === vocab.imageUrl) continue;
 
     await prisma.$executeRaw`
-      UPDATE "Vocabulary" SET "imageUrl" = ${imageUrl} WHERE id = ${vocab.id}
+      UPDATE "Vocabulary" SET "imageUrl" = ${resolved} WHERE id = ${vocab.id}
     `;
-    if (imageUrl) updated++;
+    if (resolved) updated++;
     else cleared++;
   }
 
-  console.log(`✅ Cập nhật ${updated} từ có ảnh, xóa ${cleared} URL cũ/sai`);
+  const kanjiRows = await prisma.$queryRaw<{ id: number; imageUrl: string | null }[]>`
+    SELECT id, "imageUrl" FROM "KanjiEntry" WHERE "imageUrl" IS NOT NULL
+  `;
+  let kanjiUpdated = 0;
+  for (const row of kanjiRows) {
+    const local = toLocalImageUrl(row.imageUrl);
+    if (!local || local === row.imageUrl) continue;
+    await prisma.$executeRaw`
+      UPDATE "KanjiEntry" SET "imageUrl" = ${local} WHERE id = ${row.id}
+    `;
+    kanjiUpdated++;
+  }
+
+  console.log(
+    `✅ Vocab: ${updated} ảnh local, ${cleared} xóa URL cũ. Kanji: ${kanjiUpdated} ảnh local.`,
+  );
 }
 
 async function main() {

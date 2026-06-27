@@ -24,7 +24,11 @@
     "stripe:listen": "stripe.cmd listen --forward-to localhost:3000/api/webhooks/stripe",
     "seed:vocab-images": "npm run seed:vocab-images -w @edu/nihongo-services",
     "prisma:generate": "npm run generate -w @edu/prisma-nihongo",
-    "db:backup": "powershell -NoProfile -ExecutionPolicy Bypass -File infra/backups/backup.ps1"
+    "db:backup": "powershell -NoProfile -ExecutionPolicy Bypass -File infra/backups/backup.ps1",
+    "db:export-content": "powershell -NoProfile -ExecutionPolicy Bypass -File infra/postgres/export-content-seed.ps1",
+    "media:download": "node packages/vocab-images/scripts/download-media.mjs",
+    "media:sync": "node packages/vocab-images/scripts/sync-public.mjs",
+    "media:setup": "npm run media:download && npm run media:sync && npm run seed:vocab-images"
   },
   "engines": {
     "node": ">=22"

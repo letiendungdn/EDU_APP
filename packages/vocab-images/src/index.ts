@@ -1,10 +1,24 @@
-/** OpenMoji SVG — ổn định, miễn phí */
+import { kanjiMnemonicLocalPath, openmojiLocalPath, toLocalImageUrl } from './media-paths';
+
+export {
+  MEDIA,
+  OPENMOJI_VERSION,
+  kanjiStrokeSvgUrl,
+  kanjiMnemonicLocalPath,
+  kanjivgCdnUrl,
+  kanjivgLocalPath,
+  openmojiCdnUrl,
+  openmojiLocalPath,
+  toLocalImageUrl,
+} from './media-paths';
+
+/** OpenMoji SVG — file local trong public/media/openmoji */
 function om(code: string) {
-  return `https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@15.0.0/color/svg/${code.toUpperCase()}.svg`;
+  return openmojiLocalPath(code);
 }
 
 function omFlag(code: string) {
-  return om(code.replace(/-/g, '-'));
+  return openmojiLocalPath(code);
 }
 
 export const PICTURE_IMAGES = {
@@ -736,9 +750,7 @@ export function isPictureEligible(input: {
 }
 
 function normalizeStoredImageUrl(url: string | null | undefined): string | null {
-  if (!url) return null;
-  if (url.includes('upload.wikimedia.org')) return null;
-  return url;
+  return toLocalImageUrl(url);
 }
 
 function normalizeRomaji(romaji: string): string {

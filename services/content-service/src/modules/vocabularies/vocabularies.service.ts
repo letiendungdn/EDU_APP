@@ -52,7 +52,7 @@ export class VocabulariesService {
     const [data, total] = await this.prisma.$transaction([
       this.prisma.vocabulary.findMany({
         where,
-        orderBy: { id: "asc" },
+        orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
         skip: (page - 1) * limit,
         take: limit,
       }),

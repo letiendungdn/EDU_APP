@@ -10,15 +10,6 @@ const nextConfig: NextConfig = {
     root: monorepoRoot,
   },
   transpilePackages: ["@edu/vocab-images"],
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.jsdelivr.net",
-        pathname: "/gh/hfg-gmuend/openmoji/**",
-      },
-    ],
-  },
   async rewrites() {
     return [
       {

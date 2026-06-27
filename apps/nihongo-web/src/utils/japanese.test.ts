@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { getStrokeText, shouldShowKanaStroke } from './japanese';
+import {
+  getStrokeText,
+  hasReadingVariants,
+  parseReadingVariants,
+  shouldShowKanaStroke,
+} from './japanese';
 
 describe('getStrokeText', () => {
   it('giữ lại hiragana', () => {
@@ -25,6 +30,39 @@ describe('getStrokeText', () => {
 
   it('xử lý mixed text', () => {
     expect(getStrokeText('食べる (taberu)')).toBe('食べる');
+  });
+});
+
+describe('parseReadingVariants', () => {
+  it('tách 2 cách đọc trong ngoặc', () => {
+    expect(parseReadingVariants('あの ひと（あの かた）', 'ano hito (ano kata)')).toEqual([
+      { text: 'あの ひと', label: 'ano hito' },
+      { text: 'あの かた', label: 'ano kata' },
+    ]);
+  });
+
+  it('tách nhiều biến thể cách nhau bằng dấu phẩy', () => {
+    expect(parseReadingVariants('－ほん（－ぽん、－ぼん）', '-hon (-pon, -bon)')).toEqual([
+      { text: '－ほん', label: '-hon' },
+      { text: '－ぽん', label: '-pon' },
+      { text: '－ぼん', label: '-bon' },
+    ]);
+  });
+
+  it('giữ nguyên khi không có ngoặc', () => {
+    expect(parseReadingVariants('たべる', 'taberu')).toEqual([
+      { text: 'たべる', label: 'taberu' },
+    ]);
+  });
+});
+
+describe('hasReadingVariants', () => {
+  it('true khi có ngoặc biến thể', () => {
+    expect(hasReadingVariants('だれ（どなた）')).toBe(true);
+  });
+
+  it('false khi chỉ một cách đọc', () => {
+    expect(hasReadingVariants('わたし')).toBe(false);
   });
 });
 

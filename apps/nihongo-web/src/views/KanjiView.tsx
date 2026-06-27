@@ -7,6 +7,7 @@ import { usePlayAll } from '../hooks/usePlayAll';
 import { useKanjiLessonsQuery, useKanjiEntriesQuery } from '../hooks/queries';
 import StrokeOrder from '../components/StrokeOrder';
 import { getStrokeText } from '../utils/japanese';
+import { toLocalImageUrl } from '@edu/vocab-images';
 import type { KanjiEntry, KanjiLesson } from '../types/api';
 import './VocabView.css';
 
@@ -192,7 +193,10 @@ export default function KanjiView() {
           <div className="stroke-order-sidepanel glass-panel">
             {currentKanji.imageUrl && (
               <div className="kanji-illustration">
-                <img src={currentKanji.imageUrl} alt={currentKanji.character} />
+                <img
+                  src={toLocalImageUrl(currentKanji.imageUrl) ?? currentKanji.imageUrl}
+                  alt={currentKanji.character}
+                />
               </div>
             )}
             {currentKanji.mnemonicJp && (
@@ -209,7 +213,7 @@ export default function KanjiView() {
         <div className="empty-state">
           <p>
             Dữ liệu kanji cho Bài {currentLesson} chưa có. Chạy{' '}
-            <code>npm run build:kll</code> rồi <code>npx prisma db seed</code> nhé!
+            <code>npm run seed -w @edu/prisma-nihongo</code> (DB trống) hoặc restore backup.
           </p>
         </div>
       )}
