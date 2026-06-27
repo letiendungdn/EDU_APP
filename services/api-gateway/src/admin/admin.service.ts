@@ -1,14 +1,14 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
-import { CONTENT_PATTERNS } from '@app/contracts';
-import { PrismaService } from '@app/prisma';
+import { Injectable, Inject } from "@nestjs/common";
+import { ClientProxy } from "@nestjs/microservices";
+import { firstValueFrom } from "rxjs";
+import { CONTENT_PATTERNS } from "@app/contracts";
+import { PrismaService } from "@app/prisma";
 
 @Injectable()
 export class AdminService {
   constructor(
     private prisma: PrismaService,
-    @Inject('CONTENT_SERVICE') private readonly contentClient: ClientProxy,
+    @Inject("CONTENT_SERVICE") private readonly contentClient: ClientProxy,
   ) {}
 
   async getDashboardStats() {
@@ -34,7 +34,7 @@ export class AdminService {
 
     const recentLessons = await this.prisma.lesson.findMany({
       take: 5,
-      orderBy: { lessonNumber: 'desc' },
+      orderBy: { lessonNumber: "desc" },
       select: {
         id: true,
         lessonNumber: true,
@@ -71,7 +71,7 @@ export class AdminService {
         createdAt: true,
         _count: { select: { examResults: true } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 

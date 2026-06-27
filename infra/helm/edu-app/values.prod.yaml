@@ -1,0 +1,31 @@
+# Production overrides — apply with: helm upgrade --install edu-app . -f values.yaml -f values.prod.yaml
+
+replicaCount:
+  apiGateway: 2
+  contentService: 2
+  examService: 2
+  nihongoWeb: 2
+  englishWeb: 2
+
+config:
+  NODE_ENV: production
+  ALLOWED_ORIGINS: "https://nihongo.yourdomain.com,https://english.yourdomain.com"
+  NEXT_PUBLIC_ENGLISH_APP_URL: https://english.yourdomain.com
+  NEXT_PUBLIC_NIHONGO_APP_URL: https://nihongo.yourdomain.com
+  INGRESS_HOST_NIHONGO: nihongo.yourdomain.com
+  INGRESS_HOST_ENGLISH: english.yourdomain.com
+
+ingress:
+  hosts:
+    nihongo: nihongo.yourdomain.com
+    english: english.yourdomain.com
+
+hpa:
+  apiGateway:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+
+postgres:
+  storage: 20Gi

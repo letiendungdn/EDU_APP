@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: {{ include "edu-app.namespace" . }}
+  labels:
+    {{- include "edu-app.labels" . | nindent 4 }}
+data:
+  01-init-databases.sql: |
+    SELECT 'CREATE DATABASE english_learning'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'english_learning')\gexec

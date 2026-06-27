@@ -1,0 +1,49 @@
+.vocab-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 160px;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--surface-color, #1e1e2e);
+  border: 1px solid var(--border-color, #333);
+  cursor: default;
+  text-align: center;
+}
+
+.vocab-card[role='button'] {
+  cursor: pointer;
+}
+
+.vocab-card-kanji {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.vocab-card-kana {
+  font-size: 1.25rem;
+}
+
+.vocab-card-romaji {
+  color: var(--text-secondary, #888);
+  font-size: 0.9rem;
+}
+
+.vocab-card-meaning {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.vocab-card-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #888);
+}
+
+.vocab-card-audio {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+}

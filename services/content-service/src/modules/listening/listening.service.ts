@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { shuffle, speechTextFromJapanese } from '@app/common';
-import { PrismaService } from '@app/prisma';
+import { Injectable } from "@nestjs/common";
+import { shuffle, speechTextFromJapanese } from "@app/common";
+import { PrismaService } from "@app/prisma";
 
 export interface ListeningPlaylistItem {
   id: string;
-  type: 'vocab' | 'sentence';
+  type: "vocab" | "sentence";
   speakText: string;
   display: string;
   meaning: string;
@@ -19,7 +19,7 @@ export class ListeningService {
     const lessons = await this.prisma.lesson.findMany({
       where: { lessonNumber: { gte: lessonFrom, lte: lessonTo } },
       select: { id: true, lessonNumber: true },
-      orderBy: { lessonNumber: 'asc' },
+      orderBy: { lessonNumber: "asc" },
     });
 
     const lessonIds = lessons.map((l) => l.id);
@@ -46,7 +46,7 @@ export class ListeningService {
       const lessonNumber = lessonById.get(vocab.lessonId) ?? 0;
       items.push({
         id: `v-${vocab.id}`,
-        type: 'vocab',
+        type: "vocab",
         speakText: vocab.kana,
         display: vocab.kanji || vocab.kana,
         meaning: vocab.meaning,
@@ -62,7 +62,7 @@ export class ListeningService {
           example.vi?.trim() || example.en?.trim() || grammar.meaning;
         items.push({
           id: `s-${example.id}`,
-          type: 'sentence',
+          type: "sentence",
           speakText: speechTextFromJapanese(example.jp),
           display: example.jp.trim(),
           meaning,

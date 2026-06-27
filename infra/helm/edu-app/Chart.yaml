@@ -1,0 +1,6 @@
+apiVersion: v2
+name: edu-app
+description: Helm chart for edu-app platform (api-gateway, microservices, frontends)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

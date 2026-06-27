@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
+import AuthHeader from '@/components/AuthHeader';
 
 const englishAppUrl = process.env.NEXT_PUBLIC_ENGLISH_APP_URL ?? 'http://localhost:3001';
 
@@ -24,6 +25,9 @@ const navItems = [
   { href: '/reading', label: 'Đọc hiểu' },
   { href: '/dictation', label: 'Nghe chép' },
   { href: '/analytics', label: 'Tiến độ' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/community', label: 'Cộng đồng' },
+  { href: '/support', label: 'Hỗ trợ' },
 ];
 
 function NavItem({ href, label, end }: { href: string; label: string; end?: boolean }) {
@@ -38,21 +42,26 @@ function NavItem({ href, label, end }: { href: string; label: string; end?: bool
 }
 
 export default function MainLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname() ?? '';
+  const isAuthScreen = pathname === '/login' || pathname === '/profile';
+
   return (
     <div className="app-container">
-      <header className="app-header">
+      <header className={`app-header${isAuthScreen ? ' app-header--compact' : ''}`}>
         <div className="container header-content">
           <Link href="/" className="logo">
             <span className="logo-icon">🇯🇵</span>
             Nihongo Learn
           </Link>
           <nav className="nav-links">
-            {navItems.map(({ href, label, end }) => (
-              <NavItem key={href} href={href} label={label} end={end} />
-            ))}
+            {!isAuthScreen &&
+              navItems.map(({ href, label, end }) => (
+                <NavItem key={href} href={href} label={label} end={end} />
+              ))}
             <a href={englishAppUrl} className="nav-link app-switcher">
               🇬🇧 English
             </a>
+            <AuthHeader />
           </nav>
         </div>
       </header>

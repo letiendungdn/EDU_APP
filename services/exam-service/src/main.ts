@@ -1,12 +1,14 @@
-import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import "./tracing";
+import { Logger } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 import {
   EXAM_PROTO_PATH,
   GRPC_DEFAULT_PORTS,
   GRPC_PACKAGES,
-} from '@app/contracts';
-import { ExamModule } from './exam.module';
-import { RpcHttpExceptionFilter } from './filters/rpc-http-exception.filter';
+} from "@app/contracts";
+import { ExamModule } from "./exam.module";
+import { RpcHttpExceptionFilter } from "./filters/rpc-http-exception.filter";
 
 async function bootstrap() {
   const port = process.env.EXAM_GRPC_PORT ?? GRPC_DEFAULT_PORTS.exam;
@@ -23,7 +25,8 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new RpcHttpExceptionFilter());
   await app.listen();
-  console.log(`Exam service listening on gRPC :${port}`);
+  const logger = new Logger("Bootstrap");
+  logger.log(`Exam service listening on gRPC :${port}`);
 }
 
 void bootstrap();

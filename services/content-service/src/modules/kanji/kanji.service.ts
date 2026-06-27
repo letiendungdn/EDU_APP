@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@app/prisma';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "@app/prisma";
 
 @Injectable()
 export class KanjiService {
@@ -7,7 +7,7 @@ export class KanjiService {
 
   findAllLessons() {
     return this.prisma.kanjiLesson.findMany({
-      orderBy: { lessonNumber: 'asc' },
+      orderBy: { lessonNumber: "asc" },
       include: {
         _count: {
           select: { entries: true },
@@ -19,7 +19,7 @@ export class KanjiService {
   findEntries(lessonNumber?: number) {
     return this.prisma.kanjiEntry.findMany({
       where: lessonNumber ? { lesson: { lessonNumber } } : undefined,
-      orderBy: [{ lesson: { lessonNumber: 'asc' } }, { sortOrder: 'asc' }],
+      orderBy: [{ lesson: { lessonNumber: "asc" } }, { sortOrder: "asc" }],
       include: {
         lesson: {
           select: {
@@ -29,7 +29,7 @@ export class KanjiService {
           },
         },
         vocabularies: {
-          orderBy: { id: 'asc' },
+          orderBy: { id: "asc" },
         },
       },
     });

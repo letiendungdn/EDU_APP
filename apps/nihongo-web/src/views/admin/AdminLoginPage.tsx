@@ -2,18 +2,25 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { ApiError } from '@/types/api';
 import './AdminPages.css';
 
 export default function AdminLoginPage() {
-  const { login, isAuthenticated, isAdmin } = useAuth();
+  const { loginAdmin, isAuthenticated, isAdmin, logout } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('admin@nihongo.local');
   const [password, setPassword] = useState('admin123');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get('reason') === 'forbidden') {
+      setError('Tài khoản hiện tại không có quyền admin. Đăng nhập bằng tài khoản admin.');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (isAuthenticated && isAdmin) {
@@ -26,15 +33,17 @@ export default function AdminLoginPage() {
     setError('');
     setLoading(true);
     try {
-      await login(email, password);
-      router.push('/admin');
+      if (isAuthenticated && !isAdmin) {
+        await logout();
+      }
+      await loginAdmin(email, password);
+      router.replace('/admin');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Đăng nhập thất bại');
+      setError(err instanceof ApiError ? err.message : err instanceof Error ? err.message : 'Đăng nhập thất bại');
     } finally {
       setLoading(false);
     }
   };
-
   if (isAuthenticated && isAdmin) {
     return (
       <div className="admin-login-page">

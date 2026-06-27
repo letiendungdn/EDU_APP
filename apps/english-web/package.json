@@ -7,12 +7,9 @@
     "build": "next build",
     "start": "next start --port 3001",
     "lint": "eslint",
-    "db:push": "prisma db push",
-    "db:seed": "npx ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
-    "db:studio": "prisma studio"
-  },
-  "prisma": {
-    "seed": "npx ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "db:push": "npm run db:push -w @edu/prisma-english",
+    "db:seed": "npm run seed -w @edu/prisma-english",
+    "db:studio": "npm run studio -w @edu/prisma-english"
   },
   "dependencies": {
     "@edu/vocab-images": "*",

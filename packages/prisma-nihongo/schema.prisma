@@ -14,6 +14,7 @@ datasource db {
 
 enum Role {
   USER
+  TEACHER
   ADMIN
 }
 
@@ -60,17 +61,18 @@ model Lesson {
   description  String?
   jlptLevel    JlptLevel?
   thumbnailUrl String?
+  sortOrder    Int          @default(0)
   vocabularies Vocabulary[]
   grammars     Grammar[]
   exercises    Exercise[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
-  @@index([jlptLevel])
+  @@index([jlptLevel, sortOrder])
 }
 
 model Vocabulary {
-  id            Int        @id @default(autoincrement())
+  id            Int                @id @default(autoincrement())
   kanji         String?
   kana          String
   romaji        String
@@ -82,12 +84,14 @@ model Vocabulary {
   audioUrl      String?
   imageUrl      String?
   frequencyRank Int?
+  sortOrder     Int                @default(0)
   lessonId      Int
-  lesson        Lesson     @relation(fields: [lessonId], references: [id])
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  lesson        Lesson             @relation(fields: [lessonId], references: [id])
+  dictations    DictationAttempt[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
 
-  @@index([lessonId])
+  @@index([lessonId, sortOrder])
   @@index([jlptLevel])
 }
 
@@ -98,13 +102,14 @@ model Grammar {
   explanation    String?
   jlptLevel      JlptLevel?
   formalityLevel String?
+  sortOrder      Int        @default(0)
   lessonId       Int
   lesson         Lesson     @relation(fields: [lessonId], references: [id])
   examples       Example[]
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 
-  @@index([lessonId])
+  @@index([lessonId, sortOrder])
   @@index([jlptLevel])
 }
 
@@ -115,6 +120,7 @@ model Example {
   en        String?
   vi        String?
   audioUrl  String?
+  sortOrder Int     @default(0)
   grammarId Int
   grammar   Grammar @relation(fields: [grammarId], references: [id], onDelete: Cascade)
 }
@@ -127,13 +133,14 @@ model Exercise {
   explanation String?
   audioUrl    String?
   difficulty  Int              @default(1)
+  sortOrder   Int              @default(0)
   lessonId    Int
   lesson      Lesson           @relation(fields: [lessonId], references: [id])
-  optionsList ExerciseOption[]
+  options     ExerciseOption[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
-  @@index([lessonId])
+  @@index([lessonId, sortOrder])
 }
 
 model ExerciseOption {
@@ -141,6 +148,7 @@ model ExerciseOption {
   exerciseId Int
   exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   text       String
+  isCorrect  Boolean  @default(false)
   sortOrder  Int      @default(0)
 
   @@index([exerciseId, sortOrder])
@@ -151,16 +159,16 @@ model ExerciseOption {
 // ─────────────────────────────────────────────
 
 model KanaSection {
-  id        Int         @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   script    KanaScript
   slug      String
   title     String
   subtitle  String?
-  columns   Int         @default(5)
-  sortOrder Int         @default(0)
+  columns   Int        @default(5)
+  sortOrder Int        @default(0)
   cells     KanaCell[]
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   @@unique([script, slug])
   @@index([script, sortOrder])
@@ -407,12 +415,12 @@ model KanjiLesson {
   lessonNumber Int          @unique
   title        String?
   jlptLevel    JlptLevel?
+  sortOrder    Int          @default(0)
   entries      KanjiEntry[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
-  @@index([lessonNumber])
-  @@index([jlptLevel])
+  @@index([jlptLevel, sortOrder])
 }
 
 model KanjiEntry {
@@ -437,7 +445,7 @@ model KanjiEntry {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
-  @@index([lessonId])
+  @@index([lessonId, sortOrder])
   @@index([character])
   @@index([jlptLevel])
 }
@@ -447,12 +455,11 @@ model KanjiVocab {
   word         String
   reading      String
   meaningVi    String
+  sortOrder    Int        @default(0)
   kanjiEntryId Int
   kanjiEntry   KanjiEntry @relation(fields: [kanjiEntryId], references: [id], onDelete: Cascade)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
 
-  @@index([kanjiEntryId])
+  @@index([kanjiEntryId, sortOrder])
 }
 
 // ─────────────────────────────────────────────
@@ -460,35 +467,62 @@ model KanjiVocab {
 // ─────────────────────────────────────────────
 
 model User {
-  id                Int            @id @default(autoincrement())
-  email             String         @unique
-  passwordHash      String
-  role              Role           @default(USER)
-  name              String?
-  avatarUrl         String?
-  nativeLanguage    String?        @default("vi")
-  targetJlptLevel   JlptLevel?
-  studyGoalMinutes  Int?           @default(30)
-  lastActiveAt      DateTime?
-  totalStudySeconds Int            @default(0)
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  id               Int            @id @default(autoincrement())
+  email            String         @unique
+  passwordHash     String?
+  googleId         String?        @unique
+  role             Role           @default(USER)
+  name             String?
+  avatarUrl        String?
+  nativeLanguage   String?        @default("vi")
+  targetJlptLevel  JlptLevel?
+  studyGoalMinutes Int?           @default(30)
+  lastActiveAt     DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 
-  examResults   ExamResult[]
-  srsCards      SrsCard[]
-  listeningLogs ListeningLog[]
-  studySessions StudySession[]
-  dailyNotes    DailyNote[]
-  dailyGoals    DailyGoal[]
+  srsCards       SrsCard[]
+  examResults    ExamResult[]
+  listeningLogs  ListeningLog[]
+  studySessions  StudySession[]
+  studyStreak    StudyStreak?
+  dailyNotes     DailyNote[]
+  dailyGoals     DailyGoal[]
+  refreshTokens  RefreshToken[]
+  subscription   Subscription?
+  coachProfile   CoachProfile?
+  learnerSessions CoachingSession[] @relation("LearnerSessions")
+  payments       Payment[]
+  reviewsGiven   CoachReview[]
+  sentMessages   ChatMessage[]  @relation("SentMessages")
+  notifications  Notification[]
+  supportThread  SupportThread?
+  supportMessages SupportMessage[] @relation("SupportMessages")
+  createdLearnerChats LearnerChatRoom[]   @relation("CreatedLearnerChats")
+  learnerChatMembers  LearnerChatMember[]
+  learnerChatMessages LearnerChatMessage[] @relation("LearnerChatMessages")
 
   @@index([role])
 }
 
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
 // ─────────────────────────────────────────────
-// Progress & SRS
+// SRS — Spaced Repetition (SM-2)
 // ─────────────────────────────────────────────
 
-// Thay thế ReviewLog — dùng thuật toán SM-2 cho Spaced Repetition
+// Không còn snapshot fields (kana, kanji, meaning, lessonNumber).
+// Dùng contentType + contentId để join sang đúng bảng khi cần hiển thị.
 model SrsCard {
   id          Int         @id @default(autoincrement())
   userId      Int
@@ -496,33 +530,30 @@ model SrsCard {
   contentType ContentType
   contentId   Int
 
-  // Snapshot nhanh để hiển thị mà không cần join
-  kana        String
-  kanji       String?
-  meaning     String
-  lessonNumber Int
-
-  // SM-2 algorithm
-  easeFactor   Float     @default(2.5)
-  interval     Int       @default(0)
-  repetitions  Int       @default(0)
-  nextReviewAt DateTime?
+  // SM-2 algorithm fields
+  easeFactor     Float     @default(2.5)
+  interval       Int       @default(0)
+  repetitions    Int       @default(0)
+  nextReviewAt   DateTime?
   lastReviewedAt DateTime?
 
   // Statistics
-  wrongCount   Int       @default(0)
-  correctCount Int       @default(0)
-  reviewStreak Int       @default(0)
-  mastered     Boolean   @default(false)
+  correctCount Int     @default(0)
+  wrongCount   Int     @default(0)
+  reviewStreak Int     @default(0)
+  mastered     Boolean @default(false)
 
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, contentType, contentId])
-  @@index([userId, mastered])
   @@index([userId, nextReviewAt])
-  @@index([userId, contentType])
+  @@index([userId, contentType, mastered])
 }
+
+// ─────────────────────────────────────────────
+// Progress & Exam
+// ─────────────────────────────────────────────
 
 model ExamResult {
   id           Int                 @id @default(autoincrement())
@@ -536,14 +567,12 @@ model ExamResult {
   percent      Float
   passed       Boolean
   submittedAt  DateTime            @default(now())
+  sections     ExamSectionResult[]
 
-  sectionResults ExamSectionResult[]
-
-  @@index([userId])
+  @@index([userId, submittedAt])
   @@index([level])
 }
 
-// Thay thế sectionScores Json — chuẩn hóa từng section thành row riêng
 model ExamSectionResult {
   id           Int        @id @default(autoincrement())
   examResultId Int
@@ -568,11 +597,35 @@ model ListeningLog {
   updatedAt  DateTime @updatedAt
 
   @@unique([userId, date])
-  @@index([userId])
+  @@index([userId, date])
+}
+
+model StudySession {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date          DateTime @db.Date
+  seconds       Int      @default(0)
+  cardsReviewed Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+// Streak tách riêng để tránh recompute từ StudySession mỗi lần hiển thị
+model StudyStreak {
+  id            Int      @id @default(autoincrement())
+  userId        Int      @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentStreak Int      @default(0)
+  longestStreak Int      @default(0)
+  lastStudyDate String?  // YYYY-MM-DD
+  updatedAt     DateTime @updatedAt
 }
 
 // ─────────────────────────────────────────────
-// Reading (đọc hiểu)
+// Reading
 // ─────────────────────────────────────────────
 
 model ReadingPassage {
@@ -624,46 +677,36 @@ model ReadingAttempt {
   percent     Float
   submittedAt DateTime       @default(now())
 
-  @@index([userId])
+  @@index([userId, submittedAt])
   @@index([passageId])
 }
 
 // ─────────────────────────────────────────────
-// Dictation (nghe chép chính tả)
+// Dictation
 // ─────────────────────────────────────────────
 
 model DictationAttempt {
-  id          Int      @id @default(autoincrement())
-  userId      Int?
-  vocabId     Int
-  userInput   String
-  correct     Boolean
-  createdAt   DateTime @default(now())
+  id        Int        @id @default(autoincrement())
+  userId    Int?
+  vocabId   Int
+  vocab     Vocabulary @relation(fields: [vocabId], references: [id], onDelete: Cascade)
+  userInput String
+  correct   Boolean
+  createdAt DateTime   @default(now())
 
-  @@index([userId])
+  @@index([userId, createdAt])
   @@index([vocabId])
 }
 
-// Theo dõi thời gian học mỗi ngày
-model StudySession {
-  id            Int      @id @default(autoincrement())
-  userId        Int
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date          DateTime @db.Date
-  seconds       Int      @default(0)
-  cardsReviewed Int      @default(0)
-  createdAt     DateTime @default(now())
+// ─────────────────────────────────────────────
+// Daily notes & goals
+// ─────────────────────────────────────────────
 
-  @@unique([userId, date])
-  @@index([userId])
-}
-
-// Ghi chú học tập hằng ngày
 model DailyNote {
   id        Int      @id @default(autoincrement())
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date      String
+  date      String   // YYYY-MM-DD
   content   String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -672,16 +715,411 @@ model DailyNote {
   @@index([userId, date])
 }
 
-// Mục tiêu học tập hằng ngày (danh sách checkbox JSON)
+// Thay items Json bằng bảng riêng để query và update từng item
 model DailyGoal {
-  id        Int      @id @default(autoincrement())
+  id        Int             @id @default(autoincrement())
   userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date      String
-  items     Json
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      String          // YYYY-MM-DD
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  items     DailyGoalItem[]
 
   @@unique([userId, date])
   @@index([userId, date])
+}
+
+model DailyGoalItem {
+  id        Int       @id @default(autoincrement())
+  goalId    Int
+  goal      DailyGoal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  text      String
+  done      Boolean   @default(false)
+  sortOrder Int       @default(0)
+
+  @@index([goalId, sortOrder])
+}
+
+// ─────────────────────────────────────────────
+// Payment & Marketplace Enums
+// ─────────────────────────────────────────────
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+  PAUSED
+}
+
+enum SubscriptionPlan {
+  FREE
+  BASIC
+  PRO
+  PRO_ANNUAL
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum SessionStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+  NO_SHOW
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+}
+
+enum WebhookEventStatus {
+  RECEIVED
+  PROCESSED
+  FAILED
+  IGNORED
+}
+
+// ─────────────────────────────────────────────
+// Subscription (Learner trả tiền platform)
+// ─────────────────────────────────────────────
+
+model SubscriptionPlanConfig {
+  id             Int              @id @default(autoincrement())
+  plan           SubscriptionPlan @unique
+  displayName    String
+  priceUsdCents  Int
+  intervalMonths Int              @default(1)
+  trialDays      Int              @default(0)
+  features       Json
+  stripePriceId  String?
+  active         Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+model Subscription {
+  id                   Int                @id @default(autoincrement())
+  userId               Int                @unique
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                 SubscriptionPlan   @default(FREE)
+  status               SubscriptionStatus @default(ACTIVE)
+  stripeCustomerId     String?
+  stripeSubscriptionId String?            @unique
+  stripePriceId        String?
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  trialEnd             DateTime?
+  canceledAt           DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  payments             Payment[]
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([stripeCustomerId])
+  @@index([status])
+}
+
+// ─────────────────────────────────────────────
+// Coach Profile (TEACHER user mở rộng)
+// ─────────────────────────────────────────────
+
+model CoachProfile {
+  id              Int         @id @default(autoincrement())
+  userId          Int         @unique
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio             String?     @db.Text
+  languages       String[]
+  specializations String[]
+  hourlyRateUsd   Int
+  currency        String      @default("USD")
+  timezone        String      @default("Asia/Ho_Chi_Minh")
+  isActive        Boolean     @default(false)
+  isVerified      Boolean     @default(false)
+  featuredUntil   DateTime?
+  totalSessions   Int         @default(0)
+  avgRating       Float?
+  reviewCount     Int         @default(0)
+  stripeAccountId String?     @unique
+  payoutEnabled   Boolean     @default(false)
+  availability    CoachAvailability[]
+  sessions        CoachingSession[]
+  reviews         CoachReview[]
+  payouts         Payout[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([isActive, avgRating])
+  @@index([isActive, hourlyRateUsd])
+}
+
+model CoachAvailability {
+  id          Int          @id @default(autoincrement())
+  coachId     Int
+  coach       CoachProfile @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  dayOfWeek   Int
+  startHour   Int
+  startMinute Int          @default(0)
+  endHour     Int
+  endMinute   Int          @default(0)
+
+  @@index([coachId, dayOfWeek])
+}
+
+// ─────────────────────────────────────────────
+// Coaching Session (Booking)
+// ─────────────────────────────────────────────
+
+model CoachingSession {
+  id                 Int            @id @default(autoincrement())
+  learnerId          Int
+  learner            User           @relation("LearnerSessions", fields: [learnerId], references: [id])
+  coachId            Int
+  coach              CoachProfile   @relation(fields: [coachId], references: [id])
+  status             SessionStatus  @default(PENDING)
+  scheduledAt        DateTime
+  durationMin        Int            @default(60)
+  topic              String?
+  notes              String?        @db.Text
+  priceUsdCents      Int
+  platformFeePercent Int            @default(20)
+  payment            Payment?
+  review             CoachReview?
+  canceledAt         DateTime?
+  canceledBy         String?
+  cancelReason       String?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  messages           ChatMessage[]
+
+  @@index([learnerId, scheduledAt])
+  @@index([coachId, scheduledAt])
+  @@index([status, scheduledAt])
+}
+
+// ─────────────────────────────────────────────
+// Payment
+// ─────────────────────────────────────────────
+
+model Payment {
+  id                    Int              @id @default(autoincrement())
+  userId                Int
+  user                  User             @relation(fields: [userId], references: [id])
+  amountCents           Int
+  currency              String           @default("USD")
+  status                PaymentStatus    @default(PENDING)
+  stripePaymentIntentId String?          @unique
+  stripeChargeId        String?
+  stripeReceiptUrl      String?
+  subscriptionId        Int?
+  subscription          Subscription?    @relation(fields: [subscriptionId], references: [id])
+  sessionId             Int?             @unique
+  session               CoachingSession? @relation(fields: [sessionId], references: [id])
+  refundedAt            DateTime?
+  refundAmountCents     Int?
+  refundReason          String?
+  metadata              Json?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([status])
+}
+
+// ─────────────────────────────────────────────
+// Payout (platform → Coach qua Stripe Connect)
+// ─────────────────────────────────────────────
+
+model Payout {
+  id               Int          @id @default(autoincrement())
+  coachId          Int
+  coach            CoachProfile @relation(fields: [coachId], references: [id])
+  amountCents      Int
+  currency         String       @default("USD")
+  status           PayoutStatus @default(PENDING)
+  stripeTransferId String?      @unique
+  stripePayoutId   String?
+  periodStart      DateTime
+  periodEnd        DateTime
+  sessionCount     Int          @default(0)
+  grossAmountCents Int
+  feeAmountCents   Int
+  processedAt      DateTime?
+  failReason       String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([coachId, status])
+  @@index([periodStart, periodEnd])
+}
+
+// ─────────────────────────────────────────────
+// Webhook Events (idempotency)
+// ─────────────────────────────────────────────
+
+model WebhookEvent {
+  id           Int                @id @default(autoincrement())
+  provider     String
+  eventId      String             @unique
+  eventType    String
+  payload      Json
+  status       WebhookEventStatus @default(RECEIVED)
+  processedAt  DateTime?
+  errorMessage String?
+  retryCount   Int                @default(0)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@index([eventType, status])
+  @@index([provider, status, createdAt])
+}
+
+// ─────────────────────────────────────────────
+// Coach Reviews
+// ─────────────────────────────────────────────
+
+model CoachReview {
+  id        Int             @id @default(autoincrement())
+  sessionId Int             @unique
+  session   CoachingSession @relation(fields: [sessionId], references: [id])
+  learnerId Int
+  learner   User            @relation(fields: [learnerId], references: [id])
+  coachId   Int
+  coach     CoachProfile    @relation(fields: [coachId], references: [id])
+  rating    Int
+  comment   String?         @db.Text
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([coachId, rating])
+}
+
+// ─────────────────────────────────────────────
+// Real-time: Chat & Notifications
+// ─────────────────────────────────────────────
+
+enum NotificationType {
+  PAYMENT_SUCCESS
+  PAYMENT_FAILED
+  SESSION_CONFIRMED
+  SESSION_CANCELED
+  SESSION_REMINDER
+  COACH_MESSAGE
+  SUPPORT_MESSAGE
+  GROUP_MESSAGE
+  SYSTEM
+}
+
+enum LearnerChatRoomType {
+  DIRECT
+  GROUP
+}
+
+enum LearnerChatMemberRole {
+  MEMBER
+  ADMIN
+}
+
+model ChatMessage {
+  id        Int             @id @default(autoincrement())
+  sessionId Int
+  session   CoachingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  senderId  Int
+  sender    User            @relation("SentMessages", fields: [senderId], references: [id])
+  content   String
+  readAt    DateTime?
+  createdAt DateTime        @default(now())
+
+  @@index([sessionId, createdAt])
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  body      String
+  metadata  Json?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, readAt, createdAt])
+}
+
+model SupportThread {
+  id            Int              @id @default(autoincrement())
+  userId        Int              @unique
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages      SupportMessage[]
+  lastMessageAt DateTime         @default(now())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([lastMessageAt])
+}
+
+model SupportMessage {
+  id        Int           @id @default(autoincrement())
+  threadId  Int
+  thread    SupportThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  senderId  Int
+  sender    User          @relation("SupportMessages", fields: [senderId], references: [id])
+  content   String
+  readAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  @@index([threadId, createdAt])
+}
+
+model LearnerChatRoom {
+  id            Int                   @id @default(autoincrement())
+  name          String?
+  type          LearnerChatRoomType     @default(GROUP)
+  createdById   Int
+  createdBy     User                    @relation("CreatedLearnerChats", fields: [createdById], references: [id])
+  members       LearnerChatMember[]
+  messages      LearnerChatMessage[]
+  lastMessageAt DateTime                @default(now())
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+
+  @@index([lastMessageAt])
+  @@index([type])
+}
+
+model LearnerChatMember {
+  id       Int                   @id @default(autoincrement())
+  roomId   Int
+  room     LearnerChatRoom        @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId   Int
+  user     User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     LearnerChatMemberRole  @default(MEMBER)
+  joinedAt DateTime               @default(now())
+
+  @@unique([roomId, userId])
+  @@index([userId])
+}
+
+model LearnerChatMessage {
+  id        Int             @id @default(autoincrement())
+  roomId    Int
+  room      LearnerChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  senderId  Int
+  sender    User            @relation("LearnerChatMessages", fields: [senderId], references: [id])
+  content   String
+  readAt    DateTime?
+  createdAt DateTime        @default(now())
+
+  @@index([roomId, createdAt])
 }

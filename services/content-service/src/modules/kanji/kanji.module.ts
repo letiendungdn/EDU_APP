@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { KanjiService } from './kanji.service';
+import { Module } from "@nestjs/common";
+import { KanjiService } from "./kanji.service";
 
 @Module({
   providers: [KanjiService],

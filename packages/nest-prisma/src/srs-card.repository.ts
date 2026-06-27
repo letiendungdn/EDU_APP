@@ -46,20 +46,12 @@ export class SrsCardRepository {
         userId,
         contentType: VOCABULARY_CONTENT_TYPE,
         contentId,
-        kana: item.kana,
-        kanji: item.kanji ?? null,
-        meaning: item.meaning,
-        lessonNumber: item.lessonNumber,
         wrongCount: item.wrongCount,
         reviewStreak: item.reviewStreak,
         mastered: item.mastered,
         lastReviewedAt,
       },
       update: {
-        kana: item.kana,
-        kanji: item.kanji ?? null,
-        meaning: item.meaning,
-        lessonNumber: item.lessonNumber,
         wrongCount: item.wrongCount,
         reviewStreak: item.reviewStreak,
         mastered: item.mastered,
@@ -74,15 +66,30 @@ export class SrsCardRepository {
       orderBy: [{ mastered: 'asc' }, { wrongCount: 'desc' }],
     });
 
-    return cards.map((card: (typeof cards)[number]) => ({
-      kana: card.kana,
-      kanji: card.kanji,
-      meaning: card.meaning,
-      lessonNumber: card.lessonNumber,
-      wrongCount: card.wrongCount,
-      reviewStreak: card.reviewStreak,
-      mastered: card.mastered,
-      lastReviewedAt: card.lastReviewedAt?.toISOString() ?? null,
-    }));
+    if (!cards.length) return [];
+
+    const vocabIds = cards.map((c) => c.contentId);
+    const vocabularies = await this.prisma.vocabulary.findMany({
+      where: { id: { in: vocabIds } },
+      include: { lesson: { select: { lessonNumber: true } } },
+    });
+    const vocabById = new Map(vocabularies.map((v) => [v.id, v]));
+
+    return cards
+      .map((card) => {
+        const vocab = vocabById.get(card.contentId);
+        if (!vocab) return null;
+        return {
+          kana: vocab.kana,
+          kanji: vocab.kanji,
+          meaning: vocab.meaning,
+          lessonNumber: vocab.lesson.lessonNumber,
+          wrongCount: card.wrongCount,
+          reviewStreak: card.reviewStreak,
+          mastered: card.mastered,
+          lastReviewedAt: card.lastReviewedAt?.toISOString() ?? null,
+        };
+      })
+      .filter((item): item is ReviewBankItem => item !== null);
   }
 }

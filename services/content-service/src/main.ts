@@ -1,11 +1,13 @@
-import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import "./tracing";
+import { Logger } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 import {
   CONTENT_PROTO_PATH,
   GRPC_DEFAULT_PORTS,
   GRPC_PACKAGES,
-} from '@app/contracts';
-import { ContentModule } from './content.module';
+} from "@app/contracts";
+import { ContentModule } from "./content.module";
 
 async function bootstrap() {
   const port = process.env.CONTENT_GRPC_PORT ?? GRPC_DEFAULT_PORTS.content;
@@ -21,7 +23,8 @@ async function bootstrap() {
     },
   );
   await app.listen();
-  console.log(`Content service listening on gRPC :${port}`);
+  const logger = new Logger("Bootstrap");
+  logger.log(`Content service listening on gRPC :${port}`);
 }
 
 void bootstrap();

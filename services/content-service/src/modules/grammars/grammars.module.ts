@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { GrammarsService } from './grammars.service';
+import { Module } from "@nestjs/common";
+import { GrammarsService } from "./grammars.service";
 
 @Module({
   providers: [GrammarsService],

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: edu-app
+  labels:
+    app.kubernetes.io/part-of: edu-platform
+data:
+  01-init-databases.sql: |
+    SELECT 'CREATE DATABASE english_learning'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'english_learning')\gexec

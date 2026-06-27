@@ -7,3 +7,4 @@ export {
   type ReviewBankItem,
   type ReviewBankSyncItem,
 } from './srs-card.repository';
+export { SrsService } from './srs.service';

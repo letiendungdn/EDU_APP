@@ -22,13 +22,25 @@ export default function AdminDashboardPage() {
           </p>
         </div>
         <div className="admin-topbar-actions">
+          <Link href="/admin/payments" className="btn btn-outline">
+            Thanh toán
+          </Link>
+          <Link href="/admin/messages" className="btn btn-outline">
+            Tin nhắn
+          </Link>
           <Link href="/admin/import" className="btn btn-outline">
             Import từ vựng
           </Link>
           <button type="button" className="btn btn-outline" onClick={() => refetch()}>
             {isFetching ? 'Đang tải...' : 'Làm mới'}
           </button>
-          <button type="button" className="btn btn-outline" onClick={logout}>
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => {
+              void logout();
+            }}
+          >
             Đăng xuất
           </button>
           <Link href="/" className="btn btn-primary">

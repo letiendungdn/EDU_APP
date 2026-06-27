@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: exam-service
+  namespace: {{ include "edu-app.namespace" . }}
+  labels:
+    app: exam-service
+    {{- include "edu-app.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 50052
+      targetPort: 50052
+      name: grpc
+      protocol: TCP
+  selector:
+    app: exam-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exam-service
+  namespace: {{ include "edu-app.namespace" . }}
+  labels:
+    app: exam-service
+    {{- include "edu-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount.examService }}
+  selector:
+    matchLabels:
+      app: exam-service
+  template:
+    metadata:
+      labels:
+        app: exam-service
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: exam-service
+          image: {{ include "edu-app.image" (dict "service" "exam-service" "Values" .Values "Chart" .Chart) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 50052
+              name: grpc
+          envFrom:
+            - configMapRef:
+                name: {{ include "edu-app.configMapName" . }}
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "edu-app.secretName" . }}
+                  key: DATABASE_URL_NIHONGO
+          resources:
+            {{- toYaml .Values.resources.examService | nindent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: 50052
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            timeoutSeconds: 3
+          readinessProbe:
+            tcpSocket:
+              port: 50052
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3

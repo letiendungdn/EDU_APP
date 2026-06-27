@@ -37,7 +37,13 @@ export default function AdminImportPage() {
             <Link href="/admin">← Dashboard</Link>
           </p>
         </div>
-        <button type="button" className="btn btn-outline" onClick={logout}>
+        <button
+          type="button"
+          className="btn btn-outline"
+          onClick={() => {
+            void logout();
+          }}
+        >
           Đăng xuất
         </button>
       </header>

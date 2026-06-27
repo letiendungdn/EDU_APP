@@ -1,13 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@app/prisma';
-import { CreateGrammarDto, UpdateGrammarDto } from '@app/contracts';
+import { Inject, Injectable } from "@nestjs/common";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import type { Cache } from "cache-manager";
+import { PrismaService } from "@app/prisma";
+import { CacheKeys, CacheTTL } from "@app/common";
+import { CreateGrammarDto, UpdateGrammarDto } from "@app/contracts";
 
 @Injectable()
 export class GrammarsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
-  create(dto: CreateGrammarDto) {
-    return this.prisma.grammar.create({
+  async create(dto: CreateGrammarDto) {
+    const grammar = await this.prisma.grammar.create({
       data: {
         pattern: dto.pattern,
         meaning: dto.meaning,
@@ -15,6 +21,8 @@ export class GrammarsService {
         lessonId: dto.lessonId,
       },
     });
+    await this.invalidateLessonCaches(dto.lessonId);
+    return grammar;
   }
 
   async findAll(lessonNumber?: number, page = 1, limit = 50) {
@@ -26,6 +34,17 @@ export class GrammarsService {
       });
       if (!lesson) return { data: [], total: 0, page, limit };
       lessonId = lesson.id;
+
+      const cacheKey = CacheKeys.grammarByLesson(lessonId);
+      const cached = await this.cacheManager.get<{
+        data: unknown[];
+        total: number;
+        page: number;
+        limit: number;
+      }>(cacheKey);
+      if (cached && cached.page === page && cached.limit === limit) {
+        return cached;
+      }
     }
 
     const where = lessonId ? { lessonId } : {};
@@ -33,13 +52,22 @@ export class GrammarsService {
       this.prisma.grammar.findMany({
         where,
         include: { examples: true },
-        orderBy: { id: 'asc' },
+        orderBy: { id: "asc" },
         skip: (page - 1) * limit,
         take: limit,
       }),
       this.prisma.grammar.count({ where }),
     ]);
-    return { data, total, page, limit };
+
+    const result = { data, total, page, limit };
+    if (lessonId) {
+      await this.cacheManager.set(
+        CacheKeys.grammarByLesson(lessonId),
+        result,
+        CacheTTL.medium * 1000,
+      );
+    }
+    return result;
   }
 
   findOne(id: number) {
@@ -49,12 +77,21 @@ export class GrammarsService {
     });
   }
 
-  update(id: number, dto: UpdateGrammarDto) {
+  async update(id: number, dto: UpdateGrammarDto) {
     const { examples: _examples, ...data } = dto;
-    return this.prisma.grammar.update({ where: { id }, data });
+    const grammar = await this.prisma.grammar.update({ where: { id }, data });
+    await this.invalidateLessonCaches(grammar.lessonId);
+    return grammar;
   }
 
-  remove(id: number) {
-    return this.prisma.grammar.delete({ where: { id } });
+  async remove(id: number) {
+    const grammar = await this.prisma.grammar.delete({ where: { id } });
+    await this.invalidateLessonCaches(grammar.lessonId);
+    return grammar;
+  }
+
+  private async invalidateLessonCaches(lessonId: number) {
+    await this.cacheManager.del(CacheKeys.grammarByLesson(lessonId));
+    await this.cacheManager.del(CacheKeys.lessonList());
   }
 }

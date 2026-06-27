@@ -1,9 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { PassportStrategy } from '@nestjs/passport';
-import { Role } from '@prisma/client';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PrismaService } from '@app/prisma';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { PassportStrategy } from "@nestjs/passport";
+import { Role } from "@prisma/client";
+import { ExtractJwt, Strategy } from "passport-jwt";
+import { PrismaService } from "@app/prisma";
 
 export interface JwtPayload {
   sub: number;
@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey:
-        configService.get<string>('jwt.secret') ?? 'change-me-in-production',
+        configService.get<string>("jwt.secret") ?? "change-me-in-production",
     });
   }
 

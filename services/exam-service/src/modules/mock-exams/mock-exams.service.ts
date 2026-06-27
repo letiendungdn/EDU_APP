@@ -1,39 +1,39 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import type { Cache } from 'cache-manager';
-import type { ExerciseType } from '@prisma/client';
+import { Inject, Injectable } from "@nestjs/common";
+import { RpcException } from "@nestjs/microservices";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import type { Cache } from "cache-manager";
+import type { ExerciseType } from "@prisma/client";
 import {
+  REDIS_CLIENT,
   sample,
   shuffle,
   speechTextFromJapanese,
   normalizeAnswer,
-} from '@app/common';
-import { PrismaService } from '@app/prisma';
-import { randomUUID } from 'crypto';
+} from "@app/common";
+import { PrismaService } from "@app/prisma";
+import type Redis from "ioredis";
+import { randomUUID } from "crypto";
 
 const SESSION_TTL_MS = 3 * 60 * 60 * 1000;
 const sessionKey = (examId: string) => `mock-exam:${examId}`;
 
-function exerciseOptions(exercise: {
-  optionsList?: { text: string }[];
-}): string[] {
-  return exercise.optionsList?.map((o) => o.text) ?? [];
+function exerciseOptions(exercise: { options?: { text: string }[] }): string[] {
+  return exercise.options?.map((o) => o.text) ?? [];
 }
 
 function toQuestionType(
   type: ExerciseType,
-): 'multiple_choice' | 'fill_in_blank' {
-  return type === 'MULTIPLE_CHOICE' ? 'multiple_choice' : 'fill_in_blank';
+): "multiple_choice" | "fill_in_blank" {
+  return type === "MULTIPLE_CHOICE" ? "multiple_choice" : "fill_in_blank";
 }
 
-export type MockExamLevel = 'n5' | 'n4';
+export type MockExamLevel = "n5" | "n4";
 
 export interface MockExamQuestionPublic {
   id: string;
   sectionId: string;
   sectionName: string;
-  type: 'multiple_choice' | 'fill_in_blank' | 'listening';
+  type: "multiple_choice" | "fill_in_blank" | "listening";
   question: string;
   options?: string[];
   audioText?: string;
@@ -46,7 +46,7 @@ export interface MockExamReviewItem extends MockExamQuestionPublic {
   isCorrect: boolean;
 }
 
-interface MockExamSession {
+export interface MockExamSession {
   examId: string;
   level: MockExamLevel;
   title: string;
@@ -72,7 +72,7 @@ interface LevelConfig {
 
 const LEVEL_CONFIG: Record<MockExamLevel, LevelConfig> = {
   n5: {
-    title: 'Đề thi thử JLPT N5',
+    title: "Đề thi thử JLPT N5",
     durationMinutes: 50,
     lessonFrom: 1,
     lessonTo: 25,
@@ -85,7 +85,7 @@ const LEVEL_CONFIG: Record<MockExamLevel, LevelConfig> = {
     listeningSentenceCount: 4,
   },
   n4: {
-    title: 'Đề thi thử JLPT N4',
+    title: "Đề thi thử JLPT N4",
     durationMinutes: 65,
     lessonFrom: 26,
     lessonTo: 50,
@@ -104,6 +104,7 @@ export class MockExamsService {
   constructor(
     private prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(REDIS_CLIENT) private readonly redis: Redis,
   ) {}
 
   listTemplates() {
@@ -122,9 +123,9 @@ export class MockExamsService {
         totalQuestions,
         lessonRange: `${cfg.lessonFrom}–${cfg.lessonTo}`,
         description:
-          level === 'n5'
-            ? 'Từ vựng, ngữ pháp, kanji & nghe (Minna I + KLL N5)'
-            : 'Từ vựng, ngữ pháp, kanji & nghe (Minna II + KLL N4)',
+          level === "n5"
+            ? "Từ vựng, ngữ pháp, kanji & nghe (Minna I + KLL N5)"
+            : "Từ vựng, ngữ pháp, kanji & nghe (Minna II + KLL N4)",
       };
     });
   }
@@ -151,13 +152,13 @@ export class MockExamsService {
     const exercises = lessonIds.length
       ? await this.prisma.exercise.findMany({
           where: { lessonId: { in: lessonIds } },
-          include: { optionsList: { orderBy: { sortOrder: 'asc' } } },
+          include: { options: { orderBy: { sortOrder: "asc" } } },
         })
       : [];
 
-    const vocabPool = exercises.filter((e) => e.type === 'MULTIPLE_CHOICE');
+    const vocabPool = exercises.filter((e) => e.type === "MULTIPLE_CHOICE");
     const grammarPool = exercises.filter(
-      (e) => e.type === 'MULTIPLE_CHOICE' || e.type === 'FILL_IN_BLANK',
+      (e) => e.type === "MULTIPLE_CHOICE" || e.type === "FILL_IN_BLANK",
     );
 
     const pickedVocab = sample(vocabPool, cfg.vocabCount);
@@ -224,7 +225,7 @@ export class MockExamsService {
     const pushQuestion = (
       sectionId: string,
       sectionName: string,
-      type: 'multiple_choice' | 'fill_in_blank' | 'listening',
+      type: "multiple_choice" | "fill_in_blank" | "listening",
       question: string,
       answer: string,
       options?: string[],
@@ -248,9 +249,9 @@ export class MockExamsService {
 
     for (const ex of pickedVocab) {
       pushQuestion(
-        'vocab',
-        'Từ vựng',
-        'multiple_choice',
+        "vocab",
+        "Từ vựng",
+        "multiple_choice",
         ex.question,
         ex.answer,
         shuffle(exerciseOptions(ex)),
@@ -261,21 +262,21 @@ export class MockExamsService {
     for (const ex of pickedGrammar) {
       const type = toQuestionType(ex.type);
       pushQuestion(
-        'grammar',
-        'Ngữ pháp',
+        "grammar",
+        "Ngữ pháp",
         type,
         ex.question,
         ex.answer,
-        type === 'multiple_choice' ? shuffle(exerciseOptions(ex)) : undefined,
+        type === "multiple_choice" ? shuffle(exerciseOptions(ex)) : undefined,
         lessonById.get(ex.lessonId),
       );
     }
 
     for (const kq of kanjiQuestions) {
       pushQuestion(
-        'kanji',
-        'Kanji',
-        'multiple_choice',
+        "kanji",
+        "Kanji",
+        "multiple_choice",
         kq.question,
         kq.answer,
         shuffle(kq.options),
@@ -285,9 +286,9 @@ export class MockExamsService {
 
     for (const lq of listeningWordQuestions) {
       pushQuestion(
-        'listening',
-        'Nghe',
-        'listening',
+        "listening",
+        "Nghe",
+        "listening",
         lq.question,
         lq.answer,
         shuffle(lq.options),
@@ -298,9 +299,9 @@ export class MockExamsService {
 
     for (const lq of listeningSentenceQuestions) {
       pushQuestion(
-        'listening',
-        'Nghe',
-        'listening',
+        "listening",
+        "Nghe",
+        "listening",
         lq.question,
         lq.answer,
         shuffle(lq.options),
@@ -344,13 +345,13 @@ export class MockExamsService {
     if (!session) {
       throw new RpcException({
         statusCode: 404,
-        message: 'Phiên thi không tồn tại hoặc đã hết hạn. Hãy bắt đầu đề mới.',
+        message: "Phiên thi không tồn tại hoặc đã hết hạn. Hãy bắt đầu đề mới.",
       });
     }
 
     const review: MockExamReviewItem[] = session.questions.map((q) => {
-      const correctAnswer = session.answerKey[q.id] ?? '';
-      const userAnswer = answers[q.id] ?? '';
+      const correctAnswer = session.answerKey[q.id] ?? "";
+      const userAnswer = answers[q.id] ?? "";
       const isCorrect =
         normalizeAnswer(userAnswer) === normalizeAnswer(correctAnswer);
       return {
@@ -364,10 +365,10 @@ export class MockExamsService {
     const correctCount = review.filter((r) => r.isCorrect).length;
     const total = review.length;
     const percent = total ? Math.round((correctCount / total) * 100) : 0;
-    const passThreshold = session.level === 'n5' ? 60 : 65;
+    const passThreshold = session.level === "n5" ? 60 : 65;
     const passed = percent >= passThreshold;
 
-    const sectionScores = ['vocab', 'grammar', 'kanji', 'listening'].map(
+    const sectionScores = ["vocab", "grammar", "kanji", "listening"].map(
       (sectionId) => {
         const items = review.filter((r) => r.sectionId === sectionId);
         const sectionCorrect = items.filter((r) => r.isCorrect).length;
@@ -383,8 +384,25 @@ export class MockExamsService {
     await this.cacheManager.del(sessionKey(examId));
 
     const submittedAt = new Date();
+    let runningScore = 0;
 
-    await this.prisma.examResult.create({
+    if (userId) {
+      for (let i = 0; i < review.length; i += 1) {
+        if (review[i].isCorrect) runningScore += 1;
+        await this.redis.publish(
+          "exam:question-scored",
+          JSON.stringify({
+            userId,
+            examResultId: 0,
+            questionIndex: i,
+            correct: review[i].isCorrect,
+            score: runningScore,
+          }),
+        );
+      }
+    }
+
+    const examResult = await this.prisma.examResult.create({
       data: {
         userId: userId ?? null,
         examId,
@@ -395,7 +413,7 @@ export class MockExamsService {
         percent,
         passed,
         submittedAt,
-        sectionResults: {
+        sections: {
           create: sectionScores.map((section) => ({
             section: section.sectionId,
             correct: section.correct,
@@ -407,6 +425,19 @@ export class MockExamsService {
         },
       },
     });
+
+    if (userId) {
+      await this.redis.publish(
+        "exam:completed",
+        JSON.stringify({
+          userId,
+          examResultId: examResult.id,
+          totalScore: correctCount,
+          passed,
+          percent,
+        }),
+      );
+    }
 
     return {
       examId,
@@ -426,9 +457,13 @@ export class MockExamsService {
   getHistory(userId: number) {
     return this.prisma.examResult.findMany({
       where: { userId },
-      orderBy: { submittedAt: 'desc' },
+      orderBy: { submittedAt: "desc" },
       take: 20,
     });
+  }
+
+  getSession(examId: string) {
+    return this.cacheManager.get<MockExamSession>(sessionKey(examId));
   }
 
   private buildKanjiQuestions(
@@ -491,7 +526,7 @@ export class MockExamsService {
       ).map((v) => v.meaning);
 
       return {
-        question: 'Nghe từ vựng và chọn nghĩa tiếng Việt đúng.',
+        question: "Nghe từ vựng và chọn nghĩa tiếng Việt đúng.",
         answer: entry.meaning,
         options: [...distractors, entry.meaning],
         audioText: entry.kana,
@@ -511,7 +546,7 @@ export class MockExamsService {
       ).map((e) => e.vi);
 
       return {
-        question: 'Nghe câu tiếng Nhật và chọn nghĩa tiếng Việt đúng.',
+        question: "Nghe câu tiếng Nhật và chọn nghĩa tiếng Việt đúng.",
         answer: entry.vi,
         options: [...distractors, entry.vi],
         audioText: speechTextFromJapanese(entry.jp),

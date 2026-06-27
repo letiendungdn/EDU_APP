@@ -8,19 +8,29 @@
     "start": "next start --port 5173",
     "lint": "oxlint",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.9",
     "@edu/vocab-images": "*",
+    "@react-oauth/google": "^0.12.2",
+    "@stripe/react-stripe-js": "^6.6.0",
+    "@stripe/stripe-js": "^9.8.0",
     "@tanstack/react-query": "^5.101.1",
+    "@tanstack/react-virtual": "^3.14.4",
     "cheerio": "^1.2.0",
     "hanzi-writer": "^3.7.3",
     "next": "^15.5.7",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "recharts": "^3.9.0"
   },
   "devDependencies": {
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/react": "^8.6.14",
+    "@storybook/react-vite": "^8.6.14",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
@@ -32,6 +42,7 @@
     "eslint-config-next": "^15.5.7",
     "jsdom": "^26.1.0",
     "oxlint": "^1.69.0",
+    "storybook": "^8.6.14",
     "typescript": "^6.0.3",
     "vitest": "^3.2.4"
   }

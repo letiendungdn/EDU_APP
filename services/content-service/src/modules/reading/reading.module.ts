@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { ReadingService } from './reading.service';
+import { Module } from "@nestjs/common";
+import { ReadingService } from "./reading.service";
 
 @Module({
   providers: [ReadingService],

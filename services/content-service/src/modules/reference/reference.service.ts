@@ -1,23 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { JlptSessionStatus, KanaScript } from '@prisma/client';
-import { PrismaService } from '@app/prisma';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { JlptSessionStatus, KanaScript } from "@prisma/client";
+import { PrismaService } from "@app/prisma";
 
 const SLUGS = [
-  'kana-charts',
-  'japanese-counters',
-  'daily-listening',
-  'jlpt-roadmap',
-  'jlpt-danang-schedule',
+  "kana-charts",
+  "japanese-counters",
+  "daily-listening",
+  "jlpt-roadmap",
+  "jlpt-danang-schedule",
 ] as const;
 
 type ReferenceSlug = (typeof SLUGS)[number];
 
 function sessionStatusToApi(status: JlptSessionStatus): string {
   const map: Record<JlptSessionStatus, string> = {
-    REGISTRATION_OPEN: 'registration_open',
-    REGISTRATION_CLOSED: 'registration_closed',
-    UPCOMING: 'upcoming',
-    PAST: 'past',
+    REGISTRATION_OPEN: "registration_open",
+    REGISTRATION_CLOSED: "registration_closed",
+    UPCOMING: "upcoming",
+    PAST: "past",
   };
   return map[status];
 }
@@ -36,15 +36,15 @@ export class ReferenceService {
     }
 
     switch (slug as ReferenceSlug) {
-      case 'kana-charts':
+      case "kana-charts":
         return this.getKanaCharts();
-      case 'japanese-counters':
+      case "japanese-counters":
         return this.getJapaneseCounters();
-      case 'daily-listening':
+      case "daily-listening":
         return this.getDailyListening();
-      case 'jlpt-roadmap':
+      case "jlpt-roadmap":
         return this.getJlptRoadmap();
-      case 'jlpt-danang-schedule':
+      case "jlpt-danang-schedule":
         return this.getJlptDanangSchedule();
       default:
         throw new NotFoundException(`Reference content not found: ${slug}`);
@@ -53,11 +53,11 @@ export class ReferenceService {
 
   private titleFor(slug: ReferenceSlug): string {
     const titles: Record<ReferenceSlug, string> = {
-      'kana-charts': 'Bảng kana Hiragana/Katakana',
-      'japanese-counters': 'Đếm số & thứ tự tiếng Nhật',
-      'daily-listening': 'Nghe mỗi ngày — podcast & preset',
-      'jlpt-roadmap': 'Lộ trình JLPT',
-      'jlpt-danang-schedule': 'Lịch thi JLPT Đà Nẵng',
+      "kana-charts": "Bảng kana Hiragana/Katakana",
+      "japanese-counters": "Đếm số & thứ tự tiếng Nhật",
+      "daily-listening": "Nghe mỗi ngày — podcast & preset",
+      "jlpt-roadmap": "Lộ trình JLPT",
+      "jlpt-danang-schedule": "Lịch thi JLPT Đà Nẵng",
     };
     return titles[slug];
   }
@@ -65,9 +65,9 @@ export class ReferenceService {
   private async getKanaCharts() {
     const sections = await this.prisma.kanaSection.findMany({
       include: {
-        cells: { orderBy: [{ rowIndex: 'asc' }, { colIndex: 'asc' }] },
+        cells: { orderBy: [{ rowIndex: "asc" }, { colIndex: "asc" }] },
       },
-      orderBy: [{ script: 'asc' }, { sortOrder: 'asc' }],
+      orderBy: [{ script: "asc" }, { sortOrder: "asc" }],
     });
 
     const mapScript = (script: KanaScript) =>
@@ -80,8 +80,8 @@ export class ReferenceService {
           const rows: Array<Array<{ kana: string; romaji: string }>> =
             Array.from({ length: rowCount }, () =>
               Array.from({ length: colCount }, () => ({
-                kana: '',
-                romaji: '',
+                kana: "",
+                romaji: "",
               })),
             );
 
@@ -109,8 +109,8 @@ export class ReferenceService {
 
   private async getJapaneseCounters() {
     const categories = await this.prisma.counterCategory.findMany({
-      include: { items: { orderBy: { sortOrder: 'asc' } } },
-      orderBy: { sortOrder: 'asc' },
+      include: { items: { orderBy: { sortOrder: "asc" } } },
+      orderBy: { sortOrder: "asc" },
     });
 
     return {
@@ -134,8 +134,8 @@ export class ReferenceService {
   private async getDailyListening() {
     const [config, podcasts, presets] = await Promise.all([
       this.prisma.listeningConfig.findUnique({ where: { id: 1 } }),
-      this.prisma.podcastResource.findMany({ orderBy: { sortOrder: 'asc' } }),
-      this.prisma.listeningPreset.findMany({ orderBy: { sortOrder: 'asc' } }),
+      this.prisma.podcastResource.findMany({ orderBy: { sortOrder: "asc" } }),
+      this.prisma.listeningPreset.findMany({ orderBy: { sortOrder: "asc" } }),
     ]);
 
     return {
@@ -159,22 +159,22 @@ export class ReferenceService {
   private async getJlptRoadmap() {
     const [meta, tips, levels] = await Promise.all([
       this.prisma.jlptRoadmapMeta.findUnique({ where: { id: 1 } }),
-      this.prisma.studyTip.findMany({ orderBy: { sortOrder: 'asc' } }),
+      this.prisma.studyTip.findMany({ orderBy: { sortOrder: "asc" } }),
       this.prisma.jlptRoadmapLevel.findMany({
         include: {
-          examSections: { orderBy: { sortOrder: 'asc' } },
-          materials: { orderBy: { sortOrder: 'asc' } },
+          examSections: { orderBy: { sortOrder: "asc" } },
+          materials: { orderBy: { sortOrder: "asc" } },
           phases: {
-            orderBy: { sortOrder: 'asc' },
-            include: { tasks: { orderBy: { sortOrder: 'asc' } } },
+            orderBy: { sortOrder: "asc" },
+            include: { tasks: { orderBy: { sortOrder: "asc" } } },
           },
         },
-        orderBy: { sortOrder: 'asc' },
+        orderBy: { sortOrder: "asc" },
       }),
     ]);
 
     return {
-      examScheduleNote: meta?.examScheduleNote ?? '',
+      examScheduleNote: meta?.examScheduleNote ?? "",
       studyTips: tips.map((t) => t.text),
       levels: levels.map((level) => ({
         id: level.externalKey,
@@ -232,13 +232,13 @@ export class ReferenceService {
         this.prisma.jlptOrganizer.findUnique({ where: { id: 1 } }),
         this.prisma.jlptExamFeeInfo.findUnique({ where: { id: 1 } }),
         this.prisma.jlptExamBriefing.findUnique({ where: { id: 1 } }),
-        this.prisma.jlptExamSession.findMany({ orderBy: { sortOrder: 'asc' } }),
-        this.prisma.jlptExamVenue.findMany({ orderBy: { sortOrder: 'asc' } }),
-        this.prisma.jlptExamDaySlot.findMany({ orderBy: { sortOrder: 'asc' } }),
+        this.prisma.jlptExamSession.findMany({ orderBy: { sortOrder: "asc" } }),
+        this.prisma.jlptExamVenue.findMany({ orderBy: { sortOrder: "asc" } }),
+        this.prisma.jlptExamDaySlot.findMany({ orderBy: { sortOrder: "asc" } }),
       ]);
 
     if (!organizer || !fees || !briefing) {
-      throw new NotFoundException('JLPT Đà Nẵng schedule not seeded');
+      throw new NotFoundException("JLPT Đà Nẵng schedule not seeded");
     }
 
     return {

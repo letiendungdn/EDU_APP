@@ -101,6 +101,21 @@ export interface AuthUser {
   email: string;
   role: string;
   name: string | null;
+  avatarUrl?: string | null;
+  nativeLanguage?: string | null;
+  targetJlptLevel?: string | null;
+  studyGoalMinutes?: number | null;
+  hasPassword?: boolean;
+  isGoogleLinked?: boolean;
+  createdAt?: string;
+}
+
+export interface UpdateProfileInput {
+  name?: string;
+  avatarUrl?: string | null;
+  nativeLanguage?: string;
+  targetJlptLevel?: string | null;
+  studyGoalMinutes?: number;
 }
 
 export interface LoginResponse {
@@ -186,6 +201,191 @@ export interface ApiResponse<T> {
   success: boolean;
   data: T;
   timestamp: string;
+}
+
+export type SubscriptionPlan = 'FREE' | 'BASIC' | 'PRO' | 'PRO_ANNUAL';
+export type SubscriptionStatus = 'ACTIVE' | 'PAST_DUE' | 'CANCELED' | 'TRIALING' | 'PAUSED';
+
+export interface SubscriptionPlanConfig {
+  id: number;
+  plan: SubscriptionPlan;
+  displayName: string;
+  priceUsdCents: number;
+  intervalMonths: number;
+  trialDays: number;
+  features: string[];
+  active: boolean;
+}
+
+export interface Subscription {
+  id: number;
+  plan: SubscriptionPlan;
+  status: SubscriptionStatus;
+  currentPeriodStart: string | null;
+  currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+}
+
+export interface CreateSubscriptionResponse {
+  clientSecret: string;
+  subscriptionId: string;
+}
+
+export type PaymentStatus =
+  | 'PENDING'
+  | 'SUCCEEDED'
+  | 'FAILED'
+  | 'REFUNDED'
+  | 'PARTIALLY_REFUNDED';
+
+export interface PaymentRecord {
+  id: number;
+  amountCents: number;
+  currency: string;
+  status: PaymentStatus;
+  refundedAt: string | null;
+  refundAmountCents: number | null;
+  refundReason: string | null;
+  createdAt: string;
+  session?: {
+    id: number;
+    scheduledAt: string;
+    status: string;
+    topic: string | null;
+    coach?: { id: number; user?: { name: string | null } };
+  } | null;
+  subscription?: {
+    id: number;
+    plan: SubscriptionPlan;
+    status: SubscriptionStatus;
+  } | null;
+}
+
+export interface AdminUserSummary {
+  id: number;
+  email: string;
+  role: string;
+  name: string | null;
+  createdAt: string;
+  _count: { examResults: number };
+}
+
+export interface AdminPaymentRecord extends PaymentRecord {
+  user: {
+    id: number;
+    email: string;
+    name: string | null;
+  };
+}
+
+export interface AdminPaymentsList {
+  items: AdminPaymentRecord[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface SupportChatUser {
+  id: number;
+  name: string | null;
+  email: string;
+  avatarUrl?: string | null;
+  role: string;
+}
+
+export interface SupportChatMessage {
+  id: number;
+  threadId: number;
+  senderId: number;
+  content: string;
+  readAt: string | null;
+  createdAt: string;
+  sender: SupportChatUser;
+}
+
+export interface SupportThread {
+  id: number;
+  userId: number;
+  lastMessageAt: string;
+  user: SupportChatUser;
+}
+
+export interface SupportThreadResponse {
+  thread: SupportThread;
+  messages: SupportChatMessage[];
+}
+
+export interface AdminSupportThreadSummary {
+  id: number;
+  userId: number;
+  lastMessageAt: string;
+  user: SupportChatUser;
+  lastMessage: SupportChatMessage | null;
+  unreadCount: number;
+}
+
+export interface CommunityChatUser {
+  id: number;
+  name: string | null;
+  email: string;
+  avatarUrl?: string | null;
+  role: string;
+  memberRole?: string;
+  joinedAt?: string;
+}
+
+export interface CommunityChatMessage {
+  id: number;
+  roomId: number;
+  senderId: number;
+  content: string;
+  readAt: string | null;
+  createdAt: string;
+  sender: CommunityChatUser;
+}
+
+export interface CommunityRoomSummary {
+  id: number;
+  name: string;
+  type: 'DIRECT' | 'GROUP';
+  lastMessageAt: string;
+  members: CommunityChatUser[];
+  lastMessage: CommunityChatMessage | null;
+  unreadCount: number;
+}
+
+export interface CommunityRoomDetail {
+  id: number;
+  name: string;
+  type: 'DIRECT' | 'GROUP';
+  lastMessageAt: string;
+  members: CommunityChatUser[];
+}
+
+export interface CommunityRoomResponse {
+  room: CommunityRoomDetail;
+  messages: CommunityChatMessage[];
+}
+
+export interface RefundResult {
+  paymentId: number;
+  stripeRefundId: string;
+  amountCents: number;
+  status: PaymentStatus;
+  message: string;
+}
+
+export interface SavedCard {
+  id: string;
+  brand: string;
+  last4: string;
+  expMonth: number;
+  expYear: number;
+  isDefault: boolean;
+}
+
+export interface SetupIntentResponse {
+  clientSecret: string;
 }
 
 export class ApiError extends Error {

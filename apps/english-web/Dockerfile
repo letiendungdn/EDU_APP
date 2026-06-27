@@ -5,14 +5,14 @@ COPY packages/vocab-images ./packages/vocab-images
 COPY apps/english-web ./apps/english-web
 RUN npm ci
 WORKDIR /app/apps/english-web
-ENV DATABASE_URL=postgresql://nihongo:nihongo@postgres:5432/english_learning
-RUN npx prisma generate
+ENV API_URL=http://api-gateway:3000
 RUN npm run build
 
 FROM node:22-alpine AS runner
 WORKDIR /app/apps/english-web
 ENV NODE_ENV=production
 ENV PORT=3001
+ENV API_URL=http://api-gateway:3000
 COPY --from=builder /app/apps/english-web/package*.json ./
 COPY --from=builder /app/apps/english-web/.next ./.next
 COPY --from=builder /app/node_modules /app/node_modules

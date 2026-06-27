@@ -1,18 +1,30 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@app/prisma';
-import { CreateLessonDto, UpdateLessonDto } from '@app/contracts';
+import { Inject, Injectable } from "@nestjs/common";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import type { Cache } from "cache-manager";
+import { PrismaService } from "@app/prisma";
+import { CacheKeys, CacheTTL } from "@app/common";
+import { CreateLessonDto, UpdateLessonDto } from "@app/contracts";
 
 @Injectable()
 export class LessonsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
-  create(dto: CreateLessonDto) {
-    return this.prisma.lesson.create({ data: dto });
+  async create(dto: CreateLessonDto) {
+    const lesson = await this.prisma.lesson.create({ data: dto });
+    await this.cacheManager.del(CacheKeys.lessonList());
+    return lesson;
   }
 
-  findAll() {
-    return this.prisma.lesson.findMany({
-      orderBy: { lessonNumber: 'asc' },
+  async findAll() {
+    const cacheKey = CacheKeys.lessonList();
+    const cached = await this.cacheManager.get(cacheKey);
+    if (cached) return cached;
+
+    const lessons = await this.prisma.lesson.findMany({
+      orderBy: { lessonNumber: "asc" },
       include: {
         _count: {
           select: {
@@ -23,6 +35,9 @@ export class LessonsService {
         },
       },
     });
+
+    await this.cacheManager.set(cacheKey, lessons, CacheTTL.medium * 1000);
+    return lessons;
   }
 
   findOne(lessonNumber: number) {
@@ -31,13 +46,20 @@ export class LessonsService {
     });
   }
 
-  update(id: number, dto: UpdateLessonDto) {
-    return this.prisma.lesson.update({ where: { id }, data: dto });
+  async update(id: number, dto: UpdateLessonDto) {
+    const lesson = await this.prisma.lesson.update({
+      where: { id },
+      data: dto,
+    });
+    await this.cacheManager.del(CacheKeys.lessonList());
+    return lesson;
   }
 
-  remove(id: number) {
-    return this.prisma.lesson.delete({
+  async remove(id: number) {
+    const lesson = await this.prisma.lesson.delete({
       where: { id },
     });
+    await this.cacheManager.del(CacheKeys.lessonList());
+    return lesson;
   }
 }

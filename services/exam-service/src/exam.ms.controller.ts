@@ -1,5 +1,6 @@
-import { Controller, Logger, OnModuleInit } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { Controller, Logger, OnModuleInit } from "@nestjs/common";
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { GrpcMethod } from "@nestjs/microservices";
 import {
   EXAM_PATTERNS,
   LogListeningDto,
@@ -7,10 +8,12 @@ import {
   SyncReviewDto,
   UpsertDailyNoteDto,
   UpsertDailyGoalsDto,
-} from '@app/contracts';
-import { handleGrpcDispatch, type PatternHandler } from '@app/common';
-import { MockExamsService } from './modules/mock-exams/mock-exams.service';
-import { ProgressService } from './modules/progress/progress.service';
+} from "@app/contracts";
+import { handleGrpcDispatch, type PatternHandler } from "@app/common";
+import { MockExamsService } from "./modules/mock-exams/mock-exams.service";
+import { ProgressService } from "./modules/progress/progress.service";
+import { SubmitExamCommand } from "./modules/mock-exams/commands/submit-exam.command";
+import { GetResultsQuery } from "./modules/mock-exams/queries/get-results.query";
 
 @Controller()
 export class ExamMsController implements OnModuleInit {
@@ -20,13 +23,15 @@ export class ExamMsController implements OnModuleInit {
   constructor(
     private readonly mockExamsService: MockExamsService,
     private readonly progressService: ProgressService,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
   ) {}
 
   onModuleInit() {
     this.routes = {
       [EXAM_PATTERNS.LIST_TEMPLATES]: () => this.listTemplates(),
       [EXAM_PATTERNS.START_EXAM]: (data) =>
-        this.startExam(data as { level: 'n5' | 'n4' }),
+        this.startExam(data as { level: "n5" | "n4" }),
       [EXAM_PATTERNS.SUBMIT_EXAM]: (data) =>
         this.submitExam(
           data as {
@@ -48,7 +53,9 @@ export class ExamMsController implements OnModuleInit {
       [PROGRESS_PATTERNS.GET_ANALYTICS]: (data) =>
         this.getAnalytics(data as { userId: number }),
       [PROGRESS_PATTERNS.UPSERT_DAILY_NOTE]: (data) =>
-        this.upsertDailyNote(data as { userId: number; dto: UpsertDailyNoteDto }),
+        this.upsertDailyNote(
+          data as { userId: number; dto: UpsertDailyNoteDto },
+        ),
       [PROGRESS_PATTERNS.GET_DAILY_NOTES]: (data) =>
         this.getDailyNotes(data as { userId: number; limit?: number }),
       [PROGRESS_PATTERNS.UPSERT_DAILY_GOALS]: (data) =>
@@ -60,7 +67,7 @@ export class ExamMsController implements OnModuleInit {
     };
   }
 
-  @GrpcMethod('ExamService', 'Dispatch')
+  @GrpcMethod("ExamService", "Dispatch")
   dispatch(data: { pattern: string; payload: string }) {
     return handleGrpcDispatch(this.routes, data);
   }
@@ -69,7 +76,7 @@ export class ExamMsController implements OnModuleInit {
     return this.mockExamsService.listTemplates();
   }
 
-  startExam(data: { level: 'n5' | 'n4' }) {
+  startExam(data: { level: "n5" | "n4" }) {
     return this.mockExamsService.start(data.level);
   }
 
@@ -78,19 +85,19 @@ export class ExamMsController implements OnModuleInit {
     answers: Record<string, string>;
     userId?: number;
   }) {
-    const result = await this.mockExamsService.submit(
-      data.examId,
-      data.answers,
-      data.userId,
-    );
+    type SubmitExamResult = Awaited<ReturnType<MockExamsService["submit"]>>;
+    const result = await this.commandBus.execute<
+      SubmitExamCommand,
+      SubmitExamResult
+    >(new SubmitExamCommand(data.examId, data.answers, data.userId));
     this.logger.log(
-      `Exam submitted: examId=${data.examId} userId=${data.userId ?? 'guest'} level=${result.level} percent=${result.percent}% passed=${result.passed}`,
+      `Exam submitted: examId=${data.examId} userId=${data.userId ?? "guest"} level=${result.level} percent=${result.percent}% passed=${result.passed}`,
     );
     return result;
   }
 
   getHistory(data: { userId: number }) {
-    return this.mockExamsService.getHistory(data.userId);
+    return this.queryBus.execute(new GetResultsQuery(data.userId));
   }
 
   syncReview(data: { userId: number; dto: SyncReviewDto }) {

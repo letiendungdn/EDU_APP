@@ -102,6 +102,17 @@ a {
   color: var(--primary-color);
 }
 
+.btn-block {
+  width: 100%;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.82rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
 .glass-panel {
   background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(10px);
@@ -144,6 +155,8 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .logo {

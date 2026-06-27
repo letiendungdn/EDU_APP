@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nihongo-web
+  namespace: edu-app
+  labels:
+    app: nihongo-web
+    app.kubernetes.io/part-of: edu-platform
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5173
+      targetPort: 5173
+      name: http
+  selector:
+    app: nihongo-web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nihongo-web
+  namespace: edu-app
+  labels:
+    app: nihongo-web
+    app.kubernetes.io/part-of: edu-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nihongo-web
+  template:
+    metadata:
+      labels:
+        app: nihongo-web
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nihongo-web
+          image: ghcr.io/letiendungdn/edu_app/nihongo-web:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5173
+              name: http
+          envFrom:
+            - configMapRef:
+                name: edu-app-config
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5173
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5173
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3

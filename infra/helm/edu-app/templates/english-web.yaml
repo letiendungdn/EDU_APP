@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: english-web
+  namespace: {{ include "edu-app.namespace" . }}
+  labels:
+    app: english-web
+    {{- include "edu-app.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3001
+      targetPort: 3001
+      name: http
+  selector:
+    app: english-web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: english-web
+  namespace: {{ include "edu-app.namespace" . }}
+  labels:
+    app: english-web
+    {{- include "edu-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount.englishWeb }}
+  selector:
+    matchLabels:
+      app: english-web
+  template:
+    metadata:
+      labels:
+        app: english-web
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: english-web
+          image: {{ include "edu-app.image" (dict "service" "english-web" "Values" .Values "Chart" .Chart) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 3001
+              name: http
+          envFrom:
+            - configMapRef:
+                name: {{ include "edu-app.configMapName" . }}
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "edu-app.secretName" . }}
+                  key: DATABASE_URL_ENGLISH
+          resources:
+            {{- toYaml .Values.resources.englishWeb | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3

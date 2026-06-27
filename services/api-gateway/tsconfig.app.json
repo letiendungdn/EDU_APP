@@ -7,7 +7,14 @@
     "src/**/*",
     "../../packages/nest-common/src/**/*",
     "../../packages/nest-contracts/src/**/*",
-    "../../packages/nest-prisma/src/**/*"
+    "../../packages/nest-prisma/src/**/*",
+    "../payment-service/src/**/*",
+    "../english-service/src/**/*",
+    "../../packages/nest-prisma-english/src/**/*"
   ],
-  "exclude": ["**/*.spec.ts"]
+  "exclude": [
+    "**/*.spec.ts",
+    "../payment-service/**/*.spec.ts",
+    "../english-service/**/*.spec.ts"
+  ]
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { playAudio } from '../utils/speech';
 import LessonSelector from '../components/LessonSelector';
 import PlayAllButton from '../components/PlayAllButton';
@@ -30,7 +31,7 @@ export default function VocabView() {
   const { data: lessons = [] } = useLessonsQuery();
   const { data: lessonVocab = [], isLoading: loading } = useVocabulariesQuery(currentLesson);
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
-  const listItemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const listScrollRef = useRef<HTMLDivElement>(null);
 
   const expectedCount =
     lessons.find((l) => l.lessonNumber === currentLesson)?._count?.vocabularies ?? null;
@@ -44,6 +45,13 @@ export default function VocabView() {
       .filter(({ vocab }) => !q || matchesVocabSearch(vocab, q));
   }, [lessonVocab, searchQuery]);
 
+  const rowVirtualizer = useVirtualizer({
+    count: filteredVocab.length,
+    getScrollElement: () => listScrollRef.current,
+    estimateSize: () => 72,
+    overscan: 5,
+  });
+
   useEffect(() => {
     stopPlayAll();
     setCurrentIndex(0);
@@ -52,11 +60,11 @@ export default function VocabView() {
   }, [currentLesson, stopPlayAll]);
 
   useEffect(() => {
-    listItemRefs.current[currentIndex]?.scrollIntoView({
-      block: 'nearest',
-      behavior: 'smooth',
-    });
-  }, [currentIndex, currentLesson, searchQuery]);
+    const filteredIndex = filteredVocab.findIndex(({ index }) => index === currentIndex);
+    if (filteredIndex >= 0) {
+      rowVirtualizer.scrollToIndex(filteredIndex, { align: 'auto' });
+    }
+  }, [currentIndex, currentLesson, searchQuery, filteredVocab, rowVirtualizer]);
 
   const currentVocab = lessonVocab[currentIndex];
 
@@ -159,43 +167,55 @@ export default function VocabView() {
                 Đang hiển thị {lessonVocab.length}/{expectedCount} từ — hãy refresh trang.
               </p>
             )}
-            <ul className="vocab-word-list-items">
+            <div ref={listScrollRef} className="vocab-word-list-items">
               {filteredVocab.length === 0 ? (
-                <li className="vocab-word-list-empty">Không tìm thấy từ phù hợp.</li>
+                <p className="vocab-word-list-empty">Không tìm thấy từ phù hợp.</p>
               ) : (
-                filteredVocab.map(({ vocab, index }) => (
-                  <li key={vocab.id}>
-                    <button
-                      ref={(el) => {
-                        listItemRefs.current[index] = el;
-                      }}
-                      type="button"
-                      className={`vocab-word-list-item ${
-                        index === currentIndex ? 'active' : ''
-                      }`}
-                      onClick={() => handleSelectWord(index)}
-                      aria-current={index === currentIndex ? 'true' : undefined}
-                    >
-                      <span className="vocab-word-list-num">{index + 1}</span>
-                      <VocabPicture
-                        word={vocab.romaji}
-                        meaning={vocab.meaning}
-                        kana={vocab.kana}
-                        kanji={vocab.kanji}
-                        imageUrl={vocab.imageUrl}
-                        size="xs"
-                        className="vocab-word-list-thumb"
-                        alt={vocab.kana}
-                      />
-                      <span className="vocab-word-list-jp japanese-text">
-                        {vocab.kanji || vocab.kana}
-                      </span>
-                      <span className="vocab-word-list-meaning">{vocab.meaning}</span>
-                    </button>
-                  </li>
-                ))
+                <div
+                  className="vocab-word-list-virtual"
+                  style={{ height: `${rowVirtualizer.getTotalSize()}px` }}
+                >
+                  {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                    const { vocab, index } = filteredVocab[virtualRow.index];
+                    return (
+                      <div
+                        key={vocab.id}
+                        className="vocab-word-list-row"
+                        style={{
+                          height: `${virtualRow.size}px`,
+                          transform: `translateY(${virtualRow.start}px)`,
+                        }}
+                      >
+                        <button
+                          type="button"
+                          className={`vocab-word-list-item ${
+                            index === currentIndex ? 'active' : ''
+                          }`}
+                          onClick={() => handleSelectWord(index)}
+                          aria-current={index === currentIndex ? 'true' : undefined}
+                        >
+                          <span className="vocab-word-list-num">{index + 1}</span>
+                          <VocabPicture
+                            word={vocab.romaji}
+                            meaning={vocab.meaning}
+                            kana={vocab.kana}
+                            kanji={vocab.kanji}
+                            imageUrl={vocab.imageUrl}
+                            size="xs"
+                            className="vocab-word-list-thumb"
+                            alt={vocab.kana}
+                          />
+                          <span className="vocab-word-list-jp japanese-text">
+                            {vocab.kanji || vocab.kana}
+                          </span>
+                          <span className="vocab-word-list-meaning">{vocab.meaning}</span>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
               )}
-            </ul>
+            </div>
           </aside>
 
           <div className="vocab-main-layout">

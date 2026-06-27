@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nihongo-web
+  namespace: {{ include "edu-app.namespace" . }}
+  labels:
+    app: nihongo-web
+    {{- include "edu-app.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5173
+      targetPort: 5173
+      name: http
+  selector:
+    app: nihongo-web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nihongo-web
+  namespace: {{ include "edu-app.namespace" . }}
+  labels:
+    app: nihongo-web
+    {{- include "edu-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount.nihongoWeb }}
+  selector:
+    matchLabels:
+      app: nihongo-web
+  template:
+    metadata:
+      labels:
+        app: nihongo-web
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: nihongo-web
+          image: {{ include "edu-app.image" (dict "service" "nihongo-web" "Values" .Values "Chart" .Chart) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 5173
+              name: http
+          envFrom:
+            - configMapRef:
+                name: {{ include "edu-app.configMapName" . }}
+          resources:
+            {{- toYaml .Values.resources.nihongoWeb | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5173
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5173
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3

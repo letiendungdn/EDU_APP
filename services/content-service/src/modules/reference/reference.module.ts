@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { ReferenceService } from './reference.service';
+import { Module } from "@nestjs/common";
+import { ReferenceService } from "./reference.service";
 
 @Module({
   providers: [ReferenceService],

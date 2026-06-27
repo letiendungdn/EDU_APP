@@ -1,13 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { PrismaService } from '@app/prisma';
-import { SrsCardRepository } from '@app/prisma/srs-card.repository';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "@app/prisma";
+import { SrsCardRepository } from "@app/prisma/srs-card.repository";
 import {
   LogListeningDto,
   SyncReviewDto,
   UpsertDailyGoalsDto,
   UpsertDailyNoteDto,
-} from '@app/contracts';
+} from "@app/contracts";
 
 function fallbackContentId(kana: string, lessonNumber: number): number {
   let hash = lessonNumber * 9973;
@@ -32,7 +31,7 @@ export class ProgressService {
           lesson: { lessonNumber: item.lessonNumber },
         },
         select: { id: true },
-        orderBy: { id: 'asc' },
+        orderBy: { id: "asc" },
       });
 
       const contentId =
@@ -68,7 +67,7 @@ export class ProgressService {
   getListeningHistory(userId: number) {
     return this.prisma.listeningLog.findMany({
       where: { userId },
-      orderBy: { date: 'desc' },
+      orderBy: { date: "desc" },
       take: 90,
     });
   }
@@ -78,13 +77,13 @@ export class ProgressService {
       await Promise.all([
         this.prisma.studySession.findMany({
           where: { userId },
-          orderBy: { date: 'asc' },
+          orderBy: { date: "asc" },
           take: 365,
           select: { date: true, seconds: true, cardsReviewed: true },
         }),
         this.prisma.examResult.findMany({
           where: { userId },
-          orderBy: { submittedAt: 'asc' },
+          orderBy: { submittedAt: "asc" },
           select: {
             submittedAt: true,
             percent: true,
@@ -100,7 +99,7 @@ export class ProgressService {
         }),
         this.prisma.listeningLog.findMany({
           where: { userId },
-          orderBy: { date: 'asc' },
+          orderBy: { date: "asc" },
           take: 365,
           select: { date: true, seconds: true },
         }),
@@ -143,7 +142,7 @@ export class ProgressService {
   listDailyNotes(userId: number, limit = 90) {
     return this.prisma.dailyNote.findMany({
       where: { userId },
-      orderBy: { date: 'desc' },
+      orderBy: { date: "desc" },
       take: limit,
       select: {
         date: true,
@@ -153,23 +152,45 @@ export class ProgressService {
     });
   }
 
-  upsertDailyGoals(userId: number, dto: UpsertDailyGoalsDto) {
-    const items = dto.items as unknown as Prisma.InputJsonValue;
-    return this.prisma.dailyGoal.upsert({
-      where: { userId_date: { userId, date: dto.date } },
-      create: { userId, date: dto.date, items },
-      update: { items },
+  async upsertDailyGoals(userId: number, dto: UpsertDailyGoalsDto) {
+    const itemRows = dto.items.map((item, sortOrder) => ({
+      text: item.label,
+      done: item.done,
+      sortOrder,
+    }));
+
+    return this.prisma.$transaction(async (tx) => {
+      const goal = await tx.dailyGoal.upsert({
+        where: { userId_date: { userId, date: dto.date } },
+        create: { userId, date: dto.date },
+        update: {},
+      });
+
+      await tx.dailyGoalItem.deleteMany({ where: { goalId: goal.id } });
+      if (itemRows.length) {
+        await tx.dailyGoalItem.createMany({
+          data: itemRows.map((row) => ({ ...row, goalId: goal.id })),
+        });
+      }
+
+      return tx.dailyGoal.findUnique({
+        where: { id: goal.id },
+        include: { items: { orderBy: { sortOrder: "asc" } } },
+      });
     });
   }
 
   listDailyGoals(userId: number, limit = 90) {
     return this.prisma.dailyGoal.findMany({
       where: { userId },
-      orderBy: { date: 'desc' },
+      orderBy: { date: "desc" },
       take: limit,
       select: {
         date: true,
-        items: true,
+        items: {
+          orderBy: { sortOrder: "asc" },
+          select: { text: true, done: true, sortOrder: true },
+        },
         updatedAt: true,
       },
     });

@@ -2,20 +2,22 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useQueryClient } from '@tanstack/react-query';
 import { playAudio } from '../utils/speech';
+import { queryKeys, useVocabReview } from '../hooks/queries';
 import {
   DAILY_REVIEW_LIMIT,
   getAllMistakeWords,
   getMistakeStats,
   getTodayReviewBatch,
-  recordReviewResult,
-  syncToServer,
   removeMistakeWord,
 } from '../utils/mistakeVocab';
 import type { MistakeWord, MistakeStats } from '../utils/mistakeVocab';
 import './VocabReviewView.css';
 
 export default function VocabReviewView() {
+  const queryClient = useQueryClient();
+  const reviewMutation = useVocabReview();
   const [tab, setTab] = useState<'review' | 'bank'>('review');
   const [stats, setStats] = useState<MistakeStats>(getMistakeStats);
   const [bank, setBank] = useState<MistakeWord[]>(() => getAllMistakeWords());
@@ -36,6 +38,7 @@ export default function VocabReviewView() {
   const startReview = () => {
     const batch = getTodayReviewBatch(DAILY_REVIEW_LIMIT);
     if (!batch.length) return;
+    queryClient.setQueryData(queryKeys.vocab.review(), batch);
     setQueue(batch);
     setIndex(0);
     setRevealed(false);
@@ -46,8 +49,7 @@ export default function VocabReviewView() {
 
   const finishCard = (remembered: boolean): void => {
     if (!current) return;
-    recordReviewResult(current.key, remembered);
-    void syncToServer();
+    reviewMutation.mutate({ key: current.key, remembered });
     if (remembered) setRememberedCount((n) => n + 1);
 
     if (index + 1 >= queue.length) {

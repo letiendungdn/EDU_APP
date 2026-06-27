@@ -1,7 +1,11 @@
 import { apiRequest } from '../lib/api-client';
 import type {
+  AdminPaymentsList,
   AdminStats,
+  AdminSupportThreadSummary,
+  AdminUserSummary,
   AuthUser,
+  CreateSubscriptionResponse,
   Exercise,
   Grammar,
   JlptDaNangSchedule,
@@ -12,6 +16,16 @@ import type {
   LoginResponse,
   MockExamTemplate,
   PaginatedResponse,
+  PaymentRecord,
+  PaymentStatus,
+  Subscription,
+  SubscriptionPlan,
+  SubscriptionPlanConfig,
+  SupportThreadResponse,
+  RefundResult,
+  SetupIntentResponse,
+  SavedCard,
+  UpdateProfileInput,
   Vocabulary,
 } from '../types/api';
 import type {
@@ -130,10 +144,46 @@ export function submitMockExam(examId: string, answers: Record<string, string>) 
   });
 }
 
-export function loginAdmin(email: string, password: string) {
+export function login(email: string, password: string) {
   return apiRequest<LoginResponse>('/auth/login', {
     method: 'POST',
+    credentials: 'include',
     body: JSON.stringify({ email, password }),
+  });
+}
+
+/** @deprecated use login() */
+export const loginAdmin = login;
+
+export function register(email: string, password: string) {
+  return apiRequest<LoginResponse>('/auth/register', {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export function logoutAuth(token: string) {
+  return apiRequest<{ message: string }>('/auth/logout', {
+    method: 'POST',
+    token,
+    credentials: 'include',
+  });
+}
+
+export function loginWithGoogle(credential: string) {
+  return apiRequest<LoginResponse>('/auth/google', {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify({ credential }),
+  });
+}
+
+export function updateProfile(token: string, data: UpdateProfileInput) {
+  return apiRequest<AuthUser>('/auth/me', {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(data),
   });
 }
 
@@ -143,6 +193,136 @@ export function fetchAuthMe(token: string) {
 
 export function fetchAdminStats(token: string) {
   return apiRequest<AdminStats>('/admin/stats', { token });
+}
+
+export function fetchAdminUsers(token: string) {
+  return apiRequest<AdminUserSummary[]>('/admin/users', { token });
+}
+
+export type AdminPaymentsFilters = {
+  userId?: number;
+  status?: PaymentStatus;
+  page?: number;
+  limit?: number;
+};
+
+export function fetchAdminPayments(token: string, filters: AdminPaymentsFilters = {}) {
+  const params = new URLSearchParams();
+  if (filters.userId) params.set('userId', String(filters.userId));
+  if (filters.status) params.set('status', filters.status);
+  if (filters.page) params.set('page', String(filters.page));
+  if (filters.limit) params.set('limit', String(filters.limit));
+  const qs = params.toString();
+  return apiRequest<AdminPaymentsList>(`/admin/payments${qs ? `?${qs}` : ''}`, { token });
+}
+
+export function fetchAdminUserPayments(token: string, userId: number) {
+  return apiRequest<PaymentRecord[]>(`/admin/users/${userId}/payments`, { token });
+}
+
+export function adminRefundPayment(
+  token: string,
+  paymentId: number,
+  options?: { reason?: string; amountCents?: number },
+) {
+  return apiRequest<RefundResult>(`/admin/payments/${paymentId}/refund`, {
+    method: 'POST',
+    token,
+    body: JSON.stringify(options ?? {}),
+  });
+}
+
+export function fetchSupportThread(token: string) {
+  return apiRequest<SupportThreadResponse>('/support', { token });
+}
+
+export function sendSupportMessage(token: string, content: string) {
+  return apiRequest<{ threadId: number; message: import('../types/chat').SupportMessage }>(
+    '/support/messages',
+    { method: 'POST', token, body: JSON.stringify({ content }) },
+  );
+}
+
+export function markSupportRead(token: string) {
+  return apiRequest<{ ok: boolean }>('/support/read', { method: 'PATCH', token });
+}
+
+export function fetchAdminSupportThreads(token: string) {
+  return apiRequest<AdminSupportThreadSummary[]>('/admin/support/threads', { token });
+}
+
+export function fetchAdminSupportThread(token: string, threadId: number) {
+  return apiRequest<SupportThreadResponse>(`/admin/support/threads/${threadId}`, {
+    token,
+  });
+}
+
+export function sendAdminSupportMessage(token: string, threadId: number, content: string) {
+  return apiRequest<{ message: import('../types/chat').SupportMessage }>(
+    `/admin/support/threads/${threadId}/messages`,
+    { method: 'POST', token, body: JSON.stringify({ content }) },
+  );
+}
+
+export function markAdminSupportRead(token: string, threadId: number) {
+  return apiRequest<{ ok: boolean }>(`/admin/support/threads/${threadId}/read`, {
+    method: 'PATCH',
+    token,
+  });
+}
+
+export function fetchCommunityRooms(token: string) {
+  return apiRequest<import('../types/api').CommunityRoomSummary[]>('/community/rooms', {
+    token,
+  });
+}
+
+export function fetchCommunityRoom(token: string, roomId: number) {
+  return apiRequest<import('../types/api').CommunityRoomResponse>(
+    `/community/rooms/${roomId}`,
+    { token },
+  );
+}
+
+export function sendCommunityMessage(token: string, roomId: number, content: string) {
+  return apiRequest<{ message: import('../types/chat').GroupChatMessage }>(
+    `/community/rooms/${roomId}/messages`,
+    { method: 'POST', token, body: JSON.stringify({ content }) },
+  );
+}
+
+export function markCommunityRead(token: string, roomId: number) {
+  return apiRequest<{ ok: boolean }>(`/community/rooms/${roomId}/read`, {
+    method: 'PATCH',
+    token,
+  });
+}
+
+export function createCommunityGroup(
+  token: string,
+  name: string,
+  memberIds: number[],
+) {
+  return apiRequest<import('../types/api').CommunityRoomResponse>('/community/rooms/group', {
+    method: 'POST',
+    token,
+    body: JSON.stringify({ name, memberIds }),
+  });
+}
+
+export function createDirectChat(token: string, userId: number) {
+  return apiRequest<import('../types/api').CommunityRoomResponse>('/community/rooms/direct', {
+    method: 'POST',
+    token,
+    body: JSON.stringify({ userId }),
+  });
+}
+
+export function searchCommunityUsers(token: string, q: string) {
+  return apiRequest<import('../types/api').CommunityChatUser[]>(
+    `/community/users?q=${encodeURIComponent(q)}`,
+    { token },
+  );
 }
 
 export function adminImportVocab(token: string, lessonNumber: number, text: string) {
@@ -335,5 +515,90 @@ export function upsertDailyGoals(
     method: 'PUT',
     token,
     body: JSON.stringify({ date, items }),
+  });
+}
+
+// ─── Subscription ─────────────────────────────────────────────
+
+export function fetchSubscriptionPlans() {
+  return apiRequest<SubscriptionPlanConfig[]>('/subscriptions/plans');
+}
+
+export function fetchSubscriptionStatus(token: string) {
+  return apiRequest<Subscription | null>('/subscriptions/status', { token });
+}
+
+export function createSubscription(
+  token: string,
+  plan: SubscriptionPlan,
+  paymentMethodId?: string,
+) {
+  return apiRequest<CreateSubscriptionResponse>('/subscriptions', {
+    method: 'POST',
+    token,
+    body: JSON.stringify({
+      plan,
+      ...(paymentMethodId ? { paymentMethodId } : {}),
+    }),
+  });
+}
+
+export function cancelSubscription(token: string) {
+  return apiRequest<{ message: string }>('/subscriptions', {
+    method: 'DELETE',
+    token,
+  });
+}
+
+export function requestSubscriptionRefund(token: string, reason?: string) {
+  return apiRequest<RefundResult>('/subscriptions/refund', {
+    method: 'POST',
+    token,
+    body: JSON.stringify({ reason }),
+  });
+}
+
+// ─── Payments / Refunds ───────────────────────────────────────
+
+export function fetchMyPayments(token: string) {
+  return apiRequest<PaymentRecord[]>('/payments/me', { token });
+}
+
+export function requestPaymentRefund(
+  token: string,
+  paymentId: number,
+  reason?: string,
+) {
+  return apiRequest<RefundResult>(`/payments/${paymentId}/refund`, {
+    method: 'POST',
+    token,
+    body: JSON.stringify({ reason }),
+  });
+}
+
+// ─── Payment methods ──────────────────────────────────────────
+
+export function fetchPaymentMethods(token: string) {
+  return apiRequest<SavedCard[]>('/payment-methods', { token });
+}
+
+export function createPaymentMethodSetup(token: string) {
+  return apiRequest<SetupIntentResponse>('/payment-methods/setup', {
+    method: 'POST',
+    token,
+  });
+}
+
+export function setDefaultPaymentMethod(token: string, paymentMethodId: string) {
+  return apiRequest<{ message: string }>(`/payment-methods/${paymentMethodId}/default`, {
+    method: 'POST',
+    token,
+  });
+}
+
+export function deletePaymentMethod(token: string, paymentMethodId: string) {
+  return apiRequest<{ message: string }>(`/payment-methods/${paymentMethodId}`, {
+    method: 'DELETE',
+    token,
   });
 }

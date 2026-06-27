@@ -6,31 +6,31 @@ import {
   Put,
   UseGuards,
   Inject,
-} from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { firstValueFrom } from 'rxjs';
+} from "@nestjs/common";
+import { ClientProxy } from "@nestjs/microservices";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { firstValueFrom } from "rxjs";
 import {
   LogListeningDto,
   PROGRESS_PATTERNS,
   SyncReviewDto,
   UpsertDailyNoteDto,
   UpsertDailyGoalsDto,
-} from '@app/contracts';
-import { CurrentUser, JwtAuthGuard } from '@app/common';
-import type { AuthUserPayload } from '@app/common';
+} from "@app/contracts";
+import { CurrentUser, JwtAuthGuard } from "@app/common";
+import type { AuthUserPayload } from "@app/common";
 
-@ApiTags('progress')
+@ApiTags("progress")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/progress')
+@Controller("api/progress")
 export class ProgressController {
   constructor(
-    @Inject('EXAM_SERVICE') private readonly examClient: ClientProxy,
+    @Inject("EXAM_SERVICE") private readonly examClient: ClientProxy,
   ) {}
 
-  @Post('review')
-  @ApiOperation({ summary: 'Sync mistake vocab review bank' })
+  @Post("review")
+  @ApiOperation({ summary: "Sync mistake vocab review bank" })
   syncReview(@CurrentUser() user: AuthUserPayload, @Body() dto: SyncReviewDto) {
     return firstValueFrom(
       this.examClient.send(PROGRESS_PATTERNS.SYNC_REVIEW, {
@@ -40,8 +40,8 @@ export class ProgressController {
     );
   }
 
-  @Get('review')
-  @ApiOperation({ summary: 'Get user review bank' })
+  @Get("review")
+  @ApiOperation({ summary: "Get user review bank" })
   getReview(@CurrentUser() user: AuthUserPayload) {
     return firstValueFrom(
       this.examClient.send(PROGRESS_PATTERNS.GET_REVIEW_BANK, {
@@ -50,8 +50,8 @@ export class ProgressController {
     );
   }
 
-  @Post('listening')
-  @ApiOperation({ summary: 'Log listening session duration' })
+  @Post("listening")
+  @ApiOperation({ summary: "Log listening session duration" })
   logListening(
     @CurrentUser() user: AuthUserPayload,
     @Body() dto: LogListeningDto,
@@ -64,8 +64,8 @@ export class ProgressController {
     );
   }
 
-  @Get('listening')
-  @ApiOperation({ summary: 'Get listening history' })
+  @Get("listening")
+  @ApiOperation({ summary: "Get listening history" })
   getListening(@CurrentUser() user: AuthUserPayload) {
     return firstValueFrom(
       this.examClient.send(PROGRESS_PATTERNS.GET_LISTENING_LOGS, {
@@ -74,8 +74,8 @@ export class ProgressController {
     );
   }
 
-  @Get('notes')
-  @ApiOperation({ summary: 'List daily study notes' })
+  @Get("notes")
+  @ApiOperation({ summary: "List daily study notes" })
   getDailyNotes(@CurrentUser() user: AuthUserPayload) {
     return firstValueFrom(
       this.examClient.send(PROGRESS_PATTERNS.GET_DAILY_NOTES, {
@@ -84,8 +84,8 @@ export class ProgressController {
     );
   }
 
-  @Put('notes')
-  @ApiOperation({ summary: 'Create or update a daily note' })
+  @Put("notes")
+  @ApiOperation({ summary: "Create or update a daily note" })
   upsertDailyNote(
     @CurrentUser() user: AuthUserPayload,
     @Body() dto: UpsertDailyNoteDto,
@@ -98,8 +98,8 @@ export class ProgressController {
     );
   }
 
-  @Get('goals')
-  @ApiOperation({ summary: 'List daily study goals' })
+  @Get("goals")
+  @ApiOperation({ summary: "List daily study goals" })
   getDailyGoals(@CurrentUser() user: AuthUserPayload) {
     return firstValueFrom(
       this.examClient.send(PROGRESS_PATTERNS.GET_DAILY_GOALS, {
@@ -108,8 +108,8 @@ export class ProgressController {
     );
   }
 
-  @Put('goals')
-  @ApiOperation({ summary: 'Create or update daily goals' })
+  @Put("goals")
+  @ApiOperation({ summary: "Create or update daily goals" })
   upsertDailyGoals(
     @CurrentUser() user: AuthUserPayload,
     @Body() dto: UpsertDailyGoalsDto,

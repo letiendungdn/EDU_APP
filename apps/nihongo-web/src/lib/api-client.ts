@@ -8,6 +8,7 @@ const RETRY_DELAY_MS = 400;
 export type RequestOptions = RequestInit & {
   token?: string | null;
   retries?: number;
+  credentials?: RequestCredentials;
 };
 
 interface ApiSuccessEnvelope<T> {
@@ -39,7 +40,7 @@ function parseErrorMessage(
 }
 
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { token, retries = MAX_RETRIES, ...init } = options;
+  const { token, retries = MAX_RETRIES, credentials, ...init } = options;
   const headers = new Headers(init.headers);
 
   if (init.body && !headers.has('Content-Type')) {
@@ -53,7 +54,11 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
     try {
-      const res = await fetch(`${API_BASE}${path}`, { ...init, headers });
+      const res = await fetch(`${API_BASE}${path}`, {
+        ...init,
+        headers,
+        credentials: credentials ?? init.credentials,
+      });
 
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as ApiErrorEnvelope;

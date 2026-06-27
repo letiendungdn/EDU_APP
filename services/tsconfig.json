@@ -30,7 +30,11 @@
       "@app/prisma": ["../packages/nest-prisma/src"],
       "@app/prisma/*": ["../packages/nest-prisma/src/*"],
       "@app/contracts": ["../packages/nest-contracts/src"],
-      "@app/contracts/*": ["../packages/nest-contracts/src/*"]
+      "@app/contracts/*": ["../packages/nest-contracts/src/*"],
+      "@app/prisma-english": ["../packages/nest-prisma-english/src"],
+      "@app/prisma-english/*": ["../packages/nest-prisma-english/src/*"],
+      "@edu/prisma-english/client": ["../packages/prisma-english/generated/client"],
+      "@edu/prisma-english/client/*": ["../packages/prisma-english/generated/client/*"]
     }
   }
 }

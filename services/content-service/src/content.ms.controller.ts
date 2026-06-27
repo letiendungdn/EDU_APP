@@ -1,5 +1,5 @@
-import { Controller, OnModuleInit } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { Controller, OnModuleInit } from "@nestjs/common";
+import { GrpcMethod } from "@nestjs/microservices";
 import {
   CONTENT_PATTERNS,
   CreateExerciseDto,
@@ -10,17 +10,17 @@ import {
   UpdateGrammarDto,
   UpdateLessonDto,
   UpdateVocabularyDto,
-} from '@app/contracts';
-import { handleGrpcDispatch, type PatternHandler } from '@app/common';
-import { LessonsService } from './modules/lessons/lessons.service';
-import { VocabulariesService } from './modules/vocabularies/vocabularies.service';
-import { GrammarsService } from './modules/grammars/grammars.service';
-import { ExercisesService } from './modules/exercises/exercises.service';
-import { KanjiService } from './modules/kanji/kanji.service';
-import { ListeningService } from './modules/listening/listening.service';
-import { ImportService } from './modules/import/import.service';
-import { ReferenceService } from './modules/reference/reference.service';
-import { ReadingService } from './modules/reading/reading.service';
+} from "@app/contracts";
+import { handleGrpcDispatch, type PatternHandler } from "@app/common";
+import { LessonsService } from "./modules/lessons/lessons.service";
+import { VocabulariesService } from "./modules/vocabularies/vocabularies.service";
+import { GrammarsService } from "./modules/grammars/grammars.service";
+import { ExercisesService } from "./modules/exercises/exercises.service";
+import { KanjiService } from "./modules/kanji/kanji.service";
+import { ListeningService } from "./modules/listening/listening.service";
+import { ImportService } from "./modules/import/import.service";
+import { ReferenceService } from "./modules/reference/reference.service";
+import { ReadingService } from "./modules/reading/reading.service";
 
 @Controller()
 export class ContentMsController implements OnModuleInit {
@@ -112,7 +112,7 @@ export class ContentMsController implements OnModuleInit {
     };
   }
 
-  @GrpcMethod('ContentService', 'Dispatch')
+  @GrpcMethod("ContentService", "Dispatch")
   dispatch(data: { pattern: string; payload: string }) {
     return handleGrpcDispatch(this.routes, data);
   }

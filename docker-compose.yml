@@ -1,9 +1,9 @@
-version: '3.9'
+name: edu-app
 
 services:
   redis:
     image: redis:7-alpine
-    container_name: nihongo-redis
+    container_name: edu-redis
     restart: unless-stopped
     ports:
       - '6379:6379'
@@ -13,18 +13,75 @@ services:
       timeout: 3s
       retries: 5
 
+  mongodb:
+    image: mongo:7-jammy
+    container_name: edu-mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_DATABASE: nihongo_audit
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', 'db.adminCommand("ping")']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: edu-zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    healthcheck:
+      test: ['CMD-SHELL', 'echo srvr | nc localhost 2181 | grep -q Mode']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: edu-kafka
+    restart: unless-stopped
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - '9092:9093'
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    healthcheck:
+      test: ['CMD', 'kafka-broker-api-versions', '--bootstrap-server', 'localhost:9092']
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
   postgres:
     image: postgres:16-alpine
-    container_name: nihongo-postgres
+    container_name: edu-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: nihongo
-      POSTGRES_PASSWORD: nihongo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nihongo}
       POSTGRES_DB: nihongo
     ports:
       - '5433:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres/init-databases.sql:/docker-entrypoint-initdb.d/01-init-databases.sql:ro
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U nihongo -d nihongo']
       interval: 5s
@@ -35,63 +92,85 @@ services:
     build:
       context: .
       dockerfile: services/content-service/Dockerfile
-    container_name: nihongo-content
+    container_name: edu-content
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgresql://nihongo:nihongo@postgres:5432/nihongo
-      CONTENT_GRPC_PORT: 50051
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-  exam-service:
-    build:
-      context: .
-      dockerfile: services/exam-service/Dockerfile
-    container_name: nihongo-exam
-    restart: unless-stopped
-    environment:
-      DATABASE_URL: postgresql://nihongo:nihongo@postgres:5432/nihongo
+      DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres:5432/nihongo
       REDIS_URL: redis://redis:6379
-      EXAM_GRPC_PORT: 50052
+      CONTENT_GRPC_PORT: 50051
+      SERVICE_NAME: content-service
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318/v1/traces
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
 
+  exam-service:
+    build:
+      context: .
+      dockerfile: services/exam-service/Dockerfile
+    container_name: edu-exam
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres:5432/nihongo
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+      EXAM_GRPC_PORT: 50052
+      SERVICE_NAME: exam-service
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318/v1/traces
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
   api-gateway:
     build:
       context: .
       dockerfile: services/api-gateway/Dockerfile
-    container_name: nihongo-gateway
+    container_name: edu-gateway
     restart: unless-stopped
-    ports:
-      - '3000:3000'
     environment:
       PORT: 3000
       CONTENT_GRPC_URL: content-service:50051
       EXAM_GRPC_URL: exam-service:50052
-      DATABASE_URL: postgresql://nihongo:nihongo@postgres:5432/nihongo
+      DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres:5432/nihongo
       JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3001}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost,http://nihongo.localhost,http://english.localhost,http://localhost:5173,http://localhost:3001}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@nihongo.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      SERVICE_NAME: api-gateway
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318/v1/traces
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      REDIS_URL: redis://redis:6379
+      MONGODB_URL: mongodb://mongodb:27017/nihongo_audit
+      KAFKA_BROKERS: kafka:9092
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_placeholder}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-whsec_placeholder}
+      AWS_REGION: ${AWS_REGION:-ap-southeast-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET:-edu-app-dev}
+      ENGLISH_DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres:5432/english_learning
     depends_on:
       - content-service
       - exam-service
+      - mongodb
+      - redis
 
   nihongo-web:
     build:
       context: .
       dockerfile: apps/nihongo-web/Dockerfile
-    container_name: nihongo-web
+    container_name: edu-nihongo-web
     restart: unless-stopped
-    ports:
-      - '5173:5173'
     environment:
       API_URL: http://api-gateway:3000
+      NEXT_PUBLIC_ENGLISH_APP_URL: ${NEXT_PUBLIC_ENGLISH_APP_URL:-http://english.localhost}
     depends_on:
       - api-gateway
 
@@ -99,16 +178,66 @@ services:
     build:
       context: .
       dockerfile: apps/english-web/Dockerfile
-    container_name: english-web
+    container_name: edu-english-web
+    restart: unless-stopped
+    environment:
+      API_URL: http://api-gateway:3000
+      NEXT_PUBLIC_NIHONGO_APP_URL: ${NEXT_PUBLIC_NIHONGO_APP_URL:-http://nihongo.localhost}
+    depends_on:
+      - api-gateway
+
+  nginx:
+    build:
+      context: .
+      dockerfile: infra/nginx/Dockerfile
+    container_name: edu-nginx
     restart: unless-stopped
     ports:
-      - '3001:3001'
-    environment:
-      DATABASE_URL: postgresql://nihongo:nihongo@postgres:5432/english_learning
-      NEXT_PUBLIC_NIHONGO_APP_URL: http://localhost:5173
+      - '80:80'
     depends_on:
-      postgres:
-        condition: service_healthy
+      - api-gateway
+      - nihongo-web
+      - english-web
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.57
+    container_name: edu-jaeger
+    restart: unless-stopped
+    ports:
+      - '16686:16686'
+      - '4318:4318'
+    environment:
+      COLLECTOR_OTLP_ENABLED: 'true'
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: edu-prometheus
+    restart: unless-stopped
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api-gateway
+
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: edu-grafana
+    restart: unless-stopped
+    ports:
+      - '4000:3000'
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
 
 volumes:
+  # Giữ data từ stack cũ `nihongo-app` (nihongo-postgres)
   postgres_data:
+    external: true
+    name: nihongo-app_postgres_data
+  mongodb_data:
+  grafana_data:

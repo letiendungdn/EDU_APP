@@ -19,10 +19,18 @@
     "build:english-web": "npm run build -w @edu/english-web",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
+    "stripe": "stripe.cmd",
+    "stripe:login": "stripe.cmd login",
+    "stripe:listen": "stripe.cmd listen --forward-to localhost:3000/api/webhooks/stripe",
     "seed:vocab-images": "npm run seed:vocab-images -w @edu/nihongo-services",
-    "prisma:generate": "npm run generate -w @edu/prisma-nihongo"
+    "prisma:generate": "npm run generate -w @edu/prisma-nihongo",
+    "db:backup": "powershell -NoProfile -ExecutionPolicy Bypass -File infra/backups/backup.ps1"
   },
   "engines": {
     "node": ">=22"
+  },
+  "overrides": {
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
   }
 }

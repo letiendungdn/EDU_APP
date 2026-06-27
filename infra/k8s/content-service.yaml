@@ -1,0 +1,74 @@
+# gRPC nội bộ — không expose ra Ingress
+apiVersion: v1
+kind: Service
+metadata:
+  name: content-service
+  namespace: edu-app
+  labels:
+    app: content-service
+    app.kubernetes.io/part-of: edu-platform
+spec:
+  type: ClusterIP
+  ports:
+    - port: 50051
+      targetPort: 50051
+      name: grpc
+      protocol: TCP
+  selector:
+    app: content-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: content-service
+  namespace: edu-app
+  labels:
+    app: content-service
+    app.kubernetes.io/part-of: edu-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: content-service
+  template:
+    metadata:
+      labels:
+        app: content-service
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: content-service
+          image: ghcr.io/letiendungdn/edu_app/content-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 50051
+              name: grpc
+          envFrom:
+            - configMapRef:
+                name: edu-app-config
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: edu-app-secrets
+                  key: DATABASE_URL_NIHONGO
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            tcpSocket:
+              port: 50051
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            timeoutSeconds: 3
+          readinessProbe:
+            tcpSocket:
+              port: 50051
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3

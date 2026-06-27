@@ -1,0 +1,18 @@
+{
+  "name": "Nihongo Learning",
+  "short_name": "Nihongo",
+  "description": "Học tiếng Nhật — Minna no Nihongo vocabulary, grammar, quiz & JLPT prep",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f1a",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

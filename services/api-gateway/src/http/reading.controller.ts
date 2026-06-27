@@ -7,24 +7,24 @@ import {
   Post,
   Query,
   Req,
-} from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { firstValueFrom } from 'rxjs';
-import { CONTENT_PATTERNS } from '@app/contracts';
-import { Public, type AuthUserPayload } from '@app/common';
+} from "@nestjs/common";
+import { ClientProxy } from "@nestjs/microservices";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { firstValueFrom } from "rxjs";
+import { CONTENT_PATTERNS } from "@app/contracts";
+import { Public, type AuthUserPayload } from "@app/common";
 
-@ApiTags('reading')
-@Controller('api/reading')
+@ApiTags("reading")
+@Controller("api/reading")
 export class ReadingController {
   constructor(
-    @Inject('CONTENT_SERVICE') private readonly contentClient: ClientProxy,
+    @Inject("CONTENT_SERVICE") private readonly contentClient: ClientProxy,
   ) {}
 
   @Get()
   @Public()
-  @ApiOperation({ summary: 'List reading passages' })
-  findAll(@Query('jlptLevel') jlptLevel?: string) {
+  @ApiOperation({ summary: "List reading passages" })
+  findAll(@Query("jlptLevel") jlptLevel?: string) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.GET_READING_PASSAGES, {
         jlptLevel,
@@ -32,10 +32,10 @@ export class ReadingController {
     );
   }
 
-  @Get(':id')
+  @Get(":id")
   @Public()
-  @ApiOperation({ summary: 'Get reading passage with questions' })
-  findOne(@Param('id') id: string) {
+  @ApiOperation({ summary: "Get reading passage with questions" })
+  findOne(@Param("id") id: string) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.GET_READING_PASSAGE, {
         id: +id,
@@ -43,11 +43,11 @@ export class ReadingController {
     );
   }
 
-  @Post(':id/submit')
+  @Post(":id/submit")
   @Public()
-  @ApiOperation({ summary: 'Submit reading answers' })
+  @ApiOperation({ summary: "Submit reading answers" })
   submit(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() body: { answers: Record<string, string> },
     @Req() req: { user?: AuthUserPayload | null },
   ) {

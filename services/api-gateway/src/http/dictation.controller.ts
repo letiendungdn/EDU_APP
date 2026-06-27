@@ -1,19 +1,19 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { PrismaService } from '@app/prisma';
-import { Public, type AuthUserPayload } from '@app/common';
+import { Body, Controller, Get, Post, Query, Req } from "@nestjs/common";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { PrismaService } from "@app/prisma";
+import { Public, type AuthUserPayload } from "@app/common";
 
-@ApiTags('dictation')
-@Controller('api/dictation')
+@ApiTags("dictation")
+@Controller("api/dictation")
 export class DictationController {
   constructor(private readonly prisma: PrismaService) {}
 
-  @Get('vocab')
+  @Get("vocab")
   @Public()
-  @ApiOperation({ summary: 'Get vocabulary list for dictation practice' })
+  @ApiOperation({ summary: "Get vocabulary list for dictation practice" })
   async getVocab(
-    @Query('lessonNumber') lessonNumber?: string,
-    @Query('limit') limit?: string,
+    @Query("lessonNumber") lessonNumber?: string,
+    @Query("limit") limit?: string,
   ) {
     const lessonId = lessonNumber
       ? (
@@ -34,14 +34,14 @@ export class DictationController {
         meaning: true,
         lessonId: true,
       },
-      orderBy: { id: 'asc' },
+      orderBy: { id: "asc" },
       take: limit ? +limit : 30,
     });
   }
 
-  @Post('attempt')
+  @Post("attempt")
   @Public()
-  @ApiOperation({ summary: 'Record a dictation attempt' })
+  @ApiOperation({ summary: "Record a dictation attempt" })
   recordAttempt(
     @Body() body: { vocabId: number; userInput: string; correct: boolean },
     @Req() req: { user?: AuthUserPayload | null },
@@ -56,8 +56,8 @@ export class DictationController {
     });
   }
 
-  @Get('stats')
-  @ApiOperation({ summary: 'Get dictation stats for current user' })
+  @Get("stats")
+  @ApiOperation({ summary: "Get dictation stats for current user" })
   async getStats(@Req() req: { user: AuthUserPayload }) {
     const userId = req.user.id;
     const [total, correct] = await Promise.all([

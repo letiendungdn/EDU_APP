@@ -114,6 +114,18 @@
   scrollbar-width: thin;
 }
 
+.vocab-word-list-virtual {
+  position: relative;
+  width: 100%;
+}
+
+.vocab-word-list-row {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
 .vocab-word-list-item {
   width: 100%;
   display: grid;

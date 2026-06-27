@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { ProgressService } from './progress.service';
+import { Module } from "@nestjs/common";
+import { ProgressService } from "./progress.service";
 
 @Module({
   providers: [ProgressService],

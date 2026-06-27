@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { VocabulariesService } from './vocabularies.service';
+import { Module } from "@nestjs/common";
+import { VocabulariesService } from "./vocabularies.service";
 
 @Module({
   providers: [VocabulariesService],

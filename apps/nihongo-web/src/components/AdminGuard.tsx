@@ -2,29 +2,35 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, type ReactNode } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { useAuthMeQuery } from '@/hooks/queries';
-import { getStoredToken } from '@/lib/api-client';
 
 export default function AdminGuard({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const token = getStoredToken();
-  const { data: user, isLoading, isError } = useAuthMeQuery(!!token);
+  const { token, user: sessionUser, isAdmin, isAuthenticated } = useAuth();
+  const needsFetch = isAuthenticated && !!token && !sessionUser;
+  const { data: fetchedUser, isLoading, isError } = useAuthMeQuery(needsFetch);
+
+  const user = sessionUser ?? fetchedUser;
 
   useEffect(() => {
     if (!token) {
       router.replace('/admin/login');
       return;
     }
-    if (!isLoading && (isError || !user)) {
+    if (needsFetch && isLoading) {
+      return;
+    }
+    if (isError || !user) {
       router.replace('/admin/login');
       return;
     }
-    if (!isLoading && user && user.role !== 'ADMIN') {
-      router.replace('/');
+    if (user.role !== 'ADMIN') {
+      router.replace('/admin/login?reason=forbidden');
     }
-  }, [token, isLoading, isError, user, router]);
+  }, [token, needsFetch, isLoading, isError, user, router]);
 
-  if (!token || isLoading) {
+  if (!token || (needsFetch && isLoading)) {
     return (
       <div className="container">
         <div className="empty-state glass-panel">
@@ -34,7 +40,7 @@ export default function AdminGuard({ children }: { children: ReactNode }) {
     );
   }
 
-  if (isError || !user || user.role !== 'ADMIN') {
+  if (isError || !user || !isAdmin) {
     return null;
   }
 

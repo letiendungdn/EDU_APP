@@ -43,6 +43,15 @@ jobs:
           DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
           REDIS_URL: redis://localhost:6379
           JWT_SECRET: test-secret
+          CONTENT_GRPC_URL: localhost:50051
+          EXAM_GRPC_URL: localhost:50052
+      - run: npm run test:e2e -w @edu/nihongo-services
+        env:
+          DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test-secret
+          CONTENT_GRPC_URL: localhost:50051
+          EXAM_GRPC_URL: localhost:50052
       - run: npm run build:all -w @edu/nihongo-services
 
   nihongo-web:
@@ -56,6 +65,7 @@ jobs:
           cache-dependency-path: package-lock.json
       - run: npm ci
       - run: npm run lint -w @edu/nihongo-web
+      - run: npm run test:run -w @edu/nihongo-web
       - run: npm run build -w @edu/nihongo-web
         env:
           API_URL: http://localhost:3000

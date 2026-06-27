@@ -1,16 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@app/prisma';
-import { CreateExerciseDto, UpdateExerciseDto } from '@app/contracts';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "@app/prisma";
+import { CreateExerciseDto, UpdateExerciseDto } from "@app/contracts";
 
-type PrismaExerciseType = 'MULTIPLE_CHOICE' | 'FILL_IN_BLANK' | 'LISTENING';
+type PrismaExerciseType = "MULTIPLE_CHOICE" | "FILL_IN_BLANK" | "LISTENING";
 
 const PRISMA_EXERCISE_TYPE: Record<string, PrismaExerciseType> = {
-  multiple_choice: 'MULTIPLE_CHOICE',
-  fill_in_blank: 'FILL_IN_BLANK',
-  listening: 'LISTENING',
-  MULTIPLE_CHOICE: 'MULTIPLE_CHOICE',
-  FILL_IN_BLANK: 'FILL_IN_BLANK',
-  LISTENING: 'LISTENING',
+  multiple_choice: "MULTIPLE_CHOICE",
+  fill_in_blank: "FILL_IN_BLANK",
+  listening: "LISTENING",
+  MULTIPLE_CHOICE: "MULTIPLE_CHOICE",
+  FILL_IN_BLANK: "FILL_IN_BLANK",
+  LISTENING: "LISTENING",
 };
 
 function toPrismaExerciseType(type: string): PrismaExerciseType {
@@ -32,11 +32,11 @@ function parseOptionsInput(options?: string | string[]): string[] {
   }
 }
 
-function mapExercise<T extends { optionsList: { text: string }[] }>(row: T) {
-  const { optionsList, ...rest } = row;
+function mapExercise<T extends { options: { text: string }[] }>(row: T) {
+  const { options: optionRows, ...rest } = row;
   return {
     ...rest,
-    options: optionsList.map((o) => o.text),
+    options: optionRows.map((o) => o.text),
   };
 }
 
@@ -52,7 +52,7 @@ export class ExercisesService {
         question: dto.question,
         answer: dto.answer,
         lessonId: dto.lessonId,
-        optionsList: optionTexts.length
+        options: optionTexts.length
           ? {
               create: optionTexts.map((text, sortOrder) => ({
                 text,
@@ -61,7 +61,7 @@ export class ExercisesService {
             }
           : undefined,
       },
-      include: { optionsList: { orderBy: { sortOrder: 'asc' } } },
+      include: { options: { orderBy: { sortOrder: "asc" } } },
     });
     return mapExercise(created);
   }
@@ -78,8 +78,8 @@ export class ExercisesService {
     }
     const rows = await this.prisma.exercise.findMany({
       where: lessonId ? { lessonId } : undefined,
-      include: { optionsList: { orderBy: { sortOrder: 'asc' } } },
-      orderBy: { id: 'asc' },
+      include: { options: { orderBy: { sortOrder: "asc" } } },
+      orderBy: { id: "asc" },
     });
     return rows.map(mapExercise);
   }
@@ -87,7 +87,7 @@ export class ExercisesService {
   async findOne(id: number) {
     const row = await this.prisma.exercise.findUnique({
       where: { id },
-      include: { optionsList: { orderBy: { sortOrder: 'asc' } } },
+      include: { options: { orderBy: { sortOrder: "asc" } } },
     });
     return row ? mapExercise(row) : null;
   }

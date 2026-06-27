@@ -1,5 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '@app/prisma';
+import { Injectable, Logger } from "@nestjs/common";
+import { PrismaService } from "@app/prisma";
 
 @Injectable()
 export class ImportService {
@@ -9,7 +9,7 @@ export class ImportService {
 
   async importVocabFromText(lessonNumber: number, text: string) {
     const lines = text
-      .split('\n')
+      .split("\n")
       .map((l) => l.trim())
       .filter((l) => l);
 
@@ -24,7 +24,7 @@ export class ImportService {
       });
 
       for (const line of lines) {
-        const parts = line.split('\t').map((p) => p.trim());
+        const parts = line.split("\t").map((p) => p.trim());
         if (parts.length < 3) {
           this.logger.warn(`Skipping malformed line: ${line}`);
           skipped += 1;

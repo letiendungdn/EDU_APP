@@ -1,20 +1,34 @@
 ﻿# Dependencies
 node_modules/
 
+# Secrets (không commit credential)
+.env
+!.env.example
+**/client_secret*.json
+!**/client_secret.example.json
+
+# Test coverage
+coverage/
+
+# Agent / IDE local
+.agents/
+.claude/
+.continue/
+
 # Build output
 dist/
+*.tsbuildinfo
 
 # Next.js
 .next/
 out/
 
-# Environment
-.env
-.env.*
-!.env.example
+# Database backup SQL dumps (scripts + README vẫn commit)
+infra/backups/*.sql
 
-# Database backups
-infra/backups/
+# Stripe CLI binary (~27MB, không phải config)
+infra/stripe-cli/stripe.exe
+infra/stripe-cli/stripe.zip
 
 # OS
 .DS_Store

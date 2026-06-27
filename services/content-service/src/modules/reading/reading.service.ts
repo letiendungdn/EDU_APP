@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { JlptLevel } from '@prisma/client';
-import { PrismaService } from '@app/prisma';
+import { Injectable } from "@nestjs/common";
+import { JlptLevel } from "@prisma/client";
+import { PrismaService } from "@app/prisma";
 
 function parseJlptLevel(value?: string): JlptLevel | undefined {
   if (!value) return undefined;
@@ -25,7 +25,7 @@ export class ReadingService {
         sortOrder: true,
         _count: { select: { questions: true } },
       },
-      orderBy: [{ jlptLevel: 'asc' }, { sortOrder: 'asc' }],
+      orderBy: [{ jlptLevel: "asc" }, { sortOrder: "asc" }],
     });
   }
 
@@ -34,9 +34,9 @@ export class ReadingService {
       where: { id },
       include: {
         questions: {
-          orderBy: { sortOrder: 'asc' },
+          orderBy: { sortOrder: "asc" },
           include: {
-            options: { orderBy: { sortOrder: 'asc' } },
+            options: { orderBy: { sortOrder: "asc" } },
           },
         },
       },
@@ -52,7 +52,7 @@ export class ReadingService {
       where: { id: passageId },
       include: { questions: true },
     });
-    if (!passage) throw new Error('Passage not found');
+    if (!passage) throw new Error("Passage not found");
 
     let correct = 0;
     const results = passage.questions.map((q) => {
