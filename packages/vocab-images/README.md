@@ -12,7 +12,7 @@ npm run media:setup
 | Lệnh | Mô tả |
 |------|--------|
 | `npm run media:download` | Tải OpenMoji, KanjiVG, ảnh kanji vnjpclub → `media/` |
-| `npm run media:sync` | Copy → `apps/*/public/media/` |
+| `npm run media:sync` | Copy → `apps/nihongo-web/public/media/` |
 | `npm run seed:vocab-images` | Ghi `/media/...` vào `Vocabulary` + `KanjiEntry` |
 
 ## Đường dẫn
