@@ -325,8 +325,7 @@ docker volume create nihongo-app_postgres_data   # nihongo — giữ data cũ n�
 npm run docker:up:nihongo
 
 # Restore DB (đợi postgres healthy ~10s)
-Get-Content infra\backups\nihongo_20260628_160937.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
-Get-Content infra\backups\english_learning_20260628_160937.sql | docker exec -i edu-postgres-english psql -U english english_learning
+Get-Content infra\backups\nihongo_20260628_164425.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 ```
 
 **Media (KanjiVG, OpenMoji)** đã nằm trong image `nihongo-web` nếu build từ repo đã `media:sync`. Clone repo thiếu `apps/nihongo-web/public/media` thì trước khi build:

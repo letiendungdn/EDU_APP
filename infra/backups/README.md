@@ -14,7 +14,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File infra/backups/backup.ps1
 bash infra/backups/backup.sh
 ```
 
-Yêu cầu: `docker compose up -d postgres-nihongo postgres-english`
+Yêu cầu: `edu-postgres-nihongo` đang chạy. English chỉ dump nếu `edu-postgres-english` đang chạy.
 
 ## Output (cùng thư mục này)
 
@@ -29,8 +29,9 @@ File `*.sql` được commit trong repo (snapshot restore). Chạy `npm run db:b
 ## Restore
 
 ```powershell
-Get-Content infra\backups\nihongo_20260628_160937.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
-Get-Content infra\backups\english_learning_20260628_160937.sql | docker exec -i edu-postgres-english psql -U english english_learning
+Get-Content infra\backups\nihongo_20260628_164425.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+# English (tùy chọn, nếu có container + file backup):
+Get-Content infra\backups\english_learning_20260627_235641.sql | docker exec -i edu-postgres-english psql -U english english_learning
 ```
 
 Schema chat tham khảo: [`docs/sql/chat-schema.sql`](../../docs/sql/chat-schema.sql)

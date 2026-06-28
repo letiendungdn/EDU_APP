@@ -14,7 +14,7 @@ New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
 foreach ($item in $dumps) {
     if (-not (docker ps --format "{{.Names}}" | Select-String -Quiet "^$($item.Container)$")) {
-        Write-Host "Bỏ qua $($item.Db) — container '$($item.Container)' chưa chạy." -ForegroundColor Yellow
+        Write-Host "Bo qua $($item.Db) - container '$($item.Container)' chua chay." -ForegroundColor Yellow
         continue
     }
     $file = Join-Path $outDir "$($item.Db)_${ts}.sql"
@@ -26,4 +26,4 @@ $schemaFile = Join-Path $outDir "nihongo_schema_${ts}.sql"
 Write-Host "Dump schema nihongo -> $schemaFile"
 docker exec edu-postgres-nihongo pg_dump -U nihongo --schema-only nihongo | Set-Content -Path $schemaFile -Encoding utf8
 
-Write-Host "Done. SQL dumps in infra/backups/ (*.sql gitignored)" -ForegroundColor Green
+Write-Host "Done. SQL dumps saved in infra/backups/" -ForegroundColor Green

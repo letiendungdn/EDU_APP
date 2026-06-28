@@ -61,8 +61,7 @@ Kiểm tra: `docker ps --filter "name=edu-"`
 Đã có snapshot full trong `infra/backups/` (user, vocab, payment, …):
 
 ```powershell
-Get-Content "infra\backups\nihongo_20260628_160937.sql" | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
-Get-Content "infra\backups\english_learning_20260628_160937.sql" | docker exec -i edu-postgres-english psql -U english english_learning
+Get-Content "infra\backups\nihongo_20260628_164425.sql" | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 ```
 
 **Cách B — DB trống: migrate + seed nội dung**
