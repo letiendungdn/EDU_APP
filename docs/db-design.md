@@ -28,6 +28,10 @@ MongoDB: TTL index 90 ngày trên audit_logs — tự dọn sạch, không cần
 │  KanjiLesson ──< KanjiEntry ──< KanjiVocab                    │
 │  KanaSection ──< KanaCell                                      │
 │  CounterCategory ──< CounterItem                               │
+│  PronunciationRulesMeta (singleton)                            │
+│  PronunciationRuleTip[]                                        │
+│  PronunciationRuleSection ──< PronunciationRulePoint          │
+│                           ──< PronunciationRuleExample         │
 └────────────────────────────────────────────────────────────────┘
 ┌────────────────────────────────────────────────────────────────┐
 │ JLPT                                                            │
@@ -47,6 +51,7 @@ MongoDB: TTL index 90 ngày trên audit_logs — tự dọn sạch, không cần
 │                                                                 │
 │  ListeningConfig (singleton)                                   │
 │  PodcastResource[]  ListeningPreset[]                         │
+│  (Quy tắc phát âm: xem CONTENT block trên)                    │
 └────────────────────────────────────────────────────────────────┘
 ┌────────────────────────────────────────────────────────────────┐
 │ USER & PROGRESS                                                 │
@@ -379,6 +384,7 @@ LearnerChatMemberRole:  MEMBER | ADMIN
 | `20260627120000_add_chat_notification` | ChatMessage, Notification, NotificationType enum |
 | `20260627210000_add_support_chat` | SupportThread, SupportMessage + SUPPORT_MESSAGE enum |
 | `20260627220000_add_learner_group_chat` | LearnerChatRoom, LearnerChatMember, LearnerChatMessage + GROUP_MESSAGE enum |
+| `20260628140000_pronunciation_rules` | PronunciationRulesMeta, PronunciationRuleTip, PronunciationRuleSection, PronunciationRulePoint, PronunciationRuleExample — seed `seed:pronunciation-rules` / `nihongo-content-seed.sql` |
 
 ---
 

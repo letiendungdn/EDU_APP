@@ -1,12 +1,12 @@
 #!/bin/sh
 # Dump chỉ bảng nội dung học (Minna + KLL + reference). Chạy trong container postgres.
-set -euo pipefail
 
 TABLES="
 Lesson Vocabulary Grammar Example Exercise ExerciseOption
 KanjiLesson KanjiEntry KanjiVocab
 KanaSection KanaCell
 CounterCategory CounterItem
+PronunciationRulesMeta PronunciationRuleTip PronunciationRuleSection PronunciationRulePoint PronunciationRuleExample
 ListeningConfig PodcastResource ListeningPreset
 JlptOrganizer JlptExamFeeInfo JlptExamBriefing JlptExamSession JlptExamVenue JlptExamDaySlot
 JlptRoadmapMeta StudyTip JlptRoadmapLevel JlptRoadmapExamSection JlptRoadmapMaterial JlptRoadmapPhase JlptRoadmapTask

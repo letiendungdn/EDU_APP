@@ -14,8 +14,8 @@ New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
 foreach ($item in $dumps) {
     if (-not (docker ps --format "{{.Names}}" | Select-String -Quiet "^$($item.Container)$")) {
-        Write-Host "Container '$($item.Container)' chưa chạy. Chạy: docker compose up -d postgres-nihongo postgres-english" -ForegroundColor Yellow
-        exit 1
+        Write-Host "Bỏ qua $($item.Db) — container '$($item.Container)' chưa chạy." -ForegroundColor Yellow
+        continue
     }
     $file = Join-Path $outDir "$($item.Db)_${ts}.sql"
     Write-Host "Dump $($item.Db) -> $file"

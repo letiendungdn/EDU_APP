@@ -1,0 +1,29 @@
+.pronunciation-rules-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding-bottom: 3rem;
+  animation: fadeIn var(--transition-normal);
+}
+
+.pronunciation-rules-view-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 720px;
+}
+
+.pronunciation-rules-view-subtitle {
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.pronunciation-rules-view .pronunciation-rules {
+  width: 100%;
+  max-width: 720px;
+}

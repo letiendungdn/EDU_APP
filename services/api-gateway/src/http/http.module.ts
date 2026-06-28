@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, type DynamicModule, type Type } from "@nestjs/common";
 import { LessonsController } from "./lessons.controller";
 import { VocabulariesController } from "./vocabularies.controller";
 import { GrammarsController } from "./grammars.controller";
@@ -24,12 +24,19 @@ import { UploadService } from "./upload/upload.service";
 import { PaymentModule } from "../../../payment-service/src/payment.module";
 import { EnglishModule } from "../../../english-service/src/english.module";
 import { RealtimeModule } from "../realtime/realtime.module";
+import { isEnglishEnabled } from "@app/common";
 import { NotificationController } from "./notification.controller";
 import { SupportController } from "./support.controller";
 import { CommunityController } from "./community.controller";
 
+const httpImports: Array<Type | DynamicModule> = [
+  PaymentModule,
+  ...(isEnglishEnabled() ? [EnglishModule] : []),
+  RealtimeModule,
+];
+
 @Module({
-  imports: [PaymentModule, EnglishModule, RealtimeModule],
+  imports: httpImports,
   controllers: [
     LessonsController,
     VocabulariesController,

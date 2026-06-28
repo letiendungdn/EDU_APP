@@ -30,3 +30,4 @@ export type { AuditLogDocument } from './audit/audit-log.schema';
 export { RedisModule, REDIS_CLIENT } from './redis/redis.module';
 export { RateLimit } from './rate-limit/rate-limit.decorator';
 export { SlidingWindowRateLimitGuard } from './rate-limit/sliding-window.guard';
+export { isEnglishEnabled } from './config/english-enabled';

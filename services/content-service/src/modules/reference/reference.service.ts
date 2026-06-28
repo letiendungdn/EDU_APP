@@ -5,6 +5,7 @@ import { PrismaService } from "@app/prisma";
 const SLUGS = [
   "kana-charts",
   "japanese-counters",
+  "japanese-pronunciation-rules",
   "daily-listening",
   "jlpt-roadmap",
   "jlpt-danang-schedule",
@@ -40,6 +41,8 @@ export class ReferenceService {
         return this.getKanaCharts();
       case "japanese-counters":
         return this.getJapaneseCounters();
+      case "japanese-pronunciation-rules":
+        return this.getJapanesePronunciationRules();
       case "daily-listening":
         return this.getDailyListening();
       case "jlpt-roadmap":
@@ -55,6 +58,7 @@ export class ReferenceService {
     const titles: Record<ReferenceSlug, string> = {
       "kana-charts": "Bảng kana Hiragana/Katakana",
       "japanese-counters": "Đếm số & thứ tự tiếng Nhật",
+      "japanese-pronunciation-rules": "Quy tắc phát âm tiếng Nhật",
       "daily-listening": "Nghe mỗi ngày — podcast & preset",
       "jlpt-roadmap": "Lộ trình JLPT",
       "jlpt-danang-schedule": "Lịch thi JLPT Đà Nẵng",
@@ -127,6 +131,54 @@ export class ReferenceService {
           romaji: item.romaji,
           vi: item.meaningVi,
         })),
+      })),
+    };
+  }
+
+  private async getJapanesePronunciationRules() {
+    const meta = await this.prisma.pronunciationRulesMeta.findUnique({
+      where: { id: 1 },
+    });
+    if (!meta) {
+      throw new NotFoundException("Japanese pronunciation rules not seeded");
+    }
+
+    const [tips, sections] = await Promise.all([
+      this.prisma.pronunciationRuleTip.findMany({
+        orderBy: { sortOrder: "asc" },
+      }),
+      this.prisma.pronunciationRuleSection.findMany({
+        orderBy: { sortOrder: "asc" },
+        include: {
+          points: { orderBy: { sortOrder: "asc" } },
+          examples: { orderBy: { sortOrder: "asc" } },
+        },
+      }),
+    ]);
+
+    return {
+      intro: meta.intro,
+      tipsForVietnamese: tips.map((tip) => tip.text),
+      sections: sections.map((section) => ({
+        id: section.slug,
+        title: section.title,
+        summary: section.summary,
+        points: section.points.map((point) => ({
+          ...(point.label ? { label: point.label } : {}),
+          ...(point.japanese ? { japanese: point.japanese } : {}),
+          ...(point.romaji ? { romaji: point.romaji } : {}),
+          explanation: point.explanation,
+        })),
+        ...(section.examples.length > 0
+          ? {
+              examples: section.examples.map((example) => ({
+                japanese: example.japanese,
+                romaji: example.romaji,
+                meaning: example.meaning,
+                ...(example.note ? { note: example.note } : {}),
+              })),
+            }
+          : {}),
       })),
     };
   }

@@ -42,6 +42,34 @@ export interface JapaneseCountersPayload {
   categories: CounterCategory[];
 }
 
+export interface PronunciationRulePoint {
+  label?: string;
+  japanese?: string;
+  romaji?: string;
+  explanation: string;
+}
+
+export interface PronunciationRuleExample {
+  japanese: string;
+  romaji: string;
+  meaning: string;
+  note?: string;
+}
+
+export interface PronunciationRuleSection {
+  id: string;
+  title: string;
+  summary: string;
+  points: PronunciationRulePoint[];
+  examples?: PronunciationRuleExample[];
+}
+
+export interface JapanesePronunciationRulesPayload {
+  intro: string;
+  tipsForVietnamese: string[];
+  sections: PronunciationRuleSection[];
+}
+
 export interface PodcastItem {
   id: string;
   title: string;

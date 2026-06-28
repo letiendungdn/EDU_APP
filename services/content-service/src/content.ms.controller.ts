@@ -85,7 +85,7 @@ export class ContentMsController implements OnModuleInit {
         this.deleteExercise(data as { id: number }),
       [CONTENT_PATTERNS.GET_KANJI_LESSONS]: () => this.getKanjiLessons(),
       [CONTENT_PATTERNS.GET_KANJI_ENTRIES]: (data) =>
-        this.getKanjiEntries(data as { lessonNumber?: number }),
+        this.getKanjiEntries(data as { lessonNumber?: number; query?: string }),
       [CONTENT_PATTERNS.GET_KANJI_ENTRY]: (data) =>
         this.getKanjiEntry(data as { id: number }),
       [CONTENT_PATTERNS.GET_LISTENING_PLAYLIST]: (data) =>
@@ -213,8 +213,8 @@ export class ContentMsController implements OnModuleInit {
     return this.kanjiService.findAllLessons();
   }
 
-  getKanjiEntries(data: { lessonNumber?: number }) {
-    return this.kanjiService.findEntries(data.lessonNumber);
+  getKanjiEntries(data: { lessonNumber?: number; query?: string }) {
+    return this.kanjiService.findEntries(data.lessonNumber, data.query);
   }
 
   getKanjiEntry(data: { id: number }) {

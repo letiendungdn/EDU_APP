@@ -31,6 +31,7 @@ import type {
 import type {
   DailyListeningPayload,
   JapaneseCountersPayload,
+  JapanesePronunciationRulesPayload,
   JlptDaNangSchedulePayload,
   JlptRoadmapPayload,
   KanaChartsPayload,
@@ -91,6 +92,10 @@ export function fetchKanjiEntries(lessonNumber: number) {
   return apiRequest<KanjiEntry[]>(`/kanji?lessonNumber=${lessonNumber}`);
 }
 
+export function fetchKanjiSearch(query: string) {
+  return apiRequest<KanjiEntry[]>(`/kanji?q=${encodeURIComponent(query)}`);
+}
+
 export function fetchListeningPlaylist(lessonFrom = 1, lessonTo = 25, limit = 120) {
   return apiRequest<ListeningPlaylist>(
     `/listening/playlist?lessonFrom=${lessonFrom}&lessonTo=${lessonTo}&limit=${limit}`,
@@ -119,6 +124,12 @@ export function fetchKanaCharts() {
 
 export function fetchJapaneseCounters() {
   return fetchReference<JapaneseCountersPayload>('japanese-counters');
+}
+
+export function fetchJapanesePronunciationRules() {
+  return fetchReference<JapanesePronunciationRulesPayload>(
+    'japanese-pronunciation-rules',
+  );
 }
 
 export function fetchDailyListeningConfig() {

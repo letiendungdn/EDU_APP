@@ -52,6 +52,12 @@ const features = [
     desc: 'Flashcard nghe mẫu, ghi âm giọng bạn và nghe lại để so sánh — Kana & từ vựng Minna.',
   },
   {
+    to: '/pronunciation-rules',
+    icon: '📖',
+    title: 'Quy tắc phát âm',
+    desc: 'Nguyên âm, phụ âm, trường âm, âm đục và các quy tắc đọc — có ví dụ nghe mẫu.',
+  },
+  {
     to: '/jlpt',
     icon: '🎯',
     title: 'Lộ trình JLPT',

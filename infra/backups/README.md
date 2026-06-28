@@ -29,8 +29,8 @@ File `*.sql` được commit trong repo (snapshot restore). Chạy `npm run db:b
 ## Restore
 
 ```powershell
-Get-Content infra\backups\nihongo_20260627_235641.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
-Get-Content infra\backups\english_learning_20260627_235641.sql | docker exec -i edu-postgres-english psql -U english english_learning
+Get-Content infra\backups\nihongo_20260628_160937.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content infra\backups\english_learning_20260628_160937.sql | docker exec -i edu-postgres-english psql -U english english_learning
 ```
 
 Schema chat tham khảo: [`docs/sql/chat-schema.sql`](../../docs/sql/chat-schema.sql)

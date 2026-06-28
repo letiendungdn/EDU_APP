@@ -41,6 +41,20 @@ describe("KanjiService", () => {
     );
   });
 
+  it("findEntries filters by search query", async () => {
+    prisma.kanjiEntry.findMany.mockResolvedValue([]);
+    await service.findEntries(undefined, "日");
+    expect(prisma.kanjiEntry.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          OR: expect.arrayContaining([
+            expect.objectContaining({ character: { contains: "日" } }),
+          ]),
+        }),
+      }),
+    );
+  });
+
   it("findOne returns entry with relations", async () => {
     prisma.kanjiEntry.findUnique.mockResolvedValue({
       id: 1,

@@ -217,6 +217,67 @@ model CounterItem {
 }
 
 // ─────────────────────────────────────────────
+// Japanese pronunciation rules (reference)
+// ─────────────────────────────────────────────
+
+model PronunciationRulesMeta {
+  id        Int      @id @default(1)
+  intro     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PronunciationRuleTip {
+  id        Int      @id @default(autoincrement())
+  text      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model PronunciationRuleSection {
+  id        Int                       @id @default(autoincrement())
+  slug      String                    @unique
+  title     String
+  summary   String
+  sortOrder Int                       @default(0)
+  points    PronunciationRulePoint[]
+  examples  PronunciationRuleExample[]
+  createdAt DateTime                  @default(now())
+  updatedAt DateTime                  @updatedAt
+
+  @@index([sortOrder])
+}
+
+model PronunciationRulePoint {
+  id          Int                    @id @default(autoincrement())
+  sectionId   Int
+  section     PronunciationRuleSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  label       String?
+  japanese    String?
+  romaji      String?
+  explanation String
+  sortOrder   Int                    @default(0)
+
+  @@index([sectionId, sortOrder])
+}
+
+model PronunciationRuleExample {
+  id        Int                    @id @default(autoincrement())
+  sectionId Int
+  section   PronunciationRuleSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  japanese  String
+  romaji    String
+  meaning   String
+  note      String?
+  sortOrder Int                    @default(0)
+
+  @@index([sectionId, sortOrder])
+}
+
+// ─────────────────────────────────────────────
 // Daily listening
 // ─────────────────────────────────────────────
 

@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { playAudio, stopAudio } from '../utils/speech';
 import LessonSelector from '../components/LessonSelector';
@@ -121,7 +122,10 @@ export default function PronunciationView() {
       <header className="pronunciation-header">
         <h2 className="view-title">Luyện phát âm</h2>
         <p className="pronunciation-subtitle">
-          Nghe mẫu → ghi âm giọng bạn → nghe lại để so sánh. Không cần AI.
+          Nghe mẫu → ghi âm giọng bạn → nghe lại để so sánh. Không cần AI.{' '}
+          <Link href="/pronunciation-rules" className="pronunciation-rules-link">
+            Xem quy tắc phát âm →
+          </Link>
         </p>
 
         <div className="pronunciation-source-tabs">

@@ -24,10 +24,14 @@ export class KanjiController {
   @Get("kanji")
   @Public()
   @ApiOperation({ summary: "List kanji entries" })
-  findEntries(@Query("lessonNumber") lessonNumber?: string) {
+  findEntries(
+    @Query("lessonNumber") lessonNumber?: string,
+    @Query("q") q?: string,
+  ) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.GET_KANJI_ENTRIES, {
         lessonNumber: lessonNumber ? +lessonNumber : undefined,
+        query: q?.trim() || undefined,
       }),
     );
   }

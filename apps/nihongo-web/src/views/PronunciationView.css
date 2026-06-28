@@ -14,13 +14,24 @@
   align-items: center;
   gap: 0.85rem;
   width: 100%;
-  max-width: 560px;
+  max-width: 720px;
 }
 
 .pronunciation-subtitle {
   color: var(--text-secondary);
   line-height: 1.55;
   margin: 0;
+}
+
+.pronunciation-rules-link {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pronunciation-rules-link:hover {
+  text-decoration: underline;
 }
 
 .pronunciation-source-tabs,

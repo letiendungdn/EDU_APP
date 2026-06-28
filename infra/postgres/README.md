@@ -6,7 +6,7 @@
 
 | File | Mô tả |
 |------|--------|
-| `nihongo-content-seed.sql` | Dump data-only các bảng nội dung (commit vào git) |
+| `nihongo-content-seed.sql` | Dump data-only các bảng nội dung (Minna, KLL, JLPT ref, **quy tắc phát âm**, listening…) — commit vào git |
 | `dump-content-tables.sh` | Script dump (chạy trong container) |
 | `export-content-seed.ps1` / `.sh` | Export từ DB local → SQL |
 

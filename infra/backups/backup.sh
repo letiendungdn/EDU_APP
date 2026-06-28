@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Backup PostgreSQL — nihongo và english_learning trên 2 container riêng
-set -euo pipefail
+set -euo pipefailo pipefail
 
 OUT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TS="$(date +%Y%m%d_%H%M%S)"

@@ -22,11 +22,13 @@ import {
   fetchJlptDaNangSchedule,
   fetchDailyListeningConfig,
   fetchJapaneseCounters,
+  fetchJapanesePronunciationRules,
   fetchJlptRoadmap,
   fetchJlptDaNangScheduleStatic,
   fetchKanaCharts,
   fetchKanjiEntries,
   fetchKanjiLessons,
+  fetchKanjiSearch,
   fetchListeningPlaylist,
 } from '../api';
 import type { AdminPaymentsFilters } from '../api';
@@ -57,10 +59,12 @@ export const queryKeys = {
   exercises: (lesson: number) => ['exercises', lesson] as const,
   kanjiLessons: ['kanji-lessons'] as const,
   kanjiEntries: (lesson: number) => ['kanji', lesson] as const,
+  kanjiSearch: (query: string) => ['kanji-search', query] as const,
   listeningPlaylist: (from: number, to: number) => ['listening-playlist', from, to] as const,
   jlptDaNangSchedule: ['jlpt-da-nang-schedule'] as const,
   kanaCharts: ['reference', 'kana-charts'] as const,
   japaneseCounters: ['reference', 'japanese-counters'] as const,
+  japanesePronunciationRules: ['reference', 'japanese-pronunciation-rules'] as const,
   dailyListeningConfig: ['reference', 'daily-listening'] as const,
   jlptRoadmap: ['reference', 'jlpt-roadmap'] as const,
   jlptDaNangStatic: ['reference', 'jlpt-danang-schedule'] as const,
@@ -109,6 +113,15 @@ export function useKanjiEntriesQuery(lessonNumber: number) {
   });
 }
 
+export function useKanjiSearchQuery(query: string) {
+  return useQuery({
+    queryKey: queryKeys.kanjiSearch(query),
+    queryFn: () => fetchKanjiSearch(query),
+    enabled: query.trim().length > 0,
+    staleTime: STALE_5M,
+  });
+}
+
 export function useListeningPlaylistQuery(lessonFrom: number, lessonTo: number) {
   return useQuery({
     queryKey: queryKeys.listeningPlaylist(lessonFrom, lessonTo),
@@ -138,6 +151,14 @@ export function useJapaneseCountersQuery() {
   return useQuery({
     queryKey: queryKeys.japaneseCounters,
     queryFn: fetchJapaneseCounters,
+    staleTime: STALE_5M,
+  });
+}
+
+export function useJapanesePronunciationRulesQuery() {
+  return useQuery({
+    queryKey: queryKeys.japanesePronunciationRules,
+    queryFn: fetchJapanesePronunciationRules,
     staleTime: STALE_5M,
   });
 }

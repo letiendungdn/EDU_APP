@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 0CZXvlGp0Bn1XYCf5jNeyTnvL2r4aW7LwVt5MP3b3YHc44ODJEmvoEs3K7iyDEv
+\restrict v3sdKQ3cRbZW0JocPd8nSMCAfP4KJxxbmjozyWeydhgYmyi7RbLd05bvGnM7hRZ
 
 -- Dumped from database version 16.14
 -- Dumped by pg_dump version 16.14
@@ -1480,7 +1480,8 @@ CREATE TABLE public."KanjiVocab" (
     reading text NOT NULL,
     "meaningVi" text NOT NULL,
     "kanjiEntryId" integer NOT NULL,
-    "sortOrder" integer DEFAULT 0 NOT NULL
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "vocabularyId" integer
 );
 
 
@@ -1931,6 +1932,174 @@ ALTER SEQUENCE public."PodcastResource_id_seq" OWNER TO nihongo;
 
 ALTER SEQUENCE public."PodcastResource_id_seq" OWNED BY public."PodcastResource".id;
 
+
+--
+-- Name: PronunciationRuleExample; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."PronunciationRuleExample" (
+    id integer NOT NULL,
+    "sectionId" integer NOT NULL,
+    japanese text NOT NULL,
+    romaji text NOT NULL,
+    meaning text NOT NULL,
+    note text,
+    "sortOrder" integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public."PronunciationRuleExample" OWNER TO nihongo;
+
+--
+-- Name: PronunciationRuleExample_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."PronunciationRuleExample_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."PronunciationRuleExample_id_seq" OWNER TO nihongo;
+
+--
+-- Name: PronunciationRuleExample_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."PronunciationRuleExample_id_seq" OWNED BY public."PronunciationRuleExample".id;
+
+
+--
+-- Name: PronunciationRulePoint; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."PronunciationRulePoint" (
+    id integer NOT NULL,
+    "sectionId" integer NOT NULL,
+    label text,
+    japanese text,
+    romaji text,
+    explanation text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public."PronunciationRulePoint" OWNER TO nihongo;
+
+--
+-- Name: PronunciationRulePoint_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."PronunciationRulePoint_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."PronunciationRulePoint_id_seq" OWNER TO nihongo;
+
+--
+-- Name: PronunciationRulePoint_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."PronunciationRulePoint_id_seq" OWNED BY public."PronunciationRulePoint".id;
+
+
+--
+-- Name: PronunciationRuleSection; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."PronunciationRuleSection" (
+    id integer NOT NULL,
+    slug text NOT NULL,
+    title text NOT NULL,
+    summary text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."PronunciationRuleSection" OWNER TO nihongo;
+
+--
+-- Name: PronunciationRuleSection_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."PronunciationRuleSection_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."PronunciationRuleSection_id_seq" OWNER TO nihongo;
+
+--
+-- Name: PronunciationRuleSection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."PronunciationRuleSection_id_seq" OWNED BY public."PronunciationRuleSection".id;
+
+
+--
+-- Name: PronunciationRuleTip; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."PronunciationRuleTip" (
+    id integer NOT NULL,
+    text text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."PronunciationRuleTip" OWNER TO nihongo;
+
+--
+-- Name: PronunciationRuleTip_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."PronunciationRuleTip_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."PronunciationRuleTip_id_seq" OWNER TO nihongo;
+
+--
+-- Name: PronunciationRuleTip_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."PronunciationRuleTip_id_seq" OWNED BY public."PronunciationRuleTip".id;
+
+
+--
+-- Name: PronunciationRulesMeta; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."PronunciationRulesMeta" (
+    id integer DEFAULT 1 NOT NULL,
+    intro text NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."PronunciationRulesMeta" OWNER TO nihongo;
 
 --
 -- Name: ReadingAttempt; Type: TABLE; Schema: public; Owner: nihongo
@@ -2498,6 +2667,42 @@ CREATE TABLE public."Vocabulary" (
 ALTER TABLE public."Vocabulary" OWNER TO nihongo;
 
 --
+-- Name: VocabularyKanjiLink; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."VocabularyKanjiLink" (
+    id integer NOT NULL,
+    "vocabularyId" integer NOT NULL,
+    "kanjiEntryId" integer NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public."VocabularyKanjiLink" OWNER TO nihongo;
+
+--
+-- Name: VocabularyKanjiLink_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."VocabularyKanjiLink_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."VocabularyKanjiLink_id_seq" OWNER TO nihongo;
+
+--
+-- Name: VocabularyKanjiLink_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."VocabularyKanjiLink_id_seq" OWNED BY public."VocabularyKanjiLink".id;
+
+
+--
 -- Name: Vocabulary_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
 --
 
@@ -2861,6 +3066,34 @@ ALTER TABLE ONLY public."PodcastResource" ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- Name: PronunciationRuleExample id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PronunciationRuleExample" ALTER COLUMN id SET DEFAULT nextval('public."PronunciationRuleExample_id_seq"'::regclass);
+
+
+--
+-- Name: PronunciationRulePoint id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PronunciationRulePoint" ALTER COLUMN id SET DEFAULT nextval('public."PronunciationRulePoint_id_seq"'::regclass);
+
+
+--
+-- Name: PronunciationRuleSection id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PronunciationRuleSection" ALTER COLUMN id SET DEFAULT nextval('public."PronunciationRuleSection_id_seq"'::regclass);
+
+
+--
+-- Name: PronunciationRuleTip id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PronunciationRuleTip" ALTER COLUMN id SET DEFAULT nextval('public."PronunciationRuleTip_id_seq"'::regclass);
+
+
+--
 -- Name: ReadingAttempt id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -2956,6 +3189,13 @@ ALTER TABLE ONLY public."User" ALTER COLUMN id SET DEFAULT nextval('public."User
 --
 
 ALTER TABLE ONLY public."Vocabulary" ALTER COLUMN id SET DEFAULT nextval('public."Vocabulary_id_seq"'::regclass);
+
+
+--
+-- Name: VocabularyKanjiLink id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."VocabularyKanjiLink" ALTER COLUMN id SET DEFAULT nextval('public."VocabularyKanjiLink_id_seq"'::regclass);
 
 
 --
@@ -8914,2633 +9154,2633 @@ COPY public."KanjiLesson" (id, "lessonNumber", title, "createdAt", "updatedAt", 
 -- Data for Name: KanjiVocab; Type: TABLE DATA; Schema: public; Owner: nihongo
 --
 
-COPY public."KanjiVocab" (id, word, reading, "meaningVi", "kanjiEntryId", "sortOrder") FROM stdin;
-2627	õ©Çµ£¼	ÒüäÒüúÒü¢Òéô	S├┤╠ü 1	513	0
-2628	õ©Ç	Òü▓Òü¿	1 giãí╠Ç	513	0
-2629	õ©ÇÕêå	ÒüäÒüúÒüÀÒéô	1 phu╠üt	513	0
-2630	õ©Çµ£ê	ÒüäÒüíÒüîÒüñ	Tha╠üng 1	513	0
-2631	õ©ÇµùÑ	ÒüäÒüíÒü½Òüí	1 nga╠Çy	513	0
-2632	õ©ÇµùÑ	ÒüñÒüäÒüƒÒüí	Nga╠Çy m├┤╠Çng 1	513	0
-2633	õ©Çõ║║	Òü▓Òü¿Òéè	1 ngã░ãí╠Çi	513	0
-2634	õ©Çþò¬	ÒüäÒüíÒü░Òéô	Thã░╠ü nh├ó╠üt, ─æß║ºu ti├¬n	513	0
-2635	õ║îµ£¼	Òü½Òü╗Òéô	S├┤╠ü 2	514	0
-2636	õ║î	ÒüÁÒüƒ	2 giãí╠Ç	514	0
-2637	õ║îµ£ê	Òü½ÒüîÒüñ	Tha╠üng 2	514	0
-2638	õ║îõ║║	ÒüÁÒüƒÒéè	2 ngã░ãí╠Çi	514	0
-2639	õ║îµùÑ	ÒüÁÒüñÒüï	2 nga╠Çy, nga╠Çy m├┤╠Çng 2	514	0
-2640	õ║îÕìüµùÑ	Òü»ÒüñÒüï	20 nga╠Çy, nga╠Çy 20	514	0
-2641	õ║îÕìüµ¡│	Òü»ÒüƒÒüí	20 tu├┤╠ëi	514	0
-2642	õ║îÕìüµ¡│	Òü½ÒüÿÒéàÒüúÒüòÒüä	20 tu├┤╠ëi	514	0
-2643	õ©ëµ£¼	ÒüòÒéôÒü╝Òéô	S├┤╠ü 3	515	0
-2644	õ©ë	Òü┐Òüú	3 giãí╠Ç	515	0
-2645	õ©ëµ£ê	ÒüòÒéôÒüîÒüñ	Tha╠üng 3	515	0
-2646	õ©ëµùÑ	Òü┐ÒüúÒüï	3 nga╠Çy, nga╠Çy m├┤╠Çng 3	515	0
-2647	õ©ëõ║║	ÒüòÒéôÒü½Òéô	3 ngã░ãí╠Çi	515	0
-2648	õ©ëµ¡│	ÒüòÒéôÒüòÒüä	3 tu├┤╠ëi	515	0
-2649	õ©ëµùÑµ£ê	Òü┐ÒüïÒüÑÒüì	Tr─âng khuy├¬╠üt	515	0
-2650	ÕøøÞºÆ	ÒüùÒüïÒüÅ	S├┤╠ü 4	516	0
-2651	Õøø	Òüù	S├┤╠ü 4	516	0
-2652	Õøø	ÒéêÒüú	4 giãí╠Ç	516	0
-2653	Õøøµ£ê	ÒüùÒüîÒüñ	Tha╠üng 4	516	0
-2654	ÕøøµùÑ	ÒéêÒüúÒüï	4 nga╠Çy, nga╠Çy m├┤╠Çng 4	516	0
-2655	Õøøõ║║	ÒéêÒü½Òéô	4 ngã░ãí╠Çi	516	0
-2656	ÕøøÕ╣┤þöƒ	ÒéêÒü¡ÒéôÒüøÒüä	ho╠úc sinh n─âm 4	516	0
-2657	Õøøµ¡│	ÒéêÒéôÒüòÒüä	4 tu├┤╠ëi	516	0
-2658	õ║öµ£¼	ÒüöÒü╗Òéô	S├┤╠ü 5	517	0
-2659	õ║ö	ÒüäÒüñ	5 giãí╠Ç	517	0
-2660	õ║öµ£ê	ÒüöÒüîÒüñ	Tha╠üng 5	517	0
-2661	õ║öµùÑ	ÒüäÒüñÒüï	5 nga╠Çy, nga╠Çy m├┤╠Çng 5	517	0
-2662	õ║öÕ╣┤	ÒüöÒü¡Òéô	5 n─âm	517	0
-2663	õ║öõ║║	ÒüöÒü½Òéô	5 ngã░ãí╠Çi	517	0
-2664	õ║öµ¡│	ÒüöÒüòÒüä	5 tu├┤╠ëi	517	0
-2665	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	S├ö╠ü 6	518	0
-2666	Õà¡	ÒéÇÒüú	Sß╗æ 600	518	0
-2667	Õà¡µÖé	ÒéìÒüÅÒüÿ	6 giãí╠Ç	518	0
-2668	Õà¡Õêå	ÒéìÒüúÒüÀÒéô	6 phu╠üt	518	0
-2669	Õà¡µ£ê	ÒéìÒüÅÒüîÒüñ	tha╠üng 6	518	0
-2670	Õà¡µùÑ	ÒéÇÒüäÒüï	6 nga╠Çy, nga╠Çy m├┤╠Çng 6	518	0
-2671	Õà¡õ║║	ÒéìÒüÅÒü½Òéô	6 ngã░ãí╠Çi	518	0
-2672	õ©â	ÒüùÒüí	S├┤╠ü 7	519	0
-2673	õ©â	Òü¬Òü¬	7 giãí╠Ç	519	0
-2674	õ©âÕêå	Òü¬Òü¬ÒüÁÒéô	7 phu╠üt	519	0
-2675	õ©âµ£ê	ÒüùÒüíÒüîÒüñ	tha╠üng 7	519	0
-2676	õ©âµùÑ	Òü¬Òü«Òüï	7 nga╠Çy, tha╠üng 7	519	0
-2677	õ©âõ║║	Òü¬Òü¬Òü½Òéô	7 ngã░ãí╠Çi	519	0
-2678	õ©âÕñò	ÒüƒÒü¬Òü░Òüƒ	L├¬╠â h├┤╠úi tanabata ( l├¬╠â h├┤╠úi ngã░u lang chã░╠üc nã░╠â)	519	0
-2679	Õà½	Òü»Òüí	S├┤╠ü 8	520	0
-2680	Õà½	ÒéäÒüú	S├┤╠ü 800	520	0
-2681	Õà½µÖé	Òü»ÒüíÒüÿ	8 giãí╠Ç	520	0
-2682	Õà½µ£ê	Òü»ÒüíÒüîÒüñ	Tha╠üng 8	520	0
-2683	Õà½µùÑ	ÒéêÒüåÒüï	8 nga╠Çy, nga╠Çy m├┤╠Çng 8	520	0
-2684	Õà½õ║║	Òü»ÒüíÒü½Òéô	8 ngã░ãí╠Çi	520	0
-2685	Õà½µ¡│	Òü»ÒüúÒüòÒüä	8 tu├┤╠ëi	520	0
-2686	Õø×	ÒüïÒüä	Cã░╠ëa ha╠Çng rau	521	0
-2687	õ╣Ø	ÒüìÒéàÒüå	S├┤╠ü 9	521	0
-2688	õ╣Ø	ÒüÅ	S├┤╠ü 9	521	0
-2689	õ╣Ø	ÒüôÒüôÒü«	9 giãí╠Ç	521	0
-2690	õ╣Øµ£ê	ÒüÅÒüîÒüñ	Tha╠üng 9	521	0
-2691	õ╣ØµùÑ	ÒüôÒüôÒü«Òüï	9 nga╠Çy, nga╠Çy m├┤╠Çng 9	521	0
-2692	õ╣ØÕ╣┤	ÒüìÒéàÒüåÒü¡Òéô	9 n─âm	521	0
-2693	õ╣Øµ¡│	ÒüìÒéàÒüåÒüòÒüä	9 tu├┤╠ëi	521	0
-2694	õ╣Øõ║║	ÒüìÒéàÒüåÒü½Òéô	9 ngã░ãí╠Çi	521	0
-2695	Õ©©	ÒüÿÒéçÒüå	S├┤╠ü 10	522	0
-2696	Õìü	Òü¿Òüè	10 ca╠üi	522	0
-2697	ÕìüµÖé	ÒüÿÒéàÒüåÒüÿ	10 giãí╠Ç	522	0
-2698	ÕìüÕêå	ÒüÿÒüúÒüÀÒéô	10 phu╠üt	522	0
-2699	ÕìüÕêå	ÒüÿÒéàÒüúÒüÀÒéô	10 phu╠üt	522	0
-2700	Õìüµ£ê	ÒüÿÒéàÒüåÒüîÒüñ	Tha╠üng 10	522	0
-2701	ÕìüµùÑ	Òü¿ÒüèÒüï	10 nga╠Çy, nga╠Çy 10	522	0
-2702	Õìüõ║║	ÒüÿÒéàÒüåÒü½Òéô	10 ngã░ãí╠Çi	522	0
-2703	Õìüµ¡│	ÒüÿÒüúÒüòÒüä	10 tu├┤╠ëi	522	0
-2704	ÕìüÕêå	ÒüÿÒéàÒüåÒüÂÒéô	─Éß║ºy ─æß╗º	522	0
-2705	Õ║ª	Òü®	S├┤╠ü 100	523	0
-2706	õ║îþÖ¥	Òü½Òü▓ÒéâÒüÅ	S├┤╠ü 200	523	0
-2707	õ©ëþÖ¥	ÒüòÒéôÒü│ÒéâÒüÅ	S├┤╠ü 300	523	0
-2708	Õà¡þÖ¥	ÒéìÒüúÒü┤ÒéâÒüÅ	S├┤╠ü 600	523	0
-2709	Õà½þÖ¥	Òü»ÒüúÒü┤ÒéâÒüÅ	S├┤╠ü 800	523	0
-2710	Õà½þÖ¥Õ▒ï	ÒéäÒüèÒéä	Cã░╠ëa ha╠Çng rau	523	0
-2711	þÖ¥þºæ	Òü▓ÒéâÒüúÒüï	Tã░╠Ç ─æi├¬╠ën ba╠üch khoa	523	0
-2712	þÖ¥Þ▓¿Õ║ù	Òü▓ÒéâÒüúÒüïÒüªÒéô	Cã░╠ëa ha╠Çng ba╠üch ho╠üa	523	0
-2713	Õìü	ÒüÿÒéàÒüå	Ngh├¼n, ng├án, ─æãín vß╗ï ─æß║┐m	524	0
-2714	õ║îÕìâ	Òü½ÒüøÒéô	S├┤╠ü 2000	524	0
-2715	õ©ëÕìâ	ÒüòÒéôÒü£Òéô	S├┤╠ü 3000	524	0
-2716	Õà½Õìâ	Òü»ÒüúÒüøÒéô	S├┤╠ü 8000	524	0
-2717	ÕìâÕåå	ÒüøÒéôÒüêÒéô	1000 y├¬n	524	0
-2718	ÕìâÕ╣┤	ÒüøÒéôÒü¡Òéô	1000 n─âm, n─âm 1000	524	0
-2719	Õìâõ║║	ÒüøÒéôÒü½Òéô	1000 ngã░ãí╠Çi	524	0
-2720	ÕìâÞæëþ£î	ÒüíÒü░ÒüæÒéô	Ti╠ënh Chiba	524	0
-2721	õ©Çõ©ç	ÒüäÒüíÒü¥Òéô	S├┤╠ü 10000	525	0
-2722	Õìüõ©ç	ÒüÿÒéàÒüåÒü¥Òéô	S├┤╠ü 100000	525	0
-2723	þÖ¥õ©ç	Òü▓ÒéâÒüÅÒü¥Òéô	Triß╗çu, tr─âm vß║ín	525	0
-2724	õ©çÕ╣┤þ¡å	Òü¥ÒéôÒü¡ÒéôÒü▓Òüñ	Bu╠üt ma╠üy	525	0
-2725	õ©çµ¡│	Òü░ÒéôÒüûÒüä	Hoan h├┤, ch├áo mß╗½ng, vß║ín tuß║┐	525	0
-2726	õ©çõ©Ç	Òü¥ÒéôÒüäÒüí	Va╠ún b├ó╠üt ─æ─â╠üt di╠â, ├¡t cãí hß╗Öi, ├¡t khß║ú n─âng	525	0
-2727	Õåå	ÒüêÒéô	100 y├¬n	526	0
-2728	Õåå	ÒüêÒéô	y├¬n	526	0
-2729	Õåå	Òü¥Òéï	Hi╠Çnh tro╠Çn	526	0
-2730	õ©©	Òü¥Òéï	viß╗çc ─æß╗ông y├¬n l├¬n gi├í	526	0
-2731	ÕååÕ«ë	ÒüêÒéôÒéäÒüÖ	─Éß╗ông Y├¬n hß║í gi├í	526	0
-2732	µÑòÕåå	ÒüáÒüêÒéô	Hi╠Çnh b├ó╠Çu du╠úc	526	0
-2733	Õååµ║Ç	ÒüêÒéôÒü¥Òéô	sß╗▒ vi├¬n m├ún, sß╗▒ ─æß║ºy ─æß╗º, sß╗▒ trß╗ìn vß║╣n, ├¬m ─æß║╣p	526	0
-2734	ÕÅú	ÒüÅÒüí	M├┤i, miß╗çng	527	0
-2735	ÕàÑÕÅú	ÒüäÒéèÒüÉÒüí	L├┤╠üi va╠Ço	527	0
-2736	Õç║ÕÅú	ÒüºÒüÉÒüí	L├┤╠üi ra	527	0
-2737	õ║║ÕÅú	ÒüÿÒéôÒüôÒüå	D├ón s├┤╠ü	527	0
-2738	ÕîùÕÅú	ÒüìÒüƒÒüÉÒüí	Cã░╠ëa phi╠üa b─â╠üc	527	0
-2739	õ©¡Õñ«	ÒüíÒéàÒüåÒüèÒüå	Cã░╠ëa trung t├óm	527	0
-2740	þ¬ôÕÅú	Òü¥Òü®ÒüÉÒüí	Cã░╠ëa ba╠ün ve╠ü	527	0
-2741	ÕÅúÞ¬┐	ÒüÅÒüíÒéçÒüå	Gio╠úng ─æi├¬╠úu	527	0
-2742	þø«	Òéü	M─â╠üt	528	0
-2743	õ©ÇµùÑ	ÒüäÒüíÒü½Òüí	nga╠Çy thã░╠ü nh├ó╠üt	528	0
-2744	þø«þÜä	ÒééÒüÅÒüªÒüì	Mu╠úc ─æi╠üch	528	0
-2745	þºæþø«	ÒüïÒééÒüÅ	M├┤n ho╠úc	528	0
-2746	þø«µ¼í	ÒééÒüÅÒüÿ	Mu╠úc lu╠úc	528	0
-2747	µ│¿þø«	ÒüíÒéàÒüåÒééÒüÅ	Chu╠ü y╠ü	528	0
-2748	µùÑ	Òü▓	Chu╠ë nh├ó╠út	529	0
-2749	µùÑµ£¼	Òü½Òü╗Òéô	Nh├ó╠út Ba╠ën	529	0
-2750	µùÑµ£¼	Òü½ÒüúÒü¢Òéô	Nh├ó╠út Ba╠ën	529	0
-2751	õ╗èµùÑ	ÒüìÒéçÒüå	H├┤m nay	529	0
-2752	õ©ëµùÑ	Òü┐ÒüúÒüï	3 nga╠Çy, nga╠Çy m├┤╠Çng 3	529	0
-2753	µ»ÄµùÑ	Òü¥ÒüäÒü½Òüí	thã░ß╗Øng ng├áy, mß╗ùi ng├áy, h├áng ng├áy	529	0
-2754	µùÑÞ¿ÿ	Òü½ÒüúÒüì	Nh├ó╠út ki╠ü	529	0
-2755	µ»ì	Òü»Òü»	Nga╠Çy cu╠ëa me╠ú	529	0
-2756	õ╝æµùÑ	ÒüìÒéàÒüåÒüÿÒüñ	Ng├áy nghß╗ë	529	0
-2757	õ©ëµùÑ	Òü┐ÒüúÒüï	th├íng gi├¬ng	530	0
-2758	µ£êµø£µùÑ	ÒüÆÒüñÒéêÒüåÒü│	Thã░╠ü 2	530	0
-2759	õ╗èµ£ê	ÒüôÒéôÒüÆÒüñ	Tha╠üng na╠Çy	530	0
-2760	µ£ê	ÒüñÒüì	M─â╠út tr─âng	530	0
-2761	õ©Ç	ÒüäÒüú	1 tha╠üng	530	0
-2762	µ»Äµ£ê	Òü¥ÒüäÒüñÒüì	h├áng th├íng, mß╗ùi th├íng	530	0
-2763	µØÑµ£ê	ÒéëÒüäÒüÆÒüñ	Tha╠üng sau	530	0
-2764	µ¡úµ£ê	ÒüùÒéçÒüåÒüîÒüñ	T├¬╠üt	530	0
-2765	þü½	Òü▓	Thã░╠ü 3	531	0
-2766	þü½	Òü▓	Lã░╠ëa	531	0
-2767	þü½õ║ï	ÒüïÒüÿ	Vu╠ú cha╠üy	531	0
-2768	þü½Õ▒▒	ÒüïÒüûÒéô	Nu╠üi lã░╠ëa	531	0
-2769	Þè▒þü½	Òü»Òü¬Òü│	Pha╠üo hoa	531	0
-2770	þü½µÿƒ	ÒüïÒüøÒüä	Sao ho╠ëa	531	0
-2771	µÂêþü½ÕÖ¿	ÒüùÒéçÒüåÒüïÒüì	Du╠úng cu╠ú chã░╠âa cha╠üy	531	0
-2772	þü½þü¢	ÒüïÒüòÒüä	Ho╠ëa hoa╠ún	531	0
-2773	µ╗Ø	ÒüƒÒüì	Thã░╠ü 4	532	0
-2774	µ░┤	Òü┐ÒüÜ	Nã░ãí╠üc	532	0
-2775	µ░┤µ││	ÒüÖÒüäÒüêÒüä	Bãíi l├┤╠úi	532	0
-2776	µ░┤Úüô	ÒüÖÒüäÒü®Òüå	Nã░ãí╠üc ma╠üy	532	0
-2777	µÁÀµ░┤µÁ┤	ÒüïÒüäÒüÖÒüäÒéêÒüÅ	Vi├¬╠úc t─â╠üm bie╠ën	532	0
-2778	µ░┤þØÇ	Òü┐ÒüÜÒüÄ	A╠üo t─â╠üm	532	0
-2779	ÚªÖµ░┤	ÒüôÒüåÒüÖÒüä	Nã░ãí╠üc hoa	532	0
-2780	Ú╝╗µ░┤	Òü»Òü¬Òü┐ÒüÜ	Nã░ãí╠üc mu╠âi	532	0
-2781	µ£¿	Òüì	Thã░╠ü 5	533	0
-2782	µ£¿	Òüì	Ca╠üi c├óy	533	0
-2783	µ£¿þÂ┐	ÒééÒéüÒéô	b├┤ng, cß╗æt t├┤ng, c├┤-t├┤ng	533	0
-2784	µ£¿µØæ	ÒüìÒéÇÒéë	Sao m├┤╠úc	533	0
-2785	Õñºµ£¿	ÒüƒÒüäÒü╝ÒüÅ	C├óy c├┤╠ë thu╠ú	533	0
-2786	µØÉµ£¿	ÒüûÒüäÒééÒüÅ	G├┤╠â, ─æ├┤╠Ç m├┤╠úc	533	0
-2787	µ£¿ÚÖ░	ÒüôÒüïÒüÆ	bo╠üng r├óm	533	0
-2788	Õ▒▒	ÒéäÒü¥	Thã░╠ü 6	534	0
-2789	Úçæ	ÒüïÒü¡	Ti├¬╠Çn	534	0
-2790	Úçæµîü	ÒüïÒü¡Òéé	Ti├¬╠Çn cã░ãí╠üc, ti├¬╠Çn thu╠Ç lao	534	0
-2791	ÕÑ¿Õ¡ªÚçæ	ÒüùÒéçÒüåÒüîÒüÅÒüìÒéô	Ho╠úc b├┤╠ëng	534	0
-2792	þÅ¥Úçæ	ÒüÆÒéôÒüìÒéô	Ti├¬╠Çn m─â╠út	534	0
-2793	þ¿ÄÚçæ	Òü£ÒüäÒüìÒéô	thuß║┐, tiß╗ün thuß║┐	534	0
-2794	Õ£ƒ	ÒüñÒüí	Thã░╠ü 7	535	0
-2795	Õ£ƒ	ÒüñÒüí	─É├ó╠üt	535	0
-2796	Õ£ƒþöú	Òü┐ÒéäÒüÆ	Qua╠Ç lã░u ni├¬╠úm	535	0
-2797	Õ£ƒÕ£░	Òü¿Òüí	─É├ó╠üt ─æai, la╠ânh th├┤╠ë	535	0
-2798	Õ£ƒµÿƒ	Òü®ÒüøÒüä	Sao th├┤╠ë	535	0
-2799	þ▓ÿÕ£ƒ	Òü¡ÒéôÒü®	─É├ó╠üt se╠üt	535	0
-2800	Õ£ƒÕÅ░	Òü®ÒüáÒüä	nß╗ün tß║úng, cãí sß╗ƒ, nß╗ün, m├│ng	535	0
-2801	Õ£ƒÞÂ│	Òü®ÒüØÒüÅ	Nghi├¬m c├ó╠üm ch├ón b├ó╠ën	535	0
-2802	ÚÇ▒	ÒüùÒéàÒüå	Chu╠ë nh├ó╠út	536	0
-2803	µ£êµø£µùÑ	ÒüÆÒüñÒéêÒüåÒü│	Thã░╠ü hai	536	0
-2804	þü½µø£µùÑ	ÒüïÒéêÒüåÒü│	Thã░╠ü ba	536	0
-2805	µ░┤µø£µùÑ	ÒüÖÒüäÒéêÒüåÒü│	Thã░╠ü tã░	536	0
-2806	µ£¿µø£µùÑ	ÒééÒüÅÒéêÒüåÒü│	Thã░╠ü n─âm	536	0
-2807	Úçæµø£µùÑ	ÒüìÒéôÒéêÒüåÒü│	Thã░╠ü sa╠üu	536	0
-2808	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	Thã░╠ü ba╠ëy	536	0
-2809	µø£µùÑ	ÒéêÒüåÒü│	Nga╠Çy trong tu├ó╠Çn	536	0
-2810	µ£¿	Òüì	Sa╠üch	537	0
-2811	µùÑµ£¼	Òü½Òü╗Òéô	Nh├ó╠út ba╠ën	537	0
-2812	µùÑµ£¼	Òü½ÒüúÒü¢Òéô	Nh├ó╠út ba╠ën	537	0
-2813	õ©Çµ£¼	ÒüäÒüúÒü¢Òéô	1 chai, 1 ly, 1 c├óy, ÔÇª (─æ├¬╠üm v├ó╠út da╠Çi)	537	0
-2814	õ║îµ£¼	Òü½Òü╗Òéô	2 chai, 2 ly, 2 c├óy ÔÇª	537	0
-2815	õ©ëµ£¼	ÒüòÒéôÒü╝Òéô	3 chai, 3 ly, 3 c├óy ÔÇª	537	0
-2816	µùÑµ£¼Þ¬×	Òü½Òü╗ÒéôÒüö	Ti├¬╠üng Nh├ó╠út	537	0
-2817	õ║║	Òü▓Òü¿	Ngã░ãí╠Çi	538	0
-2818	µùÑµ£¼õ║║	Òü½Òü╗ÒéôÒüÿÒéô	Ngã░ãí╠Çi Nh├ó╠út	538	0
-2819	õ©Çõ║║	Òü▓Òü¿Òéè	1 ngã░ãí╠Çi	538	0
-2820	õ║îõ║║	ÒüÁÒüƒÒéè	2 ngã░ãí╠Çi	538	0
-2821	õ©ëõ║║	ÒüòÒéôÒü½Òéô	3 ngã░ãí╠Çi	538	0
-2822	õ©Çõ║║	Òü▓Òü¿Òéè	ngã░ß╗Øi lß╗øn, ngã░ß╗Øi trã░ß╗ƒng th├ánh	538	0
-2823	ÕÑ│	ÒüèÒéôÒü¬	Ngã░ãí╠Çi phu╠ú nã░╠â	538	0
-2824	õ╗è	ÒüäÒü¥	B├óy giãí╠Ç, hiß╗çn tß║íi	539	0
-2825	õ╗èµ£ê	ÒüôÒéôÒüÆÒüñ	Tha╠üng na╠Çy	539	0
-2826	õ╗èµùÑ	ÒüìÒéçÒüå	H├┤m nay	539	0
-2827	õ╗èµÖ®	ÒüôÒéôÒü░Òéô	T├┤╠üi nay	539	0
-2828	õ╗èÚÇ▒	ÒüôÒéôÒüùÒéàÒüå	Tu├ó╠Çn na╠Çy	539	0
-2829	õ╗èÕ╣┤	ÒüôÒü¿Òüù	N─âm nay	539	0
-2830	õ╗èµ£Ø	ÒüæÒüò	Sa╠üng nay	539	0
-2831	õ╗èÕ║ª	ÒüôÒéôÒü®	L├ó╠Çn na╠Çy	539	0
-2832	Õ£ƒ	ÒüñÒüí	Chu╠Ça	540	0
-2833	Õ»║ÚÖó	ÒüÿÒüäÒéô	Tu vi├¬╠ún, thiß╗ün l├óm	540	0
-2834	Õ▒▒Õ»║	ÒéäÒü¥ÒüºÒéë	Tu vi├¬╠ún tr├¬n nu╠üi	540	0
-2835	µ©àµ░┤Õ»║	ÒüìÒéêÒü┐ÒüÜÒüºÒéë	Chu╠Ça Kyomizu	540	0
-2836	ÚçæÚûúÕ»║	ÒüìÒéôÒüïÒüÅÒüÿ	Chu╠Ça Kinkaku (chu╠Ça va╠Çng)	540	0
-2837	µÿö	ÒéÇÒüïÒüù	1 giãí╠Ç	541	0
-2838	µÖéÒÇà	Òü¿ÒüìÒü®Òüì	Thi╠ënh thoa╠ëng	541	0
-2839	µÖéÚûô	ÒüÿÒüïÒéô	Thãí╠Çi gian	541	0
-2840	õ©ÇµÖéÚûô	ÒüäÒüíÒüÿÒüïÒéô	1 ti├¬╠üng	541	0
-2841	µÖéÞ¿ê	Òü¿ÒüæÒüä	─É├┤╠Çng h├┤╠Ç	541	0
-2842	µÖé	Òü¿Òüì	Lu╠üc ├ó╠üy	541	0
-2843	µÖéõ╗ú	ÒüÿÒüáÒüä	Thãí╠Çi ─æa╠úi	541	0
-2844	µÖéÕê╗Þí¿	ÒüÿÒüôÒüÅÒü▓ÒéçÒüå	Ba╠ëng hã░ãí╠üng d├ó╠ân thãí╠Çi gian (li╠úch tri╠Çnh), bß║úng tra giß╗Ø t├áu (xeÔÇª)	541	0
-2845	õ©ëµ£¼	ÒüòÒéôÒü╝Òéô	3 giãí╠Ç rã░ãí╠âi	542	0
-2846	ÕìèÕêå	Òü»ÒéôÒüÂÒéô	M├┤╠út nã░╠ëa	542	0
-2847	ÕìèÕ│Â	Òü»ÒéôÒü¿Òüå	Ba╠ün ─æa╠ëo	542	0
-2848	ÕìèÕ╣┤	Òü»ÒéôÒü¿Òüù	Nã░╠ëa n─âm	542	0
-2849	ÕëìÕìè	Òü£ÒéôÒü»Òéô	nß╗¡a ─æß║ºu, hiß╗çp mß╗Öt	542	0
-2850	ÕìèÚíì	Òü»ÒéôÒüîÒüÅ	Nã░╠ëa gi╠üa	542	0
-2851	ÕêÇ	ÒüïÒüƒÒü¬	C├óy ─æao, ki├¬╠üm	543	0
-2852	µùÑµ£¼ÕêÇ	Òü½Òü╗ÒéôÒü¿Òüå	Ki├¬╠üm Nh├ó╠út	543	0
-2853	þƒ¡ÕêÇ	ÒüƒÒéôÒü¿Òüå	C├óy ─æao ng─â╠ün ( ─Éoa╠ën dao)	543	0
-2854	ÕêÇ	ÒüïÒüƒÒü¬	5 phu╠üt	544	0
-2855	ÕìüÕêå	ÒüÿÒüúÒüÀÒéô	10 phu╠üt	544	0
-2856	ÕìüÕêå	ÒüÿÒéàÒüúÒüÀÒéô	10 phu╠üt	544	0
-2857	ÕìèÕêå	Òü»ÒéôÒüÂÒéô	1 nã░╠ëa	544	0
-2858	Õêå	ÒéÅ	Tã░╠ú mi╠Çnh	544	0
-2859	µ░ùÕêå	ÒüìÒüÂÒéô	T├óm tã░, tinh th├ó╠Çn	544	0
-2860	ÕìüÕêå	ÒüÿÒéàÒüåÒüÂÒéô	─Éu╠ë	544	0
-2861	þÀÜ	ÒüøÒéô	Phi╠üa tr├¬n	545	0
-2862	õ©è	Òüé	Gio╠ëi	545	0
-2863	õ©èþØÇ	ÒüåÒéÅÒüÄ	├üo khoa╠üc ngoa╠Çi	545	0
-2864	ÕÀØõ©è	ÒüïÒéÅÒüïÒü┐	Thã░ãí╠úng ngu├┤╠Çn	545	0
-2865	Õ▒ïõ©è	ÒüèÒüÅÒüÿÒéçÒüå	T├ó╠Çng thã░ãí╠úng	545	0
-2866	þÀÜ	ÒüøÒéô	Phi╠üa dã░ãí╠üi	546	0
-2867	õ©ï	Òüò	─Éa╠Çu ─æi├¬╠ún ng├ó╠Çm	546	0
-2868	õ©ïµëï	Òü©Òüƒ	L├¬n xu├┤╠üng, dao ─æ├┤╠úng	546	0
-2869	õ©ï	Òüè	Ha╠ú ngu├┤╠Çn, ha╠ú lã░u	546	0
-2870	Õåå	ÒüêÒéô	B├¬n trong	547	0
-2871	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	Trung Quß╗æc, t├¬n mß╗Öt h├▓n ─æß║úo ph├¡a T├óy Nam Nhß║¡t Bß║ún.	547	0
-2872	õ©ÇÕ╣┤õ©¡	ÒüäÒüíÒü¡ÒéôÒüÿÒéàÒüå	Su├┤╠üt 1 n─âm	547	0
-2873	õ©¡Õ¡ªµáí	ÒüíÒéàÒüåÒüîÒüúÒüôÒüå	Trã░ãí╠Çng trung ho╠úc cãí sãí╠ë	547	0
-2874	õ©ûþòî	ÒüøÒüïÒüä	Tr├¬n kh─â╠üp th├¬╠ü giãí╠üi	547	0
-2875	Þâîõ©¡	ÒüøÒü¬Òüï	Ca╠üi lã░ng	547	0
-2876	õ©¡µ¡ó	ÒüíÒéàÒüåÒüù	Ngã░╠Çng, ─æi╠Çnh chi╠ë	547	0
-2877	õ©¡þ┤Ü	ÒüíÒéàÒüåÒüìÒéàÒüå	Tri╠Çnh ─æ├┤╠ú trung c├ó╠üp	547	0
-2878	þàÖÞìë	ÒüƒÒü░Òüô	B├¬n ngoa╠Çi	548	0
-2879	ÕñûÕø¢	ÒüîÒüäÒüôÒüÅ	Nã░ãí╠üc ngoa╠Çi	548	0
-2880	ÕñûÕø¢	ÒüîÒüäÒüôÒüÅ	Ngã░ãí╠Çi ngoa╠úi qu├┤╠üc	548	0
-2881	Õñû	Òü╗Òüï	Ha╠ëi ngoa╠úi, ngã░ãí╠üc ngoa╠Çi	548	0
-2882	µäÅÕñû	ÒüäÒüîÒüä	Ngoß║íi khoa	548	0
-2883	ÕÅ│µëï	Òü┐ÒüÄÒüª	B├¬n pha╠ëi	549	0
-2884	ÕÅ│µëï	Òü┐ÒüÄÒüª	Tay pha╠ëi	549	0
-2885	ÕÅ│ÞÂ│	Òü┐ÒüÄÒüéÒüù	Ch├ón pha╠ëi	549	0
-2886	ÕÅ│Õü┤	Òü┐ÒüÄÒüîÒéÅ	Phi╠üa b├¬n pha╠ëi	549	0
-2887	ÕÀªÕÅ│	ÒüòÒéåÒüå	Tra╠üi pha╠ëi	549	0
-2888	ÕÅ│þ┐╝	ÒüåÒéêÒüÅ	Ca╠ünh pha╠ëi	549	0
-2889	ÕÉìõ║║	ÒéüÒüäÒüÿÒéô	Nha╠Ç ma╠üy, c├┤ng trã░ß╗Øng	550	0
-2890	ÕÀÑµÑ¡	ÒüôÒüåÒüÄÒéçÒüå	Ng├ánh c├┤ng nghiß╗çp	550	0
-2891	ÕÀÑõ║ï	ÒüôÒüåÒüÿ	C├┤ng trã░ãí╠Çng x├óy dß╗▒ng	550	0
-2892	ÕñºÕÀÑ	ÒüáÒüäÒüÅ	Thãí╠ú m├┤╠úc	550	0
-2893	ÕÀÑÕñ½	ÒüÅÒüÁÒüå	─Éa╠Ço s├óu nghi├¬n cã░╠üu, c├┤ng phu	550	0
-2894	ÕÀÑÕ¡ª	ÒüôÒüåÒüîÒüÅ	M├┤n ky╠â thu├ó╠út c├┤ng ngh├¬╠ú	550	0
-2895	þ┤░ÕÀÑ	ÒüòÒüäÒüÅ	Ta╠üc ph├ó╠ëm, sã░╠ú chß║┐ t├íc	550	0
-2896	õ║║ÕÀÑþÜä	ÒüÿÒéôÒüôÒüåÒüªÒüì	Nh├ón ta╠úo	550	0
-2897	ÕÅ│	Òü┐ÒüÄ	B├¬n tra╠üi	551	0
-2898	ÕÀªµëï	Òü▓ÒüáÒéèÒüª	Tay tra╠üi	551	0
-2899	ÕÀªÕü┤	Òü▓ÒüáÒéèÒüîÒéÅ	Phi╠üa b├¬n tra╠üi	551	0
-2900	ÕÀªÕÅ│	ÒüòÒéåÒüå	Tra╠üi pha╠ëi	551	0
-2901	ÕÀªþ┐╝	ÒüòÒéêÒüÅ	Ca╠ünh tra╠üi	551	0
-2902	µ£ê	ÒüñÒüì	Phi╠üa trã░ãí╠üc	552	0
-2903	ÕìêÕëì	ÒüöÒü£Òéô	Sa╠üng (tã░╠Ç 0-12h, a.m)	552	0
-2904	ÕìêÕëìõ©¡	ÒüöÒü£ÒéôÒüíÒéàÒüå	Trong su├┤╠üt bu├┤╠ëi sa╠üng	552	0
-2905	ÕÉìÕëì	Òü¬Òü¥Òüê	T├¬n	552	0
-2906	õ©ëÕ╣┤Õëì	ÒüòÒéôÒü¡ÒéôÒü¥Òüê	3 n─âm trã░ãí╠üc	552	0
-2907	ÕëìÕú▓	Òü¥ÒüêÒüå	Ve╠ü ba╠ün trã░ãí╠üc	552	0
-2908	ÕëìÕìè	Òü£ÒéôÒü»Òéô	Nã░╠ëa trã░ãí╠üc	552	0
-2909	Úüô	Òü┐Òüí	Sau giãí╠Ç ho╠úc	553	0
-2910	Õ¥î	ÒüéÒü¿	Sa╠üng (tã░╠Ç 0-12h, a.m)	553	0
-2911	µ£ÇÕ¥î	ÒüòÒüäÒüö	Cu├┤╠üi cu╠Çng	553	0
-2912	Õ¥îÕìè	ÒüôÒüåÒü»Òéô	Nã░╠ëa sau	553	0
-2913	µ╝óÕ¡ù	ÒüïÒéôÒüÿ	Sa╠üng (tã░╠Ç 0-12h, a.m)	554	0
-2914	ÕìêÕ¥î	ÒüöÒüö	Chi├¬╠Çu (tã░╠Ç 13-23h, p.m)	554	0
-2915	ÕìêÕëìõ©¡	ÒüöÒü£ÒéôÒüíÒéàÒüå	Trong su├┤╠üt bu├┤╠ëi sa╠üng	554	0
-2916	µ¡úÕìê	ÒüùÒéçÒüåÒüö	Bu├┤╠ëi trã░a	554	0
-2917	ÚûÇ	ÒééÒéô	C├┤╠ëng	555	0
-2918	Õ░éÚûÇ	ÒüøÒéôÒééÒéô	Chuy├¬n m├┤n	555	0
-2919	µ¡úÚûÇ	ÒüøÒüäÒééÒéô	C├┤╠ëng chi╠ünh	555	0
-2920	Úâ¿ÚûÇ	ÒüÂÒééÒéô	B├┤╠ú ph├ó╠ún	555	0
-2921	ÕàÑÚûÇ	Òü½ÒéàÒüåÒééÒéô	Nh├ó╠úp m├┤n, mãí╠üi ho╠úc	555	0
-2922	ÚûÇµØ¥	ÒüïÒü®Òü¥Òüñ	C├óy th├┤ng nga╠Çy T├¬╠üt	555	0
-2923	ÕÉìÚûÇ	ÒéüÒüäÒééÒéô	Gia ─æi╠Çnh quy├¬╠Çn quy╠ü	555	0
-2924	ÚûÇ	ÒééÒéô	ãá╠ë giã░╠âa, trong khoa╠ëng	556	0
-2925	µÖéÚûô	ÒüÿÒüïÒéô	Thãí╠Çi gian	556	0
-2926	õ║îµÖéÚûô	Òü½ÒüÿÒüïÒéô	2 ti├¬╠üng	556	0
-2927	õ©ÇÚÇ▒Úûô	ÒüäÒüúÒüùÒéàÒüåÒüïÒéô	1 tu├ó╠Çn	556	0
-2928	Úûô	Òü¥	Nh├ón gian, con ngã░ãí╠Çi	556	0
-2929	õ©ûÚûô	ÒüøÒüæÒéô	Th├¬╠ü gian	556	0
-2930	µùÑ	Òü▓	Phi╠üa ─æ├┤ng	557	0
-2931	µØ▒ÕÅú	Òü▓ÒüîÒüùÒüÉÒüí	Cã░╠ëa phi╠üa ─æ├┤ng	557	0
-2932	õ©¡µØ▒	ÒüíÒéàÒüåÒü¿Òüå	Trung ─æ├┤ng	557	0
-2933	µØ▒õ║¼	Òü¿ÒüåÒüìÒéçÒüå	Tokyo	557	0
-2934	ÚûóµØ▒	ÒüïÒéôÒü¿Òüå	Khu vã░╠úc Kantou	557	0
-2935	µØ▒µ┤ï	Òü¿ÒüåÒéêÒüå	Phã░ãíng ─É├┤ng	557	0
-2936	µØ▒µÁÀ	Òü¿ÒüåÒüïÒüä	Vu╠Çng Tokai	557	0
-2937	µØ▒Õîù	Òü¿ÒüåÒü╗ÒüÅ	Vu╠Çng Tohoku	557	0
-2938	Õøø	ÒéêÒüú	Phi╠üa T├óy	558	0
-2939	ÞÑ┐ÕÅú	Òü½ÒüùÒüÉÒüí	Cã░╠ëa phi╠üa T├óy	558	0
-2940	ÕîùÞÑ┐	Òü╗ÒüÅÒüøÒüä	T├óy B─â╠üc	558	0
-2941	ÕìùÞÑ┐	Òü¬ÒéôÒüøÒüä	T├óy nam	558	0
-2942	ÞÑ┐µ┤ï	ÒüøÒüäÒéêÒüå	T├óy ├éu, phã░ãíng T├óy	558	0
-2943	ÚûóÞÑ┐	ÒüïÒéôÒüòÒüä	Khu vã░╠úc Kansai	558	0
-2944	µØ▒ÞÑ┐	Òü¿ÒüåÒüûÒüä	─É├┤ng t├óy	558	0
-2945	ÕñºÞÑ┐µ┤ï	ÒüƒÒüäÒüøÒüäÒéêÒüå	─Éa╠úi T├óy Dã░ãíng	558	0
-2946	õ║î	ÒüÁÒüƒ	Phia╠ü Nam	559	0
-2947	ÕìùÕÅú	Òü┐Òü¬Òü┐ÒüÉÒüí	Cã░╠ëa phi╠üa Nam	559	0
-2948	µØ▒Õìù	Òü¿ÒüåÒü¬Òéô	─É├┤ng nam	559	0
-2949	ÕìùÕîù	Òü¬ÒéôÒü╝ÒüÅ	T├óy nam	559	0
-2950	Õìùþ▒│	Òü¬ÒéôÒü╣Òüä	Nam my╠â	559	0
-2951	ÕìùµÑÁ	Òü¬ÒéôÒüìÒéçÒüÅ	Nam cã░╠úc	559	0
-2952	Õîù	ÒüìÒüƒ	Phi╠üa B─â╠üc	560	0
-2953	ÕîùÕÅú	ÒüìÒüƒÒüÉÒüí	Cã░╠ëa B─â╠üc	560	0
-2954	ÕîùµØ▒	Òü╗ÒüÅÒü¿Òüå	─É├┤ng B─â╠üc	560	0
-2955	µØ▒Õîù	Òü¿ÒüåÒü╗ÒüÅ	Vu╠Çng Tohoku	560	0
-2956	ÕîùµÁÀÚüô	Òü╗ÒüúÒüïÒüäÒü®Òüå	Hokkaido	560	0
-2957	ÕìùÕîù	Òü¬ÒéôÒü╝ÒüÅ	Nam B─â╠üc	560	0
-2958	ÕîùµÑÁ	Òü╗ÒüúÒüìÒéçÒüÅ	B─â╠üc cã░╠úc	560	0
-2959	þö░	Òüƒ	Mi├¬╠Çn qu├¬, qu├¬ nha╠Ç	561	0
-2960	þö░	Òüƒ	Ru├┤╠úng lu╠üa nã░ãí╠üc	561	0
-2961	þö░Õ£Æ	ÒüºÒéôÒüêÒéô	Vu╠Çng n├┤ng th├┤n	561	0
-2962	þ¡ïÞéë	ÒüìÒéôÒü½ÒüÅ	Sã░╠üc ma╠únh	562	0
-2963	Õ¡ªÕèø	ÒüîÒüÅÒéèÒéçÒüÅ	Ho╠úc lã░╠úc, sß╗▒ hiß╗âu biß║┐t	562	0
-2964	Úø╗Õèø	ÒüºÒéôÒéèÒéçÒüÅ	─Éi├¬╠ún n─âng, ─æiß╗çn lß╗▒c	562	0
-2965	ÚçìÕèø	ÒüÿÒéàÒüåÒéèÒéçÒüÅ	Tro╠úng lã░╠úc, sã░╠üc n─â╠úng	562	0
-2966	ÕìöÕèø	ÒüìÒéçÒüåÒéèÒéçÒüÅ	N├┤╠â lã░╠úc	562	0
-2967	ÕèøÕ¡ª	ÒéèÒüìÒüîÒüÅ	─É├┤╠úng lã░╠úc ho╠úc, cãí ho╠úc	562	0
-2968	ÞªûÕèø	ÒüùÒéèÒéçÒüÅ	Thi╠ú lã░╠úc	562	0
-2969	þöÀ	ÒüèÒü¿Òüô	Be╠ü trai	563	0
-2970	þöÀ	ÒüèÒü¿Òüô	Ngã░ãí╠Çi ─æa╠Çn ├┤ng	563	0
-2971	þöÀµÇº	ÒüáÒéôÒüøÒüä	Nam giãí╠üi	563	0
-2972	þöÀÕ¡É	ÒüáÒéôÒüù	Ho╠úc sinh nam	563	0
-2973	ÚòÀþöÀ	ÒüíÒéçÒüåÒü¬Òéô	Trã░ãí╠ëng nam	563	0
-2974	ÕÑ│	ÒüèÒéôÒü¬	Be╠ü ga╠üi	564	0
-2975	ÕÑ│	ÒüèÒéôÒü¬	Ngã░ãí╠Çi phu╠ú nã░╠â	564	0
-2976	ÕÑ│µÇº	ÒüÿÒéçÒüøÒüä	Nã░╠â giãí╠üi	564	0
-2977	ÚòÀÕÑ│	ÒüíÒéçÒüåÒüÿÒéç	Trã░ãí╠ëng nã░╠â	564	0
-2978	Õ░æÕÑ│	ÒüùÒéçÒüåÒüÿÒéç	Thi├¬╠üu nã░╠â, c├┤ ga╠üi	564	0
-2979	Õ¢╝ÕÑ│	ÒüïÒü«ÒüÿÒéç	C├┤ ├ó╠üy, ba╠ún ga╠üi	564	0
-2980	ÕÑ│µê┐	Òü½ÒéçÒüåÒü╝Òüå	Vãí╠ú	564	0
-2981	ÕÑ│þÑ×	ÒéüÒüîÒü┐	Nã░╠â th├ó╠Çn	564	0
-2982	Õ¡É	Òüô	Be╠ü ga╠üi	565	0
-2983	þöÀ	ÒüèÒü¿Òüô	Be╠ü trai	565	0
-2984	Õ¡Éõ¥ø	ÒüôÒü®Òéé	Tre╠ë con, con ca╠üi	565	0
-2985	Úø╗Õ¡É	ÒüºÒéôÒüù	Tã░╠Ç ─æi├¬╠ën ─æi├¬╠ún tã░╠ë	565	0
-2986	ÕÑ│Õ¡ÉÕ¡ªþöƒ	ÒüÿÒéçÒüùÒüîÒüÅÒüøÒüä	Ho╠úc sinh nã░╠â	565	0
-2987	þöÀÕ¡ÉÕ¡ªþöƒ	ÒüáÒéôÒüùÒüîÒüÅÒüøÒüä	Ho╠úc sinh nam	565	0
-2988	µºÿÕ¡É	ÒéêÒüåÒüÖ	Th├íi ─æß╗Ö, trß║íng th├íi	565	0
-2989	Õ¡É	Òüô	Ho╠úc sinh	566	0
-2990	ÕñºÕ¡ª	ÒüáÒüäÒüîÒüÅ	─Éa╠úi ho╠úc	566	0
-2991	Õ¡ªµáí	ÒüîÒüúÒüôÒüå	Trã░ãí╠Çng ho╠úc	566	0
-2992	Õ¡ªÚâ¿	ÒüîÒüÅÒüÂ	Khoa	566	0
-2993	Õ¡ªþ┐Æ	ÒüîÒüÅÒüùÒéàÒüå	Ho╠úc t├ó╠úp	566	0
-2994	Õ¡ªÞÇà	ÒüîÒüÅÒüùÒéâ	Ho╠úc gia╠ë	566	0
-2995	µûçÕ¡ª	ÒüÂÒéôÒüîÒüÅ	V─ân ho╠úc	566	0
-2996	µñìþë®	ÒüùÒéçÒüÅÒüÂÒüñ	Ho╠úc sinh	567	0
-2997	Õàêþöƒ	ÒüøÒéôÒüøÒüä	Gia╠üo vi├¬n	567	0
-2998	þöƒ	Òüå	Tã░ãíi s├┤╠üng	567	0
-2999	õ©Çþöƒ	ÒüäÒüúÒüùÒéçÒüå	Su├┤╠üt cu├┤╠úc ─æãí╠Çi	567	0
-3000	Þ¬░	ÒüáÒéî	Gia╠üo vi├¬n	568	0
-3001	Õàêµ£ê	ÒüøÒéôÒüÆÒüñ	Tha╠üng trã░ãí╠üc	568	0
-3002	ÕàêÚÇ▒	ÒüøÒéôÒüùÒéàÒüå	Tu├ó╠Çn trã░ãí╠üc	568	0
-3003	ÕàêÞ╝®	ÒüøÒéôÒü▒Òüä	─Éa╠Çn anh, ngã░ß╗Øi ─æi trã░ß╗øc	568	0
-3004	ÕàêµùÑ	ÒüøÒéôÒüÿÒüñ	Va╠Çi nga╠Çy trã░ãí╠üc, h├┤m trã░ãí╠üc	568	0
-3005	ÕàêþÑû	ÒüøÒéôÒü×	├öng ba╠Ç t├┤╠ë ti├¬n	568	0
-3006	õ║║	Òü▓Òü¿	Ca╠üi gi╠Ç	569	0
-3007	õ¢ò	Òü¬Òéô	Ca╠üi gi╠Ç	569	0
-3008	õ¢òõ║║	Òü¬ÒéôÒü½Òéô	Bao nhi├¬u ngã░ãí╠Çi	569	0
-3009	õ¢òµÖé	Òü¬ÒéôÒüÿ	M├ó╠üy giãí╠Ç	569	0
-3010	õ¢ò	Òü¬Òéô	Bao nhi├¬u l├ó╠Çn	569	0
-3011	Õ╣¥õ¢òÕ¡ª	ÒüìÒüïÒüîÒüÅ	Hi╠Çnh ho╠úc	569	0
-3012	þêÂ	ÒüíÒüí	B├┤╠ü (cu╠ëa mi╠Çnh)	570	0
-3013	þêÂ	Òü¿Òüå	Nga╠Çy cu╠ëa b├┤╠ü	570	0
-3014	þÑûþêÂ	ÒüØÒüÁ	├öng	570	0
-3015	þêÂµ»ì	ÒüÁÒü╝	B├┤╠ü me╠ú	570	0
-3016	þÑûþêÂµ»ì	ÒüØÒüÁÒü╝	├öng ba╠Ç	570	0
-3017	ÕÅöþêÂ	ÒüèÒüÿ	chu╠ü, c├ó╠úu	570	0
-3018	õ╝»þêÂ	ÒüèÒüÿ	chu╠ü, c├ó╠úu	570	0
-3019	µ»ì	ÒüïÒüé	Me╠ú (cu╠ëa mi╠Çnh)	571	0
-3020	µ»ì	ÒüïÒüé	Nga╠Çy cu╠ëa me╠ú	571	0
-3021	þÑûµ»ì	ÒüØÒü╝	Ba╠Ç	571	0
-3022	þêÂµ»ì	ÒüÁÒü╝	B├┤╠ü me╠ú	571	0
-3023	þÑûþêÂµ»ì	ÒüØÒüÁÒü╝	├öng ba╠Ç	571	0
-3024	µ»ìÞ¬×	Òü╝Òüö	Ti├¬╠üng me╠ú ─æe╠ë	571	0
-3025	ÕÅöµ»ì	ÒüèÒü░	C├┤ d├¼, b├íc g├íi	571	0
-3026	õ╝»µ»ì	ÒüèÒü░	C├┤ d├¼, b├íc g├íi	571	0
-3027	þ▒│	ÒüôÒéü	Sinh vi├¬n, ho╠úc sinh n─âm 3	572	0
-3028	õ©ÇÕ╣┤	ÒüäÒüíÒü¡Òéô	1 n─âm	572	0
-3029	õ╗èÕ╣┤	ÒüôÒü¿Òüù	N─âm nay	572	0
-3030	ÕÄ╗Õ╣┤	ÒüìÒéçÒü¡Òéô	N─âm ngoa╠üi	572	0
-3031	µ»ÄÕ╣┤	Òü¥ÒüäÒü¿Òüù	thã░ß╗Øng ni├¬n ,h├áng n─âm, mß╗ùi n─âm	572	0
-3032	µ»ÄÕ╣┤	Òü¥ÒüäÒü¡Òéô	thã░ß╗Øng ni├¬n ,h├áng n─âm, mß╗ùi n─âm	572	0
-3033	Õ╣┤	Òü¿Òüù	thã░ß╗Øng ni├¬n ,h├áng n─âm, mß╗ùi n─âm	572	0
-3034	µØÑÕ╣┤	ÒéëÒüäÒü¡Òéô	N─âm sau	572	0
-3035	ÚØÆÕ░æÕ╣┤	ÒüøÒüäÒüùÒéçÒüåÒü¡Òéô	Thanh thi├¬╠üu ni├¬n	572	0
-3036	õ©¡Õ╣┤	ÒüíÒéàÒüåÒü¡Òéô	Trung ni├¬n	572	0
-3037	ÚüÄÕÄ╗	ÒüïÒüô	N─âm ngoa╠üi	573	0
-3038	ÚüÄÕÄ╗	ÒüïÒüô	Qua╠ü khã░╠ü	573	0
-3039	Þ¬░	ÒüáÒéî	M├┤╠âi nga╠Çy	574	0
-3040	µ»Äµ£ê	Òü¥ÒüäÒüñÒüì	M├┤╠üi tha╠üng	574	0
-3041	µ»ÄÕ╣┤	Òü¥ÒüäÒü¿Òüù	M├┤╠âi n─âm	574	0
-3042	µ»ÄÕ╣┤	Òü¥ÒüäÒü¡Òéô	M├┤╠âi n─âm	574	0
-3043	µ»ÄÚÇ▒	Òü¥ÒüäÒüùÒéàÒüå	M├┤╠üi tu├ó╠Çn	574	0
-3044	µ»ÄµÖ®	Òü¥ÒüäÒü░Òéô	M├┤╠âi t├┤╠üi	574	0
-3045	µ»Äµ£Ø	Òü¥ÒüäÒüéÒüò	M├┤╠âi sa╠üng	574	0
-3046	µ»ÄÕ║ª	Òü¥ÒüäÒü®	M├┤╠âi l├ó╠Çn	574	0
-3047	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	Vua	575	0
-3048	Õø¢þÄï	ÒüôÒüÅÒüèÒüå	Qu├┤╠üc vã░ãíng	575	0
-3049	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	Vi╠ú vua	575	0
-3050	ÕÑ│þÄï	ÒüÿÒéçÒüèÒüå	Nã░╠â Hoa╠Çng	575	0
-3051	þÄïÕÑ│	ÒüèÒüåÒüÿÒéç	C├┤ng chu╠üa	575	0
-3052	þÄïÕ¡É	ÒüèÒüåÒüÿ	Hoa╠Çng tã░╠ë	575	0
-3053	þÄïÕø¢	ÒüèÒüåÒüôÒüÅ	vã░ãíng quß╗æc, ─æß║Ñt nã░ß╗øc theo chß║┐ ─æß╗Ö qu├ón chß╗º	575	0
-3054	Õ«Øþƒ│	Òü╗ÒüåÒüøÒüì	─É├ó╠üt nã░ãí╠üc	576	0
-3055	ÕñûÕø¢	ÒüîÒüäÒüôÒüÅ	Nã░ãí╠üc ngoa╠Çi	576	0
-3056	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	Trung Quß╗æc, t├¬n mß╗Öt h├▓n ─æß║úo ph├¡a T├óy Nam Nhß║¡t Bß║ún.	576	0
-3057	ÚƒôÕø¢	ÒüïÒéôÒüôÒüÅ	Ha╠Çn qu├┤╠üc	576	0
-3058	Õø¢õ╝Ü	ÒüôÒüúÒüïÒüä	Qu├┤╠üc h├┤i╠ú, nghß╗ï viß╗çn	576	0
-3059	Õø¢ÚÜø	ÒüôÒüÅÒüòÒüä	Qu├┤╠üc t├¬╠ü	576	0
-3060	Õø¢þ▒ì	ÒüôÒüÅÒüøÒüì	Qu├┤╠üc ti╠úch	576	0
-3061	Õø¢Õåà	ÒüôÒüÅÒü¬Òüä	Trong nã░ãí╠üc, n├┤╠úi ─æi╠úa	576	0
-3062	þë®	ÒééÒü«	ngß║»m hoa anh ─æ├áo nß╗ƒ, hß╗Öi ngß║»m hoa, hß╗Öi xem hoa	577	0
-3063	µäÅÞªï	ÒüäÒüæÒéô	├Ø kiß║┐n	577	0
-3064	Þªïþë®	ÒüæÒéôÒüÂÒüñ	Tham quan, ngß║»m cß║únh	577	0
-3065	Þªïµ£¼	Òü┐Òü╗Òéô	Mß║½u, vß║¡t mß║½u, kiß╗âu mß║½u	577	0
-3066	ÞªïÕ¡ª	ÒüæÒéôÒüîÒüÅ	Kiß║┐n tß║¡p, tham quan vß╗øi mß╗Ñc ─æ├¡ch hß╗ìc tß║¡p	577	0
-3067	ÞºÆ	ÒüïÒü®	Ng├ón h├áng	578	0
-3068	µùàÞíî	ÒéèÒéçÒüôÒüå	Du lß╗ïch	578	0
-3069	ÞíîÕïò	ÒüôÒüåÒü®Òüå	H├ánh ─æß╗Öng	578	0
-3070	Þíîõ║ï	ÒüÄÒéçÒüåÒüÿ	Sß╗▒ kiß╗çn	578	0
-3071	õ©ÇÞíîþø«	ÒüäÒüíÒüÄÒéçÒüåÒéü	D├▓ng ─æß║ºu ti├¬n	578	0
-3072	þ¿▓	ÒüäÒü¡	Gß║ío	579	0
-3073	þ▒│Õ▒ï	ÒüôÒéüÒéä	Cß╗¡a h├áng b├ín gß║ío	579	0
-3074	þ▒│Õø¢	Òü╣ÒüäÒüôÒüÅ	Nã░ß╗øc Mß╗╣	579	0
-3075	µ¼ºþ▒│	ÒüèÒüåÒü╣Òüä	├éu Mß╗╣	579	0
-3076	Õìùþ▒│	Òü¬ÒéôÒü╣Òüä	Nam My╠â	579	0
-3077	Õîùþ▒│	Òü╗ÒüÅÒü╣Òüä	B─â╠üc Mß╗╣	579	0
-3078	µû░þ▒│	ÒüùÒéôÒü¥Òüä	ngã░ß╗Øi mß╗øi v├áo nghß╗ü, ngã░ß╗Øi tß║¡p sß╗▒ ,l├║a mß╗øi ,gß║ío mß╗øi	579	0
-3079	Õìüµ£ê	ÒüÿÒéàÒüåÒüîÒüñ	N─âm sau	580	0
-3080	µØÑÚÇ▒	ÒéëÒüäÒüùÒéàÒüå	Tuß║ºn sau	580	0
-3081	Õ░åµØÑ	ÒüùÒéçÒüåÒéëÒüä	Tã░ãíng lai	580	0
-3082	µØÑÕ¡ªµ£ƒ	ÒéëÒüäÒüîÒüúÒüì	Hß╗ìc k├¼ mß╗øi	580	0
-3083	Þ¬░	ÒüáÒéî	Lã░ãíng t├óm	581	0
-3084	õ©ìÞë»	ÒüÁÒéèÒéçÒüå	Bß║Ñt lã░ãíng, kh├┤ng tß╗æt, kh├┤ng ─æß║ít	581	0
-3085	ÕÑêÞë»þ£î	Òü¬ÒéëÒüæÒéô	Tß╗ënh Nara	581	0
-3086	Õ«Â	ÒüäÒüê	Thß╗®c ─ân	582	0
-3087	ÚúƒÕáé	ÒüùÒéçÒüÅÒü®Òüå	Ph├▓ng ─ân, c─ân tin	582	0
-3088	Úúƒõ║ï	ÒüùÒéçÒüÅÒüÿ	Bß╗»a ─ân	582	0
-3089	µÿ╝Úúƒ	ÒüíÒéàÒüåÒüùÒéçÒüÅ	Bß╗»a ─ân trã░a	582	0
-3090	µ£ØÚúƒ	ÒüíÒéçÒüåÒüùÒéçÒüÅ	Bß╗»a ─ân s├íng	582	0
-3091	Úúƒ	ÒüÅ	─Éoß║ín thß╗▒c, nhß╗ïn ─ân	582	0
-3092	Õñº	ÒüèÒüè	Thß╗®c uß╗æng	583	0
-3093	Úú▓	Òü«	Quß║ºy giß║úi kh├ít	583	0
-3094	Úú▓	Òü«	Thuß╗æc uß╗æng	583	0
-3095	Úú▓Úúƒ	ÒüäÒéôÒüùÒéçÒüÅ	Cß╗¡a h├áng ─ân uß╗æng	583	0
-3096	Úú▓ÚàÆÚüïÞ╗ó	ÒüäÒéôÒüùÒéàÒüåÒéôÒüªÒéô	L├íi xe trong t├¼nh trß║íng say rã░ß╗úu	583	0
-3097	Úú▓µûÖµ░┤	ÒüäÒéôÒéèÒéçÒüåÒüÖÒüä	Nã░ß╗øc uß╗æng	583	0
-3098	þºü	ÒéÅÒüƒÒüù	Hß╗Öi thoß║íi, sß╗▒ n├│i chuyß╗çn	584	0
-3099	õ╝Üþñ¥	ÒüïÒüäÒüùÒéâ	C├┤ng ty	584	0
-3100	õ╝Üþñ¥Õôí	ÒüïÒüäÒüùÒéâÒüäÒéô	Nh├ón vi├¬n c├┤ng ty	584	0
-3101	õ╝ÜÞ¡░	ÒüïÒüäÒüÄ	Cuß╗Öc hß╗ìp	584	0
-3102	õ╝ÜÕá┤	ÒüïÒüäÒüÿÒéçÒüå	Hß╗Öi trã░ß╗Øng	584	0
-3103	Õø¢õ╝Ü	ÒüôÒüúÒüïÒüä	Quß╗æc hß╗Öi	584	0
-3104	õ╝ÜÚçê	ÒüêÒüùÒéâÒüÅ	C├║i ch├áo, gß║¡t ─æß║ºu	584	0
-3105	ÞÇ│	Òü┐Òü┐	Lß╗ù tai	585	0
-3106	ÕêØÞÇ│	Òü»ÒüñÒü┐Òü┐	─Éiß╗üu mß╗øi nghe lß║ºn ─æß║ºu	585	0
-3107	ÞÇ│	Òü┐Òü┐	Khoa Tai M┼®i Hß╗ìng	585	0
-3108	ÚûÇ	ÒééÒéô	B├ío	586	0
-3109	Þü×	Òüì	Viß╗çc chã░a tß╗½ng c├│ trã░ß╗øc ─æ├óy	586	0
-3110	ÕÅú	ÒüÅÒüí	Tß╗½ ngß╗»	587	0
-3111	õ©ÇÞ¿Ç	Òü▓Òü¿ÒüôÒü¿	Mß╗Öt tß╗½, mß╗Öt lß╗Øi	587	0
-3112	õ╝ØÞ¿Ç	ÒüºÒéôÒüöÒéô	Lß╗Øi nhß║»n	587	0
-3113	µû╣Þ¿Ç	Òü╗ÒüåÒüÆÒéô	Tiß║┐ng ─æß╗ïa phã░ãíng	587	0
-3114	õ║êÞ¿Ç	ÒéêÒüÆÒéô	Ti├¬n ─æo├ín	587	0
-3115	Þ¿ÇÞ¬×Õ¡ª	ÒüÆÒéôÒüöÒüîÒüÅ	Ng├┤n ngß╗» hß╗ìc	587	0
-3116	Þ¿Ç	Òüä	Giß║úi th├¡ch, biß╗çn bß║ích	587	0
-3117	õ¢òÕìâ	Òü¬ÒéôÒü£Òéô	C├óu chuyß╗çn	588	0
-3118	õ╝ÜÞ®▒	ÒüïÒüäÒéÅ	Hoß╗Öi thoß║íi	588	0
-3119	Úø╗Þ®▒	ÒüºÒéôÒéÅ	─Éiß╗çn thoß║íi	588	0
-3120	õ©ûÞ®▒	ÒüøÒéÅ	Ch─âm s├│c	588	0
-3121	Þ®▒Úíî	ÒéÅÒüáÒüä	Chß╗º ─æß╗ü, ─æß╗ü t├ái	588	0
-3122	Þ®▒	Òü»Òü¬	N├│i chuyß╗çn bß║▒ng tay	588	0
-3123	õ║║	Òü▓Òü¿	─Éß║íi hß╗ìc quß╗æc lß║¡p	589	0
-3124	þ½ïµ┤¥	ÒéèÒüúÒü▒	Tuyß╗çt vß╗Øi	589	0
-3125	Õ╗║þ½ï	ÒüôÒéôÒéèÒéàÒüå	X├óy dß╗▒ng ch├╣a chiß╗ün, ─æß╗ün ─æ├ái	589	0
-3126	Õ»║	ÒüªÒéë	Ph├▓ng chß╗Ø	590	0
-3127	Õ¥à	Òü¥	K├¼ vß╗ìng	590	0
-3128	Úúƒ	Òüƒ	Khu vß╗▒c xung quanh	591	0
-3129	Õæ¿µ£ƒ	ÒüùÒéàÒüåÒüì	Chu kß╗│	591	0
-3130	õ©ûþòî	ÒüøÒüïÒüä	V├▓ng quanh thß║┐ giß╗øi	591	0
-3131	õ©ÇÕæ¿Õ╣┤	ÒüäÒüúÒüùÒéàÒüåÒü¡Òéô	1 n─âm tr├▓n	591	0
-3132	Úüô	Òü┐Òüí	Tuß║ºn n├áy	592	0
-3133	µØÑÚÇ▒	ÒéëÒüäÒüùÒéàÒüå	Tuß║ºn sau	592	0
-3134	ÕàêÚÇ▒	ÒüøÒéôÒüùÒéàÒüå	Tuß║ºn trã░ß╗øc	592	0
-3135	µ»ÄÚÇ▒	Òü¥ÒüäÒüùÒéàÒüå	Mß╗ùi tuß║ºn	592	0
-3136	õ©ÇÚÇ▒Úûô	ÒüäÒüúÒüùÒéàÒüåÒüïÒéô	1 tuß║ºn	592	0
-3137	ÚÇ▒µ£½	ÒüùÒéàÒüåÒü¥Òüñ	Cuß╗æi tuß║ºn	592	0
-3138	ÚÇ▒Õêè	ÒüùÒéàÒüåÒüïÒéô	Tuß║ºn san, xuß║Ñt bß║ún tß╗½ng tuß║ºn	592	0
-3139	µëïÞÂ│	ÒüªÒüéÒüù	─Éß║íi hß╗ìc, trã░ß╗Øng ─Éß║íi hß╗ìc	593	0
-3140	ÕñºÕ¡ªþöƒ	ÒüáÒüäÒüîÒüÅÒüøÒüä	Sinh vi├¬n	593	0
-3141	Õñºõ║║	ÒüèÒü¿Òü¬	Ngã░ß╗Øi lß╗øn	593	0
-3142	ÕñºÕÑ¢	ÒüáÒüäÒüÖ	─Éß║íi sß╗® qu├ín	593	0
-3143	ÕñºÕêç	ÒüƒÒüäÒüøÒüñ	Chß╗º nh├á	593	0
-3144	µëïÞÂ│	ÒüªÒüéÒüù	Hß╗ìc sinh tiß╗âu hß╗ìc	594	0
-3145	Õ░ÅÕ¡ªµáí	ÒüùÒéçÒüåÒüîÒüúÒüôÒüå	Trã░ß╗Øng tiß╗âu hß╗ìc	594	0
-3146	Õ░ÅÞ¬¼	ÒüùÒéçÒüåÒüøÒüñ	Tiß╗âu thuyß║┐t	594	0
-3147	Õ░ÅÕîà	ÒüôÒüÑÒüñÒü┐	Bã░u kiß╗çn	594	0
-3148	Õ░ÅÚ║ª	ÒüôÒéÇÒüÄ	L├║a m├¼	594	0
-3149	Õ░ÅÕÀØ	ÒüèÒüîÒéÅ	Con suß╗æi	594	0
-3150	Õ╗║þë®	ÒüƒÒüªÒééÒü«	Trã░ß╗Øng cß║Ñp 3	595	0
-3151	Ú½ÿµáíþöƒ	ÒüôÒüåÒüôÒüåÒüøÒüä	Hß╗ìc sinh cß║Ñp 3	595	0
-3152	µ£ÇÚ½ÿ	ÒüòÒüäÒüôÒüå	Tß╗æt nhß║Ñt, tuyß╗çt vß╗Øi	595	0
-3153	Ú½ÿþ┤Ü	ÒüôÒüåÒüìÒéàÒüå	Cao cß║Ñp	595	0
-3154	Ú½ÿ	ÒüƒÒüï	Gi├í y├¬n cao	595	0
-3155	µ«ïÚ½ÿ	ÒüûÒéôÒüáÒüï	Sß╗æ dã░ t├ái khoß║ún	595	0
-3156	õ║║	Òü▓Òü¿	An to├án	596	0
-3157	õ©ìÕ«ë	ÒüÁÒüéÒéô	ß╗ön ─æß╗ïnh	596	0
-3158	Õ«ëµÿô	ÒüéÒéôÒüä	Mß╗Ñc ti├¬u, ti├¬u chuß║®n	596	0
-3159	ÕååÕ«ë	ÒüêÒéôÒéäÒüÖ	Gi├í y├¬n thß║Ñp	596	0
-3160	µû░	ÒüéÒüƒÒéë	B├ío ch├¡, b├ái b├ío	597	0
-3161	µû░Õ╣╣þÀÜ	ÒüùÒéôÒüïÒéôÒüøÒéô	T├áu si├¬u tß╗æc	597	0
-3162	µû░Õ╣┤	ÒüùÒéôÒü¡Òéô	N─âm mß╗øi	597	0
-3163	µû░Ú««	ÒüùÒéôÒüøÒéô	Tß╗ënh Niigata ß╗ƒ Nhß║¡t	597	0
-3164	ÕÉî	ÒüèÒü¬	Trung cß╗ò	598	0
-3165	ÕÅñµ£¼	ÒüÁÒéïÒü╗Òéô	S├ích c┼®	598	0
-3166	õ¢┐	ÒüñÒüï	Khß║úo cß╗ò hß╗ìc	598	0
-3167	ÕÅñõ╗ú	ÒüôÒüáÒüä	Cß╗ò ─æß║íi, ng├áy xã░a	598	0
-3168	ÕÅñÚâ¢	ÒüôÒü¿	Cß╗æ ─æ├┤	598	0
-3169	õ║îõ║║	ÒüÁÒüƒÒéè	Ng├áy mß╗ông 1 Tß║┐t	599	0
-3170	ÞÂ│Õàâ	ÒüéÒüùÒééÒü¿	Bã░ß╗øc ch├ón	599	0
-3171	Õ£░Õàâ	ÒüÿÒééÒü¿	─Éß╗ïa phã░ãíng, trong v├╣ng	599	0
-3172	õ©ëµ¼íÕàâ	ÒüòÒéôÒüÿÒüÆÒéô	Kh├┤ng gian 3 chiß╗üu	599	0
-3173	Õàâ	ÒüÆÒéô	Nguy├¬n ( Nh├á Nguy├¬n cß╗ºa Trung Quß╗æc )	599	0
-3174	þ┤ÇÕàâÕëì	ÒüìÒüÆÒéôÒü£Òéô	Trã░ß╗øc c├┤ng nguy├¬n	599	0
-3175	µü»	ÒüäÒüì	Thß╗Øi tiß║┐t	600	0
-3176	Úø╗µ░ù	ÒüºÒéôÒüì	─Éiß╗çn	600	0
-3177	µ░ùµîü	ÒüìÒééÒüí	T├¼nh cß║úm, cß║úm x├║c	600	0
-3178	õ║║µ░ù	Òü½ÒéôÒüì	Nß╗òi tiß║┐ng, ─æã░ß╗úc nhiß╗üu ngã░ß╗Øi ã░a th├¡ch, h├óm mß╗Ö	600	0
-3179	µ░ù	Òüì	Cß║úm gi├íc, linh cß║úm	600	0
-3180	ÕñÜ	ÒüèÒüè	C├│ lß║¢	601	0
-3181	ÕñÜÕ░æ	ÒüƒÒüùÒéçÒüå	├ìt nhiß╗üu	601	0
-3182	µ╗àÕñÜ	ÒéüÒüúÒüƒ	Biß╗âu quyß║┐t	601	0
-3183	ÕñÜµò░	ÒüƒÒüÖÒüå	─Éa sß╗æ, sß╗æ ─æ├┤ng	601	0
-3184	ÕñÜÚçÅ	ÒüƒÒéèÒéçÒüå	Lã░ß╗úng nhiß╗üu	601	0
-3185	Õ░Å	ÒüíÒüä	Thiß║┐u ni├¬n	602	0
-3186	Õ░æÕÑ│	ÒüùÒéçÒüåÒüÿÒéç	Thiß║┐u nß╗»	602	0
-3187	Õ░æÒÇà	ÒüùÒéçÒüåÒüùÒéçÒüå	1 ch├║t	602	0
-3188	µ©øÕ░æ	ÒüÆÒéôÒüùÒéçÒüå	Giß║úm, suy giß║úm	602	0
-3189	Õ░æÚçÅ	ÒüùÒéçÒüåÒéèÒéçÒüå	Lã░ß╗úng ├¡t	602	0
-3190	þºü	ÒéÅÒüƒÒüù	Hiroshima (Nhß║¡t Bß║ún)	603	0
-3191	Õ║âÕæè	ÒüôÒüåÒüôÒüÅ	Quß║úng c├ío	603	0
-3192	Õ║âÕá┤	Òü▓ÒéìÒü░	Quß║úng trã░ß╗Øng	603	0
-3193	Õ║â	Òü▓Òéì	Bß╗Ö com l├¬	603	0
-3194	µùÑµø£µùÑ	Òü½ÒüíÒéêÒüåÒü│	N├│i nhanh	604	0
-3195	þ┤áµù®	ÒüÖÒü░Òéä	Nhanh ch├│ng, ngay lß║¡p tß╗®c	604	0
-3196	µù®µ£Ø	ÒüØÒüåÒüíÒéçÒüå	S├íng sß╗øm	604	0
-3197	Ú½¬	ÒüïÒü┐	Gi├ím ─æß╗æc	605	0
-3198	Úâ¿ÚòÀ	ÒüÂÒüíÒéçÒüå	Trã░ß╗ƒng ph├▓ng	605	0
-3199	Þ║½ÚòÀ	ÒüùÒéôÒüíÒéçÒüå	Chiß╗üu cao	605	0
-3200	ÚòÀµëÇ	ÒüíÒéçÒüåÒüùÒéç	─Éiß╗âm mß║ính	605	0
-3201	ÚòÀþöÀ	ÒüíÒéçÒüåÒü¬Òéô	Trã░ß╗ƒng Nam	605	0
-3202	ÚòÀµû╣Õ¢ó	ÒüíÒéçÒüåÒü╗ÒüåÒüæÒüä	H├¼nh chß╗» nhß║¡t	605	0
-3203	µùÑ	Òü▓	Ng├áy mai	606	0
-3204	µÿÄµùÑ	ÒüéÒüùÒüƒ	Ng├áy mai	606	0
-3205	µÿÄµùÑ	Òü┐ÒéçÒüåÒü½Òüí	Ng├áy mai	606	0
-3206	Þ¬¼µÿÄ	ÒüøÒüñÒéüÒüä	Thuyß║┐t minh, giß║úi th├¡ch	606	0
-3207	Þ¿╝µÿÄµø©	ÒüùÒéçÒüåÒéüÒüäÒüùÒéç	Chß╗®ng minh thã░	606	0
-3208	µÿÄÕ¥îµùÑ	Òü┐ÒéçÒüåÒüöÒü½Òüí	Ng├áy mß╗æt	606	0
-3209	µÿÄÕ¥îµùÑ	ÒüéÒüòÒüúÒüª	Ng├áy mß╗æt	606	0
-3210	ÕÑ│	ÒüèÒéôÒü¬	Hß╗»u ├¢, thiß╗çn ch├¡, l├▓ng tß╗æt	607	0
-3211	ÕÑ¢µäƒ	ÒüôÒüåÒüïÒéô	ß║ñn tã░ß╗úng tß╗æt, thiß╗çn cß║úm	607	0
-3212	ÕÅïÚüö	Òü¿ÒééÒüáÒüí	Bß║ín b├¿ (n├│i chung)	608	0
-3213	ÕÅïõ║║	ÒéåÒüåÒüÿÒéô	Bß║ín	608	0
-3214	Þª¬ÕÅï	ÒüùÒéôÒéåÒüå	Bß║ín th├ón	608	0
-3215	ÕÅïµâà	ÒéåÒüåÒüÿÒéçÒüå	T├¼nh bß║ín, t├¼nh bß║▒ng hß╗»u	608	0
-3216	ÕÅïÕÑ¢	ÒéåÒüåÒüôÒüå	Hß╗»u nghß╗ï, hß╗»u hß║úo	608	0
-3217	õ║║	Òü▓Òü¿	Lß╗æi v├áo, cß╗¡a v├áo	609	0
-3218	ÕàÑÕ¡ª	Òü½ÒéàÒüåÒüîÒüÅ	Nhß║¡p khß║®u	609	0
-3219	ÕÅÄÕàÑ	ÒüùÒéàÒüåÒü½ÒéàÒüå	Thu nhß║¡p	609	0
-3220	Õç║ÕÅú	ÒüºÒüÉÒüí	Lß╗æi ra, cß╗¡a ra	610	0
-3221	µÇØ	ÒüèÒéé	Xuß║Ñt khß║®u	610	0
-3222	Õç║Õ©¡	ÒüùÒéàÒüúÒüøÒüì	Tham gia, tham dß╗▒, c├│ mß║Àt	610	0
-3223	õ║║ÒÇà	Òü▓Òü¿Òü│Òü¿	Th├ánh phß╗æ Tsukuba Nhß║¡t bß║ún	611	0
-3224	Õ©éÚòÀ	ÒüùÒüíÒéçÒüå	Thß╗ï trã░ß╗ƒng	611	0
-3225	Õ©éµ░æ	ÒüùÒü┐Òéô	D├ón th├ánh phß╗æ	611	0
-3226	Õ©éÕ¢╣µëÇ	ÒüùÒéäÒüÅÒüùÒéç	Cãí quan h├ánh ch├¡nh th├ánh phß╗æ	611	0
-3227	Úâ¢Õ©é	Òü¿Òüù	─É├┤ thß╗ï	611	0
-3228	Õ©éÕá┤	ÒüùÒüÿÒéçÒüå	Chß╗ú	611	0
-3229	Õ©éÕá┤	ÒüäÒüíÒü░	Chß╗ú	611	0
-3230	µ£ØÕ©é	ÒüéÒüòÒüäÒüí	Chß╗ú s├íng	611	0
-3231	þö║	Òü¥Òüí	Thß╗ï trß║Ñn	612	0
-3232	Õîù	ÒüìÒüƒ	Thß╗ï trß║Ñn Kitayama Nhß║¡t Bß║ún	612	0
-3233	ÕîùÕ▒▒	ÒüìÒüƒÒéäÒü¥	Thß╗ï trß║Ñn Kitayama Nhß║¡t Bß║ún	612	0
-3234	þö║ÚòÀ	ÒüíÒéçÒüåÒüíÒéçÒüå	Thß╗ï trã░ß╗ƒng	612	0
-3235	þö║µ░æ	ÒüíÒéçÒüåÒü┐Òéô	Nguß╗Øi d├ón trong thß╗ï trß║Ñn	612	0
-3236	ÕƒÄõ©ïþö║	ÒüÿÒéçÒüåÒüïÒü¥Òüí	Phß╗æ cß╗ò	612	0
-3237	µ©»þö║	Òü┐Òü¬Òü¿Òü¥Òüí	Th├ánh phß╗æ cß║úng	612	0
-3238	µ£¿	Òüì	L├áng, th├┤n x├ú	613	0
-3239	þö░µØæ	ÒüƒÒéÇÒéë	Th├┤n trã░ß╗ƒng, trã░ß╗ƒng l├áng	613	0
-3240	µØæµ░æ	ÒüØÒéôÒü┐Òéô	D├ón l├áng	613	0
-3241	Þ¥▓µØæ	Òü«ÒüåÒüØÒéô	N├┤ng th├┤n	613	0
-3242	Õ©éþö║µØæ	ÒüùÒüíÒéçÒüåÒüØÒéô	Th├ánh phß╗æ, thß╗ï trß║Ñn v├á l├áng mß║íc	613	0
-3243	µ╝üµØæ	ÒüÄÒéçÒüØÒéô	L├áng ch├ái	613	0
-3244	Úø▓	ÒüÅÒéé	Mã░a	614	0
-3245	µóàÚø¿	ÒüñÒéå	M├╣a mã░a (─æß║ºu h├¿)	614	0
-3246	µóàÚø¿	Òü░ÒüäÒüå	M├╣a mã░a (─æß║ºu h├¿)	614	0
-3247	ÕñºÚø¿	ÒüèÒüèÒüéÒéü	Mã░a lß╗øn	614	0
-3248	Úø¿Õ¡ú	ÒüåÒüì	M├╣a mã░a	614	0
-3249	µÜ┤Úó¿Úø¿	Òü╝ÒüåÒüÁÒüåÒüå	Mã░a b├úo	614	0
-3250	Úø¿µ░┤	ÒüéÒü¥Òü┐ÒüÜ	Nã░ß╗øc mã░a	614	0
-3251	Úø¿	ÒüéÒéü	─Éiß╗çn	615	0
-3252	Úø╗Þ╗è	ÒüºÒéôÒüùÒéâ	T├áu ─æiß╗çn	615	0
-3253	Úø╗Þ®▒	ÒüºÒéôÒéÅ	─Éiß╗çn thoß║íi	615	0
-3254	Úø╗Õèø	ÒüºÒéôÒéèÒéçÒüÅ	─Éiß╗çn lß╗▒c	615	0
-3255	Úø╗Õ¡É	ÒüºÒéôÒüù	─Éiß╗çn tß╗¡	615	0
-3256	Úø╗µ▒á	ÒüºÒéôÒüí	Pin	615	0
-3257	Õü£Úø╗	ÒüªÒüäÒüºÒéô	C├║p ─æiß╗çn	615	0
-3258	Úø╗µ║É	ÒüºÒéôÒüÆÒéô	Nguß╗ôn ─æiß╗çn	615	0
-3259	Þ╗è	ÒüÅÒéïÒü¥	Xe hãíi (├┤ t├┤)	616	0
-3260	Úø╗Þ╗è	ÒüºÒéôÒüùÒéâ	T├áu ─æiß╗çn	616	0
-3261	Þç¬ÕïòÞ╗è	ÒüÿÒü®ÒüåÒüùÒéâ	Xe hãíi (├┤ t├┤)	616	0
-3262	Þç¬Þ╗óÞ╗è	ÒüÿÒüªÒéôÒüùÒéâ	Xe ─æß║íp	616	0
-3263	ÚºÉÞ╗èÕá┤	ÒüíÒéàÒüåÒüùÒéâÒüÿÒéçÒüå	B├úi ─æß╗ù xe	616	0
-3264	µòæµÇÑÞ╗è	ÒüìÒéàÒüåÒüìÒéàÒüåÒüùÒéâ	Xe cß║Ñp cß╗®u	616	0
-3265	Úª¼	ÒüåÒü¥	Con ngß╗▒a	617	0
-3266	Õ¡ÉÚª¼	ÒüôÒüåÒü¥	Ngß╗▒a con	617	0
-3267	Úª¼	ÒüåÒü¥	Chuß╗ông ngß╗▒a	617	0
-3268	Úª¼Þ╗è	Òü░ÒüùÒéâ	Xe ngß╗▒a	617	0
-3269	õ╣ùÚª¼	ÒüÿÒéçÒüåÒü░	Cã░ß╗íi ngß╗▒a	617	0
-3270	þ½ÂÚª¼	ÒüæÒüäÒü░	Cuß╗Öc ─æua ngß╗▒a	617	0
-3271	Úª¼Ú╣┐	Òü░Òüï	Ngu ngß╗æc	617	0
-3272	Úºà	ÒüêÒüì	Nh├á ga	618	0
-3273	µØ▒õ║¼Úºà	Òü¿ÒüåÒüìÒéçÒüåÒüêÒüì	Ga Tokyo	618	0
-3274	ÚºàÕôí	ÒüêÒüìÒüäÒéô	Nh├ón vi├¬n nh├á ga	618	0
-3275	ÚºàÕëì	ÒüêÒüìÒü¥Òüê	Trã░ß╗øc nh├á ga	618	0
-3276	þÑ×þñ¥	ÒüÿÒéôÒüÿÒéâ	C├┤ng ty	619	0
-3277	þñ¥õ╝Ü	ÒüùÒéâÒüïÒüä	X├ú hß╗Öi	619	0
-3278	þñ¥ÚòÀ	ÒüùÒéâÒüíÒéçÒüå	Gi├ím ─æß╗æc	619	0
-3279	þÑ×þñ¥	ÒüÿÒéôÒüÿÒéâ	─Éß╗ün thß╗Ø thß║ºn ─æß║ío	619	0
-3280	þñ¥õ╝ÜÕ¡ª	ÒüùÒéâÒüïÒüäÒüîÒüÅ	X├ú hß╗Öi hß╗ìc	619	0
-3281	þñ¥õ╝Ü	ÒüùÒéâÒüïÒüä	Chß╗º ngh─®a x├ú hß╗Öi	619	0
-3282	þñ¥	ÒéäÒüùÒéì	─Éß╗ün thß╗Ø	619	0
-3283	Õòåþñ¥	ÒüùÒéçÒüåÒüùÒéâ	C├┤ng ty thã░ãíng mß║íi	619	0
-3284	þêÂ	ÒüíÒüí	Trã░ß╗Øng hß╗ìc	620	0
-3285	Ú½ÿµáí	ÒüôÒüåÒüôÒüå	Trã░ß╗Øng THPT, cß║Ñp 3	620	0
-3286	õ©¡Õ¡ªµáí	ÒüíÒéàÒüåÒüîÒüúÒüôÒüå	Trã░ß╗øng THCS. Cß║Ñp 2	620	0
-3287	Õ░ÅÕ¡ªµáí	ÒüùÒéçÒüåÒüîÒüúÒüôÒüå	Trã░ß╗øng Tiß╗âu hß╗ìc	620	0
-3288	µáíÚòÀ	ÒüôÒüåÒüíÒéçÒüå	Hiß╗çu trã░ß╗ƒng	620	0
-3289	µáíÞêÄ	ÒüôÒüåÒüùÒéâ	Khu nh├á trã░ß╗Øng, khu hß╗ìc x├í	620	0
-3290	µáíµ¡î	ÒüôÒüåÒüï	B├ái ca cß╗ºa trã░ß╗Øng	620	0
-3291	Õ║ùÕàê	Òü┐ÒüøÒüòÒüì	Qu├ín, cß╗¡a tiß╗çm	621	0
-3292	Õû½ÞîÂÕ║ù	ÒüìÒüúÒüòÒüªÒéô	Qu├ín giß║úi kh├ít, tiß╗çm c├á ph├¬	621	0
-3293	Õ║ùÕôí	ÒüªÒéôÒüäÒéô	Nh├ón vi├¬n cß╗¡a h├áng	621	0
-3294	µø©Õ║ù	ÒüùÒéçÒüªÒéô	Cß╗¡a h├áng s├ích	621	0
-3295	Õú▓Õ║ù	Òü░ÒüäÒüªÒéô	Quß║ºy b├ín h├áng	621	0
-3296	Õ║ùÚòÀ	ÒüªÒéôÒüíÒéçÒüå	Chß╗º cß╗¡a h├áng	621	0
-3297	µ£¼Õ║ù	Òü╗ÒéôÒüªÒéô	Cãí sß╗ƒ ch├¡nh, trß╗Ñ sß╗ƒ ch├¡nh	621	0
-3298	µö»Õ║ù	ÒüùÒüªÒéô	Cãí sß╗ƒ phß╗Ñ, chi nh├ính	621	0
-3299	ÚèÇ	ÒüÄÒéô	Ng├ón h├áng	622	0
-3300	ÚèÇ	ÒüÄÒéô	Bß║íc	622	0
-3301	µ░┤ÚèÇ	ÒüÖÒüäÒüÄÒéô	Thß╗ºy ng├ón	622	0
-3302	ÚèÇÞë▓	ÒüÄÒéôÒüäÒéì	M├áu bß║íc	622	0
-3303	ÚèÇµ▓│	ÒüÄÒéôÒüî	Ng├ón h├á	622	0
-3304	þùàÚÖó	Òü│ÒéçÒüåÒüäÒéô	Bß╗ï bß╗çnh, ß╗æm	623	0
-3305	þùàÚÖó	Òü│ÒéçÒüåÒüäÒéô	Bß╗çnh viß╗çn	623	0
-3306	þ£ïþùà	ÒüïÒéôÒü│ÒéçÒüå	Bß║ío bß╗çnh, bß╗çnh cß║Ñp t├¡nh	623	0
-3307	Úçìþùà	ÒüÿÒéàÒüåÒü│ÒéçÒüå	Bß╗çnh nß║Àng	623	0
-3308	þùà	Òéä	C├│ bß╗çnh	623	0
-3309	þû¥þùà	ÒüùÒüúÒü║Òüä	Bß╗çnh tß║¡t	623	0
-3310	Õàâµ░ù	ÒüÆÒéôÒüì	Bß╗çnh viß╗çn	624	0
-3311	ÕàÑÚÖó	Òü½ÒéàÒüåÒüäÒéô	Trã░ß╗Øng cao hß╗ìc, Viß╗çc ─æ├áo tß║ío sau tß╗æt nghiß╗çp	624	0
-3312	ÕñºÕ¡ª	ÒüáÒüäÒüîÒüÅ	Hß╗ìc sinh cao hß╗ìc	624	0
-3313	ÚÇÇÚÖó	ÒüƒÒüäÒüäÒéô	Y viß╗çn	624	0
-3314	þ¥ÄÕ«╣ÚÖó	Òü│ÒéêÒüåÒüäÒéô	Viß╗çn thß║®m mß╗╣	624	0
-3315	õ║║	Òü▓Òü¿	Ng├áy nghß╗ë	625	0
-3316	õ╝æÞ¼ø	ÒüìÒéàÒüåÒüôÒüå	─Éã░ß╗úc nghß╗ë 1 tiß║┐t hß╗ìc	625	0
-3317	Õ«Üõ╝æµùÑ	ÒüªÒüäÒüìÒéàÒüåÒü│	Ng├áy nghß╗ë thã░ß╗Øng k├¼	625	0
-3318	Õ£ƒ	ÒüñÒüí	Chi├¬u ─æ├úi	626	0
-3319	Þä▒ÞÁ░	ÒüáÒüúÒüØÒüå	Tß║®u tho├ít, ─æ├áo ng┼®	626	0
-3320	ÚÇâÞÁ░	Òü¿ÒüåÒüØÒüå	Bß╗Å trß╗æn	626	0
-3321	ÞÁ░Þíî	ÒüØÒüåÒüôÒüå	Du lß╗ïch, di chuyß╗ân, du h├ánh	626	0
-3322	µÜ┤ÞÁ░	Òü╝ÒüåÒüØÒüå	nh├│m chß║íy xe oto bike mß║Ñt trß║¡t tß╗▒ g├óy tiß║┐ng ß╗ôn	626	0
-3323	Õ©½ÞÁ░	ÒüùÒéÅÒüÖ	Th├íng chß║íp	626	0
-3324	Úüà	ÒüèÒüØ	Thß╗®c dß║¡y	627	0
-3325	ÞÁÀµ║É	ÒüìÒüÆÒéô	Gß╗æc rß╗à, nguß╗ôn gß╗æc	627	0
-3326	Þ▓Ø	ÒüïÒüä	Ngao, s├▓, hß║┐n, trai	628	0
-3327	Þ▓Øµ«╗	ÒüïÒüäÒüîÒéë	Vß╗Å ngao, s├▓ ,hß║┐n, trai	628	0
-3328	ÕÀ╗Þ▓Ø	Òü¥ÒüìÒüîÒüä	ß╗Éc s├¬n	628	0
-3329	Þ▓Ø	ÒüïÒüä	─Éß╗ô l├ám bß║▒ng vß╗Å s├▓	628	0
-3330	µÿö	ÒéÇÒüïÒüù	Viß╗çc mua sß║»m	629	0
-3331	Þ▓À	Òüï	Viß╗çc mua b├ín	629	0
-3332	Þ▓ÀÕÅÄ	Òü░ÒüäÒüùÒéàÒüå	B├¬n mua, kh├ích h├áng	629	0
-3333	õ║║	Òü▓Òü¿	Quß║ºy b├ín	630	0
-3334	Õú▓Õ║ù	Òü░ÒüäÒüªÒéô	Quß║ºy b├ín h├áng	630	0
-3335	Þç¬Õïò	ÒüÿÒü®Òüå	M├íy b├ín h├áng tß╗▒ ─æß╗Öng	630	0
-3336	ÕñºÕú▓Õç║	ÒüèÒüèÒüåÒéèÒüá	Thã░ãíng mß║íi, viß╗çc b├ín bu├┤n	630	0
-3337	µ£¼	Òü╗Òéô	S├ích ─æß╗ìc	631	0
-3338	Þ¬¡µø©	Òü®ÒüÅÒüùÒéç	Viß╗çc ─æß╗ìc s├ích	631	0
-3339	Þ¬¡ÞÇà	Òü®ÒüÅÒüùÒéâ	─Éß╗ìc giß║ú	631	0
-3340	ÕÅÑÞ¬¡þé╣	ÒüÅÒü¿ÒüåÒüªÒéô	Dß║Ñu chß║Ñm c├óu	631	0
-3341	µäøÞ¬¡µø©	ÒüéÒüäÒü®ÒüÅÒüùÒéç	S├ích ã░a th├¡ch	631	0
-3342	þ¡å	ÒüÁÒüº	Thã░ viß╗çn	632	0
-3343	Þ¥×µø©	ÒüÿÒüùÒéç	Tß╗½ ─æiß╗ân	632	0
-3344	µòÖþºæµø©	ÒüìÒéçÒüåÒüïÒüùÒéç	S├ích gi├ío khoa	632	0
-3345	Þ¬¡µø©	Òü®ÒüÅÒüùÒéç	Viß╗çc ─æß╗ìc s├ích	632	0
-3346	µø©Úüô	ÒüùÒéçÒü®Òüå	Thã░ ph├íp	632	0
-3347	Þé®µø©	ÒüïÒüƒÒüîÒüì	Chß╗®c vß╗ï, chß╗®c danh	632	0
-3348	ÕÀú	ÒüÖ	Viß╗çc trß╗ƒ vß╗ü nã░ß╗øc	633	0
-3349	Õ©░	ÒüïÒüê	Du lß╗ïch vß╗ü trong ng├áy	633	0
-3350	Õ©░Õ«à	ÒüìÒüƒÒüÅ	Viß╗çc vß╗ü nh├á	633	0
-3351	Õ©░Õîû	ÒüìÒüï	Du nhß║¡p, nhß║¡p tß╗ïch	633	0
-3352	þöÀ	ÒüèÒü¿Òüô	Viß╗çc hß╗ìc	634	0
-3353	Õ╝ô	ÒéåÒü┐	C├íi cung	635	0
-3354	Õ╝ôþƒó	ÒéåÒü┐Òéä	Cung v├á t├¬n	635	0
-3355	Õ╝ôÚüô	ÒüìÒéàÒüåÒü®Òüå	M├┤n bß║»n cung, cung ─æß║ío	635	0
-3356	ÞÖ½	ÒéÇÒüù	S├óu bß╗ì	636	0
-3357	ÞÖ½µ¡»	ÒéÇÒüùÒü░	R─âng s├óu	636	0
-3358	Õ╝▒ÞÖ½	ÒéêÒéÅÒéÇÒüù	Kß║╗ yß║┐u ─æuß╗æi, nh├ít gan	636	0
-3359	µÿåÞÖ½	ÒüôÒéôÒüíÒéàÒüå	C├┤n tr├╣ng	636	0
-3360	ÞÖ½	ÒéÇÒüù	Ki├¬n ─æß╗ïnh, vß╗»ng v├áng	637	0
-3361	Õ╝ÀÕêÂ	ÒüìÒéçÒüåÒüøÒüä	Viß╗çc ─ân cã░ß╗øp, vß╗Ñ cã░ß╗øp	637	0
-3362	µò░þÅá	ÒüÿÒéàÒüÜ	Tß╗ënh cß║úm, cß║úm x├║c	638	0
-3363	µîü	Òéé	Vß║¡t mang theo, vß║¡t sß╗ƒ hß╗»u	638	0
-3364	ÕÉìÕëì	Òü¬Òü¥Òüê	T├¬n	639	0
-3365	µ£ëÕÉì	ÒéåÒüåÒéüÒüä	Chß╗» Hiragana	639	0
-3366	ÕÉìÕê║	ÒéüÒüäÒüù	Danh thiß║┐p	639	0
-3367	µ░ÅÕÉì	ÒüùÒéüÒüä	Hß╗ì t├¬n	639	0
-3368	ÕÉìÕ¡ù	Òü┐ÒéçÒüåÒüÿ	Hß╗ì	639	0
-3369	ÕÉìÞ®×	ÒéüÒüäÒüù	Danh tß╗½	639	0
-3370	Õ¢╝	ÒüïÒéî	Tiß║┐ng Nhß║¡t	640	0
-3371	õ©¡Õø¢Þ¬×	ÒüíÒéàÒüåÒüöÒüÅÒüö	Tiß║┐ng Trung Quß╗æc	640	0
-3372	Þï▒Þ¬×	ÒüêÒüäÒüö	Tiß║┐ng Anh	640	0
-3373	µò¼Þ¬×	ÒüæÒüäÒüö	K├¡nh ngß╗»	640	0
-3374	ÕñûÕø¢Þ¬×	ÒüîÒüäÒüôÒüÅÒüö	Tiß║┐ng nã░ß╗øc ngo├ái	640	0
-3375	ÕìÿÞ¬×	ÒüƒÒéôÒüö	Tß╗½ vß╗▒ng	640	0
-3376	Þ¬×	ÒüïÒüƒ	Chß╗º ngß╗»	640	0
-3377	µÿÑ	Òü»Òéï	M├╣a xu├ón	641	0
-3378	µÿÑõ╝æ	Òü»ÒéïÒéäÒüÖ	Hß╗ìc k├¼ m├╣a xu├ón	641	0
-3379	µÿÑÕÀ╗	Òü»ÒéïÒü¥	Xu├ón ph├ón	641	0
-3380	ÚØÆµÿÑ	ÒüøÒüäÒüùÒéàÒéô	Thanh xu├ón	641	0
-3381	µÿÑÕñÅþºïÕå¼	ÒüùÒéàÒéôÒüïÒüùÒéàÒüåÒü¿Òüå	4 m├╣a, xu├ón hß║í thu ─æ├┤ng	641	0
-3382	ÕñÅ	Òü¬Òüñ	M├╣a h├¿	642	0
-3383	ÕñÅõ╝æ	Òü¬ÒüñÒéäÒüÖ	Quß║ºn ├ío m├╣a h├¿	642	0
-3384	þ£ƒÕñÅ	Òü¥Òü¬Òüñ	Giß╗»a hß║í	642	0
-3385	ÕêØÕñÅ	ÒüùÒéçÒüï	─Éß║ºu hß║í	642	0
-3386	ÕñÅÞç│	ÒüÆÒüù	Hß║í ch├¡	642	0
-3387	µÿÑÕñÅþºïÕå¼	ÒüùÒéàÒéôÒüïÒüùÒéàÒüåÒü¿Òüå	4 m├╣a, xu├ón hß║í thu ─æ├┤ng	642	0
-3388	þºï	ÒüéÒüì	M├╣a thu	643	0
-3389	þºïÕ¡ªµ£ƒ	ÒüéÒüìÒüîÒüúÒüì	Hß╗ìc k├¼ m├╣a thu	643	0
-3390	þºïÚó¿	ÒüéÒüìÒüïÒü£	Cãín gi├│ thu	643	0
-3391	þºïÕêå	ÒüùÒéàÒüåÒüÂÒéô	Xu├ón ph├ón	643	0
-3392	µÖ®þºï	Òü░ÒéôÒüùÒéàÒüå	Cuß╗æi thu	643	0
-3393	µÿÑÕñÅþºïÕå¼	ÒüùÒéàÒéôÒüïÒüùÒéàÒüåÒü¿Òüå	4 m├╣a, xu├ón hß║í thu ─æ├┤ng	643	0
-3394	Õå¼	ÒüÁÒéå	M├╣a ─æ├┤ng	644	0
-3395	Õå¼õ╝æ	ÒüÁÒéåÒéäÒüÖ	Giß╗»a ─æ├┤ng	644	0
-3396	Õå¼Þç│	Òü¿ÒüåÒüÿ	─É├┤ng ch├¡	644	0
-3397	Õå¼þ£á	Òü¿ÒüåÒü┐Òéô	Sß╗▒ ngß╗º ─æ├┤ng	644	0
-3398	µÜûÕå¼	ÒüáÒéôÒü¿Òüå	M├╣a ─æ├┤ng ß║Ñm ├íp	644	0
-3399	µÿÑÕñÅþºïÕå¼	ÒüùÒéàÒéôÒüïÒüùÒéàÒüåÒü¿Òüå	4 m├╣a, xu├ón hß║í thu ─æ├┤ng	644	0
-3400	Õìüµ£ê	ÒüÿÒéàÒüåÒüîÒüñ	Buß╗òi s├íng	645	0
-3401	µ»Äµ£Ø	Òü¥ÒüäÒüéÒüò	Mß╗ùi buß╗òi s├íng	645	0
-3402	õ╗èµ£Ø	ÒüæÒüò	S├íng nay	645	0
-3403	µ£Ø	ÒüéÒüò	Bß╗»a ─ân s├íng	645	0
-3404	µ£ØÕ»ØÕØè	ÒüéÒüòÒü¡Òü╝Òüå	B├ío ra buß╗æi s├íng	645	0
-3405	Õîùµ£ØÚ««	ÒüìÒüƒÒüíÒéçÒüåÒüøÒéô	Bß║»c Triß╗üu Ti├¬n	645	0
-3406	µÿ╝	Òü▓Òéï	Buß╗òi trã░a, ban ng├áy	646	0
-3407	µÿ╝Úûô	Òü▓ÒéïÒü¥	Ban ng├áy	646	0
-3408	µÿ╝õ╝æ	Òü▓ÒéïÒéäÒüÖ	Buß╗òi ─ân trã░a	646	0
-3409	µÿ╝Õ»Ø	Òü▓ÒéïÒü¡	Giß║Ñc ngß╗º trã░a	646	0
-3410	Õñòµû╣	ÒéåÒüåÒüîÒüƒ	Buß╗òi chiß╗üu	647	0
-3411	ÕñòµùÑ	ÒéåÒüåÒü▓	Mß║Àt trß╗Øi l├║c ban chiß╗üu	647	0
-3412	ÕñòÚúƒ	ÒéåÒüåÒüùÒéçÒüÅ	Bß╗»a ─ân chiß╗üu	647	0
-3413	õ©âÕñò	ÒüƒÒü¬Òü░Òüƒ	Lß╗à hß╗Öi thß║Ñt tß╗ïch	647	0
-3414	ÕñòÕêè	ÒéåÒüåÒüïÒéô	B├ío ra l├║c chiß╗üu	647	0
-3415	Õñòþ½ï	ÒéåÒüåÒüáÒüí	Cãín mã░a r├áo ban ─æ├¬m	647	0
-3416	õ©Çµ£Øõ©ÇÕñò	ÒüäÒüúÒüíÒéçÒüåÒüäÒüúÒüøÒüì	Trong khoß║úng thß╗Øi gian ngß║»n	647	0
-3417	µùù	Òü»Òüƒ	C├ích ─æß╗ìc	648	0
-3418	Õñòµû╣	ÒéåÒüåÒüîÒüƒ	Buß╗òi chiß╗üu	648	0
-3419	µû╣	ÒüïÒüƒ	Vß╗ï (ngã░ß╗Øi) kia	648	0
-3420	õ©íµû╣	ÒéèÒéçÒüåÒü╗Òüå	2 b├¬n, song phã░ãíng	648	0
-3421	µû╣µ│ò	Òü╗ÒüåÒü╗Òüå	Phã░ãíng ph├íp	648	0
-3422	µû╣ÕÉæ	Òü╗ÒüåÒüôÒüå	Phã░ãíng hã░ß╗øng	648	0
-3423	µû╣Þ¿Ç	Òü╗ÒüåÒüÆÒéô	Phã░ãíng ngß╗», tiß║┐ng ─æß╗ïa phã░ãíng	648	0
-3424	ÚòÀµû╣Õ¢ó	ÒüíÒéçÒüåÒü╗ÒüåÒüæÒüä	H├¼nh chß╗» nhß║¡t	648	0
-3425	µÖ®	Òü░Òéô	Buß╗òi tß╗æi	649	0
-3426	õ╗èµÖ®	ÒüôÒéôÒü░Òéô	Tß╗æi nay	649	0
-3427	µ»ÄµÖ®	Òü¥ÒüäÒü░Òéô	Mß╗ùi tß╗æi	649	0
-3428	µÖ®Õ¥íÚú»	Òü░ÒéôÒüöÒü»Òéô	Cãím tß╗æi	649	0
-3429	µÖ®Õ®Ü	Òü░ÒéôÒüôÒéô	Sß╗▒ kß║┐t  h├┤n muß╗Ön	649	0
-3430	µÖ®Õ╣┤	Òü░ÒéôÒü¡Òéô	Nhß╗»ng n─âm cuß╗æi ─æß╗Øi	649	0
-3431	Õñ£	ÒéêÒéï	Buß╗òi tß╗æi	650	0
-3432	õ╗èÕñ£	ÒüôÒéôÒéä	Tß╗æi nay	650	0
-3433	Õñ£õ©¡	ÒéêÒü¬Òüï	Nß╗¡a ─æ├¬m, ban ─æ├¬m	650	0
-3434	Õñ£µÿÄ	ÒéêÒüé	─É├¬m khuya, khuya khoß║»t	650	0
-3435	Õñ£Úúƒ	ÒéäÒüùÒéçÒüÅ	Bß╗»a ─ân khuya	650	0
-3436	Õ┐âÞçô	ÒüùÒéôÒü×Òüå	Tr├íi tim, t├óm hß╗ôn, tß║¡n ─æ├íy l├▓ng	651	0
-3437	Õ«ëÕ┐â	ÒüéÒéôÒüùÒéô	Trung t├óm	651	0
-3438	þå▒Õ┐â	Òü¡ÒüúÒüùÒéô	T├óm l├¢ hß╗ìc	651	0
-3439	µëï	Òüª	Tay	652	0
-3440	õ©ïµëï	Òü©Òüƒ	Thã░	652	0
-3441	µëïµ┤ù	ÒüªÒüéÒéë	Tem	652	0
-3442	µëïõ╝Ø	ÒüªÒüñÒüá	Ca s─®	652	0
-3443	ÞÂ│	ÒüéÒüù	Bã░ß╗øc ch├ón	653	0
-3444	ÞÂ│	Òüƒ	1 cß║Àp	653	0
-3445	µ░┤õ©ìÞÂ│	Òü┐ÒüÜÒüÂÒüØÒüÅ	T├¼nh trß║íng thiß║┐u nã░ß╗øc	653	0
-3446	ÚüáÞÂ│	ÒüêÒéôÒüØÒüÅ	D├ú ngoß║íi	653	0
-3447	µ║ÇÞÂ│	Òü¥ÒéôÒü×ÒüÅ	Th├Áa m├ún, h├ái l├▓ng	653	0
-3448	ÞÂ│Úƒ│	ÒüéÒüùÒüèÒü¿	Tiß║┐ng bã░ß╗øc ch├ón	653	0
-3449	õ¢ô	ÒüïÒéëÒüá	Cãí thß╗â	654	0
-3450	õ¢ôÚçì	ÒüƒÒüäÒüÿÒéàÒüå	C├ón nß║Àng, trß╗ìng lã░ß╗úng cãí thß╗â	654	0
-3451	õ¢ôµôì	ÒüƒÒüäÒüØÒüå	B├ái tß║¡p thß╗â dß╗Ñc	654	0
-3452	õ¢ôµ©®	ÒüƒÒüäÒüèÒéô	Nhiß╗çt ─æß╗Ö cãí thß╗â, th├ón nhiß╗çt	654	0
-3453	Õà¿õ¢ô	Òü£ÒéôÒüƒÒüä	To├án thß╗â, cß║ú ngã░ß╗Øi	654	0
-3454	Õøúõ¢ô	ÒüáÒéôÒüƒÒüä	─Éo├án thß╗â	654	0
-3455	õ©ûÚûôõ¢ô	ÒüøÒüæÒéôÒüªÒüä	─É├║ng ─æß║»n, lß╗ïch sß╗▒, tao nh├ú	654	0
-3456	õ¢ôÞ¬┐	ÒüƒÒüäÒüíÒéçÒüå	T├¼nh trß║íng cãí thß╗â	654	0
-3457	Úªû	ÒüÅÒü│	Cß╗ò	655	0
-3458	Úªû	ÒüÅÒü│	Cß╗ò tay	655	0
-3459	Úªûþø©	ÒüùÒéàÒüùÒéçÒüå	Thß╗º tã░ß╗øng	655	0
-3460	ÚªûÚâ¢	ÒüùÒéàÒü¿	Thß╗º ─æ├┤	655	0
-3461	Úªûõ¢ì	ÒüùÒéàÒüä	Vß╗ï tr├¡ ─æß║ºu ti├¬n, ─æß╗®ng ─æß║ºu	655	0
-3462	Úâ¿Úªû	ÒüÂÒüùÒéà	Bß╗Ö (chß╗» H├ín)	655	0
-3463	Úüô	Òü┐Òüí	─Éã░ß╗Øng	656	0
-3464	þëçÚüô	ÒüïÒüƒÒü┐Òüí	─Éã░ß╗Øng mß╗Öt chiß╗üu	656	0
-3465	µø©Úüô	ÒüùÒéçÒü®Òüå	Thã░ ph├íp	656	0
-3466	µƒöÚüô	ÒüÿÒéàÒüåÒü®Òüå	Nhu ─æß║ío, M├┤n v├Á judo	656	0
-3467	ÕîùµÁÀÚüô	Òü╗ÒüúÒüïÒüäÒü®Òüå	Hokkaido Nhß║¡t bß║ún	656	0
-3468	ÚüôÕàÀ	Òü®ÒüåÒüÉ	Dß╗Ñng cß╗Ñ	656	0
-3469	µ¡®Úüô	Òü╗Òü®Òüå	─Éã░ß╗Øng ─æi bß╗Ö	656	0
-3470	Þ┐æÚüô	ÒüíÒüïÒü┐Òüí	─Éã░ß╗Øng tß║»t	656	0
-3471	Õ▒▒	ÒéäÒü¥	N├║i	657	0
-3472	Õ▒▒Úüô	ÒéäÒü¥Òü┐Òüí	─Éã░ß╗Øng n├║i	657	0
-3473	Õ▒▒þö░	ÒéäÒü¥Òüá	N├║i Ph├║ S─®	657	0
-3474	þü½Õ▒▒	ÒüïÒüûÒéô	N├║i lß╗¡a	657	0
-3475	Õ▒▒þü½õ║ï	ÒéäÒü¥ÒüïÒüÿ	Ch├íy rß╗½ng	657	0
-3476	þÖ╗Õ▒▒	Òü¿ÒüûÒéô	Leo n├║i	657	0
-3477	Õ▒▒µ×ù	ÒüòÒéôÒéèÒéô	Sãín l├óm, rß╗½ng rß║¡m	657	0
-3478	ÕÀØ	ÒüïÒéÅ	Con s├┤ng	658	0
-3479	Õ░ÅÕÀØ	ÒüèÒüîÒéÅ	S├┤ng Nile	658	0
-3480	Õñ®	ÒüéÒü¥	Dß║úi ng├ón h├á	658	0
-3481	ÕÀØÕ▓©	ÒüïÒéÅÒüÄÒüù	Bß╗Ø s├┤ng, ven s├┤ng	658	0
-3482	ÕÀØÚüè	ÒüïÒéÅÒüéÒüØ	S├┤ng ng├▓i	658	0
-3483	õ║îµ£¼	Òü½Òü╗Òéô	Rß╗½ng	659	0
-3484	Õ░Åµ×ù	ÒüôÒü░ÒéäÒüù	Rß╗½ng r├║	659	0
-3485	Õ▒▒µ×ù	ÒüòÒéôÒéèÒéô	Sãín l├óm, rß╗½ng rß║¡m	659	0
-3486	µ×ùµÑ¡	ÒéèÒéôÒüÄÒéçÒüå	L├óm nghiß╗çp	659	0
-3487	µØ¥µ×ù	Òü¥ÒüñÒü░ÒéäÒüù	Rß╗½ng th├┤ng	659	0
-3488	µ×ùÚüô	ÒéèÒéôÒü®Òüå	─Éã░ß╗Øng m├▓n trong rß╗½ng	659	0
-3489	Õ»åµ×ù	Òü┐ÒüñÒéèÒéô	Rß╗½ng rß║¡m	659	0
-3490	õ©ëµ£¼	ÒüòÒéôÒü╝Òéô	Rß╗½ng	660	0
-3491	µú«þö░	ÒééÒéèÒüƒ	Rß╗½ng r├║	660	0
-3492	þ¬ô	Òü¥Òü®	Bß║ºu trß╗Øi	661	0
-3493	þ®║µ░ù	ÒüÅÒüåÒüì	Kh├┤ng kh├¡	661	0
-3494	þ®║µ©»	ÒüÅÒüåÒüôÒüå	S├ón bay	661	0
-3495	Þê¬þ®║õ¥┐	ÒüôÒüåÒüÅÒüåÒü│Òéô	Bã░u phß║®m gß╗ƒi bß║▒ng ─æã░ß╗Øng h├áng kh├┤ng	661	0
-3496	þ®║µëï	ÒüïÒéëÒüª	M├┤n v├Á karate	661	0
-3497	þ®║	Òüé	Bß║ºu trß╗Øi rß╗Öng lß╗øn	661	0
-3498	µ»ÄµùÑ	Òü¥ÒüäÒü½Òüí	Biß╗ân	662	0
-3499	ÕîùµÁÀÚüô	Òü╗ÒüúÒüïÒüäÒü®Òüå	Hokkaido Nhß║¡t bß║ún	662	0
-3500	µÁÀÕñû	ÒüïÒüäÒüîÒüä	Nã░ß╗øc ngo├ái	662	0
-3501	µÁÀ	ÒüïÒüä	Biß╗ân Aegean	662	0
-3502	µÁÀÕ▓©	ÒüïÒüäÒüîÒéô	Bß╗Ø biß╗ân, ven biß╗ân	662	0
-3503	µÁÀÞ│è	ÒüïÒüäÒü×ÒüÅ	Hß║úi tß║Àc, cã░ß╗øp biß╗ân	662	0
-3504	µÁÀÞù╗	ÒüïÒüäÒüØÒüå	Taß╗Å biß╗ân, rong biß╗ân	662	0
-3505	µÁÀµ░┤	ÒüïÒüäÒüÖÒüä	Nã░ß╗øc biß╗ân	662	0
-3506	õ║║	Òü▓Òü¿	H├│a hß╗ìc	663	0
-3507	µûçÕîû	ÒüÂÒéôÒüï	V─ân h├│a	663	0
-3508	Õîû	Òü░	Trang ─æiß╗âm	663	0
-3509	µ░æõ©╗Õîû	Òü┐ÒéôÒüùÒéàÒüï	D├ón chß╗º h├│a	663	0
-3510	ÕñëÕîû	Òü©ÒéôÒüï	Biß║┐n h├│a	663	0
-3511	ÚÇ▓Õîû	ÒüùÒéôÒüï	Tiß║┐n h├│a	663	0
-3512	Þìë	ÒüÅÒüò	Hoa	664	0
-3513	Þè▒Þªï	Òü»Òü¬Òü┐	Ngß║»m hoa anh ─æ├áo nß╗ƒ, hß╗Öi ngß║»m hoa	664	0
-3514	Þè▒þü½	Òü»Òü¬Òü│	Ph├ío hoa	664	0
-3515	Þè▒Õ▒ï	Òü»Òü¬Òéä	Cß╗¡a h├áng hoa	664	0
-3516	Þè▒Õ½ü	Òü»Òü¬ÒéêÒéü	C├┤ d├óu	664	0
-3517	þöƒ	Òüä	Nghß╗ç thuß║¡t cß║»m hoa	664	0
-3518	Þè▒þôÂ	ÒüïÒü│Òéô	Lß╗ì hoa	664	0
-3519	Þè▒þ▓ëþùç	ÒüïÒüÁÒéôÒüùÒéçÒüå	Hß╗Öi chß╗®ng dß╗ï ß╗®ng phß║Ñn hoa	664	0
-3520	õ©íµëï	ÒéèÒéçÒüåÒüª	Thß╗Øi tiß║┐t	665	0
-3521	Õñ®µ░ù	ÒüªÒéôÒüì	Dß╗▒ b├ío thß╗Øi tiß║┐t	665	0
-3522	Õñ®Õø¢	ÒüªÒéôÒüöÒüÅ	Thi├¬n ─æã░ß╗Øng	665	0
-3523	Õñ®þÜç	ÒüªÒéôÒü«Òüå	Ho├áng ─æß║┐	665	0
-3524	Õñ®õ¢┐	ÒüªÒéôÒüù	Thi├¬n sß╗®	665	0
-3525	Õñ®µëì	ÒüªÒéôÒüòÒüä	Thi├¬n t├ái	665	0
-3526	Õñ®	ÒüéÒü¥	Dß║úi ng├ón h├á	665	0
-3527	Õñ®µûçÕ¡ª	ÒüªÒéôÒééÒéôÒüîÒüÅ	Thi├¬n v─ân hß╗ìc	665	0
-3528	µùÑ	Òü▓	M├áu ─æß╗Å	666	0
-3529	ÞÁñ	ÒüéÒüï	Lß╗ù	666	0
-3530	þ£ƒ	Òü¥	─Éß╗Å bß╗½ng	666	0
-3531	ÞÁñÕìüÕ¡ù	ÒüøÒüìÒüÿÒéàÒüåÒüÿ	Chß╗» thß║¡p ─æß╗Å	666	0
-3532	ÞÁñÚüô	ÒüøÒüìÒü®Òüå	─Éã░ß╗Øng x├¡ch ─æß║ío	666	0
-3533	ÞÁñÚú»	ÒüøÒüìÒü»Òéô	Gß║ío ─æß╗Å	666	0
-3534	ÞÁñÕñûþÀÜ	ÒüøÒüìÒüîÒüäÒüøÒéô	Tia hß╗ông ngoß║íi	666	0
-3535	ÚØÆ	ÒüéÒüè	M├áu Xanh	667	0
-3536	ÚØÆ	ÒüéÒüè	Bß║ºu trß╗Øi xanh	667	0
-3537	ÚØÆõ┐íÕÅÀ	ÒüéÒüèÒüùÒéôÒüöÒüå	─É├¿n xanh	667	0
-3538	ÚØÆµú«	ÒüéÒüèÒééÒéè	Rß╗½ng xanh	667	0
-3539	ÚØÆÕ╣┤	ÒüøÒüäÒü¡Òéô	Thanh ni├¬n	667	0
-3540	þ£ƒ	Òü¥	Xanh l├¿	667	0
-3541	ÚØÆµÿÑ	ÒüøÒüäÒüùÒéàÒéô	Thanh xu├ón	667	0
-3542	þÖ¢	ÒüùÒéì	M├áu trß║»ng	668	0
-3543	þÖ¢	ÒüùÒéì	Trß║»ng ─æen	668	0
-3544	ÚØóþÖ¢	ÒüèÒééÒüùÒéì	T├│c bß║íc	668	0
-3545	þÖ¢Ú½¬	Òü»ÒüÅÒü»Òüñ	T├│c bß║íc	668	0
-3546	þ£ƒ	Òü¥	Trß║»ng to├ít	668	0
-3547	þÖ¢þ┤Ö	Òü»ÒüÅÒüù	Giß║Ñy trß║»ng	668	0
-3548	þÖ¢Ú│Ñ	Òü»ÒüÅÒüíÒéçÒüå	Thi├¬n nga	668	0
-3549	þÖ¢Õñ£	Òü│ÒéâÒüÅÒéä	Hiß╗çn tã░ß╗úng ─æ├¬m trß║»ng	668	0
-3550	þö░	Òüƒ	M├áu ─æen	669	0
-3551	Ú╗Æ	ÒüÅÒéì	Trß║»ng ─æen	669	0
-3552	Ú╗Æþî½	ÒüÅÒéìÒü¡Òüô	M├¿o mun	669	0
-3553	Ú╗ÆµØ┐	ÒüôÒüÅÒü░Òéô	Bß║úng ─æen	669	0
-3554	þ£ƒ	Òü¥	─Éen thui	669	0
-3555	Ú╗ÆÕ¡ù	ÒüÅÒéìÒüÿ	L├úi	669	0
-3556	õ║îõ║║	ÒüÁÒüƒÒéè	M├áu sß║»c	670	0
-3557	Þë▓ÒÇà	ÒüäÒéìÒüäÒéì	M├áu xanh nã░ß╗øc biß╗ân	670	0
-3558	þü░Þë▓	Òü»ÒüäÒüäÒéì	M├áu x├ím	670	0
-3559	Þë▓Úëøþ¡å	ÒüäÒéìÒüêÒéôÒü┤Òüñ	B├║t ch├¼ m├áu	670	0
-3560	µÖ»Þë▓	ÒüæÒüùÒüì	Phong cß║únh	670	0
-3561	þë╣Þë▓	Òü¿ÒüÅÒüùÒéçÒüÅ	─Éß║Àc sß║»c	670	0
-3562	Þä▒Þë▓	ÒüáÒüúÒüùÒéçÒüÅ	Phai m├áu	670	0
-3563	Ú¡Ü	ÒüòÒüïÒü¬	C├í	671	0
-3564	Ú¡ÜÕ▒ï	ÒüòÒüïÒü¬Òéä	Cß╗¡a h├áng c├í	671	0
-3565	Õ░ÅÚ¡Ü	ÒüôÒüûÒüïÒü¬	C├í con	671	0
-3566	Ú¡ÜÕ©éÕá┤	ÒüåÒüèÒüäÒüíÒü░	Chß╗ú c├í	671	0
-3567	ÚçæÚ¡Ü	ÒüìÒéôÒüÄÒéç	C├í v├áng	671	0
-3568	õ║║Ú¡Ü	Òü½ÒéôÒüÄÒéç	Ngã░ß╗Øi c├í	671	0
-3569	þå▒Õ©»Ú¡Ü	Òü¡ÒüúÒüƒÒüäÒüÄÒéç	C├í nhiß╗çt ─æß╗øi	671	0
-3570	Ú¡Üõ╗ïÚí×	ÒüÄÒéçÒüïÒüäÒéïÒüä	Hß║úi sß║ún	671	0
-3571	þè¼	ÒüäÒü¼	Con ch├│	672	0
-3572	Õ¡Éþè¼	ÒüôÒüäÒü¼	C├║n con	672	0
-3573	þò¬þè¼	Òü░ÒéôÒüæÒéô	Ch├│ giß╗» cß╗òng	672	0
-3574	þø▓Õ░Äþè¼	ÒééÒüåÒü®ÒüåÒüæÒéô	Ch├│ dß║½n ─æã░ß╗Øng	672	0
-3575	þè¼þî┐	ÒüæÒéôÒüêÒéô	Gh├®t nhau nhã░ ch├│ vß╗øi m├¿o	672	0
-3576	þîƒþè¼	ÒéèÒéçÒüåÒüæÒéô	Ch├│ s─ân	672	0
-3577	þïéþè¼þùà	ÒüìÒéçÒüåÒüæÒéôÒü│ÒéçÒüå	Bß╗çnh dß║íi	672	0
-3578	þ▒│	ÒüôÒéü	Thß╗®c ─ân	673	0
-3579	ÚúƒµûÖÕôü	ÒüùÒéçÒüÅÒéèÒéçÒüåÒü▓Òéô	Thß╗▒c phß║®m, nguy├¬n liß╗çu nß║Ñu ─ân	673	0
-3580	þäíµûÖ	ÒéÇÒéèÒéçÒüå	Miß╗àn ph├¡	673	0
-3581	µûÖÚçæ	ÒéèÒéçÒüåÒüìÒéô	Tiß╗ün cã░ß╗øc	673	0
-3582	µÄêµÑ¡µûÖ	ÒüÿÒéàÒüÄÒéçÒüåÒéèÒéçÒüå	Tiß╗ün hß╗ìc ph├¡	673	0
-3583	þÁªµûÖ	ÒüìÒéàÒüåÒéèÒéçÒüå	Tiß╗ün lã░ãíng	673	0
-3584	µØÉµûÖ	ÒüûÒüäÒéèÒéçÒüå	T├ái liß╗çu	673	0
-3585	Þ│çµûÖ	ÒüùÒéèÒéçÒüå	Tã░ liß╗çu	673	0
-3586	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	Thß╗®c ─ân, m├│n ─ân	674	0
-3587	þäíþÉå	ÒéÇÒéè	L├¢ do	674	0
-3588	Õ£░þÉå	ÒüíÒéè	─Éß╗ïa l├¢	674	0
-3589	õ┐«þÉå	ÒüùÒéàÒüåÒéè	Sß╗¡a chß╗»a	674	0
-3590	þÉåµâ│	ÒéèÒüØÒüå	L├¢ tã░ß╗ƒng	674	0
-3591	þÉåÞºú	ÒéèÒüïÒüä	L├¢ giß║úi, thß║Ñu hiß╗âu	674	0
-3592	Õ┐âþÉåÕ¡ª	ÒüùÒéôÒéèÒüîÒüÅ	T├óm l├¢ hß╗ìc	674	0
-3593	þºü	ÒéÅÒüƒÒüù	Vi phß║ím	675	0
-3594	ÕÅìþ£ü	Òü»ÒéôÒüøÒüä	Sß╗▒ xem x├®t lß║íi, , phß║ún tß╗ënh	675	0
-3595	ÕÅìµèù	Òü»ÒéôÒüôÒüå	Sß╗▒ phß║ún kh├íng	675	0
-3596	ÕÅì	ÒüØ	Phß║ún ß╗®ng	675	0
-3597	ÕÅìþë®	ÒüƒÒéôÒééÒü«	Tß║Ñm vß║úi	675	0
-3598	Þ¼ÇÕÅì	ÒéÇÒü╗Òéô	Cuß╗Öc nß╗òi loß║ín, mã░u phß║ún	675	0
-3599	þÜå	Òü┐Òü¬	Cãím	676	0
-3600	µ£Ø	ÒüéÒüò	Cãím s├íng	676	0
-3601	µÿ╝	Òü▓Òéï	Cãím trã░a	676	0
-3602	µÖ®	Òü░Òéô	Cãím tß╗æi	676	0
-3603	Úú»	ÒéüÒüù	Cãím (lß╗ïch sß╗▒)	676	0
-3604	þéèÚú»ÕÖ¿	ÒüÖÒüäÒü»ÒéôÒüì	Nß╗ôi cãím ─æiß╗çn	676	0
-3605	µ┤Ñ	Òüñ	Con b├▓	677	0
-3606	þëøÞéë	ÒüÄÒéàÒüåÒü½ÒüÅ	Thß╗ït b├▓	677	0
-3607	þëøõ╣│	ÒüÄÒéàÒüåÒü½ÒéàÒüå	Sß╗»a b├▓	677	0
-3608	Õ¡Éþëø	ÒüôÒüåÒüù	Con b├¬	677	0
-3609	þëíþëøÕ║º	ÒüèÒüåÒüùÒüû	Cung Kim ngã░u	677	0
-3610	µ░┤þëø	ÒüÖÒüäÒüÄÒéàÒüå	Con tr├óu nã░ß╗øc	677	0
-3611	þëøõ©╝	ÒüÄÒéàÒüåÒü®Òéô	Cãím gyudon (cãím thß╗ït b├▓ Nhß║¡t Bß║ún)	677	0
-3612	Úùÿþëø	Òü¿ÒüåÒüÄÒéàÒüå	─Éß║Ñu b├▓	677	0
-3613	Þ▒Ü	ÒüÂÒüƒ	Con heo	678	0
-3614	Þ▒ÜÞéë	ÒüÂÒüƒÒü½ÒüÅ	Thß╗ït heo	678	0
-3615	Õ¡ÉÞ▒Ü	ÒüôÒüÂÒüƒ	Con heo con	678	0
-3616	Ú│Ñ	Òü¿Òéè	Con chim	679	0
-3617	Õ░ÅÚ│Ñ	ÒüôÒü¿Òéè	Con chim nhß╗Å, chim non	679	0
-3618	Ú│ÑÞéë	Òü¿ÒéèÒü½ÒüÅ	Thß╗ït chim, thß╗ït g├á	679	0
-3619	þÖ¢Ú│Ñ	Òü»ÒüÅÒüíÒéçÒüå	Con thi├¬n nga	679	0
-3620	þä╝	Òéä	G├á nã░ß╗øng	679	0
-3621	Ú│ÑÕ▒à	Òü¿ÒéèÒüä	Cß╗òng ─æß╗ün thß╗ƒ ─æß║ío Shinto	679	0
-3622	õ©Çþƒ│õ║îÚ│Ñ	ÒüäÒüúÒüøÒüìÒü½ÒüíÒéçÒüå	Mß╗Öt m┼®i t├¬n tr├║ng 2 ─æ├¡ch (th├ánh ngß╗»)	679	0
-3623	Þéë	Òü½ÒüÅ	Thß╗ït	680	0
-3624	þëøÞéë	ÒüÄÒéàÒüåÒü½ÒüÅ	Thß╗ït b├▓	680	0
-3625	Þ▒ÜÞéë	ÒüÂÒüƒÒü½ÒüÅ	Thß╗ït heo	680	0
-3626	Ú│ÑÞéë	Òü¿ÒéèÒü½ÒüÅ	Thß╗ït g├á	680	0
-3627	ÞéëÕ▒ï	Òü½ÒüÅÒéä	Cß╗¡a h├áng thß╗ït	680	0
-3628	þ¡ïÞéë	ÒüìÒéôÒü½ÒüÅ	Cãí bß║»p	680	0
-3629	þÜ«Þéë	Òü▓Òü½ÒüÅ	Diß╗àu cß╗út, ch├óm chß╗ìc	680	0
-3630	õ║îõ║║	ÒüÁÒüƒÒéè	Tr├á	681	0
-3631	ÞîÂÞë▓	ÒüíÒéâÒüäÒéì	M├áu tr├á	681	0
-3632	þ┤àÞîÂ	ÒüôÒüåÒüíÒéâ	Hß╗ông tr├á	681	0
-3633	Õû½ÞîÂÕ║ù	ÒüìÒüúÒüòÒüªÒéô	Tiß╗çm giß║úi kh├ít, qu├ín C├á ph├¬	681	0
-3634	ÞîÂþóù	ÒüíÒéâÒéÅÒéô	T├ích tr├á	681	0
-3635	ÞîÂÚüô	ÒüòÒü®Òüå	Tr├á ─æß║ío	681	0
-3636	ÞîÂÚüô	ÒüíÒéâÒü®Òüå	Tr├á ─æß║ío	681	0
-3637	þäíÞîÂÞïªÞîÂ	ÒéÇÒüíÒéâÒüÅÒüíÒéâ	Lß╗Ön xß╗Ön, rß╗æi tung, bß╗Øi	681	0
-3638	ÞîÂÕ║ù	ÒüíÒéâÒü┐Òüø	Tiß╗çm tr├á	681	0
-3639	µ»ìÞª¬	Òü»Òü»ÒüèÒéä	Dß╗▒ ─æß╗ïnh	682	0
-3640	õ║êþ┤ä	ÒéêÒéäÒüÅ	─Éß║Àt chß╗ù, hß║╣n trã░ß╗øc	682	0
-3641	õ║êþ┐Æ	ÒéêÒüùÒéàÒüå	Xem b├ái mß╗øi, soß║ín b├ái	682	0
-3642	Õñ®µ░ù	ÒüªÒéôÒüì	Dß╗▒ b├ío thß╗Øi tiß║┐t	682	0
-3643	õ║êþ«ù	ÒéêÒüòÒéô	Ng├ón s├ích, ng├ón quß╗╣	682	0
-3644	õ║êµ©¼	ÒéêÒüØÒüÅ	Sß╗▒ b├ío trã░ß╗øc, ã░ß╗øc lã░ß╗úng	682	0
-3645	õ║êÚÿ▓	ÒéêÒü╝Òüå	Ph├▓ng ngß╗½a	682	0
-3646	õ║êÞ¿Ç	ÒéêÒüÆÒéô	Lß╗Øi ti├¬n ─æo├ín, ti├¬n tr├¼	682	0
-3647	ÚçÄÕÄƒ	Òü«Òü»Òéë	Rau	683	0
-3648	ÚòÀÚçÄ	Òü¬ÒüîÒü«	Tß╗ënh Nagano, 1 tß╗ënh cß╗ºa Nhß║¡t Bß║ún	683	0
-3649	Õ░ÅÚçÄ	ÒüèÒü«	B├│ng ch├áy	683	0
-3650	ÕêåÚçÄ	ÒüÂÒéôÒéä	L─®nh vß╗▒c	683	0
-3651	ÚçÄÕàÜ	ÒéäÒü¿Òüå	─Éß║úng chß╗æng ─æß╗æi	683	0
-3652	ÚçÄÕÄƒ	Òü«Òü»Òéë	C├ính ─æß╗ông	683	0
-3653	Þìë	ÒüÅÒüò	Rau	684	0
-3654	ÞÅ£Õ£Æ	ÒüòÒüäÒüêÒéô	Vã░ß╗Øn rau	684	0
-3655	ÞÅ£	Òü¬	C├ính ─æß╗ông hoa	684	0
-3656	þÖ¢ÞÅ£	Òü»ÒüÅÒüòÒüä	Cß║úi thß║úo	684	0
-3657	Õ▒▒ÞÅ£	ÒüòÒéôÒüòÒüä	Rau dß║íi ß╗ƒ n├║i	684	0
-3658	ÞÅ£Úúƒ	ÒüòÒüäÒüùÒéçÒüÅ	Ngã░ß╗Øi theo chß╗º ngh─®a ─ân chay	684	0
-3659	õ©âõ║║	ÒüùÒüíÒü½Òéô	Con tem	685	0
-3660	ÕñºÕêç	ÒüƒÒüäÒüøÒüñ	V├®	685	0
-3661	þÀá	Òüù	Ho├án to├án (kh├┤ng)	685	0
-3662	õ║║	Òü▓Òü¿	Sß╗▒ viß║┐t v─ân, sß╗▒ l├ám v─ân, b├ái v─ân	686	0
-3663	õ¢£Õôü	ÒüòÒüÅÒü▓Òéô	T├íc phß║®m	686	0
-3664	õ¢£Õ«Â	ÒüòÒüúÒüï	T├íc gia, nh├á v─ân	686	0
-3665	µôìõ¢£	ÒüØÒüåÒüò	Thao t├íc, ─æiß╗üu khiß╗ân	686	0
-3666	ÕÉìõ¢£	ÒéüÒüäÒüòÒüÅ	T├íc phß║®m danh tiß║┐ng	686	0
-3667	Õïòõ¢£	Òü®ÒüåÒüò	─Éß╗Öng t├íc	686	0
-3668	µ£¿	Òüì	Tã░ãíng lai	687	0
-3669	µ£¬µ║Ç	Òü┐Òü¥Òéô	Kh├┤ng ─æß║ºy ─æß╗º	687	0
-3670	µ£¬Õ®Ü	Òü┐ÒüôÒéô	Sß╗▒ chã░a kß║┐t h├┤n, sß╗▒ chã░a cã░ß╗øi	687	0
-3671	µ£¬Õ«Ü	Òü┐ÒüªÒüä	Sß╗▒ chã░a ─æã░ß╗úc quyß║┐t ─æß╗ïnh	687	0
-3672	µ£¬µêÉÕ╣┤	Òü┐ÒüøÒüäÒü¡Òéô	Vß╗ï th├ánh ni├¬n, chã░a ─æß╗º tuß╗òi	687	0
-3673	µ£¬þåƒ	Òü┐ÒüÿÒéàÒüÅ	Chã░a c├│ kinh nghiß╗çm, chã░a ch├¡n chß║»n	687	0
-3674	µ£¬µÿÄ	Òü┐ÒéüÒüä	S├íng tinh mãí, ban mai	687	0
-3675	Õæ│	ÒüéÒüÿ	M├╣i vß╗ï	688	0
-3676	µäÅÕæ│	ÒüäÒü┐	├Ø ngh─®a	688	0
-3677	ÞÂúÕæ│	ÒüùÒéàÒü┐	Sß╗ƒ th├¡ch	688	0
-3678	ÞêêÕæ│	ÒüìÒéçÒüåÒü┐	Hß╗®ng th├║	688	0
-3679	Õæ│ÕÖî	Òü┐ÒüØ	Tã░ãíng Miso	688	0
-3680	Þ¬┐Õæ│	ÒüíÒéçÒüåÒü┐	Gia vß╗ï	688	0
-3681	Õæ│	ÒüéÒüÿ	─Éãín giß║ún, mß╗Öc mß║íc	688	0
-3682	µùÑ	Òü▓	├ém nhß║íc	689	0
-3683	Úƒ│	ÒüèÒü¿	Tiß║┐ng, ├óm thanh	689	0
-3684	þÖ║Úƒ│	Òü»ÒüñÒüèÒéô	Sß╗▒ ph├ít ├óm	689	0
-3685	Úî▓Úƒ│	ÒéìÒüÅÒüèÒéô	Sß╗▒ ghi ├óm	689	0
-3686	Úƒ│ÚçÅ	ÒüèÒéôÒéèÒéçÒüå	├ém lã░ß╗úng (volume)	689	0
-3687	µ»ìÚƒ│	Òü╝ÒüäÒéô	Nguy├¬n ├óm	689	0
-3688	Õ¡ÉÚƒ│	ÒüùÒüäÒéô	Phß╗Ñ ├óm	689	0
-3689	µ£¼Úƒ│	Òü╗ÒéôÒü¡	├¢ ─æß╗ïnh thß╗▒c sß╗▒, ─æß╗Öng cãí	689	0
-3690	µ£¿	Òüì	├ém nhß║íc	690	0
-3691	µÑ¢	ÒüƒÒü«	Nhß║íc cß╗Ñ	690	0
-3692	Õ¿»µÑ¢	ÒüöÒéëÒüÅ	Vui chãíi, giß║úi tr├¡, ti├¬u khiß╗ân	690	0
-3693	Õñº	ÒüèÒüè	B├ái h├ít	691	0
-3694	µ¡î	ÒüåÒüƒ	Ca s─®	691	0
-3695	µ¡îÞ®×	ÒüïÒüù	Ca tß╗½, lß╗Øi b├ái h├ít	691	0
-3696	þƒ¡µ¡î	ÒüƒÒéôÒüï	Thãí ngß║»n	691	0
-3697	Õø¢µ¡î	ÒüôÒüúÒüï	Quß╗æc ca	691	0
-3698	µáíµ¡î	ÒüôÒüåÒüï	B├ái h├ít cß╗ºa trã░ß╗Øng	691	0
-3699	µùÑµ£¼	Òü½Òü╗Òéô	bß║ún th├ón m├¼nh, tß╗▒ m├¼nh	692	0
-3700	Þç¬Þ╗óÞ╗è	ÒüÿÒüªÒéôÒüùÒéâ	Xe ─æß║íp	692	0
-3701	Þç¬ÕïòÞ╗è	ÒüÿÒü®ÒüåÒüùÒéâ	Xe ├┤ t├┤	692	0
-3702	Þç¬þö▒	ÒüÿÒéåÒüå	Tß╗▒ do	692	0
-3703	Þç¬	Òü┐ÒüÜÒüï	Tß╗▒ nhi├¬n	692	0
-3704	Þç¬þ┐Æ	ÒüÿÒüùÒéàÒüå	Sß╗▒ tß╗▒ ├┤n tß║¡p, tß╗▒ hß╗ìc	692	0
-3705	Þç¬õ┐í	ÒüÿÒüùÒéô	Tß╗▒ tin	692	0
-3706	Þ╗è	ÒüÅÒéïÒü¥	Xe ─æß║íp	693	0
-3707	ÚüïÞ╗óµëï	ÒüåÒéôÒüªÒéôÒüùÒéà	T├ái xß║┐	693	0
-3708	Þ╗ó	ÒüôÒéì	Chuyß╗ân c├┤ng t├íc	693	0
-3709	Þ╗óµáí	ÒüªÒéôÒüôÒüå	Sß╗▒ chuyß╗â trã░ß╗Øng	693	0
-3710	µ£¿	Òüì	Phã░ãíng tiß╗çn ─æi lß║íi	694	0
-3711	õ╣ù	Òü«	Phã░ãíng tiß╗çn giao th├┤ng	694	0
-3712	õ╣ùÕ«ó	ÒüÿÒéçÒüåÒüìÒéâÒüÅ	H├ánh kh├ích	694	0
-3713	õ╣ù	Òü«	Viß╗çc cã░ß╗íi ngß╗▒a	694	0
-3714	õ╣ùÞ╗èÕê©	ÒüÿÒéçÒüåÒüùÒéâÒüæÒéô	V├® xe	694	0
-3715	Õ©¢Õ¡É	Òü╝ÒüåÒüù	Bß╗®c ß║únh	695	0
-3716	ÕåÖ	ÒüåÒüñ	Nhiß║┐p ß║únh gia	695	0
-3717	ÕåÖþöƒ	ÒüùÒéâÒüøÒüä	Vß║¢ ph├íc	695	0
-3718	ÞñçÕåÖ	ÒüÁÒüÅÒüùÒéâ	Bß║ún sao	695	0
-3719	µÅÅÕåÖ	Òü│ÒéçÒüåÒüùÒéâ	Chß╗º ngh─®a tß║ú thß╗▒c	695	0
-3720	þºü	ÒéÅÒüƒÒüù	2 m├íy	696	0
-3721	ÕÅ░µëÇ	ÒüáÒüäÒü®ÒüôÒéì	Nh├á bß║┐p	696	0
-3722	ÕÅ░Úó¿	ÒüƒÒüäÒüÁÒüå	B├úo	696	0
-3723	ÕÅ░	ÒüáÒüä	C├íi gi├í, khung, bß╗ç	696	0
-3724	Þê×ÕÅ░	ÒüÂÒüƒÒüä	S├ón khß║Ñu	696	0
-3725	ÕÅ░µ╣¥	ÒüƒÒüäÒéÅÒéô	─É├ái Loan	696	0
-3726	ÕÅ░µ£¼	ÒüáÒüäÒü╗Òéô	Kß╗ïch bß║ún	696	0
-3727	õ║║	Òü▓Òü¿	Trung ã░ãíng	697	0
-3728	õ©¡Õñ«þÀÜ	ÒüíÒéàÒüåÒüèÒüåÒüøÒéô	Tuyß║┐n t├áu Chyuo	697	0
-3729	õ©¡Õñ«	ÒüíÒéàÒüåÒüèÒüå	Trung ã░ãíng tß║¡p quyß╗ün	697	0
-3730	µÿáþö╗	ÒüêÒüäÒüî	Phim ß║únh	698	0
-3731	µÿáþö╗Úñ¿	ÒüêÒüäÒüîÒüïÒéô	Rß║íp chiß║┐u phim	698	0
-3732	þö░	Òüƒ	Phim ß║únh	699	0
-3733	µ╝½þö╗	Òü¥ÒéôÒüî	Truyß╗çn tranh nhß║¡t bß║ún	699	0
-3734	Þ¿êþö╗	ÒüæÒüäÒüïÒüÅ	Kß║┐ hoß║ích	699	0
-3735	þö╗Õ«Â	ÒüîÒüï	Hß╗ìa s─®	699	0
-3736	þÁÁþö╗	ÒüïÒüäÒüî	Bß╗®c tranh, hß╗Öi hß╗ìa	699	0
-3737	þö╗µò░	ÒüïÒüÅÒüÖÒüå	Sß╗æ n├®t	699	0
-3738	þö╗þ┤á	ÒüîÒüØ	Pixel (phß║ºn tß╗¡ ß║únh)	699	0
-3739	þ¥è	Òü▓ÒüñÒüÿ	Con cß╗½u	700	0
-3740	Õ¡Éþ¥è	ÒüôÒü▓ÒüñÒüÿ	cß╗½u con, cß╗½u non	700	0
-3741	þ¥èµ»ø	ÒéêÒüåÒééÒüå	L├┤ng cß╗½u	700	0
-3742	Õ▒▒þ¥è	ÒéäÒüÄ	Con d├¬	700	0
-3743	þ¥è	Òü▓ÒüñÒüÿ	├éu phu╠úc	701	0
-3744	ÞÑ┐µ┤ï	ÒüøÒüäÒéêÒüå	t├óy phã░ãíng	701	0
-3745	µØ▒µ┤ï	Òü¿ÒüåÒéêÒüå	phã░ãíng ─É├┤ng	701	0
-3746	Õñ¬Õ╣│µ┤ï	ÒüƒÒüäÒü©ÒüäÒéêÒüå	Th├íi B├¼nh Dã░ãíng	701	0
-3747	ÕñºÞÑ┐µ┤ï	ÒüƒÒüäÒüøÒüäÒéêÒüå	─Éß║íi T├óy Dã░ãíng	701	0
-3748	µ┤ïÕ╝Å	ÒéêÒüåÒüùÒüì	Kiß╗âu T├óy	701	0
-3749	µ┤ïÚúƒ	ÒéêÒüåÒüùÒéçÒüÅ	M├│n ─ân T├óy	701	0
-3750	µ┤ïµø©	ÒéêÒüåÒüùÒéç	S├ích phã░ãíng T├óy	701	0
-3751	µ£ê	ÒüñÒüì	Trang phß╗Ñc, ├ío quß║ºn	702	0
-3752	µ┤ïµ£ì	ÒéêÒüåÒüÁÒüÅ	├éu phu╠úc	702	0
-3753	ÕÆîµ£ì	ÒéÅÒüÁÒüÅ	Quß║ºn ├ío kiß╗âu Nhß║¡t	702	0
-3754	µ£ìÞúà	ÒüÁÒüÅÒüØÒüå	Phß╗Ñc trang	702	0
-3755	Õàïµ£ì	ÒüôÒüÅÒüÁÒüÅ	─Éß╗ông phß╗Ñc	702	0
-3756	Õû¬µ£ì	ÒééÒüÁÒüÅ	Tang phß╗Ñc	702	0
-3757	Õ¥üµ£ì	ÒüøÒüäÒüÁÒüÅ	Chinh phß╗Ñc	702	0
-3758	þØÇ	Òüì	├üo kho├íc	703	0
-3759	õ©ïþØÇ	ÒüùÒüƒÒüÄ	Quß║ºn ├ío trong	703	0
-3760	þØÇ	Òüñ	Bß╗Ö Kimono	703	0
-3761	Õê░þØÇ	Òü¿ÒüåÒüíÒéâÒüÅ	Sß╗▒ ─æß║┐n nãíi	703	0
-3762	ÞÉ¢	Òüè	├üo bãíi, quß║ºn ├ío tß║»m	703	0
-3763	µ£¼Õ¢ô	Òü╗ÒéôÒü¿Òüå	Bß╗®c ß║únh	704	0
-3764	þ£ƒ	Òü¥	Ch├¡nh giß╗»a	704	0
-3765	þ£ƒ	Òü¥	Tß╗æi ─æen nhã░ mß╗▒c	704	0
-3766	þ£ƒ	Òü¥	Trß║»ng to├ít	704	0
-3767	þ£ƒÕñ£õ©¡	Òü¥ÒéêÒü¬Òüï	Giß╗»a ─æ├¬m khuya	704	0
-3768	þ£ƒÕëú	ÒüùÒéôÒüæÒéô	Nghi├¬m trang, ─æ├║ng ─æß║»n	704	0
-3769	þ£ƒÕ«ƒ	ÒüùÒéôÒüÿÒüñ	Ch├ón thß║¡t	704	0
-3770	µÿö	ÒéÇÒüïÒüù	Nh├á	705	0
-3771	Õ«ÂµùÅ	ÒüïÒü×ÒüÅ	Gia ─æ├¼nh	705	0
-3772	Õ«ÂÕåà	ÒüïÒü¬Òüä	Vß╗ú, m├¼nh	705	0
-3773	Õ«Âõ║ï	ÒüïÒüÿ	Viß╗çc nh├á, viß╗çc gia ─æ├¼nh	705	0
-3774	ÕñºÕ«Â	ÒüèÒüèÒéä	Chß╗º nh├á	705	0
-3775	Õ«ÂÞ│â	ÒéäÒüíÒéô	Tiß╗ün nh├á	705	0
-3776	Õ▒▒þö░Õ«Â	ÒéäÒü¥ÒüáÒüæ	Gia ─æ├¼nh Yamada	705	0
-3777	þƒó	Òéä	M┼®i t├¬n	706	0
-3778	þƒóÕì░	ÒéäÒüÿÒéïÒüù	M┼®i t├¬n chß╗ë hã░ß╗øng	706	0
-3779	þäíþÉåþƒóþÉå	ÒéÇÒéèÒéäÒéè	Bß║▒ng sß╗®c mß║ính, sinh ─æß╗Öng, mß║ính mß║¢	706	0
-3780	µùù	Òü»Òüƒ	Gia ─æ├¼nh	707	0
-3781	Þª¬µùÅ	ÒüùÒéôÒü×ÒüÅ	Th├ón tß╗Öc, b├á con th├ón thiß║┐t, ngã░ß╗Øi trong d├▓ng tß╗Öc	707	0
-3782	Þ▓┤µùÅ	ÒüìÒü×ÒüÅ	Qu├¢ tß╗Öc, qu├¢ ph├íi	707	0
-3783	µ░æµùÅ	Òü┐ÒéôÒü×ÒüÅ	D├ón tß╗Öc	707	0
-3784	µ░┤µùÅÚñ¿	ÒüÖÒüäÒü×ÒüÅÒüïÒéô	C├┤ng vi├¬n thß╗ºy cung	707	0
-3785	µ£¿	Òüì	cha mß║╣	708	0
-3786	Þª¬Õêç	ÒüùÒéôÒüøÒüñ	th├ón sinh	708	0
-3787	Þª¬ÕÅï	ÒüùÒéôÒéåÒüå	bß║ín th├ón	708	0
-3788	þêÂÞª¬	ÒüíÒüíÒüèÒéä	bß╗æ, ba	708	0
-3789	µ»ìÞª¬	Òü»Òü»ÒüèÒéä	mß║╣	708	0
-3790	Þª¬Õ¡É	ÒüèÒéäÒüô	cha mß║╣ v├á con c├íi, t├¼nh m├íu mß╗º	708	0
-3791	Õàä	ÒüéÒü½	Anh	709	0
-3792	Õàä	Òü½Òüä	Anh em	709	0
-3793	þ¥®Õàä	ÒüÄÒüæÒüä	Anh em kß║┐t ngh─®a	709	0
-3794	Õºë	ÒüéÒü¡	Chß╗ï	710	0
-3795	Õºë	Òü¡Òüê	Chß╗ï em g├íi	710	0
-3796	ÕºëÕª╣	ÒüùÒü¥Òüä	Th├ánh phß╗æ kß║┐t ngh─®a	710	0
-3797	Õ╝ƒ	ÒüèÒü¿ÒüåÒü¿	Em trai	711	0
-3798	ÕàäÕ╝ƒ	ÒüìÒéçÒüåÒüáÒüä	Anh em trai	711	0
-3799	Õ╝ƒÕ¡É	ÒüºÒüù	─æß╗ô ─æß╗ç ,─æß╗ç tß╗¡	711	0
-3800	þ¥®Õ╝ƒ	ÒüÄÒüªÒüä	em kß║┐t ngh─®a, ngh─®a ─æß╗ç, em rß╗â, em vß╗ú	711	0
-3801	ÕÑ│	ÒüèÒéôÒü¬	Em g├íi	712	0
-3802	ÕºëÕª╣	ÒüùÒü¥Òüä	Chß╗ï em g├íi	712	0
-3803	þºü	ÒéÅÒüƒÒüù	T├┤i	713	0
-3804	þºü	ÒéÅÒüƒÒüù	T├┤i	713	0
-3805	þºüþ½ï	ÒüùÒéèÒüñ	─Éß║íi hß╗ìc Tã░ lß║¡p	713	0
-3806	þºüÚëä	ÒüùÒüªÒüñ	─æã░ß╗Øng sß║»t tã░ doanh	713	0
-3807	þºüþö¿	ÒüùÒéêÒüå	viß╗çc ri├¬ng ,d├╣ng cho c├í nh├ón	713	0
-3808	þºüµ£ë	ÒüùÒéåÒüå	tã░ hß╗»u	713	0
-3809	þºüþöƒµ┤╗	ÒüùÒüøÒüäÒüïÒüñ	Cuß╗Öc sß╗æng c├í nh├ón	713	0
-3810	þºüµø©þ«▒	ÒüùÒüùÒéçÒü░Òüô	Tß╗º ─æß╗▒ng ─æß╗ô c├í nh├ón	713	0
-3811	þºü	ÒéÅÒüƒÒüù	Chß╗ông	714	0
-3812	Õñ½Õª╗	ÒüÁÒüòÒüä	Vß╗ú chß╗ông, phu th├¬	714	0
-3813	Õñ½Õ®ª	ÒüÁÒüåÒüÁ	Vß╗ú chß╗ông	714	0
-3814	Õñºõ©êÕñ½	ÒüáÒüäÒüÿÒéçÒüåÒüÂ	Kh├┤ng sao	714	0
-3815	Õñ½õ║║	ÒüÁÒüÿÒéô	phu nh├ón	714	0
-3816	ÕÀÑÕñ½	ÒüÅÒüÁÒüå	─Éa╠Ço s├óu nghi├¬n cã░╠üu, c├┤ng phu	714	0
-3817	µîü	Òéé	Vß╗ú, vß╗ú con	715	0
-3818	Õñ½Õª╗	ÒüÁÒüòÒüä	vß╗ú chß╗ông, phu th├¬	715	0
-3819	Õª╗Õ¡É	ÒüòÒüäÒüù	vß╗ú con, th├¬ tß╗¡	715	0
-3820	õ©ÇÕñ½	ÒüäÒüúÒüÀ	─Éa th├¬	715	0
-3821	Õ©¢Õ¡É	Òü╝ÒüåÒüù	Ngã░ß╗Øi chß╗ông	716	0
-3822	õ©╗Õ®ª	ÒüùÒéàÒüÁ	vß╗ú	716	0
-3823	õ©╗Þ¬×	ÒüùÒéàÒüö	Chß╗º ngß╗»	716	0
-3824	õ©╗þ¥®	ÒüùÒéàÒüÄ	Chß╗º ngh─®a	716	0
-3825	õ©╗Úíî	ÒüùÒéàÒüáÒüä	Chß╗º ─æß╗ü, ─æß╗ü t├ái	716	0
-3826	õ©╗Úúƒ	ÒüùÒéàÒüùÒéçÒüÅ	M├│n ─ân ch├¡nh	716	0
-3827	õ©╗	ÒüèÒéé	Ngã░ß╗Øi chß╗º, ngã░ß╗Øi sß╗ƒ hß╗»u	716	0
-3828	õ©╗õ║║	ÒüùÒéàÒüÿÒéô	nãíi sinh sß╗æng, ─æß╗ïa chß╗ë	717	0
-3829	õ¢Åµ░æ	ÒüÿÒéàÒüåÒü┐Òéô	Ngã░ß╗Øi d├ón cã░ tr├║	717	0
-3830	õ¢ÅÕ«à	ÒüÿÒéàÒüåÒüƒÒüÅ	Nh├á ß╗ƒ, nãíi sß╗æng	717	0
-3831	ÞíúÚúƒõ¢Å	ÒüäÒüùÒéçÒüÅÒüÿÒéàÒüå	Nhu cß║ºu ─ân uß╗æng thiß║┐t yß║┐u cß╗ºa cuß╗Öc sß╗æng	717	0
-3832	þ│©ÕÀ╗	ÒüäÒü¿Òü¥	Sß╗úi chß╗ë	718	0
-3833	µ»øþ│©	ÒüæÒüäÒü¿	Sß╗úi len	718	0
-3834	Úçú	Òüñ	D├óy cã░ß╗øc c├óu c├í	718	0
-3835	µè£þ│©	Òü░ÒüúÒüù	Vß║»t chß╗ë	718	0
-3836	ÕÉìµ£¡	Òü¬ÒüÁÒüá	Ho╠ú t├¬n	719	0
-3837	Õ¢╝µ░Å	ÒüïÒéîÒüù	bß║ín trai , ngã░ß╗Øi y├¬u	719	0
-3838	ÕñºÚçÄµ░Å	ÒüèÒüèÒü«Òüù	├öng Ono	719	0
-3839	µæéµ░Å	ÒüøÒüúÒüù	thang chia nhiß╗çt ─æß╗Ö lß║Ñy ─æiß╗âm ─æ├┤ng cß╗ºa nã░ß╗øc l├á 0 v├á ─æiß╗âm s├┤i l├á 100, b├ích ph├ón	719	0
-3840	ÞÅ»µ░Å	ÒüïÒüù	thang nhiß╗çt Fahrenheit	719	0
-3841	µ░ÅþÑ×	ÒüåÒüÿÒüîÒü┐	thß║ºn hß╗Ö mß║íng, th├ánh ho├áng, thß║ºn hß╗Ö mß╗çnh	719	0
-3842	Ú½¬	ÒüïÒü┐	Giß║Ñy	720	0
-3843	µëïþ┤Ö	ÒüªÒüîÒü┐	Thã░	720	0
-3844	Þí¿þ┤Ö	Òü▓ÒéçÒüåÒüù	b├¼a	720	0
-3845	þ┤ÖÕ╣ú	ÒüùÒü©Òüä	Tiß╗ün giß║Ñy	720	0
-3846	ÕÆîþ┤Ö	ÒéÅÒüù	giß║Ñy Nhß║¡t	720	0
-3847	þ┤Ö	ÒüïÒü┐	Nghß╗ç thuß║¡t xß║┐p giß║Ñy cß╗ºa Nhß║¡t Bß║ún	720	0
-3848	ÞÇüõ║║	ÒéìÒüåÒüÿÒéô	Ph├▓ng hß╗ìc, lß╗øp hß╗ìc	721	0
-3849	µòÖõ╝Ü	ÒüìÒéçÒüåÒüïÒüä	gi├ío ─æã░ß╗Øng, nh├á thß╗Ø	721	0
-3850	µòÖÞé▓	ÒüìÒéçÒüåÒüäÒüÅ	Sß╗▒ gi├ío dß╗Ñc	721	0
-3851	µòÖµÄê	ÒüìÒéçÒüåÒüÿÒéà	sß╗▒ gi├ío dß╗Ñc, gi├ío dß╗Ñc, giß║úng dß║íy	721	0
-3852	µòÖÕ©½	ÒüìÒéçÒüåÒüù	Gi├ío vi├¬n	721	0
-3853	µòÖþºæµø©	ÒüìÒéçÒüåÒüïÒüùÒéç	S├ích gi├ío khoa	721	0
-3854	Õ«ùµòÖ	ÒüùÒéàÒüåÒüìÒéçÒüå	t├┤n gi├ío ,─æß║ío gi├ío ,─æß║ío	721	0
-3855	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	Ph├▓ng hß╗ìc, lß╗øp hß╗ìc	722	0
-3856	þáöþ®ÂÕ«ñ	ÒüæÒéôÒüìÒéàÒüåÒüùÒüñ	Pho├▓ng nghi├¬n cß╗®u	722	0
-3857	õ╝ÜÞ¡░Õ«ñ	ÒüïÒüäÒüÄÒüùÒüñ	Ph├▓ng hß╗ìp	722	0
-3858	Õ¥àÕÉêÕ«ñ	Òü¥ÒüíÒüéÒüäÒüùÒüñ	Ph├▓ng chß╗Ø	722	0
-3859	µ©®Õ«ñ	ÒüèÒéôÒüùÒüñ	Nh├á k├¡nh	722	0
-3860	Õ£░õ©ïÕ«ñ	ÒüíÒüïÒüùÒüñ	Hß║ºm chß╗®a, nß╗ün m├│ng, tß║ºng hß║ºm	722	0
-3861	ÕÆîÕ«ñ	ÒéÅÒüùÒüñ	ph├▓ng ß╗ƒ kiß╗âu Nhß║¡t┬áph├▓ng kiß╗âu Nhß║¡t	722	0
-3862	µÁ┤Õ«ñ	ÒéêÒüÅÒüùÒüñ	ph├▓ng tß║»m ,buß╗ông tß║»m	722	0
-3863	þ¥¢	Òü»Òü¡	L├┤ng, c├ính	723	0
-3864	þ¥¢µá╣	Òü»Òü¡	C├ính, l├┤ng v┼®	723	0
-3865	õ©Çþ¥¢	ÒüäÒüíÒéÅ	Mß╗Öt con (chim, g├á, vß╗ït)	723	0
-3866	Õìâþ¥¢	ÒüøÒéôÒü░	Mß╗Öt tr─âm con (chim, g├á, vß╗ït)	723	0
-3867	þ¥¢µ»ø	ÒüåÒééÒüå	L├┤ng c├ính	723	0
-3868	Ú│Ñ	Òü¿Òéè	tß║¡p luyß╗çn	724	0
-3869	þ┐Æµàú	ÒüùÒéàÒüåÒüïÒéô	Th├│i quen	724	0
-3870	Õ¥®þ┐Æ	ÒüÁÒüÅÒüùÒéàÒüå	Xem lß║íi b├ái, ├┤n b├ái	724	0
-3871	õ║êþ┐Æ	ÒéêÒüùÒéàÒüå	sß╗▒ soß║ín b├ái, xem b├ái mß╗øi	724	0
-3872	Õ¡ªþ┐Æ	ÒüîÒüÅÒüùÒéàÒüå	Hß╗ìc tß║¡p	724	0
-3873	Þç¬þ┐Æ	ÒüÿÒüùÒéàÒüå	Sß╗▒ tß╗▒ ├┤n tß║¡p, tß╗▒ hß╗ìc	724	0
-3874	þ┐ÆÕ¡ù	ÒüùÒéàÒüåÒüÿ	Sß╗▒ luyß╗çn tß║¡p chß╗»; luyß╗çn tß║¡p chß╗»	724	0
-3875	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	H├ín tß╗▒	725	0
-3876	µ╝óÕÆî	ÒüïÒéôÒéÅ	Tß╗½ ─æiß╗ân H├ín Nhß║¡t	725	0
-3877	µ╝óµû╣Þû¼	ÒüïÒéôÒü¢ÒüåÒéäÒüÅ	Thuß╗æc ─æ├┤ng y; thuß╗æc bß║»c	725	0
-3878	µ╝óµûç	ÒüïÒéôÒüÂÒéô	thãí v─ân Nhß║¡t Bß║ún m├┤ phß╗Ång thãí v─ân Trung Quß╗æc	725	0
-3879	Õ¡É	Òüô	Chß╗», k├¢ tß╗▒	726	0
-3880	µ╝óÕ¡ù	ÒüïÒéôÒüÿ	H├ín tß╗▒	726	0
-3881	µûçÕ¡ù	ÒééÒüÿ	Chß╗», v─ân tß╗▒	726	0
-3882	ÕÉìÕ¡ù	Òü┐ÒéçÒüåÒüÿ	Hß╗ì	726	0
-3883	µò░Õ¡ù	ÒüÖÒüåÒüÿ	m├ú ,chß╗» sß╗æ, sß╗æ liß╗çu	726	0
-3884	þ┐ÆÕ¡ù	ÒüùÒéàÒüåÒüÿ	sß╗▒ luyß╗çn tß║¡p chß╗»	726	0
-3885	µ┤╗Õ¡ù	ÒüïÒüñÒüÿ	chß╗» in	726	0
-3886	Õ¡ù	Òüÿ	Chß╗» la tinh	726	0
-3887	þºü	ÒéÅÒüƒÒüù	Lß╗à nhß║¡p hß╗ìc	727	0
-3888	þÁÉÕ®ÜÕ╝Å	ÒüæÒüúÒüôÒéôÒüùÒüì	Lß╗à cã░ß╗øi	727	0
-3889	Õ╝Å	ÒüùÒüì	H├¼nh thß╗®c; kiß╗âu; lß╗à; nghi thß╗®c	727	0
-3890	µ¡úÕ╝Å	ÒüøÒüäÒüùÒüì	kiß╗âu T├óy	727	0
-3891	ÕÆîÕ╝Å	ÒéÅÒüùÒüì	kiß╗âu Nhß║¡t	727	0
-3892	Õ╝Å	ÒüùÒüì	Kß╗│ thi, b├ái thi	728	0
-3893	Þ®ªÕÉê	ÒüùÒüéÒüä	cuß╗Öc thi ─æß║Ñu, trß║¡n ─æß║Ñu	728	0
-3894	Þ®ª	ÒüƒÒéü	Kß╗│ thi trã░ß╗øc khi nhß║¡p hß╗ìc; kß╗│ thi tuyß╗ân sinh	728	0
-3895	Þ®ªÚúƒ	ÒüùÒüùÒéçÒüÅ	sß╗▒ nß║┐m thß╗¡, ─ân thß╗¡	728	0
-3896	Õ▒▒	ÒéäÒü¥	Kß╗│ thi, b├ái thi	729	0
-3897	þÁîÚ¿ô	ÒüæÒüäÒüæÒéô	kinh nghiß╗çm	729	0
-3898	Õ«ƒÚ¿ô	ÒüÿÒüúÒüæÒéô	thß╗▒c nghiß╗çm ,th├¡ nghiß╗çm ,suy nghiß╗çm ,kinh nghiß╗çm thß╗▒c tß║┐	729	0
-3899	ÕÅùÚ¿ô	ÒüÿÒéàÒüæÒéô	ß╗®ng th├¡ ,sß╗▒ tham gia k├¼ thi, dß╗▒ thi	729	0
-3900	õ¢ôÚ¿ô	ÒüƒÒüäÒüæÒéô	thß╗â t├¡ch ,sß╗▒ thß╗â nghiß╗çm, sß╗▒ trß║úi nghiß╗çm	729	0
-3901	Õ«┐	ÒéäÒü®	B├ái tß║¡p vß╗ü nh├á	730	0
-3902	õ©ïÕ«┐	ÒüÆÒüùÒéàÒüÅ	nh├á trß╗ì	730	0
-3903	Õ«┐µ│è	ÒüùÒéàÒüÅÒü»ÒüÅ	Ngß╗º trß╗ì, trß╗ì lß║íi	730	0
-3904	Õ«┐	ÒéäÒü®	Nh├á trß╗ì, chß╗ù tr├║	730	0
-3905	µ░æÕ«┐	Òü┐ÒéôÒüùÒéàÒüÅ	Nh├á trß╗ì cß╗ºa d├ón cho kh├ích du lß╗ïch thu├¬; nh├á trß╗ì tã░ nh├ón	730	0
-3906	Þ¿ÿÞÇà	ÒüìÒüùÒéâ	B├ái tß║¡p vß╗ü nh├á	731	0
-3907	ÕòÅÚíî	ÒééÒéôÒüáÒüä	Vß║Ñn ─æß╗ü	731	0
-3908	Úíî	ÒüáÒüä	Vß║Ñn ─æß╗ü; chß╗º ─æß╗ü	731	0
-3909	ÚíîÕÉì	ÒüáÒüäÒéüÒüä	t├¬n (s├ích, b├ái h├ít.v.v...) ,nhan ─æß╗ü	731	0
-3910	Þ®▒Úíî	ÒéÅÒüáÒüä	Chß╗º ─æß╗ü, ti├¬u ─æß╗ü	731	0
-3911	Þ¡░Úíî	ÒüÄÒüáÒüä	─æß╗ü ├ín hß╗Öi nghß╗ï, vß║Ñn ─æß╗ü thß║úo luß║¡n	731	0
-3912	Þ¬▓Úíî	ÒüïÒüáÒüä	chß╗º ─æß╗ü, ─æß╗ü t├ái	731	0
-3913	õ©╗Úíî	ÒüùÒéàÒüáÒüä	─æß╗ü t├ái, chß╗º ─æß╗ü	731	0
-3914	ÕÅñ	ÒüÁÒéï	v─ân hß╗ìc	732	0
-3915	õ¢£µûç	ÒüòÒüÅÒüÂÒéô	sß╗▒ viß║┐t v─ân, sß╗▒ l├ám v─ân, ─æoß║ín v─ân	732	0
-3916	µûçÕîû	ÒüÂÒéôÒüï	V─ân h├│a	732	0
-3917	µûçÕ¡ù	ÒééÒüÿ	Chß╗», v─ân tß╗▒	732	0
-3918	µûçµ│ò	ÒüÂÒéôÒü¢Òüå	Ngã░╠â pha╠üp	732	0
-3919	Þï▒µûç	ÒüêÒüäÒüÂÒéô	c├óu tiß║┐ng Anh	732	0
-3920	µûçÕÅÑ	ÒééÒéôÒüÅ	sß╗▒ k├¬u ca, sß╗▒ ph├án n├án, sß╗▒ than phiß╗ün	732	0
-3921	µûç	ÒüÁÒü┐	Thã░ tß╗½	732	0
-3922	þ£ƒ	Òü¥	tiß║┐ng Anh	733	0
-3923	Þï▒Úøä	ÒüêÒüäÒéåÒüå	Anh h├╣ng	733	0
-3924	Þï▒Õø¢	ÒüêÒüäÒüôÒüÅ	Nã░ß╗øc anh	733	0
-3925	Þï▒õ╝ÜÞ®▒	ÒüêÒüäÒüïÒüäÒéÅ	Sß╗▒ ─æ├ám thoß║íi bß║▒ng anh ngß╗»	733	0
-3926	Þï▒ÕÆî	ÒüêÒüäÒéÅ	Tß╗½ ─æiß╗ân Anh - Nhß║¡t	733	0
-3927	ÕÆîÞï▒	ÒéÅÒüêÒüä	Tß╗½ ─æiß╗ân Nhß║¡t - Anh	733	0
-3928	Õñº	ÒüèÒüè	Hß╗Åi, chß║Ñt vß║Ñn	734	0
-3929	µÇºÞ│¬	ÒüøÒüäÒüùÒüñ	t├¡nh chß║Ñt	734	0
-3930	þë®Þ│¬	ÒüÂÒüúÒüùÒüñ	vß║¡t chß║Ñt	734	0
-3931	þ┤áÞ│¬	ÒüØÒüùÒüñ	tß╗æ chß║Ñt	734	0
-3932	þÑ×þÁîÞ│¬	ÒüùÒéôÒüæÒüäÒüùÒüñ	├¡nh n├│ng nß║úy, sß╗▒ bß╗ôn chß╗ôn, lo lß║»ng	734	0
-3933	Þ│¬Õ▒ï	ÒüùÒüíÒéä	tiß╗çm cß║ºm ─æß╗ô	734	0
-3934	ÚûÇ	ÒééÒéô	Vß║Ñn ─æß╗ü	735	0
-3935	Þ│¬ÕòÅ	ÒüùÒüñÒééÒéô	Hß╗Åi, chß║Ñt vß║Ñn	735	0
-3936	ÕòÅ	Òü¿Òüä	C├óu hß╗Åi	735	0
-3937	ÕòÅ	Òü¿	Viß║┐ng th─âm	735	0
-3938	þûæÕòÅ	ÒüÄÒééÒéô	sß╗▒ nghi vß║Ñn, sß╗▒ ho├ái nghi	735	0
-3939	Õ¡ªÕòÅ	ÒüîÒüÅÒééÒéô	hß╗ìc vß║Ñn, sß╗▒ hß╗ìc	735	0
-3940	ÕòÅÕ▒ï	Òü¿ÒéôÒéä	Kho b├ín xß╗ë	735	0
-3941	Õàä	Òü½Òüä	sß╗▒ thuyß║┐t minh, sß╗▒ giß║úi th├¡ch	736	0
-3942	Õ░ÅÞ¬¼	ÒüùÒéçÒüåÒüøÒüñ	Tiß╗âu thuyß║┐t	736	0
-3943	ÚûïÞ¿¡	ÒüïÒüäÒüøÒüñ	sß╗▒ th├ánh lß║¡p, sß╗▒ x├óy dß╗▒ng	736	0
-3944	Þ¬¼Õ¥ù	ÒüøÒüúÒü¿ÒüÅ	sß╗▒ phß╗Ång ─æo├ín, giß║ú thuyß║┐t	736	0
-3945	Þ¬¼	Òü¿	sß╗▒ ─æi khß║»p nãíi ─æß╗â diß╗àn thuyß║┐t, cuß╗Öc vß║¡n ─æß╗Öng tranh cß╗¡	736	0
-3946	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	chuyß║┐n tham quan, d├ú ngoß║íi	737	0
-3947	µ£øÚüáÚÅí	Òü╝ÒüåÒüêÒéôÒüìÒéçÒüå	K├¡nh viß╗àn vß╗ìng	737	0
-3948	µ░©Úüá	ÒüêÒüäÒüêÒéô	xa lß║»c ,viß╗àn ,─æß║▒ng xa, phã░ãíng xa	737	0
-3949	µ£¿	Òüì	x├│m giß╗üng , h├áng x├│m	738	0
-3950	µ£ÇÞ┐æ	ÒüòÒüäÒüìÒéô	gß║ºn nhß║Ñt ,gß║ºn ─æ├óy, mß╗øi ─æ├óy	738	0
-3951	Þ┐æÚáâ	ÒüíÒüïÒüöÒéì	gß║ºn ─æ├óy	738	0
-3952	Þ┐æõ╗úþÜä	ÒüìÒéôÒüáÒüäÒüªÒüì	sß╗▒ cß║¡n thß╗ï, tß║¡t cß║¡n thß╗ï	738	0
-3953	õ©¡Þ┐æµØ▒	ÒüíÒéàÒüåÒüìÒéôÒü¿Òüå	V├╣ng cß║¡n trung cß║¡n ─æ├┤ng	738	0
-3954	Þ¬░	ÒüáÒéî	Hiß╗ün triß║┐t, hß╗ìc giß║ú	739	0
-3955	õ¢£ÞÇà	ÒüòÒüÅÒüùÒéâ	t├íc giß║ú	739	0
-3956	Õî╗ÞÇà	ÒüäÒüùÒéâ	B├íc s─®	739	0
-3957	þáöþ®ÂÞÇà	ÒüæÒéôÒüìÒéàÒüåÒüùÒéâ	Nh├á nghi├¬n cß╗®u	739	0
-3958	µ¡»Õî╗ÞÇà	Òü»ÒüäÒüùÒéâ	Nha s─®	739	0
-3959	Þ¿ÿÞÇà	ÒüìÒüùÒéâ	Ngã░ß╗Øi viß║┐t b├ío	739	0
-3960	Þ¬¡ÞÇà	Òü®ÒüÅÒüùÒéâ	─Éß╗Öc giß║ú	739	0
-3961	ÞïÑÞÇà	ÒéÅÒüïÒééÒü«	thanh ni├¬n, lß╗øp trß║╗, giß╗øi trß║╗	739	0
-3962	Õñ¬ÚÖ¢	ÒüƒÒüäÒéêÒüå	C├íi n├│ng c├▓n s├│t lß║íi cß╗ºa m├╣a h├¿	740	0
-3963	Úü┐µÜæÕ£░	Òü▓ÒüùÒéçÒüí	Khu nghß╗ë m├ít	740	0
-3964	Õ»Æ	ÒüòÒéÇ	kh├¡ lß║ính, hãíi lß║ính	741	0
-3965	Õ»Æµ░ù	ÒüïÒéôÒüì	kh├¡ lß║ính, hãíi lß║ính	741	0
-3966	Õ»ÆÕ©»	ÒüïÒéôÒüƒÒüä	H├án ─æß╗øi, xß╗® lß║ính	741	0
-3967	Õ»ÆÚó¿	ÒüïÒéôÒüÀÒüå	H├án phong	741	0
-3968	Õåè	ÒüòÒüñ	Thß╗â trß╗ìng, c├ón nß║Àng	742	0
-3969	ÚçìÕ¢╣	ÒüÿÒéàÒüåÒéäÒüÅ	gi├ím ─æß╗æc	742	0
-3970	ÚçìÞªü	ÒüÿÒéàÒüåÒéêÒüå	Vß║¡t phß║®m qu├¢ b├íu; ─æß╗ô qu├¢ gi├í	742	0
-3971	õ║îÚçì	ÒüÁÒüƒÒüê	Hai m├¡	742	0
-3972	Þ╗¢	ÒüïÒéï	Xe hß║íng nhß╗Å	743	0
-3973	Þ╗¢	ÒüïÒéì	Khinh miß╗çt, xem thã░ß╗Øng, miß╗çt thß╗ï	743	0
-3974	þºü	ÒéÅÒüƒÒüù	Tß╗ôi nhß║Ñt, tß╗ôi tß╗ç	744	0
-3975	õ¢Äõ©ï	ÒüªÒüäÒüï	sß╗▒ giß║úm, sß╗▒ k├®m ─æi, sß╗▒ suy giß║úm	744	0
-3976	õ¢Äµ©®	ÒüªÒüäÒüèÒéô	Nhiß╗çt ─æß╗Ö thß║Ñp	744	0
-3977	õ¢Äµ░ùÕ£º	ÒüªÒüäÒüìÒüéÒüñ	├üp suß║Ñt thß║Ñp	744	0
-3978	Ú½ÿõ¢Ä	ÒüôÒüåÒüªÒüä	cao v├á thß║Ñp, l├¬n v├á xuß╗æng, dao ─æß╗Öng, biß║┐n ─æß╗Öng	744	0
-3979	Õ░ÅÚ│Ñ	ÒüôÒü¿Òéè	nhã░ß╗úc ─æiß╗âm, ─æiß╗âm yß║┐u	745	0
-3980	Õ╝▒	ÒéêÒéÅ	sß╗▒ gß║ºy yß║┐u, sß╗▒ gß║ºy g├▓ ß╗æm yß║┐u	745	0
-3981	Õ╝▒ÞéëÕ╝ÀÚúƒ	ÒüÿÒéâÒüÅÒü½ÒüÅÒüìÒéçÒüåÒüùÒéçÒüÅ	Viß╗çc con mß║ính ─ân thß╗ït con yß║┐u	745	0
-3982	Õ╝▒µ░ù	ÒéêÒéÅÒüì	sß╗▒ nh├║t nh├ít, sß╗▒ nh├ít gan, sß╗▒ rß╗Ñt r├¿	745	0
-3983	Õ¢╝	ÒüïÒéî	sß╗▒ n├│i xß║Ñu vß╗ü ai ─æ├│	746	0
-3984	µé¬ÕÅú	ÒéÅÒéïÒüÉÒüí	sß╗▒ n├│i xß║Ñu vß╗ü ai ─æ├│	746	0
-3985	µäÅÕ£░µé¬	ÒüäÒüÿÒéÅÒéï	c├íi xß║Ñu nhß║Ñt, c├íi tß╗ôi nhß║Ñt	746	0
-3986	µé¬ÞÇà	ÒéÅÒéïÒééÒü«	ngã░ß╗Øi xß║Ñu, kß║╗ xß║Ñu	746	0
-3987	µé¬Ú¡ö	ÒüéÒüÅÒü¥	y├¬u ma	746	0
-3988	µé¬	ÒüéÒüÅ	Sß╗▒ xß║Ñu; kh├┤ng tß╗æt	746	0
-3989	µé¬Õ»Æ	ÒüèÒüïÒéô	sß╗▒ ß╗øn lß║ính; sß╗▒ r├╣n m├¼nh	746	0
-3990	õ©¡	Òü¬Òüï	Tß╗æi om	747	0
-3991	µÜùÞ¿ÿ	ÒüéÒéôÒüì	sß╗▒ ├ím s├ít	747	0
-3992	Õñ¬	ÒüÁÒü¿	Sß╗æ mß║¡t khß║®u	748	0
-3993	Õñ¬	ÒüÁÒü¿	Mß║Àt trß╗Øi	748	0
-3994	Õñ¬Ú╝ô	ÒüƒÒüäÒüô	C├íi trß╗æng	748	0
-3995	þÜçÕñ¬Õ¡É	ÒüôÒüåÒüƒÒüäÒüù	Ho├áng th├íi tß╗¡, th├íi tß╗¡	748	0
-3996	Õñ¬Õ╣│µ┤ï	ÒüƒÒüäÒü©ÒüäÒéêÒüå	Th├íi B├¼nh Dã░ãíng	748	0
-3997	õ©©Õñ¬	Òü¥ÒéïÒüƒ	Khoanh gß╗ù tr├▓n	748	0
-3998	Þ▒å	Òü¥Òéü	Hß║ít ─æß║¡u	749	0
-3999	Þ▒åÞàÉ	Òü¿ÒüåÒüÁ	─Éß║¡u h┼®	749	0
-4000	Þ▒å	Òü¥Òéü	Hß║ít c├á ph├¬	749	0
-4001	µ×ØÞ▒å	ÒüêÒüáÒü¥Òéü	─Éß║¡u xanh	749	0
-4002	ÕñºÞ▒å	ÒüáÒüäÒüÜ	─æß║¡u tã░ãíng	749	0
-4003	Þ▒åõ╣│	Òü¿ÒüåÒü½ÒéàÒüå	Sß╗»a ─æß║¡u n├ánh	749	0
-4004	þ┤ìÞ▒å	Òü¬ÒüúÒü¿Òüå	M├│n ─æß║¡u n├ánh l├¬n men	749	0
-4005	þƒó	Òéä	sß╗ƒ ─æoß║ún, ─æiß╗âm yß║┐u, nhã░ß╗úc ─æiß╗âm	750	0
-4006	þƒ¡µ£ƒ	ÒüƒÒéôÒüì	ngß║»n hß║ín	750	0
-4007	þƒ¡µ£ƒ	ÒüƒÒéôÒüì	Cao ─æß║│ng	750	0
-4008	þƒ¡þÀ¿	ÒüƒÒéôÒü║Òéô	truyß╗çn ngß║»n	750	0
-4009	þƒ¡µ░ù	ÒüƒÒéôÒüì	─Éoß║ún ca	750	0
-4010	Õñ¬ÚÖ¢	ÒüƒÒüäÒéêÒüå	├ünh s├íng	751	0
-4011	Õàë	Òü▓Òüï	Tham quan, du lß╗ïch	751	0
-4012	µùÑÕàë	Òü½ÒüúÒüôÒüå	nß║»ng,├ính mß║Àt trß╗Øi	751	0
-4013	ÕàëþÀÜ	ÒüôÒüåÒüøÒéô	tia s├íng	751	0
-4014	ÕàëµÖ»	ÒüôÒüåÒüæÒüä	Quang cß║únh, phong cß║únh	751	0
-4015	Õàëþå▒Þ▓╗	ÒüôÒüåÒü¡ÒüñÒü▓	Tiß╗ün ─æiß╗çn, ga, nhi├¬n liß╗çu	751	0
-4016	ÞÖ½	ÒéÇÒüù	Gi├│	752	0
-4017	ÕÅ░Úó¿	ÒüƒÒüäÒüÁÒüå	B├úo lß╗øn	752	0
-4018	Úó¿Úé¬	ÒüïÒü£	cß║úm lß║ính, cß║úm c├║m	752	0
-4019	Úó¿Õæé	ÒüÁÒéì	Bß╗ôn tß║»m	752	0
-4020	Úó¿Þê╣	ÒüÁÒüåÒüøÒéô	Khinh kh├¡ cß║ºu	752	0
-4021	Úó¿µÖ»	ÒüÁÒüåÒüæÒüä	Phong cß║únh	752	0
-4022	µ┤ïÚó¿	ÒéêÒüåÒüÁÒüå	kiß╗âu T├óy	752	0
-4023	ÕÆîÚó¿	ÒéÅÒüÁÒüå	kiß╗âu, phong c├ích Nhß║¡t	752	0
-4024	Þ╗è	ÒüÅÒéïÒü¥	sß╗▒ l├íi (xe), sß╗▒ vß║¡n h├ánh (m├íy m├│c)	753	0
-4025	ÚüïÞ╗óµëï	ÒüåÒéôÒüªÒéôÒüùÒéà	T├ái xß║┐	753	0
-4026	ÚüïÕïò	ÒüåÒéôÒü®Òüå	sß╗▒ vß║¡n ─æß╗Öng, viß╗çc chãíi thß╗â thao	753	0
-4027	Úüï	ÒüåÒéô	xß║Ñu sß╗æ, ─æen ─æß╗ºi	753	0
-4028	ÚüïÕæ¢	ÒüåÒéôÒéüÒüä	vß║¡n mß╗çnh	753	0
-4029	ÚüïÞ│â	ÒüåÒéôÒüíÒéô	tiß╗ün cã░ß╗øc	753	0
-4030	Õèø	ÒüíÒüïÒéë	sß╗▒ vß║¡n ─æß╗Öng, viß╗çc chãíi thß╗â thao	754	0
-4031	Þç¬ÕïòÞ╗è	ÒüÿÒü®ÒüåÒüùÒéâ	Xe ├┤ t├┤	754	0
-4032	Õïòþë®	Òü®ÒüåÒüÂÒüñ	─Éß╗Öng vß║¡t	754	0
-4033	µ┤╗Õïò	ÒüïÒüñÒü®Òüå	Hoß║ít ─æß╗Öng	754	0
-4034	µäƒÕïò	ÒüïÒéôÒü®Òüå	─æß╗Öng tß╗½	754	0
-4035	õ┐íÕÅÀ	ÒüùÒéôÒüöÒüå	sß╗▒ cß║Ñm, sß╗▒ ngß╗½ng	755	0
-4036	ÕÀú	ÒüÖ	Mß╗Öt bã░ß╗øc	756	0
-4037	ÚÇ▓µ¡®	ÒüùÒéôÒü¢	Sß╗▒ tiß║┐n bß╗Ö	756	0
-4038	µ¡®Úüô	Òü╗Òü®Òüå	Vß╗ëa h├¿, ─æã░ß╗Øng d├ánh cho ngã░ß╗Øi ─æi bß╗Ö	756	0
-4039	µ¡®	ÒüéÒéå	tiß╗ün hoa hß╗ông┬átß╗ë suß║Ñt, tß╗ë gi├í, phß║ºn tr─âm l├úi suß║Ñt	756	0
-4040	µ¡®ÞíîÞÇà	Òü╗ÒüôÒüåÒüùÒéâ	Kß║╗ bß╗Ö h├ánh, ngã░ß╗Øi ─æi bß╗Ö	756	0
-4041	õ║║	Òü▓Òü¿	─Éß║íi sß╗® qu├ín	757	0
-4042	Õñºõ¢┐	ÒüƒÒüäÒüù	─Éß║íi sß╗®	757	0
-4043	õ¢┐þö¿õ©¡	ÒüùÒéêÒüåÒüíÒéàÒüå	T├¼nh trß║íng ─æang sß╗¡ dß╗Ñng	757	0
-4044	õ¢┐Õæ¢	ÒüùÒéüÒüä	Sß╗® mß╗çnh	757	0
-4045	Õñ®õ¢┐	ÒüªÒéôÒüù	Thi├¬n sß╗®	757	0
-4046	ÚÇü	ÒüèÒüÅ	Sß╗▒ ph├ít thanh	758	0
-4047	ÚâÁÚÇü	ÒéåÒüåÒüØÒüå	Cã░ß╗øc ph├¡	758	0
-4048	ÚÇüÕêÑõ╝Ü	ÒüØÒüåÒü╣ÒüñÒüïÒüä	Tiß╗çc chia tay	758	0
-4049	ÚÇüõ┐í	ÒüØÒüåÒüùÒéô	T├áu kh├┤ng d├╣ng ─æß╗â chß╗ƒ h├ánh kh├ích	758	0
-4050	Õàêþöƒ	ÒüøÒéôÒüøÒüä	X├á b├┤ng	759	0
-4051	µ┤ùÚíö	ÒüøÒéôÒüîÒéô	Viß╗çc rß╗¡a mß║Àt	759	0
-4052	µ┤ùþñ╝	ÒüøÒéôÒéîÒüä	Lß╗à rß╗¡a tß╗Öi	759	0
-4053	µÇÑ	ÒüäÒüØ	tß╗æc h├ánh	760	0
-4054	þë╣µÇÑ	Òü¿ÒüúÒüìÒéàÒüå	t├áu tß╗æc h├ánh sß╗▒ hß╗Åa tß╗æc	760	0
-4055	Þç│µÇÑ	ÒüùÒüìÒéàÒüå	Cß║Ñp tß╗æc, khß║®n cß║Ñp	760	0
-4056	þÀèµÇÑ	ÒüìÒéôÒüìÒéàÒüå	sß╗▒ cß║Ñp b├ích, sß╗▒ khß║®n cß║Ñp, cß║Ñp b├ích, khß║®n cß║Ñp	760	0
-4057	µòæµÇÑÞ╗è	ÒüìÒéàÒüåÒüìÒéàÒüåÒüùÒéâ	Xe cß║Ñp cß╗®u	760	0
-4058	µÇÑþö¿	ÒüìÒéàÒüåÒéêÒüå	Viß╗çc gß║Ñp	760	0
-4059	õ║îõ║║	ÒüÁÒüƒÒéè	Mß╗ƒ cß╗¡a h├áng	761	0
-4060	Õà¼Úûï	ÒüôÒüåÒüïÒüä	Sß╗▒ c├┤ng khai, c├┤ng bß╗æ	761	0
-4061	Úûïõ╝ÜÕ╝Å	ÒüïÒüäÒüïÒüäÒüùÒüì	Lß╗à khai trã░ãíng,khai mß║íc	761	0
-4062	õ║║	Òü▓Òü¿	sß╗▒ ─æ├│ng cß╗¡a h├áng	762	0
-4063	ÚûëÚÄû	Òü©ÒüäÒüò	Sß╗▒ phong bß║┐, sß╗▒ phong tß╗Åa	762	0
-4064	Õ╝ô	ÒéåÒü┐	Sß╗▒ tr├¡ch dß║½n	764	0
-4065	Õ╝òÕèø	ÒüäÒéôÒéèÒéçÒüÅ	Lß╗▒c hß║Ñp dß║Ñn, lß╗▒c h├║t	764	0
-4066	þö░	Òüƒ	Kß╗ë niß╗çm	765	0
-4067	µÇØ	ÒüèÒéé	├¢ tã░ß╗ƒng ,tã░ tã░ß╗ƒng	765	0
-4068	Õñº	ÒüèÒüè	Ngã░ß╗Øi quen, quen biß║┐t	766	0
-4069	þƒÑÞ¡ÿ	ÒüíÒüùÒüì	Tri thß╗®c, kiß║┐n thß╗®c	766	0
-4070	þƒÑµÇº	ÒüíÒüøÒüä	sß╗▒ th├┤ng minh	766	0
-4071	þƒÑõ║ï	ÒüíÒüÿ	ngã░ß╗Øi ─æß╗®ng ─æß║ºu mß╗Öt tß╗ënh (cß╗ºa Nhß║¡t Bß║ún)	766	0
-4072	õ║║	Òü▓Òü¿	C├ích suy ngh─®	767	0
-4073	ÕÅéÞÇâ	ÒüòÒéôÒüôÒüå	Sß╗▒ tham khß║úo	767	0
-4074	ÞÇâµà«	ÒüôÒüåÒéèÒéç	khß║úo cß╗ò hß╗ìc	767	0
-4075	ÕÅéÞÇâµø©	ÒüòÒéôÒüôÒüåÒüùÒéç	S├ích tham khß║úo	767	0
-4076	µ¡╗	Òüù	C├íi chß║┐t	768	0
-4077	µ¡╗õ¢ô	ÒüùÒüƒÒüä	X├íc chß║┐t	768	0
-4078	Õ┐àµ¡╗	Òü▓ÒüúÒüù	Quyß║┐t t├óm	768	0
-4079	µ¡╗õ║í	ÒüùÒü╝Òüå	Tß╗¡ vong	768	0
-4080	Õ«ëµÑ¢µ¡╗	ÒüéÒéôÒéëÒüÅÒüù	Ra ─æi nhß║╣ nh├áng	768	0
-4081	µ¡╗ÞÇà	ÒüùÒüùÒéâ	Ngã░ß╗Øi chß║┐t	768	0
-4082	µ¡╗Þ¬×	ÒüùÒüö	lß╗Øi n├│i cß╗ºa ngã░ß╗Øi chß║┐t	768	0
-4083	Õî╗ÞÇà	ÒüäÒüùÒéâ	B├íc s─®	769	0
-4084	Õî╗Õ¡ª	ÒüäÒüîÒüÅ	y hß╗ìc	769	0
-4085	µ¡»Õî╗ÞÇà	Òü»ÒüäÒüùÒéâ	B├íc s─® nha khoa; nha s─®	769	0
-4086	Õî╗ÚÖó	ÒüäÒüäÒéô	y viß╗çn	769	0
-4087	Õî╗þÖé	ÒüäÒéèÒéçÒüå	Sß╗▒ chß╗»a trß╗ï	769	0
-4088	Õî╗Õ©½	ÒüäÒüù	b├íc s─®	769	0
-4089	Õî╗Þû¼Õôü	ÒüäÒéäÒüÅÒü▓Òéô	─Éß╗ô y tß║┐; dã░ß╗úc phß║®m; thuß╗æc chß╗»a bß╗çnh,Dã░ß╗úc liß╗çu	769	0
-4090	ÕÅ░	ÒüáÒüä	Tß╗½ ─æß║ºu ─æß║┐n cuß╗æi; tß╗½ ─æß║ºu ch├¡ cuß╗æi	770	0
-4091	µø©	Òüï	chuyß║┐n t├áu ─æß║ºu ti├¬n	770	0
-4092	þºü	ÒéÅÒüƒÒüù	sau c├╣ng, cuß╗æi c├╣ng	771	0
-4093	þÁéõ║å	ÒüùÒéàÒüåÒéèÒéçÒüå	Sß╗▒ kß║┐t th├║c	771	0
-4094	þÁéÚø╗	ÒüùÒéàÒüåÒüºÒéô	chuyß║┐n xe ─æiß╗çn cuß╗æi c├╣ng	771	0
-4095	þÁéþé╣	ÒüùÒéàÒüåÒüªÒéô	trß║ím, ga cuß╗æi c├╣ng	771	0
-4096	ÕºïþÁé	ÒüùÒüÿÒéàÒüå	tß╗½ ─æß║ºu ─æß║┐n cuß╗æi	771	0
-4097	Õ┤û	ÒüîÒüæ	─É├í	772	0
-4098	Õ«Øþƒ│	Òü╗ÒüåÒüøÒüì	ngß╗ìc┬á─æ├í qu├¢┬ábß║úo thß║ích	772	0
-4099	þƒ│	ÒüøÒüú	Dß║ºu hoß║ú	772	0
-4100	þƒ│þé¡	ÒüøÒüìÒüƒÒéô	Than ─æa╠ü	772	0
-4101	þúüþƒ│	ÒüÿÒüùÒéâÒüÅ	quß║Àng sß║»t tß╗½, quß║Àng tß╗½┬á─æ├í nam ch├óm, nam ch├óm	772	0
-4102	ÕÅ░	ÒüáÒüä	Sß╗▒ nghi├¬n cß╗®u	773	0
-4103	þáöþ®ÂÞÇà	ÒüæÒéôÒüìÒéàÒüåÒüùÒéâ	Nh├á nghi├¬n cß╗®u	773	0
-4104	þáöþ®ÂÕ«ñ	ÒüæÒéôÒüìÒéàÒüåÒüùÒüñ	Ph├▓ng nghi├¬n cß╗®u	773	0
-4105	þáöþ®ÂµëÇ	ÒüæÒéôÒüìÒéàÒüåÒüÿÒéç	tß╗ò nghi├¬n cß╗®u; nh├│m nghi├¬n cß╗®u; viß╗çn nghi├¬n cß╗®u	773	0
-4106	þáöþ®ÂµëÇ	ÒüæÒéôÒüìÒéàÒüåÒüùÒéç	tß╗ò nghi├¬n cß╗®u; nh├│m nghi├¬n cß╗®u; viß╗çn nghi├¬n cß╗®u	773	0
-4107	þáöõ┐«	ÒüæÒéôÒüùÒéàÒüå	Sß╗▒ ─æ├áo tß║ío	773	0
-4108	Õ«Â	ÒüäÒüê	Sß╗▒ nghi├¬n cß╗®u	774	0
-4109	þáöþ®ÂÞÇà	ÒüæÒéôÒüìÒéàÒüåÒüùÒéâ	Nh├á nghi├¬n cß╗®u	774	0
-4110	þáöþ®ÂÕ«ñ	ÒüæÒéôÒüìÒéàÒüåÒüùÒüñ	Ph├▓ng nghi├¬n cß╗®u	774	0
-4111	þ®ÂµÿÄ	ÒüìÒéàÒüåÒéüÒüä	sß╗▒ ─æiß╗üu tra cho r├Á r├áng, ─æiß╗üu tra r├Á	774	0
-4112	þ®ÂµÑÁ	ÒüìÒéàÒüåÒüìÒéçÒüÅ	Sß╗▒ theo ─æuß╗òi; sß╗▒ theo t├¼m	774	0
-4113	þö░	Òüƒ	Du hß╗ìc sinh	775	0
-4114	þòÖÕ«ê	ÒéïÒüÖ	Sß╗▒ vß║»ng nh├á	775	0
-4115	þòÖÕ«êþò¬	ÒéïÒüÖÒü░Òéô	ti╠ün hi├¬╠úu ─æi├¬╠ún thoa╠úi tra╠ë lãí╠Çi tã░╠ú ─æ├┤╠úng	775	0
-4116	þòÖ	Òü¿	gß╗¡i ─æß║úm bß║úo	775	0
-4117	µ£ê	ÒüñÒüì	sß╗▒ phß║úi trß║ú chi ph├¡	776	0
-4118	µ£ëÕê®	ÒéåÒüåÒéè	sß╗▒ c├│ hay kh├┤ng c├│	776	0
-4119	þòæ	Òü»ÒüƒÒüæ	Ng├ánh nghß╗ü, sß║ún nghiß╗çp	777	0
-4120	þöƒþöú	ÒüøÒüäÒüòÒéô	sß╗▒ sß║ún xuß║Ñt	777	0
-4121	Õ£ƒþöú	Òü┐ÒéäÒüÆ	Qu├á lã░u niß╗çm	777	0
-4122	þöúÕ£░	ÒüòÒéôÒüí	nãíi sß║ún xuß║Ñt	777	0
-4123	Õà▒þöú	ÒüìÒéçÒüåÒüòÒéô	Chß╗º ngh─®a cß╗Öng sß║ún	777	0
-4124	Þ▓íþöú	ÒüûÒüäÒüòÒéô	tiß╗ün cß╗ºa┬át├ái sß║ún	777	0
-4125	þöú	Òüå	Bß║Ñt ─æß╗Öng sß║ún	777	0
-4126	þ¥è	Òü▓ÒüñÒüÿ	Ng├ánh c├┤ng nghiß╗çp	778	0
-4127	µÄêµÑ¡	ÒüÿÒéàÒüÄÒéçÒüå	Sß╗▒ giß║úng dß║íy	778	0
-4128	ÕìÆµÑ¡	ÒüØÒüñÒüÄÒéçÒüå	sß╗▒ tß╗æt nghiß╗çp	778	0
-4129	ÞüÀµÑ¡	ÒüùÒéçÒüÅÒüÄÒéçÒüå	nghß╗ü nghiß╗çp	778	0
-4130	õ╝üµÑ¡	ÒüìÒüÄÒéçÒüå	Cãí sß╗ƒ, x├¡ nghiß╗çp, doanh nghiß╗çp	778	0
-4131	ÕûÂµÑ¡õ©¡	ÒüêÒüäÒüÄÒéçÒüåÒüíÒéàÒüå	T├¼nh trß║íng ─æang ─æã░ß╗úc b├áy b├ín	778	0
-4132	Þç¬µÑ¡Þç¬Õ¥ù	ÒüÿÒüöÒüåÒüÿÒü¿ÒüÅ	Gieo nh├ón n├áo gß║Àt quß║ú ─æß║Ñy (th├ánh ngß╗»)	778	0
-4133	Þ¥▓µÑ¡	Òü«ÒüåÒüÄÒéçÒüå	Ng├ánh n├┤ng nghiß╗çp	778	0
-4134	Þû¼Þìë	ÒéäÒüÅÒüØÒüå	Thuß╗æc	779	0
-4135	Þû¼Õ▒ï	ÒüÅÒüÖÒéèÒéä	nh├á thuß╗æc ,hiß╗çu thuß╗æc ,dã░ß╗úc ph├▓ng ,cß╗¡a h├áng thuß╗æc	779	0
-4136	Þ¥▓Þû¼	Òü«ÒüåÒéäÒüÅ	thuß╗æc trß╗½ s├óu	779	0
-4137	Þû¼Õ▒Ç	ÒéäÒüúÒüìÒéçÒüÅ	Tiß╗çm thuß╗æc	779	0
-4138	Þû¼µîç	ÒüÅÒüÖÒéèÒéåÒü│	ng├│n ├íp ├║t	779	0
-4139	Úó¿Úé¬Þû¼	ÒüïÒü£ÒüÉÒüÖÒéè	Thuß╗æc cß║úm	779	0
-4140	Þû¼Õ¡ª	ÒéäÒüÅÒüîÒüÅ	dã░ß╗úc hß╗ìc	779	0
-4141	õ║║	Òü▓Òü¿	Ngã░ß╗Øi lao ─æß╗Öng	780	0
-4142	Õè┤Õâì	ÒéìÒüåÒü®Òüå	Lao ─æß╗Öng	780	0
-4143	Õè┤ÕâìÞÇà	ÒéìÒüåÒü®ÒüåÒüùÒéâ	Ngã░ß╗Øi lao ─æß╗Öng	780	0
-4144	Õè┤ÕâìþÁäÕÉê	ÒéìÒüåÒü®ÒüåÒüÅÒü┐ÒüéÒüä	C├┤ng ─æo├án lao ─æß╗Öng	780	0
-4145	Úçæ	ÒüïÒü¡	Nh├ón vi├¬n c├┤ng ty	781	0
-4146	Õ║ùÕôí	ÒüªÒéôÒüäÒéô	Ngã░ß╗Øi b├ín  h├áng, nh├ón vi├¬n b├ín h├áng	781	0
-4147	ÚèÇÞíîÕôí	ÒüÄÒéôÒüôÒüåÒüäÒéô	Nh├ón vi├¬n ng├ón h├áng	781	0
-4148	Õà¿Õôí	Òü£ÒéôÒüäÒéô	tß║Ñt cß║ú mß╗ìi ngã░ß╗Øi	781	0
-4149	Õà¼ÕïÖÕôí	ÒüôÒüåÒéÇÒüäÒéô	C├┤ng chß╗®c, vi├¬n chß╗®c nh├á nã░ß╗øc	781	0
-4150	õ╝ÜÕôí	ÒüïÒüäÒüäÒéô	Hß╗Öi vi├¬n, th├ánh vi├¬n	781	0
-4151	µ║ÇÕôí	Òü¥ÒéôÒüäÒéô	Sß╗▒ ─æ├┤ng ngã░ß╗Øi, chß║¡t n├¡ch ngã░ß╗Øi	781	0
-4152	µòÖÕôí	ÒüìÒéçÒüåÒüäÒéô	gi├ío vi├¬n	781	0
-4153	Õìüõ©Çõ║║	ÒüÿÒéàÒüåÒüäÒüíÒü½Òéô	V├Á s─®	782	0
-4154	ÕìÜÕú½	Òü»ÒüÅÒüù	Tiß║┐n s─®, thß║íc s─®	782	0
-4155	ÕìÜÕú½	Òü»ÒüïÒüø	tiß║┐n s─®, thß║íc s─®	782	0
-4156	õ┐«Õú½	ÒüùÒéàÒüåÒüù	Thß║íc s─®	782	0
-4157	Õ╝üÞ¡ÀÕú½	Òü╣ÒéôÒüöÒüù	Luß║¡t sã░	782	0
-4158	þ┤│Õú½	ÒüùÒéôÒüù	ngã░ß╗Øi h├áo hoa phong nh├ú, ngã░ß╗Øi cao sang, ngã░ß╗Øi quyß╗ün qu├¢	782	0
-4159	µÂêÚÿ▓Õú½	ÒüùÒéçÒüåÒü╝ÒüåÒüù	L├¡nh cß╗®u hß╗Åa	782	0
-4160	õ╝ÜÞ¿ê	ÒüïÒüäÒüæÒüä	Kß║┐ to├ín	782	0
-4161	þ¿ÄþÉåÕú½	Òü£ÒüäÒéèÒüù	Kß║┐ to├ín thuß║┐ vß╗Ñ	782	0
-4162	µ«┐µºÿ	Òü¿Òü«ÒüòÒü¥	C├┤ng viß╗çc	783	0
-4163	õ╗òµû╣	ÒüùÒüïÒüƒ	C├ích l├ám, phã░ãíng ph├íp	783	0
-4164	õ╗òõ©è	ÒüùÒüé	Hoß║ít ─æß╗Öng t├¼nh nguyß╗çn	783	0
-4165	õ╗ò	ÒüñÒüï	Bß╗ôi b├án	783	0
-4166	Õà¿Úâ¿	Òü£ÒéôÒüÂ	Viß╗çc, vß║Ñn ─æß╗ü	784	0
-4167	õ╗òõ║ï	ÒüùÒüöÒü¿	C├┤ng viß╗çc	784	0
-4168	þü½õ║ï	ÒüïÒüÿ	Vß╗Ñ hß╗Åa hoß║ín, hß╗Åa hoß║ín	784	0
-4169	Úúƒõ║ï	ÒüùÒéçÒüÅÒüÿ	Bß╗»a ─ân	784	0
-4170	Þ┐öõ║ï	Òü©ÒéôÒüÿ	Sß╗▒ trß║ú lß╗Øi, ─æ├íp trß║ú	784	0
-4171	õ║ïµòà	ÒüÿÒüô	Biß║┐n cß╗æ, sß╗▒ cß╗æ	784	0
-4172	þö¿õ║ï	ÒéêÒüåÒüÿ	Viß╗çc bß║¡n	784	0
-4173	õ║ïÕïÖ	ÒüÿÒéÇ	V─ân ph├▓ng	784	0
-4174	þÁÁ	Òüê	Thã░ viß╗çn	785	0
-4175	Õ£░Õø│	ÒüíÒüÜ	Bß║ún ─æß╗ô	785	0
-4176	Õø│	ÒüÜ	H├¼nh vß║¢, bß╗®c hß╗ìa	785	0
-4177	Õø│Þí¿	ÒüÜÒü▓ÒéçÒüå	─Éß╗ô thß╗ï	785	0
-4178	ÕÉêÕø│	ÒüéÒüäÒüÜ	Dß║Ñu hiß╗çu, hiß╗çu lß╗çnh	785	0
-4179	µäÅÕø│	ÒüäÒü¿	├Ø ─æß╗ô, mß╗Ñc ─æ├¡ch, ├¢ ─æß╗ïnh	785	0
-4180	Õñ¬	ÒüÁÒü¿	Chß╗º tß╗ìa phi├¬n t├▓a	786	0
-4181	Õñûõ║ñÕ«ÿ	ÒüîÒüäÒüôÒüåÒüïÒéô	Nh├á ngoß║íi giao	786	0
-4182	Þ¡ªÕ«ÿ	ÒüæÒüäÒüïÒéô	Cß║únh s├ít	786	0
-4183	ÞúüÕêñÕ«ÿ	ÒüòÒüäÒü░ÒéôÒüïÒéô	quan t├▓a, thß║®m ph├ín	786	0
-4184	Õ«ÿÕ║ü	ÒüïÒéôÒüíÒéçÒüå	c├┤ng sß╗ƒ, cãí quan ch├¡nh quyß╗ün	786	0
-4185	Õ«ÿÕâÜ	ÒüïÒéôÒéèÒéçÒüå	quan li├¬u, quan chß╗®c	786	0
-4186	ÕÖ¿Õ«ÿ	ÒüìÒüïÒéô	cãí quan, bß╗Ö phß║¡n	786	0
-4187	Õ╗║þë®	ÒüƒÒüªÒééÒü«	thã░ viß╗çn	787	0
-4188	µÿáþö╗Úñ¿	ÒüêÒüäÒüîÒüïÒéô	Rß║íp chiß║┐u phim	787	0
-4189	Õñºõ¢┐Úñ¿	ÒüƒÒüäÒüùÒüïÒéô	─Éß║íi sß╗® qu├ín	787	0
-4190	µùàÚñ¿	ÒéèÒéçÒüïÒéô	Nha├á trß╗ì cho kh├ích du lß╗ïch	787	0
-4191	õ╝ÜÚñ¿	ÒüïÒüäÒüïÒéô	Hß╗Öi qu├ín, trung t├óm	787	0
-4192	þ¥ÄÞíôÚñ¿	Òü│ÒüÿÒéàÒüñÒüïÒéô	Viß╗çn bß║úo t├áng mß╗╣ thuß║¡t	787	0
-4193	ÕìÜþë®Úñ¿	Òü»ÒüÅÒüÂÒüñÒüïÒéô	Viß╗çn bß║úo t├áng	787	0
-4194	µ░┤µùÅÚñ¿	ÒüÖÒüäÒü×ÒüÅÒüïÒéô	C├┤ng vi├¬n thß╗ºy cung	787	0
-4195	õ║îÕìüõ©Çõ║║	Òü½ÒüÿÒéàÒüåÒüäÒüíÒü½Òéô	Ng├áy xã░a	788	0
-4196	µÿöÞ®▒	ÒéÇÒüïÒüùÒü░Òü¬Òüù	Chuyß╗çn d├ón gian, truyß╗çn cß╗ò t├¡ch	788	0
-4197	Õñºµÿö	ÒüèÒüèÒéÇÒüïÒüù	Rß║Ñt xa xã░a, ng├áy xß╗¡a ng├áy xã░a	788	0
-4198	µÿöµùÑ	ÒüøÒüìÒüÿÒüñ	Ng├áy xã░a	788	0
-4199	µÿöÒÇà	ÒéÇÒüïÒüùÒéÇÒüïÒüù	Ng├áy xß╗¡a ng├áy xã░a	788	0
-4200	õ╗èµÿö	ÒüôÒéôÒüÿÒéâÒüÅ	Xã░a v├á nay	788	0
-4201	µÿö	ÒéÇÒüïÒüù	Nh├á cho thu├¬	789	0
-4202	ÕÇƒÚçæ	ÒüùÒéâÒüúÒüìÒéô	tiß╗ün vay	789	0
-4203	ÕÇƒÕ£░	ÒüùÒéâÒüÅÒüí	─Éß║Ñt cho thu├¬	789	0
-4204	õ╗ú	Òüï	Thß╗Øi ─æß║íi	790	0
-4205	Úø╗µ░ùõ╗ú	ÒüºÒéôÒüìÒüáÒüä	Tiß╗ün ─æiß╗çn, ga, nhi├¬n liß╗çu	790	0
-4206	õ╗ú	Òüï	Thß║¡p ni├¬n 60	790	0
-4207	Õìüõ╗ú	ÒüÿÒéàÒüåÒüáÒüä	Thanh thiß║┐u ni├¬n	790	0
-4208	õ╗úÞí¿	ÒüáÒüäÒü▓ÒéçÒüå	─Éß║íi biß╗âu, ─æß║íi diß╗çn	790	0
-4209	þÅ¥õ╗ú	ÒüÆÒéôÒüáÒüä	Thß╗Øi ─æß║íi n├áy	790	0
-4210	õ╗úÚçæ	ÒüáÒüäÒüìÒéô	gi├í, tiß╗ün h├áng, h├│a ─æãín, sß╗▒ thanh to├ín	790	0
-4211	Þ║½õ╗úÚçæ	Òü┐Òü«ÒüùÒéìÒüìÒéô	Tiß╗ün chuß╗Öc	790	0
-4212	Õ£ƒÕ£░	Òü¿Òüí	Bß║ún ─æß╗ô	792	0
-4213	Õ£░þÉå	ÒüíÒéè	─Éß╗ïa l├¢	792	0
-4214	Õ£░õ©ï	ÒüíÒüï	Tß║ºng hß║ºm, dã░ß╗øi l├▓ng ─æß║Ñt	792	0
-4215	Õ£░õ©ïÚëä	ÒüíÒüïÒüªÒüñ	T├áu ─æiß╗çn ngß║ºm	792	0
-4216	Õ£░Ú£ç	ÒüÿÒüùÒéô	─Éß╗Öng ─æß║Ñt	792	0
-4217	µäÅÕ£░µé¬	ÒüäÒüÿÒéÅÒéï	Miß╗ün, ─æß╗ïa phã░ãíng, v├╣ng	792	0
-4218	Õ£░þÉâ	ÒüíÒüìÒéàÒüå	Tr├íi ─æß║Ñt, ─æß╗ïa cß║ºu	792	0
-4219	µ╝óÕ¡ù	ÒüïÒéôÒüÿ	Thß║┐ giß╗øi	793	0
-4220	õ©ûÞ®▒	ÒüøÒéÅ	Sß╗▒ quan t├óm	793	0
-4221	õ©ûþ┤Ç	ÒüøÒüäÒüì	Thß║┐ kß╗À	793	0
-4222	õ©ûÚûô	ÒüøÒüæÒéô	Thß║┐ gian	793	0
-4223	õ©ûõ╗ú	ÒüøÒüáÒüä	Thß║┐ hß╗ç	793	0
-4224	õ©û	Òéê	Trong c├Ái ─æß╗Øi, trong thß║┐ giß╗øi n├áy	793	0
-4225	õ©ûÞ½û	ÒéêÒéìÒéô	C├┤ng luß║¡n	793	0
-4226	õ©ûÞ½û	ÒüøÒéìÒéô	C├┤ng luß║¡n	793	0
-4227	õ©ûÞ¥×	ÒüøÒüÿ	sß╗▒ nß╗ïnh  nß╗ìt	793	0
-4228	þö░	Òüƒ	Thß║┐ giß╗øi	794	0
-4229	ÚÖÉþòî	ÒüÆÒéôÒüïÒüä	Phß║ím vi, phß║ím tr├╣, giß╗øi hß║ín	794	0
-4230	Õóâþòî	ÒüìÒéçÒüåÒüïÒüä	Bi├¬n giß╗øi, bi├¬n cã░ãíng	794	0
-4231	µö┐þòî	ÒüøÒüäÒüïÒüä	Giß╗øi ch├¡nh trß╗ï	794	0
-4232	µÑ¡þòî	ÒüÄÒéçÒüåÒüïÒüä	Ng├ánh nghß╗ü, giß╗øi kinh doanh, thß╗ï trã░ß╗Øng	794	0
-4233	Õ«Â	ÒüäÒüê	Mß╗Öt lß║ºn, mß╗Öt l├║c	795	0
-4234	õ╗èÕ║ª	ÒüôÒéôÒü®	Lß║ºn n├áy	795	0
-4235	õ©ëÕìüÕ║ª	ÒüòÒéôÒüÿÒéàÒüåÒü®	30 ─æß╗Ö	795	0
-4236	µ©®Õ║ª	ÒüèÒéôÒü®	├ön ─æß╗Ö, nhiß╗çt ─æß╗Ö	795	0
-4237	Õ║ªÒÇà	ÒüƒÒü│ÒüƒÒü│	Thã░ß╗Øng xuy├¬n, nhiß╗üu lß║ºn	795	0
-4238	µö»Õ║ª	ÒüùÒüƒÒüÅ	Tß╗æc ─æß╗Ö	795	0
-4239	ÚÖÉÕ║ª	ÒüÆÒéôÒü®	Hß║ín ─æß╗Ö, giß╗øi hß║ín, mß╗®c ─æß╗Ö hß║ín chß║┐	795	0
-4240	Õø×	Òü¥ÒéÅ	Mß╗Öt lß║ºn	796	0
-4241	õ¢òÕø×	Òü¬ÒéôÒüïÒüä	Mß║Ñy lß║ºn	796	0
-4242	Õø×	Òü¥ÒéÅ	Tß║¡p v├®, cuß╗æn sß╗ò v├®	796	0
-4243	õ╗èÕø×	ÒüôÒéôÒüïÒüä	Lß║ºn n├áy	796	0
-4244	Õø×þ¡ö	ÒüïÒüäÒü¿Òüå	Sß╗▒ trß║ú lß╗Øi, c├óu trß║ú lß╗Øi	796	0
-4245	Õø×Õ¥®	ÒüïÒüäÒüÁÒüÅ	Kh├┤i phß╗Ñc, hß╗ôi phß╗Ñc	796	0
-4246	Õø×Þ╗ó	ÒüïÒüäÒüªÒéô	Sß╗▒ xoay chuyß╗ân, xoay v├▓ng	796	0
-4247	þºü	ÒéÅÒüƒÒüù	C├┤ng viß╗çc, viß╗çc bß║¡n	797	0
-4248	þö¿õ║ï	ÒéêÒüåÒüÿ	Viß╗çc bß║¡n	797	0
-4249	þö¿µäÅ	ÒéêÒüåÒüä	Thuß║¡t ngß╗»	797	0
-4250	þö¿þ┤Ö	ÒéêÒüåÒüù	Mß║½u giß║Ñy trß║»ng, form trß║»ng	797	0
-4251	õ¢┐þö¿	ÒüùÒéêÒüå	Lß╗ç ph├¡, ph├¡	797	0
-4252	õ║║	Òü▓Òü¿	Ngã░ß╗Øi d├ón th├ánh phß╗æ	798	0
-4253	Õø¢µ░æ	ÒüôÒüÅÒü┐Òéô	Thß╗® d├ón, quß╗æc d├ón, nh├ón d├ón	798	0
-4254	õ¢Åµ░æ	ÒüÿÒéàÒüåÒü┐Òéô	Ngã░ß╗Øi d├ón cã░ tr├║	798	0
-4255	µ░æõ©╗	Òü┐ÒéôÒüùÒéà	Chß╗º ngh─®a d├ón chß╗º	798	0
-4256	µ░æµùÅ	Òü┐ÒéôÒü×ÒüÅ	D├ón tß╗Öc	798	0
-4257	Úøúµ░æ	Òü¬ÒéôÒü┐Òéô	Ngã░ß╗Øi l├ính nß║ín, d├ón tß╗Á nß║ín	798	0
-4258	µ░æ	ÒüƒÒü┐	D├ón, ngã░ß╗Øi d├ón	798	0
-4259	µ░æÚûô	Òü┐ÒéôÒüïÒéô	Tã░ nh├ón, thuß╗Öc ngã░ß╗Øi d├ón, d├ón sß╗▒	798	0
-4260	õ©╗õ║║	ÒüùÒéàÒüÿÒéô	Sß╗▒ ti├¬m, ti├¬m chß╗ºng	799	0
-4261	µ│¿þø«	ÒüíÒéàÒüåÒééÒüÅ	Sß╗▒ chu├║ ├¢	799	0
-4262	þÖ║µ│¿	Òü»ÒüúÒüíÒéàÒüå	Kh├┤ng ch├║ ├¢	799	0
-4263	Õ┐â	ÒüôÒüôÒéì	├Ø ngh─®a	800	0
-4264	µ│¿µäÅ	ÒüíÒéàÒüåÒüä	├Ø kiß║┐n	800	0
-4265	þö¿µäÅ	ÒéêÒüåÒüä	Hß╗»u ├¢, thiß╗çn ch├¡, l├▓ng tß╗æt	800	0
-4266	µäÅÕñû	ÒüäÒüîÒüä	├Ø ─æß╗ïnh	800	0
-4267	Þ▒å	Òü¥Òéü	C├íi ─æß║ºu	801	0
-4268	Úá¡þùø	ÒüÜÒüñÒüå	Sß╗▒ ─æau ─æß║ºu	801	0
-4269	ÕàêÚá¡	ÒüøÒéôÒü¿Òüå	sß╗▒ dß║½n ─æß║ºu, ti├¬n phong	801	0
-4270	õ║îÚá¡	Òü½Òü¿Òüå	2 con (tr├óu, b├▓,ÔÇª)	801	0
-4271	Úá¡Þä│	ÒüÜÒü«Òüå	Bß╗Ö n├úo, ─æß║ºu ├│c, tr├¡  ├│c	801	0
-4272	Úá¡µûçÕ¡ù	ÒüïÒüùÒéëÒééÒüÿ	K├¡ tß╗▒ ─æß║ºu ti├¬n	801	0
-4273	Úƒ│Úá¡	ÒüèÒéôÒü®	Ngã░ß╗Øi h├ít ch├¡nh trong hß╗úp xã░ß╗øng	801	0
-4274	Õ║ùÚá¡	ÒüªÒéôÒü¿Òüå	Quaß║ºy h├áng, quß║ºy thi tiß╗ün	801	0
-4275	Úá¡	ÒüéÒüƒÒü¥	Khu├┤n mß║Àt	802	0
-4276	þ¼æÚíö	ÒüêÒüîÒüè	Khu├┤n mß║Àt tã░ãíi cã░ß╗Øi	802	0
-4277	µ┤ùÚíö	ÒüøÒéôÒüîÒéô	Sß╗▒ rß╗¡a mß║Àt	802	0
-4278	Úíö	ÒüïÒüè	Tranh ch├ón dung	802	0
-4279	µê©	Òü¿	tiß║┐ng n├│i	803	0
-4280	Úƒ│Õú░Õ¡ª	ÒüèÒéôÒüøÒüäÒüîÒüÅ	Ngß╗» ├óm hß╗ìc	803	0
-4281	Õú░	ÒüôÒüê	Tß╗½ tã░ß╗úng thanh	803	0
-4282	Õú░µÑ¢	ÒüøÒüäÒüîÒüÅ	Thanh nhß║íc	803	0
-4283	Õú░Õä¬	ÒüøÒüäÒéåÒüå	Diß╗àn vi├¬n lß╗ông tiß║┐ng	803	0
-4284	Õú░Þë▓	ÒüôÒéÅÒüäÒéì	Thanh sß║»c, giß╗ìng	803	0
-4285	õ╗èµùÑ	ÒüìÒéçÒüå	t├áu tß╗æc h├ánh	804	0
-4286	þï¼þë╣	Òü®ÒüÅÒü¿ÒüÅ	─Éß║Àc sß║»c, ─æß║Àc ─æiß╗âm, ã░u ─æiß╗âm nß╗òi bß║¡t	804	0
-4287	þë╣Õ¥┤	Òü¿ÒüÅÒüíÒéçÒüå	─Éß║Àc trã░ng	804	0
-4288	þë╣µèÇ	Òü¿ÒüÅÒüÄ	Kß╗╣ thuß║¡t,  kß╗╣ n─âng ─æß║Àc biß╗çt	804	0
-4289	Õîàõ©ü	Òü╗ÒüåÒüíÒéçÒüå	Giß╗øi t├¡nh	805	0
-4290	ÕÀ«ÕêÑ	ÒüòÒü╣Òüñ	Sß╗▒ ph├ón biß╗çt	805	0
-4291	ÕêÑÞìÿ	Òü╣ÒüúÒüØÒüå	Biß╗çt thß╗▒	805	0
-4292	þ½╣	ÒüƒÒüæ	Tre, tr├║c	806	0
-4293	þ½╣	ÒüƒÒüæ	M─âng	806	0
-4294	þ½╣µ×ù	ÒüíÒüÅÒéèÒéô	Rß╗½ng tr├║c	806	0
-4295	þ«▒	Òü»Òüô	cuß╗Öc thi ─æß║Ñu, trß║¡n ─æß║Ñu	807	0
-4296	Úûô	Òü¥	t├¼nh huß╗æng, ho├án cß║únh, ─æiß╗üu kiß╗çn	807	0
-4297	Õá┤ÕÉê	Òü░ÒüéÒüä	Trã░ß╗Øng hß╗úp	807	0
-4298	õ╝╝ÕÉê	Òü½Òüé	trß║íi huß║Ñn luyß╗çn, trß║íi tß║¡p trung ─æß╗â r├¿n luyß╗çn	807	0
-4299	þºü	ÒéÅÒüƒÒüù	Gi├ó╠üy thi	808	0
-4300	Õø×þ¡ö	ÒüïÒüäÒü¿Òüå	sß╗▒ trß║ú lß╗Øi, hß╗ôi ─æ├íp	808	0
-4301	Þºúþ¡ö	ÒüïÒüäÒü¿Òüå	sß╗▒ trß║ú lß╗Øi, giß║úi ph├íp	808	0
-4302	Þ┐öþ¡ö	Òü©ÒéôÒü¿Òüå	sß╗▒ trß║ú lß╗Øi, sß╗▒ ─æ├íp lß╗Øi	808	0
-4303	ÞÁñõ┐íÕÅÀ	ÒüéÒüïÒüùÒéôÒüöÒüå	Tß║┐t	809	0
-4304	µ¡ú	ÒüƒÒüá	buß╗òi trã░a, giß╗»a ng├áy, ban trã░a	809	0
-4305	µ¡úþø┤	ÒüùÒéçÒüåÒüÿÒüì	sß╗▒ giß║úi th├¡ch ─æ├║ng, sß╗▒ giß║úi th├¡ch ch├¡nh x├íc	809	0
-4306	ÕàÑ	Òü»Òüä	sß╗▒ ─æß╗ông thß╗Øi, sß╗▒ c├╣ng l├║c	810	0
-4307	ÕÉîÕâÜ	Òü®ÒüåÒéèÒéçÒüå	─Éß╗ông nghiß╗çp	810	0
-4308	Õà▒ÕÉî	ÒüìÒéçÒüåÒü®Òüå	cß╗Öng ─æß╗ông, sß╗▒ li├¬n hiß╗çp, li├¬n ─æß╗øi	810	0
-4309	ÕÉîþ┤Üþöƒ	Òü®ÒüåÒüìÒéàÒüåÒüøÒüä	Bß║ín c├╣ng kho├í; bß║ín c├╣ng lß╗øp	810	0
-4310	µò░	ÒüïÒü×	─æß╗ông hß╗ô	811	0
-4311	Þ¿êþö╗	ÒüæÒüäÒüïÒüÅ	Kß║┐ hoß║ích, chã░ãíng tr├¼nh, phã░ãíng ├ín	811	0
-4312	ÕÉêÞ¿ê	ÒüöÒüåÒüæÒüä	tß╗òng sß╗æ	811	0
-4313	Þ¿ê	Òü»Òüï	T├¡nh to├ín	811	0
-4314	þÁ▒Þ¿ê	Òü¿ÒüåÒüæÒüä	Thß╗æng k├¬	811	0
-4315	Þ¿êþ«ù	ÒüæÒüäÒüòÒéô	t├ái ch├¡nh gia ─æ├¼nh	811	0
-4316	õ©ÿ	ÒüèÒüï	Tokyo	812	0
-4317	õ║¼Õ¡É	ÒüìÒéçÒüåÒüô	Kyoko( t├¬n1 ngã░ß╗Øi phß╗Ñ nß╗» Nhß║¡t)	812	0
-4318	õ║¼Úâ¢	ÒüìÒéçÒüåÒü¿	Kyoto	812	0
-4319	õ║¼Úÿ¬þÑ×	ÒüæÒüäÒü»ÒéôÒüùÒéô	Kyoto- Osaka - Kobe	812	0
-4320	Ú│Ñ	Òü¿Òéè	tß╗Ñ hß╗ìp	813	0
-4321	Úøåõ©¡	ÒüùÒéàÒüåÒüíÒéàÒüå	tß║¡p trung, ch├║ t├óm	813	0
-4322	ÚøåÕøú	ÒüùÒéàÒüåÒüáÒéô	tß║¡p thß╗â, tß║¡p ─æo├án	813	0
-4323	õ©ìõ¥┐	ÒüÁÒü╣Òéô	sß╗æ ─æen, bß║Ñt hß║ính, kh├┤ng may mß║»n	814	0
-4324	µ░┤õ©ìÞÂ│	Òü┐ÒüÜÒüÂÒüØÒüÅ	T├¼nh trß║íng thiß║┐u nã░ß╗øc	814	0
-4325	õ©ìÕÅ»Þâ¢	ÒüÁÒüïÒü«Òüå	Kh├│ kh─ân (kinh doanh); kh├┤ng chß║íy (bu├┤n b├ín); ß║┐ ß║®m	814	0
-4326	ÚâÁõ¥┐	ÒéåÒüåÒü│Òéô	Bã░u ─æiß╗çn	815	0
-4327	õ¥┐	ÒüƒÒéê	nh├á vß╗ç sinh, toa l├®t	815	0
-4328	Þê¬þ®║õ¥┐	ÒüôÒüåÒüÅÒüåÒü│Òéô	Bã░u phß║®m gß╗ƒi bß║▒ng ─æã░ß╗Øng h├áng kh├┤ng	815	0
-4329	Þê╣õ¥┐	ÒüÁÒü¬Òü│Òéô	Gß╗ƒi bß║▒ng ─æã░ß╗Øng t├áu	815	0
-4330	õ¥┐	Òü│Òéô	Sß╗▒ thuß║¡n tiß╗çn	815	0
-4331	õ╗Ñõ©è	ÒüäÒüÿÒéçÒüå	´¢×trß╗ƒ l├¬n	816	0
-4332	õ╗Ñõ©ï	ÒüäÒüï	´¢×trß╗ƒ xuß╗æng	816	0
-4333	õ╗ÑÕñû	ÒüäÒüîÒüä	´¢×ngo├ái ra	816	0
-4334	õ╗ÑÕåà	ÒüäÒü¬Òüä	´¢×trong v├▓ng	816	0
-4335	õ╗ÑÕëì	ÒüäÒü£Òéô	trã░ß╗øc kia	816	0
-4336	õ╗ÑÕ¥î	ÒüäÒüö	sau ─æ├│, tß╗½ sau ─æ├│, tß╗½ sau khi	816	0
-4337	õ╗ÑµØÑ	ÒüäÒéëÒüä	kß╗â tß╗½´¢×	816	0
-4338	Õ£ƒ	ÒüñÒüí	─Éß╗ïa ─æiß╗âm	817	0
-4339	Õá┤ÕÉê	Òü░ÒüéÒüä	Trã░ß╗Øng hß╗úp	817	0
-4340	õ╝ÜÕá┤	ÒüïÒüäÒüÿÒéçÒüå	hß╗Öi trã░ß╗Øng	817	0
-4341	ÕÀÑÕá┤	ÒüôÒüåÒüÿÒéçÒüå	C├┤ng trã░ß╗Øng	817	0
-4342	Õú▓	Òüå	Quß║ºy b├ín h├áng	817	0
-4343	ÚºÉÞ╗èÕá┤	ÒüíÒéàÒüåÒüùÒéâÒüÿÒéçÒüå	Chß╗ù ─æß╗ù xe	817	0
-4344	Õ║âÕá┤	Òü▓ÒéìÒü░	quß║úng trã░ß╗Øng	817	0
-4345	Õ©éÕá┤	ÒüäÒüíÒü░	Chß╗ú	817	0
-4346	µê©	Òü¿	Cß╗¡a	818	0
-4347	µê©µúÜ	Òü¿ÒüáÒü¬	gi├í ─æß╗▒ng b├ít ─æ─®a, tß╗º bß║┐p	818	0
-4348	õ║òµê©	ÒüäÒü®	Giß║┐ng nã░ß╗øc	818	0
-4349	µê©þÀá	Òü¿ÒüÿÒü¥	cß╗¡a lã░ß╗øi	818	0
-4350	µ▒ƒµê©	ÒüêÒü®	Thß╗Øi edo	818	0
-4351	µê©þ▒ì	ÒüôÒüøÒüì	Hß╗Ö tß╗ïch, hß╗Ö khß║®u	818	0
-4352	µê©	Òü¿	L├á nãíi nhã░ thß║┐ n├áo	819	0
-4353	ÕÅ░µëÇ	ÒüáÒüäÒü®ÒüôÒéì	Nh├á bß║┐p	819	0
-4354	õ¢ÅµëÇ	ÒüÿÒéàÒüåÒüùÒéç	nãíi sinh sß╗æng, ─æß╗ïa chß╗ë	819	0
-4355	Þ┐æµëÇ	ÒüìÒéôÒüÿÒéç	x├│m giß╗üng ,v├╣ng phß╗Ñ cß║¡n, nh├á h├áng x├│m, h├áng x├│m, l├íng giß╗üng	819	0
-4356	Õá┤µëÇ	Òü░ÒüùÒéç	─Éß╗ïa ─æiß╗âm	819	0
-4357	õ║ïÕïÖ	ÒüÿÒéÇ	V─ân ph├▓ng	819	0
-4358	Õ©éÕ¢╣µëÇ	ÒüùÒéäÒüÅÒüùÒéç	Cãí quan h├ánh ch├¡nh th├ánh phß╗æ	819	0
-4359	õ║║	Òü▓Òü¿	cß╗¡a h├áng s├ích	820	0
-4360	Õ▒ïõ©è	ÒüèÒüÅÒüÿÒéçÒüå	s├ón thã░ß╗úng, tß║ºng thã░ß╗úng	820	0
-4361	Õà½þÖ¥Õ▒ï	ÒéäÒüèÒéä	Cß╗¡a h├áng rau quß║ú	820	0
-4362	Úâ¿Õ▒ï	Òü©Òéä	c─ân ph├▓ng	820	0
-4363	Õ║èÕ▒ï	Òü¿ÒüôÒéä	hiß╗çu cß║»t t├│c	820	0
-4364	Õ▒ïµá╣	ÒéäÒü¡	M├íi nh├á	820	0
-4365	ÕÉìÕÅñÕ▒ï	Òü¬ÒüöÒéä	Th├ánh phß╗æ Nagoya Nhß║¡t Bß║ún	820	0
-4366	ÚàÆÕ▒ï	ÒüòÒüïÒéä	tß╗¡u qu├ín ,tiß╗çm rã░ß╗úu ,qu├ín rã░ß╗úu	820	0
-4367	Õ£ƒ	ÒüñÒüí	C─ân tin	821	0
-4368	Þ¼øÕáé	ÒüôÒüåÒü®Òüå	Giß║úng ─æã░ß╗Øng	821	0
-4369	ÕáéÒÇà	Òü®ÒüåÒü®Òüå	T├▓a thß╗ï ch├¡nh	821	0
-4370	Õø¢õ╝ÜÞ¡░õ║ïÕáé	ÒüôÒüúÒüïÒüäÒüÄÒüÿÒü®Òüå	T├▓a nh├á nghß╗ï sß╗▒ quß╗æc hß╗Öi; t├▓a nh├á quß╗æc hß╗Öi .	821	0
-4371	Õü£	ÒüªÒüä	Kinh ─æ├┤ Tokyo	822	0
-4372	ÚªûÚâ¢	ÒüùÒéàÒü¿	thß╗º ─æ├┤	822	0
-4373	Úâ¢ÕÉê	ÒüñÒüöÒüå	t├¼nh huß╗æng, ho├án cß║únh, ─æiß╗üu kiß╗çn	822	0
-4374	õ║¼Úâ¢	ÒüìÒéçÒüåÒü¿	Kyoto	822	0
-4375	Úâ¢õ╝Ü	Òü¿ÒüïÒüä	th├ánh thß╗ï, th├ánh phß╗æ	822	0
-4376	Úâ¢	Òü┐ÒéäÒüô	thß╗º ─æ├┤	822	0
-4377	Úâ¢Õ┐â	Òü¿ÒüùÒéô	trung t├óm th├ánh phß╗æ, trung t├óm ─æ├┤ thß╗ï	822	0
-4378	Õø¢	ÒüÅÒü½	Tß╗ënh nagano	823	0
-4379	þ£îÕ║ü	ÒüæÒéôÒüíÒéçÒüå	ß╗ªy ban tß╗ënh	823	0
-4380	þ£îþƒÑõ║ï	ÒüæÒéôÒüíÒüÿ	ngã░ß╗Øi ─æß╗®ng ─æß║ºu mß╗Öt tß╗ënh (cß╗ºa Nhß║¡t Bß║ún)	823	0
-4381	þ£îþ½ï	ÒüæÒéôÒéèÒüñ	Sß╗▒ thuß╗Öc vß╗ü tß╗ënh; do tß╗ënh th├ánh lß║¡p	823	0
-4382	Úâ¢ÚüôÕ║£þ£î	Òü¿Òü®ÒüåÒüÁÒüæÒéô	Sß╗▒ ph├ón chia h├ánh ch├¡nh cß╗ºa Nhß║¡t	823	0
-4383	Õî║	ÒüÅ	Khua ph├¡a bß║»c	824	0
-4384	Õî║Õêç	ÒüÅÒüÄ	khu vß╗▒c, phß║ím vi, l─®nh vß╗▒c, khß╗æi	824	0
-4385	Õ£░Õî║	ÒüíÒüÅ	khu; khu vß╗▒c	824	0
-4386	Õî║Õ¢╣µëÇ	ÒüÅÒéäÒüÅÒüùÒéç	Trß╗Ñ sß╗ƒ h├ánh ch├¡nh khu vß╗▒c	824	0
-4387	Õî║ÕêÑ	ÒüÅÒü╣Òüñ	─æoß║ín, ph├ón ─æoß║ín, khoß║úng, khoß║úng c├ích	824	0
-4388	Þíî	Òüä	Ao, h├┤╠Ç	825	0
-4389	Úø╗µ▒á	ÒüºÒéôÒüí	pin	825	0
-4390	µ║£	Òüƒ	C├íi hß╗ô	825	0
-4391	Þ▓»µ░┤µ▒á	ÒüíÒéçÒüÖÒüäÒüí	H├┤╠Ç chã░╠üa nã░ãí╠üc	825	0
-4392	þö¿µ░┤Õ£░	ÒéêÒüåÒüÖÒüäÒüí	Bß╗â chß╗®a nã░ß╗øc	825	0
-4393	õ║║Úí×	ÒüÿÒéôÒéïÒüä	sß╗▒ ph├ít ├óm	826	0
-4394	Õç║þÖ║	ÒüùÒéàÒüúÒü▒Òüñ	Sß╗▒ xuß║Ñt ph├ít, khß╗ƒi h├ánh	826	0
-4395	þÖ║Þí¿	Òü»ÒüúÒü┤ÒéçÒüå	Ph├ít biß╗âu	826	0
-4396	þÖ║µÿÄ	Òü»ÒüñÒéüÒüä	Sß╗▒ ph├ít minh	826	0
-4397	þÖ║Þªï	Òü»ÒüúÒüæÒéô	Sß╗▒ ph├ít hiß╗çn, kh├ím phß║Ñ	826	0
-4398	þÖ║Õú▓	Òü»ÒüñÒü░Òüä	Sß╗▒ b├ín ra, ph├ít h├ánh sß║ún phß║®m	826	0
-4399	ÕºïþÖ║	ÒüùÒü»Òüñ	chuyß║┐n t├áu ─æß║ºu ti├¬n	826	0
-4400	þÖ║ÞÂ│	Òü╗ÒüúÒüØÒüÅ	Sß╗▒ mß╗ƒ ─æß║ºu hoß║ít ─æß╗Öng; sß╗▒ th├ánh lß║¡p	826	0
-4401	Õ╗║þë®	ÒüƒÒüªÒééÒü«	t├▓a nh├á, c├┤ng tr├¼nh kiß║┐n tr├║c	827	0
-4402	Õ╗║	Òüƒ	sß╗▒ kiß║┐n thiß║┐t, sß╗▒ x├óy dß╗▒ng	827	0
-4403	Õ╗║þ»ë	ÒüæÒéôÒüíÒüÅ	Kiß║┐n tr├║c, x├óy dß╗▒ng	827	0
-4404	õ║îÚÜÄÕ╗║	Òü½ÒüïÒüäÒüá	Kiß║┐n quß╗æc, x├óy dß╗½ng nß╗ün tß║úng ─æß║Ñt nã░ß╗øc	827	0
-4405	Õ╗║þ½ï	ÒüôÒéôÒéèÒéàÒüå	Sß╗▒ x├óy dß╗▒ng	827	0
-4406	þëø	ÒüåÒüù	─Éß╗ô vß║¡t	828	0
-4407	Úúƒ	Òüƒ	─Éß╗ô ─ân	828	0
-4408	Úú▓	Òü«	Thß╗®c uß╗æng	828	0
-4409	Þ▓À	Òüï	Viß╗çc mua sß║»m	828	0
-4410	þØÇþë®	ÒüìÒééÒü«	Kimono (y phß╗Ñc truyß╗ün thß╗æng cß╗ºa Nhß║¡t bß║ún)	828	0
-4411	Õïòþë®	Òü®ÒüåÒüÂÒüñ	─Éß╗Öng vß║¡t	828	0
-4412	Õ╗║þë®	ÒüƒÒüªÒééÒü«	t├▓a nh├á, ng├┤i nh├á, c├┤ng tr├¼nh kiß║┐n tr├║c	828	0
-4413	µ×£þë®	ÒüÅÒüáÒééÒü«	hoa quß║ú, tr├íi c├óy	828	0
-4414	ÞìÀþë®	Òü½ÒééÒüñ	H├ánh l├¢	828	0
-4415	õ©ë	Òü┐Òüú	H├áng h├│a, vß║¡t phß║®m	829	0
-4416	µùÑþö¿Õôü	Òü½ÒüíÒéêÒüåÒü▓Òéô	Vß║¡t dß╗Ñng h├áng ng├áy	829	0
-4417	Þú¢Õôü	ÒüøÒüäÒü▓Òéô	th├ánh phß║®m ,sß║ún phß║®m ,h├áng h├│a	829	0
-4418	Õ┐àÚ£ÇÕôü	Òü▓ÒüñÒüÿÒéàÒü▓Òéô	Mß║Àt h├áng nhu yß║┐u; nhu yß║┐u phß║®m	829	0
-4419	õ¢£Õôü	ÒüòÒüÅÒü▓Òéô	T├íc phß║®m	829	0
-4420	õ©èÕôü	ÒüÿÒéçÒüåÒü▓Òéô	Thß╗▒c phß║®m; nguy├¬n liß╗çu nß║Ñu ─ân	829	0
-4421	õ║îõ║║	ÒüÁÒüƒÒéè	Du lß╗ïch	830	0
-4422	µùàÚñ¿	ÒéèÒéçÒüïÒéô	Nh├á trß╗ì cho kh├ích du lß╗ïch	830	0
-4423	µùàÕê©	ÒéèÒéçÒüæÒéô	hß╗Ö chiß║┐u	830	0
-4424	µùà	ÒüƒÒü│	Chuyß║┐n ─æi	830	0
-4425	õ©Çõ║║µùà	Òü▓Òü¿ÒéèÒüƒÒü│	Du lß╗ïch mß╗Öt m├¼nh	830	0
-4426	µùàÞ▓╗	ÒéèÒéçÒü▓	lß╗Ö ph├¡, ph├¡ ─æi du lß╗ïch	830	0
-4427	õ╣ù	Òü«	Giao th├┤ng	831	0
-4428	ÚÇÜÞ¿│	ÒüñÒüåÒéäÒüÅ	Viß╗çc phi├¬n dß╗ïch	831	0
-4429	µÖ«ÚÇÜ	ÒüÁÒüñÒüå	Viß╗çc ─æi hß╗ìc	831	0
-4430	ÚÇÜÕïñ	ÒüñÒüåÒüìÒéô	Viß╗çc ─æi l├ám	831	0
-4431	Ú│Ñ	Òü¿Òéè	Hß╗ìc l├¬n, hß╗ìc l├¬n ─æß║íi hß╗ìc	832	0
-4432	ÚÇ▓µ¡®	ÒüùÒéôÒü¢	tiß║┐n bß╗Ö	832	0
-4433	ÚÇ▓Õîû	ÒüùÒéôÒüï	Sß╗▒ tiß║┐n h├│a	832	0
-4434	µÿçÚÇ▓	ÒüùÒéçÒüåÒüùÒéô	Viß╗çc th─âng tiß║┐n, th─âng chß╗®c	832	0
-4435	ÕàêÚÇ▓Õø¢	ÒüøÒéôÒüùÒéôÒüôÒüÅ	Nã░ß╗øc ti├¬n tiß║┐n	832	0
-4436	õ¢ô	ÒüïÒéëÒüá	H├¼nh tr├▓n	833	0
-4437	õ©©	Òü¥Òéï	Vi├¬n ─æß║ín	833	0
-4438	þå▒	Òü¡Òüñ	Nhiß╗çt ─æß╗Ö	834	0
-4439	þå▒Õ┐â	Òü¡ÒüúÒüùÒéô	nhiß╗çt ─æß╗øi	834	0
-4440	þå▒	Òü¡Òüú	Sß╗▒ ─æß╗æt n├│ng, sß╗▒ ─æun n├│ng	834	0
-4441	þå▒µ╣»	Òü¡ÒüúÒü¿Òüå	nã░ß╗øc s├┤i	834	0
-4442	ÕåÀ	ÒüñÒéü	Tß╗º lß║ính	835	0
-4443	ÕåÀµê┐	ÒéîÒüäÒü╝Òüå	Ph├▓ng lß║ính	835	0
-4444	õ©¡	Òü¬Òüï	─Éß╗ô ngß╗ìt	836	0
-4445	µ▒Ü	ÒüìÒüƒÒü¬	├ö nhiß╗àm	837	0
-4446	µ▒Ü	ÒéêÒüö	sß╗▒ tham ├┤, sß╗▒ tham nh┼®ng	837	0
-4447	µ×£þë®	ÒüÅÒüáÒééÒü«	hoa quß║ú, tr├íi c├óy	838	0
-4448	þÁÉµ×£	ÒüæÒüúÒüï	Kß║┐t quß║ú	838	0
-4449	Õè╣µ×£	ÒüôÒüåÒüï	c├│ hiß╗çu quß║ú, c├│ t├íc dß╗Ñng	838	0
-4450	µ×£Õ«ƒ	ÒüïÒüÿÒüñ	quß║ú	838	0
-4451	µ×£	Òü»	th├ánh quß║ú, kß║┐t quß║ú	838	0
-4452	ÕìÁ	ÒüƒÒü¥Òüö	Trß╗®ng	839	0
-4453	ÕìÁÚ╗ä	ÒéëÒéôÒüèÒüå	L├▓ng ─æß╗Å	839	0
-4454	ÕìÁþÖ¢	ÒéëÒéôÒü▒ÒüÅ	L├▓ng trß║»ng	839	0
-4455	þÜ┐	ÒüòÒéë	─É─®a	840	0
-4456	þü░þÜ┐	Òü»ÒüäÒüûÒéë	Gß║ít t├án thuß╗æc	840	0
-4457	þ┤Ö	ÒüïÒü┐	─É─®a giß║Ñy	840	0
-4458	ÕñºþÜ┐	ÒüèÒüèÒüûÒéë	C├íi ─æ─®a lß╗øn	840	0
-4459	Õ░ÅþÜ┐	ÒüôÒüûÒéë	C├íi ─æ─®a nhß╗Å	840	0
-4460	ÚàÆ	ÒüòÒüæ	Rã░ß╗úc	841	0
-4461	ÚàÆÕ▒ï	ÒüòÒüïÒéä	tß╗¡u qu├ín ,tiß╗çm rã░ß╗úu ,qu├ín rã░ß╗úu	841	0
-4462	µùÑµ£¼ÚàÆ	Òü½Òü╗ÒéôÒüùÒéà	Rã░ß╗úc Nhß║¡t	841	0
-4463	Úú▓ÚàÆ	ÒüäÒéôÒüùÒéà	L├íi xe trong t├¼nh trß║íng say rã░ß╗úu	841	0
-4464	µ┤ïÚàÆ	ÒéêÒüåÒüùÒéà	Rã░ß╗úu T├óy	841	0
-4465	Õ▒àÚàÆÕ▒ï	ÒüäÒüûÒüïÒéä	Qu├ín rã░ß╗úu	841	0
-4466	Õ£░ÚàÆ	ÒüÿÒüûÒüæ	Rã░ß╗úu ─æß╗ïa phã░ãíng	841	0
-4467	þÜ┐	ÒüòÒéë	Muß╗æi ─ân	842	0
-4468	Õí®Þ¥ø	ÒüùÒüèÒüïÒéë	muß╗æi ─ân	842	0
-4469	Õí®Õêå	ÒüêÒéôÒüÂÒéô	lã░ß╗úng muß╗æi	842	0
-4470	Õí®µ░┤	ÒüùÒüèÒü┐ÒüÜ	nã░ß╗øc muß╗æi	842	0
-4471	õ║║	Òü▓Òü¿	ng├áy th├íng	843	0
-4472	µùÑõ╗ÿ	Òü▓ÒüÑ	lß╗à t├ón, quß║ºy thã░ß╗Øng trß╗▒c	843	0
-4473	ÕÅù	Òüå	Sß╗▒ tß║Àng cho, k├¡nh tß║Àng, quy├¬n c├║ng	843	0
-4474	õ╗ÿÚî▓	ÒüÁÒéìÒüÅ	T├║i x├ích	843	0
-4475	µ£¿	Òüì	mß╗Öt chiß╗üu, mß╗Öt lã░ß╗út	844	0
-4476	þëçµû╣	ÒüïÒüƒÒü╗Òüå	Mß╗Öt hã░ß╗øng; mß╗Öt chiß╗üu; mß╗Öt chiß║┐c; mß╗Öt b├¬n	844	0
-4477	þëçµëï	ÒüïÒüƒÒüª	mß╗Öt tay	844	0
-4478	þëçÞ¿Ç	ÒüïÒüƒÒüôÒü¿	Kiß║┐n thß╗®c n├┤ng cß║ín; sß╗▒ biß║┐t l├Ám b├Ám	844	0
-4479	þëçÕ»ä	ÒüïÒüƒÒéê	mß║únh vß╗Ñn, mß║únh vß╗í	844	0
-4480	µ£¼	Òü¢Òéô	G├á quay, g├á nã░ß╗øng	845	0
-4481	þä╝Þéë	ÒéäÒüìÒü½ÒüÅ	thß╗ït quay, thß╗ït nã░ß╗øng	845	0
-4482	þçâþä╝	Òü¡ÒéôÒüùÒéçÒüå	Sß╗▒ ─æß╗æt ch├íy	845	0
-4483	µ£ê	ÒüñÒüì	Cß╗Ñc ph├▓ng ch├íy chß╗»a ch├íy	846	0
-4484	ÕÅñ	ÒüÁÒéï	thß╗â rß║»n, dß║íng rß║»n, chß║Ñt rß║»n	847	0
-4485	Õø║Õ«Ü	ÒüôÒüªÒüä	cß╗æ ─æß╗ïnh, sß╗▒ cß╗æ ─æß╗ïnh, sß╗▒ giß╗» nguy├¬n, giß╗» nguy├¬n, giß╗» cß╗æ ─æß╗ïnh	847	0
-4486	ÚáæÕø║	ÒüîÒéôÒüô	Ngoan cß╗æ, cß╗æ chß║Ñp	847	0
-4487	ÕÇïõ║║	ÒüôÒüÿÒéô	mß╗Öt c├íi, mß╗Öt cß╗Ñc, mß╗Öt vi├¬n	848	0
-4488	ÕÇïõ║║	ÒüôÒüÿÒéô	c├í nh├ón, c├í thß╗â	848	0
-4489	ÕÇïõ║║	ÒüôÒüÿÒéô	Chß╗º ngh─®a c├í nh├ón	848	0
-4490	ÕÇïÕ▒ò	ÒüôÒüªÒéô	Triß╗ân l├úm c├í nh├ón (tß╗▒ tß╗ò chß╗®c triß╗ân l├úm)	848	0
-4491	ÕÇïµÇº	ÒüôÒüøÒüä	C├í t├¡nh, t├¡nh c├ích	848	0
-4492	ÕÇïµò░	ÒüôÒüÖÒüå	Sß╗æ cß╗ºa mß╗ùi thß╗®	848	0
-4493	ÕÇïÕ«ñ	ÒüôÒüùÒüñ	Ph├▓ng ri├¬ng	848	0
-4494	õ║║	Òü▓Òü¿	Khu├┤n mß║Àt tã░ãíi cã░ß╗Øi	849	0
-4495	Õ¥«þ¼æ	Òü╗Òü╗Òüê	Sß╗▒ mß╗ëm cã░ß╗Øi	849	0
-4496	þ½ï	Òüƒ	Tiß║┐ng kh├│c	850	0
-4497	µ│ú	Òü¬	M├¡t ã░ß╗øt	850	0
-4498	Õ£ƒ	ÒüñÒüí	sß╗æ ─æen bß║Ñt hß║ính, kh├┤ng may mß║»n	852	0
-4499	Õ╣©Úüï	ÒüôÒüåÒüåÒéô	Vß║¡n may, sß╗æ ─æß╗Å	852	0
-4500	Õ╣©	ÒüòÒüäÒéÅ	Sß╗▒ may mß║»n, hß║ính ph├║c	852	0
-4501	Õ¢╝	ÒüïÒéî	Thß║úm kß╗ïch	853	0
-4502	ÕÅñ	ÒüÁÒéï	k├®m, yß║┐u	854	0
-4503	Þïª	ÒüÅÒéï	Sß╗▒ ─æau ─æß╗øn, sß╗▒ ─æau nhß╗®c	854	0
-4504	ÞïªÕè┤	ÒüÅÒéìÒüå	Gian khß╗ò, cam go	854	0
-4505	Þïªµâà	ÒüÅÒüÿÒéçÒüå	sß╗▒ than phiß╗ü, lß╗Øi than phiß╗ün	854	0
-4506	þùø	ÒüäÒüƒ	Sß╗▒ ─æau ─æß║ºu	855	0
-4507	Þïªþùø	ÒüÅÒüñÒüå	Sß╗▒ ─æau ─æß╗øn, sß╗▒ ─æau nhß╗®c	855	0
-4508	þùø	ÒüäÒüƒ	Cãín ─æau bß╗Ñng	855	0
-4509	Þà░þùø	ÒéêÒüåÒüñÒüå	─æau thß║»t lã░ng	855	0
-4510	Þç¬Õêå	ÒüÿÒüÂÒéô	sß╗▒ xß║Ñu hß╗ò	856	0
-4511	µüÑ	Òü»	T├¡nh nh├║t nh├ít,bß║¢n lß║¢n, ngã░ß╗úng	856	0
-4512	ÚàÆ	ÒüòÒüæ	Sß╗▒ ─æã░a cho; sß╗▒ chuyß╗ân cho; sß╗▒ ph├ón ph├ít	857	0
-4513	µö»Úàì	ÒüùÒü»Òüä	sß╗▒ ß║únh hã░ß╗ƒng, sß╗▒ chi phß╗æi	857	0
-4514	ÚàìÕüÂÞÇà	Òü»ÒüäÒüÉÒüåÒüùÒéâ	Bß║ín ─æß╗ông h├ánh, ngã░ß╗Øi gh├®p ─æ├┤i	857	0
-4515	µö»Úàì	ÒüùÒü»Òüä	Ngã░ß╗Øi quß║ún l├¡, gi├ím ─æß╗æc, ngã░ß╗Øi ─æiß╗üu h├ánh	857	0
-4516	Õ«àÚàìõ¥┐	ÒüƒÒüÅÒü»ÒüäÒü│Òéô	Chuyß╗ân ph├ít tß║¡n nh├á	857	0
-4517	Õñº	ÒüèÒüè	Bß║ºn c├╣ng, ngh├¿o kh├│	858	0
-4518	Õø░µâæ	ÒüôÒéôÒéÅÒüÅ	Bß╗æi rß╗æi	858	0
-4519	µúÆ	Òü╝Òüå	Gia vß╗ï; hã░ãíng liß╗çu; chß║Ñt tß║ío m├╣i hã░ãíng	859	0
-4520	Þ¥øµè▒	ÒüùÒéôÒü╝Òüå	Sß╗▒ ki├¬n nhß║½n; sß╗▒ chß╗ïu ─æß╗▒ng	859	0
-4521	Þ¥øÕ¡É	ÒüïÒéëÒüù	C├óy m├╣ tß║ít; m├╣ tß║ít	859	0
-4522	õ║║ÒÇà	Òü▓Òü¿Òü│Òü¿	giß║Ñc ngß╗º	860	0
-4523	Õ▒àþ£á	ÒüäÒü¡ÒéÇ	Ngß╗º ─æ├┤ng	860	0
-4524	Õé¼þ£á	ÒüòÒüäÒü┐Òéô	thuß║¡t th├┤i mi├¬n	860	0
-4525	õ©ëõ║║	ÒüòÒéôÒü½Òéô	T─âng ca	861	0
-4526	µ«ïÚ½ÿ	ÒüûÒéôÒüáÒüï	Sß╗æ dã░ t├ái khoß║ún	861	0
-4527	õ╗è	ÒüäÒü¥	Kß╗À niß╗çm	862	0
-4528	Þ¿ÿÕ┐ÁµùÑ	ÒüìÒü¡ÒéôÒü│	Ng├áy kß╗ë niß╗çm	862	0
-4529	õ┐íÕ┐Á	ÒüùÒéôÒü¡Òéô	L├▓ng tin	862	0
-4530	Õ┐ÁÚíÿ	Òü¡ÒéôÒüîÒéô	T├óm nguyß╗çn, nguyß╗çn vß╗ìng	862	0
-4531	þäíÕ┐Á	ÒéÇÒü¡Òéô	l├ám tiß║┐c, thã░ãíng tiß║┐c, hß╗æi tiß║┐c, ch├ín nß║ún, sß╗▒ buß╗ôn nß║ún; sß╗▒ thß║Ñt vß╗ìng	862	0
-4532	µªéÕ┐Á	ÒüîÒüäÒü¡Òéô	Kh├íi niß╗çm	862	0
-4533	µ¡ªÕÖ¿	ÒüÂÒüì	sß╗▒ cß║úm tß║í, biß║┐t ãín	863	0
-4534	µäƒµâ│	ÒüïÒéôÒüØÒüå	cß║úm tã░ß╗ƒng, ß║Ñn tã░ß╗úng	863	0
-4535	þºü	ÒéÅÒüƒÒüù	T├¼nh cß║úm; t├óm trß║íng; cß║úm x├║c; cß║úm gi├íc	864	0
-4536	Þïªµâà	ÒüÅÒüÿÒéçÒüå	sß╗▒ , lß╗Øi than phiß╗ün	864	0
-4537	õ║ïµâà	ÒüÿÒüÿÒéçÒüå	T├¼nh h├¼nh, t├¼nh trß║íng	864	0
-4538	ÕÅïµâà	ÒéåÒüåÒüÿÒéçÒüå	t├¼nh bß║ín, t├¼nh bß║▒ng hß╗»u	864	0
-4539	Þí¿µâà	Òü▓ÒéçÒüåÒüÿÒéçÒüå	T├¼nh h├¼nh, biß╗âu lß╗Ö t├¼nh cß║úm, bß╗ü ngo├ái	864	0
-4540	µâàÕá▒	ÒüÿÒéçÒüåÒü╗Òüå	Th├┤ng tin, tin tß╗®c	864	0
-4541	µâà	Òü¬Òüò	kh├┤ng kh├¡, bß║ºu kh├┤ng kh├¡; cß║úm nhß║¡n	864	0
-4542	Õ¡ªµáí	ÒüîÒüúÒüôÒüå	cß║úm gi├íc	865	0
-4543	þø«	Òéü	Vß╗ï gi├íc	865	0
-4544	ÞªûÞªÜ	ÒüùÒüïÒüÅ	thß╗ï gi├íc	865	0
-4545	þø«ÞªÜ	ÒéüÒüû	─Éß╗ông hß╗ô b├ío thß╗®c	865	0
-4546	ÕÅ│Õü┤	Òü┐ÒüÄÒüîÒéÅ	─æß╗ô ─æß╗â qu├¬n	866	0
-4547	Õ┐ÿ	ÒéÅÒüÖ	tiß╗çc tß║Ñt ni├¬n	866	0
-4548	þ»Çµ░┤	ÒüøÒüúÒüÖÒüä	sß╗▒ quyß║┐t ─æß╗ïnh	867	0
-4549	µ▒║Õ┐â	ÒüæÒüúÒüùÒéô	quyß║┐t t├óm	867	0
-4550	Þºúµ▒║	ÒüïÒüäÒüæÒüñ	giß║úi quyß║┐t	867	0
-4551	µ▒║ÕïØ	ÒüæÒüúÒüùÒéçÒüå	trß║¡n chung kß║┐t	867	0
-4552	Õêñµ▒║	Òü»ÒéôÒüæÒüñ	ph├ín quyß║┐t, quyß║┐t ─æß╗ïnh cß╗ºa quan t├▓a	867	0
-4553	Õ╝ò	Òü▓	dß╗▒ ─æß╗ïnh	868	0
-4554	Õ«Üõ╝æµùÑ	ÒüªÒüäÒüìÒéàÒüåÒü│	ng├áy nghß╗ë ─æß╗ïnh k├¼	868	0
-4555	µ▒║Õ«Ü	ÒüæÒüúÒüªÒüä	sß╗▒ quyß║┐t ─æß╗ïnh	868	0
-4556	Þé»Õ«Ü	ÒüôÒüåÒüªÒüä	Sß╗▒ t├¡nh to├ín; sß╗▒ thanh to├ín; t├¡nh tiß╗ün	868	0
-4557	Õ«Üµ£ƒÕê©	ÒüªÒüäÒüìÒüæÒéô	V├® ─æß╗ïnh k├¼	868	0
-4558	µëï	Òüª	lß╗à t├ón, quß║ºy thã░ß╗Øng trß╗▒c	870	0
-4559	ÕÅù	Òüå	ß╗®ng th├¡ ,sß╗▒ tham gia k├¼ thi, dß╗▒ thi	870	0
-4560	ÕÅù	Òüå	bß╗ï ─æß╗Öng, thß╗Ñ ─æß╗Öng	870	0
-4561	ÕÅùÞ║½	ÒüåÒüæÒü┐	bß╗ï ─æß╗Öng, thß╗Ñ ─æß╗Öng	870	0
-4562	ÕÅùõ┐í	ÒüÿÒéàÒüùÒéô	Sß╗▒ thu t├¡n hiß╗çu	870	0
-4563	µòÖ	ÒüèÒüù	Sß╗▒ giß║úng dß║íy	871	0
-4564	µòÖµÄê	ÒüìÒéçÒüåÒüÿÒéà	sß╗▒ gi├ío dß╗Ñc, gi├ío dß╗Ñc, giß║úng dß║íy	871	0
-4565	µÄêµÑ¡µûÖ	ÒüÿÒéàÒüÄÒéçÒüåÒéèÒéçÒüå	Tiß╗ün hß╗ìc ph├¡	871	0
-4566	µÄê	ÒüòÒüÜ	cho v├á nhß║¡n	871	0
-4567	Õ╝ƒÕ¡É	ÒüºÒüù	Hß╗ìc tr├▓, hß╗ìc sinh	872	0
-4568	Õ¥Æµ¡®	Òü¿Òü╗	T├¡n ─æß╗ô Hß╗ôi gi├ío	872	0
-4569	µòÖÕ¥Æ	ÒüìÒéçÒüåÒü¿	t├¡n ─æß╗ô ─æß║ío gi├ío	872	0
-4570	µØ▒µ┤ï	Òü¿ÒüåÒéêÒüå	tß║¡p luyß╗çn	873	0
-4571	Þ¿ôþÀ┤	ÒüÅÒéôÒéîÒéô	huß║Ñn luyß╗çn	873	0
-4572	þÀ┤	Òü¡	sß╗▒ khß║úo nghiß╗çm, r├¿n gi┼®a, sß╗▒ thß╗¡ th├ích	873	0
-4573	µ┤ùþÀ┤	ÒüøÒéôÒéîÒéô	Vß║╗ lß╗ïch sß╗▒; tao nh├ú; tinh tß║┐	873	0
-4574	µ£¬þÀ┤	Òü┐ÒéîÒéô	sß╗▒ tiß║┐c nuß╗æi, sß╗▒ quyß║┐n luyß║┐n, sß╗▒ lã░u luyß║┐n	873	0
-4575	õ║║	Òü▓Òü¿	Xem lß║íi b├ái, ├┤n b├ái	874	0
-4576	Õø×Õ¥®	ÒüïÒüäÒüÁÒüÅ	Kh├┤i phß╗Ñc, hß╗ôi phß╗Ñc	874	0
-4577	Õ¥ÇÕ¥®	ÒüèÒüåÒüÁÒüÅ	V├® khß╗® hß╗ôi	874	0
-4578	Õ¥®µùº	ÒüÁÒüúÒüìÒéàÒüå	Tr├╣ng tu, phß╗Ñc chß║┐	874	0
-4579	Õ¥®Þêê	ÒüÁÒüúÒüôÒüå	sß╗▒ phß╗Ñc hã░ng	874	0
-4580	Õ¥®µ┤╗	ÒüÁÒüúÒüïÒüñ	sß╗▒ sß╗æng lß║íi, phß╗Ñc hß╗ôi, phß╗Ñc hã░ng,  t├íi sinh	874	0
-4581	ÕÅìÕ¥®	Òü»ÒéôÒüÀÒüÅ	sß╗▒ nhß║»c lß║íi	874	0
-4582	µ£¿	Òüì	Bß╗ü ngo├ái, ph├¡a trã░ß╗øc, biß╗âu ─æß╗ô	875	0
-4583	Þí¿	Òü▓ÒéçÒüå	Bß╗ü ngo├ái, ph├¡a trã░ß╗øc, biß╗âu ─æß╗ô	875	0
-4584	þÖ║Þí¿	Òü»ÒüúÒü┤ÒéçÒüå	Pha╠üt bi├¬╠ëu	875	0
-4585	Þí¿	ÒüéÒéëÒéÅ	b├¼a	875	0
-4586	õ╗úÞí¿	ÒüáÒüäÒü▓ÒéçÒüå	─æß║íi diß╗çn, ─æß╗ïa biß╗âu	875	0
-4587	Þí¿µâà	Òü▓ÒéçÒüåÒüÿÒéçÒüå	T├¼nh h├¼nh, biß╗âu lß╗Ö t├¼nh cß║úm, bß╗ü ngo├ái	875	0
-4588	õ¢Åõ║║	ÒüÿÒéàÒüåÒü½Òéô	sß╗▒ tß╗æt nghiß╗çp	876	0
-4589	ÕìÆµÑ¡Õ╝Å	ÒüØÒüñÒüÄÒéçÒüåÒüùÒüì	lß╗à tß╗æt nghiß╗çp	876	0
-4590	ÕìÆµÑ¡þöƒ	ÒüØÒüñÒüÄÒéçÒüåÒüøÒüä	Sinh vi├¬n, hß╗ìc sinh tß╗æt nghiß╗çp	876	0
-4591	ÕñºÕìÆ	ÒüáÒüäÒüØÒüñ	Tß╗æt nghiß╗çp ─æß║íi hß╗ìc	876	0
-4592	ÕìÆÞ½û	ÒüØÒüñÒéìÒéô	luß║¡n ├ín tß╗æt nghiß╗çp	876	0
-4593	µû░ÕìÆ	ÒüùÒéôÒüØÒüñ	Mß╗øi ra trã░ß╗Øng, mß╗øi tß╗æt nghiß╗çp	876	0
-4594	Úüô	Òü┐Òüí	vi phß║ím	877	0
-4595	ÕïÿÚüò	ÒüïÒéôÒüíÒüî	sß╗▒ kh├íc nhau	877	0
-4596	þºü	ÒéÅÒüƒÒüù	Cãí quan h├ánh ch├¡nh th├ánh phß╗æ	878	0
-4597	Õ¢╣þø«	ÒéäÒüÅÒéü	tr├ích nhiß╗çm, c├┤ng viß╗çc, nhiß╗çm vß╗Ñ	878	0
-4598	Õ¢╣ÞÇà	ÒéäÒüÅÒüùÒéâ	diß╗àn vi├¬n	878	0
-4599	Õ¢╣	ÒéäÒüÅ	vai diß╗àn, nhiß╗çm vß╗Ñ	878	0
-4600	õ©╗Õ¢╣	ÒüùÒéàÒéäÒüÅ	nh├ón vß║¡t ch├¡nh, vai ch├¡nh	878	0
-4601	ÕàÁÕ¢╣	Òü©ÒüäÒüêÒüì	binh dß╗ïch, qu├ón dß╗ïch, viß╗çc bß║»t ─æi l├¡nh, viß╗çc bß║»t nhß║¡p ng┼®	878	0
-4602	þÖ¢	ÒüùÒéì	So s├ính	879	0
-4603	µ»öÞ╝âþÜä	Òü▓ÒüïÒüÅÒüªÒüì	C├│ t├¡nh so s├ính; mang t├¡nh so s├ính, tã░ãíng ─æß╗æi	879	0
-4604	Õ»¥µ»ö	ÒüƒÒüäÒü▓	sß╗▒ so s├ính	879	0
-4605	µ»öõ¥ï	Òü▓ÒéîÒüä	Ty╠ë l├¬╠ú	879	0
-4606	þÜå	Òü┐Òü¬	mß╗ìi ngã░ß╗Øi	879	0
-4607	Þºúþªü	ÒüïÒüäÒüìÒéô	sß╗▒ hß╗ºy bß╗Å lß╗çnh cß║Ñm	879	0
-4608	þÜåþø«	ÒüïÒüäÒééÒüÅ	ho├án to├án	879	0
-4609	þÜåþäí	ÒüïÒüäÒéÇ	kh├┤ng c├│ g├¼, con sß╗æ kh├┤ng, v├┤ ngh─®a, kh├┤ng hß╗ü	879	0
-4610	Õ¢╝	ÒüïÒéî	Anh ta	880	0
-4611	Õ¢╝	ÒüïÒéî	C├┤ ß║Ñy, bß║ín g├íi	880	0
-4612	Õ¢╝µ░Å	ÒüïÒéîÒüù	Bß║ín trai, ngã░ß╗Øi y├¬u	880	0
-4613	Õ¢╝Õ▓©	Òü▓ÒüîÒéô	B├¬n kia bß╗Ø, c├Ái bß╗ông lai	880	0
-4614	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	to├án bß╗Ö	881	0
-4615	Õ«ëÕà¿	ÒüéÒéôÒü£Òéô	an to├án	881	0
-4616	Õà¿Õø¢	Òü£ÒéôÒüôÒüÅ	to├án quß╗æc, khß║»p nã░ß╗øc	881	0
-4617	Õà¿Õôí	Òü£ÒéôÒüäÒéô	tß║Ñt cß║ú mß╗ìi ngã░ß╗Øi	881	0
-4618	Õà¿	Òü¥ÒüúÒüƒ	to├án lß╗▒c	881	0
-4619	Õü£	ÒüªÒüä	to├án bß╗Ö	882	0
-4620	Úâ¿Õ▒ï	Òü©Òéä	c─ân ph├▓ng	882	0
-4621	Úâ¿ÚòÀ	ÒüÂÒüíÒéçÒüå	trã░ß╗ƒng ph├▓ng	882	0
-4622	õ©ÇÚâ¿	ÒüäÒüíÒüÂ	mß╗Öt bß╗Ö phß║¡n	882	0
-4623	Úâ¿	ÒüÂ	C├óu lß║íc bß╗Ö quß║ºn vß╗út	882	0
-4624	ÕÀÑÕ¡ªÚâ¿	ÒüôÒüåÒüîÒüÅÒüÂ	khoa kß╗╣ thuß║¡t c├┤ng nghiß╗çp	882	0
-4625	ÕñºÚâ¿Õêå	ÒüáÒüäÒüÂÒüÂÒéô	─æß║íi bß╗Ö phß║¡n, phß║ºn lß╗øn	882	0
-4626	Õ┐à	ÒüïÒü¬Òéë	sß╗▒ quyß║┐t t├óm	883	0
-4627	Õ┐àõ┐«	Òü▓ÒüúÒüùÒéàÒüå	sß╗▒ cß║ºn phß║úi hß╗ìc, c├íi cß║ºn phß║úi sß╗¡a	883	0
-4628	Õ┐àÚ£ÇÕôü	Òü▓ÒüñÒüÿÒéàÒü▓Òéô	Mß║Àt h├áng nhu yß║┐u; nhu yß║┐u phß║®m	883	0
-4629	ÕÑ│	ÒüèÒéôÒü¬	y├¬u cß║ºu, ─æ├▓i hß╗Åi	884	0
-4630	Þªüþ┤ä	ÒéêÒüåÒéäÒüÅ	sß╗▒ t├│m lã░ß╗úc, sß╗▒ kh├íi qu├ít	884	0
-4631	ÞìÀþë®	Òü½ÒééÒüñ	h├ánh l├¢	885	0
-4632	ÞìÀÚÇá	Òü½ÒüÑÒüÅ	nhß║¡p h├áng	885	0
-4633	Õç║ÞìÀ	ÒüùÒéàÒüúÒüï	xuß║Ñt h├áng	885	0
-4634	þ«▒	Òü»Òüô	tß╗▒ do	886	0
-4635	þÉåþö▒	ÒéèÒéåÒüå	l├¢ do	886	0
-4636	þÁîþö▒	ÒüæÒüäÒéå	Qu├í cß║únh Paris	886	0
-4637	õ©ìÞç¬þö▒	ÒüÁÒüÿÒéåÒüå	n├▓i giß╗æng, nguß╗ôn	886	0
-4638	µêæ	ÒéÅ	─Éãín xin nghß╗ë, ─æãín xin ph├®p	887	0
-4639	þ¿▓	ÒüäÒü¡	lß╗úi ├¡ch, lß╗úi nhuß║¡n	888	0
-4640	Õê®ÕÅú	ÒéèÒüôÒüå	quyß╗ün lß╗úi	888	0
-4641	Õê®Õ¡É	ÒéèÒüù	tiß╗ün lß╗Øi, lß╗úi tß╗®c, l├úi (ng├ón h├áng)	888	0
-4642	õ¢òµø£µùÑ	Òü¬ÒéôÒéêÒüåÒü│	─æß╗ô giß║Àt	890	0
-4643	µ┤ùµ┐»µ®ƒ	ÒüøÒéôÒüƒÒüÅÒüì	m├íy giß║Àt	890	0
-4644	õ║îõ║║	ÒüÁÒüƒÒéè	giß║Ñc ngß╗º trã░a	891	0
-4645	Õ»ØÕØè	Òü¡Òü╝Òüå	ngß╗º qu├¬n	891	0
-4646	Õ»ØÕ«ñ	ÒüùÒéôÒüùÒüñ	ph├▓ng ngß╗º	891	0
-4647	Õ»ØÕÅ░Þ╗è	ÒüùÒéôÒüáÒüäÒüùÒéâ	xe giã░ß╗Øng nß║▒m	891	0
-4648	Õ»ØÞ¿Ç	Òü¡ÒüöÒü¿	ngß╗º mß╗ø, n├│i mß╗ø	891	0
-4649	ÞÂ│	ÒüéÒüù	m├║a truyß╗ün thß╗æng nhß║¡t bß║ún	892	0
-4650	µ░┤	Òü┐ÒüÜ	sinh hoß║ít, ─æß╗Øi sß╗æng	893	0
-4651	µ┤╗Õïò	ÒüïÒüñÒü®Òüå	hoß║ít ─æß╗Öng	893	0
-4652	µ┤╗Õ¡ù	ÒüïÒüñÒüÿ	chß╗» in	893	0
-4653	µ┤╗µ░ù	ÒüïÒüúÒüì	x├┤n xao, hoß║ít n├ío, s├┤i nß╗òi	893	0
-4654	µ┤╗Þ║ì	ÒüïÒüñÒéäÒüÅ	hoß║ít sß╗Ñng, sß╗¡ dß╗Ñng, tß║¡n dß╗Ñng	893	0
-4655	µ┤╗þÖ║	ÒüïÒüúÒü▒Òüñ	th├│i quen ─ân uß╗æng	893	0
-4656	µ£¿	Òüì	Cuß╗æi tuß║ºn	894	0
-4657	µ£êµ£½	ÒüÆÒüñÒü¥Òüñ	cuß╗æi th├íng	894	0
-4658	Õ╣┤µ£½	Òü¡ÒéôÒü¥Òüñ	cuß╗æi n─âm	894	0
-4659	µ£½	ÒüÖÒüê	Cuß╗æi, ─æß╗ënh, ch├│t	894	0
-4660	µ£½	ÒüÖÒüê	con ├║t	894	0
-4661	µ£ƒµ£½	ÒüìÒü¥Òüñ	K├¼ thi cuß╗æi k├¼	894	0
-4662	Õ«Â	ÒüäÒüê	Nh├á	895	0
-4663	Õ©░Õ«à	ÒüìÒüƒÒüÅ	Viß╗çc vß╗ü nh├á	895	0
-4664	Þç¬Õ«à	ÒüÿÒüƒÒüÅ	Nh├á m├¼nh	895	0
-4665	õ¢ÅÕ«à	ÒüÿÒéàÒüåÒüƒÒüÅ	nh├á ß╗ƒ, nãíi sß╗æng	895	0
-4666	Õ«àÚàìõ¥┐	ÒüƒÒüÅÒü»ÒüäÒü│Òéô	Chuyß╗ân ph├ít tß║¡n nh├á	895	0
-4667	þñ¥Õ«à	ÒüùÒéâÒüƒÒüÅ	cã░ x├í cß╗ºa c├┤ng ty	895	0
-4668	þÑ¡	Òü¥Òüñ	lß╗à hß╗Öi	896	0
-4669	Õ¡ªÕ£ÆþÑ¡	ÒüîÒüÅÒüêÒéôÒüòÒüä	ng├áy hß╗Öi ß╗ƒ trã░ß╗Øng	896	0
-4670	õ╗è	ÒüäÒü¥	ng├áy thã░ß╗Øng	897	0
-4671	Õ╣│	ÒüƒÒüä	h├▓a b├¼nh	897	0
-4672	Õ╣│µêÉ	Òü©ÒüäÒüøÒüä	thß╗Øi kß╗│ B├¼nh Th├ánh	897	0
-4673	Õ╣│ÕØç	Òü©ÒüäÒüìÒéô	b├¼nh qu├ón, trung b├¼nh	897	0
-4674	Õà¼Õ╣│	ÒüôÒüåÒü©Òüä	c├┤ng bß║▒ng	897	0
-4675	Õ╣│þ¡ë	Òü│ÒéçÒüåÒü®Òüå	b├¼nh ─æß║│ng	897	0
-4676	ÕÆîÚúƒ	ÒéÅÒüùÒéçÒüÅ	h├▓a b├¼nh	898	0
-4677	ÕÆîÚúƒ	ÒéÅÒüùÒéçÒüÅ	m├│n ─ân Nhß║¡t	898	0
-4678	ÕÆî	ÒéÅ	h├▓a b├¼nh, t├¡nh cß╗Öng, tß╗òng cß╗Öng	898	0
-4679	Þï▒ÕÆî	ÒüêÒüäÒéÅ	Tß╗½ ─æiß╗ân Anh - Nhß║¡t	898	0
-4680	ÕÆî	Òü¬Òüö	Thß╗Øi kß╗│ Chi├¬u Ho├á	898	0
-4681	ÕÆî	ÒéäÒéÅ	Nã░ß╗øc Cß╗Öng h├▓a	898	0
-4682	µêªõ║ë	ÒüøÒéôÒüØÒüå	Chiß║┐n tranh	899	0
-4683	µêª	ÒüƒÒüƒÒüï	t├íc chiß║┐n, chiß║┐n lã░ß╗úc	899	0
-4684	ÕåÀµêª	ÒéîÒüäÒüøÒéô	chiß║┐n tranh lß║ính	899	0
-4685	ÕÅìµêª	Òü»ÒéôÒüøÒéô	sß╗▒ phß║ún chiß║┐n	899	0
-4686	µîæµêª	ÒüíÒéçÒüåÒüøÒéô	th├ích thß╗®c, thß╗¡ th├ích, bß║Ñt chß║Ñp	899	0
-4687	µêª	ÒüäÒüÅÒüò	Trß║¡n mß║íc	899	0
-4688	õ║║	Òü▓Òü¿	Chiß║┐n tranh	900	0
-4689	õ║ë	ÒüéÒéëÒüØ	Sß╗▒ tranh luß║¡n, sß╗▒ b├án c├úi	900	0
-4690	µö┐Õ║£	ÒüøÒüäÒüÁ	Ch├¡nh trß╗ï	901	0
-4691	µö┐µ▓╗Õ«Â	ÒüøÒüäÒüÿÒüï	Chi├¡nh trß╗ï gia	901	0
-4692	µö┐ÕàÜ	ÒüøÒüäÒü¿Òüå	ch├¡nh ─æß║úng	901	0
-4693	µö┐Õ║£	ÒüøÒüäÒüÁ	ch├¡nh phß╗º	901	0
-4694	Þíîµö┐	ÒüÄÒéçÒüåÒüøÒüä	h├ánh ch├¡nh	901	0
-4695	Þ▓íµö┐	ÒüûÒüäÒüøÒüä	t├ái ch├¡nh	901	0
-4696	µö┐µ¿®	ÒüøÒüäÒüæÒéô	ch├¡nh quyß╗ün	901	0
-4697	µö┐þ¡û	ÒüøÒüäÒüòÒüÅ	ch├¡nh s├ích	901	0
-4698	þºü	ÒéÅÒüƒÒüù	ch├¡nh trß╗ï	902	0
-4699	µö┐µ▓╗Õ«Â	ÒüøÒüäÒüÿÒüï	ch├¡nh trß╗ï gia	902	0
-4700	µ▓╗	ÒüèÒüò	─æiß╗üu trß╗ï	902	0
-4701	µ▓╗Õ«ë	ÒüíÒüéÒéô	trß╗ï an	902	0
-4702	Õ£ƒ	ÒüñÒüí	kinh nghiß╗çm	903	0
-4703	þÁîµ©ê	ÒüæÒüäÒüûÒüä	kinh tß║┐	903	0
-4704	þÁîþö▒	ÒüæÒüäÒéå	qu├í cß║únh Paris	903	0
-4705	þÁîÕûÂ	ÒüæÒüäÒüêÒüä	Kinh doanh	903	0
-4706	þÑ×þÁî	ÒüùÒéôÒüæÒüä	thß║ºn kinh, sß╗▒ nhß║íy cß║úm	903	0
-4707	þÁîµ¡┤	ÒüæÒüäÒéîÒüì	L├¢ lß╗ïch; qu├í tr├¼nh l├ám viß╗çc; qu├í tr├¼nh kinh nghiß╗çm	903	0
-4708	þÁî	ÒüìÒéçÒüå	Kinh phß║¡t	903	0
-4709	þ£ïµØ┐	ÒüïÒéôÒü░Òéô	Kinh tß║┐	904	0
-4710	þÁîµ©êÕ¡ª	ÒüæÒüäÒüûÒüäÒüîÒüÅ	Kinh tß║┐ hß╗ìc	904	0
-4711	µ©ê	ÒüÖ	cß╗®u tß║┐	904	0
-4712	ÕÄ╗Õ╣┤	ÒüìÒéçÒü¡Òéô	ph├íp luß║¡t	905	0
-4713	µûçµ│ò	ÒüÂÒéôÒü¢Òüå	ngß╗» ph├íp	905	0
-4714	µû╣µ│ò	Òü╗ÒüåÒü╗Òüå	phã░ãíng ph├íp	905	0
-4715	µå▓µ│ò	ÒüæÒéôÒü¢Òüå	hiß║┐n ph├íp	905	0
-4716	Úüòµ│ò	ÒüäÒü╗Òüå	tr├íi ph├®p, vi phß║ím ph├íp luß║¡t	905	0
-4717	þö¿µ│ò	ÒéêÒüåÒü╗Òüå	c├ích d├╣ng	905	0
-4718	µ│òµíê	Òü╗ÒüåÒüéÒéô	luß║¡t dß╗▒ thß║úo, dß╗▒ luß║¡t	905	0
-4719	µ│òÕëç	Òü╗ÒüåÒüØÒüÅ	quy luß║¡t, ─æß╗ïnh luß║¡t, ph├®p tß║»t	905	0
-4720	õ║ñÚÇÜ	ÒüôÒüåÒüñÒüå	Pha╠üp lu├ó╠út	906	0
-4721	ÞªÅÕ¥ï	ÒüìÒéèÒüñ	quy luß║¡t, kß╗ë luß║¡t	906	0
-4722	µêÆÕ¥ï	ÒüïÒüäÒéèÒüñ	giß╗øi luß║¡t, ─æiß╗üu dß║íy bß║úo, lß╗Øi r─ân ─æe	906	0
-4723	õ©ÇÕ¥ï	ÒüäÒüíÒéèÒüñ	Thß║ºn kinh tß╗▒ trß╗ï	906	0
-4724	þÑ¡	Òü¥Òüñ	quß╗æc tß║┐	907	0
-4725	Õø¢ÚÜøÕîû	ÒüôÒüÅÒüòÒüäÒüï	quß╗æc tß║┐ h├│a	907	0
-4726	ÚÜø	ÒüòÒüä	khi ´¢×	907	0
-4727	õ║ñÚÜø	ÒüôÒüåÒüòÒüä	Mß╗æi quan hß╗ç;mß╗æi giao tiß║┐p ; giao du	907	0
-4728	Õ«ƒÚÜø	ÒüÿÒüúÒüòÒüä	Thß╗▒c tß║┐	907	0
-4729	ÚÜøþ½ï	ÒüìÒéÅÒüá	Ngay trã░ß╗øc khi; l├║c sß║»p sß╗¡a	907	0
-4730	Úûóõ┐é	ÒüïÒéôÒüæÒüä	Mß╗æi quan hß╗ç	908	0
-4731	Õø¢ÚÜø	ÒüôÒüÅÒüòÒüä	Quan hß╗ç quß╗æc tß║┐	908	0
-4732	µäƒÕ┐â	ÒüïÒéôÒüùÒéô	Kh├óm phß╗Ñc; th├ín phß╗Ñc; cß║úm phß╗Ñc; h├óm mß╗Ö; ngã░ß╗íng mß╗Ö	908	0
-4733	ÚûóµØ▒	ÒüïÒéôÒü¿Òüå	v├╣ng kanto	908	0
-4734	ÚûóÞÑ┐	ÒüïÒéôÒüòÒüä	v├╣ng kansai	908	0
-4735	ÚûóÕÅû	ÒüøÒüìÒü¿Òéè	─É├┤ vß║¡t su m├┤	908	0
-4736	þÄäÚûó	ÒüÆÒéôÒüïÒéô	sß║únh trong nh├á, bß║¡c thß╗üm ─æi v├áo nh├á	908	0
-4737	þ¿ÄÚûó	Òü£ÒüäÒüïÒéô	thuß║┐ quan	908	0
-4738	õ║║ÒÇà	Òü▓Òü¿Òü│Òü¿	mß╗æi quan hß╗ç	909	0
-4739	Õø¢ÚÜø	ÒüôÒüÅÒüòÒüä	Quan hß╗ç quß╗æc tß║┐	909	0
-4740	õ┐é	ÒüïÒüïÒéè	Sß╗▒ chß╗ïu tr├ích nhiß╗çm	909	0
-4741	õ┐éÕôí	ÒüïÒüïÒéèÒüäÒéô	ngã░ß╗Øi chß╗ïu tr├ích nhiß╗çm	909	0
-4742	õ║║Úûô	Òü½ÒéôÒüÆÒéô	Mß╗æi quan hß╗ç giß╗»a ngã░ß╗Øi vß╗øi ngã░ß╗Øi	909	0
-4743	þäíÚûóõ┐é	ÒéÇÒüïÒéôÒüæÒüä	kh├┤ng li├¬n quan	909	0
-4744	þ¥è	Òü▓ÒüñÒüÿ	chß╗º ngh─®a	910	0
-4745	µ░æõ©╗	Òü┐ÒéôÒüùÒéà	chß╗º ngh─®a d├ón chß╗º	910	0
-4746	þñ¥õ╝Ü	ÒüùÒéâÒüïÒüä	chß╗º ngh─®a x├ú hß╗Öi	910	0
-4747	Þ¼øþ¥®	ÒüôÒüåÒüÄ	B├ái giß║úng; giß╗Ø hß╗ìc	910	0
-4748	þ¥®ÕïÖ	ÒüÄÒéÇ	ngh─®a vß╗Ñ, phß║¡n sß╗▒	910	0
-4749	þ¥®þÉå	ÒüÄÒéè	t├¼nh ngh─®a, ─æß║ío l├¡, quan hß╗ç th├ón thuß╗Öc kh├┤ng phß║úi trß╗▒c hß╗ç, hß╗ì ─æß║▒ng nh├á chß╗ông hoß║Àc vß╗ú	910	0
-4750	µ¡úþ¥®	ÒüøÒüäÒüÄ	Ch├¡nh ngh─®a	910	0
-4751	Õ«Üþ¥®	ÒüªÒüäÒüÄ	─æß╗ïnh ngh─®a	910	0
-4752	µ¡ú	ÒüƒÒüá	hß╗Öi nghß╗ï	911	0
-4753	Õø¢õ╝Ü	ÒüôÒüúÒüïÒüä	nghß╗ï vi├¬n quß╗æc hß╗Öi	911	0
-4754	õ©ìµÇØÞ¡░	ÒüÁÒüùÒüÄ	hß╗ìp quß╗æc hß╗Öi; hß╗ìp nghß╗ï viß╗çn; hß╗Öi nghß╗ï	911	0
-4755	Þ¡░Þ½û	ÒüÄÒéìÒéô	─æß╗ü ├ín hß╗Öi nghß╗ï, vß║Ñn ─æß╗ü thß║úo luß║¡n	911	0
-4756	Õàä	ÒüéÒü½	ch├¡nh ─æß║úng	912	0
-4757	õ©ÄÕàÜ	ÒéêÒü¿Òüå	─Éß║úng cß║ºm quyß╗ün	912	0
-4758	ÚçÄÕàÜ	ÒéäÒü¿Òüå	─Éß║úng chß╗æng ─æß╗æi	912	0
-4759	ÕàÜÚªû	Òü¿ÒüåÒüùÒéà	chß╗º tß╗ïch ─æß║úng	912	0
-4760	µùù	Òü»Òüƒ	khu vui chãíi	913	0
-4761	Õæ¿Úüè	ÒüùÒéàÒüåÒéåÒüå	cuß╗Öc ─æi du lß╗ïch, cuß╗Öc chu du	913	0
-4762	µ░┤	Òü┐ÒüÜ	viß╗çc bãíi lß╗Öi	914	0
-4763	Õ╣│µ││	Òü▓ÒéëÒüèÒéê	cuß╗Öc thi bãíi	914	0
-4764	Õ¢╝	ÒüïÒéî	Sß╗▒ mß╗çt mß╗Åi; sß╗▒ mß╗Åi; sß╗▒ mß╗çt nhoc	915	0
-4765	ÕÅïÚüö	Òü¿ÒééÒüáÒüí	hß╗ç thß╗æng l├▓ sã░ß╗ƒi	916	0
-4766	µ©®µÜû	ÒüèÒéôÒüáÒéô	m├╣a ─æ├┤ng ß║Ñm ├íp	916	0
-4767	Úø¿	ÒüéÒéü	nã░ß╗øc ngß╗ìt, thß╗®c uß╗æng kh├┤ng chß╗®a cß╗ôn	917	0
-4768	õ║ë	ÒüéÒéëÒüØ	nghß╗ë ngãíi t─®nh dã░ß╗íng	918	0
-4769	ÚØÖÚñè	ÒüøÒüäÒéêÒüå	t─®nh mß║ích	918	0
-4770	Õà¼Þíå	ÒüôÒüåÒüùÒéàÒüå	c├┤ng vi├¬n	919	0
-4771	Õà¼Õ╣│	ÒüôÒüåÒü©Òüä	c├┤ng bß║▒ng	919	0
-4772	Õà¼ÕïÖÕôí	ÒüôÒüåÒéÇÒüäÒéô	c├┤ng chß╗®c nh├á nã░ß╗øc	919	0
-4773	Õà¼Þíå	ÒüôÒüåÒüùÒéàÒüå	C├┤ng ch├║ng; d├ón ch├║ng; cß╗Öng ─æß╗ông	919	0
-4774	Õà¼þ½ï	ÒüôÒüåÒéèÒüñ	c├┤ng lß║¡p	919	0
-4775	Õà¼	ÒüèÒüèÒéäÒüæ	sß╗▒ c├┤ng khai c├┤ng bß╗æ	919	0
-4776	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	c├┤ng vi├¬n	920	0
-4777	Õïòþë®Õ£Æ	Òü®ÒüåÒüÂÒüñÒüêÒéô	sß╗ƒ th├║	920	0
-4778	ÚüèÕ£ÆÕ£░	ÒéåÒüåÒüêÒéôÒüí	khu vui chãíi	920	0
-4779	Õ╣╝þ¿ÜÕ£Æ	ÒéêÒüåÒüíÒüêÒéô	nh├á trß║╗	920	0
-4780	Õ£ÆÞè©	ÒüêÒéôÒüÆÒüä	Nghß╗ç thuß║¡t c├óy cß║únh; nghß╗ç thuß║¡t l├ám vã░ß╗Øn	920	0
-4781	Õ║¡Õ£Æ	ÒüªÒüäÒüêÒéô	Vã░ß╗Øn	920	0
-4782	Õ£Æ	ÒüØÒü«	Vã░ß╗Øn Eden	920	0
-4783	þø«þÜä	ÒééÒüÅÒüªÒüì	sß╗▒ li├¬n tß╗Ñc, sß╗▒ liß╗ün tiß║┐p	922	0
-4784	ÚÇúþÁí	ÒéîÒéôÒéëÒüÅ	sß╗▒ li├¬n quan, sß╗▒ li├¬n hß╗ç	922	0
-4785	ÚÇúõ╝æ	ÒéîÒéôÒüìÒéàÒüå	k├¼ nghß╗ë d├ái ng├áy	922	0
-4786	ÚÇú	ÒüñÒéë	Li├¬n hß╗úp quß╗æc	922	0
-4787	Õø¢ÚÇú	ÒüôÒüÅÒéîÒéô	Li├¬n hß╗úp quß╗æc	922	0
-4788	Õ┐â	ÒüôÒüôÒéì	cß╗¡a sß╗ò	923	0
-4789	þ¬ôÕÅú	Òü¥Òü®ÒüÉÒüí	cß╗¡a b├ín v├®	923	0
-4790	ÕÉîþ¬ôõ╝Ü	Òü®ÒüåÒüØÒüåÒüïÒüä	Hß╗Öi hß╗ìc sinh c├╣ng trã░ß╗Øng; hß╗Öi c├╣ng lß╗øp	923	0
-4791	þ¬ô	Òü¥Òü®	chß╗ù ngß╗ôi ph├¡a cß╗¡a sß╗¡a	923	0
-4792	Úçæ	ÒüïÒü¡	b├¬n phß║úi	924	0
-4793	õ©íÕü┤	ÒéèÒéçÒüåÒüîÒéÅ	hai b├¬n	924	0
-4794	ÕÉæ	ÒéÇ	Ph├¡a b├¬n kia; mß║Àt b├¬n kia	924	0
-4795	Õü┤ÚØó	ÒüØÒüÅÒéüÒéô	Mß║Àt b├¬n; mß╗Öt b├¬n; mß╗Öt mß║Àt; h├┤ng; sã░ß╗Øn	924	0
-4796	ÕÅìÕ»¥	Òü»ÒéôÒüƒÒüä	Ph├¡a b├¬n kia	924	0
-4797	ÕñûÕü┤	ÒüØÒü¿ÒüîÒéÅ	mß║Àti, ph├¡a ngo├ái ,bß╗ü ngo├ái	924	0
-4798	ÕåàÕü┤	ÒüåÒüíÒüîÒéÅ	ph├¡a trong ,b├¬n trong, ß╗ƒ trong, nß╗Öi bß╗Ö	924	0
-4799	õ©ûþòî	ÒüøÒüïÒüä	l├í	925	0
-4800	Þ¿ÇÞæë	ÒüôÒü¿Òü░	tß╗½ ngß╗», ng├┤n ngß╗»	925	0
-4801	Þæëµø©	Òü»ÒüîÒüì	bã░u thiß║┐p	925	0
-4802	þ┤àÞæë	ÒüôÒüåÒéêÒüå	c├óy l├í ─æß╗Å	925	0
-4803	þ┤àÞæë	ÒééÒü┐Òüÿ	c├óy l├í ─æß╗Å	925	0
-4804	ÞÉ¢	Òüè	l├í rß╗Ñng	925	0
-4805	Õñ®µ░ù	ÒüªÒéôÒüì	phong cß║únh	926	0
-4806	µÖ»µ░ù	ÒüæÒüäÒüì	t├¼nh h├¼nh, t├¼nh h├¼nh kinh tß║┐	926	0
-4807	õ©ìµÖ»µ░ù	ÒüÁÒüæÒüäÒüì	Kh├│ kh─ân (kinh doanh); kh├┤ng chß║íy (bu├┤n b├ín); ß║┐ ß║®m	926	0
-4808	Úó¿µÖ»	ÒüÁÒüåÒüæÒüä	phong cß║únh	926	0
-4809	Õñ£µÖ»	ÒéäÒüæÒüä	cß║únh ,  quang cß║únh ban ─æ├¬m	926	0
-4810	ÞâîµÖ»	Òü»ÒüäÒüæÒüä	bß╗æi cß║únh, phong l├ám cß║únh, phong nß╗ün	926	0
-4811	ÕàëµÖ»	ÒüôÒüåÒüæÒüä	quang cß║únh	926	0
-4812	µÖ»Õôü	ÒüæÒüäÒü▓Òéô	phß║ºn thã░ß╗ƒng	926	0
-4813	Þ¿Ç	Òüä	nhß║¡t k├¢	927	0
-4814	µÜùÞ¿ÿ	ÒüéÒéôÒüì	k├¢ sß╗▒, tin tß╗®c b├ío ch├¡, b├ái b├ío	927	0
-4815	Þ¿ÿÞÇà	ÒüìÒüùÒéâ	k├¢ giß║ú	927	0
-4816	Þ¿ÿÕàÑ	ÒüìÒü½ÒéàÒüå	kß╗À niß╗çm	927	0
-4817	Þ¿ÿÚî▓	ÒüìÒéìÒüÅ	sß╗▒ ghi ch├®p lß║íi	927	0
-4818	õ¢ò	Òü¬Òü½	h├¼nh d├íng, kiß╗âu	928	0
-4819	õ║║Õ¢ó	Òü½ÒéôÒüÄÒéçÒüå	b├║p b├¬	928	0
-4820	Õ¢óÕ«╣Þ®×	ÒüæÒüäÒéêÒüåÒüù	t├¡nh tß╗½	928	0
-4821	ÚüÄÕÄ╗Õ¢ó	ÒüïÒüôÒüæÒüä	thß╗â qu├í khß╗®	928	0
-4822	þÅ¥Õ£¿Õ¢ó	ÒüÆÒéôÒüûÒüäÒüæÒüä	thß╗â hiß╗çn tß║íi	928	0
-4823	Õø│Õ¢ó	ÒüÜÒüæÒüä	h├¼nh d├íng con ngã░ß╗Øi, d├íng vß║╗, ─æß╗ô hß╗ìa	928	0
-4824	µ¡úµû╣Õ¢ó	ÒüøÒüäÒü╗ÒüåÒüæÒüä	h├¼nh vu├┤ng	928	0
-4825	Õ¢óÞªï	ÒüïÒüƒÒü┐	vß║¡t kß╗À niß╗çm, ─æß╗ô lã░u niß╗çm	928	0
-4826	õ¥ì	ÒüòÒéÇÒéëÒüä	vß║¡n may, may mß║»n	929	0
-4827	ÕñºÕÉë	ÒüáÒüäÒüìÒüí	─æß║íi c├ít	929	0
-4828	ÕÉëµùÑ	ÒüìÒüíÒüÿÒüñ	ng├áy may mß║»n, ng├áy vui vß║╗, ng├áy l├ánh th├íng tß╗æt	929	0
-4829	õ©ìÕÉë	ÒüÁÒüìÒüñ	tin vui, tin thß║»ng trß║¡n	929	0
-4830	ÕÉëÕçÂ	ÒüìÒüúÒüìÒéçÒüå	sß╗▒ hung c├ít,  l├ánh dß╗», ─æiß╗üm l├ánh ─æiß╗üm dß╗»	929	0
-4831	þ│©	ÒüäÒü¿	kß║┐t quß║ú	930	0
-4832	þÁÉÞ½û	ÒüæÒüñÒéìÒéô	kß║┐t luß║¡n	930	0
-4833	þÁÉ	Òéå	kß║┐t cß╗Ñc	930	0
-4834	ÕøúþÁÉ	ÒüáÒéôÒüæÒüñ	tß║ím ─æã░ß╗úc, tã░ãíng ─æß╗æi, c┼®ng ─æã░ß╗úc, kh├í	930	0
-4835	ÕÑ│	ÒüèÒéôÒü¬	ly h├┤n	931	0
-4836	Õ®Üþ┤ä	ÒüôÒéôÒéäÒüÅ	─æ├¡nh h├┤n	931	0
-4837	Õ®Üþ┤äÞÇà	ÒüôÒéôÒéäÒüÅÒüùÒéâ	chß╗ông chã░a cã░ß╗øi	931	0
-4838	µùóÕ®Ü	ÒüìÒüôÒéô	─æ├ú c├│ gia ─æ├¼nh, ─æ├ú kß║┐t h├┤n	931	0
-4839	µ£¬Õ®Ü	Òü┐ÒüôÒéô	sß╗▒ chã░a kß║┐t h├┤n, sß╗▒ chã░a cã░ß╗øi	931	0
-4840	µû░Õ®Ü	ÒüùÒéôÒüôÒéô	t├ón h├┤n, mß╗øi cã░ß╗øi	931	0
-4841	Õà▒	Òü¿Òéé	cß╗Öng ─æß╗ông, th├┤ng thã░ß╗Øng, phß╗ò th├┤ng	932	0
-4842	Õà¼Õà▒	ÒüôÒüåÒüìÒéçÒüå	C├┤ng cß╗Öng	932	0
-4843	Õà▒µäƒ	ÒüìÒéçÒüåÒüïÒéô	chß╗º ngh─®a cß╗Öng sß║ún	932	0
-4844	Õà▒Õ¡ª	ÒüìÒéçÒüåÒüîÒüÅ	sß╗▒ hß╗ìc chung	932	0
-4845	Õà▒ÕÉî	ÒüìÒéçÒüåÒü®Òüå	Cß╗Öng ─æß╗ông; sß╗▒ li├¬n hiß╗çp; sß╗▒ li├¬n ─æß╗øi	932	0
-4846	õ©ÇþÀÆ	ÒüäÒüúÒüùÒéç	Tre╠ë con, con ca╠üi	933	0
-4847	õ¥ø	ÒüØÒü¬	sß╗▒ cung cß║Ñp, ─æã░a ra	933	0
-4848	Þ®ªõ¥øÕôü	ÒüùÒüìÒéçÒüåÒü▓Òéô	h├áng mß║½u, mß║½u thß╗¡	933	0
-4849	õ¥ø	Òü¿Òéé	lß╗à c├║ng, tã░ß╗ƒng nhß╗ø ngã░ß╗Øi ─æ├ú khuß║Ñt	933	0
-4850	Ú¡ÜÕ▒ï	ÒüòÒüïÒü¬Òéä	th├ón sinh	934	0
-4851	õ©íµëï	ÒéèÒéçÒüåÒüª	hai tay	934	0
-4852	õ©íµû╣	ÒéèÒéçÒüåÒü╗Òüå	song phã░ãíng, hai b├¬n	934	0
-4853	õ©íÕü┤	ÒéèÒéçÒüåÒüîÒéÅ	hai b├¬n	934	0
-4854	õ©íµø┐	ÒéèÒéçÒüåÒüîÒüê	─æß╗òi tiß╗ün	934	0
-4855	Õç║	Òüº	thanh ni├¬n, lß╗øp trß║╗, giß╗øi trß║╗	935	0
-4856	ÞïÑÒÇà	ÒéÅÒüïÒéÅÒüï	Ngã░ß╗Øi tß║¡p viß╗çc; ngã░ß╗Øi mß╗øi hß╗ìc, ngã░ß╗Øi chã░a c├│ kinh nghiß╗çm	935	0
-4857	ÞÇüÞïÑ	ÒéìÒüåÒü½ÒéâÒüÅ	nam nß╗» mß╗ìi lß╗®a tuß╗òi, bß║Ñt kß╗â gi├á trß║╗ trai g├íi	935	0
-4858	µØû	ÒüñÒüê	ngã░ß╗Øi gi├á	936	0
-4859	ÞÇü	Òüè	l├úo h├│a	936	0
-4860	ÞÇüþ£╝	ÒéìÒüåÒüîÒéô	mß║»t l├úo	936	0
-4861	Õ┐âÞçô	ÒüùÒéôÒü×Òüå	hãíi thß╗ƒ	937	0
-4862	µü»Õ¡É	ÒéÇÒüÖÒüô	con trai	937	0
-4863	õ╝æµü»	ÒüìÒéàÒüåÒüØÒüÅ	nghß╗ë giß║úi lao, ngh─® ngãíi	937	0
-4864	µü»	ÒüäÒüì	tin tß╗®c, t├¼nh h├¼nh	937	0
-4865	µü»	ÒüäÒüì	thß╗ƒ d├ái	937	0
-4866	þºü	ÒéÅÒüƒÒüù	con g├íi	938	0
-4867	õ©Çõ║║Õ¿ÿ	Òü▓Òü¿ÒéèÒéÇÒüÖÒéü	con g├íi duy nhß║Ñt, con g├íi mß╗Öt	938	0
-4868	Õ¿ÿÕ®┐	ÒéÇÒüÖÒéüÒéÇÒüô	con nu├┤i	938	0
-4869	þ▒│	ÒüôÒéü	b├¬n trong	939	0
-4870	ÕÑÑ	ÒüèÒüÅ	r─âng cß║Ñm	939	0
-4871	Õ░åÞ╗ì	ÒüùÒéçÒüåÒüÉÒéô	tã░ãíng lai	940	0
-4872	Õ░åµúï	ÒüùÒéçÒüåÒüÄ	cß╗Ø tã░ß╗øng	940	0
-4873	Õ░åÞ╗ì	ÒüùÒéçÒüåÒüÉÒéô	tã░ãíß╗øng qu├ón	940	0
-4874	õ©╗Õ░å	ÒüùÒéàÒüùÒéçÒüå	─æß╗Öi trã░ß╗ƒng, chß╗º tã░ß╗øng	940	0
-4875	ÕàêþÑû	ÒüøÒéôÒü×	├┤ng	941	0
-4876	þÑûµ»ì	ÒüØÒü╝	b├á	941	0
-4877	þÑûÕàê	ÒüØÒüøÒéô	tß╗ò ti├¬n	941	0
-4878	þÑûÕø¢	ÒüØÒüôÒüÅ	qu├¬ cha ─æß║Ñt mß║╣, tß╗ò quß╗æc	941	0
-4879	ÕàêþÑû	ÒüøÒéôÒü×	├┤ng b├á, tß╗ò ti├¬n	941	0
-4880	þÑûþêÂµ»ì	ÒüØÒüÁÒü╝	├┤ng b├á	941	0
-4881	ÕàâþÑû	ÒüîÒéôÒüØ	tß╗ò sã░, ngã░ß╗Øi s├íng lß║¡p, ngã░ß╗Øi s├íng tß║ío ra	941	0
-4882	µòÖþÑû	ÒüìÒéçÒüåÒüØ	gi├ío tß╗ò, ngã░ß╗Øi lß║¡p ra mß╗Öt t├┤n gi├ío	941	0
-4883	þºü	ÒéÅÒüƒÒüù	sß╗▒ gi├ío dß╗Ñc	942	0
-4884	Þé▓	ÒüØÒüá	m├┤n thß╗â dß╗Ñc, thß╗â chß║Ñt	942	0
-4885	Þé▓ÕàÉ	ÒüäÒüÅÒüÿ	sß╗▒ nu├┤i , ch─âm s├│c trß║╗	942	0
-4886	õ┐ØÞé▓	Òü╗ÒüäÒüÅ	viß╗çc nu├┤i dã░ß╗íng, ch─âm s├│c	942	0
-4887	þöƒ	Òüå	nam giß╗øi	943	0
-4888	ÕÑ│µÇº	ÒüÿÒéçÒüøÒüä	nß╗» giß╗øi	943	0
-4889	µÇºÕêÑ	ÒüøÒüäÒü╣Òüñ	giß╗øi t├¡nh	943	0
-4890	µÇºµá╝	ÒüøÒüäÒüïÒüÅ	t├¡nh c├ích	943	0
-4891	µÇºÞ│¬	ÒüøÒüäÒüùÒüñ	t├¡nh chß║Ñt	943	0
-4892	þÉåµÇº	ÒéèÒüøÒüä	l├¢ tr├¡, l├¢ t├¡nh	943	0
-4893	Úà©µÇº	ÒüòÒéôÒüøÒüä	t├¡nh axit	943	0
-4894	þø©µÇº	ÒüéÒüäÒüùÒéçÒüå	mß╗æi quan hß╗ç th├ón thuß╗Öc, t├¡nh tã░ãíng hß╗úp	943	0
-4895	Úúƒõ║ï	ÒüùÒéçÒüÅÒüÿ	thiß╗çp mß╗Øi	944	0
-4896	Õñ¬ÚÖ¢	ÒüƒÒüäÒéêÒüå	trã░ß╗øc hß║┐t, mß╗øi ─æß║ºu, lß║ºn ─æß║ºu ti├¬n	946	0
-4897	µ£ÇÕ¥î	ÒüòÒüäÒüö	cuß╗æi c├╣ng	946	0
-4898	µ£ÇÞ┐æ	ÒüòÒüäÒüìÒéô	gß║ºn ─æ├óy, mß╗øi ─æ├óy	946	0
-4899	µ£ÇÚ½ÿ	ÒüòÒüäÒüôÒüå	tuyß╗çt nhß║Ñt, tß╗æt nhß║Ñt	946	0
-4900	µ£Çõ¢Ä	ÒüòÒüäÒüªÒüä	tß╗ôi nhß║Ñt	946	0
-4901	µ£Çµû░	ÒüòÒüäÒüùÒéô	c├íi mß╗øi nhß║Ñt	946	0
-4902	µ£Ç	ÒééÒüúÒü¿	chuyß║┐n t├áu ─æiß╗çn cuß╗æi c├╣ng	946	0
-4903	þØÇþë®	ÒüìÒééÒü«	trã░ß╗øc hß║┐t ,mß╗øi ─æß║ºu ,l├║c ─æß║ºu ,lß║ºn ─æß║ºu ti├¬n ,─æß║ºu ti├¬n	947	0
-4904	ÕêØþ┤Ü	ÒüùÒéçÒüìÒéàÒüå	Sãí cß║Ñp, sß╗▒ d├ánh cho ngã░ß╗Øi mß╗øi bß║»t ─æß║ºu	947	0
-4905	ÕêØµüï	Òü»ÒüñÒüôÒüä	mß╗æi t├¼nh ─æß║ºu	947	0
-4906	ÕêØÕ┐âÞÇà	ÒüùÒéçÒüùÒéôÒüùÒéâ	ngã░ß╗Øi mß╗øi nhß║¡p m├┤n, ngã░ß╗Øi mß╗øi hß╗ìc, ngã░ß╗Øi mß╗øi v├áo nghß╗ü	947	0
-4907	ÕêØÕñÅ	ÒüùÒéçÒüï	─æß║ºu h├¿	947	0
-4908	Úáåþò¬	ÒüÿÒéàÒéôÒü░Òéô	Thã░╠ü nh├ó╠üt, ─æß║ºu ti├¬n	948	0
-4909	þò¬ÕÅÀ	Òü░ÒéôÒüöÒüå	sß╗æ hiß╗çu	948	0
-4910	õ║îþò¬þø«	Òü½Òü░ÒéôÒéü	vß╗ï tr├¡ thß╗® 2	948	0
-4911	Õ¢ôþò¬	Òü¿ÒüåÒü░Òéô	phi├¬n trß╗▒c, lã░ß╗út (l├ám viß╗çc)	948	0
-4912	õ║ñþò¬	ÒüôÒüåÒü░Òéô	─æß╗ôn cß║únh s├ít	948	0
-4913	þò¬þÁä	Òü░ÒéôÒüÉÒü┐	chã░ãíng tr├¼nh, k├¬nh tv	948	0
-4914	þòÖÕ«êþò¬	ÒéïÒüÖÒü░Òéô	ti╠ün hi├¬╠úu ─æi├¬╠ún thoa╠úi tra╠ë lãí╠Çi tã░╠ú ─æ├┤╠úng	948	0
-4915	Úáåþò¬	ÒüÿÒéàÒéôÒü░Òéô	thß╗® tß╗▒, lß║ºn lã░ß╗út	948	0
-4916	þºü	ÒéÅÒüƒÒüù	5 tuß╗òi	949	0
-4917	õ║îÕìüµ¡│	Òü»ÒüƒÒüí	20 tuß╗òi	949	0
-4918	Õìüµ¡│	ÒüÿÒéàÒüúÒüòÒüä	20 tuß╗òi	949	0
-4919	õ©çµ¡│	Òü░ÒéôÒüûÒüä	Hoan h├┤, ch├áo mß╗½ng, vß║ín tuß║┐	949	0
-4920	µ¡│µÜ«	ÒüøÒüäÒü╝	qu├á cuß╗æi n─âm	949	0
-4921	µ¡│µ£ê	ÒüòÒüäÒüÆÒüñ	tuß║┐ nguyß╗çt, thß╗Øi gian	949	0
-4922	µ¡│ÕàÑ	ÒüòÒüäÒü½ÒéàÒüå	thu nhß║¡p	949	0
-4923	µ¡│Õç║	ÒüòÒüäÒüùÒéàÒüñ	chi ti├¬u	949	0
-4924	µ£¿	Òüì	1 tß╗Ø, 1 tß║Ñm	950	0
-4925	µ×Üµò░	Òü¥ÒüäÒüÖÒüå	sß╗æ tß╗Ø,sß╗æ tß║Ñm	950	0
-4926	õ║îµ×Üþø«	Òü½Òü¥ÒüäÒéü	tß║Ñm thß╗® 2, tß╗Ø thß╗® 2	950	0
-4927	þ┤Ö	ÒüïÒü┐	1 quyß╗ân, 1 tß║¡p	951	0
-4928	Õ░ÅÕåèÕ¡É	ÒüùÒéçÒüåÒüòÒüúÒüù	cuß╗æn s├ích nhß╗Å	951	0
-4929	ÕêÑÕåè	Òü╣ÒüúÒüòÒüñ	tß║¡p ri├¬ng	951	0
-4930	þƒ¡Õåè	ÒüƒÒéôÒüûÒüÅ	Mß║únh giß║Ñy nhß╗Å d├ái d├╣ng ─æß╗â l├ám thãí	951	0
-4931	Õåèµò░	ÒüòÒüúÒüÖÒüå	sß╗æ quyß╗ân (s├ích vß╗ƒ)	951	0
-4932	õ©ÇÕääõ║║	ÒüäÒüíÒüèÒüÅÒü½Òéô	1 tr─âm triß╗çu	952	0
-4933	ÕìüÕää	ÒüÿÒéàÒüåÒüèÒüÅ	1 tß╗À	952	0
-4934	Õääõ©çÚòÀÞÇà	ÒüèÒüÅÒü¥ÒéôÒüíÒéçÒüåÒüÿÒéâ	tß╗À ph├║	952	0
-4935	Õøø	ÒéêÒüú	─æiß╗âm	953	0
-4936	Õ╝▒þé╣	ÒüÿÒéâÒüÅÒüªÒéô	nhã░ß╗úc ─æiß╗âm, ─æiß╗âm yß║┐u	953	0
-4937	õ║ñÕÀ«þé╣	ÒüôÒüåÒüòÒüªÒéô	ng├ú tã░, b├╣ng binh, nãíi giao nhau	953	0
-4938	þé╣µò░	ÒüªÒéôÒüÖÒüå	─æiß╗âm sß╗æ	953	0
-4939	µ¼áþé╣	ÒüæÒüúÒüªÒéô	thiß║┐u s├│t, khuyß║┐t ─æiß╗âm	953	0
-4940	þÖ¥þé╣	Òü▓ÒéâÒüÅÒüªÒéô	100 ─æiß╗âm	953	0
-4941	ÕÅÑÞ¬¡þé╣	ÒüÅÒü¿ÒüåÒüªÒéô	dß║Ñu chß║Ñm c├óu	953	0
-4942	Þªüþé╣	ÒéêÒüåÒüªÒéô	yß║┐u ─æiß╗âm, ─æiß╗âm trß╗ìng yß║┐u	953	0
-4943	þÜå	Òü┐Òü¬	tß║ºng hai	954	0
-4944	ÚÜÄµ«Á	ÒüïÒüäÒüáÒéô	cß║ºu thang	954	0
-4945	µ«ÁÚÜÄ	ÒüáÒéôÒüïÒüä	giai ─æoß║ín	954	0
-4946	ÚÜÄþ┤Ü	ÒüïÒüäÒüìÒéàÒüå	giai cß║Ñp	954	0
-4947	þƒ│	ÒüäÒüù	cß║ºu thang	955	0
-4948	õ©Çµ«Á	ÒüäÒüíÒüáÒéô	1 bß║¡c (cß║ºu thang)	955	0
-4949	õ©Çµ«Á	ÒüäÒüíÒüáÒéô	giai ─æoß║ín	955	0
-4950	µëïµ«Á	ÒüùÒéàÒüáÒéô	phã░ãíng thß╗®c, phã░ãíng ph├íp	955	0
-4951	ÕÇñµ«Á	Òü¡ÒüáÒéô	gi├í cß║ú	955	0
-4952	µÖ«µ«Á	ÒüÁÒüáÒéô	b├¼nh thã░ß╗Øng, th├┤ng thã░ß╗Øng	955	0
-4953	Õñº	ÒüèÒüè	sß╗æ hiß╗çu	956	0
-4954	Þ¿ÿÕÅÀ	ÒüìÒüöÒüå	k├¡ hiß╗çu	956	0
-4955	õ©ÇÕÅÀÞ╗è	ÒüäÒüíÒüöÒüåÒüùÒéâ	xe hß║íng nhß║Ñt	956	0
-4956	õ┐íÕÅÀ	ÒüùÒéôÒüöÒüå	─æ├¿n giao th├┤ng	956	0
-4957	þ¼¼	ÒüáÒüä	ß║Ñn phß║®m thß╗® 3, sß╗æ 3, lß║ºn thß╗® 3	956	0
-4958	Õ╣┤ÕÅÀ	Òü¡ÒéôÒüöÒüå	n─âm, ni├¬n hiß╗çu	956	0
-4959	µÜùÕÅÀ	ÒüéÒéôÒüöÒüå	├ím hiß╗çu, mß║¡t m├ú	956	0
-4960	Þâî	Òüø	ba lß║ºn (bß╗Öi sß╗æ)	957	0
-4961	ÕÇìµò░	Òü░ÒüäÒüÖÒüå	bß╗Öi sß╗æ	957	0
-4962	ÕÇìþÄç	Òü░ÒüäÒéèÒüñ	bß╗Öi suß║Ñt	957	0
-4963	ÕÇìÕóù	Òü░ÒüäÒü×Òüå	hãín hß║│n nhß╗»ng ngã░ß╗Øi kh├íc, tuyß╗çt vß╗Øi	957	0
-4964	ÕÅú	ÒüÅÒüí	tiß║┐p theo, sau ─æ├óy	958	0
-4965	µ¼íÒÇà	ÒüñÒüÄÒüñÒüÄ	lß║ºn lã░ß╗út, kß║┐ tiß║┐p	958	0
-4966	þø«µ¼í	ÒééÒüÅÒüÿ	mß╗Ñc lß╗Ñc	958	0
-4967	µ¼íþ¼¼	ÒüùÒüáÒüä	thß╗® nß╗», con g├íi thß╗®	958	0
-4968	µ¼íþöÀ	ÒüÿÒü¬Òéô	thß╗® nam, con trai thß╗®	958	0
-4969	µ¼íÕø×	ÒüÿÒüïÒüä	lß║ºn sau	958	0
-4970	þ╣░	ÒüÅ	mß╗ìi ngã░ß╗Øi, ngã░ß╗Øi ngã░ß╗Øi	959	0
-4971	Þë▓ÒÇà	ÒüäÒéìÒüäÒéì	thß╗ënh thoß║úng	959	0
-4972	Õ░æÒÇà	ÒüùÒéçÒüåÒüùÒéçÒüå	tuß║ºn trã░ß╗øc nß╗»a	959	0
-4973	ÕêÑÒÇà	Òü╣ÒüñÒü╣Òüñ	Ng├áy xß╗¡a ng├áy xã░a	959	0
-4974	õ╗û	Òüƒ	c├íi kh├íc	960	0
-4975	õ╗û	Òü╗Òüï	c├íi kh├íc	960	0
-4976	õ╗û	Òüƒ	ngã░ß╗Øi kh├íc	960	0
-4977	õ╗ûÕïòÞ®×	ÒüƒÒü®ÒüåÒüù	tha ─æß╗Öng tß╗½	960	0
-4978	ÕïØ	Òüï	Sß╗▒ thi ─æß║Ñu, sß╗▒ chãíi ph├ón thß║»ng bß║íi	961	0
-4979	ÕïØµëï	ÒüïÒüúÒüª	chiß║┐n thß║»ng, giß║úi nhß║Ñt	961	0
-4980	Õä¬ÕïØ	ÒéåÒüåÒüùÒéçÒüå	trß║¡n chung kß║┐t	961	0
-4981	Þ▓á	Òü¥	Sß╗▒ thi ─æß║Ñu, sß╗▒ chãíi ph├ón thß║»ng bß║íi	962	0
-4982	ÕïØ	Òüï	g├ính v├íc	962	0
-4983	ÞâîÞ▓á	ÒüøÒüè	bß╗ï thã░ãíng	962	0
-4984	µè▒Þ▓á	Òü╗ÒüåÒüÁ	sß╗▒ ß║Ñp ß╗º, ├┤m ß║Ñp (ho├ái b├úo)	962	0
-4985	Õñº	ÒüèÒüè	sß╗▒ t├ín dã░ãíng, ca tß╗Ñng	963	0
-4986	þÁÂÞ│ø	Òü£ÒüúÒüòÒéô	ngã░ß╗íng mß╗Ö	963	0
-4987	µ¡ªÕÖ¿	ÒüÂÒüì	trã░ß╗ƒng th├ánh, t─âng trã░ß╗ƒng	964	0
-4988	µêÉõ║║	ÒüøÒüäÒüÿÒéô	ngã░ß╗Øi trã░ß╗ƒng th├ánh	964	0
-4989	µêÉ	Òü¬	th├ánh t├¡ch	964	0
-4990	Õ«îµêÉ	ÒüïÒéôÒüøÒüä	ho├án th├ánh	964	0
-4991	µêÉÕèƒ	ÒüøÒüäÒüôÒüå	th├ánh c├┤ng	964	0
-4992	Þë▓	ÒüäÒéì	tuyß╗çt chß╗ºng	965	0
-4993	þÁÂ	Òüƒ	tuyß╗çt vß╗ìng	965	0
-4994	þºü	ÒéÅÒüƒÒüù	─æß╗æi tã░ß╗úng	966	0
-4995	Õ»¥	ÒüƒÒüä	mß╗Öt ─æ├┤i, mß╗Öt cß║Àp	966	0
-4996	þ│©	ÒüäÒü¿	sß╗▒ li├¬n tß╗Ñc,  liß╗ün tiß║┐p	967	0
-4997	þø©þÂÜ	ÒüØÒüåÒü×ÒüÅ	sß╗▒ kß║┐ tiß║┐p, thß╗½a kß║┐	967	0
-4998	þÂÜÒÇà	Òü×ÒüÅÒü×ÒüÅ	Sß╗▒ li├¬n tß╗Ñc; sß╗▒ kß║┐ tiß║┐p; viß╗çc c├íi n├áy tiß║┐p theo c├íi kh├íc	967	0
-4999	ÕìâÞ¬×	ÒüøÒéôÒüö	tß╗½ ─æiß╗ân	968	0
-5000	Þ¥×	Òéä	tß╗½ ─æiß╗ân	968	0
-5001	Þ¥×ÞüÀ	ÒüÿÒüùÒéçÒüÅ	nß╗ïnh h├│t, lß╗Øi nß╗ïnh nß╗ìt	968	0
-5002	Þ¥×Þí¿	ÒüÿÒü▓ÒéçÒüå	─æãín tß╗½ chß╗®c	968	0
-5003	µëï	Òüª	Thã░ bß║ín ─æß╗ìc; b├ái cß╗Öng t├íc cho b├ío; thã░ gß╗¡i ngã░ß╗Øi bi├¬n tß║¡p	969	0
-5004	µèòÞ│ç	Òü¿ÒüåÒüù	─æß║ºu tã░	969	0
-5005	µèòµëï	Òü¿ÒüåÒüùÒéà	ngã░ß╗Øi ph├ít b├│ng (b├│ng ch├áy)	969	0
-5006	Úü©	ÒüêÒéë	tuyß╗ân thß╗º	970	0
-5007	Úü©µè×	ÒüøÒéôÒüƒÒüÅ	bß║ºu cß╗¡, tuyß╗ân cß╗¡	970	0
-5008	µè¢Úü©	ÒüíÒéàÒüåÒüøÒéô	sß╗▒ r├║t th─âm,  xß╗ò sß╗æ	970	0
-5009	Õ¢ôÚü©	Òü¿ÒüåÒüøÒéô	quyß╗ün bß║ºu cß╗¡	970	0
-5010	Úü®Õ¢ô	ÒüªÒüìÒü¿Òüå	lß╗Øi hß╗®a	971	0
-5011	õ║êþ┤ä	ÒéêÒéäÒüÅ	─Éß║Àt chß╗ù, hß║╣n trã░ß╗øc	971	0
-5012	þ┤ä	ÒéäÒüÅ	ã░ß╗øc t├¡nh khoß║úng 100 ngã░ß╗Øi	971	0
-5013	Õ®Üþ┤ä	ÒüôÒéôÒéäÒüÅ	sß╗▒ ─æ├¡nh h├┤n, sß╗▒ ─æ├¡nh ã░ß╗øc	971	0
-5014	þ»Çþ┤ä	ÒüøÒüñÒéäÒüÅ	hß╗úp ─æß╗ông, khß║┐ ã░ß╗øc	971	0
-5015	Þªüþ┤ä	ÒéêÒüåÒéäÒüÅ	sß╗▒ t├│m lã░ß╗úc, sß╗▒ kh├íi qu├ít	971	0
-5016	Õ¢╝	ÒüïÒéî	lß╗Øi hß╗®a	972	0
-5017	Þè▒µØƒ	Òü»Òü¬ÒüƒÒü░	b├│ hoa	972	0
-5018	µØƒ	ÒüƒÒü░	b├│, b├║i, cuß╗Ön	972	0
-5019	µØƒ	ÒüƒÒü░	Sß╗▒ kiß╗üm chß║┐; sß╗▒ hß║ín chß║┐; sß╗▒ tr├│i buß╗Öc; sß╗▒ giam cß║ºm	972	0
-5020	ÚìÁ	ÒüïÒüÄ	vß║»ng nh├á	973	0
-5021	þòÖÕ«êþò¬Úø╗Þ®▒	ÒéïÒüÖÒü░ÒéôÒüºÒéôÒéÅ	chß║┐ ─æß╗Ö ─æi├¬╠ún thoa╠úi tra╠ë lãí╠Çi tã░╠ú ─æ├┤╠úng	973	0
-5022	Õ«ê	Òü¥Òéé	c├│ t├¡nh bß║úo thß╗º	973	0
-5023	Õ¡ÉÕ«êµ¡î	ÒüôÒééÒéèÒüåÒüƒ	b├ái h├ít ru trß║╗	973	0
-5024	Õ«ê	Òü¥Òéé	nh├ón vi├¬n bß║úo vß╗ç, cß║únh vß╗ç	973	0
-5025	Úüô	Òü┐Òüí	qu├í khß╗®	974	0
-5026	ÚüÄ	ÒüÖ	─æa sß╗æ, sß╗æ ─æ├┤ng	974	0
-5027	Õñòµû╣	ÒéåÒüåÒüîÒüƒ	giß║Ñc mãí	975	0
-5028	Õñóõ©¡	ÒéÇÒüíÒéàÒüå	ch├¼m ─æß║»m, say sã░a, miß╗çt m├ái	975	0
-5029	µé¬Õñó	ÒüéÒüÅÒéÇ	├íc mß╗Öng	975	0
-5030	ÕêØÕñó	Òü»ÒüñÒéåÒéü	giß║Ñc mãí ─æß║ºu ti├¬n trong n─âm	975	0
-5031	þäíµêæÕñóõ©¡	ÒéÇÒüîÒéÇÒüíÒéàÒüå	say sã░a viß╗çc g├¼ ─æ├│ qu├¬n cß║ú bß║ún th├ón m├¼nh	975	0
-5032	þÖ¢	ÒüùÒéì	mß╗Ñc ─æ├¡ch	976	0
-5033	µ░æõ©╗þÜä	Òü┐ÒéôÒüùÒéàÒüªÒüì	C├│ t├¡nh d├ón chß╗º	976	0
-5034	þñ¥õ╝ÜþÜä	ÒüùÒéâÒüïÒüäÒüªÒüì	c├│ t├¡nh x├ú hß╗Öi, tß║¡p thß╗â	976	0
-5035	Õø¢ÚÜøþÜä	ÒüôÒüÅÒüòÒüäÒüªÒüì	t├¡nh quß╗æc tß║┐	976	0
-5036	þ®ìµÑÁþÜä	ÒüøÒüúÒüìÒéçÒüÅÒüªÒüì	t├¡ch cß╗▒c	976	0
-5037	µÂêµÑÁþÜä	ÒüùÒéçÒüåÒüìÒéçÒüÅÒüªÒüì	mang t├¡nh ti├¬u cß╗▒c	976	0
-5038	µ»öÞ╝âþÜä	Òü▓ÒüïÒüÅÒüªÒüì	tã░ãíng ─æß╗æi	976	0
-5039	þÜä	Òü¥Òü¿	mß╗Ñc ti├¬u	976	0
-5040	Ú│Ñ	Òü¿Òéè	m├íy bay	977	0
-5041	Úúø	Òü¿	phi trã░ß╗Øng, s├ón bay	977	0
-5042	þ│©	ÒüäÒü¿	m├íy bay	978	0
-5043	µ®ƒõ╝Ü	ÒüìÒüïÒüä	cãí hß╗Öi, dß╗ïp	978	0
-5044	µ┤ùµ┐»µ®ƒ	ÒüøÒéôÒüƒÒüÅÒüì	m├íy giß║Àc	978	0
-5045	µ®ƒµó░	ÒüìÒüïÒüä	m├íy m├│c, cãí kh├¡	978	0
-5046	µ®ƒÞâ¢	ÒüìÒü«Òüå	chß╗®c n─âng	978	0
-5047	µ®ƒÕ½î	ÒüìÒüÆÒéô	sß║»c mß║Àt; t├óm trß║íng; t├¡nh kh├¡; t├óm t├¼nh; t├¡nh t├¼nh	978	0
-5048	µ®ƒÚûó	ÒüìÒüïÒéô	cãí quan	978	0
-5049	µ®ƒÚûó	ÒüìÒüïÒéô	nguy cãí, khß╗ºng hoß║úng	978	0
-5050	µ®ƒþ╣ö	Òü»ÒüƒÒüè	M├íy dß╗çt	978	0
-5051	Õñ½	ÒüèÒüúÒü¿	thß║Ñt nghiß╗çp	979	0
-5052	Õñ▒þñ╝	ÒüùÒüñÒéîÒüä	thß║Ñt vß╗ìng	979	0
-5053	Úëä	ÒüªÒüñ	t├áu ─æiß╗çn ngß║ºm	980	0
-5054	Úëä	ÒüªÒüñ	sß║»t, th├®p	980	0
-5055	ÚëäÚüô	ÒüªÒüñÒü®Òüå	─æã░ß╗Øng sß║»t	980	0
-5056	þºüÚëä	ÒüùÒüªÒüñ	─æã░ß╗Øng sß║»c tã░ nh├ón	980	0
-5057	þºü	ÒéÅÒüƒÒüù	ngay lß║¡p tß╗®c, tß╗®c th├¼	981	0
-5058	ÚÇƒÚüö	ÒüØÒüÅÒüƒÒüñ	dß╗ïch vß╗Ñ chuyß╗ân ph├ít nhanh	981	0
-5059	Õ┐½ÚÇƒ	ÒüïÒüäÒüØÒüÅ	t├áu si├¬u tß╗æc	981	0
-5060	Ú½ÿÚÇƒ	ÒüôÒüåÒüØÒüÅ	─æã░ß╗Øng cao tß╗æc	981	0
-5061	µÖéÚÇƒ	ÒüÿÒüØÒüÅ	tß╗æc ─æß╗Ö t├¡nh theo giß╗Ø	981	0
-5062	õ©╗õ║║	ÒüùÒéàÒüÿÒéô	b├úi ─æß╗ù xe	983	0
-5063	ÚºÉµùÑ	ÒüíÒéàÒüåÒü½Òüí	─æß║íi sß╗® thã░ß╗Øng tr├║ tß║íi nhß║¡t bß║ún	983	0
-5064	µÁÀÞ¥║	ÒüåÒü┐Òü╣	3 ng├áy 2 ─æ├¬m	984	0
-5065	õ©Çµ│è	ÒüäÒüúÒü▒ÒüÅ	Ngß╗º trß╗ì, trß╗ì lß║íi	984	0
-5066	Þê╣	ÒüÁÒü¡	Thuyß╗ün	985	0
-5067	Þê╣õ¥┐	ÒüÁÒü¬Òü│Òéô	Gß╗ƒi bß║▒ng ─æã░ß╗Øng t├áu, lß╗øp vß╗Å ngo├ái cß╗ºa t├áu	985	0
-5068	Úó¿Þê╣	ÒüÁÒüåÒüøÒéô	khinh kh├¡ cß║ºu	985	0
-5069	ÚÇáÞê╣	Òü×ÒüåÒüøÒéô	─æ├│ng t├áu	985	0
-5070	Õ«óÞê╣	ÒüìÒéâÒüÅÒüøÒéô	thuyß╗ün chß╗ƒ kh├ích, t├áu chß╗ƒ kh├ích	985	0
-5071	Þ▓¿þë®Þê╣	ÒüïÒééÒüñÒüøÒéô	t├áu chß╗ƒ h├áng	985	0
-5072	Þê╣ÚòÀ	ÒüøÒéôÒüíÒéçÒüå	thuyß╗ün trã░ß╗ƒng	985	0
-5073	Þê╣µùà	ÒüÁÒü¬ÒüƒÒü│	chuyß║┐n ─æi (cuß╗Öc h├ánh tr├¼nh) bß║▒ng t├áu thuyß╗ün	985	0
-5074	õ║îõ║║	ÒüÁÒüƒÒéè	t├ái khoß║ún	986	0
-5075	Õ║ºÕ©¡	ÒüûÒüøÒüì	chß╗ù ngß╗ôi	986	0
-5076	Õ║ºÕ©âÕøú	ÒüûÒüÂÒü¿Òéô	─Éß╗çm ngß╗ôi	986	0
-5077	Õ║ºÞ½çõ╝Ü	ÒüûÒüáÒéôÒüïÒüä	buß╗òi tß╗ìa ─æ├ám	986	0
-5078	Õ║ºµòÀ	ÒüûÒüùÒüì	ph├▓ng kh├ích	986	0
-5079	Õ║ù	Òü┐Òüø	ghß║┐, chß╗ù ngß╗ôi	987	0
-5080	Õç║Õ©¡	ÒüùÒéàÒüúÒüøÒüì	tham gia, c├│ mß║Àt	987	0
-5081	þ®║Õ©¡	ÒüÅÒüåÒüøÒüì	kh├┤ng trung, kh├┤ng gian	987	0
-5082	µ¼áÕ©¡	ÒüæÒüúÒüøÒüì	vß║»ng mß║Àt	987	0
-5083	Õ«óÕ©¡	ÒüìÒéâÒüÅÒüøÒüì	ghß║┐ cß╗ºa kh├ích, ghß║┐ kh├ín giß║ú	987	0
-5084	Ú│Ñ	Òü¿Òéè	─æß║úo, c├╣ lao	988	0
-5085	ÕìèÕ│Â	Òü»ÒéôÒü¿Òüå	b├ín ─æß║úo	988	0
-5086	ÕêùÕ│Â	ÒéîÒüúÒü¿Òüå	quß║ºn ─æß║úo	988	0
-5087	Õ│ÂÕø¢	ÒüùÒü¥ÒüÉÒü½	quß╗æc ─æß║úo	988	0
-5088	Õ│Âµ░æ	Òü¿ÒüåÒü┐Òéô	d├ón sß╗æng tr├¬n ─æß║úo	988	0
-5089	þäíõ║║Õ│Â	ÒéÇÒüÿÒéôÒü¿Òüå	─æß║úo hoang	988	0
-5090	Õü£	ÒüªÒüä	lß╗Ñc ─æß╗ïa	989	0
-5091	ÚÖ©	ÒéèÒüÅ	maß║Àt ─æß║Ñt, ─æß║Ñt liß╗ün	989	0
-5092	þØÇÚÖ©	ÒüíÒéâÒüÅÒéèÒüÅ	hß║í c├ính, ─æ├íp ─æß║Ñt	989	0
-5093	õ©èÚÖ©	ÒüÿÒéçÒüåÒéèÒüÅ	cß║¡p bß║┐n, ─æß╗ò bß╗Ö	989	0
-5094	ÚÖ©Þ╗ì	ÒéèÒüÅÒüÉÒéô	lß╗Ñc qu├ón	989	0
-5095	ÚÖ©õ©è	ÒéèÒüÅÒüÿÒéçÒüå	tr├¬n mß║Àt ─æß║Ñt, tr├¬n ─æß║Ñt liß╗ün	989	0
-5096	µ©»	Òü┐Òü¬Òü¿	s├ón bay	990	0
-5097	µ©»	Òü┐Òü¬Òü¿	bß║┐n cß║úng	990	0
-5098	þÑ×µê©	ÒüôÒüåÒü╣	cß║úng Kobe	990	0
-5099	µ©»þö║	Òü┐Òü¬Òü¿Òü¥Òüí	phß╗æ cß║úng	990	0
-5100	µ£¿	Òüì	c├óy cß║ºu	991	0
-5101	Úëäµ®ï	ÒüªÒüúÒüìÒéçÒüå	cß║ºu c├│ ─æã░ß╗Øng ray cho xe lß╗¡a	991	0
-5102	µ¡®Úüôµ®ï	Òü╗Òü®ÒüåÒüìÒéçÒüå	cß║ºu vã░ß╗út, cß║ºu cho ngã░ß╗Øi ─æi bß╗Ö	991	0
-5103	µ®ï	Òü░Òüù	cß║ºu treo	991	0
-5104	þêÂ	ÒüíÒüí	─æß╗ôn cß║únh s├ít	992	0
-5105	õ║ñÕÀ«þé╣	ÒüôÒüåÒüòÒüªÒéô	b├╣ng binh	992	0
-5106	õ║ñÚÇÜ	ÒüôÒüåÒüñÒüå	tai nß║ín giao th├┤ng	992	0
-5107	õ║ñµÅø	ÒüôÒüåÒüïÒéô	trao ─æß╗òi	992	0
-5108	Õñûõ║ñÕ«ÿ	ÒüîÒüäÒüôÒüåÒüïÒéô	nh├á ngoß║íi giao	992	0
-5109	ÚøÀ	ÒüïÒü┐Òü¬Òéè	─æãín xin viß╗çc	993	0
-5110	ÚøÀ	ÒüïÒü┐Òü¬Òéè	thß║ºn, ch├║a	994	0
-5111	þÑ×µºÿ	ÒüïÒü┐ÒüòÒü¥	thß║ºn, thã░ß╗úng ─æß║┐, ch├║a trß╗Øi	994	0
-5112	þÑ×þñ¥	ÒüÿÒéôÒüÿÒéâ	─Éß╗ün thß╗Ø thß║ºn ─æß║ío	994	0
-5113	þÑ×þÁî	ÒüùÒéôÒüæÒüä	thß║ºn kinh, sß╗▒ nhß║íy cß║úm	994	0
-5114	þ▓¥þÑ×	ÒüøÒüäÒüùÒéô	t├óm kh├¡, tinh thß║ºn	994	0
-5115	þÑ×Þ®▒	ÒüùÒéôÒéÅ	thß║ºn thoß║íi	994	0
-5116	þÑ×Úüô	ÒüùÒéôÒü¿Òüå	thß║ºn ─æß║ío	994	0
-5117	þÑ×µê©	ÒüôÒüåÒü╣	Kobe (Nhß║¡t Bß║ún)	994	0
-5118	µ£¿	Òüì	thß║ºn, thã░ß╗úng ─æß║┐, ch├║a trß╗Øi	995	0
-5119	þö░õ©¡µºÿ	ÒüƒÒü¬ÒüïÒüòÒü¥	├öng, b├á, ng├ái tanaka	995	0
-5120	µºÿÒÇà	ÒüòÒü¥ÒüûÒü¥	th├íi ─æß╗Ö, trß║íng th├íi	995	0
-5121	ÕÉîµºÿ	Òü®ÒüåÒéêÒüå	tß║Ñt cß║ú mß╗ìi ngã░ß╗Øi (c├ích xã░ng h├┤ k├¡nh trß╗ìng)	995	0
-5122	Õ«óµºÿ	ÒüìÒéâÒüÅÒüòÒü¥	qu├¢ kh├ích	995	0
-5123	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	vua	995	0
-5124	µ¿íµºÿ	ÒééÒéêÒüå	hoa v─ân, m├┤ h├¼nh	995	0
-5125	õ║║	Òü▓Òü¿	─æ├¿n giao th├┤ng	996	0
-5126	õ┐í	ÒüùÒéô	tß╗▒ tin	996	0
-5127	õ┐íþö¿	ÒüùÒéôÒéêÒüå	l├▓ng tin, sß╗▒ tin tã░ß╗ƒng, sß╗▒ t├¡n nhiß╗çm	996	0
-5128	õ┐íÚá╝	ÒüùÒéôÒéëÒüä	tin cß║¡y, t├¡n nhiß╗çm	996	0
-5129	õ┐íõ╗░	ÒüùÒéôÒüôÒüå	t├¡n ngã░ß╗íng	996	0
-5130	ÕÅùõ┐í	ÒüÿÒéàÒüùÒéô	sß╗▒ thu t├¡n hiß╗çu	996	0
-5131	Õæ¿	Òü¥ÒéÅ	t├¼nh trß║íng	997	0
-5132	Þ¬┐µƒ╗	ÒüíÒéçÒüåÒüò	sß╗▒ ─æiß╗üu tra, cuß╗Öc ─æiß╗üu tra khß║úo s├ít	997	0
-5133	Þ¬┐Õæ│µûÖ	ÒüíÒéçÒüåÒü┐ÒéèÒéçÒüå	gia vß╗ï	997	0
-5134	Þ¬┐þ»Ç	ÒüíÒéçÒüåÒüøÒüñ	─æiß╗üu tiß║┐t, chß╗ënh l├¢	997	0
-5135	µ£¿	Òüì	sß╗▒ ─æiß╗üu tra, cuß╗Öc ─æiß╗üu tra khß║úo s├ít	998	0
-5136	µñ£µƒ╗	ÒüæÒéôÒüò	sß╗▒ kiß╗âm tra	998	0
-5137	µñ£µƒ╗	ÒüæÒéôÒüò	tuß║ºn cß║únh, tuß║ºn binh, cß║únh s├ít tuß║ºn tiß╗àu	998	0
-5138	µôìõ¢£	ÒüØÒüåÒüò	thao t├íc, ─æiß╗üu khiß╗ân	998	0
-5139	Õ»®µƒ╗	ÒüùÒéôÒüò	thß║®m x├®t, thß║®m tra	998	0
-5140	µ£¿	Òüì	─æß╗æi tã░ß╗úng, ─æß╗æi phã░ãíng	999	0
-5141	Úªûþø©	ÒüùÒéàÒüùÒéçÒüå	thß╗º tã░ß╗øng	999	0
-5142	þø©Õ¢ô	ÒüØÒüåÒü¿Òüå	sß╗▒ tã░ãíng ─æã░ãíng	999	0
-5143	þø©Úüò	ÒüØÒüåÒüä	sß╗▒ kh├íc nhau	999	0
-5144	þø©þÂÜ	ÒüØÒüåÒü×ÒüÅ	sß╗▒ kß║┐ tiß║┐p, sß╗▒ thß╗½a kß║┐	999	0
-5145	þø©Õñë	ÒüéÒüäÒüï	m├┤n vß║¡t sumo	999	0
-5146	þü½	Òü▓	─æ├╣a, n├│i ─æ├╣a, n├│i giß╗ín	1000	0
-5147	ÚÜÄµ«Á	ÒüïÒüäÒüáÒéô	cß║ºu thang	1000	0
-5148	Õ║ºÞ½çõ╝Ü	ÒüûÒüáÒéôÒüïÒüä	buß╗òi tß╗ìa ─æ├ám	1000	0
-5149	µççÞ½çõ╝Ü	ÒüôÒéôÒüáÒéôÒüïÒüä	buß╗òi hß╗ìp mß║Àt th├ón mß║¡t	1000	0
-5150	ÚøæÞ½ç	ÒüûÒüñÒüáÒéô	n├│i chuyß╗çn phiß║┐m	1000	0
-5151	Õ»¥Þ½ç	ÒüƒÒüäÒüáÒéô	sß╗▒ ─æß╗æi thoß║íi, cuß╗Öc ─æß╗æi thoß║íi	1000	0
-5152	µ£¿	Òüì	kß║┐ hoß║ích	1001	0
-5153	µíêÕñû	ÒüéÒéôÒüîÒüä	bß║Ñt ngß╗Ø, ngoß║íi dß╗▒ kiß║┐n	1001	0
-5154	þ¡öµíê	Òü¿ÒüåÒüéÒéô	phiß║┐u trß║ú lß╗Øi	1001	0
-5155	µÅÉµíê	ÒüªÒüäÒüéÒéô	sß╗▒ ─æß╗ü nghß╗ï, lß╗Øi ─æß╗ü nghß╗ï	1001	0
-5156	µíê	ÒüéÒéô	Quß║ú nhi├¬n;  ─æ├║ng nhã░ dß╗▒ ─æo├ín	1001	0
-5157	ÕÉìµíê	ÒéüÒüäÒüéÒéô	├¢ kiß║┐n hay	1001	0
-5158	õ║║	Òü▓Òü¿	trong v├▓ng 10 ng├áy	1002	0
-5159	Õ«ÂÕåà	ÒüïÒü¬Òüä	vß╗ú (m├¼nh)	1002	0
-5160	Õø¢Õåà	ÒüôÒüÅÒü¬Òüä	trong nã░ß╗øc, quß╗æc nß╗Öi	1002	0
-5161	Õåà	ÒüåÒüí	b├¬n trong	1002	0
-5162	Õåàþºæ	Òü¬ÒüäÒüï	nß╗Öi khoa	1002	0
-5163	ÕåàÕ«╣	Òü¬ÒüäÒéêÒüå	nß╗Öi dung	1002	0
-5164	ÕóâÕåà	ÒüæÒüäÒüáÒüä	b├¬n trong ─æß╗ün, ch├╣a	1002	0
-5165	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	cß║¡u, bß║ín Yamamoto	1003	0
-5166	ÕÉø	ÒüìÒü┐	bß║ín, em (─æß║íi tß╗½ nh├ón xã░ng, khi ─æß╗æi phã░ãíng l├á nß╗»)	1003	0
-5167	ÕÉøõ©╗	ÒüÅÒéôÒüùÒéà	vã░ãíng giß║ú, qu├ón chß╗º	1003	0
-5168	Õ£ƒ	ÒüñÒüí	bß║ín b├¿, ngã░ß╗Øi bß║ín	1004	0
-5169	þºüÚüö	ÒéÅÒüƒÒüùÒüƒÒüí	ch├║ng t├┤i	1004	0
-5170	ÚÇƒÚüö	ÒüØÒüÅÒüƒÒüñ	dß╗ïch vß╗Ñ chuyß╗ân ph├ít nhanh	1004	0
-5171	õ©èÚüö	ÒüÿÒéçÒüåÒüƒÒüñ	sß╗▒ ph├ón ph├ít, sß╗▒ ─æã░a chuyß╗ân cho	1004	0
-5172	Úüö	ÒüƒÒüú	chuy├¬n gia, ngã░ß╗Øi th├ánh thß║ío	1004	0
-5173	µÿƒ	Òü╗Òüù	ng├┤i sao	1005	0
-5174	Þíøµÿƒ	ÒüêÒüäÒüøÒüä	vß╗ç tinh	1005	0
-5175	µÿƒÕ║º	ÒüøÒüäÒüû	ch├▓m sao	1005	0
-5176	µÿƒÕìá	Òü╗ÒüùÒüåÒéëÒü¬	sao Hß╗Åa	1005	0
-5177	µâæµÿƒ	ÒéÅÒüÅÒüøÒüä	h├ánh tinh	1005	0
-5178	µÁü	Òü¬Òüî	sao b─âng	1005	0
-5179	µÿÄµÿƒ	Òü┐ÒéçÒüåÒüÿÒéçÒüå	sao mai	1005	0
-5180	Úø¿	ÒüéÒéü	tuyß║┐t	1006	0
-5181	ÕñºÚø¬	ÒüèÒüèÒéåÒüì	tuyß║┐t rãíi d├áy	1006	0
-5182	Úø¬	ÒéåÒüì	tuyß║┐t mß╗øi	1006	0
-5183	ÚÖìÚø¬	ÒüôÒüåÒüøÒüñ	viß╗çc tuyß║┐t rãíi	1006	0
-5184	Úø¬Õ┤®	Òü¬ÒüáÒéî	tuyß║┐t lß╗ƒ	1006	0
-5185	ÕÉ╣Úø¬	ÒüÁÒüÂÒüì	b├úo tuyß║┐t	1006	0
-5186	Õü£	ÒüªÒüä	sau ─æ├│ trß╗ƒ ─æi, tß╗½ sau ─æ├│	1007	0
-5187	õ©ïÚÖì	ÒüïÒüôÒüå	rãíi xuß╗æng, tß╗Ñt xuß╗æng	1007	0
-5188	ÚÖì	Òüè	lã░ß╗úng mã░a	1007	0
-5189	Õúè	ÒüôÒéÅ	trß╗▒c tiß║┐p	1008	0
-5190	þø┤þÀÜ	ÒüíÒéçÒüÅÒüøÒéô	─æã░ß╗Øng thß║│ng	1008	0
-5191	Õ┤û	ÒüîÒüæ	mß╗æi nguy	1009	0
-5192	Õì▒	ÒüéÒéä	sß╗▒ nguy hß║íi, nguy hiß╗âm	1009	0
-5193	Õì▒Õ«│	ÒüìÒüîÒüä	nguy cãí, khß╗ºng hoß║úng	1009	0
-5194	Õì▒þ»ñ	ÒüìÒü¿ÒüÅ	trong t├¼nh trß║íng nguy kß╗ïch	1009	0
-5195	õ║║	Òü▓Òü¿	mß╗æi nguy	1010	0
-5196	ÚÖ║	ÒüæÒéÅ	n├║i dß╗æc, ngß╗ìn n├║i hiß╗âm trß╗ƒ	1010	0
-5197	ÕåÆÚÖ║	Òü╝ÒüåÒüæÒéô	sß╗▒ mß║ío hiß╗âm	1010	0
-5198	õ┐ØÚÖ║	Òü╗ÒüæÒéô	bß║úo hiß╗âm	1010	0
-5199	þ«▒	Òü░Òüô	vß║¡t nhß║Àt ─æã░ß╗úc, cß╗ºa rãíi	1011	0
-5200	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	l├ám tr├▓n sß╗æ	1012	0
-5201	ÕÅûµì¿	ÒüùÒéàÒüùÒéâ	sß╗▒ tuyß╗ân chß╗ìn, chß╗ìn lß╗ìc	1012	0
-5202	Õ¢╝	ÒüïÒéî	tiß╗ün ho├án trß║ú, ho├án trß║ú lß║íi	1013	0
-5203	þàÖÞìë	ÒüƒÒü░Òüô	sß╗▒ hß║Ñp thß╗Ñ	1014	0
-5204	ÕÉ©	ÒüÖ	t├án thuß╗æc	1014	0
-5205	µùù	Òü»Òüƒ	sß╗▒ ph├ít thanh	1015	0
-5206	Úûïµö¥	ÒüïÒüäÒü╗Òüå	sß╗▒ ─æuß╗òi ─æi, trß╗Ñc xuß║Ñt	1015	0
-5207	µëïµö¥	ÒüªÒü░Òü¬	n─âng lã░ß╗úng ph├│ng xß║í	1015	0
-5208	µö¥þü½	Òü╗ÒüåÒüï	sß╗▒ ph├│ng hß╗Åa, ─æß╗æt nh├á	1015	0
-5209	Õ¢╝	ÒüïÒéî	kh├│ kh─ân, vß║Ñt vß║ú	1016	0
-5210	ÕñëÕîû	Òü©ÒéôÒüï	sß╗▒ thay ─æß╗òi, biß║┐n h├│a	1016	0
-5211	Õñëµø┤	Òü©ÒéôÒüôÒüå	sß╗▒ thay ─æß╗òi, biß║┐n ─æß╗òi, cß║úi biß║┐n	1016	0
-5212	Þ®▒	Òü»Òü¬	r─âng	1017	0
-5213	µ¡»Õî╗ÞÇà	Òü»ÒüäÒüùÒéâ	nha s─®	1017	0
-5214	ÞÖ½µ¡»	ÒéÇÒüùÒü░	r─âng s├óu	1017	0
-5215	µ¡»þú¿	Òü»Òü┐Òüî	nha khoa	1017	0
-5216	ÕÅïÚüö	Òü¿ÒééÒüáÒüí	t├│c	1018	0
-5217	Ú½¬	ÒüïÒü┐	sß╗úi t├│c, sß╗úi l├┤ng	1018	0
-5218	µòúÚ½¬	ÒüòÒéôÒü▒Òüñ	viß╗çc cß║»t t├│c	1018	0
-5219	µ┤ùÚ½¬	ÒüøÒéôÒü▒Òüñ	viß╗çc gß╗Öi ─æß║ºu	1018	0
-5220	Ú½¬Õ×ï	ÒüïÒü┐ÒüîÒüƒ	kiß╗âu t├│c	1018	0
-5221	ÚçæÚ½¬	ÒüìÒéôÒü▒Òüñ	t├│c v├áng, t├│c v├áng hoe	1018	0
-5222	Ú╗ÆÚ½¬	ÒüÅÒéìÒüïÒü┐	t├│c ─æen	1018	0
-5223	þÖ¢Ú½¬	Òü»ÒüÅÒü»Òüñ	t├│c bß║íc	1018	0
-5224	þÖ¢Ú½¬	ÒüùÒéëÒüî	t├│c bß║íc	1018	0
-5225	õ╝Ü	Òüé	bß╗®c tranh	1019	0
-5226	þÁÁµ£¼	ÒüêÒü╗Òéô	s├ích truyß╗çn bß║▒ng tranh ß║únh	1019	0
-5227	þÁÁ	Òüê	dß╗Ñng cß╗Ñ ─æß╗â vß║¢ tranh, m├áu vß║¢	1019	0
-5228	þÁÁþö╗	ÒüïÒüäÒüî	bß╗®c tranh, hß╗Öi hß╗ìa	1019	0
-5229	µ▓╣þÁÁ	ÒüéÒüÂÒéëÒüê	tranh sãín dß║ºu	1019	0
-5230	Õó¿þÁÁ	ÒüÖÒü┐Òüê	tranh thß╗ºy mß║Àc	1019	0
-5231	µÁ«õ©ûþÁÁ	ÒüåÒüìÒéêÒüê	tranh Ukiyoe (tranh khß║»c gß╗ù tß╗½ thß╗Øi Edo)	1019	0
-5232	õ╝╝ÚíöþÁÁ	Òü½ÒüîÒüèÒüê	tranh ch├ón dung	1019	0
-5233	Õ¡É	Òüô	chiß╗üu ngang	1020	0
-5234	µ¿¬Õêç	ÒéêÒüôÒüÄ	cß║ºu vã░ß╗út, cß║ºu cho ngã░ß╗Øi ─æi bß╗Ö	1020	0
-5235	µ¿¬µû¡	ÒüèÒüåÒüáÒéô	─æ├┤ vß║¡t sß╗æ mß╗Öt nhß║¡t bß║ún (cß║Ñp hiß╗çu lß╗▒c s─® sumo chuy├¬n nghiß╗çp cao nhß║Ñt)	1020	0
-5236	þƒó	Òéä	cãím hß╗Öp	1021	0
-5237	Úü®Õ¢ô	ÒüªÒüìÒü¿Òüå	sß╗▒ tã░ãíng th├¡ch, ph├╣ hß╗úp	1021	0
-5238	Õ¢ô	Òüé	khi ß║Ñy, ─æã░ãíng thß╗Øi	1021	0
-5239	µïàÕ¢ô	ÒüƒÒéôÒü¿Òüå	ngã░ß╗Øi phß╗Ñ tr├ích, ngã░ß╗Øi chß╗ïu tr├ích nhiß╗çm	1021	0
-5240	Õ¢ôþäÂ	Òü¿ÒüåÒü£Òéô	─æã░ãíng nhi├¬n, d─® nhi├¬n	1021	0
-5241	õ║îõ║║	ÒüÁÒüƒÒéè	tin nhß║»n	1022	0
-5242	õ╝ØþÁ▒	ÒüºÒéôÒü¿Òüå	truyß╗ün thß╗æng	1022	0
-5243	Õ«úõ╝Ø	ÒüøÒéôÒüºÒéô	sß╗▒ tuy├¬n truyß╗ün, th├┤ng tin tuy├¬n truyß╗ün, sß╗▒ c├┤ng khai	1022	0
-5244	õ╝Øµƒô	ÒüºÒéôÒüøÒéô	sß╗▒ truyß╗ün nhiß╗àm , sß╗▒ lan truyß╗ün	1022	0
-5245	õ╝ØÞ¿ÿ	ÒüºÒéôÒüì	sß╗▒ t├¡ch, tiß╗âu sß╗¡	1022	0
-5246	Úü║õ╝ØÕ¡É	ÒüäÒüºÒéôÒüù	gen, di truyß╗ün	1022	0
-5247	þö░	Òüƒ	tß║┐ b├áo	1023	0
-5248	þ┤░ÞÅî	ÒüòÒüäÒüìÒéô	vi tr├╣ng, vi khuß║®n	1023	0
-5249	Õ┐âþ┤░	ÒüôÒüôÒéìÒü╝ÒüØ	mß╗Öt c├ích chi tiß║┐t, tã░ß╗Øng tß║¡n	1023	0
-5250	þ┤░ÕÀÑ	ÒüòÒüäÒüÅ	t├íc phß║®m, sß╗▒ chß║┐ t├íc	1023	0
-5251	þü½õ║ï	ÒüïÒüÿ	miß╗àn ph├¡	1024	0
-5252	þäí	Òü¬	v├┤ sß╗▒, kh├┤ng c├│ vß║Ñn ─æß╗ü g├¼	1024	0
+COPY public."KanjiVocab" (id, word, reading, "meaningVi", "kanjiEntryId", "sortOrder", "vocabularyId") FROM stdin;
+2627	õ©Çµ£¼	ÒüäÒüúÒü¢Òéô	S├┤╠ü 1	513	0	\N
+2628	õ©Ç	Òü▓Òü¿	1 giãí╠Ç	513	0	\N
+2629	õ©ÇÕêå	ÒüäÒüúÒüÀÒéô	1 phu╠üt	513	0	\N
+2630	õ©Çµ£ê	ÒüäÒüíÒüîÒüñ	Tha╠üng 1	513	0	\N
+2631	õ©ÇµùÑ	ÒüäÒüíÒü½Òüí	1 nga╠Çy	513	0	\N
+2632	õ©ÇµùÑ	ÒüñÒüäÒüƒÒüí	Nga╠Çy m├┤╠Çng 1	513	0	\N
+2633	õ©Çõ║║	Òü▓Òü¿Òéè	1 ngã░ãí╠Çi	513	0	\N
+2635	õ║îµ£¼	Òü½Òü╗Òéô	S├┤╠ü 2	514	0	\N
+2637	õ║îµ£ê	Òü½ÒüîÒüñ	Tha╠üng 2	514	0	\N
+2639	õ║îµùÑ	ÒüÁÒüñÒüï	2 nga╠Çy, nga╠Çy m├┤╠Çng 2	514	0	\N
+2640	õ║îÕìüµùÑ	Òü»ÒüñÒüï	20 nga╠Çy, nga╠Çy 20	514	0	\N
+2641	õ║îÕìüµ¡│	Òü»ÒüƒÒüí	20 tu├┤╠ëi	514	0	\N
+2642	õ║îÕìüµ¡│	Òü½ÒüÿÒéàÒüúÒüòÒüä	20 tu├┤╠ëi	514	0	\N
+2643	õ©ëµ£¼	ÒüòÒéôÒü╝Òéô	S├┤╠ü 3	515	0	\N
+2644	õ©ë	Òü┐Òüú	3 giãí╠Ç	515	0	\N
+2645	õ©ëµ£ê	ÒüòÒéôÒüîÒüñ	Tha╠üng 3	515	0	\N
+2646	õ©ëµùÑ	Òü┐ÒüúÒüï	3 nga╠Çy, nga╠Çy m├┤╠Çng 3	515	0	\N
+2647	õ©ëõ║║	ÒüòÒéôÒü½Òéô	3 ngã░ãí╠Çi	515	0	\N
+2648	õ©ëµ¡│	ÒüòÒéôÒüòÒüä	3 tu├┤╠ëi	515	0	\N
+2649	õ©ëµùÑµ£ê	Òü┐ÒüïÒüÑÒüì	Tr─âng khuy├¬╠üt	515	0	\N
+2650	ÕøøÞºÆ	ÒüùÒüïÒüÅ	S├┤╠ü 4	516	0	\N
+2651	Õøø	Òüù	S├┤╠ü 4	516	0	\N
+2652	Õøø	ÒéêÒüú	4 giãí╠Ç	516	0	\N
+2653	Õøøµ£ê	ÒüùÒüîÒüñ	Tha╠üng 4	516	0	\N
+2654	ÕøøµùÑ	ÒéêÒüúÒüï	4 nga╠Çy, nga╠Çy m├┤╠Çng 4	516	0	\N
+2655	Õøøõ║║	ÒéêÒü½Òéô	4 ngã░ãí╠Çi	516	0	\N
+2656	ÕøøÕ╣┤þöƒ	ÒéêÒü¡ÒéôÒüøÒüä	ho╠úc sinh n─âm 4	516	0	\N
+2657	Õøøµ¡│	ÒéêÒéôÒüòÒüä	4 tu├┤╠ëi	516	0	\N
+2658	õ║öµ£¼	ÒüöÒü╗Òéô	S├┤╠ü 5	517	0	\N
+2660	õ║öµ£ê	ÒüöÒüîÒüñ	Tha╠üng 5	517	0	\N
+2662	õ║öÕ╣┤	ÒüöÒü¡Òéô	5 n─âm	517	0	\N
+2663	õ║öõ║║	ÒüöÒü½Òéô	5 ngã░ãí╠Çi	517	0	\N
+2664	õ║öµ¡│	ÒüöÒüòÒüä	5 tu├┤╠ëi	517	0	\N
+2666	Õà¡	ÒéÇÒüú	Sß╗æ 600	518	0	\N
+2667	Õà¡µÖé	ÒéìÒüÅÒüÿ	6 giãí╠Ç	518	0	\N
+2668	Õà¡Õêå	ÒéìÒüúÒüÀÒéô	6 phu╠üt	518	0	\N
+2669	Õà¡µ£ê	ÒéìÒüÅÒüîÒüñ	tha╠üng 6	518	0	\N
+2670	Õà¡µùÑ	ÒéÇÒüäÒüï	6 nga╠Çy, nga╠Çy m├┤╠Çng 6	518	0	\N
+2671	Õà¡õ║║	ÒéìÒüÅÒü½Òéô	6 ngã░ãí╠Çi	518	0	\N
+2672	õ©â	ÒüùÒüí	S├┤╠ü 7	519	0	\N
+2673	õ©â	Òü¬Òü¬	7 giãí╠Ç	519	0	\N
+2674	õ©âÕêå	Òü¬Òü¬ÒüÁÒéô	7 phu╠üt	519	0	\N
+2675	õ©âµ£ê	ÒüùÒüíÒüîÒüñ	tha╠üng 7	519	0	\N
+2676	õ©âµùÑ	Òü¬Òü«Òüï	7 nga╠Çy, tha╠üng 7	519	0	\N
+2677	õ©âõ║║	Òü¬Òü¬Òü½Òéô	7 ngã░ãí╠Çi	519	0	\N
+2678	õ©âÕñò	ÒüƒÒü¬Òü░Òüƒ	L├¬╠â h├┤╠úi tanabata ( l├¬╠â h├┤╠úi ngã░u lang chã░╠üc nã░╠â)	519	0	\N
+2679	Õà½	Òü»Òüí	S├┤╠ü 8	520	0	\N
+2680	Õà½	ÒéäÒüú	S├┤╠ü 800	520	0	\N
+2681	Õà½µÖé	Òü»ÒüíÒüÿ	8 giãí╠Ç	520	0	\N
+2682	Õà½µ£ê	Òü»ÒüíÒüîÒüñ	Tha╠üng 8	520	0	\N
+2683	Õà½µùÑ	ÒéêÒüåÒüï	8 nga╠Çy, nga╠Çy m├┤╠Çng 8	520	0	\N
+2684	Õà½õ║║	Òü»ÒüíÒü½Òéô	8 ngã░ãí╠Çi	520	0	\N
+2685	Õà½µ¡│	Òü»ÒüúÒüòÒüä	8 tu├┤╠ëi	520	0	\N
+2686	Õø×	ÒüïÒüä	Cã░╠ëa ha╠Çng rau	521	0	\N
+2687	õ╣Ø	ÒüìÒéàÒüå	S├┤╠ü 9	521	0	\N
+2688	õ╣Ø	ÒüÅ	S├┤╠ü 9	521	0	\N
+2689	õ╣Ø	ÒüôÒüôÒü«	9 giãí╠Ç	521	0	\N
+2690	õ╣Øµ£ê	ÒüÅÒüîÒüñ	Tha╠üng 9	521	0	\N
+2691	õ╣ØµùÑ	ÒüôÒüôÒü«Òüï	9 nga╠Çy, nga╠Çy m├┤╠Çng 9	521	0	\N
+2692	õ╣ØÕ╣┤	ÒüìÒéàÒüåÒü¡Òéô	9 n─âm	521	0	\N
+2693	õ╣Øµ¡│	ÒüìÒéàÒüåÒüòÒüä	9 tu├┤╠ëi	521	0	\N
+2694	õ╣Øõ║║	ÒüìÒéàÒüåÒü½Òéô	9 ngã░ãí╠Çi	521	0	\N
+2695	Õ©©	ÒüÿÒéçÒüå	S├┤╠ü 10	522	0	\N
+2696	Õìü	Òü¿Òüè	10 ca╠üi	522	0	\N
+2697	ÕìüµÖé	ÒüÿÒéàÒüåÒüÿ	10 giãí╠Ç	522	0	\N
+2698	ÕìüÕêå	ÒüÿÒüúÒüÀÒéô	10 phu╠üt	522	0	\N
+2699	ÕìüÕêå	ÒüÿÒéàÒüúÒüÀÒéô	10 phu╠üt	522	0	\N
+2700	Õìüµ£ê	ÒüÿÒéàÒüåÒüîÒüñ	Tha╠üng 10	522	0	\N
+2701	ÕìüµùÑ	Òü¿ÒüèÒüï	10 nga╠Çy, nga╠Çy 10	522	0	\N
+2702	Õìüõ║║	ÒüÿÒéàÒüåÒü½Òéô	10 ngã░ãí╠Çi	522	0	\N
+2703	Õìüµ¡│	ÒüÿÒüúÒüòÒüä	10 tu├┤╠ëi	522	0	\N
+2704	ÕìüÕêå	ÒüÿÒéàÒüåÒüÂÒéô	─Éß║ºy ─æß╗º	522	0	\N
+2705	Õ║ª	Òü®	S├┤╠ü 100	523	0	\N
+2706	õ║îþÖ¥	Òü½Òü▓ÒéâÒüÅ	S├┤╠ü 200	523	0	\N
+2707	õ©ëþÖ¥	ÒüòÒéôÒü│ÒéâÒüÅ	S├┤╠ü 300	523	0	\N
+2708	Õà¡þÖ¥	ÒéìÒüúÒü┤ÒéâÒüÅ	S├┤╠ü 600	523	0	\N
+2709	Õà½þÖ¥	Òü»ÒüúÒü┤ÒéâÒüÅ	S├┤╠ü 800	523	0	\N
+2710	Õà½þÖ¥Õ▒ï	ÒéäÒüèÒéä	Cã░╠ëa ha╠Çng rau	523	0	\N
+2711	þÖ¥þºæ	Òü▓ÒéâÒüúÒüï	Tã░╠Ç ─æi├¬╠ën ba╠üch khoa	523	0	\N
+2712	þÖ¥Þ▓¿Õ║ù	Òü▓ÒéâÒüúÒüïÒüªÒéô	Cã░╠ëa ha╠Çng ba╠üch ho╠üa	523	0	\N
+2713	Õìü	ÒüÿÒéàÒüå	Ngh├¼n, ng├án, ─æãín vß╗ï ─æß║┐m	524	0	\N
+2714	õ║îÕìâ	Òü½ÒüøÒéô	S├┤╠ü 2000	524	0	\N
+2715	õ©ëÕìâ	ÒüòÒéôÒü£Òéô	S├┤╠ü 3000	524	0	\N
+2716	Õà½Õìâ	Òü»ÒüúÒüøÒéô	S├┤╠ü 8000	524	0	\N
+2717	ÕìâÕåå	ÒüøÒéôÒüêÒéô	1000 y├¬n	524	0	\N
+2718	ÕìâÕ╣┤	ÒüøÒéôÒü¡Òéô	1000 n─âm, n─âm 1000	524	0	\N
+2719	Õìâõ║║	ÒüøÒéôÒü½Òéô	1000 ngã░ãí╠Çi	524	0	\N
+2720	ÕìâÞæëþ£î	ÒüíÒü░ÒüæÒéô	Ti╠ënh Chiba	524	0	\N
+2636	õ║î	ÒüÁÒüƒ	2 giãí╠Ç	514	0	28795
+2638	õ║îõ║║	ÒüÁÒüƒÒéè	2 ngã░ãí╠Çi	514	0	29178
+2659	õ║ö	ÒüäÒüñ	5 giãí╠Ç	517	0	27236
+2665	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	S├ö╠ü 6	518	0	27001
+2721	õ©Çõ©ç	ÒüäÒüíÒü¥Òéô	S├┤╠ü 10000	525	0	\N
+2722	Õìüõ©ç	ÒüÿÒéàÒüåÒü¥Òéô	S├┤╠ü 100000	525	0	\N
+2723	þÖ¥õ©ç	Òü▓ÒéâÒüÅÒü¥Òéô	Triß╗çu, tr─âm vß║ín	525	0	\N
+2724	õ©çÕ╣┤þ¡å	Òü¥ÒéôÒü¡ÒéôÒü▓Òüñ	Bu╠üt ma╠üy	525	0	\N
+2725	õ©çµ¡│	Òü░ÒéôÒüûÒüä	Hoan h├┤, ch├áo mß╗½ng, vß║ín tuß║┐	525	0	\N
+2726	õ©çõ©Ç	Òü¥ÒéôÒüäÒüí	Va╠ún b├ó╠üt ─æ─â╠üt di╠â, ├¡t cãí hß╗Öi, ├¡t khß║ú n─âng	525	0	\N
+2727	Õåå	ÒüêÒéô	100 y├¬n	526	0	\N
+2728	Õåå	ÒüêÒéô	y├¬n	526	0	\N
+2729	Õåå	Òü¥Òéï	Hi╠Çnh tro╠Çn	526	0	\N
+2731	ÕååÕ«ë	ÒüêÒéôÒéäÒüÖ	─Éß╗ông Y├¬n hß║í gi├í	526	0	\N
+2732	µÑòÕåå	ÒüáÒüêÒéô	Hi╠Çnh b├ó╠Çu du╠úc	526	0	\N
+2733	Õååµ║Ç	ÒüêÒéôÒü¥Òéô	sß╗▒ vi├¬n m├ún, sß╗▒ ─æß║ºy ─æß╗º, sß╗▒ trß╗ìn vß║╣n, ├¬m ─æß║╣p	526	0	\N
+2738	ÕîùÕÅú	ÒüìÒüƒÒüÉÒüí	Cã░╠ëa phi╠üa b─â╠üc	527	0	\N
+2739	õ©¡Õñ«	ÒüíÒéàÒüåÒüèÒüå	Cã░╠ëa trung t├óm	527	0	\N
+2740	þ¬ôÕÅú	Òü¥Òü®ÒüÉÒüí	Cã░╠ëa ba╠ün ve╠ü	527	0	\N
+2741	ÕÅúÞ¬┐	ÒüÅÒüíÒéçÒüå	Gio╠úng ─æi├¬╠úu	527	0	\N
+2743	õ©ÇµùÑ	ÒüäÒüíÒü½Òüí	nga╠Çy thã░╠ü nh├ó╠üt	528	0	\N
+2745	þºæþø«	ÒüïÒééÒüÅ	M├┤n ho╠úc	528	0	\N
+2746	þø«µ¼í	ÒééÒüÅÒüÿ	Mu╠úc lu╠úc	528	0	\N
+2747	µ│¿þø«	ÒüíÒéàÒüåÒééÒüÅ	Chu╠ü y╠ü	528	0	\N
+2750	µùÑµ£¼	Òü½ÒüúÒü¢Òéô	Nh├ó╠út Ba╠ën	529	0	\N
+2752	õ©ëµùÑ	Òü┐ÒüúÒüï	3 nga╠Çy, nga╠Çy m├┤╠Çng 3	529	0	\N
+2756	õ╝æµùÑ	ÒüìÒéàÒüåÒüÿÒüñ	Ng├áy nghß╗ë	529	0	\N
+2757	õ©ëµùÑ	Òü┐ÒüúÒüï	th├íng gi├¬ng	530	0	\N
+2761	õ©Ç	ÒüäÒüú	1 tha╠üng	530	0	\N
+2764	µ¡úµ£ê	ÒüùÒéçÒüåÒüîÒüñ	T├¬╠üt	530	0	\N
+2768	þü½Õ▒▒	ÒüïÒüûÒéô	Nu╠üi lã░╠ëa	531	0	\N
+2770	þü½µÿƒ	ÒüïÒüøÒüä	Sao ho╠ëa	531	0	\N
+2771	µÂêþü½ÕÖ¿	ÒüùÒéçÒüåÒüïÒüì	Du╠úng cu╠ú chã░╠âa cha╠üy	531	0	\N
+2772	þü½þü¢	ÒüïÒüòÒüä	Ho╠ëa hoa╠ún	531	0	\N
+2773	µ╗Ø	ÒüƒÒüì	Thã░╠ü 4	532	0	\N
+2777	µÁÀµ░┤µÁ┤	ÒüïÒüäÒüÖÒüäÒéêÒüÅ	Vi├¬╠úc t─â╠üm bie╠ën	532	0	\N
+2778	µ░┤þØÇ	Òü┐ÒüÜÒüÄ	A╠üo t─â╠üm	532	0	\N
+2779	ÚªÖµ░┤	ÒüôÒüåÒüÖÒüä	Nã░ãí╠üc hoa	532	0	\N
+2780	Ú╝╗µ░┤	Òü»Òü¬Òü┐ÒüÜ	Nã░ãí╠üc mu╠âi	532	0	\N
+2783	µ£¿þÂ┐	ÒééÒéüÒéô	b├┤ng, cß╗æt t├┤ng, c├┤-t├┤ng	533	0	\N
+2784	µ£¿µØæ	ÒüìÒéÇÒéë	Sao m├┤╠úc	533	0	\N
+2785	Õñºµ£¿	ÒüƒÒüäÒü╝ÒüÅ	C├óy c├┤╠ë thu╠ú	533	0	\N
+2786	µØÉµ£¿	ÒüûÒüäÒééÒüÅ	G├┤╠â, ─æ├┤╠Ç m├┤╠úc	533	0	\N
+2787	µ£¿ÚÖ░	ÒüôÒüïÒüÆ	bo╠üng r├óm	533	0	\N
+2789	Úçæ	ÒüïÒü¡	Ti├¬╠Çn	534	0	\N
+2790	Úçæµîü	ÒüïÒü¡Òéé	Ti├¬╠Çn cã░ãí╠üc, ti├¬╠Çn thu╠Ç lao	534	0	\N
+2791	ÕÑ¿Õ¡ªÚçæ	ÒüùÒéçÒüåÒüîÒüÅÒüìÒéô	Ho╠úc b├┤╠ëng	534	0	\N
+2793	þ¿ÄÚçæ	Òü£ÒüäÒüìÒéô	thuß║┐, tiß╗ün thuß║┐	534	0	\N
+2794	Õ£ƒ	ÒüñÒüí	Thã░╠ü 7	535	0	\N
+2795	Õ£ƒ	ÒüñÒüí	─É├ó╠üt	535	0	\N
+2796	Õ£ƒþöú	Òü┐ÒéäÒüÆ	Qua╠Ç lã░u ni├¬╠úm	535	0	\N
+2798	Õ£ƒµÿƒ	Òü®ÒüøÒüä	Sao th├┤╠ë	535	0	\N
+2799	þ▓ÿÕ£ƒ	Òü¡ÒéôÒü®	─É├ó╠üt se╠üt	535	0	\N
+2800	Õ£ƒÕÅ░	Òü®ÒüáÒüä	nß╗ün tß║úng, cãí sß╗ƒ, nß╗ün, m├│ng	535	0	\N
+2801	Õ£ƒÞÂ│	Òü®ÒüØÒüÅ	Nghi├¬m c├ó╠üm ch├ón b├ó╠ën	535	0	\N
+2802	ÚÇ▒	ÒüùÒéàÒüå	Chu╠ë nh├ó╠út	536	0	\N
+2809	µø£µùÑ	ÒéêÒüåÒü│	Nga╠Çy trong tu├ó╠Çn	536	0	\N
+2734	ÕÅú	ÒüÅÒüí	M├┤i, miß╗çng	527	0	27817
+2735	ÕàÑÕÅú	ÒüäÒéèÒüÉÒüí	L├┤╠üi va╠Ço	527	0	28621
+2736	Õç║ÕÅú	ÒüºÒüÉÒüí	L├┤╠üi ra	527	0	28622
+2737	õ║║ÕÅú	ÒüÿÒéôÒüôÒüå	D├ón s├┤╠ü	527	0	29472
+2742	þø«	Òéü	M─â╠üt	528	0	27814
+2744	þø«þÜä	ÒééÒüÅÒüªÒüì	Mu╠úc ─æi╠üch	528	0	29227
+2748	µùÑ	Òü▓	Chu╠ë nh├ó╠út	529	0	27940
+2749	µùÑµ£¼	Òü½Òü╗Òéô	Nh├ó╠út Ba╠ën	529	0	27003
+2751	õ╗èµùÑ	ÒüìÒéçÒüå	H├┤m nay	529	0	27143
+2753	µ»ÄµùÑ	Òü¥ÒüäÒü½Òüí	thã░ß╗Øng ng├áy, mß╗ùi ng├áy, h├áng ng├áy	529	0	27155
+2754	µùÑÞ¿ÿ	Òü½ÒüúÒüì	Nh├ó╠út ki╠ü	529	0	27908
+2755	µ»ì	Òü»Òü»	Nga╠Çy cu╠ëa me╠ú	529	0	27341
+2758	µ£êµø£µùÑ	ÒüÆÒüñÒéêÒüåÒü│	Thã░╠ü 2	530	0	27156
+2759	õ╗èµ£ê	ÒüôÒéôÒüÆÒüñ	Tha╠üng na╠Çy	530	0	27212
+2760	µ£ê	ÒüñÒüì	M─â╠út tr─âng	530	0	28020
+2762	µ»Äµ£ê	Òü¥ÒüäÒüñÒüì	h├áng th├íng, mß╗ùi th├íng	530	0	28812
+2763	µØÑµ£ê	ÒéëÒüäÒüÆÒüñ	Tha╠üng sau	530	0	27213
+2765	þü½	Òü▓	Thã░╠ü 3	531	0	28716
+2766	þü½	Òü▓	Lã░╠ëa	531	0	28716
+2767	þü½õ║ï	ÒüïÒüÿ	Vu╠ú cha╠üy	531	0	29025
+2769	Þè▒þü½	Òü»Òü¬Òü│	Pha╠üo hoa	531	0	28245
+2774	µ░┤	Òü┐ÒüÜ	Nã░ãí╠üc	532	0	27271
+2775	µ░┤µ││	ÒüÖÒüäÒüêÒüä	Bãíi l├┤╠úi	532	0	28826
+2781	µ£¿	Òüì	Thã░╠ü 5	533	0	27493
+2782	µ£¿	Òüì	Ca╠üi c├óy	533	0	27493
+2788	Õ▒▒	ÒéäÒü¥	Thã░╠ü 6	534	0	27394
+2792	þÅ¥Úçæ	ÒüÆÒéôÒüìÒéô	Ti├¬╠Çn m─â╠út	534	0	27906
+2797	Õ£ƒÕ£░	Òü¿Òüí	─É├ó╠üt ─æai, la╠ânh th├┤╠ë	535	0	28936
+2803	µ£êµø£µùÑ	ÒüÆÒüñÒéêÒüåÒü│	Thã░╠ü hai	536	0	27156
+2804	þü½µø£µùÑ	ÒüïÒéêÒüåÒü│	Thã░╠ü ba	536	0	27157
+2805	µ░┤µø£µùÑ	ÒüÖÒüäÒéêÒüåÒü│	Thã░╠ü tã░	536	0	27158
+2806	µ£¿µø£µùÑ	ÒééÒüÅÒéêÒüåÒü│	Thã░╠ü n─âm	536	0	27159
+2807	Úçæµø£µùÑ	ÒüìÒéôÒéêÒüåÒü│	Thã░╠ü sa╠üu	536	0	27160
+2808	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	Thã░╠ü ba╠ëy	536	0	27161
+2810	µ£¿	Òüì	Sa╠üch	537	0	27493
+2812	µùÑµ£¼	Òü½ÒüúÒü¢Òéô	Nh├ó╠út ba╠ën	537	0	\N
+2813	õ©Çµ£¼	ÒüäÒüúÒü¢Òéô	1 chai, 1 ly, 1 c├óy, ÔÇª (─æ├¬╠üm v├ó╠út da╠Çi)	537	0	\N
+2814	õ║îµ£¼	Òü½Òü╗Òéô	2 chai, 2 ly, 2 c├óy ÔÇª	537	0	\N
+2815	õ©ëµ£¼	ÒüòÒéôÒü╝Òéô	3 chai, 3 ly, 3 c├óy ÔÇª	537	0	\N
+2818	µùÑµ£¼õ║║	Òü½Òü╗ÒéôÒüÿÒéô	Ngã░ãí╠Çi Nh├ó╠út	538	0	\N
+2819	õ©Çõ║║	Òü▓Òü¿Òéè	1 ngã░ãí╠Çi	538	0	\N
+2821	õ©ëõ║║	ÒüòÒéôÒü½Òéô	3 ngã░ãí╠Çi	538	0	\N
+2822	õ©Çõ║║	Òü▓Òü¿Òéè	ngã░ß╗Øi lß╗øn, ngã░ß╗Øi trã░ß╗ƒng th├ánh	538	0	\N
+2823	ÕÑ│	ÒüèÒéôÒü¬	Ngã░ãí╠Çi phu╠ú nã░╠â	538	0	\N
+2832	Õ£ƒ	ÒüñÒüí	Chu╠Ça	540	0	\N
+2833	Õ»║ÚÖó	ÒüÿÒüäÒéô	Tu vi├¬╠ún, thiß╗ün l├óm	540	0	\N
+2834	Õ▒▒Õ»║	ÒéäÒü¥ÒüºÒéë	Tu vi├¬╠ún tr├¬n nu╠üi	540	0	\N
+2835	µ©àµ░┤Õ»║	ÒüìÒéêÒü┐ÒüÜÒüºÒéë	Chu╠Ça Kyomizu	540	0	\N
+2840	õ©ÇµÖéÚûô	ÒüäÒüíÒüÿÒüïÒéô	1 ti├¬╠üng	541	0	\N
+2842	µÖé	Òü¿Òüì	Lu╠üc ├ó╠üy	541	0	\N
+2843	µÖéõ╗ú	ÒüÿÒüáÒüä	Thãí╠Çi ─æa╠úi	541	0	\N
+2845	õ©ëµ£¼	ÒüòÒéôÒü╝Òéô	3 giãí╠Ç rã░ãí╠âi	542	0	\N
+2847	ÕìèÕ│Â	Òü»ÒéôÒü¿Òüå	Ba╠ün ─æa╠ëo	542	0	\N
+2849	ÕëìÕìè	Òü£ÒéôÒü»Òéô	nß╗¡a ─æß║ºu, hiß╗çp mß╗Öt	542	0	\N
+2850	ÕìèÚíì	Òü»ÒéôÒüîÒüÅ	Nã░╠ëa gi╠üa	542	0	\N
+2851	ÕêÇ	ÒüïÒüƒÒü¬	C├óy ─æao, ki├¬╠üm	543	0	\N
+2852	µùÑµ£¼ÕêÇ	Òü½Òü╗ÒéôÒü¿Òüå	Ki├¬╠üm Nh├ó╠út	543	0	\N
+2853	þƒ¡ÕêÇ	ÒüƒÒéôÒü¿Òüå	C├óy ─æao ng─â╠ün ( ─Éoa╠ën dao)	543	0	\N
+2854	ÕêÇ	ÒüïÒüƒÒü¬	5 phu╠üt	544	0	\N
+2855	ÕìüÕêå	ÒüÿÒüúÒüÀÒéô	10 phu╠üt	544	0	\N
+2856	ÕìüÕêå	ÒüÿÒéàÒüúÒüÀÒéô	10 phu╠üt	544	0	\N
+2858	Õêå	ÒéÅ	Tã░╠ú mi╠Çnh	544	0	\N
+2859	µ░ùÕêå	ÒüìÒüÂÒéô	T├óm tã░, tinh th├ó╠Çn	544	0	\N
+2860	ÕìüÕêå	ÒüÿÒéàÒüåÒüÂÒéô	─Éu╠ë	544	0	\N
+2864	ÕÀØõ©è	ÒüïÒéÅÒüïÒü┐	Thã░ãí╠úng ngu├┤╠Çn	545	0	\N
+2867	õ©ï	Òüò	─Éa╠Çu ─æi├¬╠ún ng├ó╠Çm	546	0	\N
+2868	õ©ïµëï	Òü©Òüƒ	L├¬n xu├┤╠üng, dao ─æ├┤╠úng	546	0	\N
+2869	õ©ï	Òüè	Ha╠ú ngu├┤╠Çn, ha╠ú lã░u	546	0	\N
+2870	Õåå	ÒüêÒéô	B├¬n trong	547	0	\N
+2872	õ©ÇÕ╣┤õ©¡	ÒüäÒüíÒü¡ÒéôÒüÿÒéàÒüå	Su├┤╠üt 1 n─âm	547	0	\N
+2875	Þâîõ©¡	ÒüøÒü¬Òüï	Ca╠üi lã░ng	547	0	\N
+2877	õ©¡þ┤Ü	ÒüíÒéàÒüåÒüìÒéàÒüå	Tri╠Çnh ─æ├┤╠ú trung c├ó╠üp	547	0	\N
+2881	Õñû	Òü╗Òüï	Ha╠ëi ngoa╠úi, ngã░ãí╠üc ngoa╠Çi	548	0	\N
+2882	µäÅÕñû	ÒüäÒüîÒüä	Ngoß║íi khoa	548	0	\N
+2883	ÕÅ│µëï	Òü┐ÒüÄÒüª	B├¬n pha╠ëi	549	0	\N
+2884	ÕÅ│µëï	Òü┐ÒüÄÒüª	Tay pha╠ëi	549	0	\N
+2885	ÕÅ│ÞÂ│	Òü┐ÒüÄÒüéÒüù	Ch├ón pha╠ëi	549	0	\N
+2886	ÕÅ│Õü┤	Òü┐ÒüÄÒüîÒéÅ	Phi╠üa b├¬n pha╠ëi	549	0	\N
+2887	ÕÀªÕÅ│	ÒüòÒéåÒüå	Tra╠üi pha╠ëi	549	0	\N
+2888	ÕÅ│þ┐╝	ÒüåÒéêÒüÅ	Ca╠ünh pha╠ëi	549	0	\N
+2889	ÕÉìõ║║	ÒéüÒüäÒüÿÒéô	Nha╠Ç ma╠üy, c├┤ng trã░ß╗Øng	550	0	\N
+2890	ÕÀÑµÑ¡	ÒüôÒüåÒüÄÒéçÒüå	Ng├ánh c├┤ng nghiß╗çp	550	0	\N
+2891	ÕÀÑõ║ï	ÒüôÒüåÒüÿ	C├┤ng trã░ãí╠Çng x├óy dß╗▒ng	550	0	\N
+2892	ÕñºÕÀÑ	ÒüáÒüäÒüÅ	Thãí╠ú m├┤╠úc	550	0	\N
+2893	ÕÀÑÕñ½	ÒüÅÒüÁÒüå	─Éa╠Ço s├óu nghi├¬n cã░╠üu, c├┤ng phu	550	0	\N
+2894	ÕÀÑÕ¡ª	ÒüôÒüåÒüîÒüÅ	M├┤n ky╠â thu├ó╠út c├┤ng ngh├¬╠ú	550	0	\N
+2895	þ┤░ÕÀÑ	ÒüòÒüäÒüÅ	Ta╠üc ph├ó╠ëm, sã░╠ú chß║┐ t├íc	550	0	\N
+2896	õ║║ÕÀÑþÜä	ÒüÿÒéôÒüôÒüåÒüªÒüì	Nh├ón ta╠úo	550	0	\N
+2816	µùÑµ£¼Þ¬×	Òü½Òü╗ÒéôÒüö	Ti├¬╠üng Nh├ó╠út	537	0	27048
+2817	õ║║	Òü▓Òü¿	Ngã░ãí╠Çi	538	0	27202
+2820	õ║îõ║║	ÒüÁÒüƒÒéè	2 ngã░ãí╠Çi	538	0	29178
+2824	õ╗è	ÒüäÒü¥	B├óy giãí╠Ç, hiß╗çn tß║íi	539	0	27130
+2825	õ╗èµ£ê	ÒüôÒéôÒüÆÒüñ	Tha╠üng na╠Çy	539	0	27212
+2826	õ╗èµùÑ	ÒüìÒéçÒüå	H├┤m nay	539	0	27143
+2827	õ╗èµÖ®	ÒüôÒéôÒü░Òéô	T├┤╠üi nay	539	0	27147
+2828	õ╗èÚÇ▒	ÒüôÒéôÒüùÒéàÒüå	Tu├ó╠Çn na╠Çy	539	0	27209
+2829	õ╗èÕ╣┤	ÒüôÒü¿Òüù	N─âm nay	539	0	27215
+2830	õ╗èµ£Ø	ÒüæÒüò	Sa╠üng nay	539	0	27146
+2831	õ╗èÕ║ª	ÒüôÒéôÒü®	L├ó╠Çn na╠Çy	539	0	28191
+2837	µÿö	ÒéÇÒüïÒüù	1 giãí╠Ç	541	0	28274
+2838	µÖéÒÇà	Òü¿ÒüìÒü®Òüì	Thi╠ënh thoa╠ëng	541	0	27293
+2839	µÖéÚûô	ÒüÿÒüïÒéô	Thãí╠Çi gian	541	0	27453
+2841	µÖéÞ¿ê	Òü¿ÒüæÒüä	─É├┤╠Çng h├┤╠Ç	541	0	27033
+2844	µÖéÕê╗Þí¿	ÒüÿÒüôÒüÅÒü▓ÒéçÒüå	Ba╠ëng hã░ãí╠üng d├ó╠ân thãí╠Çi gian (li╠úch tri╠Çnh), bß║úng tra giß╗Ø t├áu (xeÔÇª)	541	0	27765
+2846	ÕìèÕêå	Òü»ÒéôÒüÂÒéô	M├┤╠út nã░╠ëa	542	0	29250
+2848	ÕìèÕ╣┤	Òü»ÒéôÒü¿Òüù	Nã░╠ëa n─âm	542	0	29425
+2857	ÕìèÕêå	Òü»ÒéôÒüÂÒéô	1 nã░╠ëa	544	0	29250
+2861	þÀÜ	ÒüøÒéô	Phi╠üa tr├¬n	545	0	28685
+2862	õ©è	Òüé	Gio╠ëi	545	0	27058
+2863	õ©èþØÇ	ÒüåÒéÅÒüÄ	├üo khoa╠üc ngoa╠Çi	545	0	27879
+2865	Õ▒ïõ©è	ÒüèÒüÅÒüÿÒéçÒüå	T├ó╠Çng thã░ãí╠úng	545	0	28743
+2866	þÀÜ	ÒüøÒéô	Phi╠üa dã░ãí╠üi	546	0	28685
+2871	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	Trung Quß╗æc, t├¬n mß╗Öt h├▓n ─æß║úo ph├¡a T├óy Nam Nhß║¡t Bß║ún.	547	0	27001
+2873	õ©¡Õ¡ªµáí	ÒüíÒéàÒüåÒüîÒüúÒüôÒüå	Trã░ãí╠Çng trung ho╠úc cãí sãí╠ë	547	0	28955
+2874	õ©ûþòî	ÒüøÒüïÒüä	Tr├¬n kh─â╠üp th├¬╠ü giãí╠üi	547	0	27631
+2876	õ©¡µ¡ó	ÒüíÒéàÒüåÒüù	Ngã░╠Çng, ─æi╠Çnh chi╠ë	547	0	29378
+2878	þàÖÞìë	ÒüƒÒü░Òüô	B├¬n ngoa╠Çi	548	0	27116
+2879	ÕñûÕø¢	ÒüîÒüäÒüôÒüÅ	Nã░ãí╠üc ngoa╠Çi	548	0	27578
+2880	ÕñûÕø¢	ÒüîÒüäÒüôÒüÅ	Ngã░ãí╠Çi ngoa╠úi qu├┤╠üc	548	0	27578
+2897	ÕÅ│	Òü┐ÒüÄ	B├¬n tra╠üi	551	0	27517
+2898	ÕÀªµëï	Òü▓ÒüáÒéèÒüª	Tay tra╠üi	551	0	\N
+2899	ÕÀªÕü┤	Òü▓ÒüáÒéèÒüîÒéÅ	Phi╠üa b├¬n tra╠üi	551	0	\N
+2900	ÕÀªÕÅ│	ÒüòÒéåÒüå	Tra╠üi pha╠ëi	551	0	\N
+2901	ÕÀªþ┐╝	ÒüòÒéêÒüÅ	Ca╠ünh tra╠üi	551	0	\N
+2904	ÕìêÕëìõ©¡	ÒüöÒü£ÒéôÒüíÒéàÒüå	Trong su├┤╠üt bu├┤╠ëi sa╠üng	552	0	\N
+2906	õ©ëÕ╣┤Õëì	ÒüòÒéôÒü¡ÒéôÒü¥Òüê	3 n─âm trã░ãí╠üc	552	0	\N
+2907	ÕëìÕú▓	Òü¥ÒüêÒüå	Ve╠ü ba╠ün trã░ãí╠üc	552	0	\N
+2908	ÕëìÕìè	Òü£ÒéôÒü»Òéô	Nã░╠ëa trã░ãí╠üc	552	0	\N
+2911	µ£ÇÕ¥î	ÒüòÒüäÒüö	Cu├┤╠üi cu╠Çng	553	0	\N
+2912	Õ¥îÕìè	ÒüôÒüåÒü»Òéô	Nã░╠ëa sau	553	0	\N
+2915	ÕìêÕëìõ©¡	ÒüöÒü£ÒéôÒüíÒéàÒüå	Trong su├┤╠üt bu├┤╠ëi sa╠üng	554	0	\N
+2916	µ¡úÕìê	ÒüùÒéçÒüåÒüö	Bu├┤╠ëi trã░a	554	0	\N
+2917	ÚûÇ	ÒééÒéô	C├┤╠ëng	555	0	\N
+2919	µ¡úÚûÇ	ÒüøÒüäÒééÒéô	C├┤╠ëng chi╠ünh	555	0	\N
+2920	Úâ¿ÚûÇ	ÒüÂÒééÒéô	B├┤╠ú ph├ó╠ún	555	0	\N
+2921	ÕàÑÚûÇ	Òü½ÒéàÒüåÒééÒéô	Nh├ó╠úp m├┤n, mãí╠üi ho╠úc	555	0	\N
+2922	ÚûÇµØ¥	ÒüïÒü®Òü¥Òüñ	C├óy th├┤ng nga╠Çy T├¬╠üt	555	0	\N
+2923	ÕÉìÚûÇ	ÒéüÒüäÒééÒéô	Gia ─æi╠Çnh quy├¬╠Çn quy╠ü	555	0	\N
+2924	ÚûÇ	ÒééÒéô	ãá╠ë giã░╠âa, trong khoa╠ëng	556	0	\N
+2926	õ║îµÖéÚûô	Òü½ÒüÿÒüïÒéô	2 ti├¬╠üng	556	0	\N
+2927	õ©ÇÚÇ▒Úûô	ÒüäÒüúÒüùÒéàÒüåÒüïÒéô	1 tu├ó╠Çn	556	0	\N
+2928	Úûô	Òü¥	Nh├ón gian, con ngã░ãí╠Çi	556	0	\N
+2929	õ©ûÚûô	ÒüøÒüæÒéô	Th├¬╠ü gian	556	0	\N
+2931	µØ▒ÕÅú	Òü▓ÒüîÒüùÒüÉÒüí	Cã░╠ëa phi╠üa ─æ├┤ng	557	0	\N
+2932	õ©¡µØ▒	ÒüíÒéàÒüåÒü¿Òüå	Trung ─æ├┤ng	557	0	\N
+2933	µØ▒õ║¼	Òü¿ÒüåÒüìÒéçÒüå	Tokyo	557	0	\N
+2934	ÚûóµØ▒	ÒüïÒéôÒü¿Òüå	Khu vã░╠úc Kantou	557	0	\N
+2935	µØ▒µ┤ï	Òü¿ÒüåÒéêÒüå	Phã░ãíng ─É├┤ng	557	0	\N
+2936	µØ▒µÁÀ	Òü¿ÒüåÒüïÒüä	Vu╠Çng Tokai	557	0	\N
+2937	µØ▒Õîù	Òü¿ÒüåÒü╗ÒüÅ	Vu╠Çng Tohoku	557	0	\N
+2938	Õøø	ÒéêÒüú	Phi╠üa T├óy	558	0	\N
+2939	ÞÑ┐ÕÅú	Òü½ÒüùÒüÉÒüí	Cã░╠ëa phi╠üa T├óy	558	0	\N
+2940	ÕîùÞÑ┐	Òü╗ÒüÅÒüøÒüä	T├óy B─â╠üc	558	0	\N
+2941	ÕìùÞÑ┐	Òü¬ÒéôÒüøÒüä	T├óy nam	558	0	\N
+2942	ÞÑ┐µ┤ï	ÒüøÒüäÒéêÒüå	T├óy ├éu, phã░ãíng T├óy	558	0	\N
+2943	ÚûóÞÑ┐	ÒüïÒéôÒüòÒüä	Khu vã░╠úc Kansai	558	0	\N
+2944	µØ▒ÞÑ┐	Òü¿ÒüåÒüûÒüä	─É├┤ng t├óy	558	0	\N
+2945	ÕñºÞÑ┐µ┤ï	ÒüƒÒüäÒüøÒüäÒéêÒüå	─Éa╠úi T├óy Dã░ãíng	558	0	\N
+2947	ÕìùÕÅú	Òü┐Òü¬Òü┐ÒüÉÒüí	Cã░╠ëa phi╠üa Nam	559	0	\N
+2948	µØ▒Õìù	Òü¿ÒüåÒü¬Òéô	─É├┤ng nam	559	0	\N
+2949	ÕìùÕîù	Òü¬ÒéôÒü╝ÒüÅ	T├óy nam	559	0	\N
+2950	Õìùþ▒│	Òü¬ÒéôÒü╣Òüä	Nam my╠â	559	0	\N
+2951	ÕìùµÑÁ	Òü¬ÒéôÒüìÒéçÒüÅ	Nam cã░╠úc	559	0	\N
+2953	ÕîùÕÅú	ÒüìÒüƒÒüÉÒüí	Cã░╠ëa B─â╠üc	560	0	\N
+2954	ÕîùµØ▒	Òü╗ÒüÅÒü¿Òüå	─É├┤ng B─â╠üc	560	0	\N
+2955	µØ▒Õîù	Òü¿ÒüåÒü╗ÒüÅ	Vu╠Çng Tohoku	560	0	\N
+2956	ÕîùµÁÀÚüô	Òü╗ÒüúÒüïÒüäÒü®Òüå	Hokkaido	560	0	\N
+2957	ÕìùÕîù	Òü¬ÒéôÒü╝ÒüÅ	Nam B─â╠üc	560	0	\N
+2958	ÕîùµÑÁ	Òü╗ÒüúÒüìÒéçÒüÅ	B─â╠üc cã░╠úc	560	0	\N
+2959	þö░	Òüƒ	Mi├¬╠Çn qu├¬, qu├¬ nha╠Ç	561	0	\N
+2960	þö░	Òüƒ	Ru├┤╠úng lu╠üa nã░ãí╠üc	561	0	\N
+2961	þö░Õ£Æ	ÒüºÒéôÒüêÒéô	Vu╠Çng n├┤ng th├┤n	561	0	\N
+2962	þ¡ïÞéë	ÒüìÒéôÒü½ÒüÅ	Sã░╠üc ma╠únh	562	0	\N
+2963	Õ¡ªÕèø	ÒüîÒüÅÒéèÒéçÒüÅ	Ho╠úc lã░╠úc, sß╗▒ hiß╗âu biß║┐t	562	0	\N
+2964	Úø╗Õèø	ÒüºÒéôÒéèÒéçÒüÅ	─Éi├¬╠ún n─âng, ─æiß╗çn lß╗▒c	562	0	\N
+2965	ÚçìÕèø	ÒüÿÒéàÒüåÒéèÒéçÒüÅ	Tro╠úng lã░╠úc, sã░╠üc n─â╠úng	562	0	\N
+2966	ÕìöÕèø	ÒüìÒéçÒüåÒéèÒéçÒüÅ	N├┤╠â lã░╠úc	562	0	\N
+2967	ÕèøÕ¡ª	ÒéèÒüìÒüîÒüÅ	─É├┤╠úng lã░╠úc ho╠úc, cãí ho╠úc	562	0	\N
+2968	ÞªûÕèø	ÒüùÒéèÒéçÒüÅ	Thi╠ú lã░╠úc	562	0	\N
+2972	þöÀÕ¡É	ÒüáÒéôÒüù	Ho╠úc sinh nam	563	0	\N
+2974	ÕÑ│	ÒüèÒéôÒü¬	Be╠ü ga╠üi	564	0	\N
+2975	ÕÑ│	ÒüèÒéôÒü¬	Ngã░ãí╠Çi phu╠ú nã░╠â	564	0	\N
+2977	ÚòÀÕÑ│	ÒüíÒéçÒüåÒüÿÒéç	Trã░ãí╠ëng nã░╠â	564	0	\N
+2978	Õ░æÕÑ│	ÒüùÒéçÒüåÒüÿÒéç	Thi├¬╠üu nã░╠â, c├┤ ga╠üi	564	0	\N
+2980	ÕÑ│µê┐	Òü½ÒéçÒüåÒü╝Òüå	Vãí╠ú	564	0	\N
+2981	ÕÑ│þÑ×	ÒéüÒüîÒü┐	Nã░╠â th├ó╠Çn	564	0	\N
+2982	Õ¡É	Òüô	Be╠ü ga╠üi	565	0	\N
+2984	Õ¡Éõ¥ø	ÒüôÒü®Òéé	Tre╠ë con, con ca╠üi	565	0	\N
+2985	Úø╗Õ¡É	ÒüºÒéôÒüù	Tã░╠Ç ─æi├¬╠ën ─æi├¬╠ún tã░╠ë	565	0	\N
+2986	ÕÑ│Õ¡ÉÕ¡ªþöƒ	ÒüÿÒéçÒüùÒüîÒüÅÒüøÒüä	Ho╠úc sinh nã░╠â	565	0	\N
+2903	ÕìêÕëì	ÒüöÒü£Òéô	Sa╠üng (tã░╠Ç 0-12h, a.m)	552	0	27136
+2905	ÕÉìÕëì	Òü¬Òü¥Òüê	T├¬n	552	0	27731
+2909	Úüô	Òü┐Òüí	Sau giãí╠Ç ho╠úc	553	0	28104
+2913	µ╝óÕ¡ù	ÒüïÒéôÒüÿ	Sa╠üng (tã░╠Ç 0-12h, a.m)	554	0	27447
+2914	ÕìêÕ¥î	ÒüöÒüö	Chi├¬╠Çu (tã░╠Ç 13-23h, p.m)	554	0	27137
+2918	Õ░éÚûÇ	ÒüøÒéôÒééÒéô	Chuy├¬n m├┤n	555	0	27786
+2925	µÖéÚûô	ÒüÿÒüïÒéô	Thãí╠Çi gian	556	0	27453
+2930	µùÑ	Òü▓	Phi╠üa ─æ├┤ng	557	0	27940
+2946	õ║î	ÒüÁÒüƒ	Phia╠ü Nam	559	0	28795
+2952	Õîù	ÒüìÒüƒ	Phi╠üa B─â╠üc	560	0	28558
+2969	þöÀ	ÒüèÒü¿Òüô	Be╠ü trai	563	0	29119
+2970	þöÀ	ÒüèÒü¿Òüô	Ngã░ãí╠Çi ─æa╠Çn ├┤ng	563	0	29119
+2971	þöÀµÇº	ÒüáÒéôÒüøÒüä	Nam giãí╠üi	563	0	29491
+2973	ÚòÀþöÀ	ÒüíÒéçÒüåÒü¬Òéô	Trã░ãí╠ëng nam	563	0	29599
+2976	ÕÑ│µÇº	ÒüÿÒéçÒüøÒüä	Nã░╠â giãí╠üi	564	0	29490
+2979	Õ¢╝ÕÑ│	ÒüïÒü«ÒüÿÒéç	C├┤ ├ó╠üy, ba╠ún ga╠üi	564	0	27205
+2983	þöÀ	ÒüèÒü¿Òüô	Be╠ü trai	565	0	29119
+2987	þöÀÕ¡ÉÕ¡ªþöƒ	ÒüáÒéôÒüùÒüîÒüÅÒüøÒüä	Ho╠úc sinh nam	565	0	\N
+2989	Õ¡É	Òüô	Ho╠úc sinh	566	0	\N
+2992	Õ¡ªÚâ¿	ÒüîÒüÅÒüÂ	Khoa	566	0	\N
+2993	Õ¡ªþ┐Æ	ÒüîÒüÅÒüùÒéàÒüå	Ho╠úc t├ó╠úp	566	0	\N
+2994	Õ¡ªÞÇà	ÒüîÒüÅÒüùÒéâ	Ho╠úc gia╠ë	566	0	\N
+2996	µñìþë®	ÒüùÒéçÒüÅÒüÂÒüñ	Ho╠úc sinh	567	0	\N
+2998	þöƒ	Òüå	Tã░ãíi s├┤╠üng	567	0	\N
+2999	õ©Çþöƒ	ÒüäÒüúÒüùÒéçÒüå	Su├┤╠üt cu├┤╠úc ─æãí╠Çi	567	0	\N
+3000	Þ¬░	ÒüáÒéî	Gia╠üo vi├¬n	568	0	\N
+3003	ÕàêÞ╝®	ÒüøÒéôÒü▒Òüä	─Éa╠Çn anh, ngã░ß╗Øi ─æi trã░ß╗øc	568	0	\N
+3005	ÕàêþÑû	ÒüøÒéôÒü×	├öng ba╠Ç t├┤╠ë ti├¬n	568	0	\N
+3008	õ¢òõ║║	Òü¬ÒéôÒü½Òéô	Bao nhi├¬u ngã░ãí╠Çi	569	0	\N
+3011	Õ╣¥õ¢òÕ¡ª	ÒüìÒüïÒüîÒüÅ	Hi╠Çnh ho╠úc	569	0	\N
+3013	þêÂ	Òü¿Òüå	Nga╠Çy cu╠ëa b├┤╠ü	570	0	\N
+3015	þêÂµ»ì	ÒüÁÒü╝	B├┤╠ü me╠ú	570	0	\N
+3016	þÑûþêÂµ»ì	ÒüØÒüÁÒü╝	├öng ba╠Ç	570	0	\N
+3019	µ»ì	ÒüïÒüé	Me╠ú (cu╠ëa mi╠Çnh)	571	0	\N
+3020	µ»ì	ÒüïÒüé	Nga╠Çy cu╠ëa me╠ú	571	0	\N
+3022	þêÂµ»ì	ÒüÁÒü╝	B├┤╠ü me╠ú	571	0	\N
+3023	þÑûþêÂµ»ì	ÒüØÒüÁÒü╝	├öng ba╠Ç	571	0	\N
+3024	µ»ìÞ¬×	Òü╝Òüö	Ti├¬╠üng me╠ú ─æe╠ë	571	0	\N
+3028	õ©ÇÕ╣┤	ÒüäÒüíÒü¡Òéô	1 n─âm	572	0	\N
+3031	µ»ÄÕ╣┤	Òü¥ÒüäÒü¿Òüù	thã░ß╗Øng ni├¬n ,h├áng n─âm, mß╗ùi n─âm	572	0	\N
+3032	µ»ÄÕ╣┤	Òü¥ÒüäÒü¡Òéô	thã░ß╗Øng ni├¬n ,h├áng n─âm, mß╗ùi n─âm	572	0	\N
+3033	Õ╣┤	Òü¿Òüù	thã░ß╗Øng ni├¬n ,h├áng n─âm, mß╗ùi n─âm	572	0	\N
+3035	ÚØÆÕ░æÕ╣┤	ÒüøÒüäÒüùÒéçÒüåÒü¡Òéô	Thanh thi├¬╠üu ni├¬n	572	0	\N
+3036	õ©¡Õ╣┤	ÒüíÒéàÒüåÒü¡Òéô	Trung ni├¬n	572	0	\N
+3037	ÚüÄÕÄ╗	ÒüïÒüô	N─âm ngoa╠üi	573	0	\N
+3038	ÚüÄÕÄ╗	ÒüïÒüô	Qua╠ü khã░╠ü	573	0	\N
+3039	Þ¬░	ÒüáÒéî	M├┤╠âi nga╠Çy	574	0	\N
+3041	µ»ÄÕ╣┤	Òü¥ÒüäÒü¿Òüù	M├┤╠âi n─âm	574	0	\N
+3042	µ»ÄÕ╣┤	Òü¥ÒüäÒü¡Òéô	M├┤╠âi n─âm	574	0	\N
+3046	µ»ÄÕ║ª	Òü¥ÒüäÒü®	M├┤╠âi l├ó╠Çn	574	0	\N
+3047	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	Vua	575	0	\N
+3048	Õø¢þÄï	ÒüôÒüÅÒüèÒüå	Qu├┤╠üc vã░ãíng	575	0	\N
+3049	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	Vi╠ú vua	575	0	\N
+3050	ÕÑ│þÄï	ÒüÿÒéçÒüèÒüå	Nã░╠â Hoa╠Çng	575	0	\N
+3051	þÄïÕÑ│	ÒüèÒüåÒüÿÒéç	C├┤ng chu╠üa	575	0	\N
+3052	þÄïÕ¡É	ÒüèÒüåÒüÿ	Hoa╠Çng tã░╠ë	575	0	\N
+3053	þÄïÕø¢	ÒüèÒüåÒüôÒüÅ	vã░ãíng quß╗æc, ─æß║Ñt nã░ß╗øc theo chß║┐ ─æß╗Ö qu├ón chß╗º	575	0	\N
+3054	Õ«Øþƒ│	Òü╗ÒüåÒüøÒüì	─É├ó╠üt nã░ãí╠üc	576	0	\N
+3058	Õø¢õ╝Ü	ÒüôÒüúÒüïÒüä	Qu├┤╠üc h├┤i╠ú, nghß╗ï viß╗çn	576	0	\N
+3059	Õø¢ÚÜø	ÒüôÒüÅÒüòÒüä	Qu├┤╠üc t├¬╠ü	576	0	\N
+3060	Õø¢þ▒ì	ÒüôÒüÅÒüøÒüì	Qu├┤╠üc ti╠úch	576	0	\N
+3061	Õø¢Õåà	ÒüôÒüÅÒü¬Òüä	Trong nã░ãí╠üc, n├┤╠úi ─æi╠úa	576	0	\N
+3064	Þªïþë®	ÒüæÒéôÒüÂÒüñ	Tham quan, ngß║»m cß║únh	577	0	\N
+3065	Þªïµ£¼	Òü┐Òü╗Òéô	Mß║½u, vß║¡t mß║½u, kiß╗âu mß║½u	577	0	\N
+3066	ÞªïÕ¡ª	ÒüæÒéôÒüîÒüÅ	Kiß║┐n tß║¡p, tham quan vß╗øi mß╗Ñc ─æ├¡ch hß╗ìc tß║¡p	577	0	\N
+3069	ÞíîÕïò	ÒüôÒüåÒü®Òüå	H├ánh ─æß╗Öng	578	0	\N
+3070	Þíîõ║ï	ÒüÄÒéçÒüåÒüÿ	Sß╗▒ kiß╗çn	578	0	\N
+3071	õ©ÇÞíîþø«	ÒüäÒüíÒüÄÒéçÒüåÒéü	D├▓ng ─æß║ºu ti├¬n	578	0	\N
+3072	þ¿▓	ÒüäÒü¡	Gß║ío	579	0	\N
+3073	þ▒│Õ▒ï	ÒüôÒéüÒéä	Cß╗¡a h├áng b├ín gß║ío	579	0	\N
+3074	þ▒│Õø¢	Òü╣ÒüäÒüôÒüÅ	Nã░ß╗øc Mß╗╣	579	0	\N
+2990	ÕñºÕ¡ª	ÒüáÒüäÒüîÒüÅ	─Éa╠úi ho╠úc	566	0	26982
+2991	Õ¡ªµáí	ÒüîÒüúÒüôÒüå	Trã░ãí╠Çng ho╠úc	566	0	27190
+2995	µûçÕ¡ª	ÒüÂÒéôÒüîÒüÅ	V─ân ho╠úc	566	0	29476
+2997	Õàêþöƒ	ÒüøÒéôÒüøÒüä	Gia╠üo vi├¬n	567	0	26974
+3001	Õàêµ£ê	ÒüøÒéôÒüÆÒüñ	Tha╠üng trã░ãí╠üc	568	0	27211
+3002	ÕàêÚÇ▒	ÒüøÒéôÒüùÒéàÒüå	Tu├ó╠Çn trã░ãí╠üc	568	0	27208
+3004	ÕàêµùÑ	ÒüøÒéôÒüÿÒüñ	Va╠Çi nga╠Çy trã░ãí╠üc, h├┤m trã░ãí╠üc	568	0	29205
+3006	õ║║	Òü▓Òü¿	Ca╠üi gi╠Ç	569	0	27202
+3007	õ¢ò	Òü¬Òéô	Ca╠üi gi╠Ç	569	0	27050
+3009	õ¢òµÖé	Òü¬ÒéôÒüÿ	M├ó╠üy giãí╠Ç	569	0	27134
+3010	õ¢ò	Òü¬Òéô	Bao nhi├¬u l├ó╠Çn	569	0	27050
+3012	þêÂ	ÒüíÒüí	B├┤╠ü (cu╠ëa mi╠Çnh)	570	0	27340
+3014	þÑûþêÂ	ÒüØÒüÁ	├öng	570	0	29165
+3017	ÕÅöþêÂ	ÒüèÒüÿ	chu╠ü, c├ó╠úu	570	0	29169
+3018	õ╝»þêÂ	ÒüèÒüÿ	chu╠ü, c├ó╠úu	570	0	29169
+3021	þÑûµ»ì	ÒüØÒü╝	Ba╠Ç	571	0	29166
+3025	ÕÅöµ»ì	ÒüèÒü░	C├┤ d├¼, b├íc g├íi	571	0	29171
+3026	õ╝»µ»ì	ÒüèÒü░	C├┤ d├¼, b├íc g├íi	571	0	29171
+3029	õ╗èÕ╣┤	ÒüôÒü¿Òüù	N─âm nay	572	0	27215
+3030	ÕÄ╗Õ╣┤	ÒüìÒéçÒü¡Òéô	N─âm ngoa╠üi	572	0	27214
+3034	µØÑÕ╣┤	ÒéëÒüäÒü¡Òéô	N─âm sau	572	0	27216
+3040	µ»Äµ£ê	Òü¥ÒüäÒüñÒüì	M├┤╠üi tha╠üng	574	0	28812
+3043	µ»ÄÚÇ▒	Òü¥ÒüäÒüùÒéàÒüå	M├┤╠üi tu├ó╠Çn	574	0	28811
+3044	µ»ÄµÖ®	Òü¥ÒüäÒü░Òéô	M├┤╠âi t├┤╠üi	574	0	27154
+3045	µ»Äµ£Ø	Òü¥ÒüäÒüéÒüò	M├┤╠âi sa╠üng	574	0	27153
+3055	ÕñûÕø¢	ÒüîÒüäÒüôÒüÅ	Nã░ãí╠üc ngoa╠Çi	576	0	27578
+3056	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	Trung Quß╗æc, t├¬n mß╗Öt h├▓n ─æß║úo ph├¡a T├óy Nam Nhß║¡t Bß║ún.	576	0	27001
+3057	ÚƒôÕø¢	ÒüïÒéôÒüôÒüÅ	Ha╠Çn qu├┤╠üc	576	0	26999
+3062	þë®	ÒééÒü«	ngß║»m hoa anh ─æ├áo nß╗ƒ, hß╗Öi ngß║»m hoa, hß╗Öi xem hoa	577	0	27494
+3063	µäÅÞªï	ÒüäÒüæÒéô	├Ø kiß║┐n	577	0	28017
+3067	ÞºÆ	ÒüïÒü®	Ng├ón h├áng	578	0	28107
+3068	µùàÞíî	ÒéèÒéçÒüôÒüå	Du lß╗ïch	578	0	27358
+3075	µ¼ºþ▒│	ÒüèÒüåÒü╣Òüä	├éu Mß╗╣	579	0	\N
+3076	Õìùþ▒│	Òü¬ÒéôÒü╣Òüä	Nam My╠â	579	0	\N
+3077	Õîùþ▒│	Òü╗ÒüÅÒü╣Òüä	B─â╠üc Mß╗╣	579	0	\N
+3078	µû░þ▒│	ÒüùÒéôÒü¥Òüä	ngã░ß╗Øi mß╗øi v├áo nghß╗ü, ngã░ß╗Øi tß║¡p sß╗▒ ,l├║a mß╗øi ,gß║ío mß╗øi	579	0	\N
+3079	Õìüµ£ê	ÒüÿÒéàÒüåÒüîÒüñ	N─âm sau	580	0	\N
+3082	µØÑÕ¡ªµ£ƒ	ÒéëÒüäÒüîÒüúÒüì	Hß╗ìc k├¼ mß╗øi	580	0	\N
+3083	Þ¬░	ÒüáÒéî	Lã░ãíng t├óm	581	0	\N
+3084	õ©ìÞë»	ÒüÁÒéèÒéçÒüå	Bß║Ñt lã░ãíng, kh├┤ng tß╗æt, kh├┤ng ─æß║ít	581	0	\N
+3085	ÕÑêÞë»þ£î	Òü¬ÒéëÒüæÒéô	Tß╗ënh Nara	581	0	\N
+3088	Úúƒõ║ï	ÒüùÒéçÒüÅÒüÿ	Bß╗»a ─ân	582	0	\N
+3089	µÿ╝Úúƒ	ÒüíÒéàÒüåÒüùÒéçÒüÅ	Bß╗»a ─ân trã░a	582	0	\N
+3090	µ£ØÚúƒ	ÒüíÒéçÒüåÒüùÒéçÒüÅ	Bß╗»a ─ân s├íng	582	0	\N
+3091	Úúƒ	ÒüÅ	─Éoß║ín thß╗▒c, nhß╗ïn ─ân	582	0	\N
+3092	Õñº	ÒüèÒüè	Thß╗®c uß╗æng	583	0	\N
+3093	Úú▓	Òü«	Quß║ºy giß║úi kh├ít	583	0	\N
+3094	Úú▓	Òü«	Thuß╗æc uß╗æng	583	0	\N
+3095	Úú▓Úúƒ	ÒüäÒéôÒüùÒéçÒüÅ	Cß╗¡a h├áng ─ân uß╗æng	583	0	\N
+3096	Úú▓ÚàÆÚüïÞ╗ó	ÒüäÒéôÒüùÒéàÒüåÒéôÒüªÒéô	L├íi xe trong t├¼nh trß║íng say rã░ß╗úu	583	0	\N
+3097	Úú▓µûÖµ░┤	ÒüäÒéôÒéèÒéçÒüåÒüÖÒüä	Nã░ß╗øc uß╗æng	583	0	\N
+3103	Õø¢õ╝Ü	ÒüôÒüúÒüïÒüä	Quß╗æc hß╗Öi	584	0	\N
+3104	õ╝ÜÚçê	ÒüêÒüùÒéâÒüÅ	C├║i ch├áo, gß║¡t ─æß║ºu	584	0	\N
+3106	ÕêØÞÇ│	Òü»ÒüñÒü┐Òü┐	─Éiß╗üu mß╗øi nghe lß║ºn ─æß║ºu	585	0	\N
+3108	ÚûÇ	ÒééÒéô	B├ío	586	0	\N
+3109	Þü×	Òüì	Viß╗çc chã░a tß╗½ng c├│ trã░ß╗øc ─æ├óy	586	0	\N
+3112	õ╝ØÞ¿Ç	ÒüºÒéôÒüöÒéô	Lß╗Øi nhß║»n	587	0	\N
+3113	µû╣Þ¿Ç	Òü╗ÒüåÒüÆÒéô	Tiß║┐ng ─æß╗ïa phã░ãíng	587	0	\N
+3114	õ║êÞ¿Ç	ÒéêÒüÆÒéô	Ti├¬n ─æo├ín	587	0	\N
+3115	Þ¿ÇÞ¬×Õ¡ª	ÒüÆÒéôÒüöÒüîÒüÅ	Ng├┤n ngß╗» hß╗ìc	587	0	\N
+3116	Þ¿Ç	Òüä	Giß║úi th├¡ch, biß╗çn bß║ích	587	0	\N
+3117	õ¢òÕìâ	Òü¬ÒéôÒü£Òéô	C├óu chuyß╗çn	588	0	\N
+3120	õ©ûÞ®▒	ÒüøÒéÅ	Ch─âm s├│c	588	0	\N
+3121	Þ®▒Úíî	ÒéÅÒüáÒüä	Chß╗º ─æß╗ü, ─æß╗ü t├ái	588	0	\N
+3122	Þ®▒	Òü»Òü¬	N├│i chuyß╗çn bß║▒ng tay	588	0	\N
+3124	þ½ïµ┤¥	ÒéèÒüúÒü▒	Tuyß╗çt vß╗Øi	589	0	\N
+3125	Õ╗║þ½ï	ÒüôÒéôÒéèÒéàÒüå	X├óy dß╗▒ng ch├╣a chiß╗ün, ─æß╗ün ─æ├ái	589	0	\N
+3126	Õ»║	ÒüªÒéë	Ph├▓ng chß╗Ø	590	0	\N
+3127	Õ¥à	Òü¥	K├¼ vß╗ìng	590	0	\N
+3128	Úúƒ	Òüƒ	Khu vß╗▒c xung quanh	591	0	\N
+3129	Õæ¿µ£ƒ	ÒüùÒéàÒüåÒüì	Chu kß╗│	591	0	\N
+3131	õ©ÇÕæ¿Õ╣┤	ÒüäÒüúÒüùÒéàÒüåÒü¡Òéô	1 n─âm tr├▓n	591	0	\N
+3136	õ©ÇÚÇ▒Úûô	ÒüäÒüúÒüùÒéàÒüåÒüïÒéô	1 tuß║ºn	592	0	\N
+3138	ÚÇ▒Õêè	ÒüùÒéàÒüåÒüïÒéô	Tuß║ºn san, xuß║Ñt bß║ún tß╗½ng tuß║ºn	592	0	\N
+3139	µëïÞÂ│	ÒüªÒüéÒüù	─Éß║íi hß╗ìc, trã░ß╗Øng ─Éß║íi hß╗ìc	593	0	\N
+3142	ÕñºÕÑ¢	ÒüáÒüäÒüÖ	─Éß║íi sß╗® qu├ín	593	0	\N
+3143	ÕñºÕêç	ÒüƒÒüäÒüøÒüñ	Chß╗º nh├á	593	0	\N
+3144	µëïÞÂ│	ÒüªÒüéÒüù	Hß╗ìc sinh tiß╗âu hß╗ìc	594	0	\N
+3147	Õ░ÅÕîà	ÒüôÒüÑÒüñÒü┐	Bã░u kiß╗çn	594	0	\N
+3148	Õ░ÅÚ║ª	ÒüôÒéÇÒüÄ	L├║a m├¼	594	0	\N
+3149	Õ░ÅÕÀØ	ÒüèÒüîÒéÅ	Con suß╗æi	594	0	\N
+3151	Ú½ÿµáíþöƒ	ÒüôÒüåÒüôÒüåÒüøÒüä	Hß╗ìc sinh cß║Ñp 3	595	0	\N
+3152	µ£ÇÚ½ÿ	ÒüòÒüäÒüôÒüå	Tß╗æt nhß║Ñt, tuyß╗çt vß╗Øi	595	0	\N
+3153	Ú½ÿþ┤Ü	ÒüôÒüåÒüìÒéàÒüå	Cao cß║Ñp	595	0	\N
+3154	Ú½ÿ	ÒüƒÒüï	Gi├í y├¬n cao	595	0	\N
+3155	µ«ïÚ½ÿ	ÒüûÒéôÒüáÒüï	Sß╗æ dã░ t├ái khoß║ún	595	0	\N
+3157	õ©ìÕ«ë	ÒüÁÒüéÒéô	ß╗ön ─æß╗ïnh	596	0	\N
+3158	Õ«ëµÿô	ÒüéÒéôÒüä	Mß╗Ñc ti├¬u, ti├¬u chuß║®n	596	0	\N
+3159	ÕååÕ«ë	ÒüêÒéôÒéäÒüÖ	Gi├í y├¬n thß║Ñp	596	0	\N
+3160	µû░	ÒüéÒüƒÒéë	B├ío ch├¡, b├ái b├ío	597	0	\N
+3162	µû░Õ╣┤	ÒüùÒéôÒü¡Òéô	N─âm mß╗øi	597	0	\N
+3081	Õ░åµØÑ	ÒüùÒéçÒüåÒéëÒüä	Tã░ãíng lai	580	0	28276
+3086	Õ«Â	ÒüäÒüê	Thß╗®c ─ân	582	0	28248
+3087	ÚúƒÕáé	ÒüùÒéçÒüÅÒü®Òüå	Ph├▓ng ─ân, c─ân tin	582	0	27076
+3098	þºü	ÒéÅÒüƒÒüù	Hß╗Öi thoß║íi, sß╗▒ n├│i chuyß╗çn	584	0	26968
+3099	õ╝Üþñ¥	ÒüïÒüäÒüùÒéâ	C├┤ng ty	584	0	27089
+3101	õ╝ÜÞ¡░	ÒüïÒüäÒüÄ	Cuß╗Öc hß╗ìp	584	0	27151
+3102	õ╝ÜÕá┤	ÒüïÒüäÒüÿÒéçÒüå	Hß╗Öi trã░ß╗Øng	584	0	29030
+3105	ÞÇ│	Òü┐Òü┐	Lß╗ù tai	585	0	27815
+3107	ÞÇ│	Òü┐Òü┐	Khoa Tai M┼®i Hß╗ìng	585	0	27815
+3110	ÕÅú	ÒüÅÒüí	Tß╗½ ngß╗»	587	0	27817
+3111	õ©ÇÞ¿Ç	Òü▓Òü¿ÒüôÒü¿	Mß╗Öt tß╗½, mß╗Öt lß╗Øi	587	0	29176
+3118	õ╝ÜÞ®▒	ÒüïÒüäÒéÅ	Hoß╗Öi thoß║íi	588	0	28336
+3119	Úø╗Þ®▒	ÒüºÒéôÒéÅ	─Éiß╗çn thoß║íi	588	0	27087
+3123	õ║║	Òü▓Òü¿	─Éß║íi hß╗ìc quß╗æc lß║¡p	589	0	27202
+3130	õ©ûþòî	ÒüøÒüïÒüä	V├▓ng quanh thß║┐ giß╗øi	591	0	27631
+3132	Úüô	Òü┐Òüí	Tuß║ºn n├áy	592	0	28104
+3133	µØÑÚÇ▒	ÒéëÒüäÒüùÒéàÒüå	Tuß║ºn sau	592	0	27210
+3134	ÕàêÚÇ▒	ÒüøÒéôÒüùÒéàÒüå	Tuß║ºn trã░ß╗øc	592	0	27208
+3135	µ»ÄÚÇ▒	Òü¥ÒüäÒüùÒéàÒüå	Mß╗ùi tuß║ºn	592	0	28811
+3137	ÚÇ▒µ£½	ÒüùÒéàÒüåÒü¥Òüñ	Cuß╗æi tuß║ºn	592	0	27679
+3140	ÕñºÕ¡ªþöƒ	ÒüáÒüäÒüîÒüÅÒüøÒüä	Sinh vi├¬n	593	0	29395
+3141	Õñºõ║║	ÒüèÒü¿Òü¬	Ngã░ß╗Øi lß╗øn	593	0	29043
+3145	Õ░ÅÕ¡ªµáí	ÒüùÒéçÒüåÒüîÒüúÒüôÒüå	Trã░ß╗Øng tiß╗âu hß╗ìc	594	0	28954
+3146	Õ░ÅÞ¬¼	ÒüùÒéçÒüåÒüøÒüñ	Tiß╗âu thuyß║┐t	594	0	28320
+3150	Õ╗║þë®	ÒüƒÒüªÒééÒü«	Trã░ß╗Øng cß║Ñp 3	595	0	28110
+3156	õ║║	Òü▓Òü¿	An to├án	596	0	27202
+3161	µû░Õ╣╣þÀÜ	ÒüùÒéôÒüïÒéôÒüøÒéô	T├áu si├¬u tß╗æc	597	0	27197
+3163	µû░Ú««	ÒüùÒéôÒüøÒéô	Tß╗ënh Niigata ß╗ƒ Nhß║¡t	597	0	\N
+3164	ÕÉî	ÒüèÒü¬	Trung cß╗ò	598	0	\N
+3165	ÕÅñµ£¼	ÒüÁÒéïÒü╗Òéô	S├ích c┼®	598	0	\N
+3166	õ¢┐	ÒüñÒüï	Khß║úo cß╗ò hß╗ìc	598	0	\N
+3167	ÕÅñõ╗ú	ÒüôÒüáÒüä	Cß╗ò ─æß║íi, ng├áy xã░a	598	0	\N
+3170	ÞÂ│Õàâ	ÒüéÒüùÒééÒü¿	Bã░ß╗øc ch├ón	599	0	\N
+3171	Õ£░Õàâ	ÒüÿÒééÒü¿	─Éß╗ïa phã░ãíng, trong v├╣ng	599	0	\N
+3172	õ©ëµ¼íÕàâ	ÒüòÒéôÒüÿÒüÆÒéô	Kh├┤ng gian 3 chiß╗üu	599	0	\N
+3173	Õàâ	ÒüÆÒéô	Nguy├¬n ( Nh├á Nguy├¬n cß╗ºa Trung Quß╗æc )	599	0	\N
+3174	þ┤ÇÕàâÕëì	ÒüìÒüÆÒéôÒü£Òéô	Trã░ß╗øc c├┤ng nguy├¬n	599	0	\N
+3175	µü»	ÒüäÒüì	Thß╗Øi tiß║┐t	600	0	\N
+3177	µ░ùµîü	ÒüìÒééÒüí	T├¼nh cß║úm, cß║úm x├║c	600	0	\N
+3179	µ░ù	Òüì	Cß║úm gi├íc, linh cß║úm	600	0	\N
+3180	ÕñÜ	ÒüèÒüè	C├│ lß║¢	601	0	\N
+3181	ÕñÜÕ░æ	ÒüƒÒüùÒéçÒüå	├ìt nhiß╗üu	601	0	\N
+3182	µ╗àÕñÜ	ÒéüÒüúÒüƒ	Biß╗âu quyß║┐t	601	0	\N
+3183	ÕñÜµò░	ÒüƒÒüÖÒüå	─Éa sß╗æ, sß╗æ ─æ├┤ng	601	0	\N
+3184	ÕñÜÚçÅ	ÒüƒÒéèÒéçÒüå	Lã░ß╗úng nhiß╗üu	601	0	\N
+3185	Õ░Å	ÒüíÒüä	Thiß║┐u ni├¬n	602	0	\N
+3186	Õ░æÕÑ│	ÒüùÒéçÒüåÒüÿÒéç	Thiß║┐u nß╗»	602	0	\N
+3187	Õ░æÒÇà	ÒüùÒéçÒüåÒüùÒéçÒüå	1 ch├║t	602	0	\N
+3188	µ©øÕ░æ	ÒüÆÒéôÒüùÒéçÒüå	Giß║úm, suy giß║úm	602	0	\N
+3189	Õ░æÚçÅ	ÒüùÒéçÒüåÒéèÒéçÒüå	Lã░ß╗úng ├¡t	602	0	\N
+3191	Õ║âÕæè	ÒüôÒüåÒüôÒüÅ	Quß║úng c├ío	603	0	\N
+3192	Õ║âÕá┤	Òü▓ÒéìÒü░	Quß║úng trã░ß╗Øng	603	0	\N
+3193	Õ║â	Òü▓Òéì	Bß╗Ö com l├¬	603	0	\N
+3195	þ┤áµù®	ÒüÖÒü░Òéä	Nhanh ch├│ng, ngay lß║¡p tß╗®c	604	0	\N
+3196	µù®µ£Ø	ÒüØÒüåÒüíÒéçÒüå	S├íng sß╗øm	604	0	\N
+3199	Þ║½ÚòÀ	ÒüùÒéôÒüíÒéçÒüå	Chiß╗üu cao	605	0	\N
+3200	ÚòÀµëÇ	ÒüíÒéçÒüåÒüùÒéç	─Éiß╗âm mß║ính	605	0	\N
+3202	ÚòÀµû╣Õ¢ó	ÒüíÒéçÒüåÒü╗ÒüåÒüæÒüä	H├¼nh chß╗» nhß║¡t	605	0	\N
+3205	µÿÄµùÑ	Òü┐ÒéçÒüåÒü½Òüí	Ng├áy mai	606	0	\N
+3206	Þ¬¼µÿÄ	ÒüøÒüñÒéüÒüä	Thuyß║┐t minh, giß║úi th├¡ch	606	0	\N
+3207	Þ¿╝µÿÄµø©	ÒüùÒéçÒüåÒéüÒüäÒüùÒéç	Chß╗®ng minh thã░	606	0	\N
+3208	µÿÄÕ¥îµùÑ	Òü┐ÒéçÒüåÒüöÒü½Òüí	Ng├áy mß╗æt	606	0	\N
+3210	ÕÑ│	ÒüèÒéôÒü¬	Hß╗»u ├¢, thiß╗çn ch├¡, l├▓ng tß╗æt	607	0	\N
+3211	ÕÑ¢µäƒ	ÒüôÒüåÒüïÒéô	ß║ñn tã░ß╗úng tß╗æt, thiß╗çn cß║úm	607	0	\N
+3213	ÕÅïõ║║	ÒéåÒüåÒüÿÒéô	Bß║ín	608	0	\N
+3214	Þª¬ÕÅï	ÒüùÒéôÒéåÒüå	Bß║ín th├ón	608	0	\N
+3215	ÕÅïµâà	ÒéåÒüåÒüÿÒéçÒüå	T├¼nh bß║ín, t├¼nh bß║▒ng hß╗»u	608	0	\N
+3216	ÕÅïÕÑ¢	ÒéåÒüåÒüôÒüå	Hß╗»u nghß╗ï, hß╗»u hß║úo	608	0	\N
+3218	ÕàÑÕ¡ª	Òü½ÒéàÒüåÒüîÒüÅ	Nhß║¡p khß║®u	609	0	\N
+3221	µÇØ	ÒüèÒéé	Xuß║Ñt khß║®u	610	0	\N
+3222	Õç║Õ©¡	ÒüùÒéàÒüúÒüøÒüì	Tham gia, tham dß╗▒, c├│ mß║Àt	610	0	\N
+3224	Õ©éÚòÀ	ÒüùÒüíÒéçÒüå	Thß╗ï trã░ß╗ƒng	611	0	\N
+3225	Õ©éµ░æ	ÒüùÒü┐Òéô	D├ón th├ánh phß╗æ	611	0	\N
+3227	Úâ¢Õ©é	Òü¿Òüù	─É├┤ thß╗ï	611	0	\N
+3228	Õ©éÕá┤	ÒüùÒüÿÒéçÒüå	Chß╗ú	611	0	\N
+3229	Õ©éÕá┤	ÒüäÒüíÒü░	Chß╗ú	611	0	\N
+3230	µ£ØÕ©é	ÒüéÒüòÒüäÒüí	Chß╗ú s├íng	611	0	\N
+3233	ÕîùÕ▒▒	ÒüìÒüƒÒéäÒü¥	Thß╗ï trß║Ñn Kitayama Nhß║¡t Bß║ún	612	0	\N
+3234	þö║ÚòÀ	ÒüíÒéçÒüåÒüíÒéçÒüå	Thß╗ï trã░ß╗ƒng	612	0	\N
+3235	þö║µ░æ	ÒüíÒéçÒüåÒü┐Òéô	Nguß╗Øi d├ón trong thß╗ï trß║Ñn	612	0	\N
+3236	ÕƒÄõ©ïþö║	ÒüÿÒéçÒüåÒüïÒü¥Òüí	Phß╗æ cß╗ò	612	0	\N
+3237	µ©»þö║	Òü┐Òü¬Òü¿Òü¥Òüí	Th├ánh phß╗æ cß║úng	612	0	\N
+3239	þö░µØæ	ÒüƒÒéÇÒéë	Th├┤n trã░ß╗ƒng, trã░ß╗ƒng l├áng	613	0	\N
+3240	µØæµ░æ	ÒüØÒéôÒü┐Òéô	D├ón l├áng	613	0	\N
+3241	Þ¥▓µØæ	Òü«ÒüåÒüØÒéô	N├┤ng th├┤n	613	0	\N
+3242	Õ©éþö║µØæ	ÒüùÒüíÒéçÒüåÒüØÒéô	Th├ánh phß╗æ, thß╗ï trß║Ñn v├á l├áng mß║íc	613	0	\N
+3243	µ╝üµØæ	ÒüÄÒéçÒüØÒéô	L├áng ch├ái	613	0	\N
+3244	Úø▓	ÒüÅÒéé	Mã░a	614	0	\N
+3245	µóàÚø¿	ÒüñÒéå	M├╣a mã░a (─æß║ºu h├¿)	614	0	\N
+3246	µóàÚø¿	Òü░ÒüäÒüå	M├╣a mã░a (─æß║ºu h├¿)	614	0	\N
+3247	ÕñºÚø¿	ÒüèÒüèÒüéÒéü	Mã░a lß╗øn	614	0	\N
+3248	Úø¿Õ¡ú	ÒüåÒüì	M├╣a mã░a	614	0	\N
+3249	µÜ┤Úó¿Úø¿	Òü╝ÒüåÒüÁÒüåÒüå	Mã░a b├úo	614	0	\N
+3168	ÕÅñÚâ¢	ÒüôÒü¿	Cß╗æ ─æ├┤	598	0	28161
+3176	Úø╗µ░ù	ÒüºÒéôÒüì	─Éiß╗çn	600	0	27013
+3178	õ║║µ░ù	Òü½ÒéôÒüì	Nß╗òi tiß║┐ng, ─æã░ß╗úc nhiß╗üu ngã░ß╗Øi ã░a th├¡ch, h├óm mß╗Ö	600	0	28307
+3190	þºü	ÒéÅÒüƒÒüù	Hiroshima (Nhß║¡t Bß║ún)	603	0	26968
+3194	µùÑµø£µùÑ	Òü½ÒüíÒéêÒüåÒü│	N├│i nhanh	604	0	27162
+3197	Ú½¬	ÒüïÒü┐	Gi├ím ─æß╗æc	605	0	27812
+3198	Úâ¿ÚòÀ	ÒüÂÒüíÒéçÒüå	Trã░ß╗ƒng ph├▓ng	605	0	27911
+3201	ÚòÀþöÀ	ÒüíÒéçÒüåÒü¬Òéô	Trã░ß╗ƒng Nam	605	0	29599
+3203	µùÑ	Òü▓	Ng├áy mai	606	0	27940
+3204	µÿÄµùÑ	ÒüéÒüùÒüƒ	Ng├áy mai	606	0	27144
+3209	µÿÄÕ¥îµùÑ	ÒüéÒüòÒüúÒüª	Ng├áy mß╗æt	606	0	27145
+3212	ÕÅïÚüö	Òü¿ÒééÒüáÒüí	Bß║ín b├¿ (n├│i chung)	608	0	27203
+3217	õ║║	Òü▓Òü¿	Lß╗æi v├áo, cß╗¡a v├áo	609	0	27202
+3219	ÕÅÄÕàÑ	ÒüùÒéàÒüåÒü½ÒéàÒüå	Thu nhß║¡p	609	0	29318
+3220	Õç║ÕÅú	ÒüºÒüÉÒüí	Lß╗æi ra, cß╗¡a ra	610	0	28622
+3223	õ║║ÒÇà	Òü▓Òü¿Òü│Òü¿	Th├ánh phß╗æ Tsukuba Nhß║¡t bß║ún	611	0	28656
+3231	þö║	Òü¥Òüí	Thß╗ï trß║Ñn	612	0	27395
+3232	Õîù	ÒüìÒüƒ	Thß╗ï trß║Ñn Kitayama Nhß║¡t Bß║ún	612	0	28558
+3238	µ£¿	Òüì	L├áng, th├┤n x├ú	613	0	27493
+3250	Úø¿µ░┤	ÒüéÒü¥Òü┐ÒüÜ	Nã░ß╗øc mã░a	614	0	\N
+3254	Úø╗Õèø	ÒüºÒéôÒéèÒéçÒüÅ	─Éiß╗çn lß╗▒c	615	0	\N
+3255	Úø╗Õ¡É	ÒüºÒéôÒüù	─Éiß╗çn tß╗¡	615	0	\N
+3257	Õü£Úø╗	ÒüªÒüäÒüºÒéô	C├║p ─æiß╗çn	615	0	\N
+3266	Õ¡ÉÚª¼	ÒüôÒüåÒü¥	Ngß╗▒a con	617	0	\N
+3268	Úª¼Þ╗è	Òü░ÒüùÒéâ	Xe ngß╗▒a	617	0	\N
+3269	õ╣ùÚª¼	ÒüÿÒéçÒüåÒü░	Cã░ß╗íi ngß╗▒a	617	0	\N
+3270	þ½ÂÚª¼	ÒüæÒüäÒü░	Cuß╗Öc ─æua ngß╗▒a	617	0	\N
+3271	Úª¼Ú╣┐	Òü░Òüï	Ngu ngß╗æc	617	0	\N
+3273	µØ▒õ║¼Úºà	Òü¿ÒüåÒüìÒéçÒüåÒüêÒüì	Ga Tokyo	618	0	\N
+3280	þñ¥õ╝ÜÕ¡ª	ÒüùÒéâÒüïÒüäÒüîÒüÅ	X├ú hß╗Öi hß╗ìc	619	0	\N
+3282	þñ¥	ÒéäÒüùÒéì	─Éß╗ün thß╗Ø	619	0	\N
+3283	Õòåþñ¥	ÒüùÒéçÒüåÒüùÒéâ	C├┤ng ty thã░ãíng mß║íi	619	0	\N
+3288	µáíÚòÀ	ÒüôÒüåÒüíÒéçÒüå	Hiß╗çu trã░ß╗ƒng	620	0	\N
+3289	µáíÞêÄ	ÒüôÒüåÒüùÒéâ	Khu nh├á trã░ß╗Øng, khu hß╗ìc x├í	620	0	\N
+3290	µáíµ¡î	ÒüôÒüåÒüï	B├ái ca cß╗ºa trã░ß╗Øng	620	0	\N
+3291	Õ║ùÕàê	Òü┐ÒüøÒüòÒüì	Qu├ín, cß╗¡a tiß╗çm	621	0	\N
+3293	Õ║ùÕôí	ÒüªÒéôÒüäÒéô	Nh├ón vi├¬n cß╗¡a h├áng	621	0	\N
+3294	µø©Õ║ù	ÒüùÒéçÒüªÒéô	Cß╗¡a h├áng s├ích	621	0	\N
+3295	Õú▓Õ║ù	Òü░ÒüäÒüªÒéô	Quß║ºy b├ín h├áng	621	0	\N
+3296	Õ║ùÚòÀ	ÒüªÒéôÒüíÒéçÒüå	Chß╗º cß╗¡a h├áng	621	0	\N
+3297	µ£¼Õ║ù	Òü╗ÒéôÒüªÒéô	Cãí sß╗ƒ ch├¡nh, trß╗Ñ sß╗ƒ ch├¡nh	621	0	\N
+3299	ÚèÇ	ÒüÄÒéô	Ng├ón h├áng	622	0	\N
+3300	ÚèÇ	ÒüÄÒéô	Bß║íc	622	0	\N
+3301	µ░┤ÚèÇ	ÒüÖÒüäÒüÄÒéô	Thß╗ºy ng├ón	622	0	\N
+3302	ÚèÇÞë▓	ÒüÄÒéôÒüäÒéì	M├áu bß║íc	622	0	\N
+3303	ÚèÇµ▓│	ÒüÄÒéôÒüî	Ng├ón h├á	622	0	\N
+3306	þ£ïþùà	ÒüïÒéôÒü│ÒéçÒüå	Bß║ío bß╗çnh, bß╗çnh cß║Ñp t├¡nh	623	0	\N
+3307	Úçìþùà	ÒüÿÒéàÒüåÒü│ÒéçÒüå	Bß╗çnh nß║Àng	623	0	\N
+3308	þùà	Òéä	C├│ bß╗çnh	623	0	\N
+3309	þû¥þùà	ÒüùÒüúÒü║Òüä	Bß╗çnh tß║¡t	623	0	\N
+3311	ÕàÑÚÖó	Òü½ÒéàÒüåÒüäÒéô	Trã░ß╗Øng cao hß╗ìc, Viß╗çc ─æ├áo tß║ío sau tß╗æt nghiß╗çp	624	0	\N
+3313	ÚÇÇÚÖó	ÒüƒÒüäÒüäÒéô	Y viß╗çn	624	0	\N
+3316	õ╝æÞ¼ø	ÒüìÒéàÒüåÒüôÒüå	─Éã░ß╗úc nghß╗ë 1 tiß║┐t hß╗ìc	625	0	\N
+3317	Õ«Üõ╝æµùÑ	ÒüªÒüäÒüìÒéàÒüåÒü│	Ng├áy nghß╗ë thã░ß╗Øng k├¼	625	0	\N
+3318	Õ£ƒ	ÒüñÒüí	Chi├¬u ─æ├úi	626	0	\N
+3319	Þä▒ÞÁ░	ÒüáÒüúÒüØÒüå	Tß║®u tho├ít, ─æ├áo ng┼®	626	0	\N
+3320	ÚÇâÞÁ░	Òü¿ÒüåÒüØÒüå	Bß╗Å trß╗æn	626	0	\N
+3321	ÞÁ░Þíî	ÒüØÒüåÒüôÒüå	Du lß╗ïch, di chuyß╗ân, du h├ánh	626	0	\N
+3322	µÜ┤ÞÁ░	Òü╝ÒüåÒüØÒüå	nh├│m chß║íy xe oto bike mß║Ñt trß║¡t tß╗▒ g├óy tiß║┐ng ß╗ôn	626	0	\N
+3323	Õ©½ÞÁ░	ÒüùÒéÅÒüÖ	Th├íng chß║íp	626	0	\N
+3324	Úüà	ÒüèÒüØ	Thß╗®c dß║¡y	627	0	\N
+3325	ÞÁÀµ║É	ÒüìÒüÆÒéô	Gß╗æc rß╗à, nguß╗ôn gß╗æc	627	0	\N
+3326	Þ▓Ø	ÒüïÒüä	Ngao, s├▓, hß║┐n, trai	628	0	\N
+3327	Þ▓Øµ«╗	ÒüïÒüäÒüîÒéë	Vß╗Å ngao, s├▓ ,hß║┐n, trai	628	0	\N
+3328	ÕÀ╗Þ▓Ø	Òü¥ÒüìÒüîÒüä	ß╗Éc s├¬n	628	0	\N
+3329	Þ▓Ø	ÒüïÒüä	─Éß╗ô l├ám bß║▒ng vß╗Å s├▓	628	0	\N
+3331	Þ▓À	Òüï	Viß╗çc mua b├ín	629	0	\N
+3332	Þ▓ÀÕÅÄ	Òü░ÒüäÒüùÒéàÒüå	B├¬n mua, kh├ích h├áng	629	0	\N
+3334	Õú▓Õ║ù	Òü░ÒüäÒüªÒéô	Quß║ºy b├ín h├áng	630	0	\N
+3335	Þç¬Õïò	ÒüÿÒü®Òüå	M├íy b├ín h├áng tß╗▒ ─æß╗Öng	630	0	\N
+3336	ÕñºÕú▓Õç║	ÒüèÒüèÒüåÒéèÒüá	Thã░ãíng mß║íi, viß╗çc b├ín bu├┤n	630	0	\N
+3252	Úø╗Þ╗è	ÒüºÒéôÒüùÒéâ	T├áu ─æiß╗çn	615	0	27195
+3253	Úø╗Þ®▒	ÒüºÒéôÒéÅ	─Éiß╗çn thoß║íi	615	0	27087
+3256	Úø╗µ▒á	ÒüºÒéôÒüí	Pin	615	0	27495
+3258	Úø╗µ║É	ÒüºÒéôÒüÆÒéô	Nguß╗ôn ─æiß╗çn	615	0	28962
+3259	Þ╗è	ÒüÅÒéïÒü¥	Xe hãíi (├┤ t├┤)	616	0	27041
+3260	Úø╗Þ╗è	ÒüºÒéôÒüùÒéâ	T├áu ─æiß╗çn	616	0	27195
+3262	Þç¬Þ╗óÞ╗è	ÒüÿÒüªÒéôÒüùÒéâ	Xe ─æß║íp	616	0	27200
+3263	ÚºÉÞ╗èÕá┤	ÒüíÒéàÒüåÒüùÒéâÒüÿÒéçÒüå	B├úi ─æß╗ù xe	616	0	28109
+3264	µòæµÇÑÞ╗è	ÒüìÒéàÒüåÒüìÒéàÒüåÒüùÒéâ	Xe cß║Ñp cß╗®u	616	0	29478
+3265	Úª¼	ÒüåÒü¥	Con ngß╗▒a	617	0	27914
+3267	Úª¼	ÒüåÒü¥	Chuß╗ông ngß╗▒a	617	0	27914
+3272	Úºà	ÒüêÒüì	Nh├á ga	618	0	27192
+3274	ÚºàÕôí	ÒüêÒüìÒüäÒéô	Nh├ón vi├¬n nh├á ga	618	0	28377
+3275	ÚºàÕëì	ÒüêÒüìÒü¥Òüê	Trã░ß╗øc nh├á ga	618	0	28398
+3276	þÑ×þñ¥	ÒüÿÒéôÒüÿÒéâ	C├┤ng ty	619	0	27827
+3277	þñ¥õ╝Ü	ÒüùÒéâÒüïÒüä	X├ú hß╗Öi	619	0	29222
+3278	þñ¥ÚòÀ	ÒüùÒéâÒüíÒéçÒüå	Gi├ím ─æß╗æc	619	0	27912
+3279	þÑ×þñ¥	ÒüÿÒéôÒüÿÒéâ	─Éß╗ün thß╗Ø thß║ºn ─æß║ío	619	0	27827
+3281	þñ¥õ╝Ü	ÒüùÒéâÒüïÒüä	Chß╗º ngh─®a x├ú hß╗Öi	619	0	29222
+3284	þêÂ	ÒüíÒüí	Trã░ß╗Øng hß╗ìc	620	0	27340
+3285	Ú½ÿµáí	ÒüôÒüåÒüôÒüå	Trã░ß╗Øng THPT, cß║Ñp 3	620	0	27772
+3286	õ©¡Õ¡ªµáí	ÒüíÒéàÒüåÒüîÒüúÒüôÒüå	Trã░ß╗øng THCS. Cß║Ñp 2	620	0	28955
+3287	Õ░ÅÕ¡ªµáí	ÒüùÒéçÒüåÒüîÒüúÒüôÒüå	Trã░ß╗øng Tiß╗âu hß╗ìc	620	0	28954
+3292	Õû½ÞîÂÕ║ù	ÒüìÒüúÒüòÒüªÒéô	Qu├ín giß║úi kh├ít, tiß╗çm c├á ph├¬	621	0	27509
+3298	µö»Õ║ù	ÒüùÒüªÒéô	Cãí sß╗ƒ phß╗Ñ, chi nh├ính	621	0	28488
+3304	þùàÚÖó	Òü│ÒéçÒüåÒüäÒéô	Bß╗ï bß╗çnh, ß╗æm	623	0	26983
+3305	þùàÚÖó	Òü│ÒéçÒüåÒüäÒéô	Bß╗çnh viß╗çn	623	0	26983
+3310	Õàâµ░ù	ÒüÆÒéôÒüì	Bß╗çnh viß╗çn	624	0	28571
+3312	ÕñºÕ¡ª	ÒüáÒüäÒüîÒüÅ	Hß╗ìc sinh cao hß╗ìc	624	0	26982
+3315	õ║║	Òü▓Òü¿	Ng├áy nghß╗ë	625	0	27202
+3330	µÿö	ÒéÇÒüïÒüù	Viß╗çc mua sß║»m	629	0	28274
+3333	õ║║	Òü▓Òü¿	Quß║ºy b├ín	630	0	27202
+3338	Þ¬¡µø©	Òü®ÒüÅÒüùÒéç	Viß╗çc ─æß╗ìc s├ích	631	0	\N
+3339	Þ¬¡ÞÇà	Òü®ÒüÅÒüùÒéâ	─Éß╗ìc giß║ú	631	0	\N
+3340	ÕÅÑÞ¬¡þé╣	ÒüÅÒü¿ÒüåÒüªÒéô	Dß║Ñu chß║Ñm c├óu	631	0	\N
+3341	µäøÞ¬¡µø©	ÒüéÒüäÒü®ÒüÅÒüùÒéç	S├ích ã░a th├¡ch	631	0	\N
+3342	þ¡å	ÒüÁÒüº	Thã░ viß╗çn	632	0	\N
+3344	µòÖþºæµø©	ÒüìÒéçÒüåÒüïÒüùÒéç	S├ích gi├ío khoa	632	0	\N
+3345	Þ¬¡µø©	Òü®ÒüÅÒüùÒéç	Viß╗çc ─æß╗ìc s├ích	632	0	\N
+3346	µø©Úüô	ÒüùÒéçÒü®Òüå	Thã░ ph├íp	632	0	\N
+3347	Þé®µø©	ÒüïÒüƒÒüîÒüì	Chß╗®c vß╗ï, chß╗®c danh	632	0	\N
+3348	ÕÀú	ÒüÖ	Viß╗çc trß╗ƒ vß╗ü nã░ß╗øc	633	0	\N
+3349	Õ©░	ÒüïÒüê	Du lß╗ïch vß╗ü trong ng├áy	633	0	\N
+3350	Õ©░Õ«à	ÒüìÒüƒÒüÅ	Viß╗çc vß╗ü nh├á	633	0	\N
+3351	Õ©░Õîû	ÒüìÒüï	Du nhß║¡p, nhß║¡p tß╗ïch	633	0	\N
+3353	Õ╝ô	ÒéåÒü┐	C├íi cung	635	0	\N
+3354	Õ╝ôþƒó	ÒéåÒü┐Òéä	Cung v├á t├¬n	635	0	\N
+3355	Õ╝ôÚüô	ÒüìÒéàÒüåÒü®Òüå	M├┤n bß║»n cung, cung ─æß║ío	635	0	\N
+3356	ÞÖ½	ÒéÇÒüù	S├óu bß╗ì	636	0	\N
+3357	ÞÖ½µ¡»	ÒéÇÒüùÒü░	R─âng s├óu	636	0	\N
+3358	Õ╝▒ÞÖ½	ÒéêÒéÅÒéÇÒüù	Kß║╗ yß║┐u ─æuß╗æi, nh├ít gan	636	0	\N
+3359	µÿåÞÖ½	ÒüôÒéôÒüíÒéàÒüå	C├┤n tr├╣ng	636	0	\N
+3360	ÞÖ½	ÒéÇÒüù	Ki├¬n ─æß╗ïnh, vß╗»ng v├áng	637	0	\N
+3361	Õ╝ÀÕêÂ	ÒüìÒéçÒüåÒüøÒüä	Viß╗çc ─ân cã░ß╗øp, vß╗Ñ cã░ß╗øp	637	0	\N
+3362	µò░þÅá	ÒüÿÒéàÒüÜ	Tß╗ënh cß║úm, cß║úm x├║c	638	0	\N
+3363	µîü	Òéé	Vß║¡t mang theo, vß║¡t sß╗ƒ hß╗»u	638	0	\N
+3365	µ£ëÕÉì	ÒéåÒüåÒéüÒüä	Chß╗» Hiragana	639	0	\N
+3367	µ░ÅÕÉì	ÒüùÒéüÒüä	Hß╗ì t├¬n	639	0	\N
+3368	ÕÉìÕ¡ù	Òü┐ÒéçÒüåÒüÿ	Hß╗ì	639	0	\N
+3369	ÕÉìÞ®×	ÒéüÒüäÒüù	Danh tß╗½	639	0	\N
+3371	õ©¡Õø¢Þ¬×	ÒüíÒéàÒüåÒüöÒüÅÒüö	Tiß║┐ng Trung Quß╗æc	640	0	\N
+3373	µò¼Þ¬×	ÒüæÒüäÒüö	K├¡nh ngß╗»	640	0	\N
+3374	ÕñûÕø¢Þ¬×	ÒüîÒüäÒüôÒüÅÒüö	Tiß║┐ng nã░ß╗øc ngo├ái	640	0	\N
+3375	ÕìÿÞ¬×	ÒüƒÒéôÒüö	Tß╗½ vß╗▒ng	640	0	\N
+3376	Þ¬×	ÒüïÒüƒ	Chß╗º ngß╗»	640	0	\N
+3378	µÿÑõ╝æ	Òü»ÒéïÒéäÒüÖ	Hß╗ìc k├¼ m├╣a xu├ón	641	0	\N
+3379	µÿÑÕÀ╗	Òü»ÒéïÒü¥	Xu├ón ph├ón	641	0	\N
+3380	ÚØÆµÿÑ	ÒüøÒüäÒüùÒéàÒéô	Thanh xu├ón	641	0	\N
+3381	µÿÑÕñÅþºïÕå¼	ÒüùÒéàÒéôÒüïÒüùÒéàÒüåÒü¿Òüå	4 m├╣a, xu├ón hß║í thu ─æ├┤ng	641	0	\N
+3383	ÕñÅõ╝æ	Òü¬ÒüñÒéäÒüÖ	Quß║ºn ├ío m├╣a h├¿	642	0	\N
+3384	þ£ƒÕñÅ	Òü¥Òü¬Òüñ	Giß╗»a hß║í	642	0	\N
+3385	ÕêØÕñÅ	ÒüùÒéçÒüï	─Éß║ºu hß║í	642	0	\N
+3386	ÕñÅÞç│	ÒüÆÒüù	Hß║í ch├¡	642	0	\N
+3387	µÿÑÕñÅþºïÕå¼	ÒüùÒéàÒéôÒüïÒüùÒéàÒüåÒü¿Òüå	4 m├╣a, xu├ón hß║í thu ─æ├┤ng	642	0	\N
+3389	þºïÕ¡ªµ£ƒ	ÒüéÒüìÒüîÒüúÒüì	Hß╗ìc k├¼ m├╣a thu	643	0	\N
+3390	þºïÚó¿	ÒüéÒüìÒüïÒü£	Cãín gi├│ thu	643	0	\N
+3391	þºïÕêå	ÒüùÒéàÒüåÒüÂÒéô	Xu├ón ph├ón	643	0	\N
+3392	µÖ®þºï	Òü░ÒéôÒüùÒéàÒüå	Cuß╗æi thu	643	0	\N
+3393	µÿÑÕñÅþºïÕå¼	ÒüùÒéàÒéôÒüïÒüùÒéàÒüåÒü¿Òüå	4 m├╣a, xu├ón hß║í thu ─æ├┤ng	643	0	\N
+3395	Õå¼õ╝æ	ÒüÁÒéåÒéäÒüÖ	Giß╗»a ─æ├┤ng	644	0	\N
+3396	Õå¼Þç│	Òü¿ÒüåÒüÿ	─É├┤ng ch├¡	644	0	\N
+3397	Õå¼þ£á	Òü¿ÒüåÒü┐Òéô	Sß╗▒ ngß╗º ─æ├┤ng	644	0	\N
+3398	µÜûÕå¼	ÒüáÒéôÒü¿Òüå	M├╣a ─æ├┤ng ß║Ñm ├íp	644	0	\N
+3399	µÿÑÕñÅþºïÕå¼	ÒüùÒéàÒéôÒüïÒüùÒéàÒüåÒü¿Òüå	4 m├╣a, xu├ón hß║í thu ─æ├┤ng	644	0	\N
+3400	Õìüµ£ê	ÒüÿÒéàÒüåÒüîÒüñ	Buß╗òi s├íng	645	0	\N
+3404	µ£ØÕ»ØÕØè	ÒüéÒüòÒü¡Òü╝Òüå	B├ío ra buß╗æi s├íng	645	0	\N
+3405	Õîùµ£ØÚ««	ÒüìÒüƒÒüíÒéçÒüåÒüøÒéô	Bß║»c Triß╗üu Ti├¬n	645	0	\N
+3408	µÿ╝õ╝æ	Òü▓ÒéïÒéäÒüÖ	Buß╗òi ─ân trã░a	646	0	\N
+3409	µÿ╝Õ»Ø	Òü▓ÒéïÒü¡	Giß║Ñc ngß╗º trã░a	646	0	\N
+3411	ÕñòµùÑ	ÒéåÒüåÒü▓	Mß║Àt trß╗Øi l├║c ban chiß╗üu	647	0	\N
+3412	ÕñòÚúƒ	ÒéåÒüåÒüùÒéçÒüÅ	Bß╗»a ─ân chiß╗üu	647	0	\N
+3413	õ©âÕñò	ÒüƒÒü¬Òü░Òüƒ	Lß╗à hß╗Öi thß║Ñt tß╗ïch	647	0	\N
+3414	ÕñòÕêè	ÒéåÒüåÒüïÒéô	B├ío ra l├║c chiß╗üu	647	0	\N
+3415	Õñòþ½ï	ÒéåÒüåÒüáÒüí	Cãín mã░a r├áo ban ─æ├¬m	647	0	\N
+3416	õ©Çµ£Øõ©ÇÕñò	ÒüäÒüúÒüíÒéçÒüåÒüäÒüúÒüøÒüì	Trong khoß║úng thß╗Øi gian ngß║»n	647	0	\N
+3417	µùù	Òü»Òüƒ	C├ích ─æß╗ìc	648	0	\N
+3420	õ©íµû╣	ÒéèÒéçÒüåÒü╗Òüå	2 b├¬n, song phã░ãíng	648	0	\N
+3422	µû╣ÕÉæ	Òü╗ÒüåÒüôÒüå	Phã░ãíng hã░ß╗øng	648	0	\N
+3423	µû╣Þ¿Ç	Òü╗ÒüåÒüÆÒéô	Phã░ãíng ngß╗», tiß║┐ng ─æß╗ïa phã░ãíng	648	0	\N
+3424	ÚòÀµû╣Õ¢ó	ÒüíÒéçÒüåÒü╗ÒüåÒüæÒüä	H├¼nh chß╗» nhß║¡t	648	0	\N
+3352	þöÀ	ÒüèÒü¿Òüô	Viß╗çc hß╗ìc	634	0	29119
+3364	ÕÉìÕëì	Òü¬Òü¥Òüê	T├¬n	639	0	27731
+3366	ÕÉìÕê║	ÒéüÒüäÒüù	Danh thiß║┐p	639	0	27027
+3370	Õ¢╝	ÒüïÒéî	Tiß║┐ng Nhß║¡t	640	0	27204
+3372	Þï▒Þ¬×	ÒüêÒüäÒüö	Tiß║┐ng Anh	640	0	27047
+3377	µÿÑ	Òü»Òéï	M├╣a xu├ón	641	0	27620
+3382	ÕñÅ	Òü¬Òüñ	M├╣a h├¿	642	0	27621
+3388	þºï	ÒüéÒüì	M├╣a thu	643	0	27622
+3394	Õå¼	ÒüÁÒéå	M├╣a ─æ├┤ng	644	0	27623
+3401	µ»Äµ£Ø	Òü¥ÒüäÒüéÒüò	Mß╗ùi buß╗òi s├íng	645	0	27153
+3402	õ╗èµ£Ø	ÒüæÒüò	S├íng nay	645	0	27146
+3403	µ£Ø	ÒüéÒüò	Bß╗»a ─ân s├íng	645	0	27138
+3406	µÿ╝	Òü▓Òéï	Buß╗òi trã░a, ban ng├áy	646	0	27139
+3407	µÿ╝Úûô	Òü▓ÒéïÒü¥	Ban ng├áy	646	0	28280
+3410	Õñòµû╣	ÒéåÒüåÒüîÒüƒ	Buß╗òi chiß╗üu	647	0	28564
+3418	Õñòµû╣	ÒéåÒüåÒüîÒüƒ	Buß╗òi chiß╗üu	648	0	28564
+3419	µû╣	ÒüïÒüƒ	Vß╗ï (ngã░ß╗Øi) kia	648	0	28253
+3421	µû╣µ│ò	Òü╗ÒüåÒü╗Òüå	Phã░ãíng ph├íp	648	0	28794
+3425	µÖ®	Òü░Òéô	Buß╗òi tß╗æi	649	0	\N
+3428	µÖ®Õ¥íÚú»	Òü░ÒéôÒüöÒü»Òéô	Cãím tß╗æi	649	0	\N
+3429	µÖ®Õ®Ü	Òü░ÒéôÒüôÒéô	Sß╗▒ kß║┐t  h├┤n muß╗Ön	649	0	\N
+3430	µÖ®Õ╣┤	Òü░ÒéôÒü¡Òéô	Nhß╗»ng n─âm cuß╗æi ─æß╗Øi	649	0	\N
+3431	Õñ£	ÒéêÒéï	Buß╗òi tß╗æi	650	0	\N
+3433	Õñ£õ©¡	ÒéêÒü¬Òüï	Nß╗¡a ─æ├¬m, ban ─æ├¬m	650	0	\N
+3434	Õñ£µÿÄ	ÒéêÒüé	─É├¬m khuya, khuya khoß║»t	650	0	\N
+3435	Õñ£Úúƒ	ÒéäÒüùÒéçÒüÅ	Bß╗»a ─ân khuya	650	0	\N
+3436	Õ┐âÞçô	ÒüùÒéôÒü×Òüå	Tr├íi tim, t├óm hß╗ôn, tß║¡n ─æ├íy l├▓ng	651	0	\N
+3437	Õ«ëÕ┐â	ÒüéÒéôÒüùÒéô	Trung t├óm	651	0	\N
+3438	þå▒Õ┐â	Òü¡ÒüúÒüùÒéô	T├óm l├¢ hß╗ìc	651	0	\N
+3440	õ©ïµëï	Òü©Òüƒ	Thã░	652	0	\N
+3441	µëïµ┤ù	ÒüªÒüéÒéë	Tem	652	0	\N
+3442	µëïõ╝Ø	ÒüªÒüñÒüá	Ca s─®	652	0	\N
+3444	ÞÂ│	Òüƒ	1 cß║Àp	653	0	\N
+3445	µ░┤õ©ìÞÂ│	Òü┐ÒüÜÒüÂÒüØÒüÅ	T├¼nh trß║íng thiß║┐u nã░ß╗øc	653	0	\N
+3446	ÚüáÞÂ│	ÒüêÒéôÒüØÒüÅ	D├ú ngoß║íi	653	0	\N
+3447	µ║ÇÞÂ│	Òü¥ÒéôÒü×ÒüÅ	Th├Áa m├ún, h├ái l├▓ng	653	0	\N
+3448	ÞÂ│Úƒ│	ÒüéÒüùÒüèÒü¿	Tiß║┐ng bã░ß╗øc ch├ón	653	0	\N
+3450	õ¢ôÚçì	ÒüƒÒüäÒüÿÒéàÒüå	C├ón nß║Àng, trß╗ìng lã░ß╗úng cãí thß╗â	654	0	\N
+3451	õ¢ôµôì	ÒüƒÒüäÒüØÒüå	B├ái tß║¡p thß╗â dß╗Ñc	654	0	\N
+3452	õ¢ôµ©®	ÒüƒÒüäÒüèÒéô	Nhiß╗çt ─æß╗Ö cãí thß╗â, th├ón nhiß╗çt	654	0	\N
+3453	Õà¿õ¢ô	Òü£ÒéôÒüƒÒüä	To├án thß╗â, cß║ú ngã░ß╗Øi	654	0	\N
+3454	Õøúõ¢ô	ÒüáÒéôÒüƒÒüä	─Éo├án thß╗â	654	0	\N
+3455	õ©ûÚûôõ¢ô	ÒüøÒüæÒéôÒüªÒüä	─É├║ng ─æß║»n, lß╗ïch sß╗▒, tao nh├ú	654	0	\N
+3456	õ¢ôÞ¬┐	ÒüƒÒüäÒüíÒéçÒüå	T├¼nh trß║íng cãí thß╗â	654	0	\N
+3457	Úªû	ÒüÅÒü│	Cß╗ò	655	0	\N
+3458	Úªû	ÒüÅÒü│	Cß╗ò tay	655	0	\N
+3460	ÚªûÚâ¢	ÒüùÒéàÒü¿	Thß╗º ─æ├┤	655	0	\N
+3461	Úªûõ¢ì	ÒüùÒéàÒüä	Vß╗ï tr├¡ ─æß║ºu ti├¬n, ─æß╗®ng ─æß║ºu	655	0	\N
+3462	Úâ¿Úªû	ÒüÂÒüùÒéà	Bß╗Ö (chß╗» H├ín)	655	0	\N
+3464	þëçÚüô	ÒüïÒüƒÒü┐Òüí	─Éã░ß╗Øng mß╗Öt chiß╗üu	656	0	\N
+3465	µø©Úüô	ÒüùÒéçÒü®Òüå	Thã░ ph├íp	656	0	\N
+3467	ÕîùµÁÀÚüô	Òü╗ÒüúÒüïÒüäÒü®Òüå	Hokkaido Nhß║¡t bß║ún	656	0	\N
+3469	µ¡®Úüô	Òü╗Òü®Òüå	─Éã░ß╗Øng ─æi bß╗Ö	656	0	\N
+3470	Þ┐æÚüô	ÒüíÒüïÒü┐Òüí	─Éã░ß╗Øng tß║»t	656	0	\N
+3472	Õ▒▒Úüô	ÒéäÒü¥Òü┐Òüí	─Éã░ß╗Øng n├║i	657	0	\N
+3473	Õ▒▒þö░	ÒéäÒü¥Òüá	N├║i Ph├║ S─®	657	0	\N
+3474	þü½Õ▒▒	ÒüïÒüûÒéô	N├║i lß╗¡a	657	0	\N
+3475	Õ▒▒þü½õ║ï	ÒéäÒü¥ÒüïÒüÿ	Ch├íy rß╗½ng	657	0	\N
+3476	þÖ╗Õ▒▒	Òü¿ÒüûÒéô	Leo n├║i	657	0	\N
+3477	Õ▒▒µ×ù	ÒüòÒéôÒéèÒéô	Sãín l├óm, rß╗½ng rß║¡m	657	0	\N
+3479	Õ░ÅÕÀØ	ÒüèÒüîÒéÅ	S├┤ng Nile	658	0	\N
+3480	Õñ®	ÒüéÒü¥	Dß║úi ng├ón h├á	658	0	\N
+3481	ÕÀØÕ▓©	ÒüïÒéÅÒüÄÒüù	Bß╗Ø s├┤ng, ven s├┤ng	658	0	\N
+3482	ÕÀØÚüè	ÒüïÒéÅÒüéÒüØ	S├┤ng ng├▓i	658	0	\N
+3483	õ║îµ£¼	Òü½Òü╗Òéô	Rß╗½ng	659	0	\N
+3484	Õ░Åµ×ù	ÒüôÒü░ÒéäÒüù	Rß╗½ng r├║	659	0	\N
+3485	Õ▒▒µ×ù	ÒüòÒéôÒéèÒéô	Sãín l├óm, rß╗½ng rß║¡m	659	0	\N
+3486	µ×ùµÑ¡	ÒéèÒéôÒüÄÒéçÒüå	L├óm nghiß╗çp	659	0	\N
+3487	µØ¥µ×ù	Òü¥ÒüñÒü░ÒéäÒüù	Rß╗½ng th├┤ng	659	0	\N
+3488	µ×ùÚüô	ÒéèÒéôÒü®Òüå	─Éã░ß╗Øng m├▓n trong rß╗½ng	659	0	\N
+3489	Õ»åµ×ù	Òü┐ÒüñÒéèÒéô	Rß╗½ng rß║¡m	659	0	\N
+3490	õ©ëµ£¼	ÒüòÒéôÒü╝Òéô	Rß╗½ng	660	0	\N
+3491	µú«þö░	ÒééÒéèÒüƒ	Rß╗½ng r├║	660	0	\N
+3495	Þê¬þ®║õ¥┐	ÒüôÒüåÒüÅÒüåÒü│Òéô	Bã░u phß║®m gß╗ƒi bß║▒ng ─æã░ß╗Øng h├áng kh├┤ng	661	0	\N
+3496	þ®║µëï	ÒüïÒéëÒüª	M├┤n v├Á karate	661	0	\N
+3499	ÕîùµÁÀÚüô	Òü╗ÒüúÒüïÒüäÒü®Òüå	Hokkaido Nhß║¡t bß║ún	662	0	\N
+3501	µÁÀ	ÒüïÒüä	Biß╗ân Aegean	662	0	\N
+3503	µÁÀÞ│è	ÒüïÒüäÒü×ÒüÅ	Hß║úi tß║Àc, cã░ß╗øp biß╗ân	662	0	\N
+3504	µÁÀÞù╗	ÒüïÒüäÒüØÒüå	Taß╗Å biß╗ân, rong biß╗ân	662	0	\N
+3505	µÁÀµ░┤	ÒüïÒüäÒüÖÒüä	Nã░ß╗øc biß╗ân	662	0	\N
+3508	Õîû	Òü░	Trang ─æiß╗âm	663	0	\N
+3509	µ░æõ©╗Õîû	Òü┐ÒéôÒüùÒéàÒüï	D├ón chß╗º h├│a	663	0	\N
+3510	ÕñëÕîû	Òü©ÒéôÒüï	Biß║┐n h├│a	663	0	\N
+3511	ÚÇ▓Õîû	ÒüùÒéôÒüï	Tiß║┐n h├│a	663	0	\N
+3512	Þìë	ÒüÅÒüò	Hoa	664	0	\N
+3513	Þè▒Þªï	Òü»Òü¬Òü┐	Ngß║»m hoa anh ─æ├áo nß╗ƒ, hß╗Öi ngß║»m hoa	664	0	\N
+3427	µ»ÄµÖ®	Òü¥ÒüäÒü░Òéô	Mß╗ùi tß╗æi	649	0	27154
+3432	õ╗èÕñ£	ÒüôÒéôÒéä	Tß╗æi nay	650	0	28563
+3439	µëï	Òüª	Tay	652	0	27318
+3443	ÞÂ│	ÒüéÒüù	Bã░ß╗øc ch├ón	653	0	27820
+3449	õ¢ô	ÒüïÒéëÒüá	Cãí thß╗â	654	0	27810
+3459	Úªûþø©	ÒüùÒéàÒüùÒéçÒüå	Thß╗º tã░ß╗øng	655	0	28044
+3463	Úüô	Òü┐Òüí	─Éã░ß╗Øng	656	0	28104
+3468	ÚüôÕàÀ	Òü®ÒüåÒüÉ	Dß╗Ñng cß╗Ñ	656	0	28246
+3471	Õ▒▒	ÒéäÒü¥	N├║i	657	0	27394
+3478	ÕÀØ	ÒüïÒéÅ	Con s├┤ng	658	0	27675
+3492	þ¬ô	Òü¥Òü®	Bß║ºu trß╗Øi	661	0	27503
+3493	þ®║µ░ù	ÒüÅÒüåÒüì	Kh├┤ng kh├¡	661	0	29337
+3494	þ®║µ©»	ÒüÅÒüåÒüôÒüå	S├ón bay	661	0	27629
+3497	þ®║	Òüé	Bß║ºu trß╗Øi rß╗Öng lß╗øn	661	0	27058
+3498	µ»ÄµùÑ	Òü¥ÒüäÒü½Òüí	Biß╗ân	662	0	27155
+3500	µÁÀÕñû	ÒüïÒüäÒüîÒüä	Nã░ß╗øc ngo├ái	662	0	28744
+3502	µÁÀÕ▓©	ÒüïÒüäÒüîÒéô	Bß╗Ø biß╗ân, ven biß╗ân	662	0	28957
+3506	õ║║	Òü▓Òü¿	H├│a hß╗ìc	663	0	27202
+3507	µûçÕîû	ÒüÂÒéôÒüï	V─ân h├│a	663	0	29221
+3514	Þè▒þü½	Òü»Òü¬Òü│	Ph├ío hoa	664	0	28245
+3515	Þè▒Õ▒ï	Òü»Òü¬Òéä	Cß╗¡a h├áng hoa	664	0	\N
+3516	Þè▒Õ½ü	Òü»Òü¬ÒéêÒéü	C├┤ d├óu	664	0	\N
+3517	þöƒ	Òüä	Nghß╗ç thuß║¡t cß║»m hoa	664	0	\N
+3519	Þè▒þ▓ëþùç	ÒüïÒüÁÒéôÒüùÒéçÒüå	Hß╗Öi chß╗®ng dß╗ï ß╗®ng phß║Ñn hoa	664	0	\N
+3520	õ©íµëï	ÒéèÒéçÒüåÒüª	Thß╗Øi tiß║┐t	665	0	\N
+3522	Õñ®Õø¢	ÒüªÒéôÒüöÒüÅ	Thi├¬n ─æã░ß╗Øng	665	0	\N
+3523	Õñ®þÜç	ÒüªÒéôÒü«Òüå	Ho├áng ─æß║┐	665	0	\N
+3524	Õñ®õ¢┐	ÒüªÒéôÒüù	Thi├¬n sß╗®	665	0	\N
+3526	Õñ®	ÒüéÒü¥	Dß║úi ng├ón h├á	665	0	\N
+3527	Õñ®µûçÕ¡ª	ÒüªÒéôÒééÒéôÒüîÒüÅ	Thi├¬n v─ân hß╗ìc	665	0	\N
+3530	þ£ƒ	Òü¥	─Éß╗Å bß╗½ng	666	0	\N
+3531	ÞÁñÕìüÕ¡ù	ÒüøÒüìÒüÿÒéàÒüåÒüÿ	Chß╗» thß║¡p ─æß╗Å	666	0	\N
+3532	ÞÁñÚüô	ÒüøÒüìÒü®Òüå	─Éã░ß╗Øng x├¡ch ─æß║ío	666	0	\N
+3533	ÞÁñÚú»	ÒüøÒüìÒü»Òéô	Gß║ío ─æß╗Å	666	0	\N
+3534	ÞÁñÕñûþÀÜ	ÒüøÒüìÒüîÒüäÒüøÒéô	Tia hß╗ông ngoß║íi	666	0	\N
+3537	ÚØÆõ┐íÕÅÀ	ÒüéÒüèÒüùÒéôÒüöÒüå	─É├¿n xanh	667	0	\N
+3538	ÚØÆµú«	ÒüéÒüèÒééÒéè	Rß╗½ng xanh	667	0	\N
+3539	ÚØÆÕ╣┤	ÒüøÒüäÒü¡Òéô	Thanh ni├¬n	667	0	\N
+3540	þ£ƒ	Òü¥	Xanh l├¿	667	0	\N
+3541	ÚØÆµÿÑ	ÒüøÒüäÒüùÒéàÒéô	Thanh xu├ón	667	0	\N
+3544	ÚØóþÖ¢	ÒüèÒééÒüùÒéì	T├│c bß║íc	668	0	\N
+3545	þÖ¢Ú½¬	Òü»ÒüÅÒü»Òüñ	T├│c bß║íc	668	0	\N
+3546	þ£ƒ	Òü¥	Trß║»ng to├ít	668	0	\N
+3547	þÖ¢þ┤Ö	Òü»ÒüÅÒüù	Giß║Ñy trß║»ng	668	0	\N
+3548	þÖ¢Ú│Ñ	Òü»ÒüÅÒüíÒéçÒüå	Thi├¬n nga	668	0	\N
+3549	þÖ¢Õñ£	Òü│ÒéâÒüÅÒéä	Hiß╗çn tã░ß╗úng ─æ├¬m trß║»ng	668	0	\N
+3550	þö░	Òüƒ	M├áu ─æen	669	0	\N
+3552	Ú╗Æþî½	ÒüÅÒéìÒü¡Òüô	M├¿o mun	669	0	\N
+3553	Ú╗ÆµØ┐	ÒüôÒüÅÒü░Òéô	Bß║úng ─æen	669	0	\N
+3554	þ£ƒ	Òü¥	─Éen thui	669	0	\N
+3555	Ú╗ÆÕ¡ù	ÒüÅÒéìÒüÿ	L├úi	669	0	\N
+3558	þü░Þë▓	Òü»ÒüäÒüäÒéì	M├áu x├ím	670	0	\N
+3559	Þë▓Úëøþ¡å	ÒüäÒéìÒüêÒéôÒü┤Òüñ	B├║t ch├¼ m├áu	670	0	\N
+3561	þë╣Þë▓	Òü¿ÒüÅÒüùÒéçÒüÅ	─Éß║Àc sß║»c	670	0	\N
+3562	Þä▒Þë▓	ÒüáÒüúÒüùÒéçÒüÅ	Phai m├áu	670	0	\N
+3564	Ú¡ÜÕ▒ï	ÒüòÒüïÒü¬Òéä	Cß╗¡a h├áng c├í	671	0	\N
+3565	Õ░ÅÚ¡Ü	ÒüôÒüûÒüïÒü¬	C├í con	671	0	\N
+3566	Ú¡ÜÕ©éÕá┤	ÒüåÒüèÒüäÒüíÒü░	Chß╗ú c├í	671	0	\N
+3567	ÚçæÚ¡Ü	ÒüìÒéôÒüÄÒéç	C├í v├áng	671	0	\N
+3568	õ║║Ú¡Ü	Òü½ÒéôÒüÄÒéç	Ngã░ß╗Øi c├í	671	0	\N
+3569	þå▒Õ©»Ú¡Ü	Òü¡ÒüúÒüƒÒüäÒüÄÒéç	C├í nhiß╗çt ─æß╗øi	671	0	\N
+3570	Ú¡Üõ╗ïÚí×	ÒüÄÒéçÒüïÒüäÒéïÒüä	Hß║úi sß║ún	671	0	\N
+3572	Õ¡Éþè¼	ÒüôÒüäÒü¼	C├║n con	672	0	\N
+3573	þò¬þè¼	Òü░ÒéôÒüæÒéô	Ch├│ giß╗» cß╗òng	672	0	\N
+3574	þø▓Õ░Äþè¼	ÒééÒüåÒü®ÒüåÒüæÒéô	Ch├│ dß║½n ─æã░ß╗Øng	672	0	\N
+3575	þè¼þî┐	ÒüæÒéôÒüêÒéô	Gh├®t nhau nhã░ ch├│ vß╗øi m├¿o	672	0	\N
+3576	þîƒþè¼	ÒéèÒéçÒüåÒüæÒéô	Ch├│ s─ân	672	0	\N
+3577	þïéþè¼þùà	ÒüìÒéçÒüåÒüæÒéôÒü│ÒéçÒüå	Bß╗çnh dß║íi	672	0	\N
+3579	ÚúƒµûÖÕôü	ÒüùÒéçÒüÅÒéèÒéçÒüåÒü▓Òéô	Thß╗▒c phß║®m, nguy├¬n liß╗çu nß║Ñu ─ân	673	0	\N
+3581	µûÖÚçæ	ÒéèÒéçÒüåÒüìÒéô	Tiß╗ün cã░ß╗øc	673	0	\N
+3582	µÄêµÑ¡µûÖ	ÒüÿÒéàÒüÄÒéçÒüåÒéèÒéçÒüå	Tiß╗ün hß╗ìc ph├¡	673	0	\N
+3586	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	Thß╗®c ─ân, m├│n ─ân	674	0	\N
+3587	þäíþÉå	ÒéÇÒéè	L├¢ do	674	0	\N
+3588	Õ£░þÉå	ÒüíÒéè	─Éß╗ïa l├¢	674	0	\N
+3589	õ┐«þÉå	ÒüùÒéàÒüåÒéè	Sß╗¡a chß╗»a	674	0	\N
+3590	þÉåµâ│	ÒéèÒüØÒüå	L├¢ tã░ß╗ƒng	674	0	\N
+3591	þÉåÞºú	ÒéèÒüïÒüä	L├¢ giß║úi, thß║Ñu hiß╗âu	674	0	\N
+3592	Õ┐âþÉåÕ¡ª	ÒüùÒéôÒéèÒüîÒüÅ	T├óm l├¢ hß╗ìc	674	0	\N
+3594	ÕÅìþ£ü	Òü»ÒéôÒüøÒüä	Sß╗▒ xem x├®t lß║íi, , phß║ún tß╗ënh	675	0	\N
+3595	ÕÅìµèù	Òü»ÒéôÒüôÒüå	Sß╗▒ phß║ún kh├íng	675	0	\N
+3596	ÕÅì	ÒüØ	Phß║ún ß╗®ng	675	0	\N
+3597	ÕÅìþë®	ÒüƒÒéôÒééÒü«	Tß║Ñm vß║úi	675	0	\N
+3598	Þ¼ÇÕÅì	ÒéÇÒü╗Òéô	Cuß╗Öc nß╗òi loß║ín, mã░u phß║ún	675	0	\N
+3599	þÜå	Òü┐Òü¬	Cãím	676	0	\N
+3602	µÖ®	Òü░Òéô	Cãím tß╗æi	676	0	\N
+3603	Úú»	ÒéüÒüù	Cãím (lß╗ïch sß╗▒)	676	0	\N
+3605	µ┤Ñ	Òüñ	Con b├▓	677	0	\N
+3525	Õñ®µëì	ÒüªÒéôÒüòÒüä	Thi├¬n t├ái	665	0	28015
+3528	µùÑ	Òü▓	M├áu ─æß╗Å	666	0	27940
+3529	ÞÁñ	ÒüéÒüï	Lß╗ù	666	0	28689
+3535	ÚØÆ	ÒüéÒüè	M├áu Xanh	667	0	28690
+3536	ÚØÆ	ÒüéÒüè	Bß║ºu trß╗Øi xanh	667	0	28690
+3542	þÖ¢	ÒüùÒéì	M├áu trß║»ng	668	0	28688
+3543	þÖ¢	ÒüùÒéì	Trß║»ng ─æen	668	0	28688
+3551	Ú╗Æ	ÒüÅÒéì	Trß║»ng ─æen	669	0	28687
+3556	õ║îõ║║	ÒüÁÒüƒÒéè	M├áu sß║»c	670	0	29178
+3557	Þë▓ÒÇà	ÒüäÒéìÒüäÒéì	M├áu xanh nã░ß╗øc biß╗ân	670	0	27982
+3560	µÖ»Þë▓	ÒüæÒüùÒüì	Phong cß║únh	670	0	28279
+3563	Ú¡Ü	ÒüòÒüïÒü¬	C├í	671	0	27268
+3571	þè¼	ÒüäÒü¼	Con ch├│	672	0	27489
+3578	þ▒│	ÒüôÒéü	Thß╗®c ─ân	673	0	28877
+3580	þäíµûÖ	ÒéÇÒéèÒéçÒüå	Miß╗àn ph├¡	673	0	28343
+3583	þÁªµûÖ	ÒüìÒéàÒüåÒéèÒéçÒüå	Tiß╗ün lã░ãíng	673	0	28314
+3584	µØÉµûÖ	ÒüûÒüäÒéèÒéçÒüå	T├ái liß╗çu	673	0	28707
+3585	Þ│çµûÖ	ÒüùÒéèÒéçÒüå	Tã░ liß╗çu	673	0	27763
+3593	þºü	ÒéÅÒüƒÒüù	Vi phß║ím	675	0	26968
+3600	µ£Ø	ÒüéÒüò	Cãím s├íng	676	0	27138
+3601	µÿ╝	Òü▓Òéï	Cãím trã░a	676	0	27139
+3604	þéèÚú»ÕÖ¿	ÒüÖÒüäÒü»ÒéôÒüì	Nß╗ôi cãím ─æiß╗çn	676	0	28756
+3606	þëøÞéë	ÒüÄÒéàÒüåÒü½ÒüÅ	Thß╗ït b├▓	677	0	27640
+3607	þëøõ╣│	ÒüÄÒéàÒüåÒü½ÒéàÒüå	Sß╗»a b├▓	677	0	\N
+3608	Õ¡Éþëø	ÒüôÒüåÒüù	Con b├¬	677	0	\N
+3610	µ░┤þëø	ÒüÖÒüäÒüÄÒéàÒüå	Con tr├óu nã░ß╗øc	677	0	\N
+3611	þëøõ©╝	ÒüÄÒéàÒüåÒü®Òéô	Cãím gyudon (cãím thß╗ït b├▓ Nhß║¡t Bß║ún)	677	0	\N
+3612	Úùÿþëø	Òü¿ÒüåÒüÄÒéàÒüå	─Éß║Ñu b├▓	677	0	\N
+3613	Þ▒Ü	ÒüÂÒüƒ	Con heo	678	0	\N
+3615	Õ¡ÉÞ▒Ü	ÒüôÒüÂÒüƒ	Con heo con	678	0	\N
+3617	Õ░ÅÚ│Ñ	ÒüôÒü¿Òéè	Con chim nhß╗Å, chim non	679	0	\N
+3618	Ú│ÑÞéë	Òü¿ÒéèÒü½ÒüÅ	Thß╗ït chim, thß╗ït g├á	679	0	\N
+3619	þÖ¢Ú│Ñ	Òü»ÒüÅÒüíÒéçÒüå	Con thi├¬n nga	679	0	\N
+3620	þä╝	Òéä	G├á nã░ß╗øng	679	0	\N
+3621	Ú│ÑÕ▒à	Òü¿ÒéèÒüä	Cß╗òng ─æß╗ün thß╗ƒ ─æß║ío Shinto	679	0	\N
+3622	õ©Çþƒ│õ║îÚ│Ñ	ÒüäÒüúÒüøÒüìÒü½ÒüíÒéçÒüå	Mß╗Öt m┼®i t├¬n tr├║ng 2 ─æ├¡ch (th├ánh ngß╗»)	679	0	\N
+3626	Ú│ÑÞéë	Òü¿ÒéèÒü½ÒüÅ	Thß╗ït g├á	680	0	\N
+3627	ÞéëÕ▒ï	Òü½ÒüÅÒéä	Cß╗¡a h├áng thß╗ït	680	0	\N
+3628	þ¡ïÞéë	ÒüìÒéôÒü½ÒüÅ	Cãí bß║»p	680	0	\N
+3629	þÜ«Þéë	Òü▓Òü½ÒüÅ	Diß╗àu cß╗út, ch├óm chß╗ìc	680	0	\N
+3634	ÞîÂþóù	ÒüíÒéâÒéÅÒéô	T├ích tr├á	681	0	\N
+3636	ÞîÂÚüô	ÒüíÒéâÒü®Òüå	Tr├á ─æß║ío	681	0	\N
+3637	þäíÞîÂÞïªÞîÂ	ÒéÇÒüíÒéâÒüÅÒüíÒéâ	Lß╗Ön xß╗Ön, rß╗æi tung, bß╗Øi	681	0	\N
+3638	ÞîÂÕ║ù	ÒüíÒéâÒü┐Òüø	Tiß╗çm tr├á	681	0	\N
+3639	µ»ìÞª¬	Òü»Òü»ÒüèÒéä	Dß╗▒ ─æß╗ïnh	682	0	\N
+3640	õ║êþ┤ä	ÒéêÒéäÒüÅ	─Éß║Àt chß╗ù, hß║╣n trã░ß╗øc	682	0	\N
+3641	õ║êþ┐Æ	ÒéêÒüùÒéàÒüå	Xem b├ái mß╗øi, soß║ín b├ái	682	0	\N
+3643	õ║êþ«ù	ÒéêÒüòÒéô	Ng├ón s├ích, ng├ón quß╗╣	682	0	\N
+3644	õ║êµ©¼	ÒéêÒüØÒüÅ	Sß╗▒ b├ío trã░ß╗øc, ã░ß╗øc lã░ß╗úng	682	0	\N
+3645	õ║êÚÿ▓	ÒéêÒü╝Òüå	Ph├▓ng ngß╗½a	682	0	\N
+3646	õ║êÞ¿Ç	ÒéêÒüÆÒéô	Lß╗Øi ti├¬n ─æo├ín, ti├¬n tr├¼	682	0	\N
+3647	ÚçÄÕÄƒ	Òü«Òü»Òéë	Rau	683	0	\N
+3648	ÚòÀÚçÄ	Òü¬ÒüîÒü«	Tß╗ënh Nagano, 1 tß╗ënh cß╗ºa Nhß║¡t Bß║ún	683	0	\N
+3649	Õ░ÅÚçÄ	ÒüèÒü«	B├│ng ch├áy	683	0	\N
+3650	ÕêåÚçÄ	ÒüÂÒéôÒéä	L─®nh vß╗▒c	683	0	\N
+3651	ÚçÄÕàÜ	ÒéäÒü¿Òüå	─Éß║úng chß╗æng ─æß╗æi	683	0	\N
+3652	ÚçÄÕÄƒ	Òü«Òü»Òéë	C├ính ─æß╗ông	683	0	\N
+3653	Þìë	ÒüÅÒüò	Rau	684	0	\N
+3654	ÞÅ£Õ£Æ	ÒüòÒüäÒüêÒéô	Vã░ß╗Øn rau	684	0	\N
+3655	ÞÅ£	Òü¬	C├ính ─æß╗ông hoa	684	0	\N
+3656	þÖ¢ÞÅ£	Òü»ÒüÅÒüòÒüä	Cß║úi thß║úo	684	0	\N
+3657	Õ▒▒ÞÅ£	ÒüòÒéôÒüòÒüä	Rau dß║íi ß╗ƒ n├║i	684	0	\N
+3658	ÞÅ£Úúƒ	ÒüòÒüäÒüùÒéçÒüÅ	Ngã░ß╗Øi theo chß╗º ngh─®a ─ân chay	684	0	\N
+3659	õ©âõ║║	ÒüùÒüíÒü½Òéô	Con tem	685	0	\N
+3660	ÕñºÕêç	ÒüƒÒüäÒüøÒüñ	V├®	685	0	\N
+3661	þÀá	Òüù	Ho├án to├án (kh├┤ng)	685	0	\N
+3666	ÕÉìõ¢£	ÒéüÒüäÒüòÒüÅ	T├íc phß║®m danh tiß║┐ng	686	0	\N
+3667	Õïòõ¢£	Òü®ÒüåÒüò	─Éß╗Öng t├íc	686	0	\N
+3669	µ£¬µ║Ç	Òü┐Òü¥Òéô	Kh├┤ng ─æß║ºy ─æß╗º	687	0	\N
+3670	µ£¬Õ®Ü	Òü┐ÒüôÒéô	Sß╗▒ chã░a kß║┐t h├┤n, sß╗▒ chã░a cã░ß╗øi	687	0	\N
+3671	µ£¬Õ«Ü	Òü┐ÒüªÒüä	Sß╗▒ chã░a ─æã░ß╗úc quyß║┐t ─æß╗ïnh	687	0	\N
+3672	µ£¬µêÉÕ╣┤	Òü┐ÒüøÒüäÒü¡Òéô	Vß╗ï th├ánh ni├¬n, chã░a ─æß╗º tuß╗òi	687	0	\N
+3673	µ£¬þåƒ	Òü┐ÒüÿÒéàÒüÅ	Chã░a c├│ kinh nghiß╗çm, chã░a ch├¡n chß║»n	687	0	\N
+3674	µ£¬µÿÄ	Òü┐ÒéüÒüä	S├íng tinh mãí, ban mai	687	0	\N
+3679	Õæ│ÕÖî	Òü┐ÒüØ	Tã░ãíng Miso	688	0	\N
+3680	Þ¬┐Õæ│	ÒüíÒéçÒüåÒü┐	Gia vß╗ï	688	0	\N
+3685	Úî▓Úƒ│	ÒéìÒüÅÒüèÒéô	Sß╗▒ ghi ├óm	689	0	\N
+3686	Úƒ│ÚçÅ	ÒüèÒéôÒéèÒéçÒüå	├ém lã░ß╗úng (volume)	689	0	\N
+3687	µ»ìÚƒ│	Òü╝ÒüäÒéô	Nguy├¬n ├óm	689	0	\N
+3688	Õ¡ÉÚƒ│	ÒüùÒüäÒéô	Phß╗Ñ ├óm	689	0	\N
+3689	µ£¼Úƒ│	Òü╗ÒéôÒü¡	├¢ ─æß╗ïnh thß╗▒c sß╗▒, ─æß╗Öng cãí	689	0	\N
+3691	µÑ¢	ÒüƒÒü«	Nhß║íc cß╗Ñ	690	0	\N
+3692	Õ¿»µÑ¢	ÒüöÒéëÒüÅ	Vui chãíi, giß║úi tr├¡, ti├¬u khiß╗ân	690	0	\N
+3693	Õñº	ÒüèÒüè	B├ái h├ít	691	0	\N
+3695	µ¡îÞ®×	ÒüïÒüù	Ca tß╗½, lß╗Øi b├ái h├ít	691	0	\N
+3614	Þ▒ÜÞéë	ÒüÂÒüƒÒü½ÒüÅ	Thß╗ït heo	678	0	27638
+3616	Ú│Ñ	Òü¿Òéè	Con chim	679	0	28242
+3623	Þéë	Òü½ÒüÅ	Thß╗ït	680	0	27267
+3624	þëøÞéë	ÒüÄÒéàÒüåÒü½ÒüÅ	Thß╗ït b├▓	680	0	27640
+3625	Þ▒ÜÞéë	ÒüÂÒüƒÒü½ÒüÅ	Thß╗ït heo	680	0	27638
+3630	õ║îõ║║	ÒüÁÒüƒÒéè	Tr├á	681	0	29178
+3631	ÞîÂÞë▓	ÒüíÒéâÒüäÒéì	M├áu tr├á	681	0	28693
+3632	þ┤àÞîÂ	ÒüôÒüåÒüíÒéâ	Hß╗ông tr├á	681	0	27273
+3635	ÞîÂÚüô	ÒüòÒü®Òüå	Tr├á ─æß║ío	681	0	28700
+3642	Õñ®µ░ù	ÒüªÒéôÒüì	Dß╗▒ b├ío thß╗Øi tiß║┐t	682	0	27624
+3662	õ║║	Òü▓Òü¿	Sß╗▒ viß║┐t v─ân, sß╗▒ l├ám v─ân, b├ái v─ân	686	0	27202
+3663	õ¢£Õôü	ÒüòÒüÅÒü▓Òéô	T├íc phß║®m	686	0	29595
+3664	õ¢£Õ«Â	ÒüòÒüúÒüï	T├íc gia, nh├á v─ân	686	0	29597
+3665	µôìõ¢£	ÒüØÒüåÒüò	Thao t├íc, ─æiß╗üu khiß╗ân	686	0	28793
+3668	µ£¿	Òüì	Tã░ãíng lai	687	0	27493
+3675	Õæ│	ÒüéÒüÿ	M├╣i vß╗ï	688	0	28310
+3676	µäÅÕæ│	ÒüäÒü┐	├Ø ngh─®a	688	0	28147
+3677	ÞÂúÕæ│	ÒüùÒéàÒü┐	Sß╗ƒ th├¡ch	688	0	27907
+3678	ÞêêÕæ│	ÒüìÒéçÒüåÒü┐	Hß╗®ng th├║	688	0	29148
+3681	Õæ│	ÒüéÒüÿ	─Éãín giß║ún, mß╗Öc mß║íc	688	0	28310
+3682	µùÑ	Òü▓	├ém nhß║íc	689	0	27940
+3683	Úƒ│	ÒüèÒü¿	Tiß║┐ng, ├óm thanh	689	0	28101
+3684	þÖ║Úƒ│	Òü»ÒüñÒüèÒéô	Sß╗▒ ph├ít ├óm	689	0	29151
+3690	µ£¿	Òüì	├ém nhß║íc	690	0	27493
+3694	µ¡î	ÒüåÒüƒ	Ca s─®	691	0	27439
+3696	þƒ¡µ¡î	ÒüƒÒéôÒüï	Thãí ngß║»n	691	0	\N
+3697	Õø¢µ¡î	ÒüôÒüúÒüï	Quß╗æc ca	691	0	\N
+3698	µáíµ¡î	ÒüôÒüåÒüï	B├ái h├ít cß╗ºa trã░ß╗Øng	691	0	\N
+3702	Þç¬þö▒	ÒüÿÒéåÒüå	Tß╗▒ do	692	0	\N
+3703	Þç¬	Òü┐ÒüÜÒüï	Tß╗▒ nhi├¬n	692	0	\N
+3704	Þç¬þ┐Æ	ÒüÿÒüùÒéàÒüå	Sß╗▒ tß╗▒ ├┤n tß║¡p, tß╗▒ hß╗ìc	692	0	\N
+3705	Þç¬õ┐í	ÒüÿÒüùÒéô	Tß╗▒ tin	692	0	\N
+3709	Þ╗óµáí	ÒüªÒéôÒüôÒüå	Sß╗▒ chuyß╗â trã░ß╗Øng	693	0	\N
+3711	õ╣ù	Òü«	Phã░ãíng tiß╗çn giao th├┤ng	694	0	\N
+3712	õ╣ùÕ«ó	ÒüÿÒéçÒüåÒüìÒéâÒüÅ	H├ánh kh├ích	694	0	\N
+3713	õ╣ù	Òü«	Viß╗çc cã░ß╗íi ngß╗▒a	694	0	\N
+3714	õ╣ùÞ╗èÕê©	ÒüÿÒéçÒüåÒüùÒéâÒüæÒéô	V├® xe	694	0	\N
+3716	ÕåÖ	ÒüåÒüñ	Nhiß║┐p ß║únh gia	695	0	\N
+3717	ÕåÖþöƒ	ÒüùÒéâÒüøÒüä	Vß║¢ ph├íc	695	0	\N
+3718	ÞñçÕåÖ	ÒüÁÒüÅÒüùÒéâ	Bß║ún sao	695	0	\N
+3719	µÅÅÕåÖ	Òü│ÒéçÒüåÒüùÒéâ	Chß╗º ngh─®a tß║ú thß╗▒c	695	0	\N
+3723	ÕÅ░	ÒüáÒüä	C├íi gi├í, khung, bß╗ç	696	0	\N
+3724	Þê×ÕÅ░	ÒüÂÒüƒÒüä	S├ón khß║Ñu	696	0	\N
+3725	ÕÅ░µ╣¥	ÒüƒÒüäÒéÅÒéô	─É├ái Loan	696	0	\N
+3726	ÕÅ░µ£¼	ÒüáÒüäÒü╗Òéô	Kß╗ïch bß║ún	696	0	\N
+3728	õ©¡Õñ«þÀÜ	ÒüíÒéàÒüåÒüèÒüåÒüøÒéô	Tuyß║┐n t├áu Chyuo	697	0	\N
+3729	õ©¡Õñ«	ÒüíÒéàÒüåÒüèÒüå	Trung ã░ãíng tß║¡p quyß╗ün	697	0	\N
+3732	þö░	Òüƒ	Phim ß║únh	699	0	\N
+3734	Þ¿êþö╗	ÒüæÒüäÒüïÒüÅ	Kß║┐ hoß║ích	699	0	\N
+3735	þö╗Õ«Â	ÒüîÒüï	Hß╗ìa s─®	699	0	\N
+3736	þÁÁþö╗	ÒüïÒüäÒüî	Bß╗®c tranh, hß╗Öi hß╗ìa	699	0	\N
+3737	þö╗µò░	ÒüïÒüÅÒüÖÒüå	Sß╗æ n├®t	699	0	\N
+3738	þö╗þ┤á	ÒüîÒüØ	Pixel (phß║ºn tß╗¡ ß║únh)	699	0	\N
+3739	þ¥è	Òü▓ÒüñÒüÿ	Con cß╗½u	700	0	\N
+3740	Õ¡Éþ¥è	ÒüôÒü▓ÒüñÒüÿ	cß╗½u con, cß╗½u non	700	0	\N
+3741	þ¥èµ»ø	ÒéêÒüåÒééÒüå	L├┤ng cß╗½u	700	0	\N
+3742	Õ▒▒þ¥è	ÒéäÒüÄ	Con d├¬	700	0	\N
+3743	þ¥è	Òü▓ÒüñÒüÿ	├éu phu╠úc	701	0	\N
+3744	ÞÑ┐µ┤ï	ÒüøÒüäÒéêÒüå	t├óy phã░ãíng	701	0	\N
+3745	µØ▒µ┤ï	Òü¿ÒüåÒéêÒüå	phã░ãíng ─É├┤ng	701	0	\N
+3746	Õñ¬Õ╣│µ┤ï	ÒüƒÒüäÒü©ÒüäÒéêÒüå	Th├íi B├¼nh Dã░ãíng	701	0	\N
+3747	ÕñºÞÑ┐µ┤ï	ÒüƒÒüäÒüøÒüäÒéêÒüå	─Éß║íi T├óy Dã░ãíng	701	0	\N
+3748	µ┤ïÕ╝Å	ÒéêÒüåÒüùÒüì	Kiß╗âu T├óy	701	0	\N
+3750	µ┤ïµø©	ÒéêÒüåÒüùÒéç	S├ích phã░ãíng T├óy	701	0	\N
+3753	ÕÆîµ£ì	ÒéÅÒüÁÒüÅ	Quß║ºn ├ío kiß╗âu Nhß║¡t	702	0	\N
+3754	µ£ìÞúà	ÒüÁÒüÅÒüØÒüå	Phß╗Ñc trang	702	0	\N
+3755	Õàïµ£ì	ÒüôÒüÅÒüÁÒüÅ	─Éß╗ông phß╗Ñc	702	0	\N
+3756	Õû¬µ£ì	ÒééÒüÁÒüÅ	Tang phß╗Ñc	702	0	\N
+3757	Õ¥üµ£ì	ÒüøÒüäÒüÁÒüÅ	Chinh phß╗Ñc	702	0	\N
+3758	þØÇ	Òüì	├üo kho├íc	703	0	\N
+3760	þØÇ	Òüñ	Bß╗Ö Kimono	703	0	\N
+3761	Õê░þØÇ	Òü¿ÒüåÒüíÒéâÒüÅ	Sß╗▒ ─æß║┐n nãíi	703	0	\N
+3762	ÞÉ¢	Òüè	├üo bãíi, quß║ºn ├ío tß║»m	703	0	\N
+3764	þ£ƒ	Òü¥	Ch├¡nh giß╗»a	704	0	\N
+3765	þ£ƒ	Òü¥	Tß╗æi ─æen nhã░ mß╗▒c	704	0	\N
+3766	þ£ƒ	Òü¥	Trß║»ng to├ít	704	0	\N
+3767	þ£ƒÕñ£õ©¡	Òü¥ÒéêÒü¬Òüï	Giß╗»a ─æ├¬m khuya	704	0	\N
+3768	þ£ƒÕëú	ÒüùÒéôÒüæÒéô	Nghi├¬m trang, ─æ├║ng ─æß║»n	704	0	\N
+3769	þ£ƒÕ«ƒ	ÒüùÒéôÒüÿÒüñ	Ch├ón thß║¡t	704	0	\N
+3772	Õ«ÂÕåà	ÒüïÒü¬Òüä	Vß╗ú, m├¼nh	705	0	\N
+3773	Õ«Âõ║ï	ÒüïÒüÿ	Viß╗çc nh├á, viß╗çc gia ─æ├¼nh	705	0	\N
+3774	ÕñºÕ«Â	ÒüèÒüèÒéä	Chß╗º nh├á	705	0	\N
+3776	Õ▒▒þö░Õ«Â	ÒéäÒü¥ÒüáÒüæ	Gia ─æ├¼nh Yamada	705	0	\N
+3777	þƒó	Òéä	M┼®i t├¬n	706	0	\N
+3779	þäíþÉåþƒóþÉå	ÒéÇÒéèÒéäÒéè	Bß║▒ng sß╗®c mß║ính, sinh ─æß╗Öng, mß║ính mß║¢	706	0	\N
+3780	µùù	Òü»Òüƒ	Gia ─æ├¼nh	707	0	\N
+3781	Þª¬µùÅ	ÒüùÒéôÒü×ÒüÅ	Th├ón tß╗Öc, b├á con th├ón thiß║┐t, ngã░ß╗Øi trong d├▓ng tß╗Öc	707	0	\N
+3782	Þ▓┤µùÅ	ÒüìÒü×ÒüÅ	Qu├¢ tß╗Öc, qu├¢ ph├íi	707	0	\N
+3783	µ░æµùÅ	Òü┐ÒéôÒü×ÒüÅ	D├ón tß╗Öc	707	0	\N
+3784	µ░┤µùÅÚñ¿	ÒüÖÒüäÒü×ÒüÅÒüïÒéô	C├┤ng vi├¬n thß╗ºy cung	707	0	\N
+3700	Þç¬Þ╗óÞ╗è	ÒüÿÒüªÒéôÒüùÒéâ	Xe ─æß║íp	692	0	27200
+3701	Þç¬ÕïòÞ╗è	ÒüÿÒü®ÒüåÒüùÒéâ	Xe ├┤ t├┤	692	0	27064
+3706	Þ╗è	ÒüÅÒéïÒü¥	Xe ─æß║íp	693	0	27041
+3707	ÚüïÞ╗óµëï	ÒüåÒéôÒüªÒéôÒüùÒéà	T├ái xß║┐	693	0	29113
+3708	Þ╗ó	ÒüôÒéì	Chuyß╗ân c├┤ng t├íc	693	0	29631
+3710	µ£¿	Òüì	Phã░ãíng tiß╗çn ─æi lß║íi	694	0	27493
+3715	Õ©¢Õ¡É	Òü╝ÒüåÒüù	Bß╗®c ß║únh	695	0	28065
+3720	þºü	ÒéÅÒüƒÒüù	2 m├íy	696	0	26968
+3721	ÕÅ░µëÇ	ÒüáÒüäÒü®ÒüôÒéì	Nh├á bß║┐p	696	0	28283
+3722	ÕÅ░Úó¿	ÒüƒÒüäÒüÁÒüå	B├úo	696	0	29023
+3727	õ║║	Òü▓Òü¿	Trung ã░ãíng	697	0	27202
+3730	µÿáþö╗	ÒüêÒüäÒüî	Phim ß║únh	698	0	27152
+3733	µ╝½þö╗	Òü¥ÒéôÒüî	Truyß╗çn tranh nhß║¡t bß║ún	699	0	28290
+3749	µ┤ïÚúƒ	ÒéêÒüåÒüùÒéçÒüÅ	M├│n ─ân T├óy	701	0	29340
+3751	µ£ê	ÒüñÒüì	Trang phß╗Ñc, ├ío quß║ºn	702	0	28020
+3752	µ┤ïµ£ì	ÒéêÒüåÒüÁÒüÅ	├éu phu╠úc	702	0	29046
+3759	õ©ïþØÇ	ÒüùÒüƒÒüÄ	Quß║ºn ├ío trong	703	0	27880
+3763	µ£¼Õ¢ô	Òü╗ÒéôÒü¿Òüå	Bß╗®c ß║únh	704	0	28004
+3770	µÿö	ÒéÇÒüïÒüù	Nh├á	705	0	28274
+3771	Õ«ÂµùÅ	ÒüïÒü×ÒüÅ	Gia ─æ├¼nh	705	0	27206
+3775	Õ«ÂÞ│â	ÒéäÒüíÒéô	Tiß╗ün nh├á	705	0	28078
+3778	þƒóÕì░	ÒéäÒüÿÒéïÒüù	M┼®i t├¬n chß╗ë hã░ß╗øng	706	0	28686
+3785	µ£¿	Òüì	cha mß║╣	708	0	27493
+3786	Þª¬Õêç	ÒüùÒéôÒüøÒüñ	th├ón sinh	708	0	\N
+3787	Þª¬ÕÅï	ÒüùÒéôÒéåÒüå	bß║ín th├ón	708	0	\N
+3788	þêÂÞª¬	ÒüíÒüíÒüèÒéä	bß╗æ, ba	708	0	\N
+3789	µ»ìÞª¬	Òü»Òü»ÒüèÒéä	mß║╣	708	0	\N
+3790	Þª¬Õ¡É	ÒüèÒéäÒüô	cha mß║╣ v├á con c├íi, t├¼nh m├íu mß╗º	708	0	\N
+3792	Õàä	Òü½Òüä	Anh em	709	0	\N
+3793	þ¥®Õàä	ÒüÄÒüæÒüä	Anh em kß║┐t ngh─®a	709	0	\N
+3795	Õºë	Òü¡Òüê	Chß╗ï em g├íi	710	0	\N
+3799	Õ╝ƒÕ¡É	ÒüºÒüù	─æß╗ô ─æß╗ç ,─æß╗ç tß╗¡	711	0	\N
+3800	þ¥®Õ╝ƒ	ÒüÄÒüªÒüä	em kß║┐t ngh─®a, ngh─®a ─æß╗ç, em rß╗â, em vß╗ú	711	0	\N
+3801	ÕÑ│	ÒüèÒéôÒü¬	Em g├íi	712	0	\N
+3805	þºüþ½ï	ÒüùÒéèÒüñ	─Éß║íi hß╗ìc Tã░ lß║¡p	713	0	\N
+3806	þºüÚëä	ÒüùÒüªÒüñ	─æã░ß╗Øng sß║»t tã░ doanh	713	0	\N
+3807	þºüþö¿	ÒüùÒéêÒüå	viß╗çc ri├¬ng ,d├╣ng cho c├í nh├ón	713	0	\N
+3808	þºüµ£ë	ÒüùÒéåÒüå	tã░ hß╗»u	713	0	\N
+3809	þºüþöƒµ┤╗	ÒüùÒüøÒüäÒüïÒüñ	Cuß╗Öc sß╗æng c├í nh├ón	713	0	\N
+3810	þºüµø©þ«▒	ÒüùÒüùÒéçÒü░Òüô	Tß╗º ─æß╗▒ng ─æß╗ô c├í nh├ón	713	0	\N
+3812	Õñ½Õª╗	ÒüÁÒüòÒüä	Vß╗ú chß╗ông, phu th├¬	714	0	\N
+3813	Õñ½Õ®ª	ÒüÁÒüåÒüÁ	Vß╗ú chß╗ông	714	0	\N
+3814	Õñºõ©êÕñ½	ÒüáÒüäÒüÿÒéçÒüåÒüÂ	Kh├┤ng sao	714	0	\N
+3815	Õñ½õ║║	ÒüÁÒüÿÒéô	phu nh├ón	714	0	\N
+3816	ÕÀÑÕñ½	ÒüÅÒüÁÒüå	─Éa╠Ço s├óu nghi├¬n cã░╠üu, c├┤ng phu	714	0	\N
+3817	µîü	Òéé	Vß╗ú, vß╗ú con	715	0	\N
+3818	Õñ½Õª╗	ÒüÁÒüòÒüä	vß╗ú chß╗ông, phu th├¬	715	0	\N
+3819	Õª╗Õ¡É	ÒüòÒüäÒüù	vß╗ú con, th├¬ tß╗¡	715	0	\N
+3820	õ©ÇÕñ½	ÒüäÒüúÒüÀ	─Éa th├¬	715	0	\N
+3822	õ©╗Õ®ª	ÒüùÒéàÒüÁ	vß╗ú	716	0	\N
+3823	õ©╗Þ¬×	ÒüùÒéàÒüö	Chß╗º ngß╗»	716	0	\N
+3824	õ©╗þ¥®	ÒüùÒéàÒüÄ	Chß╗º ngh─®a	716	0	\N
+3825	õ©╗Úíî	ÒüùÒéàÒüáÒüä	Chß╗º ─æß╗ü, ─æß╗ü t├ái	716	0	\N
+3826	õ©╗Úúƒ	ÒüùÒéàÒüùÒéçÒüÅ	M├│n ─ân ch├¡nh	716	0	\N
+3827	õ©╗	ÒüèÒéé	Ngã░ß╗Øi chß╗º, ngã░ß╗Øi sß╗ƒ hß╗»u	716	0	\N
+3828	õ©╗õ║║	ÒüùÒéàÒüÿÒéô	nãíi sinh sß╗æng, ─æß╗ïa chß╗ë	717	0	\N
+3829	õ¢Åµ░æ	ÒüÿÒéàÒüåÒü┐Òéô	Ngã░ß╗Øi d├ón cã░ tr├║	717	0	\N
+3830	õ¢ÅÕ«à	ÒüÿÒéàÒüåÒüƒÒüÅ	Nh├á ß╗ƒ, nãíi sß╗æng	717	0	\N
+3831	ÞíúÚúƒõ¢Å	ÒüäÒüùÒéçÒüÅÒüÿÒéàÒüå	Nhu cß║ºu ─ân uß╗æng thiß║┐t yß║┐u cß╗ºa cuß╗Öc sß╗æng	717	0	\N
+3832	þ│©ÕÀ╗	ÒüäÒü¿Òü¥	Sß╗úi chß╗ë	718	0	\N
+3833	µ»øþ│©	ÒüæÒüäÒü¿	Sß╗úi len	718	0	\N
+3834	Úçú	Òüñ	D├óy cã░ß╗øc c├óu c├í	718	0	\N
+3835	µè£þ│©	Òü░ÒüúÒüù	Vß║»t chß╗ë	718	0	\N
+3836	ÕÉìµ£¡	Òü¬ÒüÁÒüá	Ho╠ú t├¬n	719	0	\N
+3837	Õ¢╝µ░Å	ÒüïÒéîÒüù	bß║ín trai , ngã░ß╗Øi y├¬u	719	0	\N
+3838	ÕñºÚçÄµ░Å	ÒüèÒüèÒü«Òüù	├öng Ono	719	0	\N
+3839	µæéµ░Å	ÒüøÒüúÒüù	thang chia nhiß╗çt ─æß╗Ö lß║Ñy ─æiß╗âm ─æ├┤ng cß╗ºa nã░ß╗øc l├á 0 v├á ─æiß╗âm s├┤i l├á 100, b├ích ph├ón	719	0	\N
+3840	ÞÅ»µ░Å	ÒüïÒüù	thang nhiß╗çt Fahrenheit	719	0	\N
+3841	µ░ÅþÑ×	ÒüåÒüÿÒüîÒü┐	thß║ºn hß╗Ö mß║íng, th├ánh ho├áng, thß║ºn hß╗Ö mß╗çnh	719	0	\N
+3844	Þí¿þ┤Ö	Òü▓ÒéçÒüåÒüù	b├¼a	720	0	\N
+3845	þ┤ÖÕ╣ú	ÒüùÒü©Òüä	Tiß╗ün giß║Ñy	720	0	\N
+3846	ÕÆîþ┤Ö	ÒéÅÒüù	giß║Ñy Nhß║¡t	720	0	\N
+3848	ÞÇüõ║║	ÒéìÒüåÒüÿÒéô	Ph├▓ng hß╗ìc, lß╗øp hß╗ìc	721	0	\N
+3851	µòÖµÄê	ÒüìÒéçÒüåÒüÿÒéà	sß╗▒ gi├ío dß╗Ñc, gi├ío dß╗Ñc, giß║úng dß║íy	721	0	\N
+3853	µòÖþºæµø©	ÒüìÒéçÒüåÒüïÒüùÒéç	S├ích gi├ío khoa	721	0	\N
+3854	Õ«ùµòÖ	ÒüùÒéàÒüåÒüìÒéçÒüå	t├┤n gi├ío ,─æß║ío gi├ío ,─æß║ío	721	0	\N
+3858	Õ¥àÕÉêÕ«ñ	Òü¥ÒüíÒüéÒüäÒüùÒüñ	Ph├▓ng chß╗Ø	722	0	\N
+3859	µ©®Õ«ñ	ÒüèÒéôÒüùÒüñ	Nh├á k├¡nh	722	0	\N
+3860	Õ£░õ©ïÕ«ñ	ÒüíÒüïÒüùÒüñ	Hß║ºm chß╗®a, nß╗ün m├│ng, tß║ºng hß║ºm	722	0	\N
+3862	µÁ┤Õ«ñ	ÒéêÒüÅÒüùÒüñ	ph├▓ng tß║»m ,buß╗ông tß║»m	722	0	\N
+3863	þ¥¢	Òü»Òü¡	L├┤ng, c├ính	723	0	\N
+3864	þ¥¢µá╣	Òü»Òü¡	C├ính, l├┤ng v┼®	723	0	\N
+3865	õ©Çþ¥¢	ÒüäÒüíÒéÅ	Mß╗Öt con (chim, g├á, vß╗ït)	723	0	\N
+3866	Õìâþ¥¢	ÒüøÒéôÒü░	Mß╗Öt tr─âm con (chim, g├á, vß╗ït)	723	0	\N
+3867	þ¥¢µ»ø	ÒüåÒééÒüå	L├┤ng c├ính	723	0	\N
+3870	Õ¥®þ┐Æ	ÒüÁÒüÅÒüùÒéàÒüå	Xem lß║íi b├ái, ├┤n b├ái	724	0	\N
+3871	õ║êþ┐Æ	ÒéêÒüùÒéàÒüå	sß╗▒ soß║ín b├ái, xem b├ái mß╗øi	724	0	\N
+3794	Õºë	ÒüéÒü¡	Chß╗ï	710	0	27572
+3796	ÕºëÕª╣	ÒüùÒü¥Òüä	Th├ánh phß╗æ kß║┐t ngh─®a	710	0	28982
+3797	Õ╝ƒ	ÒüèÒü¿ÒüåÒü¿	Em trai	711	0	27574
+3798	ÕàäÕ╝ƒ	ÒüìÒéçÒüåÒüáÒüä	Anh em trai	711	0	27569
+3802	ÕºëÕª╣	ÒüùÒü¥Òüä	Chß╗ï em g├íi	712	0	28982
+3803	þºü	ÒéÅÒüƒÒüù	T├┤i	713	0	26968
+3804	þºü	ÒéÅÒüƒÒüù	T├┤i	713	0	26968
+3811	þºü	ÒéÅÒüƒÒüù	Chß╗ông	714	0	26968
+3842	Ú½¬	ÒüïÒü┐	Giß║Ñy	720	0	27812
+3843	µëïþ┤Ö	ÒüªÒüîÒü┐	Thã░	720	0	27279
+3847	þ┤Ö	ÒüïÒü┐	Nghß╗ç thuß║¡t xß║┐p giß║Ñy cß╗ºa Nhß║¡t Bß║ún	720	0	27332
+3849	µòÖõ╝Ü	ÒüìÒéçÒüåÒüïÒüä	gi├ío ─æã░ß╗Øng, nh├á thß╗Ø	721	0	28489
+3850	µòÖÞé▓	ÒüìÒéçÒüåÒüäÒüÅ	Sß╗▒ gi├ío dß╗Ñc	721	0	29220
+3852	µòÖÕ©½	ÒüìÒéçÒüåÒüù	Gi├ío vi├¬n	721	0	26975
+3855	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	Ph├▓ng hß╗ìc, lß╗øp hß╗ìc	722	0	27161
+3856	þáöþ®ÂÕ«ñ	ÒüæÒéôÒüìÒéàÒüåÒüùÒüñ	Pho├▓ng nghi├¬n cß╗®u	722	0	28973
+3857	õ╝ÜÞ¡░Õ«ñ	ÒüïÒüäÒüÄÒüùÒüñ	Ph├▓ng hß╗ìp	722	0	27078
+3861	ÕÆîÕ«ñ	ÒéÅÒüùÒüñ	ph├▓ng ß╗ƒ kiß╗âu Nhß║¡t┬áph├▓ng kiß╗âu Nhß║¡t	722	0	28080
+3868	Ú│Ñ	Òü¿Òéè	tß║¡p luyß╗çn	724	0	28242
+3869	þ┐Æµàú	ÒüùÒéàÒüåÒüïÒéô	Th├│i quen	724	0	28348
+3872	Õ¡ªþ┐Æ	ÒüîÒüÅÒüùÒéàÒüå	Hß╗ìc tß║¡p	724	0	\N
+3873	Þç¬þ┐Æ	ÒüÿÒüùÒéàÒüå	Sß╗▒ tß╗▒ ├┤n tß║¡p, tß╗▒ hß╗ìc	724	0	\N
+3876	µ╝óÕÆî	ÒüïÒéôÒéÅ	Tß╗½ ─æiß╗ân H├ín Nhß║¡t	725	0	\N
+3877	µ╝óµû╣Þû¼	ÒüïÒéôÒü¢ÒüåÒéäÒüÅ	Thuß╗æc ─æ├┤ng y; thuß╗æc bß║»c	725	0	\N
+3878	µ╝óµûç	ÒüïÒéôÒüÂÒéô	thãí v─ân Nhß║¡t Bß║ún m├┤ phß╗Ång thãí v─ân Trung Quß╗æc	725	0	\N
+3879	Õ¡É	Òüô	Chß╗», k├¢ tß╗▒	726	0	\N
+3881	µûçÕ¡ù	ÒééÒüÿ	Chß╗», v─ân tß╗▒	726	0	\N
+3882	ÕÉìÕ¡ù	Òü┐ÒéçÒüåÒüÿ	Hß╗ì	726	0	\N
+3883	µò░Õ¡ù	ÒüÖÒüåÒüÿ	m├ú ,chß╗» sß╗æ, sß╗æ liß╗çu	726	0	\N
+3885	µ┤╗Õ¡ù	ÒüïÒüñÒüÿ	chß╗» in	726	0	\N
+3890	µ¡úÕ╝Å	ÒüøÒüäÒüùÒüì	kiß╗âu T├óy	727	0	\N
+3891	ÕÆîÕ╝Å	ÒéÅÒüùÒüì	kiß╗âu Nhß║¡t	727	0	\N
+3894	Þ®ª	ÒüƒÒéü	Kß╗│ thi trã░ß╗øc khi nhß║¡p hß╗ìc; kß╗│ thi tuyß╗ân sinh	728	0	\N
+3895	Þ®ªÚúƒ	ÒüùÒüùÒéçÒüÅ	sß╗▒ nß║┐m thß╗¡, ─ân thß╗¡	728	0	\N
+3899	ÕÅùÚ¿ô	ÒüÿÒéàÒüæÒéô	ß╗®ng th├¡ ,sß╗▒ tham gia k├¼ thi, dß╗▒ thi	729	0	\N
+3900	õ¢ôÚ¿ô	ÒüƒÒüäÒüæÒéô	thß╗â t├¡ch ,sß╗▒ thß╗â nghiß╗çm, sß╗▒ trß║úi nghiß╗çm	729	0	\N
+3901	Õ«┐	ÒéäÒü®	B├ái tß║¡p vß╗ü nh├á	730	0	\N
+3902	õ©ïÕ«┐	ÒüÆÒüùÒéàÒüÅ	nh├á trß╗ì	730	0	\N
+3903	Õ«┐µ│è	ÒüùÒéàÒüÅÒü»ÒüÅ	Ngß╗º trß╗ì, trß╗ì lß║íi	730	0	\N
+3904	Õ«┐	ÒéäÒü®	Nh├á trß╗ì, chß╗ù tr├║	730	0	\N
+3905	µ░æÕ«┐	Òü┐ÒéôÒüùÒéàÒüÅ	Nh├á trß╗ì cß╗ºa d├ón cho kh├ích du lß╗ïch thu├¬; nh├á trß╗ì tã░ nh├ón	730	0	\N
+3906	Þ¿ÿÞÇà	ÒüìÒüùÒéâ	B├ái tß║¡p vß╗ü nh├á	731	0	\N
+3908	Úíî	ÒüáÒüä	Vß║Ñn ─æß╗ü; chß╗º ─æß╗ü	731	0	\N
+3909	ÚíîÕÉì	ÒüáÒüäÒéüÒüä	t├¬n (s├ích, b├ái h├ít.v.v...) ,nhan ─æß╗ü	731	0	\N
+3910	Þ®▒Úíî	ÒéÅÒüáÒüä	Chß╗º ─æß╗ü, ti├¬u ─æß╗ü	731	0	\N
+3911	Þ¡░Úíî	ÒüÄÒüáÒüä	─æß╗ü ├ín hß╗Öi nghß╗ï, vß║Ñn ─æß╗ü thß║úo luß║¡n	731	0	\N
+3912	Þ¬▓Úíî	ÒüïÒüáÒüä	chß╗º ─æß╗ü, ─æß╗ü t├ái	731	0	\N
+3913	õ©╗Úíî	ÒüùÒéàÒüáÒüä	─æß╗ü t├ái, chß╗º ─æß╗ü	731	0	\N
+3914	ÕÅñ	ÒüÁÒéï	v─ân hß╗ìc	732	0	\N
+3917	µûçÕ¡ù	ÒééÒüÿ	Chß╗», v─ân tß╗▒	732	0	\N
+3919	Þï▒µûç	ÒüêÒüäÒüÂÒéô	c├óu tiß║┐ng Anh	732	0	\N
+3920	µûçÕÅÑ	ÒééÒéôÒüÅ	sß╗▒ k├¬u ca, sß╗▒ ph├án n├án, sß╗▒ than phiß╗ün	732	0	\N
+3921	µûç	ÒüÁÒü┐	Thã░ tß╗½	732	0	\N
+3922	þ£ƒ	Òü¥	tiß║┐ng Anh	733	0	\N
+3923	Þï▒Úøä	ÒüêÒüäÒéåÒüå	Anh h├╣ng	733	0	\N
+3924	Þï▒Õø¢	ÒüêÒüäÒüôÒüÅ	Nã░ß╗øc anh	733	0	\N
+3925	Þï▒õ╝ÜÞ®▒	ÒüêÒüäÒüïÒüäÒéÅ	Sß╗▒ ─æ├ám thoß║íi bß║▒ng anh ngß╗»	733	0	\N
+3926	Þï▒ÕÆî	ÒüêÒüäÒéÅ	Tß╗½ ─æiß╗ân Anh - Nhß║¡t	733	0	\N
+3927	ÕÆîÞï▒	ÒéÅÒüêÒüä	Tß╗½ ─æiß╗ân Nhß║¡t - Anh	733	0	\N
+3928	Õñº	ÒüèÒüè	Hß╗Åi, chß║Ñt vß║Ñn	734	0	\N
+3929	µÇºÞ│¬	ÒüøÒüäÒüùÒüñ	t├¡nh chß║Ñt	734	0	\N
+3930	þë®Þ│¬	ÒüÂÒüúÒüùÒüñ	vß║¡t chß║Ñt	734	0	\N
+3931	þ┤áÞ│¬	ÒüØÒüùÒüñ	tß╗æ chß║Ñt	734	0	\N
+3932	þÑ×þÁîÞ│¬	ÒüùÒéôÒüæÒüäÒüùÒüñ	├¡nh n├│ng nß║úy, sß╗▒ bß╗ôn chß╗ôn, lo lß║»ng	734	0	\N
+3933	Þ│¬Õ▒ï	ÒüùÒüíÒéä	tiß╗çm cß║ºm ─æß╗ô	734	0	\N
+3934	ÚûÇ	ÒééÒéô	Vß║Ñn ─æß╗ü	735	0	\N
+3935	Þ│¬ÕòÅ	ÒüùÒüñÒééÒéô	Hß╗Åi, chß║Ñt vß║Ñn	735	0	\N
+3936	ÕòÅ	Òü¿Òüä	C├óu hß╗Åi	735	0	\N
+3937	ÕòÅ	Òü¿	Viß║┐ng th─âm	735	0	\N
+3938	þûæÕòÅ	ÒüÄÒééÒéô	sß╗▒ nghi vß║Ñn, sß╗▒ ho├ái nghi	735	0	\N
+3939	Õ¡ªÕòÅ	ÒüîÒüÅÒééÒéô	hß╗ìc vß║Ñn, sß╗▒ hß╗ìc	735	0	\N
+3940	ÕòÅÕ▒ï	Òü¿ÒéôÒéä	Kho b├ín xß╗ë	735	0	\N
+3941	Õàä	Òü½Òüä	sß╗▒ thuyß║┐t minh, sß╗▒ giß║úi th├¡ch	736	0	\N
+3943	ÚûïÞ¿¡	ÒüïÒüäÒüøÒüñ	sß╗▒ th├ánh lß║¡p, sß╗▒ x├óy dß╗▒ng	736	0	\N
+3944	Þ¬¼Õ¥ù	ÒüøÒüúÒü¿ÒüÅ	sß╗▒ phß╗Ång ─æo├ín, giß║ú thuyß║┐t	736	0	\N
+3945	Þ¬¼	Òü¿	sß╗▒ ─æi khß║»p nãíi ─æß╗â diß╗àn thuyß║┐t, cuß╗Öc vß║¡n ─æß╗Öng tranh cß╗¡	736	0	\N
+3947	µ£øÚüáÚÅí	Òü╝ÒüåÒüêÒéôÒüìÒéçÒüå	K├¡nh viß╗àn vß╗ìng	737	0	\N
+3948	µ░©Úüá	ÒüêÒüäÒüêÒéô	xa lß║»c ,viß╗àn ,─æß║▒ng xa, phã░ãíng xa	737	0	\N
+3951	Þ┐æÚáâ	ÒüíÒüïÒüöÒéì	gß║ºn ─æ├óy	738	0	\N
+3952	Þ┐æõ╗úþÜä	ÒüìÒéôÒüáÒüäÒüªÒüì	sß╗▒ cß║¡n thß╗ï, tß║¡t cß║¡n thß╗ï	738	0	\N
+3953	õ©¡Þ┐æµØ▒	ÒüíÒéàÒüåÒüìÒéôÒü¿Òüå	V├╣ng cß║¡n trung cß║¡n ─æ├┤ng	738	0	\N
+3875	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	H├ín tß╗▒	725	0	27001
+3880	µ╝óÕ¡ù	ÒüïÒéôÒüÿ	H├ín tß╗▒	726	0	27447
+3884	þ┐ÆÕ¡ù	ÒüùÒéàÒüåÒüÿ	sß╗▒ luyß╗çn tß║¡p chß╗»	726	0	29529
+3886	Õ¡ù	Òüÿ	Chß╗» la tinh	726	0	27446
+3887	þºü	ÒéÅÒüƒÒüù	Lß╗à nhß║¡p hß╗ìc	727	0	26968
+3888	þÁÉÕ®ÜÕ╝Å	ÒüæÒüúÒüôÒéôÒüùÒüì	Lß╗à cã░ß╗øi	727	0	28484
+3889	Õ╝Å	ÒüùÒüì	H├¼nh thß╗®c; kiß╗âu; lß╗à; nghi thß╗®c	727	0	28486
+3892	Õ╝Å	ÒüùÒüì	Kß╗│ thi, b├ái thi	728	0	28486
+3893	Þ®ªÕÉê	ÒüùÒüéÒüä	cuß╗Öc thi ─æß║Ñu, trß║¡n ─æß║Ñu	728	0	28016
+3896	Õ▒▒	ÒéäÒü¥	Kß╗│ thi, b├ái thi	729	0	27394
+3897	þÁîÚ¿ô	ÒüæÒüäÒüæÒéô	kinh nghiß╗çm	729	0	28305
+3907	ÕòÅÚíî	ÒééÒéôÒüáÒüä	Vß║Ñn ─æß╗ü	731	0	27736
+3915	õ¢£µûç	ÒüòÒüÅÒüÂÒéô	sß╗▒ viß║┐t v─ân, sß╗▒ l├ám v─ân, ─æoß║ín v─ân	732	0	28481
+3916	µûçÕîû	ÒüÂÒéôÒüï	V─ân h├│a	732	0	29221
+3918	µûçµ│ò	ÒüÂÒéôÒü¢Òüå	Ngã░╠â pha╠üp	732	0	29150
+3942	Õ░ÅÞ¬¼	ÒüùÒéçÒüåÒüøÒüñ	Tiß╗âu thuyß║┐t	736	0	28320
+3946	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	chuyß║┐n tham quan, d├ú ngoß║íi	737	0	27161
+3949	µ£¿	Òüì	x├│m giß╗üng , h├áng x├│m	738	0	27493
+3950	µ£ÇÞ┐æ	ÒüòÒüäÒüìÒéô	gß║ºn nhß║Ñt ,gß║ºn ─æ├óy, mß╗øi ─æ├óy	738	0	28021
+3954	Þ¬░	ÒüáÒéî	Hiß╗ün triß║┐t, hß╗ìc giß║ú	739	0	\N
+3955	õ¢£ÞÇà	ÒüòÒüÅÒüùÒéâ	t├íc giß║ú	739	0	\N
+3959	Þ¿ÿÞÇà	ÒüìÒüùÒéâ	Ngã░ß╗Øi viß║┐t b├ío	739	0	\N
+3960	Þ¬¡ÞÇà	Òü®ÒüÅÒüùÒéâ	─Éß╗Öc giß║ú	739	0	\N
+3961	ÞïÑÞÇà	ÒéÅÒüïÒééÒü«	thanh ni├¬n, lß╗øp trß║╗, giß╗øi trß║╗	739	0	\N
+3963	Úü┐µÜæÕ£░	Òü▓ÒüùÒéçÒüí	Khu nghß╗ë m├ít	740	0	\N
+3964	Õ»Æ	ÒüòÒéÇ	kh├¡ lß║ính, hãíi lß║ính	741	0	\N
+3965	Õ»Æµ░ù	ÒüïÒéôÒüì	kh├¡ lß║ính, hãíi lß║ính	741	0	\N
+3966	Õ»ÆÕ©»	ÒüïÒéôÒüƒÒüä	H├án ─æß╗øi, xß╗® lß║ính	741	0	\N
+3967	Õ»ÆÚó¿	ÒüïÒéôÒüÀÒüå	H├án phong	741	0	\N
+3968	Õåè	ÒüòÒüñ	Thß╗â trß╗ìng, c├ón nß║Àng	742	0	\N
+3969	ÚçìÕ¢╣	ÒüÿÒéàÒüåÒéäÒüÅ	gi├ím ─æß╗æc	742	0	\N
+3970	ÚçìÞªü	ÒüÿÒéàÒüåÒéêÒüå	Vß║¡t phß║®m qu├¢ b├íu; ─æß╗ô qu├¢ gi├í	742	0	\N
+3971	õ║îÚçì	ÒüÁÒüƒÒüê	Hai m├¡	742	0	\N
+3972	Þ╗¢	ÒüïÒéï	Xe hß║íng nhß╗Å	743	0	\N
+3973	Þ╗¢	ÒüïÒéì	Khinh miß╗çt, xem thã░ß╗Øng, miß╗çt thß╗ï	743	0	\N
+3975	õ¢Äõ©ï	ÒüªÒüäÒüï	sß╗▒ giß║úm, sß╗▒ k├®m ─æi, sß╗▒ suy giß║úm	744	0	\N
+3976	õ¢Äµ©®	ÒüªÒüäÒüèÒéô	Nhiß╗çt ─æß╗Ö thß║Ñp	744	0	\N
+3977	õ¢Äµ░ùÕ£º	ÒüªÒüäÒüìÒüéÒüñ	├üp suß║Ñt thß║Ñp	744	0	\N
+3978	Ú½ÿõ¢Ä	ÒüôÒüåÒüªÒüä	cao v├á thß║Ñp, l├¬n v├á xuß╗æng, dao ─æß╗Öng, biß║┐n ─æß╗Öng	744	0	\N
+3979	Õ░ÅÚ│Ñ	ÒüôÒü¿Òéè	nhã░ß╗úc ─æiß╗âm, ─æiß╗âm yß║┐u	745	0	\N
+3980	Õ╝▒	ÒéêÒéÅ	sß╗▒ gß║ºy yß║┐u, sß╗▒ gß║ºy g├▓ ß╗æm yß║┐u	745	0	\N
+3981	Õ╝▒ÞéëÕ╝ÀÚúƒ	ÒüÿÒéâÒüÅÒü½ÒüÅÒüìÒéçÒüåÒüùÒéçÒüÅ	Viß╗çc con mß║ính ─ân thß╗ït con yß║┐u	745	0	\N
+3982	Õ╝▒µ░ù	ÒéêÒéÅÒüì	sß╗▒ nh├║t nh├ít, sß╗▒ nh├ít gan, sß╗▒ rß╗Ñt r├¿	745	0	\N
+3984	µé¬ÕÅú	ÒéÅÒéïÒüÉÒüí	sß╗▒ n├│i xß║Ñu vß╗ü ai ─æ├│	746	0	\N
+3985	µäÅÕ£░µé¬	ÒüäÒüÿÒéÅÒéï	c├íi xß║Ñu nhß║Ñt, c├íi tß╗ôi nhß║Ñt	746	0	\N
+3986	µé¬ÞÇà	ÒéÅÒéïÒééÒü«	ngã░ß╗Øi xß║Ñu, kß║╗ xß║Ñu	746	0	\N
+3987	µé¬Ú¡ö	ÒüéÒüÅÒü¥	y├¬u ma	746	0	\N
+3988	µé¬	ÒüéÒüÅ	Sß╗▒ xß║Ñu; kh├┤ng tß╗æt	746	0	\N
+3989	µé¬Õ»Æ	ÒüèÒüïÒéô	sß╗▒ ß╗øn lß║ính; sß╗▒ r├╣n m├¼nh	746	0	\N
+3991	µÜùÞ¿ÿ	ÒüéÒéôÒüì	sß╗▒ ├ím s├ít	747	0	\N
+3992	Õñ¬	ÒüÁÒü¿	Sß╗æ mß║¡t khß║®u	748	0	\N
+3993	Õñ¬	ÒüÁÒü¿	Mß║Àt trß╗Øi	748	0	\N
+3994	Õñ¬Ú╝ô	ÒüƒÒüäÒüô	C├íi trß╗æng	748	0	\N
+3995	þÜçÕñ¬Õ¡É	ÒüôÒüåÒüƒÒüäÒüù	Ho├áng th├íi tß╗¡, th├íi tß╗¡	748	0	\N
+3996	Õñ¬Õ╣│µ┤ï	ÒüƒÒüäÒü©ÒüäÒéêÒüå	Th├íi B├¼nh Dã░ãíng	748	0	\N
+3997	õ©©Õñ¬	Òü¥ÒéïÒüƒ	Khoanh gß╗ù tr├▓n	748	0	\N
+3998	Þ▒å	Òü¥Òéü	Hß║ít ─æß║¡u	749	0	\N
+3999	Þ▒åÞàÉ	Òü¿ÒüåÒüÁ	─Éß║¡u h┼®	749	0	\N
+4000	Þ▒å	Òü¥Òéü	Hß║ít c├á ph├¬	749	0	\N
+4001	µ×ØÞ▒å	ÒüêÒüáÒü¥Òéü	─Éß║¡u xanh	749	0	\N
+4002	ÕñºÞ▒å	ÒüáÒüäÒüÜ	─æß║¡u tã░ãíng	749	0	\N
+4003	Þ▒åõ╣│	Òü¿ÒüåÒü½ÒéàÒüå	Sß╗»a ─æß║¡u n├ánh	749	0	\N
+4004	þ┤ìÞ▒å	Òü¬ÒüúÒü¿Òüå	M├│n ─æß║¡u n├ánh l├¬n men	749	0	\N
+4005	þƒó	Òéä	sß╗ƒ ─æoß║ún, ─æiß╗âm yß║┐u, nhã░ß╗úc ─æiß╗âm	750	0	\N
+4006	þƒ¡µ£ƒ	ÒüƒÒéôÒüì	ngß║»n hß║ín	750	0	\N
+4007	þƒ¡µ£ƒ	ÒüƒÒéôÒüì	Cao ─æß║│ng	750	0	\N
+4008	þƒ¡þÀ¿	ÒüƒÒéôÒü║Òéô	truyß╗çn ngß║»n	750	0	\N
+4009	þƒ¡µ░ù	ÒüƒÒéôÒüì	─Éoß║ún ca	750	0	\N
+4011	Õàë	Òü▓Òüï	Tham quan, du lß╗ïch	751	0	\N
+4013	ÕàëþÀÜ	ÒüôÒüåÒüøÒéô	tia s├íng	751	0	\N
+4014	ÕàëµÖ»	ÒüôÒüåÒüæÒüä	Quang cß║únh, phong cß║únh	751	0	\N
+4015	Õàëþå▒Þ▓╗	ÒüôÒüåÒü¡ÒüñÒü▓	Tiß╗ün ─æiß╗çn, ga, nhi├¬n liß╗çu	751	0	\N
+4016	ÞÖ½	ÒéÇÒüù	Gi├│	752	0	\N
+4019	Úó¿Õæé	ÒüÁÒéì	Bß╗ôn tß║»m	752	0	\N
+4020	Úó¿Þê╣	ÒüÁÒüåÒüøÒéô	Khinh kh├¡ cß║ºu	752	0	\N
+4021	Úó¿µÖ»	ÒüÁÒüåÒüæÒüä	Phong cß║únh	752	0	\N
+4022	µ┤ïÚó¿	ÒéêÒüåÒüÁÒüå	kiß╗âu T├óy	752	0	\N
+4023	ÕÆîÚó¿	ÒéÅÒüÁÒüå	kiß╗âu, phong c├ích Nhß║¡t	752	0	\N
+4026	ÚüïÕïò	ÒüåÒéôÒü®Òüå	sß╗▒ vß║¡n ─æß╗Öng, viß╗çc chãíi thß╗â thao	753	0	\N
+4028	ÚüïÕæ¢	ÒüåÒéôÒéüÒüä	vß║¡n mß╗çnh	753	0	\N
+4029	ÚüïÞ│â	ÒüåÒéôÒüíÒéô	tiß╗ün cã░ß╗øc	753	0	\N
+4034	µäƒÕïò	ÒüïÒéôÒü®Òüå	─æß╗Öng tß╗½	754	0	\N
+4036	ÕÀú	ÒüÖ	Mß╗Öt bã░ß╗øc	756	0	\N
+4037	ÚÇ▓µ¡®	ÒüùÒéôÒü¢	Sß╗▒ tiß║┐n bß╗Ö	756	0	\N
+4038	µ¡®Úüô	Òü╗Òü®Òüå	Vß╗ëa h├¿, ─æã░ß╗Øng d├ánh cho ngã░ß╗Øi ─æi bß╗Ö	756	0	\N
+3958	µ¡»Õî╗ÞÇà	Òü»ÒüäÒüùÒéâ	Nha s─®	739	0	27773
+3962	Õñ¬ÚÖ¢	ÒüƒÒüäÒéêÒüå	C├íi n├│ng c├▓n s├│t lß║íi cß╗ºa m├╣a h├¿	740	0	28552
+3974	þºü	ÒéÅÒüƒÒüù	Tß╗ôi nhß║Ñt, tß╗ôi tß╗ç	744	0	26968
+3983	Õ¢╝	ÒüïÒéî	sß╗▒ n├│i xß║Ñu vß╗ü ai ─æ├│	746	0	27204
+3990	õ©¡	Òü¬Òüï	Tß╗æi om	747	0	27519
+4010	Õñ¬ÚÖ¢	ÒüƒÒüäÒéêÒüå	├ünh s├íng	751	0	28552
+4012	µùÑÕàë	Òü½ÒüúÒüôÒüå	nß║»ng,├ính mß║Àt trß╗Øi	751	0	28762
+4017	ÕÅ░Úó¿	ÒüƒÒüäÒüÁÒüå	B├úo lß╗øn	752	0	29023
+4018	Úó¿Úé¬	ÒüïÒü£	cß║úm lß║ính, cß║úm c├║m	752	0	27888
+4024	Þ╗è	ÒüÅÒéïÒü¥	sß╗▒ l├íi (xe), sß╗▒ vß║¡n h├ánh (m├íy m├│c)	753	0	27041
+4025	ÚüïÞ╗óµëï	ÒüåÒéôÒüªÒéôÒüùÒéà	T├ái xß║┐	753	0	29113
+4027	Úüï	ÒüåÒéô	xß║Ñu sß╗æ, ─æen ─æß╗ºi	753	0	27967
+4030	Õèø	ÒüíÒüïÒéë	sß╗▒ vß║¡n ─æß╗Öng, viß╗çc chãíi thß╗â thao	754	0	28306
+4031	Þç¬ÕïòÞ╗è	ÒüÿÒü®ÒüåÒüùÒéâ	Xe ├┤ t├┤	754	0	27064
+4032	Õïòþë®	Òü®ÒüåÒüÂÒüñ	─Éß╗Öng vß║¡t	754	0	27913
+4033	µ┤╗Õïò	ÒüïÒüñÒü®Òüå	Hoß║ít ─æß╗Öng	754	0	29603
+4035	õ┐íÕÅÀ	ÒüùÒéôÒüöÒüå	sß╗▒ cß║Ñm, sß╗▒ ngß╗½ng	755	0	28106
+4039	µ¡®	ÒüéÒéå	tiß╗ün hoa hß╗ông┬átß╗ë suß║Ñt, tß╗ë gi├í, phß║ºn tr─âm l├úi suß║Ñt	756	0	\N
+4040	µ¡®ÞíîÞÇà	Òü╗ÒüôÒüåÒüùÒéâ	Kß║╗ bß╗Ö h├ánh, ngã░ß╗Øi ─æi bß╗Ö	756	0	\N
+4042	Õñºõ¢┐	ÒüƒÒüäÒüù	─Éß║íi sß╗®	757	0	\N
+4044	õ¢┐Õæ¢	ÒüùÒéüÒüä	Sß╗® mß╗çnh	757	0	\N
+4045	Õñ®õ¢┐	ÒüªÒéôÒüù	Thi├¬n sß╗®	757	0	\N
+4046	ÚÇü	ÒüèÒüÅ	Sß╗▒ ph├ít thanh	758	0	\N
+4047	ÚâÁÚÇü	ÒéåÒüåÒüØÒüå	Cã░ß╗øc ph├¡	758	0	\N
+4048	ÚÇüÕêÑõ╝Ü	ÒüØÒüåÒü╣ÒüñÒüïÒüä	Tiß╗çc chia tay	758	0	\N
+4049	ÚÇüõ┐í	ÒüØÒüåÒüùÒéô	T├áu kh├┤ng d├╣ng ─æß╗â chß╗ƒ h├ánh kh├ích	758	0	\N
+4051	µ┤ùÚíö	ÒüøÒéôÒüîÒéô	Viß╗çc rß╗¡a mß║Àt	759	0	\N
+4052	µ┤ùþñ╝	ÒüøÒéôÒéîÒüä	Lß╗à rß╗¡a tß╗Öi	759	0	\N
+4053	µÇÑ	ÒüäÒüØ	tß╗æc h├ánh	760	0	\N
+4055	Þç│µÇÑ	ÒüùÒüìÒéàÒüå	Cß║Ñp tß╗æc, khß║®n cß║Ñp	760	0	\N
+4056	þÀèµÇÑ	ÒüìÒéôÒüìÒéàÒüå	sß╗▒ cß║Ñp b├ích, sß╗▒ khß║®n cß║Ñp, cß║Ñp b├ích, khß║®n cß║Ñp	760	0	\N
+4060	Õà¼Úûï	ÒüôÒüåÒüïÒüä	Sß╗▒ c├┤ng khai, c├┤ng bß╗æ	761	0	\N
+4061	Úûïõ╝ÜÕ╝Å	ÒüïÒüäÒüïÒüäÒüùÒüì	Lß╗à khai trã░ãíng,khai mß║íc	761	0	\N
+4063	ÚûëÚÄû	Òü©ÒüäÒüò	Sß╗▒ phong bß║┐, sß╗▒ phong tß╗Åa	762	0	\N
+4064	Õ╝ô	ÒéåÒü┐	Sß╗▒ tr├¡ch dß║½n	764	0	\N
+4065	Õ╝òÕèø	ÒüäÒéôÒéèÒéçÒüÅ	Lß╗▒c hß║Ñp dß║Ñn, lß╗▒c h├║t	764	0	\N
+4066	þö░	Òüƒ	Kß╗ë niß╗çm	765	0	\N
+4067	µÇØ	ÒüèÒéé	├¢ tã░ß╗ƒng ,tã░ tã░ß╗ƒng	765	0	\N
+4068	Õñº	ÒüèÒüè	Ngã░ß╗Øi quen, quen biß║┐t	766	0	\N
+4070	þƒÑµÇº	ÒüíÒüøÒüä	sß╗▒ th├┤ng minh	766	0	\N
+4071	þƒÑõ║ï	ÒüíÒüÿ	ngã░ß╗Øi ─æß╗®ng ─æß║ºu mß╗Öt tß╗ënh (cß╗ºa Nhß║¡t Bß║ún)	766	0	\N
+4073	ÕÅéÞÇâ	ÒüòÒéôÒüôÒüå	Sß╗▒ tham khß║úo	767	0	\N
+4074	ÞÇâµà«	ÒüôÒüåÒéèÒéç	khß║úo cß╗ò hß╗ìc	767	0	\N
+4075	ÕÅéÞÇâµø©	ÒüòÒéôÒüôÒüåÒüùÒéç	S├ích tham khß║úo	767	0	\N
+4076	µ¡╗	Òüù	C├íi chß║┐t	768	0	\N
+4077	µ¡╗õ¢ô	ÒüùÒüƒÒüä	X├íc chß║┐t	768	0	\N
+4078	Õ┐àµ¡╗	Òü▓ÒüúÒüù	Quyß║┐t t├óm	768	0	\N
+4079	µ¡╗õ║í	ÒüùÒü╝Òüå	Tß╗¡ vong	768	0	\N
+4080	Õ«ëµÑ¢µ¡╗	ÒüéÒéôÒéëÒüÅÒüù	Ra ─æi nhß║╣ nh├áng	768	0	\N
+4081	µ¡╗ÞÇà	ÒüùÒüùÒéâ	Ngã░ß╗Øi chß║┐t	768	0	\N
+4082	µ¡╗Þ¬×	ÒüùÒüö	lß╗Øi n├│i cß╗ºa ngã░ß╗Øi chß║┐t	768	0	\N
+4086	Õî╗ÚÖó	ÒüäÒüäÒéô	y viß╗çn	769	0	\N
+4087	Õî╗þÖé	ÒüäÒéèÒéçÒüå	Sß╗▒ chß╗»a trß╗ï	769	0	\N
+4088	Õî╗Õ©½	ÒüäÒüù	b├íc s─®	769	0	\N
+4089	Õî╗Þû¼Õôü	ÒüäÒéäÒüÅÒü▓Òéô	─Éß╗ô y tß║┐; dã░ß╗úc phß║®m; thuß╗æc chß╗»a bß╗çnh,Dã░ß╗úc liß╗çu	769	0	\N
+4090	ÕÅ░	ÒüáÒüä	Tß╗½ ─æß║ºu ─æß║┐n cuß╗æi; tß╗½ ─æß║ºu ch├¡ cuß╗æi	770	0	\N
+4091	µø©	Òüï	chuyß║┐n t├áu ─æß║ºu ti├¬n	770	0	\N
+4093	þÁéõ║å	ÒüùÒéàÒüåÒéèÒéçÒüå	Sß╗▒ kß║┐t th├║c	771	0	\N
+4094	þÁéÚø╗	ÒüùÒéàÒüåÒüºÒéô	chuyß║┐n xe ─æiß╗çn cuß╗æi c├╣ng	771	0	\N
+4095	þÁéþé╣	ÒüùÒéàÒüåÒüªÒéô	trß║ím, ga cuß╗æi c├╣ng	771	0	\N
+4096	ÕºïþÁé	ÒüùÒüÿÒéàÒüå	tß╗½ ─æß║ºu ─æß║┐n cuß╗æi	771	0	\N
+4097	Õ┤û	ÒüîÒüæ	─É├í	772	0	\N
+4098	Õ«Øþƒ│	Òü╗ÒüåÒüøÒüì	ngß╗ìc┬á─æ├í qu├¢┬ábß║úo thß║ích	772	0	\N
+4099	þƒ│	ÒüøÒüú	Dß║ºu hoß║ú	772	0	\N
+4100	þƒ│þé¡	ÒüøÒüìÒüƒÒéô	Than ─æa╠ü	772	0	\N
+4101	þúüþƒ│	ÒüÿÒüùÒéâÒüÅ	quß║Àng sß║»t tß╗½, quß║Àng tß╗½┬á─æ├í nam ch├óm, nam ch├óm	772	0	\N
+4102	ÕÅ░	ÒüáÒüä	Sß╗▒ nghi├¬n cß╗®u	773	0	\N
+4105	þáöþ®ÂµëÇ	ÒüæÒéôÒüìÒéàÒüåÒüÿÒéç	tß╗ò nghi├¬n cß╗®u; nh├│m nghi├¬n cß╗®u; viß╗çn nghi├¬n cß╗®u	773	0	\N
+4106	þáöþ®ÂµëÇ	ÒüæÒéôÒüìÒéàÒüåÒüùÒéç	tß╗ò nghi├¬n cß╗®u; nh├│m nghi├¬n cß╗®u; viß╗çn nghi├¬n cß╗®u	773	0	\N
+4107	þáöõ┐«	ÒüæÒéôÒüùÒéàÒüå	Sß╗▒ ─æ├áo tß║ío	773	0	\N
+4111	þ®ÂµÿÄ	ÒüìÒéàÒüåÒéüÒüä	sß╗▒ ─æiß╗üu tra cho r├Á r├áng, ─æiß╗üu tra r├Á	774	0	\N
+4112	þ®ÂµÑÁ	ÒüìÒéàÒüåÒüìÒéçÒüÅ	Sß╗▒ theo ─æuß╗òi; sß╗▒ theo t├¼m	774	0	\N
+4113	þö░	Òüƒ	Du hß╗ìc sinh	775	0	\N
+4116	þòÖ	Òü¿	gß╗¡i ─æß║úm bß║úo	775	0	\N
+4118	µ£ëÕê®	ÒéåÒüåÒéè	sß╗▒ c├│ hay kh├┤ng c├│	776	0	\N
+4119	þòæ	Òü»ÒüƒÒüæ	Ng├ánh nghß╗ü, sß║ún nghiß╗çp	777	0	\N
+4120	þöƒþöú	ÒüøÒüäÒüòÒéô	sß╗▒ sß║ún xuß║Ñt	777	0	\N
+4043	õ¢┐þö¿õ©¡	ÒüùÒéêÒüåÒüíÒéàÒüå	T├¼nh trß║íng ─æang sß╗¡ dß╗Ñng	757	0	28627
+4050	Õàêþöƒ	ÒüøÒéôÒüøÒüä	X├á b├┤ng	759	0	26974
+4054	þë╣µÇÑ	Òü¿ÒüúÒüìÒéàÒüå	t├áu tß╗æc h├ánh sß╗▒ hß╗Åa tß╗æc	760	0	27245
+4057	µòæµÇÑÞ╗è	ÒüìÒéàÒüåÒüìÒéàÒüåÒüùÒéâ	Xe cß║Ñp cß╗®u	760	0	29478
+4058	µÇÑþö¿	ÒüìÒéàÒüåÒéêÒüå	Viß╗çc gß║Ñp	760	0	28657
+4059	õ║îõ║║	ÒüÁÒüƒÒéè	Mß╗ƒ cß╗¡a h├áng	761	0	29178
+4062	õ║║	Òü▓Òü¿	sß╗▒ ─æ├│ng cß╗¡a h├áng	762	0	27202
+4069	þƒÑÞ¡ÿ	ÒüíÒüùÒüì	Tri thß╗®c, kiß║┐n thß╗®c	766	0	29449
+4072	õ║║	Òü▓Òü¿	C├ích suy ngh─®	767	0	27202
+4083	Õî╗ÞÇà	ÒüäÒüùÒéâ	B├íc s─®	769	0	26980
+4084	Õî╗Õ¡ª	ÒüäÒüîÒüÅ	y hß╗ìc	769	0	29475
+4092	þºü	ÒéÅÒüƒÒüù	sau c├╣ng, cuß╗æi c├╣ng	771	0	26968
+4103	þáöþ®ÂÞÇà	ÒüæÒéôÒüìÒéàÒüåÒüùÒéâ	Nh├á nghi├¬n cß╗®u	773	0	26981
+4104	þáöþ®ÂÕ«ñ	ÒüæÒéôÒüìÒéàÒüåÒüùÒüñ	Ph├▓ng nghi├¬n cß╗®u	773	0	28973
+4108	Õ«Â	ÒüäÒüê	Sß╗▒ nghi├¬n cß╗®u	774	0	28248
+4109	þáöþ®ÂÞÇà	ÒüæÒéôÒüìÒéàÒüåÒüùÒéâ	Nh├á nghi├¬n cß╗®u	774	0	26981
+4110	þáöþ®ÂÕ«ñ	ÒüæÒéôÒüìÒéàÒüåÒüùÒüñ	Ph├▓ng nghi├¬n cß╗®u	774	0	28973
+4114	þòÖÕ«ê	ÒéïÒüÖ	Sß╗▒ vß║»ng nh├á	775	0	28667
+4115	þòÖÕ«êþò¬	ÒéïÒüÖÒü░Òéô	ti╠ün hi├¬╠úu ─æi├¬╠ún thoa╠úi tra╠ë lãí╠Çi tã░╠ú ─æ├┤╠úng	775	0	28668
+4117	µ£ê	ÒüñÒüì	sß╗▒ phß║úi trß║ú chi ph├¡	776	0	28020
+4121	Õ£ƒþöú	Òü┐ÒéäÒüÆ	Qu├á lã░u niß╗çm	777	0	\N
+4122	þöúÕ£░	ÒüòÒéôÒüí	nãíi sß║ún xuß║Ñt	777	0	\N
+4123	Õà▒þöú	ÒüìÒéçÒüåÒüòÒéô	Chß╗º ngh─®a cß╗Öng sß║ún	777	0	\N
+4124	Þ▓íþöú	ÒüûÒüäÒüòÒéô	tiß╗ün cß╗ºa┬át├ái sß║ún	777	0	\N
+4125	þöú	Òüå	Bß║Ñt ─æß╗Öng sß║ún	777	0	\N
+4126	þ¥è	Òü▓ÒüñÒüÿ	Ng├ánh c├┤ng nghiß╗çp	778	0	\N
+4128	ÕìÆµÑ¡	ÒüØÒüñÒüÄÒéçÒüå	sß╗▒ tß╗æt nghiß╗çp	778	0	\N
+4129	ÞüÀµÑ¡	ÒüùÒéçÒüÅÒüÄÒéçÒüå	nghß╗ü nghiß╗çp	778	0	\N
+4130	õ╝üµÑ¡	ÒüìÒüÄÒéçÒüå	Cãí sß╗ƒ, x├¡ nghiß╗çp, doanh nghiß╗çp	778	0	\N
+4132	Þç¬µÑ¡Þç¬Õ¥ù	ÒüÿÒüöÒüåÒüÿÒü¿ÒüÅ	Gieo nh├ón n├áo gß║Àt quß║ú ─æß║Ñy (th├ánh ngß╗»)	778	0	\N
+4133	Þ¥▓µÑ¡	Òü«ÒüåÒüÄÒéçÒüå	Ng├ánh n├┤ng nghiß╗çp	778	0	\N
+4134	Þû¼Þìë	ÒéäÒüÅÒüØÒüå	Thuß╗æc	779	0	\N
+4135	Þû¼Õ▒ï	ÒüÅÒüÖÒéèÒéä	nh├á thuß╗æc ,hiß╗çu thuß╗æc ,dã░ß╗úc ph├▓ng ,cß╗¡a h├áng thuß╗æc	779	0	\N
+4136	Þ¥▓Þû¼	Òü«ÒüåÒéäÒüÅ	thuß╗æc trß╗½ s├óu	779	0	\N
+4137	Þû¼Õ▒Ç	ÒéäÒüúÒüìÒéçÒüÅ	Tiß╗çm thuß╗æc	779	0	\N
+4138	Þû¼µîç	ÒüÅÒüÖÒéèÒéåÒü│	ng├│n ├íp ├║t	779	0	\N
+4139	Úó¿Úé¬Þû¼	ÒüïÒü£ÒüÉÒüÖÒéè	Thuß╗æc cß║úm	779	0	\N
+4140	Þû¼Õ¡ª	ÒéäÒüÅÒüîÒüÅ	dã░ß╗úc hß╗ìc	779	0	\N
+4142	Õè┤Õâì	ÒéìÒüåÒü®Òüå	Lao ─æß╗Öng	780	0	\N
+4143	Õè┤ÕâìÞÇà	ÒéìÒüåÒü®ÒüåÒüùÒéâ	Ngã░ß╗Øi lao ─æß╗Öng	780	0	\N
+4144	Õè┤ÕâìþÁäÕÉê	ÒéìÒüåÒü®ÒüåÒüÅÒü┐ÒüéÒüä	C├┤ng ─æo├án lao ─æß╗Öng	780	0	\N
+4145	Úçæ	ÒüïÒü¡	Nh├ón vi├¬n c├┤ng ty	781	0	\N
+4146	Õ║ùÕôí	ÒüªÒéôÒüäÒéô	Ngã░ß╗Øi b├ín  h├áng, nh├ón vi├¬n b├ín h├áng	781	0	\N
+4148	Õà¿Õôí	Òü£ÒéôÒüäÒéô	tß║Ñt cß║ú mß╗ìi ngã░ß╗Øi	781	0	\N
+4149	Õà¼ÕïÖÕôí	ÒüôÒüåÒéÇÒüäÒéô	C├┤ng chß╗®c, vi├¬n chß╗®c nh├á nã░ß╗øc	781	0	\N
+4151	µ║ÇÕôí	Òü¥ÒéôÒüäÒéô	Sß╗▒ ─æ├┤ng ngã░ß╗Øi, chß║¡t n├¡ch ngã░ß╗Øi	781	0	\N
+4152	µòÖÕôí	ÒüìÒéçÒüåÒüäÒéô	gi├ío vi├¬n	781	0	\N
+4153	Õìüõ©Çõ║║	ÒüÿÒéàÒüåÒüäÒüíÒü½Òéô	V├Á s─®	782	0	\N
+4154	ÕìÜÕú½	Òü»ÒüÅÒüù	Tiß║┐n s─®, thß║íc s─®	782	0	\N
+4156	õ┐«Õú½	ÒüùÒéàÒüåÒüù	Thß║íc s─®	782	0	\N
+4158	þ┤│Õú½	ÒüùÒéôÒüù	ngã░ß╗Øi h├áo hoa phong nh├ú, ngã░ß╗Øi cao sang, ngã░ß╗Øi quyß╗ün qu├¢	782	0	\N
+4159	µÂêÚÿ▓Õú½	ÒüùÒéçÒüåÒü╝ÒüåÒüù	L├¡nh cß╗®u hß╗Åa	782	0	\N
+4160	õ╝ÜÞ¿ê	ÒüïÒüäÒüæÒüä	Kß║┐ to├ín	782	0	\N
+4161	þ¿ÄþÉåÕú½	Òü£ÒüäÒéèÒüù	Kß║┐ to├ín thuß║┐ vß╗Ñ	782	0	\N
+4162	µ«┐µºÿ	Òü¿Òü«ÒüòÒü¥	C├┤ng viß╗çc	783	0	\N
+4164	õ╗òõ©è	ÒüùÒüé	Hoß║ít ─æß╗Öng t├¼nh nguyß╗çn	783	0	\N
+4165	õ╗ò	ÒüñÒüï	Bß╗ôi b├án	783	0	\N
+4167	õ╗òõ║ï	ÒüùÒüöÒü¿	C├┤ng viß╗çc	784	0	\N
+4169	Úúƒõ║ï	ÒüùÒéçÒüÅÒüÿ	Bß╗»a ─ân	784	0	\N
+4171	õ║ïµòà	ÒüÿÒüô	Biß║┐n cß╗æ, sß╗▒ cß╗æ	784	0	\N
+4173	õ║ïÕïÖ	ÒüÿÒéÇ	V─ân ph├▓ng	784	0	\N
+4177	Õø│Þí¿	ÒüÜÒü▓ÒéçÒüå	─Éß╗ô thß╗ï	785	0	\N
+4178	ÕÉêÕø│	ÒüéÒüäÒüÜ	Dß║Ñu hiß╗çu, hiß╗çu lß╗çnh	785	0	\N
+4179	µäÅÕø│	ÒüäÒü¿	├Ø ─æß╗ô, mß╗Ñc ─æ├¡ch, ├¢ ─æß╗ïnh	785	0	\N
+4180	Õñ¬	ÒüÁÒü¿	Chß╗º tß╗ìa phi├¬n t├▓a	786	0	\N
+4181	Õñûõ║ñÕ«ÿ	ÒüîÒüäÒüôÒüåÒüïÒéô	Nh├á ngoß║íi giao	786	0	\N
+4183	ÞúüÕêñÕ«ÿ	ÒüòÒüäÒü░ÒéôÒüïÒéô	quan t├▓a, thß║®m ph├ín	786	0	\N
+4184	Õ«ÿÕ║ü	ÒüïÒéôÒüíÒéçÒüå	c├┤ng sß╗ƒ, cãí quan ch├¡nh quyß╗ün	786	0	\N
+4185	Õ«ÿÕâÜ	ÒüïÒéôÒéèÒéçÒüå	quan li├¬u, quan chß╗®c	786	0	\N
+4186	ÕÖ¿Õ«ÿ	ÒüìÒüïÒéô	cãí quan, bß╗Ö phß║¡n	786	0	\N
+4191	õ╝ÜÚñ¿	ÒüïÒüäÒüïÒéô	Hß╗Öi qu├ín, trung t├óm	787	0	\N
+4193	ÕìÜþë®Úñ¿	Òü»ÒüÅÒüÂÒüñÒüïÒéô	Viß╗çn bß║úo t├áng	787	0	\N
+4194	µ░┤µùÅÚñ¿	ÒüÖÒüäÒü×ÒüÅÒüïÒéô	C├┤ng vi├¬n thß╗ºy cung	787	0	\N
+4195	õ║îÕìüõ©Çõ║║	Òü½ÒüÿÒéàÒüåÒüäÒüíÒü½Òéô	Ng├áy xã░a	788	0	\N
+4197	Õñºµÿö	ÒüèÒüèÒéÇÒüïÒüù	Rß║Ñt xa xã░a, ng├áy xß╗¡a ng├áy xã░a	788	0	\N
+4198	µÿöµùÑ	ÒüøÒüìÒüÿÒüñ	Ng├áy xã░a	788	0	\N
+4199	µÿöÒÇà	ÒéÇÒüïÒüùÒéÇÒüïÒüù	Ng├áy xß╗¡a ng├áy xã░a	788	0	\N
+4200	õ╗èµÿö	ÒüôÒéôÒüÿÒéâÒüÅ	Xã░a v├á nay	788	0	\N
+4202	ÕÇƒÚçæ	ÒüùÒéâÒüúÒüìÒéô	tiß╗ün vay	789	0	\N
+4131	ÕûÂµÑ¡õ©¡	ÒüêÒüäÒüÄÒéçÒüåÒüíÒéàÒüå	T├¼nh trß║íng ─æang ─æã░ß╗úc b├áy b├ín	778	0	28652
+4141	õ║║	Òü▓Òü¿	Ngã░ß╗Øi lao ─æß╗Öng	780	0	27202
+4147	ÚèÇÞíîÕôí	ÒüÄÒéôÒüôÒüåÒüäÒéô	Nh├ón vi├¬n ng├ón h├áng	781	0	26979
+4150	õ╝ÜÕôí	ÒüïÒüäÒüäÒéô	Hß╗Öi vi├¬n, th├ánh vi├¬n	781	0	29315
+4155	ÕìÜÕú½	Òü»ÒüïÒüø	tiß║┐n s─®, thß║íc s─®	782	0	29504
+4157	Õ╝üÞ¡ÀÕú½	Òü╣ÒéôÒüöÒüù	Luß║¡t sã░	782	0	29216
+4163	õ╗òµû╣	ÒüùÒüïÒüƒ	C├ích l├ám, phã░ãíng ph├íp	783	0	28996
+4166	Õà¿Úâ¿	Òü£ÒéôÒüÂ	Viß╗çc, vß║Ñn ─æß╗ü	784	0	28142
+4168	þü½õ║ï	ÒüïÒüÿ	Vß╗Ñ hß╗Åa hoß║ín, hß╗Åa hoß║ín	784	0	29025
+4170	Þ┐öõ║ï	Òü©ÒéôÒüÿ	Sß╗▒ trß║ú lß╗Øi, ─æ├íp trß║ú	784	0	28380
+4172	þö¿õ║ï	ÒéêÒüåÒüÿ	Viß╗çc bß║¡n	784	0	27454
+4174	þÁÁ	Òüê	Thã░ viß╗çn	785	0	27445
+4175	Õ£░Õø│	ÒüíÒüÜ	Bß║ún ─æß╗ô	785	0	27733
+4176	Õø│	ÒüÜ	H├¼nh vß║¢, bß╗®c hß╗ìa	785	0	28684
+4182	Þ¡ªÕ«ÿ	ÒüæÒüäÒüïÒéô	Cß║únh s├ít	786	0	28884
+4187	Õ╗║þë®	ÒüƒÒüªÒééÒü«	thã░ viß╗çn	787	0	28110
+4188	µÿáþö╗Úñ¿	ÒüêÒüäÒüîÒüïÒéô	Rß║íp chiß║┐u phim	787	0	28507
+4189	Õñºõ¢┐Úñ¿	ÒüƒÒüäÒüùÒüïÒéô	─Éß║íi sß╗® qu├ín	787	0	28168
+4192	þ¥ÄÞíôÚñ¿	Òü│ÒüÿÒéàÒüñÒüïÒéô	Viß╗çn bß║úo t├áng mß╗╣ thuß║¡t	787	0	27129
+4196	µÿöÞ®▒	ÒéÇÒüïÒüùÒü░Òü¬Òüù	Chuyß╗çn d├ón gian, truyß╗çn cß╗ò t├¡ch	788	0	29181
+4201	µÿö	ÒéÇÒüïÒüù	Nh├á cho thu├¬	789	0	28274
+4203	ÕÇƒÕ£░	ÒüùÒéâÒüÅÒüí	─Éß║Ñt cho thu├¬	789	0	\N
+4204	õ╗ú	Òüï	Thß╗Øi ─æß║íi	790	0	\N
+4205	Úø╗µ░ùõ╗ú	ÒüºÒéôÒüìÒüáÒüä	Tiß╗ün ─æiß╗çn, ga, nhi├¬n liß╗çu	790	0	\N
+4206	õ╗ú	Òüï	Thß║¡p ni├¬n 60	790	0	\N
+4207	Õìüõ╗ú	ÒüÿÒéàÒüåÒüáÒüä	Thanh thiß║┐u ni├¬n	790	0	\N
+4208	õ╗úÞí¿	ÒüáÒüäÒü▓ÒéçÒüå	─Éß║íi biß╗âu, ─æß║íi diß╗çn	790	0	\N
+4209	þÅ¥õ╗ú	ÒüÆÒéôÒüáÒüä	Thß╗Øi ─æß║íi n├áy	790	0	\N
+4210	õ╗úÚçæ	ÒüáÒüäÒüìÒéô	gi├í, tiß╗ün h├áng, h├│a ─æãín, sß╗▒ thanh to├ín	790	0	\N
+4211	Þ║½õ╗úÚçæ	Òü┐Òü«ÒüùÒéìÒüìÒéô	Tiß╗ün chuß╗Öc	790	0	\N
+4213	Õ£░þÉå	ÒüíÒéè	─Éß╗ïa l├¢	792	0	\N
+4217	µäÅÕ£░µé¬	ÒüäÒüÿÒéÅÒéï	Miß╗ün, ─æß╗ïa phã░ãíng, v├╣ng	792	0	\N
+4220	õ©ûÞ®▒	ÒüøÒéÅ	Sß╗▒ quan t├óm	793	0	\N
+4221	õ©ûþ┤Ç	ÒüøÒüäÒüì	Thß║┐ kß╗À	793	0	\N
+4222	õ©ûÚûô	ÒüøÒüæÒéô	Thß║┐ gian	793	0	\N
+4223	õ©ûõ╗ú	ÒüøÒüáÒüä	Thß║┐ hß╗ç	793	0	\N
+4224	õ©û	Òéê	Trong c├Ái ─æß╗Øi, trong thß║┐ giß╗øi n├áy	793	0	\N
+4225	õ©ûÞ½û	ÒéêÒéìÒéô	C├┤ng luß║¡n	793	0	\N
+4226	õ©ûÞ½û	ÒüøÒéìÒéô	C├┤ng luß║¡n	793	0	\N
+4227	õ©ûÞ¥×	ÒüøÒüÿ	sß╗▒ nß╗ïnh  nß╗ìt	793	0	\N
+4228	þö░	Òüƒ	Thß║┐ giß╗øi	794	0	\N
+4229	ÚÖÉþòî	ÒüÆÒéôÒüïÒüä	Phß║ím vi, phß║ím tr├╣, giß╗øi hß║ín	794	0	\N
+4230	Õóâþòî	ÒüìÒéçÒüåÒüïÒüä	Bi├¬n giß╗øi, bi├¬n cã░ãíng	794	0	\N
+4231	µö┐þòî	ÒüøÒüäÒüïÒüä	Giß╗øi ch├¡nh trß╗ï	794	0	\N
+4232	µÑ¡þòî	ÒüÄÒéçÒüåÒüïÒüä	Ng├ánh nghß╗ü, giß╗øi kinh doanh, thß╗ï trã░ß╗Øng	794	0	\N
+4235	õ©ëÕìüÕ║ª	ÒüòÒéôÒüÿÒéàÒüåÒü®	30 ─æß╗Ö	795	0	\N
+4237	Õ║ªÒÇà	ÒüƒÒü│ÒüƒÒü│	Thã░ß╗Øng xuy├¬n, nhiß╗üu lß║ºn	795	0	\N
+4238	µö»Õ║ª	ÒüùÒüƒÒüÅ	Tß╗æc ─æß╗Ö	795	0	\N
+4239	ÚÖÉÕ║ª	ÒüÆÒéôÒü®	Hß║ín ─æß╗Ö, giß╗øi hß║ín, mß╗®c ─æß╗Ö hß║ín chß║┐	795	0	\N
+4240	Õø×	Òü¥ÒéÅ	Mß╗Öt lß║ºn	796	0	\N
+4241	õ¢òÕø×	Òü¬ÒéôÒüïÒüä	Mß║Ñy lß║ºn	796	0	\N
+4242	Õø×	Òü¥ÒéÅ	Tß║¡p v├®, cuß╗æn sß╗ò v├®	796	0	\N
+4243	õ╗èÕø×	ÒüôÒéôÒüïÒüä	Lß║ºn n├áy	796	0	\N
+4245	Õø×Õ¥®	ÒüïÒüäÒüÁÒüÅ	Kh├┤i phß╗Ñc, hß╗ôi phß╗Ñc	796	0	\N
+4246	Õø×Þ╗ó	ÒüïÒüäÒüªÒéô	Sß╗▒ xoay chuyß╗ân, xoay v├▓ng	796	0	\N
+4249	þö¿µäÅ	ÒéêÒüåÒüä	Thuß║¡t ngß╗»	797	0	\N
+4250	þö¿þ┤Ö	ÒéêÒüåÒüù	Mß║½u giß║Ñy trß║»ng, form trß║»ng	797	0	\N
+4251	õ¢┐þö¿	ÒüùÒéêÒüå	Lß╗ç ph├¡, ph├¡	797	0	\N
+4253	Õø¢µ░æ	ÒüôÒüÅÒü┐Òéô	Thß╗® d├ón, quß╗æc d├ón, nh├ón d├ón	798	0	\N
+4254	õ¢Åµ░æ	ÒüÿÒéàÒüåÒü┐Òéô	Ngã░ß╗Øi d├ón cã░ tr├║	798	0	\N
+4255	µ░æõ©╗	Òü┐ÒéôÒüùÒéà	Chß╗º ngh─®a d├ón chß╗º	798	0	\N
+4256	µ░æµùÅ	Òü┐ÒéôÒü×ÒüÅ	D├ón tß╗Öc	798	0	\N
+4257	Úøúµ░æ	Òü¬ÒéôÒü┐Òéô	Ngã░ß╗Øi l├ính nß║ín, d├ón tß╗Á nß║ín	798	0	\N
+4258	µ░æ	ÒüƒÒü┐	D├ón, ngã░ß╗Øi d├ón	798	0	\N
+4259	µ░æÚûô	Òü┐ÒéôÒüïÒéô	Tã░ nh├ón, thuß╗Öc ngã░ß╗Øi d├ón, d├ón sß╗▒	798	0	\N
+4260	õ©╗õ║║	ÒüùÒéàÒüÿÒéô	Sß╗▒ ti├¬m, ti├¬m chß╗ºng	799	0	\N
+4261	µ│¿þø«	ÒüíÒéàÒüåÒééÒüÅ	Sß╗▒ chu├║ ├¢	799	0	\N
+4262	þÖ║µ│¿	Òü»ÒüúÒüíÒéàÒüå	Kh├┤ng ch├║ ├¢	799	0	\N
+4264	µ│¿µäÅ	ÒüíÒéàÒüåÒüä	├Ø kiß║┐n	800	0	\N
+4265	þö¿µäÅ	ÒéêÒüåÒüä	Hß╗»u ├¢, thiß╗çn ch├¡, l├▓ng tß╗æt	800	0	\N
+4266	µäÅÕñû	ÒüäÒüîÒüä	├Ø ─æß╗ïnh	800	0	\N
+4267	Þ▒å	Òü¥Òéü	C├íi ─æß║ºu	801	0	\N
+4268	Úá¡þùø	ÒüÜÒüñÒüå	Sß╗▒ ─æau ─æß║ºu	801	0	\N
+4269	ÕàêÚá¡	ÒüøÒéôÒü¿Òüå	sß╗▒ dß║½n ─æß║ºu, ti├¬n phong	801	0	\N
+4270	õ║îÚá¡	Òü½Òü¿Òüå	2 con (tr├óu, b├▓,ÔÇª)	801	0	\N
+4271	Úá¡Þä│	ÒüÜÒü«Òüå	Bß╗Ö n├úo, ─æß║ºu ├│c, tr├¡  ├│c	801	0	\N
+4272	Úá¡µûçÕ¡ù	ÒüïÒüùÒéëÒééÒüÿ	K├¡ tß╗▒ ─æß║ºu ti├¬n	801	0	\N
+4273	Úƒ│Úá¡	ÒüèÒéôÒü®	Ngã░ß╗Øi h├ít ch├¡nh trong hß╗úp xã░ß╗øng	801	0	\N
+4274	Õ║ùÚá¡	ÒüªÒéôÒü¿Òüå	Quaß║ºy h├áng, quß║ºy thi tiß╗ün	801	0	\N
+4276	þ¼æÚíö	ÒüêÒüîÒüè	Khu├┤n mß║Àt tã░ãíi cã░ß╗Øi	802	0	\N
+4277	µ┤ùÚíö	ÒüøÒéôÒüîÒéô	Sß╗▒ rß╗¡a mß║Àt	802	0	\N
+4279	µê©	Òü¿	tiß║┐ng n├│i	803	0	\N
+4280	Úƒ│Õú░Õ¡ª	ÒüèÒéôÒüøÒüäÒüîÒüÅ	Ngß╗» ├óm hß╗ìc	803	0	\N
+4282	Õú░µÑ¢	ÒüøÒüäÒüîÒüÅ	Thanh nhß║íc	803	0	\N
+4283	Õú░Õä¬	ÒüøÒüäÒéåÒüå	Diß╗àn vi├¬n lß╗ông tiß║┐ng	803	0	\N
+4284	Õú░Þë▓	ÒüôÒéÅÒüäÒéì	Thanh sß║»c, giß╗ìng	803	0	\N
+4286	þï¼þë╣	Òü®ÒüÅÒü¿ÒüÅ	─Éß║Àc sß║»c, ─æß║Àc ─æiß╗âm, ã░u ─æiß╗âm nß╗òi bß║¡t	804	0	\N
+4287	þë╣Õ¥┤	Òü¿ÒüÅÒüíÒéçÒüå	─Éß║Àc trã░ng	804	0	\N
+4214	Õ£░õ©ï	ÒüíÒüï	Tß║ºng hß║ºm, dã░ß╗øi l├▓ng ─æß║Ñt	792	0	27095
+4215	Õ£░õ©ïÚëä	ÒüíÒüïÒüªÒüñ	T├áu ─æiß╗çn ngß║ºm	792	0	27196
+4216	Õ£░Ú£ç	ÒüÿÒüùÒéô	─Éß╗Öng ─æß║Ñt	792	0	28394
+4218	Õ£░þÉâ	ÒüíÒüìÒéàÒüå	Tr├íi ─æß║Ñt, ─æß╗ïa cß║ºu	792	0	28019
+4219	µ╝óÕ¡ù	ÒüïÒéôÒüÿ	Thß║┐ giß╗øi	793	0	27447
+4233	Õ«Â	ÒüäÒüê	Mß╗Öt lß║ºn, mß╗Öt l├║c	795	0	28248
+4234	õ╗èÕ║ª	ÒüôÒéôÒü®	Lß║ºn n├áy	795	0	28191
+4244	Õø×þ¡ö	ÒüïÒüäÒü¿Òüå	Sß╗▒ trß║ú lß╗Øi, c├óu trß║ú lß╗Øi	796	0	29396
+4247	þºü	ÒéÅÒüƒÒüù	C├┤ng viß╗çc, viß╗çc bß║¡n	797	0	26968
+4248	þö¿õ║ï	ÒéêÒüåÒüÿ	Viß╗çc bß║¡n	797	0	27454
+4252	õ║║	Òü▓Òü¿	Ngã░ß╗Øi d├ón th├ánh phß╗æ	798	0	27202
+4263	Õ┐â	ÒüôÒüôÒéì	├Ø ngh─®a	800	0	29546
+4275	Úá¡	ÒüéÒüƒÒü¥	Khu├┤n mß║Àt	802	0	27811
+4278	Úíö	ÒüïÒüè	Tranh ch├ón dung	802	0	27813
+4281	Õú░	ÒüôÒüê	Tß╗½ tã░ß╗úng thanh	803	0	28243
+4285	õ╗èµùÑ	ÒüìÒéçÒüå	t├áu tß╗æc h├ánh	804	0	27143
+4288	þë╣µèÇ	Òü¿ÒüÅÒüÄ	Kß╗╣ thuß║¡t,  kß╗╣ n─âng ─æß║Àc biß╗çt	804	0	\N
+4289	Õîàõ©ü	Òü╗ÒüåÒüíÒéçÒüå	Giß╗øi t├¡nh	805	0	\N
+4290	ÕÀ«ÕêÑ	ÒüòÒü╣Òüñ	Sß╗▒ ph├ón biß╗çt	805	0	\N
+4291	ÕêÑÞìÿ	Òü╣ÒüúÒüØÒüå	Biß╗çt thß╗▒	805	0	\N
+4292	þ½╣	ÒüƒÒüæ	Tre, tr├║c	806	0	\N
+4293	þ½╣	ÒüƒÒüæ	M─âng	806	0	\N
+4294	þ½╣µ×ù	ÒüíÒüÅÒéèÒéô	Rß╗½ng tr├║c	806	0	\N
+4296	Úûô	Òü¥	t├¼nh huß╗æng, ho├án cß║únh, ─æiß╗üu kiß╗çn	807	0	\N
+4297	Õá┤ÕÉê	Òü░ÒüéÒüä	Trã░ß╗Øng hß╗úp	807	0	\N
+4298	õ╝╝ÕÉê	Òü½Òüé	trß║íi huß║Ñn luyß╗çn, trß║íi tß║¡p trung ─æß╗â r├¿n luyß╗çn	807	0	\N
+4301	Þºúþ¡ö	ÒüïÒüäÒü¿Òüå	sß╗▒ trß║ú lß╗Øi, giß║úi ph├íp	808	0	\N
+4302	Þ┐öþ¡ö	Òü©ÒéôÒü¿Òüå	sß╗▒ trß║ú lß╗Øi, sß╗▒ ─æ├íp lß╗Øi	808	0	\N
+4303	ÞÁñõ┐íÕÅÀ	ÒüéÒüïÒüùÒéôÒüöÒüå	Tß║┐t	809	0	\N
+4304	µ¡ú	ÒüƒÒüá	buß╗òi trã░a, giß╗»a ng├áy, ban trã░a	809	0	\N
+4305	µ¡úþø┤	ÒüùÒéçÒüåÒüÿÒüì	sß╗▒ giß║úi th├¡ch ─æ├║ng, sß╗▒ giß║úi th├¡ch ch├¡nh x├íc	809	0	\N
+4307	ÕÉîÕâÜ	Òü®ÒüåÒéèÒéçÒüå	─Éß╗ông nghiß╗çp	810	0	\N
+4308	Õà▒ÕÉî	ÒüìÒéçÒüåÒü®Òüå	cß╗Öng ─æß╗ông, sß╗▒ li├¬n hiß╗çp, li├¬n ─æß╗øi	810	0	\N
+4309	ÕÉîþ┤Üþöƒ	Òü®ÒüåÒüìÒéàÒüåÒüøÒüä	Bß║ín c├╣ng kho├í; bß║ín c├╣ng lß╗øp	810	0	\N
+4310	µò░	ÒüïÒü×	─æß╗ông hß╗ô	811	0	\N
+4311	Þ¿êþö╗	ÒüæÒüäÒüïÒüÅ	Kß║┐ hoß║ích, chã░ãíng tr├¼nh, phã░ãíng ├ín	811	0	\N
+4312	ÕÉêÞ¿ê	ÒüöÒüåÒüæÒüä	tß╗òng sß╗æ	811	0	\N
+4313	Þ¿ê	Òü»Òüï	T├¡nh to├ín	811	0	\N
+4314	þÁ▒Þ¿ê	Òü¿ÒüåÒüæÒüä	Thß╗æng k├¬	811	0	\N
+4315	Þ¿êþ«ù	ÒüæÒüäÒüòÒéô	t├ái ch├¡nh gia ─æ├¼nh	811	0	\N
+4316	õ©ÿ	ÒüèÒüï	Tokyo	812	0	\N
+4317	õ║¼Õ¡É	ÒüìÒéçÒüåÒüô	Kyoko( t├¬n1 ngã░ß╗Øi phß╗Ñ nß╗» Nhß║¡t)	812	0	\N
+4318	õ║¼Úâ¢	ÒüìÒéçÒüåÒü¿	Kyoto	812	0	\N
+4319	õ║¼Úÿ¬þÑ×	ÒüæÒüäÒü»ÒéôÒüùÒéô	Kyoto- Osaka - Kobe	812	0	\N
+4321	Úøåõ©¡	ÒüùÒéàÒüåÒüíÒéàÒüå	tß║¡p trung, ch├║ t├óm	813	0	\N
+4322	ÚøåÕøú	ÒüùÒéàÒüåÒüáÒéô	tß║¡p thß╗â, tß║¡p ─æo├án	813	0	\N
+4323	õ©ìõ¥┐	ÒüÁÒü╣Òéô	sß╗æ ─æen, bß║Ñt hß║ính, kh├┤ng may mß║»n	814	0	\N
+4324	µ░┤õ©ìÞÂ│	Òü┐ÒüÜÒüÂÒüØÒüÅ	T├¼nh trß║íng thiß║┐u nã░ß╗øc	814	0	\N
+4325	õ©ìÕÅ»Þâ¢	ÒüÁÒüïÒü«Òüå	Kh├│ kh─ân (kinh doanh); kh├┤ng chß║íy (bu├┤n b├ín); ß║┐ ß║®m	814	0	\N
+4326	ÚâÁõ¥┐	ÒéåÒüåÒü│Òéô	Bã░u ─æiß╗çn	815	0	\N
+4327	õ¥┐	ÒüƒÒéê	nh├á vß╗ç sinh, toa l├®t	815	0	\N
+4328	Þê¬þ®║õ¥┐	ÒüôÒüåÒüÅÒüåÒü│Òéô	Bã░u phß║®m gß╗ƒi bß║▒ng ─æã░ß╗Øng h├áng kh├┤ng	815	0	\N
+4330	õ¥┐	Òü│Òéô	Sß╗▒ thuß║¡n tiß╗çn	815	0	\N
+4331	õ╗Ñõ©è	ÒüäÒüÿÒéçÒüå	´¢×trß╗ƒ l├¬n	816	0	\N
+4332	õ╗Ñõ©ï	ÒüäÒüï	´¢×trß╗ƒ xuß╗æng	816	0	\N
+4333	õ╗ÑÕñû	ÒüäÒüîÒüä	´¢×ngo├ái ra	816	0	\N
+4334	õ╗ÑÕåà	ÒüäÒü¬Òüä	´¢×trong v├▓ng	816	0	\N
+4335	õ╗ÑÕëì	ÒüäÒü£Òéô	trã░ß╗øc kia	816	0	\N
+4336	õ╗ÑÕ¥î	ÒüäÒüö	sau ─æ├│, tß╗½ sau ─æ├│, tß╗½ sau khi	816	0	\N
+4337	õ╗ÑµØÑ	ÒüäÒéëÒüä	kß╗â tß╗½´¢×	816	0	\N
+4338	Õ£ƒ	ÒüñÒüí	─Éß╗ïa ─æiß╗âm	817	0	\N
+4339	Õá┤ÕÉê	Òü░ÒüéÒüä	Trã░ß╗Øng hß╗úp	817	0	\N
+4342	Õú▓	Òüå	Quß║ºy b├ín h├áng	817	0	\N
+4344	Õ║âÕá┤	Òü▓ÒéìÒü░	quß║úng trã░ß╗Øng	817	0	\N
+4345	Õ©éÕá┤	ÒüäÒüíÒü░	Chß╗ú	817	0	\N
+4346	µê©	Òü¿	Cß╗¡a	818	0	\N
+4347	µê©µúÜ	Òü¿ÒüáÒü¬	gi├í ─æß╗▒ng b├ít ─æ─®a, tß╗º bß║┐p	818	0	\N
+4348	õ║òµê©	ÒüäÒü®	Giß║┐ng nã░ß╗øc	818	0	\N
+4349	µê©þÀá	Òü¿ÒüÿÒü¥	cß╗¡a lã░ß╗øi	818	0	\N
+4350	µ▒ƒµê©	ÒüêÒü®	Thß╗Øi edo	818	0	\N
+4351	µê©þ▒ì	ÒüôÒüøÒüì	Hß╗Ö tß╗ïch, hß╗Ö khß║®u	818	0	\N
+4352	µê©	Òü¿	L├á nãíi nhã░ thß║┐ n├áo	819	0	\N
+4357	õ║ïÕïÖ	ÒüÿÒéÇ	V─ân ph├▓ng	819	0	\N
+4361	Õà½þÖ¥Õ▒ï	ÒéäÒüèÒéä	Cß╗¡a h├áng rau quß║ú	820	0	\N
+4364	Õ▒ïµá╣	ÒéäÒü¡	M├íi nh├á	820	0	\N
+4365	ÕÉìÕÅñÕ▒ï	Òü¬ÒüöÒéä	Th├ánh phß╗æ Nagoya Nhß║¡t Bß║ún	820	0	\N
+4366	ÚàÆÕ▒ï	ÒüòÒüïÒéä	tß╗¡u qu├ín ,tiß╗çm rã░ß╗úu ,qu├ín rã░ß╗úu	820	0	\N
+4367	Õ£ƒ	ÒüñÒüí	C─ân tin	821	0	\N
+4368	Þ¼øÕáé	ÒüôÒüåÒü®Òüå	Giß║úng ─æã░ß╗Øng	821	0	\N
+4369	ÕáéÒÇà	Òü®ÒüåÒü®Òüå	T├▓a thß╗ï ch├¡nh	821	0	\N
+4299	þºü	ÒéÅÒüƒÒüù	Gi├ó╠üy thi	808	0	26968
+4300	Õø×þ¡ö	ÒüïÒüäÒü¿Òüå	sß╗▒ trß║ú lß╗Øi, hß╗ôi ─æ├íp	808	0	29396
+4306	ÕàÑ	Òü»Òüä	sß╗▒ ─æß╗ông thß╗Øi, sß╗▒ c├╣ng l├║c	810	0	26987
+4320	Ú│Ñ	Òü¿Òéè	tß╗Ñ hß╗ìp	813	0	28242
+4329	Þê╣õ¥┐	ÒüÁÒü¬Òü│Òéô	Gß╗ƒi bß║▒ng ─æã░ß╗Øng t├áu	815	0	27596
+4340	õ╝ÜÕá┤	ÒüïÒüäÒüÿÒéçÒüå	hß╗Öi trã░ß╗Øng	817	0	29030
+4341	ÕÀÑÕá┤	ÒüôÒüåÒüÿÒéçÒüå	C├┤ng trã░ß╗Øng	817	0	28850
+4343	ÚºÉÞ╗èÕá┤	ÒüíÒéàÒüåÒüùÒéâÒüÿÒéçÒüå	Chß╗ù ─æß╗ù xe	817	0	28109
+4353	ÕÅ░µëÇ	ÒüáÒüäÒü®ÒüôÒéì	Nh├á bß║┐p	819	0	28283
+4354	õ¢ÅµëÇ	ÒüÿÒéàÒüåÒüùÒéç	nãíi sinh sß╗æng, ─æß╗ïa chß╗ë	819	0	27732
+4356	Õá┤µëÇ	Òü░ÒüùÒéç	─Éß╗ïa ─æiß╗âm	819	0	28184
+4358	Õ©éÕ¢╣µëÇ	ÒüùÒéäÒüÅÒüùÒéç	Cãí quan h├ánh ch├¡nh th├ánh phß╗æ	819	0	27699
+4359	õ║║	Òü▓Òü¿	cß╗¡a h├áng s├ích	820	0	27202
+4360	Õ▒ïõ©è	ÒüèÒüÅÒüÿÒéçÒüå	s├ón thã░ß╗úng, tß║ºng thã░ß╗úng	820	0	28743
+4362	Úâ¿Õ▒ï	Òü©Òéä	c─ân ph├▓ng	820	0	27081
+4363	Õ║èÕ▒ï	Òü¿ÒüôÒéä	hiß╗çu cß║»t t├│c	820	0	27787
+4370	Õø¢õ╝ÜÞ¡░õ║ïÕáé	ÒüôÒüúÒüïÒüäÒüÄÒüÿÒü®Òüå	T├▓a nh├á nghß╗ï sß╗▒ quß╗æc hß╗Öi; t├▓a nh├á quß╗æc hß╗Öi .	821	0	28188
+4371	Õü£	ÒüªÒüä	Kinh ─æ├┤ Tokyo	822	0	\N
+4372	ÚªûÚâ¢	ÒüùÒéàÒü¿	thß╗º ─æ├┤	822	0	\N
+4374	õ║¼Úâ¢	ÒüìÒéçÒüåÒü¿	Kyoto	822	0	\N
+4376	Úâ¢	Òü┐ÒéäÒüô	thß╗º ─æ├┤	822	0	\N
+4377	Úâ¢Õ┐â	Òü¿ÒüùÒéô	trung t├óm th├ánh phß╗æ, trung t├óm ─æ├┤ thß╗ï	822	0	\N
+4378	Õø¢	ÒüÅÒü½	Tß╗ënh nagano	823	0	\N
+4379	þ£îÕ║ü	ÒüæÒéôÒüíÒéçÒüå	ß╗ªy ban tß╗ënh	823	0	\N
+4380	þ£îþƒÑõ║ï	ÒüæÒéôÒüíÒüÿ	ngã░ß╗Øi ─æß╗®ng ─æß║ºu mß╗Öt tß╗ënh (cß╗ºa Nhß║¡t Bß║ún)	823	0	\N
+4381	þ£îþ½ï	ÒüæÒéôÒéèÒüñ	Sß╗▒ thuß╗Öc vß╗ü tß╗ënh; do tß╗ënh th├ánh lß║¡p	823	0	\N
+4382	Úâ¢ÚüôÕ║£þ£î	Òü¿Òü®ÒüåÒüÁÒüæÒéô	Sß╗▒ ph├ón chia h├ánh ch├¡nh cß╗ºa Nhß║¡t	823	0	\N
+4383	Õî║	ÒüÅ	Khua ph├¡a bß║»c	824	0	\N
+4384	Õî║Õêç	ÒüÅÒüÄ	khu vß╗▒c, phß║ím vi, l─®nh vß╗▒c, khß╗æi	824	0	\N
+4385	Õ£░Õî║	ÒüíÒüÅ	khu; khu vß╗▒c	824	0	\N
+4386	Õî║Õ¢╣µëÇ	ÒüÅÒéäÒüÅÒüùÒéç	Trß╗Ñ sß╗ƒ h├ánh ch├¡nh khu vß╗▒c	824	0	\N
+4387	Õî║ÕêÑ	ÒüÅÒü╣Òüñ	─æoß║ín, ph├ón ─æoß║ín, khoß║úng, khoß║úng c├ích	824	0	\N
+4388	Þíî	Òüä	Ao, h├┤╠Ç	825	0	\N
+4390	µ║£	Òüƒ	C├íi hß╗ô	825	0	\N
+4391	Þ▓»µ░┤µ▒á	ÒüíÒéçÒüÖÒüäÒüí	H├┤╠Ç chã░╠üa nã░ãí╠üc	825	0	\N
+4392	þö¿µ░┤Õ£░	ÒéêÒüåÒüÖÒüäÒüí	Bß╗â chß╗®a nã░ß╗øc	825	0	\N
+4393	õ║║Úí×	ÒüÿÒéôÒéïÒüä	sß╗▒ ph├ít ├óm	826	0	\N
+4394	Õç║þÖ║	ÒüùÒéàÒüúÒü▒Òüñ	Sß╗▒ xuß║Ñt ph├ít, khß╗ƒi h├ánh	826	0	\N
+4396	þÖ║µÿÄ	Òü»ÒüñÒéüÒüä	Sß╗▒ ph├ít minh	826	0	\N
+4397	þÖ║Þªï	Òü»ÒüúÒüæÒéô	Sß╗▒ ph├ít hiß╗çn, kh├ím phß║Ñ	826	0	\N
+4398	þÖ║Õú▓	Òü»ÒüñÒü░Òüä	Sß╗▒ b├ín ra, ph├ít h├ánh sß║ún phß║®m	826	0	\N
+4399	ÕºïþÖ║	ÒüùÒü»Òüñ	chuyß║┐n t├áu ─æß║ºu ti├¬n	826	0	\N
+4400	þÖ║ÞÂ│	Òü╗ÒüúÒüØÒüÅ	Sß╗▒ mß╗ƒ ─æß║ºu hoß║ít ─æß╗Öng; sß╗▒ th├ánh lß║¡p	826	0	\N
+4402	Õ╗║	Òüƒ	sß╗▒ kiß║┐n thiß║┐t, sß╗▒ x├óy dß╗▒ng	827	0	\N
+4403	Õ╗║þ»ë	ÒüæÒéôÒüíÒüÅ	Kiß║┐n tr├║c, x├óy dß╗▒ng	827	0	\N
+4404	õ║îÚÜÄÕ╗║	Òü½ÒüïÒüäÒüá	Kiß║┐n quß╗æc, x├óy dß╗½ng nß╗ün tß║úng ─æß║Ñt nã░ß╗øc	827	0	\N
+4405	Õ╗║þ½ï	ÒüôÒéôÒéèÒéàÒüå	Sß╗▒ x├óy dß╗▒ng	827	0	\N
+4406	þëø	ÒüåÒüù	─Éß╗ô vß║¡t	828	0	\N
+4407	Úúƒ	Òüƒ	─Éß╗ô ─ân	828	0	\N
+4408	Úú▓	Òü«	Thß╗®c uß╗æng	828	0	\N
+4409	Þ▓À	Òüï	Viß╗çc mua sß║»m	828	0	\N
+4415	õ©ë	Òü┐Òüú	H├áng h├│a, vß║¡t phß║®m	829	0	\N
+4416	µùÑþö¿Õôü	Òü½ÒüíÒéêÒüåÒü▓Òéô	Vß║¡t dß╗Ñng h├áng ng├áy	829	0	\N
+4418	Õ┐àÚ£ÇÕôü	Òü▓ÒüñÒüÿÒéàÒü▓Òéô	Mß║Àt h├áng nhu yß║┐u; nhu yß║┐u phß║®m	829	0	\N
+4420	õ©èÕôü	ÒüÿÒéçÒüåÒü▓Òéô	Thß╗▒c phß║®m; nguy├¬n liß╗çu nß║Ñu ─ân	829	0	\N
+4423	µùàÕê©	ÒéèÒéçÒüæÒéô	hß╗Ö chiß║┐u	830	0	\N
+4424	µùà	ÒüƒÒü│	Chuyß║┐n ─æi	830	0	\N
+4425	õ©Çõ║║µùà	Òü▓Òü¿ÒéèÒüƒÒü│	Du lß╗ïch mß╗Öt m├¼nh	830	0	\N
+4426	µùàÞ▓╗	ÒéèÒéçÒü▓	lß╗Ö ph├¡, ph├¡ ─æi du lß╗ïch	830	0	\N
+4427	õ╣ù	Òü«	Giao th├┤ng	831	0	\N
+4428	ÚÇÜÞ¿│	ÒüñÒüåÒéäÒüÅ	Viß╗çc phi├¬n dß╗ïch	831	0	\N
+4430	ÚÇÜÕïñ	ÒüñÒüåÒüìÒéô	Viß╗çc ─æi l├ám	831	0	\N
+4432	ÚÇ▓µ¡®	ÒüùÒéôÒü¢	tiß║┐n bß╗Ö	832	0	\N
+4433	ÚÇ▓Õîû	ÒüùÒéôÒüï	Sß╗▒ tiß║┐n h├│a	832	0	\N
+4434	µÿçÚÇ▓	ÒüùÒéçÒüåÒüùÒéô	Viß╗çc th─âng tiß║┐n, th─âng chß╗®c	832	0	\N
+4435	ÕàêÚÇ▓Õø¢	ÒüøÒéôÒüùÒéôÒüôÒüÅ	Nã░ß╗øc ti├¬n tiß║┐n	832	0	\N
+4439	þå▒Õ┐â	Òü¡ÒüúÒüùÒéô	nhiß╗çt ─æß╗øi	834	0	\N
+4440	þå▒	Òü¡Òüú	Sß╗▒ ─æß╗æt n├│ng, sß╗▒ ─æun n├│ng	834	0	\N
+4441	þå▒µ╣»	Òü¡ÒüúÒü¿Òüå	nã░ß╗øc s├┤i	834	0	\N
+4442	ÕåÀ	ÒüñÒéü	Tß╗º lß║ính	835	0	\N
+4445	µ▒Ü	ÒüìÒüƒÒü¬	├ö nhiß╗àm	837	0	\N
+4446	µ▒Ü	ÒéêÒüö	sß╗▒ tham ├┤, sß╗▒ tham nh┼®ng	837	0	\N
+4448	þÁÉµ×£	ÒüæÒüúÒüï	Kß║┐t quß║ú	838	0	\N
+4449	Õè╣µ×£	ÒüôÒüåÒüï	c├│ hiß╗çu quß║ú, c├│ t├íc dß╗Ñng	838	0	\N
+4450	µ×£Õ«ƒ	ÒüïÒüÿÒüñ	quß║ú	838	0	\N
+4451	µ×£	Òü»	th├ánh quß║ú, kß║┐t quß║ú	838	0	\N
+4453	ÕìÁÚ╗ä	ÒéëÒéôÒüèÒüå	L├▓ng ─æß╗Å	839	0	\N
+4454	ÕìÁþÖ¢	ÒéëÒéôÒü▒ÒüÅ	L├▓ng trß║»ng	839	0	\N
+4375	Úâ¢õ╝Ü	Òü¿ÒüïÒüä	th├ánh thß╗ï, th├ánh phß╗æ	822	0	28511
+4389	Úø╗µ▒á	ÒüºÒéôÒüí	pin	825	0	27495
+4395	þÖ║Þí¿	Òü»ÒüúÒü┤ÒéçÒüå	Ph├ít biß╗âu	826	0	28482
+4401	Õ╗║þë®	ÒüƒÒüªÒééÒü«	t├▓a nh├á, c├┤ng tr├¼nh kiß║┐n tr├║c	827	0	28110
+4410	þØÇþë®	ÒüìÒééÒü«	Kimono (y phß╗Ñc truyß╗ün thß╗æng cß╗ºa Nhß║¡t bß║ún)	828	0	27970
+4411	Õïòþë®	Òü®ÒüåÒüÂÒüñ	─Éß╗Öng vß║¡t	828	0	27913
+4412	Õ╗║þë®	ÒüƒÒüªÒééÒü«	t├▓a nh├á, ng├┤i nh├á, c├┤ng tr├¼nh kiß║┐n tr├║c	828	0	28110
+4413	µ×£þë®	ÒüÅÒüáÒééÒü«	hoa quß║ú, tr├íi c├óy	828	0	27270
+4414	ÞìÀþë®	Òü½ÒééÒüñ	H├ánh l├¢	828	0	27336
+4417	Þú¢Õôü	ÒüøÒüäÒü▓Òéô	th├ánh phß║®m ,sß║ún phß║®m ,h├áng h├│a	829	0	27767
+4419	õ¢£Õôü	ÒüòÒüÅÒü▓Òéô	T├íc phß║®m	829	0	29595
+4421	õ║îõ║║	ÒüÁÒüƒÒéè	Du lß╗ïch	830	0	29178
+4429	µÖ«ÚÇÜ	ÒüÁÒüñÒüå	Viß╗çc ─æi hß╗ìc	831	0	27243
+4431	Ú│Ñ	Òü¿Òéè	Hß╗ìc l├¬n, hß╗ìc l├¬n ─æß║íi hß╗ìc	832	0	28242
+4436	õ¢ô	ÒüïÒéëÒüá	H├¼nh tr├▓n	833	0	27810
+4437	õ©©	Òü¥Òéï	Vi├¬n ─æß║ín	833	0	28749
+4438	þå▒	Òü¡Òüñ	Nhiß╗çt ─æß╗Ö	834	0	27875
+4443	ÕåÀµê┐	ÒéîÒüäÒü╝Òüå	Ph├▓ng lß║ính	835	0	29163
+4444	õ©¡	Òü¬Òüï	─Éß╗ô ngß╗ìt	836	0	27519
+4447	µ×£þë®	ÒüÅÒüáÒééÒü«	hoa quß║ú, tr├íi c├óy	838	0	27270
+4452	ÕìÁ	ÒüƒÒü¥Òüö	Trß╗®ng	839	0	27266
+4455	þÜ┐	ÒüòÒéë	─É─®a	840	0	\N
+4458	ÕñºþÜ┐	ÒüèÒüèÒüûÒéë	C├íi ─æ─®a lß╗øn	840	0	\N
+4459	Õ░ÅþÜ┐	ÒüôÒüûÒéë	C├íi ─æ─®a nhß╗Å	840	0	\N
+4460	ÚàÆ	ÒüòÒüæ	Rã░ß╗úc	841	0	\N
+4461	ÚàÆÕ▒ï	ÒüòÒüïÒéä	tß╗¡u qu├ín ,tiß╗çm rã░ß╗úu ,qu├ín rã░ß╗úu	841	0	\N
+4462	µùÑµ£¼ÚàÆ	Òü½Òü╗ÒéôÒüùÒéà	Rã░ß╗úc Nhß║¡t	841	0	\N
+4463	Úú▓ÚàÆ	ÒüäÒéôÒüùÒéà	L├íi xe trong t├¼nh trß║íng say rã░ß╗úu	841	0	\N
+4464	µ┤ïÚàÆ	ÒéêÒüåÒüùÒéà	Rã░ß╗úu T├óy	841	0	\N
+4465	Õ▒àÚàÆÕ▒ï	ÒüäÒüûÒüïÒéä	Qu├ín rã░ß╗úu	841	0	\N
+4466	Õ£░ÚàÆ	ÒüÿÒüûÒüæ	Rã░ß╗úu ─æß╗ïa phã░ãíng	841	0	\N
+4467	þÜ┐	ÒüòÒéë	Muß╗æi ─ân	842	0	\N
+4468	Õí®Þ¥ø	ÒüùÒüèÒüïÒéë	muß╗æi ─ân	842	0	\N
+4469	Õí®Õêå	ÒüêÒéôÒüÂÒéô	lã░ß╗úng muß╗æi	842	0	\N
+4470	Õí®µ░┤	ÒüùÒüèÒü┐ÒüÜ	nã░ß╗øc muß╗æi	842	0	\N
+4472	µùÑõ╗ÿ	Òü▓ÒüÑ	lß╗à t├ón, quß║ºy thã░ß╗Øng trß╗▒c	843	0	\N
+4473	ÕÅù	Òüå	Sß╗▒ tß║Àng cho, k├¡nh tß║Àng, quy├¬n c├║ng	843	0	\N
+4474	õ╗ÿÚî▓	ÒüÁÒéìÒüÅ	T├║i x├ích	843	0	\N
+4476	þëçµû╣	ÒüïÒüƒÒü╗Òüå	Mß╗Öt hã░ß╗øng; mß╗Öt chiß╗üu; mß╗Öt chiß║┐c; mß╗Öt b├¬n	844	0	\N
+4477	þëçµëï	ÒüïÒüƒÒüª	mß╗Öt tay	844	0	\N
+4478	þëçÞ¿Ç	ÒüïÒüƒÒüôÒü¿	Kiß║┐n thß╗®c n├┤ng cß║ín; sß╗▒ biß║┐t l├Ám b├Ám	844	0	\N
+4479	þëçÕ»ä	ÒüïÒüƒÒéê	mß║únh vß╗Ñn, mß║únh vß╗í	844	0	\N
+4480	µ£¼	Òü¢Òéô	G├á quay, g├á nã░ß╗øng	845	0	\N
+4481	þä╝Þéë	ÒéäÒüìÒü½ÒüÅ	thß╗ït quay, thß╗ït nã░ß╗øng	845	0	\N
+4482	þçâþä╝	Òü¡ÒéôÒüùÒéçÒüå	Sß╗▒ ─æß╗æt ch├íy	845	0	\N
+4484	ÕÅñ	ÒüÁÒéï	thß╗â rß║»n, dß║íng rß║»n, chß║Ñt rß║»n	847	0	\N
+4485	Õø║Õ«Ü	ÒüôÒüªÒüä	cß╗æ ─æß╗ïnh, sß╗▒ cß╗æ ─æß╗ïnh, sß╗▒ giß╗» nguy├¬n, giß╗» nguy├¬n, giß╗» cß╗æ ─æß╗ïnh	847	0	\N
+4486	ÚáæÕø║	ÒüîÒéôÒüô	Ngoan cß╗æ, cß╗æ chß║Ñp	847	0	\N
+4487	ÕÇïõ║║	ÒüôÒüÿÒéô	mß╗Öt c├íi, mß╗Öt cß╗Ñc, mß╗Öt vi├¬n	848	0	\N
+4488	ÕÇïõ║║	ÒüôÒüÿÒéô	c├í nh├ón, c├í thß╗â	848	0	\N
+4489	ÕÇïõ║║	ÒüôÒüÿÒéô	Chß╗º ngh─®a c├í nh├ón	848	0	\N
+4490	ÕÇïÕ▒ò	ÒüôÒüªÒéô	Triß╗ân l├úm c├í nh├ón (tß╗▒ tß╗ò chß╗®c triß╗ân l├úm)	848	0	\N
+4491	ÕÇïµÇº	ÒüôÒüøÒüä	C├í t├¡nh, t├¡nh c├ích	848	0	\N
+4492	ÕÇïµò░	ÒüôÒüÖÒüå	Sß╗æ cß╗ºa mß╗ùi thß╗®	848	0	\N
+4493	ÕÇïÕ«ñ	ÒüôÒüùÒüñ	Ph├▓ng ri├¬ng	848	0	\N
+4495	Õ¥«þ¼æ	Òü╗Òü╗Òüê	Sß╗▒ mß╗ëm cã░ß╗Øi	849	0	\N
+4496	þ½ï	Òüƒ	Tiß║┐ng kh├│c	850	0	\N
+4497	µ│ú	Òü¬	M├¡t ã░ß╗øt	850	0	\N
+4498	Õ£ƒ	ÒüñÒüí	sß╗æ ─æen bß║Ñt hß║ính, kh├┤ng may mß║»n	852	0	\N
+4499	Õ╣©Úüï	ÒüôÒüåÒüåÒéô	Vß║¡n may, sß╗æ ─æß╗Å	852	0	\N
+4500	Õ╣©	ÒüòÒüäÒéÅ	Sß╗▒ may mß║»n, hß║ính ph├║c	852	0	\N
+4502	ÕÅñ	ÒüÁÒéï	k├®m, yß║┐u	854	0	\N
+4503	Þïª	ÒüÅÒéï	Sß╗▒ ─æau ─æß╗øn, sß╗▒ ─æau nhß╗®c	854	0	\N
+4504	ÞïªÕè┤	ÒüÅÒéìÒüå	Gian khß╗ò, cam go	854	0	\N
+4505	Þïªµâà	ÒüÅÒüÿÒéçÒüå	sß╗▒ than phiß╗ü, lß╗Øi than phiß╗ün	854	0	\N
+4506	þùø	ÒüäÒüƒ	Sß╗▒ ─æau ─æß║ºu	855	0	\N
+4507	Þïªþùø	ÒüÅÒüñÒüå	Sß╗▒ ─æau ─æß╗øn, sß╗▒ ─æau nhß╗®c	855	0	\N
+4508	þùø	ÒüäÒüƒ	Cãín ─æau bß╗Ñng	855	0	\N
+4509	Þà░þùø	ÒéêÒüåÒüñÒüå	─æau thß║»t lã░ng	855	0	\N
+4511	µüÑ	Òü»	T├¡nh nh├║t nh├ít,bß║¢n lß║¢n, ngã░ß╗úng	856	0	\N
+4512	ÚàÆ	ÒüòÒüæ	Sß╗▒ ─æã░a cho; sß╗▒ chuyß╗ân cho; sß╗▒ ph├ón ph├ít	857	0	\N
+4513	µö»Úàì	ÒüùÒü»Òüä	sß╗▒ ß║únh hã░ß╗ƒng, sß╗▒ chi phß╗æi	857	0	\N
+4514	ÚàìÕüÂÞÇà	Òü»ÒüäÒüÉÒüåÒüùÒéâ	Bß║ín ─æß╗ông h├ánh, ngã░ß╗Øi gh├®p ─æ├┤i	857	0	\N
+4515	µö»Úàì	ÒüùÒü»Òüä	Ngã░ß╗Øi quß║ún l├¡, gi├ím ─æß╗æc, ngã░ß╗Øi ─æiß╗üu h├ánh	857	0	\N
+4517	Õñº	ÒüèÒüè	Bß║ºn c├╣ng, ngh├¿o kh├│	858	0	\N
+4518	Õø░µâæ	ÒüôÒéôÒéÅÒüÅ	Bß╗æi rß╗æi	858	0	\N
+4519	µúÆ	Òü╝Òüå	Gia vß╗ï; hã░ãíng liß╗çu; chß║Ñt tß║ío m├╣i hã░ãíng	859	0	\N
+4520	Þ¥øµè▒	ÒüùÒéôÒü╝Òüå	Sß╗▒ ki├¬n nhß║½n; sß╗▒ chß╗ïu ─æß╗▒ng	859	0	\N
+4521	Þ¥øÕ¡É	ÒüïÒéëÒüù	C├óy m├╣ tß║ít; m├╣ tß║ít	859	0	\N
+4523	Õ▒àþ£á	ÒüäÒü¡ÒéÇ	Ngß╗º ─æ├┤ng	860	0	\N
+4524	Õé¼þ£á	ÒüòÒüäÒü┐Òéô	thuß║¡t th├┤i mi├¬n	860	0	\N
+4525	õ©ëõ║║	ÒüòÒéôÒü½Òéô	T─âng ca	861	0	\N
+4526	µ«ïÚ½ÿ	ÒüûÒéôÒüáÒüï	Sß╗æ dã░ t├ái khoß║ún	861	0	\N
+4528	Þ¿ÿÕ┐ÁµùÑ	ÒüìÒü¡ÒéôÒü│	Ng├áy kß╗ë niß╗çm	862	0	\N
+4529	õ┐íÕ┐Á	ÒüùÒéôÒü¡Òéô	L├▓ng tin	862	0	\N
+4530	Õ┐ÁÚíÿ	Òü¡ÒéôÒüîÒéô	T├óm nguyß╗çn, nguyß╗çn vß╗ìng	862	0	\N
+4531	þäíÕ┐Á	ÒéÇÒü¡Òéô	l├ám tiß║┐c, thã░ãíng tiß║┐c, hß╗æi tiß║┐c, ch├ín nß║ún, sß╗▒ buß╗ôn nß║ún; sß╗▒ thß║Ñt vß╗ìng	862	0	\N
+4532	µªéÕ┐Á	ÒüîÒüäÒü¡Òéô	Kh├íi niß╗çm	862	0	\N
+4533	µ¡ªÕÖ¿	ÒüÂÒüì	sß╗▒ cß║úm tß║í, biß║┐t ãín	863	0	\N
+4534	µäƒµâ│	ÒüïÒéôÒüØÒüå	cß║úm tã░ß╗ƒng, ß║Ñn tã░ß╗úng	863	0	\N
+4536	Þïªµâà	ÒüÅÒüÿÒéçÒüå	sß╗▒ , lß╗Øi than phiß╗ün	864	0	\N
+4457	þ┤Ö	ÒüïÒü┐	─É─®a giß║Ñy	840	0	27332
+4471	õ║║	Òü▓Òü¿	ng├áy th├íng	843	0	27202
+4475	µ£¿	Òüì	mß╗Öt chiß╗üu, mß╗Öt lã░ß╗út	844	0	27493
+4483	µ£ê	ÒüñÒüì	Cß╗Ñc ph├▓ng ch├íy chß╗»a ch├íy	846	0	28020
+4494	õ║║	Òü▓Òü¿	Khu├┤n mß║Àt tã░ãíi cã░ß╗Øi	849	0	27202
+4501	Õ¢╝	ÒüïÒéî	Thß║úm kß╗ïch	853	0	27204
+4510	Þç¬Õêå	ÒüÿÒüÂÒéô	sß╗▒ xß║Ñu hß╗ò	856	0	28275
+4516	Õ«àÚàìõ¥┐	ÒüƒÒüÅÒü»ÒüäÒü│Òéô	Chuyß╗ân ph├ít tß║¡n nh├á	857	0	29421
+4522	õ║║ÒÇà	Òü▓Òü¿Òü│Òü¿	giß║Ñc ngß╗º	860	0	28656
+4527	õ╗è	ÒüäÒü¥	Kß╗À niß╗çm	862	0	27130
+4537	õ║ïµâà	ÒüÿÒüÿÒéçÒüå	T├¼nh h├¼nh, t├¼nh trß║íng	864	0	\N
+4538	ÕÅïµâà	ÒéåÒüåÒüÿÒéçÒüå	t├¼nh bß║ín, t├¼nh bß║▒ng hß╗»u	864	0	\N
+4539	Þí¿µâà	Òü▓ÒéçÒüåÒüÿÒéçÒüå	T├¼nh h├¼nh, biß╗âu lß╗Ö t├¼nh cß║úm, bß╗ü ngo├ái	864	0	\N
+4541	µâà	Òü¬Òüò	kh├┤ng kh├¡, bß║ºu kh├┤ng kh├¡; cß║úm nhß║¡n	864	0	\N
+4544	ÞªûÞªÜ	ÒüùÒüïÒüÅ	thß╗ï gi├íc	865	0	\N
+4545	þø«ÞªÜ	ÒéüÒüû	─Éß╗ông hß╗ô b├ío thß╗®c	865	0	\N
+4546	ÕÅ│Õü┤	Òü┐ÒüÄÒüîÒéÅ	─æß╗ô ─æß╗â qu├¬n	866	0	\N
+4547	Õ┐ÿ	ÒéÅÒüÖ	tiß╗çc tß║Ñt ni├¬n	866	0	\N
+4548	þ»Çµ░┤	ÒüøÒüúÒüÖÒüä	sß╗▒ quyß║┐t ─æß╗ïnh	867	0	\N
+4549	µ▒║Õ┐â	ÒüæÒüúÒüùÒéô	quyß║┐t t├óm	867	0	\N
+4550	Þºúµ▒║	ÒüïÒüäÒüæÒüñ	giß║úi quyß║┐t	867	0	\N
+4551	µ▒║ÕïØ	ÒüæÒüúÒüùÒéçÒüå	trß║¡n chung kß║┐t	867	0	\N
+4552	Õêñµ▒║	Òü»ÒéôÒüæÒüñ	ph├ín quyß║┐t, quyß║┐t ─æß╗ïnh cß╗ºa quan t├▓a	867	0	\N
+4553	Õ╝ò	Òü▓	dß╗▒ ─æß╗ïnh	868	0	\N
+4554	Õ«Üõ╝æµùÑ	ÒüªÒüäÒüìÒéàÒüåÒü│	ng├áy nghß╗ë ─æß╗ïnh k├¼	868	0	\N
+4555	µ▒║Õ«Ü	ÒüæÒüúÒüªÒüä	sß╗▒ quyß║┐t ─æß╗ïnh	868	0	\N
+4556	Þé»Õ«Ü	ÒüôÒüåÒüªÒüä	Sß╗▒ t├¡nh to├ín; sß╗▒ thanh to├ín; t├¡nh tiß╗ün	868	0	\N
+4557	Õ«Üµ£ƒÕê©	ÒüªÒüäÒüìÒüæÒéô	V├® ─æß╗ïnh k├¼	868	0	\N
+4559	ÕÅù	Òüå	ß╗®ng th├¡ ,sß╗▒ tham gia k├¼ thi, dß╗▒ thi	870	0	\N
+4560	ÕÅù	Òüå	bß╗ï ─æß╗Öng, thß╗Ñ ─æß╗Öng	870	0	\N
+4561	ÕÅùÞ║½	ÒüåÒüæÒü┐	bß╗ï ─æß╗Öng, thß╗Ñ ─æß╗Öng	870	0	\N
+4562	ÕÅùõ┐í	ÒüÿÒéàÒüùÒéô	Sß╗▒ thu t├¡n hiß╗çu	870	0	\N
+4563	µòÖ	ÒüèÒüù	Sß╗▒ giß║úng dß║íy	871	0	\N
+4564	µòÖµÄê	ÒüìÒéçÒüåÒüÿÒéà	sß╗▒ gi├ío dß╗Ñc, gi├ío dß╗Ñc, giß║úng dß║íy	871	0	\N
+4565	µÄêµÑ¡µûÖ	ÒüÿÒéàÒüÄÒéçÒüåÒéèÒéçÒüå	Tiß╗ün hß╗ìc ph├¡	871	0	\N
+4566	µÄê	ÒüòÒüÜ	cho v├á nhß║¡n	871	0	\N
+4567	Õ╝ƒÕ¡É	ÒüºÒüù	Hß╗ìc tr├▓, hß╗ìc sinh	872	0	\N
+4568	Õ¥Æµ¡®	Òü¿Òü╗	T├¡n ─æß╗ô Hß╗ôi gi├ío	872	0	\N
+4569	µòÖÕ¥Æ	ÒüìÒéçÒüåÒü¿	t├¡n ─æß╗ô ─æß║ío gi├ío	872	0	\N
+4570	µØ▒µ┤ï	Òü¿ÒüåÒéêÒüå	tß║¡p luyß╗çn	873	0	\N
+4571	Þ¿ôþÀ┤	ÒüÅÒéôÒéîÒéô	huß║Ñn luyß╗çn	873	0	\N
+4572	þÀ┤	Òü¡	sß╗▒ khß║úo nghiß╗çm, r├¿n gi┼®a, sß╗▒ thß╗¡ th├ích	873	0	\N
+4573	µ┤ùþÀ┤	ÒüøÒéôÒéîÒéô	Vß║╗ lß╗ïch sß╗▒; tao nh├ú; tinh tß║┐	873	0	\N
+4574	µ£¬þÀ┤	Òü┐ÒéîÒéô	sß╗▒ tiß║┐c nuß╗æi, sß╗▒ quyß║┐n luyß║┐n, sß╗▒ lã░u luyß║┐n	873	0	\N
+4576	Õø×Õ¥®	ÒüïÒüäÒüÁÒüÅ	Kh├┤i phß╗Ñc, hß╗ôi phß╗Ñc	874	0	\N
+4577	Õ¥ÇÕ¥®	ÒüèÒüåÒüÁÒüÅ	V├® khß╗® hß╗ôi	874	0	\N
+4578	Õ¥®µùº	ÒüÁÒüúÒüìÒéàÒüå	Tr├╣ng tu, phß╗Ñc chß║┐	874	0	\N
+4579	Õ¥®Þêê	ÒüÁÒüúÒüôÒüå	sß╗▒ phß╗Ñc hã░ng	874	0	\N
+4580	Õ¥®µ┤╗	ÒüÁÒüúÒüïÒüñ	sß╗▒ sß╗æng lß║íi, phß╗Ñc hß╗ôi, phß╗Ñc hã░ng,  t├íi sinh	874	0	\N
+4581	ÕÅìÕ¥®	Òü»ÒéôÒüÀÒüÅ	sß╗▒ nhß║»c lß║íi	874	0	\N
+4583	Þí¿	Òü▓ÒéçÒüå	Bß╗ü ngo├ái, ph├¡a trã░ß╗øc, biß╗âu ─æß╗ô	875	0	\N
+4585	Þí¿	ÒüéÒéëÒéÅ	b├¼a	875	0	\N
+4586	õ╗úÞí¿	ÒüáÒüäÒü▓ÒéçÒüå	─æß║íi diß╗çn, ─æß╗ïa biß╗âu	875	0	\N
+4587	Þí¿µâà	Òü▓ÒéçÒüåÒüÿÒéçÒüå	T├¼nh h├¼nh, biß╗âu lß╗Ö t├¼nh cß║úm, bß╗ü ngo├ái	875	0	\N
+4588	õ¢Åõ║║	ÒüÿÒéàÒüåÒü½Òéô	sß╗▒ tß╗æt nghiß╗çp	876	0	\N
+4589	ÕìÆµÑ¡Õ╝Å	ÒüØÒüñÒüÄÒéçÒüåÒüùÒüì	lß╗à tß╗æt nghiß╗çp	876	0	\N
+4590	ÕìÆµÑ¡þöƒ	ÒüØÒüñÒüÄÒéçÒüåÒüøÒüä	Sinh vi├¬n, hß╗ìc sinh tß╗æt nghiß╗çp	876	0	\N
+4591	ÕñºÕìÆ	ÒüáÒüäÒüØÒüñ	Tß╗æt nghiß╗çp ─æß║íi hß╗ìc	876	0	\N
+4592	ÕìÆÞ½û	ÒüØÒüñÒéìÒéô	luß║¡n ├ín tß╗æt nghiß╗çp	876	0	\N
+4593	µû░ÕìÆ	ÒüùÒéôÒüØÒüñ	Mß╗øi ra trã░ß╗Øng, mß╗øi tß╗æt nghiß╗çp	876	0	\N
+4595	ÕïÿÚüò	ÒüïÒéôÒüíÒüî	sß╗▒ kh├íc nhau	877	0	\N
+4597	Õ¢╣þø«	ÒéäÒüÅÒéü	tr├ích nhiß╗çm, c├┤ng viß╗çc, nhiß╗çm vß╗Ñ	878	0	\N
+4598	Õ¢╣ÞÇà	ÒéäÒüÅÒüùÒéâ	diß╗àn vi├¬n	878	0	\N
+4599	Õ¢╣	ÒéäÒüÅ	vai diß╗àn, nhiß╗çm vß╗Ñ	878	0	\N
+4600	õ©╗Õ¢╣	ÒüùÒéàÒéäÒüÅ	nh├ón vß║¡t ch├¡nh, vai ch├¡nh	878	0	\N
+4601	ÕàÁÕ¢╣	Òü©ÒüäÒüêÒüì	binh dß╗ïch, qu├ón dß╗ïch, viß╗çc bß║»t ─æi l├¡nh, viß╗çc bß║»t nhß║¡p ng┼®	878	0	\N
+4603	µ»öÞ╝âþÜä	Òü▓ÒüïÒüÅÒüªÒüì	C├│ t├¡nh so s├ính; mang t├¡nh so s├ính, tã░ãíng ─æß╗æi	879	0	\N
+4604	Õ»¥µ»ö	ÒüƒÒüäÒü▓	sß╗▒ so s├ính	879	0	\N
+4605	µ»öõ¥ï	Òü▓ÒéîÒüä	Ty╠ë l├¬╠ú	879	0	\N
+4606	þÜå	Òü┐Òü¬	mß╗ìi ngã░ß╗Øi	879	0	\N
+4607	Þºúþªü	ÒüïÒüäÒüìÒéô	sß╗▒ hß╗ºy bß╗Å lß╗çnh cß║Ñm	879	0	\N
+4608	þÜåþø«	ÒüïÒüäÒééÒüÅ	ho├án to├án	879	0	\N
+4609	þÜåþäí	ÒüïÒüäÒéÇ	kh├┤ng c├│ g├¼, con sß╗æ kh├┤ng, v├┤ ngh─®a, kh├┤ng hß╗ü	879	0	\N
+4612	Õ¢╝µ░Å	ÒüïÒéîÒüù	Bß║ín trai, ngã░ß╗Øi y├¬u	880	0	\N
+4613	Õ¢╝Õ▓©	Òü▓ÒüîÒéô	B├¬n kia bß╗Ø, c├Ái bß╗ông lai	880	0	\N
+4614	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	to├án bß╗Ö	881	0	\N
+4616	Õà¿Õø¢	Òü£ÒéôÒüôÒüÅ	to├án quß╗æc, khß║»p nã░ß╗øc	881	0	\N
+4617	Õà¿Õôí	Òü£ÒéôÒüäÒéô	tß║Ñt cß║ú mß╗ìi ngã░ß╗Øi	881	0	\N
+4542	Õ¡ªµáí	ÒüîÒüúÒüôÒüå	cß║úm gi├íc	865	0	27190
+4543	þø«	Òéü	Vß╗ï gi├íc	865	0	27814
+4558	µëï	Òüª	lß╗à t├ón, quß║ºy thã░ß╗Øng trß╗▒c	870	0	27318
+4575	õ║║	Òü▓Òü¿	Xem lß║íi b├ái, ├┤n b├ái	874	0	27202
+4582	µ£¿	Òüì	Bß╗ü ngo├ái, ph├¡a trã░ß╗øc, biß╗âu ─æß╗ô	875	0	27493
+4584	þÖ║Þí¿	Òü»ÒüúÒü┤ÒéçÒüå	Pha╠üt bi├¬╠ëu	875	0	28482
+4594	Úüô	Òü┐Òüí	vi phß║ím	877	0	28104
+4602	þÖ¢	ÒüùÒéì	So s├ính	879	0	28688
+4610	Õ¢╝	ÒüïÒéî	Anh ta	880	0	27204
+4611	Õ¢╝	ÒüïÒéî	C├┤ ß║Ñy, bß║ín g├íi	880	0	27204
+4615	Õ«ëÕà¿	ÒüéÒéôÒü£Òéô	an to├án	881	0	29267
+4618	Õà¿	Òü¥ÒüúÒüƒ	to├án lß╗▒c	881	0	\N
+4619	Õü£	ÒüªÒüä	to├án bß╗Ö	882	0	\N
+4622	õ©ÇÚâ¿	ÒüäÒüíÒüÂ	mß╗Öt bß╗Ö phß║¡n	882	0	\N
+4623	Úâ¿	ÒüÂ	C├óu lß║íc bß╗Ö quß║ºn vß╗út	882	0	\N
+4624	ÕÀÑÕ¡ªÚâ¿	ÒüôÒüåÒüîÒüÅÒüÂ	khoa kß╗╣ thuß║¡t c├┤ng nghiß╗çp	882	0	\N
+4625	ÕñºÚâ¿Õêå	ÒüáÒüäÒüÂÒüÂÒéô	─æß║íi bß╗Ö phß║¡n, phß║ºn lß╗øn	882	0	\N
+4626	Õ┐à	ÒüïÒü¬Òéë	sß╗▒ quyß║┐t t├óm	883	0	\N
+4627	Õ┐àõ┐«	Òü▓ÒüúÒüùÒéàÒüå	sß╗▒ cß║ºn phß║úi hß╗ìc, c├íi cß║ºn phß║úi sß╗¡a	883	0	\N
+4628	Õ┐àÚ£ÇÕôü	Òü▓ÒüñÒüÿÒéàÒü▓Òéô	Mß║Àt h├áng nhu yß║┐u; nhu yß║┐u phß║®m	883	0	\N
+4629	ÕÑ│	ÒüèÒéôÒü¬	y├¬u cß║ºu, ─æ├▓i hß╗Åi	884	0	\N
+4630	Þªüþ┤ä	ÒéêÒüåÒéäÒüÅ	sß╗▒ t├│m lã░ß╗úc, sß╗▒ kh├íi qu├ít	884	0	\N
+4632	ÞìÀÚÇá	Òü½ÒüÑÒüÅ	nhß║¡p h├áng	885	0	\N
+4633	Õç║ÞìÀ	ÒüùÒéàÒüúÒüï	xuß║Ñt h├áng	885	0	\N
+4636	þÁîþö▒	ÒüæÒüäÒéå	Qu├í cß║únh Paris	886	0	\N
+4637	õ©ìÞç¬þö▒	ÒüÁÒüÿÒéåÒüå	n├▓i giß╗æng, nguß╗ôn	886	0	\N
+4638	µêæ	ÒéÅ	─Éãín xin nghß╗ë, ─æãín xin ph├®p	887	0	\N
+4639	þ¿▓	ÒüäÒü¡	lß╗úi ├¡ch, lß╗úi nhuß║¡n	888	0	\N
+4640	Õê®ÕÅú	ÒéèÒüôÒüå	quyß╗ün lß╗úi	888	0	\N
+4641	Õê®Õ¡É	ÒéèÒüù	tiß╗ün lß╗Øi, lß╗úi tß╗®c, l├úi (ng├ón h├áng)	888	0	\N
+4645	Õ»ØÕØè	Òü¡Òü╝Òüå	ngß╗º qu├¬n	891	0	\N
+4646	Õ»ØÕ«ñ	ÒüùÒéôÒüùÒüñ	ph├▓ng ngß╗º	891	0	\N
+4647	Õ»ØÕÅ░Þ╗è	ÒüùÒéôÒüáÒüäÒüùÒéâ	xe giã░ß╗Øng nß║▒m	891	0	\N
+4648	Õ»ØÞ¿Ç	Òü¡ÒüöÒü¿	ngß╗º mß╗ø, n├│i mß╗ø	891	0	\N
+4652	µ┤╗Õ¡ù	ÒüïÒüñÒüÿ	chß╗» in	893	0	\N
+4653	µ┤╗µ░ù	ÒüïÒüúÒüì	x├┤n xao, hoß║ít n├ío, s├┤i nß╗òi	893	0	\N
+4654	µ┤╗Þ║ì	ÒüïÒüñÒéäÒüÅ	hoß║ít sß╗Ñng, sß╗¡ dß╗Ñng, tß║¡n dß╗Ñng	893	0	\N
+4655	µ┤╗þÖ║	ÒüïÒüúÒü▒Òüñ	th├│i quen ─ân uß╗æng	893	0	\N
+4657	µ£êµ£½	ÒüÆÒüñÒü¥Òüñ	cuß╗æi th├íng	894	0	\N
+4658	Õ╣┤µ£½	Òü¡ÒéôÒü¥Òüñ	cuß╗æi n─âm	894	0	\N
+4659	µ£½	ÒüÖÒüê	Cuß╗æi, ─æß╗ënh, ch├│t	894	0	\N
+4660	µ£½	ÒüÖÒüê	con ├║t	894	0	\N
+4661	µ£ƒµ£½	ÒüìÒü¥Òüñ	K├¼ thi cuß╗æi k├¼	894	0	\N
+4663	Õ©░Õ«à	ÒüìÒüƒÒüÅ	Viß╗çc vß╗ü nh├á	895	0	\N
+4664	Þç¬Õ«à	ÒüÿÒüƒÒüÅ	Nh├á m├¼nh	895	0	\N
+4665	õ¢ÅÕ«à	ÒüÿÒéàÒüåÒüƒÒüÅ	nh├á ß╗ƒ, nãíi sß╗æng	895	0	\N
+4667	þñ¥Õ«à	ÒüùÒéâÒüƒÒüÅ	cã░ x├í cß╗ºa c├┤ng ty	895	0	\N
+4668	þÑ¡	Òü¥Òüñ	lß╗à hß╗Öi	896	0	\N
+4669	Õ¡ªÕ£ÆþÑ¡	ÒüîÒüÅÒüêÒéôÒüòÒüä	ng├áy hß╗Öi ß╗ƒ trã░ß╗Øng	896	0	\N
+4671	Õ╣│	ÒüƒÒüä	h├▓a b├¼nh	897	0	\N
+4672	Õ╣│µêÉ	Òü©ÒüäÒüøÒüä	thß╗Øi kß╗│ B├¼nh Th├ánh	897	0	\N
+4673	Õ╣│ÕØç	Òü©ÒüäÒüìÒéô	b├¼nh qu├ón, trung b├¼nh	897	0	\N
+4674	Õà¼Õ╣│	ÒüôÒüåÒü©Òüä	c├┤ng bß║▒ng	897	0	\N
+4675	Õ╣│þ¡ë	Òü│ÒéçÒüåÒü®Òüå	b├¼nh ─æß║│ng	897	0	\N
+4678	ÕÆî	ÒéÅ	h├▓a b├¼nh, t├¡nh cß╗Öng, tß╗òng cß╗Öng	898	0	\N
+4679	Þï▒ÕÆî	ÒüêÒüäÒéÅ	Tß╗½ ─æiß╗ân Anh - Nhß║¡t	898	0	\N
+4680	ÕÆî	Òü¬Òüö	Thß╗Øi kß╗│ Chi├¬u Ho├á	898	0	\N
+4681	ÕÆî	ÒéäÒéÅ	Nã░ß╗øc Cß╗Öng h├▓a	898	0	\N
+4683	µêª	ÒüƒÒüƒÒüï	t├íc chiß║┐n, chiß║┐n lã░ß╗úc	899	0	\N
+4684	ÕåÀµêª	ÒéîÒüäÒüøÒéô	chiß║┐n tranh lß║ính	899	0	\N
+4685	ÕÅìµêª	Òü»ÒéôÒüøÒéô	sß╗▒ phß║ún chiß║┐n	899	0	\N
+4686	µîæµêª	ÒüíÒéçÒüåÒüøÒéô	th├ích thß╗®c, thß╗¡ th├ích, bß║Ñt chß║Ñp	899	0	\N
+4687	µêª	ÒüäÒüÅÒüò	Trß║¡n mß║íc	899	0	\N
+4689	õ║ë	ÒüéÒéëÒüØ	Sß╗▒ tranh luß║¡n, sß╗▒ b├án c├úi	900	0	\N
+4690	µö┐Õ║£	ÒüøÒüäÒüÁ	Ch├¡nh trß╗ï	901	0	\N
+4691	µö┐µ▓╗Õ«Â	ÒüøÒüäÒüÿÒüï	Chi├¡nh trß╗ï gia	901	0	\N
+4692	µö┐ÕàÜ	ÒüøÒüäÒü¿Òüå	ch├¡nh ─æß║úng	901	0	\N
+4693	µö┐Õ║£	ÒüøÒüäÒüÁ	ch├¡nh phß╗º	901	0	\N
+4694	Þíîµö┐	ÒüÄÒéçÒüåÒüøÒüä	h├ánh ch├¡nh	901	0	\N
+4695	Þ▓íµö┐	ÒüûÒüäÒüøÒüä	t├ái ch├¡nh	901	0	\N
+4696	µö┐µ¿®	ÒüøÒüäÒüæÒéô	ch├¡nh quyß╗ün	901	0	\N
+4697	µö┐þ¡û	ÒüøÒüäÒüòÒüÅ	ch├¡nh s├ích	901	0	\N
+4699	µö┐µ▓╗Õ«Â	ÒüøÒüäÒüÿÒüï	ch├¡nh trß╗ï gia	902	0	\N
+4700	µ▓╗	ÒüèÒüò	─æiß╗üu trß╗ï	902	0	\N
+4701	µ▓╗Õ«ë	ÒüíÒüéÒéô	trß╗ï an	902	0	\N
+4702	Õ£ƒ	ÒüñÒüí	kinh nghiß╗çm	903	0	\N
+4704	þÁîþö▒	ÒüæÒüäÒéå	qu├í cß║únh Paris	903	0	\N
+4705	þÁîÕûÂ	ÒüæÒüäÒüêÒüä	Kinh doanh	903	0	\N
+4621	Úâ¿ÚòÀ	ÒüÂÒüíÒéçÒüå	trã░ß╗ƒng ph├▓ng	882	0	27911
+4631	ÞìÀþë®	Òü½ÒééÒüñ	h├ánh l├¢	885	0	27336
+4634	þ«▒	Òü»Òüô	tß╗▒ do	886	0	27496
+4635	þÉåþö▒	ÒéèÒéåÒüå	l├¢ do	886	0	29308
+4643	µ┤ùµ┐»µ®ƒ	ÒüøÒéôÒüƒÒüÅÒüì	m├íy giß║Àt	890	0	28649
+4644	õ║îõ║║	ÒüÁÒüƒÒéè	giß║Ñc ngß╗º trã░a	891	0	29178
+4649	ÞÂ│	ÒüéÒüù	m├║a truyß╗ün thß╗æng nhß║¡t bß║ún	892	0	27820
+4650	µ░┤	Òü┐ÒüÜ	sinh hoß║ít, ─æß╗Øi sß╗æng	893	0	27271
+4651	µ┤╗Õïò	ÒüïÒüñÒü®Òüå	hoß║ít ─æß╗Öng	893	0	29603
+4656	µ£¿	Òüì	Cuß╗æi tuß║ºn	894	0	27493
+4662	Õ«Â	ÒüäÒüê	Nh├á	895	0	28248
+4666	Õ«àÚàìõ¥┐	ÒüƒÒüÅÒü»ÒüäÒü│Òéô	Chuyß╗ân ph├ít tß║¡n nh├á	895	0	29421
+4670	õ╗è	ÒüäÒü¥	ng├áy thã░ß╗Øng	897	0	27130
+4676	ÕÆîÚúƒ	ÒéÅÒüùÒéçÒüÅ	h├▓a b├¼nh	898	0	29339
+4677	ÕÆîÚúƒ	ÒéÅÒüùÒéçÒüÅ	m├│n ─ân Nhß║¡t	898	0	29339
+4682	µêªõ║ë	ÒüøÒéôÒüØÒüå	Chiß║┐n tranh	899	0	29225
+4688	õ║║	Òü▓Òü¿	Chiß║┐n tranh	900	0	27202
+4698	þºü	ÒéÅÒüƒÒüù	ch├¡nh trß╗ï	902	0	26968
+4703	þÁîµ©ê	ÒüæÒüäÒüûÒüä	kinh tß║┐	903	0	27700
+4706	þÑ×þÁî	ÒüùÒéôÒüæÒüä	thß║ºn kinh, sß╗▒ nhß║íy cß║úm	903	0	\N
+4709	þ£ïµØ┐	ÒüïÒéôÒü░Òéô	Kinh tß║┐	904	0	\N
+4710	þÁîµ©êÕ¡ª	ÒüæÒüäÒüûÒüäÒüîÒüÅ	Kinh tß║┐ hß╗ìc	904	0	\N
+4711	µ©ê	ÒüÖ	cß╗®u tß║┐	904	0	\N
+4715	µå▓µ│ò	ÒüæÒéôÒü¢Òüå	hiß║┐n ph├íp	905	0	\N
+4716	Úüòµ│ò	ÒüäÒü╗Òüå	tr├íi ph├®p, vi phß║ím ph├íp luß║¡t	905	0	\N
+4717	þö¿µ│ò	ÒéêÒüåÒü╗Òüå	c├ích d├╣ng	905	0	\N
+4718	µ│òµíê	Òü╗ÒüåÒüéÒéô	luß║¡t dß╗▒ thß║úo, dß╗▒ luß║¡t	905	0	\N
+4719	µ│òÕëç	Òü╗ÒüåÒüØÒüÅ	quy luß║¡t, ─æß╗ïnh luß║¡t, ph├®p tß║»t	905	0	\N
+4721	ÞªÅÕ¥ï	ÒüìÒéèÒüñ	quy luß║¡t, kß╗ë luß║¡t	906	0	\N
+4722	µêÆÕ¥ï	ÒüïÒüäÒéèÒüñ	giß╗øi luß║¡t, ─æiß╗üu dß║íy bß║úo, lß╗Øi r─ân ─æe	906	0	\N
+4723	õ©ÇÕ¥ï	ÒüäÒüíÒéèÒüñ	Thß║ºn kinh tß╗▒ trß╗ï	906	0	\N
+4724	þÑ¡	Òü¥Òüñ	quß╗æc tß║┐	907	0	\N
+4725	Õø¢ÚÜøÕîû	ÒüôÒüÅÒüòÒüäÒüï	quß╗æc tß║┐ h├│a	907	0	\N
+4726	ÚÜø	ÒüòÒüä	khi ´¢×	907	0	\N
+4727	õ║ñÚÜø	ÒüôÒüåÒüòÒüä	Mß╗æi quan hß╗ç;mß╗æi giao tiß║┐p ; giao du	907	0	\N
+4728	Õ«ƒÚÜø	ÒüÿÒüúÒüòÒüä	Thß╗▒c tß║┐	907	0	\N
+4729	ÚÜøþ½ï	ÒüìÒéÅÒüá	Ngay trã░ß╗øc khi; l├║c sß║»p sß╗¡a	907	0	\N
+4731	Õø¢ÚÜø	ÒüôÒüÅÒüòÒüä	Quan hß╗ç quß╗æc tß║┐	908	0	\N
+4732	µäƒÕ┐â	ÒüïÒéôÒüùÒéô	Kh├óm phß╗Ñc; th├ín phß╗Ñc; cß║úm phß╗Ñc; h├óm mß╗Ö; ngã░ß╗íng mß╗Ö	908	0	\N
+4733	ÚûóµØ▒	ÒüïÒéôÒü¿Òüå	v├╣ng kanto	908	0	\N
+4734	ÚûóÞÑ┐	ÒüïÒéôÒüòÒüä	v├╣ng kansai	908	0	\N
+4735	ÚûóÕÅû	ÒüøÒüìÒü¿Òéè	─É├┤ vß║¡t su m├┤	908	0	\N
+4737	þ¿ÄÚûó	Òü£ÒüäÒüïÒéô	thuß║┐ quan	908	0	\N
+4739	Õø¢ÚÜø	ÒüôÒüÅÒüòÒüä	Quan hß╗ç quß╗æc tß║┐	909	0	\N
+4742	õ║║Úûô	Òü½ÒéôÒüÆÒéô	Mß╗æi quan hß╗ç giß╗»a ngã░ß╗Øi vß╗øi ngã░ß╗Øi	909	0	\N
+4743	þäíÚûóõ┐é	ÒéÇÒüïÒéôÒüæÒüä	kh├┤ng li├¬n quan	909	0	\N
+4744	þ¥è	Òü▓ÒüñÒüÿ	chß╗º ngh─®a	910	0	\N
+4745	µ░æõ©╗	Òü┐ÒéôÒüùÒéà	chß╗º ngh─®a d├ón chß╗º	910	0	\N
+4748	þ¥®ÕïÖ	ÒüÄÒéÇ	ngh─®a vß╗Ñ, phß║¡n sß╗▒	910	0	\N
+4749	þ¥®þÉå	ÒüÄÒéè	t├¼nh ngh─®a, ─æß║ío l├¡, quan hß╗ç th├ón thuß╗Öc kh├┤ng phß║úi trß╗▒c hß╗ç, hß╗ì ─æß║▒ng nh├á chß╗ông hoß║Àc vß╗ú	910	0	\N
+4750	µ¡úþ¥®	ÒüøÒüäÒüÄ	Ch├¡nh ngh─®a	910	0	\N
+4751	Õ«Üþ¥®	ÒüªÒüäÒüÄ	─æß╗ïnh ngh─®a	910	0	\N
+4752	µ¡ú	ÒüƒÒüá	hß╗Öi nghß╗ï	911	0	\N
+4753	Õø¢õ╝Ü	ÒüôÒüúÒüïÒüä	nghß╗ï vi├¬n quß╗æc hß╗Öi	911	0	\N
+4754	õ©ìµÇØÞ¡░	ÒüÁÒüùÒüÄ	hß╗ìp quß╗æc hß╗Öi; hß╗ìp nghß╗ï viß╗çn; hß╗Öi nghß╗ï	911	0	\N
+4755	Þ¡░Þ½û	ÒüÄÒéìÒéô	─æß╗ü ├ín hß╗Öi nghß╗ï, vß║Ñn ─æß╗ü thß║úo luß║¡n	911	0	\N
+4757	õ©ÄÕàÜ	ÒéêÒü¿Òüå	─Éß║úng cß║ºm quyß╗ün	912	0	\N
+4758	ÚçÄÕàÜ	ÒéäÒü¿Òüå	─Éß║úng chß╗æng ─æß╗æi	912	0	\N
+4759	ÕàÜÚªû	Òü¿ÒüåÒüùÒéà	chß╗º tß╗ïch ─æß║úng	912	0	\N
+4760	µùù	Òü»Òüƒ	khu vui chãíi	913	0	\N
+4761	Õæ¿Úüè	ÒüùÒéàÒüåÒéåÒüå	cuß╗Öc ─æi du lß╗ïch, cuß╗Öc chu du	913	0	\N
+4763	Õ╣│µ││	Òü▓ÒéëÒüèÒéê	cuß╗Öc thi bãíi	914	0	\N
+4766	µ©®µÜû	ÒüèÒéôÒüáÒéô	m├╣a ─æ├┤ng ß║Ñm ├íp	916	0	\N
+4768	õ║ë	ÒüéÒéëÒüØ	nghß╗ë ngãíi t─®nh dã░ß╗íng	918	0	\N
+4769	ÚØÖÚñè	ÒüøÒüäÒéêÒüå	t─®nh mß║ích	918	0	\N
+4770	Õà¼Þíå	ÒüôÒüåÒüùÒéàÒüå	c├┤ng vi├¬n	919	0	\N
+4771	Õà¼Õ╣│	ÒüôÒüåÒü©Òüä	c├┤ng bß║▒ng	919	0	\N
+4772	Õà¼ÕïÖÕôí	ÒüôÒüåÒéÇÒüäÒéô	c├┤ng chß╗®c nh├á nã░ß╗øc	919	0	\N
+4773	Õà¼Þíå	ÒüôÒüåÒüùÒéàÒüå	C├┤ng ch├║ng; d├ón ch├║ng; cß╗Öng ─æß╗ông	919	0	\N
+4774	Õà¼þ½ï	ÒüôÒüåÒéèÒüñ	c├┤ng lß║¡p	919	0	\N
+4775	Õà¼	ÒüèÒüèÒéäÒüæ	sß╗▒ c├┤ng khai c├┤ng bß╗æ	919	0	\N
+4778	ÚüèÕ£ÆÕ£░	ÒéåÒüåÒüêÒéôÒüí	khu vui chãíi	920	0	\N
+4780	Õ£ÆÞè©	ÒüêÒéôÒüÆÒüä	Nghß╗ç thuß║¡t c├óy cß║únh; nghß╗ç thuß║¡t l├ám vã░ß╗Øn	920	0	\N
+4781	Õ║¡Õ£Æ	ÒüªÒüäÒüêÒéô	Vã░ß╗Øn	920	0	\N
+4782	Õ£Æ	ÒüØÒü«	Vã░ß╗Øn Eden	920	0	\N
+4784	ÚÇúþÁí	ÒéîÒéôÒéëÒüÅ	sß╗▒ li├¬n quan, sß╗▒ li├¬n hß╗ç	922	0	\N
+4786	ÚÇú	ÒüñÒéë	Li├¬n hß╗úp quß╗æc	922	0	\N
+4708	þÁî	ÒüìÒéçÒüå	Kinh phß║¡t	903	0	27143
+4712	ÕÄ╗Õ╣┤	ÒüìÒéçÒü¡Òéô	ph├íp luß║¡t	905	0	27214
+4713	µûçµ│ò	ÒüÂÒéôÒü¢Òüå	ngß╗» ph├íp	905	0	29150
+4714	µû╣µ│ò	Òü╗ÒüåÒü╗Òüå	phã░ãíng ph├íp	905	0	28794
+4720	õ║ñÚÇÜ	ÒüôÒüåÒüñÒüå	Pha╠üp lu├ó╠út	906	0	28007
+4730	Úûóõ┐é	ÒüïÒéôÒüæÒüä	Mß╗æi quan hß╗ç	908	0	28783
+4738	õ║║ÒÇà	Òü▓Òü¿Òü│Òü¿	mß╗æi quan hß╗ç	909	0	28656
+4740	õ┐é	ÒüïÒüïÒéè	Sß╗▒ chß╗ïu tr├ích nhiß╗çm	909	0	29406
+4741	õ┐éÕôí	ÒüïÒüïÒéèÒüäÒéô	ngã░ß╗Øi chß╗ïu tr├ích nhiß╗çm	909	0	29387
+4746	þñ¥õ╝Ü	ÒüùÒéâÒüïÒüä	chß╗º ngh─®a x├ú hß╗Öi	910	0	29222
+4747	Þ¼øþ¥®	ÒüôÒüåÒüÄ	B├ái giß║úng; giß╗Ø hß╗ìc	910	0	28424
+4756	Õàä	ÒüéÒü½	ch├¡nh ─æß║úng	912	0	27570
+4762	µ░┤	Òü┐ÒüÜ	viß╗çc bãíi lß╗Öi	914	0	27271
+4764	Õ¢╝	ÒüïÒéî	Sß╗▒ mß╗çt mß╗Åi; sß╗▒ mß╗Åi; sß╗▒ mß╗çt nhoc	915	0	27204
+4765	ÕÅïÚüö	Òü¿ÒééÒüáÒüí	hß╗ç thß╗æng l├▓ sã░ß╗ƒi	916	0	27203
+4767	Úø¿	ÒüéÒéü	nã░ß╗øc ngß╗ìt, thß╗®c uß╗æng kh├┤ng chß╗®a cß╗ôn	917	0	27625
+4776	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	c├┤ng vi├¬n	920	0	27161
+4777	Õïòþë®Õ£Æ	Òü®ÒüåÒüÂÒüñÒüêÒéô	sß╗ƒ th├║	920	0	28491
+4779	Õ╣╝þ¿ÜÕ£Æ	ÒéêÒüåÒüíÒüêÒéô	nh├á trß║╗	920	0	29161
+4783	þø«þÜä	ÒééÒüÅÒüªÒüì	sß╗▒ li├¬n tß╗Ñc, sß╗▒ liß╗ün tiß║┐p	922	0	29227
+4785	ÚÇúõ╝æ	ÒéîÒéôÒüìÒéàÒüå	k├¼ nghß╗ë d├ái ng├áy	922	0	28480
+4787	Õø¢ÚÇú	ÒüôÒüÅÒéîÒéô	Li├¬n hß╗úp quß╗æc	922	0	29245
+4789	þ¬ôÕÅú	Òü¥Òü®ÒüÉÒüí	cß╗¡a b├ín v├®	923	0	\N
+4790	ÕÉîþ¬ôõ╝Ü	Òü®ÒüåÒüØÒüåÒüïÒüä	Hß╗Öi hß╗ìc sinh c├╣ng trã░ß╗Øng; hß╗Öi c├╣ng lß╗øp	923	0	\N
+4792	Úçæ	ÒüïÒü¡	b├¬n phß║úi	924	0	\N
+4793	õ©íÕü┤	ÒéèÒéçÒüåÒüîÒéÅ	hai b├¬n	924	0	\N
+4794	ÕÉæ	ÒéÇ	Ph├¡a b├¬n kia; mß║Àt b├¬n kia	924	0	\N
+4795	Õü┤ÚØó	ÒüØÒüÅÒéüÒéô	Mß║Àt b├¬n; mß╗Öt b├¬n; mß╗Öt mß║Àt; h├┤ng; sã░ß╗Øn	924	0	\N
+4797	ÕñûÕü┤	ÒüØÒü¿ÒüîÒéÅ	mß║Àti, ph├¡a ngo├ái ,bß╗ü ngo├ái	924	0	\N
+4798	ÕåàÕü┤	ÒüåÒüíÒüîÒéÅ	ph├¡a trong ,b├¬n trong, ß╗ƒ trong, nß╗Öi bß╗Ö	924	0	\N
+4802	þ┤àÞæë	ÒüôÒüåÒéêÒüå	c├óy l├í ─æß╗Å	925	0	\N
+4804	ÞÉ¢	Òüè	l├í rß╗Ñng	925	0	\N
+4806	µÖ»µ░ù	ÒüæÒüäÒüì	t├¼nh h├¼nh, t├¼nh h├¼nh kinh tß║┐	926	0	\N
+4807	õ©ìµÖ»µ░ù	ÒüÁÒüæÒüäÒüì	Kh├│ kh─ân (kinh doanh); kh├┤ng chß║íy (bu├┤n b├ín); ß║┐ ß║®m	926	0	\N
+4808	Úó¿µÖ»	ÒüÁÒüåÒüæÒüä	phong cß║únh	926	0	\N
+4809	Õñ£µÖ»	ÒéäÒüæÒüä	cß║únh ,  quang cß║únh ban ─æ├¬m	926	0	\N
+4810	ÞâîµÖ»	Òü»ÒüäÒüæÒüä	bß╗æi cß║únh, phong l├ám cß║únh, phong nß╗ün	926	0	\N
+4811	ÕàëµÖ»	ÒüôÒüåÒüæÒüä	quang cß║únh	926	0	\N
+4812	µÖ»Õôü	ÒüæÒüäÒü▓Òéô	phß║ºn thã░ß╗ƒng	926	0	\N
+4813	Þ¿Ç	Òüä	nhß║¡t k├¢	927	0	\N
+4814	µÜùÞ¿ÿ	ÒüéÒéôÒüì	k├¢ sß╗▒, tin tß╗®c b├ío ch├¡, b├ái b├ío	927	0	\N
+4815	Þ¿ÿÞÇà	ÒüìÒüùÒéâ	k├¢ giß║ú	927	0	\N
+4816	Þ¿ÿÕàÑ	ÒüìÒü½ÒéàÒüå	kß╗À niß╗çm	927	0	\N
+4817	Þ¿ÿÚî▓	ÒüìÒéìÒüÅ	sß╗▒ ghi ch├®p lß║íi	927	0	\N
+4820	Õ¢óÕ«╣Þ®×	ÒüæÒüäÒéêÒüåÒüù	t├¡nh tß╗½	928	0	\N
+4821	ÚüÄÕÄ╗Õ¢ó	ÒüïÒüôÒüæÒüä	thß╗â qu├í khß╗®	928	0	\N
+4822	þÅ¥Õ£¿Õ¢ó	ÒüÆÒéôÒüûÒüäÒüæÒüä	thß╗â hiß╗çn tß║íi	928	0	\N
+4823	Õø│Õ¢ó	ÒüÜÒüæÒüä	h├¼nh d├íng con ngã░ß╗Øi, d├íng vß║╗, ─æß╗ô hß╗ìa	928	0	\N
+4824	µ¡úµû╣Õ¢ó	ÒüøÒüäÒü╗ÒüåÒüæÒüä	h├¼nh vu├┤ng	928	0	\N
+4825	Õ¢óÞªï	ÒüïÒüƒÒü┐	vß║¡t kß╗À niß╗çm, ─æß╗ô lã░u niß╗çm	928	0	\N
+4826	õ¥ì	ÒüòÒéÇÒéëÒüä	vß║¡n may, may mß║»n	929	0	\N
+4827	ÕñºÕÉë	ÒüáÒüäÒüìÒüí	─æß║íi c├ít	929	0	\N
+4828	ÕÉëµùÑ	ÒüìÒüíÒüÿÒüñ	ng├áy may mß║»n, ng├áy vui vß║╗, ng├áy l├ánh th├íng tß╗æt	929	0	\N
+4829	õ©ìÕÉë	ÒüÁÒüìÒüñ	tin vui, tin thß║»ng trß║¡n	929	0	\N
+4830	ÕÉëÕçÂ	ÒüìÒüúÒüìÒéçÒüå	sß╗▒ hung c├ít,  l├ánh dß╗», ─æiß╗üm l├ánh ─æiß╗üm dß╗»	929	0	\N
+4831	þ│©	ÒüäÒü¿	kß║┐t quß║ú	930	0	\N
+4832	þÁÉÞ½û	ÒüæÒüñÒéìÒéô	kß║┐t luß║¡n	930	0	\N
+4833	þÁÉ	Òéå	kß║┐t cß╗Ñc	930	0	\N
+4834	ÕøúþÁÉ	ÒüáÒéôÒüæÒüñ	tß║ím ─æã░ß╗úc, tã░ãíng ─æß╗æi, c┼®ng ─æã░ß╗úc, kh├í	930	0	\N
+4835	ÕÑ│	ÒüèÒéôÒü¬	ly h├┤n	931	0	\N
+4836	Õ®Üþ┤ä	ÒüôÒéôÒéäÒüÅ	─æ├¡nh h├┤n	931	0	\N
+4837	Õ®Üþ┤äÞÇà	ÒüôÒéôÒéäÒüÅÒüùÒéâ	chß╗ông chã░a cã░ß╗øi	931	0	\N
+4838	µùóÕ®Ü	ÒüìÒüôÒéô	─æ├ú c├│ gia ─æ├¼nh, ─æ├ú kß║┐t h├┤n	931	0	\N
+4839	µ£¬Õ®Ü	Òü┐ÒüôÒéô	sß╗▒ chã░a kß║┐t h├┤n, sß╗▒ chã░a cã░ß╗øi	931	0	\N
+4840	µû░Õ®Ü	ÒüùÒéôÒüôÒéô	t├ón h├┤n, mß╗øi cã░ß╗øi	931	0	\N
+4841	Õà▒	Òü¿Òéé	cß╗Öng ─æß╗ông, th├┤ng thã░ß╗Øng, phß╗ò th├┤ng	932	0	\N
+4842	Õà¼Õà▒	ÒüôÒüåÒüìÒéçÒüå	C├┤ng cß╗Öng	932	0	\N
+4843	Õà▒µäƒ	ÒüìÒéçÒüåÒüïÒéô	chß╗º ngh─®a cß╗Öng sß║ún	932	0	\N
+4844	Õà▒Õ¡ª	ÒüìÒéçÒüåÒüîÒüÅ	sß╗▒ hß╗ìc chung	932	0	\N
+4845	Õà▒ÕÉî	ÒüìÒéçÒüåÒü®Òüå	Cß╗Öng ─æß╗ông; sß╗▒ li├¬n hiß╗çp; sß╗▒ li├¬n ─æß╗øi	932	0	\N
+4846	õ©ÇþÀÆ	ÒüäÒüúÒüùÒéç	Tre╠ë con, con ca╠üi	933	0	\N
+4847	õ¥ø	ÒüØÒü¬	sß╗▒ cung cß║Ñp, ─æã░a ra	933	0	\N
+4848	Þ®ªõ¥øÕôü	ÒüùÒüìÒéçÒüåÒü▓Òéô	h├áng mß║½u, mß║½u thß╗¡	933	0	\N
+4849	õ¥ø	Òü¿Òéé	lß╗à c├║ng, tã░ß╗ƒng nhß╗ø ngã░ß╗Øi ─æ├ú khuß║Ñt	933	0	\N
+4850	Ú¡ÜÕ▒ï	ÒüòÒüïÒü¬Òéä	th├ón sinh	934	0	\N
+4851	õ©íµëï	ÒéèÒéçÒüåÒüª	hai tay	934	0	\N
+4852	õ©íµû╣	ÒéèÒéçÒüåÒü╗Òüå	song phã░ãíng, hai b├¬n	934	0	\N
+4853	õ©íÕü┤	ÒéèÒéçÒüåÒüîÒéÅ	hai b├¬n	934	0	\N
+4854	õ©íµø┐	ÒéèÒéçÒüåÒüîÒüê	─æß╗òi tiß╗ün	934	0	\N
+4855	Õç║	Òüº	thanh ni├¬n, lß╗øp trß║╗, giß╗øi trß║╗	935	0	\N
+4856	ÞïÑÒÇà	ÒéÅÒüïÒéÅÒüï	Ngã░ß╗Øi tß║¡p viß╗çc; ngã░ß╗Øi mß╗øi hß╗ìc, ngã░ß╗Øi chã░a c├│ kinh nghiß╗çm	935	0	\N
+4857	ÞÇüÞïÑ	ÒéìÒüåÒü½ÒéâÒüÅ	nam nß╗» mß╗ìi lß╗®a tuß╗òi, bß║Ñt kß╗â gi├á trß║╗ trai g├íi	935	0	\N
+4858	µØû	ÒüñÒüê	ngã░ß╗Øi gi├á	936	0	\N
+4859	ÞÇü	Òüè	l├úo h├│a	936	0	\N
+4860	ÞÇüþ£╝	ÒéìÒüåÒüîÒéô	mß║»t l├úo	936	0	\N
+4861	Õ┐âÞçô	ÒüùÒéôÒü×Òüå	hãíi thß╗ƒ	937	0	\N
+4863	õ╝æµü»	ÒüìÒéàÒüåÒüØÒüÅ	nghß╗ë giß║úi lao, ngh─® ngãíi	937	0	\N
+4864	µü»	ÒüäÒüì	tin tß╗®c, t├¼nh h├¼nh	937	0	\N
+4865	µü»	ÒüäÒüì	thß╗ƒ d├ái	937	0	\N
+4867	õ©Çõ║║Õ¿ÿ	Òü▓Òü¿ÒéèÒéÇÒüÖÒéü	con g├íi duy nhß║Ñt, con g├íi mß╗Öt	938	0	\N
+4868	Õ¿ÿÕ®┐	ÒéÇÒüÖÒéüÒéÇÒüô	con nu├┤i	938	0	\N
+4791	þ¬ô	Òü¥Òü®	chß╗ù ngß╗ôi ph├¡a cß╗¡a sß╗¡a	923	0	27503
+4796	ÕÅìÕ»¥	Òü»ÒéôÒüƒÒüä	Ph├¡a b├¬n kia	924	0	29480
+4799	õ©ûþòî	ÒüøÒüïÒüä	l├í	925	0	27631
+4801	Þæëµø©	Òü»ÒüîÒüì	bã░u thiß║┐p	925	0	27566
+4803	þ┤àÞæë	ÒééÒü┐Òüÿ	c├óy l├í ─æß╗Å	925	0	27643
+4805	Õñ®µ░ù	ÒüªÒéôÒüì	phong cß║únh	926	0	27624
+4818	õ¢ò	Òü¬Òü½	h├¼nh d├íng, kiß╗âu	928	0	27289
+4819	õ║║Õ¢ó	Òü½ÒéôÒüÄÒéçÒüå	b├║p b├¬	928	0	28433
+4862	µü»Õ¡É	ÒéÇÒüÖÒüô	con trai	937	0	28324
+4866	þºü	ÒéÅÒüƒÒüù	con g├íi	938	0	26968
+4869	þ▒│	ÒüôÒéü	b├¬n trong	939	0	28877
+4870	ÕÑÑ	ÒüèÒüÅ	r─âng cß║Ñm	939	0	27536
+4871	Õ░åÞ╗ì	ÒüùÒéçÒüåÒüÉÒéô	tã░ãíng lai	940	0	\N
+4872	Õ░åµúï	ÒüùÒéçÒüåÒüÄ	cß╗Ø tã░ß╗øng	940	0	\N
+4873	Õ░åÞ╗ì	ÒüùÒéçÒüåÒüÉÒéô	tã░ãíß╗øng qu├ón	940	0	\N
+4874	õ©╗Õ░å	ÒüùÒéàÒüùÒéçÒüå	─æß╗Öi trã░ß╗ƒng, chß╗º tã░ß╗øng	940	0	\N
+4875	ÕàêþÑû	ÒüøÒéôÒü×	├┤ng	941	0	\N
+4877	þÑûÕàê	ÒüØÒüøÒéô	tß╗ò ti├¬n	941	0	\N
+4878	þÑûÕø¢	ÒüØÒüôÒüÅ	qu├¬ cha ─æß║Ñt mß║╣, tß╗ò quß╗æc	941	0	\N
+4879	ÕàêþÑû	ÒüøÒéôÒü×	├┤ng b├á, tß╗ò ti├¬n	941	0	\N
+4880	þÑûþêÂµ»ì	ÒüØÒüÁÒü╝	├┤ng b├á	941	0	\N
+4881	ÕàâþÑû	ÒüîÒéôÒüØ	tß╗ò sã░, ngã░ß╗Øi s├íng lß║¡p, ngã░ß╗Øi s├íng tß║ío ra	941	0	\N
+4882	µòÖþÑû	ÒüìÒéçÒüåÒüØ	gi├ío tß╗ò, ngã░ß╗Øi lß║¡p ra mß╗Öt t├┤n gi├ío	941	0	\N
+4884	Þé▓	ÒüØÒüá	m├┤n thß╗â dß╗Ñc, thß╗â chß║Ñt	942	0	\N
+4885	Þé▓ÕàÉ	ÒüäÒüÅÒüÿ	sß╗▒ nu├┤i , ch─âm s├│c trß║╗	942	0	\N
+4886	õ┐ØÞé▓	Òü╗ÒüäÒüÅ	viß╗çc nu├┤i dã░ß╗íng, ch─âm s├│c	942	0	\N
+4887	þöƒ	Òüå	nam giß╗øi	943	0	\N
+4889	µÇºÕêÑ	ÒüøÒüäÒü╣Òüñ	giß╗øi t├¡nh	943	0	\N
+4891	µÇºÞ│¬	ÒüøÒüäÒüùÒüñ	t├¡nh chß║Ñt	943	0	\N
+4892	þÉåµÇº	ÒéèÒüøÒüä	l├¢ tr├¡, l├¢ t├¡nh	943	0	\N
+4893	Úà©µÇº	ÒüòÒéôÒüøÒüä	t├¡nh axit	943	0	\N
+4894	þø©µÇº	ÒüéÒüäÒüùÒéçÒüå	mß╗æi quan hß╗ç th├ón thuß╗Öc, t├¡nh tã░ãíng hß╗úp	943	0	\N
+4895	Úúƒõ║ï	ÒüùÒéçÒüÅÒüÿ	thiß╗çp mß╗Øi	944	0	\N
+4897	µ£ÇÕ¥î	ÒüòÒüäÒüö	cuß╗æi c├╣ng	946	0	\N
+4899	µ£ÇÚ½ÿ	ÒüòÒüäÒüôÒüå	tuyß╗çt nhß║Ñt, tß╗æt nhß║Ñt	946	0	\N
+4900	µ£Çõ¢Ä	ÒüòÒüäÒüªÒüä	tß╗ôi nhß║Ñt	946	0	\N
+4901	µ£Çµû░	ÒüòÒüäÒüùÒéô	c├íi mß╗øi nhß║Ñt	946	0	\N
+4904	ÕêØþ┤Ü	ÒüùÒéçÒüìÒéàÒüå	Sãí cß║Ñp, sß╗▒ d├ánh cho ngã░ß╗Øi mß╗øi bß║»t ─æß║ºu	947	0	\N
+4905	ÕêØµüï	Òü»ÒüñÒüôÒüä	mß╗æi t├¼nh ─æß║ºu	947	0	\N
+4906	ÕêØÕ┐âÞÇà	ÒüùÒéçÒüùÒéôÒüùÒéâ	ngã░ß╗Øi mß╗øi nhß║¡p m├┤n, ngã░ß╗Øi mß╗øi hß╗ìc, ngã░ß╗Øi mß╗øi v├áo nghß╗ü	947	0	\N
+4907	ÕêØÕñÅ	ÒüùÒéçÒüï	─æß║ºu h├¿	947	0	\N
+4908	Úáåþò¬	ÒüÿÒéàÒéôÒü░Òéô	Thã░╠ü nh├ó╠üt, ─æß║ºu ti├¬n	948	0	\N
+4910	õ║îþò¬þø«	Òü½Òü░ÒéôÒéü	vß╗ï tr├¡ thß╗® 2	948	0	\N
+4911	Õ¢ôþò¬	Òü¿ÒüåÒü░Òéô	phi├¬n trß╗▒c, lã░ß╗út (l├ám viß╗çc)	948	0	\N
+4915	Úáåþò¬	ÒüÿÒéàÒéôÒü░Òéô	thß╗® tß╗▒, lß║ºn lã░ß╗út	948	0	\N
+4917	õ║îÕìüµ¡│	Òü»ÒüƒÒüí	20 tuß╗òi	949	0	\N
+4918	Õìüµ¡│	ÒüÿÒéàÒüúÒüòÒüä	20 tuß╗òi	949	0	\N
+4919	õ©çµ¡│	Òü░ÒéôÒüûÒüä	Hoan h├┤, ch├áo mß╗½ng, vß║ín tuß║┐	949	0	\N
+4920	µ¡│µÜ«	ÒüøÒüäÒü╝	qu├á cuß╗æi n─âm	949	0	\N
+4921	µ¡│µ£ê	ÒüòÒüäÒüÆÒüñ	tuß║┐ nguyß╗çt, thß╗Øi gian	949	0	\N
+4922	µ¡│ÕàÑ	ÒüòÒüäÒü½ÒéàÒüå	thu nhß║¡p	949	0	\N
+4923	µ¡│Õç║	ÒüòÒüäÒüùÒéàÒüñ	chi ti├¬u	949	0	\N
+4925	µ×Üµò░	Òü¥ÒüäÒüÖÒüå	sß╗æ tß╗Ø,sß╗æ tß║Ñm	950	0	\N
+4926	õ║îµ×Üþø«	Òü½Òü¥ÒüäÒéü	tß║Ñm thß╗® 2, tß╗Ø thß╗® 2	950	0	\N
+4928	Õ░ÅÕåèÕ¡É	ÒüùÒéçÒüåÒüòÒüúÒüù	cuß╗æn s├ích nhß╗Å	951	0	\N
+4929	ÕêÑÕåè	Òü╣ÒüúÒüòÒüñ	tß║¡p ri├¬ng	951	0	\N
+4930	þƒ¡Õåè	ÒüƒÒéôÒüûÒüÅ	Mß║únh giß║Ñy nhß╗Å d├ái d├╣ng ─æß╗â l├ám thãí	951	0	\N
+4931	Õåèµò░	ÒüòÒüúÒüÖÒüå	sß╗æ quyß╗ân (s├ích vß╗ƒ)	951	0	\N
+4932	õ©ÇÕääõ║║	ÒüäÒüíÒüèÒüÅÒü½Òéô	1 tr─âm triß╗çu	952	0	\N
+4933	ÕìüÕää	ÒüÿÒéàÒüåÒüèÒüÅ	1 tß╗À	952	0	\N
+4934	Õääõ©çÚòÀÞÇà	ÒüèÒüÅÒü¥ÒéôÒüíÒéçÒüåÒüÿÒéâ	tß╗À ph├║	952	0	\N
+4935	Õøø	ÒéêÒüú	─æiß╗âm	953	0	\N
+4936	Õ╝▒þé╣	ÒüÿÒéâÒüÅÒüªÒéô	nhã░ß╗úc ─æiß╗âm, ─æiß╗âm yß║┐u	953	0	\N
+4938	þé╣µò░	ÒüªÒéôÒüÖÒüå	─æiß╗âm sß╗æ	953	0	\N
+4939	µ¼áþé╣	ÒüæÒüúÒüªÒéô	thiß║┐u s├│t, khuyß║┐t ─æiß╗âm	953	0	\N
+4940	þÖ¥þé╣	Òü▓ÒéâÒüÅÒüªÒéô	100 ─æiß╗âm	953	0	\N
+4941	ÕÅÑÞ¬¡þé╣	ÒüÅÒü¿ÒüåÒüªÒéô	dß║Ñu chß║Ñm c├óu	953	0	\N
+4942	Þªüþé╣	ÒéêÒüåÒüªÒéô	yß║┐u ─æiß╗âm, ─æiß╗âm trß╗ìng yß║┐u	953	0	\N
+4943	þÜå	Òü┐Òü¬	tß║ºng hai	954	0	\N
+4945	µ«ÁÚÜÄ	ÒüáÒéôÒüïÒüä	giai ─æoß║ín	954	0	\N
+4946	ÚÜÄþ┤Ü	ÒüïÒüäÒüìÒéàÒüå	giai cß║Ñp	954	0	\N
+4948	õ©Çµ«Á	ÒüäÒüíÒüáÒéô	1 bß║¡c (cß║ºu thang)	955	0	\N
+4949	õ©Çµ«Á	ÒüäÒüíÒüáÒéô	giai ─æoß║ín	955	0	\N
+4950	µëïµ«Á	ÒüùÒéàÒüáÒéô	phã░ãíng thß╗®c, phã░ãíng ph├íp	955	0	\N
+4952	µÖ«µ«Á	ÒüÁÒüáÒéô	b├¼nh thã░ß╗Øng, th├┤ng thã░ß╗Øng	955	0	\N
+4953	Õñº	ÒüèÒüè	sß╗æ hiß╗çu	956	0	\N
+4888	ÕÑ│µÇº	ÒüÿÒéçÒüøÒüä	nß╗» giß╗øi	943	0	29490
+4890	µÇºµá╝	ÒüøÒüäÒüïÒüÅ	t├¡nh c├ích	943	0	28985
+4896	Õñ¬ÚÖ¢	ÒüƒÒüäÒéêÒüå	trã░ß╗øc hß║┐t, mß╗øi ─æß║ºu, lß║ºn ─æß║ºu ti├¬n	946	0	28552
+4898	µ£ÇÞ┐æ	ÒüòÒüäÒüìÒéô	gß║ºn ─æ├óy, mß╗øi ─æ├óy	946	0	28021
+4902	µ£Ç	ÒééÒüúÒü¿	chuyß║┐n t├áu ─æiß╗çn cuß╗æi c├╣ng	946	0	28642
+4909	þò¬ÕÅÀ	Òü░ÒéôÒüöÒüå	sß╗æ hiß╗çu	948	0	27168
+4912	õ║ñþò¬	ÒüôÒüåÒü░Òéô	─æß╗ôn cß║únh s├ít	948	0	28378
+4913	þò¬þÁä	Òü░ÒéôÒüÉÒü┐	chã░ãíng tr├¼nh, k├¬nh tv	948	0	28317
+4914	þòÖÕ«êþò¬	ÒéïÒüÖÒü░Òéô	ti╠ün hi├¬╠úu ─æi├¬╠ún thoa╠úi tra╠ë lãí╠Çi tã░╠ú ─æ├┤╠úng	948	0	28668
+4916	þºü	ÒéÅÒüƒÒüù	5 tuß╗òi	949	0	26968
+4924	µ£¿	Òüì	1 tß╗Ø, 1 tß║Ñm	950	0	27493
+4927	þ┤Ö	ÒüïÒü┐	1 quyß╗ân, 1 tß║¡p	951	0	27332
+4937	õ║ñÕÀ«þé╣	ÒüôÒüåÒüòÒüªÒéô	ng├ú tã░, b├╣ng binh, nãíi giao nhau	953	0	28105
+4944	ÚÜÄµ«Á	ÒüïÒüäÒüáÒéô	cß║ºu thang	954	0	27083
+4947	þƒ│	ÒüäÒüù	cß║ºu thang	955	0	28585
+4951	ÕÇñµ«Á	Òü¡ÒüáÒéô	gi├í cß║ú	955	0	28313
+4954	Þ¿ÿÕÅÀ	ÒüìÒüöÒüå	k├¡ hiß╗çu	956	0	\N
+4955	õ©ÇÕÅÀÞ╗è	ÒüäÒüíÒüöÒüåÒüùÒéâ	xe hß║íng nhß║Ñt	956	0	\N
+4957	þ¼¼	ÒüáÒüä	ß║Ñn phß║®m thß╗® 3, sß╗æ 3, lß║ºn thß╗® 3	956	0	\N
+4958	Õ╣┤ÕÅÀ	Òü¡ÒéôÒüöÒüå	n─âm, ni├¬n hiß╗çu	956	0	\N
+4959	µÜùÕÅÀ	ÒüéÒéôÒüöÒüå	├ím hiß╗çu, mß║¡t m├ú	956	0	\N
+4961	ÕÇìµò░	Òü░ÒüäÒüÖÒüå	bß╗Öi sß╗æ	957	0	\N
+4962	ÕÇìþÄç	Òü░ÒüäÒéèÒüñ	bß╗Öi suß║Ñt	957	0	\N
+4963	ÕÇìÕóù	Òü░ÒüäÒü×Òüå	hãín hß║│n nhß╗»ng ngã░ß╗Øi kh├íc, tuyß╗çt vß╗Øi	957	0	\N
+4965	µ¼íÒÇà	ÒüñÒüÄÒüñÒüÄ	lß║ºn lã░ß╗út, kß║┐ tiß║┐p	958	0	\N
+4966	þø«µ¼í	ÒééÒüÅÒüÿ	mß╗Ñc lß╗Ñc	958	0	\N
+4967	µ¼íþ¼¼	ÒüùÒüáÒüä	thß╗® nß╗», con g├íi thß╗®	958	0	\N
+4968	µ¼íþöÀ	ÒüÿÒü¬Òéô	thß╗® nam, con trai thß╗®	958	0	\N
+4969	µ¼íÕø×	ÒüÿÒüïÒüä	lß║ºn sau	958	0	\N
+4970	þ╣░	ÒüÅ	mß╗ìi ngã░ß╗Øi, ngã░ß╗Øi ngã░ß╗Øi	959	0	\N
+4972	Õ░æÒÇà	ÒüùÒéçÒüåÒüùÒéçÒüå	tuß║ºn trã░ß╗øc nß╗»a	959	0	\N
+4973	ÕêÑÒÇà	Òü╣ÒüñÒü╣Òüñ	Ng├áy xß╗¡a ng├áy xã░a	959	0	\N
+4974	õ╗û	Òüƒ	c├íi kh├íc	960	0	\N
+4975	õ╗û	Òü╗Òüï	c├íi kh├íc	960	0	\N
+4976	õ╗û	Òüƒ	ngã░ß╗Øi kh├íc	960	0	\N
+4977	õ╗ûÕïòÞ®×	ÒüƒÒü®ÒüåÒüù	tha ─æß╗Öng tß╗½	960	0	\N
+4978	ÕïØ	Òüï	Sß╗▒ thi ─æß║Ñu, sß╗▒ chãíi ph├ón thß║»ng bß║íi	961	0	\N
+4979	ÕïØµëï	ÒüïÒüúÒüª	chiß║┐n thß║»ng, giß║úi nhß║Ñt	961	0	\N
+4980	Õä¬ÕïØ	ÒéåÒüåÒüùÒéçÒüå	trß║¡n chung kß║┐t	961	0	\N
+4981	Þ▓á	Òü¥	Sß╗▒ thi ─æß║Ñu, sß╗▒ chãíi ph├ón thß║»ng bß║íi	962	0	\N
+4982	ÕïØ	Òüï	g├ính v├íc	962	0	\N
+4983	ÞâîÞ▓á	ÒüøÒüè	bß╗ï thã░ãíng	962	0	\N
+4984	µè▒Þ▓á	Òü╗ÒüåÒüÁ	sß╗▒ ß║Ñp ß╗º, ├┤m ß║Ñp (ho├ái b├úo)	962	0	\N
+4985	Õñº	ÒüèÒüè	sß╗▒ t├ín dã░ãíng, ca tß╗Ñng	963	0	\N
+4986	þÁÂÞ│ø	Òü£ÒüúÒüòÒéô	ngã░ß╗íng mß╗Ö	963	0	\N
+4987	µ¡ªÕÖ¿	ÒüÂÒüì	trã░ß╗ƒng th├ánh, t─âng trã░ß╗ƒng	964	0	\N
+4988	µêÉõ║║	ÒüøÒüäÒüÿÒéô	ngã░ß╗Øi trã░ß╗ƒng th├ánh	964	0	\N
+4989	µêÉ	Òü¬	th├ánh t├¡ch	964	0	\N
+4990	Õ«îµêÉ	ÒüïÒéôÒüøÒüä	ho├án th├ánh	964	0	\N
+4991	µêÉÕèƒ	ÒüøÒüäÒüôÒüå	th├ánh c├┤ng	964	0	\N
+4993	þÁÂ	Òüƒ	tuyß╗çt vß╗ìng	965	0	\N
+4995	Õ»¥	ÒüƒÒüä	mß╗Öt ─æ├┤i, mß╗Öt cß║Àp	966	0	\N
+4996	þ│©	ÒüäÒü¿	sß╗▒ li├¬n tß╗Ñc,  liß╗ün tiß║┐p	967	0	\N
+4997	þø©þÂÜ	ÒüØÒüåÒü×ÒüÅ	sß╗▒ kß║┐ tiß║┐p, thß╗½a kß║┐	967	0	\N
+4998	þÂÜÒÇà	Òü×ÒüÅÒü×ÒüÅ	Sß╗▒ li├¬n tß╗Ñc; sß╗▒ kß║┐ tiß║┐p; viß╗çc c├íi n├áy tiß║┐p theo c├íi kh├íc	967	0	\N
+4999	ÕìâÞ¬×	ÒüøÒéôÒüö	tß╗½ ─æiß╗ân	968	0	\N
+5000	Þ¥×	Òéä	tß╗½ ─æiß╗ân	968	0	\N
+5001	Þ¥×ÞüÀ	ÒüÿÒüùÒéçÒüÅ	nß╗ïnh h├│t, lß╗Øi nß╗ïnh nß╗ìt	968	0	\N
+5002	Þ¥×Þí¿	ÒüÿÒü▓ÒéçÒüå	─æãín tß╗½ chß╗®c	968	0	\N
+5004	µèòÞ│ç	Òü¿ÒüåÒüù	─æß║ºu tã░	969	0	\N
+5005	µèòµëï	Òü¿ÒüåÒüùÒéà	ngã░ß╗Øi ph├ít b├│ng (b├│ng ch├áy)	969	0	\N
+5006	Úü©	ÒüêÒéë	tuyß╗ân thß╗º	970	0	\N
+5007	Úü©µè×	ÒüøÒéôÒüƒÒüÅ	bß║ºu cß╗¡, tuyß╗ân cß╗¡	970	0	\N
+5008	µè¢Úü©	ÒüíÒéàÒüåÒüøÒéô	sß╗▒ r├║t th─âm,  xß╗ò sß╗æ	970	0	\N
+5009	Õ¢ôÚü©	Òü¿ÒüåÒüøÒéô	quyß╗ün bß║ºu cß╗¡	970	0	\N
+5010	Úü®Õ¢ô	ÒüªÒüìÒü¿Òüå	lß╗Øi hß╗®a	971	0	\N
+5011	õ║êþ┤ä	ÒéêÒéäÒüÅ	─Éß║Àt chß╗ù, hß║╣n trã░ß╗øc	971	0	\N
+5012	þ┤ä	ÒéäÒüÅ	ã░ß╗øc t├¡nh khoß║úng 100 ngã░ß╗Øi	971	0	\N
+5013	Õ®Üþ┤ä	ÒüôÒéôÒéäÒüÅ	sß╗▒ ─æ├¡nh h├┤n, sß╗▒ ─æ├¡nh ã░ß╗øc	971	0	\N
+5014	þ»Çþ┤ä	ÒüøÒüñÒéäÒüÅ	hß╗úp ─æß╗ông, khß║┐ ã░ß╗øc	971	0	\N
+5015	Þªüþ┤ä	ÒéêÒüåÒéäÒüÅ	sß╗▒ t├│m lã░ß╗úc, sß╗▒ kh├íi qu├ít	971	0	\N
+5017	Þè▒µØƒ	Òü»Òü¬ÒüƒÒü░	b├│ hoa	972	0	\N
+5018	µØƒ	ÒüƒÒü░	b├│, b├║i, cuß╗Ön	972	0	\N
+5019	µØƒ	ÒüƒÒü░	Sß╗▒ kiß╗üm chß║┐; sß╗▒ hß║ín chß║┐; sß╗▒ tr├│i buß╗Öc; sß╗▒ giam cß║ºm	972	0	\N
+5021	þòÖÕ«êþò¬Úø╗Þ®▒	ÒéïÒüÖÒü░ÒéôÒüºÒéôÒéÅ	chß║┐ ─æß╗Ö ─æi├¬╠ún thoa╠úi tra╠ë lãí╠Çi tã░╠ú ─æ├┤╠úng	973	0	\N
+5022	Õ«ê	Òü¥Òéé	c├│ t├¡nh bß║úo thß╗º	973	0	\N
+5023	Õ¡ÉÕ«êµ¡î	ÒüôÒééÒéèÒüåÒüƒ	b├ái h├ít ru trß║╗	973	0	\N
+5024	Õ«ê	Òü¥Òéé	nh├ón vi├¬n bß║úo vß╗ç, cß║únh vß╗ç	973	0	\N
+5026	ÚüÄ	ÒüÖ	─æa sß╗æ, sß╗æ ─æ├┤ng	974	0	\N
+5028	Õñóõ©¡	ÒéÇÒüíÒéàÒüå	ch├¼m ─æß║»m, say sã░a, miß╗çt m├ái	975	0	\N
+5029	µé¬Õñó	ÒüéÒüÅÒéÇ	├íc mß╗Öng	975	0	\N
+5030	ÕêØÕñó	Òü»ÒüñÒéåÒéü	giß║Ñc mãí ─æß║ºu ti├¬n trong n─âm	975	0	\N
+5031	þäíµêæÕñóõ©¡	ÒéÇÒüîÒéÇÒüíÒéàÒüå	say sã░a viß╗çc g├¼ ─æ├│ qu├¬n cß║ú bß║ún th├ón m├¼nh	975	0	\N
+5033	µ░æõ©╗þÜä	Òü┐ÒéôÒüùÒéàÒüªÒüì	C├│ t├¡nh d├ón chß╗º	976	0	\N
+5034	þñ¥õ╝ÜþÜä	ÒüùÒéâÒüïÒüäÒüªÒüì	c├│ t├¡nh x├ú hß╗Öi, tß║¡p thß╗â	976	0	\N
+5035	Õø¢ÚÜøþÜä	ÒüôÒüÅÒüòÒüäÒüªÒüì	t├¡nh quß╗æc tß║┐	976	0	\N
+5036	þ®ìµÑÁþÜä	ÒüøÒüúÒüìÒéçÒüÅÒüªÒüì	t├¡ch cß╗▒c	976	0	\N
+5037	µÂêµÑÁþÜä	ÒüùÒéçÒüåÒüìÒéçÒüÅÒüªÒüì	mang t├¡nh ti├¬u cß╗▒c	976	0	\N
+4960	Þâî	Òüø	ba lß║ºn (bß╗Öi sß╗æ)	957	0	27821
+4964	ÕÅú	ÒüÅÒüí	tiß║┐p theo, sau ─æ├óy	958	0	27817
+4971	Þë▓ÒÇà	ÒüäÒéìÒüäÒéì	thß╗ënh thoß║úng	959	0	27982
+4992	Þë▓	ÒüäÒéì	tuyß╗çt chß╗ºng	965	0	28309
+4994	þºü	ÒéÅÒüƒÒüù	─æß╗æi tã░ß╗úng	966	0	26968
+5016	Õ¢╝	ÒüïÒéî	lß╗Øi hß╗®a	972	0	27204
+5020	ÚìÁ	ÒüïÒüÄ	vß║»ng nh├á	973	0	27032
+5025	Úüô	Òü┐Òüí	qu├í khß╗®	974	0	28104
+5027	Õñòµû╣	ÒéåÒüåÒüîÒüƒ	giß║Ñc mãí	975	0	28564
+5032	þÖ¢	ÒüùÒéì	mß╗Ñc ─æ├¡ch	976	0	28688
+5038	µ»öÞ╝âþÜä	Òü▓ÒüïÒüÅÒüªÒüì	tã░ãíng ─æß╗æi	976	0	\N
+5039	þÜä	Òü¥Òü¿	mß╗Ñc ti├¬u	976	0	\N
+5041	Úúø	Òü¿	phi trã░ß╗Øng, s├ón bay	977	0	\N
+5042	þ│©	ÒüäÒü¿	m├íy bay	978	0	\N
+5047	µ®ƒÕ½î	ÒüìÒüÆÒéô	sß║»c mß║Àt; t├óm trß║íng; t├¡nh kh├¡; t├óm t├¼nh; t├¡nh t├¼nh	978	0	\N
+5048	µ®ƒÚûó	ÒüìÒüïÒéô	cãí quan	978	0	\N
+5049	µ®ƒÚûó	ÒüìÒüïÒéô	nguy cãí, khß╗ºng hoß║úng	978	0	\N
+5050	µ®ƒþ╣ö	Òü»ÒüƒÒüè	M├íy dß╗çt	978	0	\N
+5051	Õñ½	ÒüèÒüúÒü¿	thß║Ñt nghiß╗çp	979	0	\N
+5052	Õñ▒þñ╝	ÒüùÒüñÒéîÒüä	thß║Ñt vß╗ìng	979	0	\N
+5053	Úëä	ÒüªÒüñ	t├áu ─æiß╗çn ngß║ºm	980	0	\N
+5054	Úëä	ÒüªÒüñ	sß║»t, th├®p	980	0	\N
+5055	ÚëäÚüô	ÒüªÒüñÒü®Òüå	─æã░ß╗Øng sß║»t	980	0	\N
+5056	þºüÚëä	ÒüùÒüªÒüñ	─æã░ß╗Øng sß║»c tã░ nh├ón	980	0	\N
+5059	Õ┐½ÚÇƒ	ÒüïÒüäÒüØÒüÅ	t├áu si├¬u tß╗æc	981	0	\N
+5060	Ú½ÿÚÇƒ	ÒüôÒüåÒüØÒüÅ	─æã░ß╗Øng cao tß╗æc	981	0	\N
+5061	µÖéÚÇƒ	ÒüÿÒüØÒüÅ	tß╗æc ─æß╗Ö t├¡nh theo giß╗Ø	981	0	\N
+5062	õ©╗õ║║	ÒüùÒéàÒüÿÒéô	b├úi ─æß╗ù xe	983	0	\N
+5063	ÚºÉµùÑ	ÒüíÒéàÒüåÒü½Òüí	─æß║íi sß╗® thã░ß╗Øng tr├║ tß║íi nhß║¡t bß║ún	983	0	\N
+5064	µÁÀÞ¥║	ÒüåÒü┐Òü╣	3 ng├áy 2 ─æ├¬m	984	0	\N
+5065	õ©Çµ│è	ÒüäÒüúÒü▒ÒüÅ	Ngß╗º trß╗ì, trß╗ì lß║íi	984	0	\N
+5068	Úó¿Þê╣	ÒüÁÒüåÒüøÒéô	khinh kh├¡ cß║ºu	985	0	\N
+5069	ÚÇáÞê╣	Òü×ÒüåÒüøÒéô	─æ├│ng t├áu	985	0	\N
+5070	Õ«óÞê╣	ÒüìÒéâÒüÅÒüøÒéô	thuyß╗ün chß╗ƒ kh├ích, t├áu chß╗ƒ kh├ích	985	0	\N
+5071	Þ▓¿þë®Þê╣	ÒüïÒééÒüñÒüøÒéô	t├áu chß╗ƒ h├áng	985	0	\N
+5072	Þê╣ÚòÀ	ÒüøÒéôÒüíÒéçÒüå	thuyß╗ün trã░ß╗ƒng	985	0	\N
+5073	Þê╣µùà	ÒüÁÒü¬ÒüƒÒü│	chuyß║┐n ─æi (cuß╗Öc h├ánh tr├¼nh) bß║▒ng t├áu thuyß╗ün	985	0	\N
+5075	Õ║ºÕ©¡	ÒüûÒüøÒüì	chß╗ù ngß╗ôi	986	0	\N
+5076	Õ║ºÕ©âÕøú	ÒüûÒüÂÒü¿Òéô	─Éß╗çm ngß╗ôi	986	0	\N
+5077	Õ║ºÞ½çõ╝Ü	ÒüûÒüáÒéôÒüïÒüä	buß╗òi tß╗ìa ─æ├ám	986	0	\N
+5078	Õ║ºµòÀ	ÒüûÒüùÒüì	ph├▓ng kh├ích	986	0	\N
+5080	Õç║Õ©¡	ÒüùÒéàÒüúÒüøÒüì	tham gia, c├│ mß║Àt	987	0	\N
+5081	þ®║Õ©¡	ÒüÅÒüåÒüøÒüì	kh├┤ng trung, kh├┤ng gian	987	0	\N
+5082	µ¼áÕ©¡	ÒüæÒüúÒüøÒüì	vß║»ng mß║Àt	987	0	\N
+5083	Õ«óÕ©¡	ÒüìÒéâÒüÅÒüøÒüì	ghß║┐ cß╗ºa kh├ích, ghß║┐ kh├ín giß║ú	987	0	\N
+5085	ÕìèÕ│Â	Òü»ÒéôÒü¿Òüå	b├ín ─æß║úo	988	0	\N
+5086	ÕêùÕ│Â	ÒéîÒüúÒü¿Òüå	quß║ºn ─æß║úo	988	0	\N
+5087	Õ│ÂÕø¢	ÒüùÒü¥ÒüÉÒü½	quß╗æc ─æß║úo	988	0	\N
+5088	Õ│Âµ░æ	Òü¿ÒüåÒü┐Òéô	d├ón sß╗æng tr├¬n ─æß║úo	988	0	\N
+5089	þäíõ║║Õ│Â	ÒéÇÒüÿÒéôÒü¿Òüå	─æß║úo hoang	988	0	\N
+5090	Õü£	ÒüªÒüä	lß╗Ñc ─æß╗ïa	989	0	\N
+5092	þØÇÚÖ©	ÒüíÒéâÒüÅÒéèÒüÅ	hß║í c├ính, ─æ├íp ─æß║Ñt	989	0	\N
+5093	õ©èÚÖ©	ÒüÿÒéçÒüåÒéèÒüÅ	cß║¡p bß║┐n, ─æß╗ò bß╗Ö	989	0	\N
+5094	ÚÖ©Þ╗ì	ÒéèÒüÅÒüÉÒéô	lß╗Ñc qu├ón	989	0	\N
+5095	ÚÖ©õ©è	ÒéèÒüÅÒüÿÒéçÒüå	tr├¬n mß║Àt ─æß║Ñt, tr├¬n ─æß║Ñt liß╗ün	989	0	\N
+5098	þÑ×µê©	ÒüôÒüåÒü╣	cß║úng Kobe	990	0	\N
+5099	µ©»þö║	Òü┐Òü¬Òü¿Òü¥Òüí	phß╗æ cß║úng	990	0	\N
+5101	Úëäµ®ï	ÒüªÒüúÒüìÒéçÒüå	cß║ºu c├│ ─æã░ß╗Øng ray cho xe lß╗¡a	991	0	\N
+5102	µ¡®Úüôµ®ï	Òü╗Òü®ÒüåÒüìÒéçÒüå	cß║ºu vã░ß╗út, cß║ºu cho ngã░ß╗Øi ─æi bß╗Ö	991	0	\N
+5103	µ®ï	Òü░Òüù	cß║ºu treo	991	0	\N
+5107	õ║ñµÅø	ÒüôÒüåÒüïÒéô	trao ─æß╗òi	992	0	\N
+5108	Õñûõ║ñÕ«ÿ	ÒüîÒüäÒüôÒüåÒüïÒéô	nh├á ngoß║íi giao	992	0	\N
+5111	þÑ×µºÿ	ÒüïÒü┐ÒüòÒü¥	thß║ºn, thã░ß╗úng ─æß║┐, ch├║a trß╗Øi	994	0	\N
+5113	þÑ×þÁî	ÒüùÒéôÒüæÒüä	thß║ºn kinh, sß╗▒ nhß║íy cß║úm	994	0	\N
+5114	þ▓¥þÑ×	ÒüøÒüäÒüùÒéô	t├óm kh├¡, tinh thß║ºn	994	0	\N
+5115	þÑ×Þ®▒	ÒüùÒéôÒéÅ	thß║ºn thoß║íi	994	0	\N
+5116	þÑ×Úüô	ÒüùÒéôÒü¿Òüå	thß║ºn ─æß║ío	994	0	\N
+5117	þÑ×µê©	ÒüôÒüåÒü╣	Kobe (Nhß║¡t Bß║ún)	994	0	\N
+5119	þö░õ©¡µºÿ	ÒüƒÒü¬ÒüïÒüòÒü¥	├öng, b├á, ng├ái tanaka	995	0	\N
+5120	µºÿÒÇà	ÒüòÒü¥ÒüûÒü¥	th├íi ─æß╗Ö, trß║íng th├íi	995	0	\N
+5121	ÕÉîµºÿ	Òü®ÒüåÒéêÒüå	tß║Ñt cß║ú mß╗ìi ngã░ß╗Øi (c├ích xã░ng h├┤ k├¡nh trß╗ìng)	995	0	\N
+5122	Õ«óµºÿ	ÒüìÒéâÒüÅÒüòÒü¥	qu├¢ kh├ích	995	0	\N
+5123	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	vua	995	0	\N
+5043	µ®ƒõ╝Ü	ÒüìÒüïÒüä	cãí hß╗Öi, dß╗ïp	978	0	28747
+5044	µ┤ùµ┐»µ®ƒ	ÒüøÒéôÒüƒÒüÅÒüì	m├íy giß║Àc	978	0	28649
+5046	µ®ƒÞâ¢	ÒüìÒü«Òüå	chß╗®c n─âng	978	0	27142
+5057	þºü	ÒéÅÒüƒÒüù	ngay lß║¡p tß╗®c, tß╗®c th├¼	981	0	26968
+5058	ÚÇƒÚüö	ÒüØÒüÅÒüƒÒüñ	dß╗ïch vß╗Ñ chuyß╗ân ph├ít nhanh	981	0	27600
+5066	Þê╣	ÒüÁÒü¡	Thuyß╗ün	985	0	27194
+5067	Þê╣õ¥┐	ÒüÁÒü¬Òü│Òéô	Gß╗ƒi bß║▒ng ─æã░ß╗Øng t├áu, lß╗øp vß╗Å ngo├ái cß╗ºa t├áu	985	0	27596
+5074	õ║îõ║║	ÒüÁÒüƒÒéè	t├ái khoß║ún	986	0	29178
+5079	Õ║ù	Òü┐Òüø	ghß║┐, chß╗ù ngß╗ôi	987	0	27283
+5084	Ú│Ñ	Òü¿Òéè	─æß║úo, c├╣ lao	988	0	28242
+5091	ÚÖ©	ÒéèÒüÅ	maß║Àt ─æß║Ñt, ─æß║Ñt liß╗ün	989	0	29191
+5096	µ©»	Òü┐Òü¬Òü¿	s├ón bay	990	0	28741
+5097	µ©»	Òü┐Òü¬Òü¿	bß║┐n cß║úng	990	0	28741
+5100	µ£¿	Òüì	c├óy cß║ºu	991	0	27493
+5104	þêÂ	ÒüíÒüí	─æß╗ôn cß║únh s├ít	992	0	27340
+5105	õ║ñÕÀ«þé╣	ÒüôÒüåÒüòÒüªÒéô	b├╣ng binh	992	0	28105
+5106	õ║ñÚÇÜ	ÒüôÒüåÒüñÒüå	tai nß║ín giao th├┤ng	992	0	28007
+5109	ÚøÀ	ÒüïÒü┐Òü¬Òéè	─æãín xin viß╗çc	993	0	29024
+5110	ÚøÀ	ÒüïÒü┐Òü¬Òéè	thß║ºn, ch├║a	994	0	29024
+5112	þÑ×þñ¥	ÒüÿÒéôÒüÿÒéâ	─Éß╗ün thß╗Ø thß║ºn ─æß║ío	994	0	27827
+5118	µ£¿	Òüì	thß║ºn, thã░ß╗úng ─æß║┐, ch├║a trß╗Øi	995	0	27493
+5124	µ¿íµºÿ	ÒééÒéêÒüå	hoa v─ân, m├┤ h├¼nh	995	0	\N
+5126	õ┐í	ÒüùÒéô	tß╗▒ tin	996	0	\N
+5127	õ┐íþö¿	ÒüùÒéôÒéêÒüå	l├▓ng tin, sß╗▒ tin tã░ß╗ƒng, sß╗▒ t├¡n nhiß╗çm	996	0	\N
+5128	õ┐íÚá╝	ÒüùÒéôÒéëÒüä	tin cß║¡y, t├¡n nhiß╗çm	996	0	\N
+5129	õ┐íõ╗░	ÒüùÒéôÒüôÒüå	t├¡n ngã░ß╗íng	996	0	\N
+5130	ÕÅùõ┐í	ÒüÿÒéàÒüùÒéô	sß╗▒ thu t├¡n hiß╗çu	996	0	\N
+5131	Õæ¿	Òü¥ÒéÅ	t├¼nh trß║íng	997	0	\N
+5134	Þ¬┐þ»Ç	ÒüíÒéçÒüåÒüøÒüñ	─æiß╗üu tiß║┐t, chß╗ënh l├¢	997	0	\N
+5136	µñ£µƒ╗	ÒüæÒéôÒüò	sß╗▒ kiß╗âm tra	998	0	\N
+5137	µñ£µƒ╗	ÒüæÒéôÒüò	tuß║ºn cß║únh, tuß║ºn binh, cß║únh s├ít tuß║ºn tiß╗àu	998	0	\N
+5139	Õ»®µƒ╗	ÒüùÒéôÒüò	thß║®m x├®t, thß║®m tra	998	0	\N
+5142	þø©Õ¢ô	ÒüØÒüåÒü¿Òüå	sß╗▒ tã░ãíng ─æã░ãíng	999	0	\N
+5143	þø©Úüò	ÒüØÒüåÒüä	sß╗▒ kh├íc nhau	999	0	\N
+5144	þø©þÂÜ	ÒüØÒüåÒü×ÒüÅ	sß╗▒ kß║┐ tiß║┐p, sß╗▒ thß╗½a kß║┐	999	0	\N
+5145	þø©Õñë	ÒüéÒüäÒüï	m├┤n vß║¡t sumo	999	0	\N
+5148	Õ║ºÞ½çõ╝Ü	ÒüûÒüáÒéôÒüïÒüä	buß╗òi tß╗ìa ─æ├ám	1000	0	\N
+5149	µççÞ½çõ╝Ü	ÒüôÒéôÒüáÒéôÒüïÒüä	buß╗òi hß╗ìp mß║Àt th├ón mß║¡t	1000	0	\N
+5150	ÚøæÞ½ç	ÒüûÒüñÒüáÒéô	n├│i chuyß╗çn phiß║┐m	1000	0	\N
+5151	Õ»¥Þ½ç	ÒüƒÒüäÒüáÒéô	sß╗▒ ─æß╗æi thoß║íi, cuß╗Öc ─æß╗æi thoß║íi	1000	0	\N
+5153	µíêÕñû	ÒüéÒéôÒüîÒüä	bß║Ñt ngß╗Ø, ngoß║íi dß╗▒ kiß║┐n	1001	0	\N
+5154	þ¡öµíê	Òü¿ÒüåÒüéÒéô	phiß║┐u trß║ú lß╗Øi	1001	0	\N
+5155	µÅÉµíê	ÒüªÒüäÒüéÒéô	sß╗▒ ─æß╗ü nghß╗ï, lß╗Øi ─æß╗ü nghß╗ï	1001	0	\N
+5156	µíê	ÒüéÒéô	Quß║ú nhi├¬n;  ─æ├║ng nhã░ dß╗▒ ─æo├ín	1001	0	\N
+5157	ÕÉìµíê	ÒéüÒüäÒüéÒéô	├¢ kiß║┐n hay	1001	0	\N
+5159	Õ«ÂÕåà	ÒüïÒü¬Òüä	vß╗ú (m├¼nh)	1002	0	\N
+5160	Õø¢Õåà	ÒüôÒüÅÒü¬Òüä	trong nã░ß╗øc, quß╗æc nß╗Öi	1002	0	\N
+5161	Õåà	ÒüåÒüí	b├¬n trong	1002	0	\N
+5162	Õåàþºæ	Òü¬ÒüäÒüï	nß╗Öi khoa	1002	0	\N
+5163	ÕåàÕ«╣	Òü¬ÒüäÒéêÒüå	nß╗Öi dung	1002	0	\N
+5164	ÕóâÕåà	ÒüæÒüäÒüáÒüä	b├¬n trong ─æß╗ün, ch├╣a	1002	0	\N
+5165	þÄïµºÿ	ÒüèÒüåÒüòÒü¥	cß║¡u, bß║ín Yamamoto	1003	0	\N
+5167	ÕÉøõ©╗	ÒüÅÒéôÒüùÒéà	vã░ãíng giß║ú, qu├ón chß╗º	1003	0	\N
+5168	Õ£ƒ	ÒüñÒüí	bß║ín b├¿, ngã░ß╗Øi bß║ín	1004	0	\N
+5169	þºüÚüö	ÒéÅÒüƒÒüùÒüƒÒüí	ch├║ng t├┤i	1004	0	\N
+5171	õ©èÚüö	ÒüÿÒéçÒüåÒüƒÒüñ	sß╗▒ ph├ón ph├ít, sß╗▒ ─æã░a chuyß╗ân cho	1004	0	\N
+5172	Úüö	ÒüƒÒüú	chuy├¬n gia, ngã░ß╗Øi th├ánh thß║ío	1004	0	\N
+5174	Þíøµÿƒ	ÒüêÒüäÒüøÒüä	vß╗ç tinh	1005	0	\N
+5175	µÿƒÕ║º	ÒüøÒüäÒüû	ch├▓m sao	1005	0	\N
+5176	µÿƒÕìá	Òü╗ÒüùÒüåÒéëÒü¬	sao Hß╗Åa	1005	0	\N
+5177	µâæµÿƒ	ÒéÅÒüÅÒüøÒüä	h├ánh tinh	1005	0	\N
+5178	µÁü	Òü¬Òüî	sao b─âng	1005	0	\N
+5179	µÿÄµÿƒ	Òü┐ÒéçÒüåÒüÿÒéçÒüå	sao mai	1005	0	\N
+5181	ÕñºÚø¬	ÒüèÒüèÒéåÒüì	tuyß║┐t rãíi d├áy	1006	0	\N
+5183	ÚÖìÚø¬	ÒüôÒüåÒüøÒüñ	viß╗çc tuyß║┐t rãíi	1006	0	\N
+5184	Úø¬Õ┤®	Òü¬ÒüáÒéî	tuyß║┐t lß╗ƒ	1006	0	\N
+5185	ÕÉ╣Úø¬	ÒüÁÒüÂÒüì	b├úo tuyß║┐t	1006	0	\N
+5186	Õü£	ÒüªÒüä	sau ─æ├│ trß╗ƒ ─æi, tß╗½ sau ─æ├│	1007	0	\N
+5187	õ©ïÚÖì	ÒüïÒüôÒüå	rãíi xuß╗æng, tß╗Ñt xuß╗æng	1007	0	\N
+5188	ÚÖì	Òüè	lã░ß╗úng mã░a	1007	0	\N
+5189	Õúè	ÒüôÒéÅ	trß╗▒c tiß║┐p	1008	0	\N
+5190	þø┤þÀÜ	ÒüíÒéçÒüÅÒüøÒéô	─æã░ß╗Øng thß║│ng	1008	0	\N
+5191	Õ┤û	ÒüîÒüæ	mß╗æi nguy	1009	0	\N
+5192	Õì▒	ÒüéÒéä	sß╗▒ nguy hß║íi, nguy hiß╗âm	1009	0	\N
+5193	Õì▒Õ«│	ÒüìÒüîÒüä	nguy cãí, khß╗ºng hoß║úng	1009	0	\N
+5194	Õì▒þ»ñ	ÒüìÒü¿ÒüÅ	trong t├¼nh trß║íng nguy kß╗ïch	1009	0	\N
+5196	ÚÖ║	ÒüæÒéÅ	n├║i dß╗æc, ngß╗ìn n├║i hiß╗âm trß╗ƒ	1010	0	\N
+5197	ÕåÆÚÖ║	Òü╝ÒüåÒüæÒéô	sß╗▒ mß║ío hiß╗âm	1010	0	\N
+5198	õ┐ØÚÖ║	Òü╗ÒüæÒéô	bß║úo hiß╗âm	1010	0	\N
+5199	þ«▒	Òü░Òüô	vß║¡t nhß║Àt ─æã░ß╗úc, cß╗ºa rãíi	1011	0	\N
+5201	ÕÅûµì¿	ÒüùÒéàÒüùÒéâ	sß╗▒ tuyß╗ân chß╗ìn, chß╗ìn lß╗ìc	1012	0	\N
+5204	ÕÉ©	ÒüÖ	t├án thuß╗æc	1014	0	\N
+5205	µùù	Òü»Òüƒ	sß╗▒ ph├ít thanh	1015	0	\N
+5206	Úûïµö¥	ÒüïÒüäÒü╗Òüå	sß╗▒ ─æuß╗òi ─æi, trß╗Ñc xuß║Ñt	1015	0	\N
+5207	µëïµö¥	ÒüªÒü░Òü¬	n─âng lã░ß╗úng ph├│ng xß║í	1015	0	\N
+5208	µö¥þü½	Òü╗ÒüåÒüï	sß╗▒ ph├│ng hß╗Åa, ─æß╗æt nh├á	1015	0	\N
+5132	Þ¬┐µƒ╗	ÒüíÒéçÒüåÒüò	sß╗▒ ─æiß╗üu tra, cuß╗Öc ─æiß╗üu tra khß║úo s├ít	997	0	29280
+5133	Þ¬┐Õæ│µûÖ	ÒüíÒéçÒüåÒü┐ÒéèÒéçÒüå	gia vß╗ï	997	0	28713
+5135	µ£¿	Òüì	sß╗▒ ─æiß╗üu tra, cuß╗Öc ─æiß╗üu tra khß║úo s├ít	998	0	27493
+5138	µôìõ¢£	ÒüØÒüåÒüò	thao t├íc, ─æiß╗üu khiß╗ân	998	0	28793
+5140	µ£¿	Òüì	─æß╗æi tã░ß╗úng, ─æß╗æi phã░ãíng	999	0	27493
+5141	Úªûþø©	ÒüùÒéàÒüùÒéçÒüå	thß╗º tã░ß╗øng	999	0	28044
+5146	þü½	Òü▓	─æ├╣a, n├│i ─æ├╣a, n├│i giß╗ín	1000	0	28716
+5147	ÚÜÄµ«Á	ÒüïÒüäÒüáÒéô	cß║ºu thang	1000	0	27083
+5152	µ£¿	Òüì	kß║┐ hoß║ích	1001	0	27493
+5158	õ║║	Òü▓Òü¿	trong v├▓ng 10 ng├áy	1002	0	27202
+5170	ÚÇƒÚüö	ÒüØÒüÅÒüƒÒüñ	dß╗ïch vß╗Ñ chuyß╗ân ph├ít nhanh	1004	0	27600
+5173	µÿƒ	Òü╗Òüù	ng├┤i sao	1005	0	28553
+5180	Úø¿	ÒüéÒéü	tuyß║┐t	1006	0	27625
+5182	Úø¬	ÒéåÒüì	tuyß║┐t mß╗øi	1006	0	27626
+5195	õ║║	Òü▓Òü¿	mß╗æi nguy	1010	0	27202
+5200	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	l├ám tr├▓n sß╗æ	1012	0	27161
+5202	Õ¢╝	ÒüïÒéî	tiß╗ün ho├án trß║ú, ho├án trß║ú lß║íi	1013	0	27204
+5203	þàÖÞìë	ÒüƒÒü░Òüô	sß╗▒ hß║Ñp thß╗Ñ	1014	0	27116
+5210	ÕñëÕîû	Òü©ÒéôÒüï	sß╗▒ thay ─æß╗òi, biß║┐n h├│a	1016	0	\N
+5211	Õñëµø┤	Òü©ÒéôÒüôÒüå	sß╗▒ thay ─æß╗òi, biß║┐n ─æß╗òi, cß║úi biß║┐n	1016	0	\N
+5212	Þ®▒	Òü»Òü¬	r─âng	1017	0	\N
+5214	ÞÖ½µ¡»	ÒéÇÒüùÒü░	r─âng s├óu	1017	0	\N
+5215	µ¡»þú¿	Òü»Òü┐Òüî	nha khoa	1017	0	\N
+5218	µòúÚ½¬	ÒüòÒéôÒü▒Òüñ	viß╗çc cß║»t t├│c	1018	0	\N
+5219	µ┤ùÚ½¬	ÒüøÒéôÒü▒Òüñ	viß╗çc gß╗Öi ─æß║ºu	1018	0	\N
+5220	Ú½¬Õ×ï	ÒüïÒü┐ÒüîÒüƒ	kiß╗âu t├│c	1018	0	\N
+5221	ÚçæÚ½¬	ÒüìÒéôÒü▒Òüñ	t├│c v├áng, t├│c v├áng hoe	1018	0	\N
+5222	Ú╗ÆÚ½¬	ÒüÅÒéìÒüïÒü┐	t├│c ─æen	1018	0	\N
+5223	þÖ¢Ú½¬	Òü»ÒüÅÒü»Òüñ	t├│c bß║íc	1018	0	\N
+5224	þÖ¢Ú½¬	ÒüùÒéëÒüî	t├│c bß║íc	1018	0	\N
+5228	þÁÁþö╗	ÒüïÒüäÒüî	bß╗®c tranh, hß╗Öi hß╗ìa	1019	0	\N
+5229	µ▓╣þÁÁ	ÒüéÒüÂÒéëÒüê	tranh sãín dß║ºu	1019	0	\N
+5230	Õó¿þÁÁ	ÒüÖÒü┐Òüê	tranh thß╗ºy mß║Àc	1019	0	\N
+5231	µÁ«õ©ûþÁÁ	ÒüåÒüìÒéêÒüê	tranh Ukiyoe (tranh khß║»c gß╗ù tß╗½ thß╗Øi Edo)	1019	0	\N
+5232	õ╝╝ÚíöþÁÁ	Òü½ÒüîÒüèÒüê	tranh ch├ón dung	1019	0	\N
+5233	Õ¡É	Òüô	chiß╗üu ngang	1020	0	\N
+5234	µ¿¬Õêç	ÒéêÒüôÒüÄ	cß║ºu vã░ß╗út, cß║ºu cho ngã░ß╗Øi ─æi bß╗Ö	1020	0	\N
+5235	µ¿¬µû¡	ÒüèÒüåÒüáÒéô	─æ├┤ vß║¡t sß╗æ mß╗Öt nhß║¡t bß║ún (cß║Ñp hiß╗çu lß╗▒c s─® sumo chuy├¬n nghiß╗çp cao nhß║Ñt)	1020	0	\N
+5236	þƒó	Òéä	cãím hß╗Öp	1021	0	\N
+5237	Úü®Õ¢ô	ÒüªÒüìÒü¿Òüå	sß╗▒ tã░ãíng th├¡ch, ph├╣ hß╗úp	1021	0	\N
+5239	µïàÕ¢ô	ÒüƒÒéôÒü¿Òüå	ngã░ß╗Øi phß╗Ñ tr├ích, ngã░ß╗Øi chß╗ïu tr├ích nhiß╗çm	1021	0	\N
+5240	Õ¢ôþäÂ	Òü¿ÒüåÒü£Òéô	─æã░ãíng nhi├¬n, d─® nhi├¬n	1021	0	\N
+5242	õ╝ØþÁ▒	ÒüºÒéôÒü¿Òüå	truyß╗ün thß╗æng	1022	0	\N
+5243	Õ«úõ╝Ø	ÒüøÒéôÒüºÒéô	sß╗▒ tuy├¬n truyß╗ün, th├┤ng tin tuy├¬n truyß╗ün, sß╗▒ c├┤ng khai	1022	0	\N
+5244	õ╝Øµƒô	ÒüºÒéôÒüøÒéô	sß╗▒ truyß╗ün nhiß╗àm , sß╗▒ lan truyß╗ün	1022	0	\N
+5245	õ╝ØÞ¿ÿ	ÒüºÒéôÒüì	sß╗▒ t├¡ch, tiß╗âu sß╗¡	1022	0	\N
+5246	Úü║õ╝ØÕ¡É	ÒüäÒüºÒéôÒüù	gen, di truyß╗ün	1022	0	\N
+5247	þö░	Òüƒ	tß║┐ b├áo	1023	0	\N
+5248	þ┤░ÞÅî	ÒüòÒüäÒüìÒéô	vi tr├╣ng, vi khuß║®n	1023	0	\N
+5249	Õ┐âþ┤░	ÒüôÒüôÒéìÒü╝ÒüØ	mß╗Öt c├ích chi tiß║┐t, tã░ß╗Øng tß║¡n	1023	0	\N
+5250	þ┤░ÕÀÑ	ÒüòÒüäÒüÅ	t├íc phß║®m, sß╗▒ chß║┐ t├íc	1023	0	\N
+5252	þäí	Òü¬	v├┤ sß╗▒, kh├┤ng c├│ vß║Ñn ─æß╗ü g├¼	1024	0	\N
+2634	õ©Çþò¬	ÒüäÒüíÒü░Òéô	Thã░╠ü nh├ó╠üt, ─æß║ºu ti├¬n	513	0	27646
+2661	õ║öµùÑ	ÒüäÒüñÒüï	5 nga╠Çy, nga╠Çy m├┤╠Çng 5	517	0	28260
+2730	õ©©	Òü¥Òéï	viß╗çc ─æß╗ông y├¬n l├¬n gi├í	526	0	28749
+2776	µ░┤Úüô	ÒüÖÒüäÒü®Òüå	Nã░ãí╠üc ma╠üy	532	0	28560
+2811	µùÑµ£¼	Òü½Òü╗Òéô	Nh├ó╠út ba╠ën	537	0	27003
+2836	ÚçæÚûúÕ»║	ÒüìÒéôÒüïÒüÅÒüÿ	Chu╠Ça Kinkaku (chu╠Ça va╠Çng)	540	0	27417
+2902	µ£ê	ÒüñÒüì	Phi╠üa trã░ãí╠üc	552	0	28020
+2910	Õ¥î	ÒüéÒü¿	Sa╠üng (tã░╠Ç 0-12h, a.m)	553	0	29275
+2988	µºÿÕ¡É	ÒéêÒüåÒüÖ	Th├íi ─æß╗Ö, trß║íng th├íi	565	0	29108
+3027	þ▒│	ÒüôÒéü	Sinh vi├¬n, ho╠úc sinh n─âm 3	572	0	28877
+3080	µØÑÚÇ▒	ÒéëÒüäÒüùÒéàÒüå	Tuß║ºn sau	580	0	27210
+3100	õ╝Üþñ¥Õôí	ÒüïÒüäÒüùÒéâÒüäÒéô	Nh├ón vi├¬n c├┤ng ty	584	0	26977
+3169	õ║îõ║║	ÒüÁÒüƒÒéè	Ng├áy mß╗ông 1 Tß║┐t	599	0	29178
+3226	Õ©éÕ¢╣µëÇ	ÒüùÒéäÒüÅÒüùÒéç	Cãí quan h├ánh ch├¡nh th├ánh phß╗æ	611	0	27699
+3251	Úø¿	ÒüéÒéü	─Éiß╗çn	615	0	27625
+3261	Þç¬ÕïòÞ╗è	ÒüÿÒü®ÒüåÒüùÒéâ	Xe hãíi (├┤ t├┤)	616	0	27064
+3314	þ¥ÄÕ«╣ÚÖó	Òü│ÒéêÒüåÒüäÒéô	Viß╗çn thß║®m mß╗╣	624	0	28303
+3337	µ£¼	Òü╗Òéô	S├ích ─æß╗ìc	631	0	27021
+3343	Þ¥×µø©	ÒüÿÒüùÒéç	Tß╗½ ─æiß╗ân	632	0	27022
+3426	õ╗èµÖ®	ÒüôÒéôÒü░Òéô	Tß╗æi nay	649	0	27147
+3466	µƒöÚüô	ÒüÿÒéàÒüåÒü®Òüå	Nhu ─æß║ío, M├┤n v├Á judo	656	0	28224
+3518	Þè▒þôÂ	ÒüïÒü│Òéô	Lß╗ì hoa	664	0	28434
+3521	Õñ®µ░ù	ÒüªÒéôÒüì	Dß╗▒ b├ío thß╗Øi tiß║┐t	665	0	27624
+3609	þëíþëøÕ║º	ÒüèÒüåÒüùÒüû	Cung Kim ngã░u	677	0	28576
+3633	Õû½ÞîÂÕ║ù	ÒüìÒüúÒüòÒüªÒéô	Tiß╗çm giß║úi kh├ít, qu├ín C├á ph├¬	681	0	27509
+3699	µùÑµ£¼	Òü½Òü╗Òéô	bß║ún th├ón m├¼nh, tß╗▒ m├¼nh	692	0	27003
+3731	µÿáþö╗Úñ¿	ÒüêÒüäÒüîÒüïÒéô	Rß║íp chiß║┐u phim	698	0	28507
+3791	Õàä	ÒüéÒü½	Anh	709	0	27570
+3821	Õ©¢Õ¡É	Òü╝ÒüåÒüù	Ngã░ß╗Øi chß╗ông	716	0	28065
+3874	þ┐ÆÕ¡ù	ÒüùÒéàÒüåÒüÿ	Sß╗▒ luyß╗çn tß║¡p chß╗»; luyß╗çn tß║¡p chß╗»	724	0	29529
+3898	Õ«ƒÚ¿ô	ÒüÿÒüúÒüæÒéô	thß╗▒c nghiß╗çm ,th├¡ nghiß╗çm ,suy nghiß╗çm ,kinh nghiß╗çm thß╗▒c tß║┐	729	0	29470
+3956	Õî╗ÞÇà	ÒüäÒüùÒéâ	B├íc s─®	739	0	26980
+3957	þáöþ®ÂÞÇà	ÒüæÒéôÒüìÒéàÒüåÒüùÒéâ	Nh├á nghi├¬n cß╗®u	739	0	26981
+4041	õ║║	Òü▓Òü¿	─Éß║íi sß╗® qu├ín	757	0	27202
+4085	µ¡»Õî╗ÞÇà	Òü»ÒüäÒüùÒéâ	B├íc s─® nha khoa; nha s─®	769	0	27773
+4127	µÄêµÑ¡	ÒüÿÒéàÒüÄÒéçÒüå	Sß╗▒ giß║úng dß║íy	778	0	28423
+4190	µùàÚñ¿	ÒéèÒéçÒüïÒéô	Nha├á trß╗ì cho kh├ích du lß╗ïch	787	0	29560
+4212	Õ£ƒÕ£░	Òü¿Òüí	Bß║ún ─æß╗ô	792	0	28936
+4236	µ©®Õ║ª	ÒüèÒéôÒü®	├ön ─æß╗Ö, nhiß╗çt ─æß╗Ö	795	0	29164
+5213	µ¡»Õî╗ÞÇà	Òü»ÒüäÒüùÒéâ	nha s─®	1017	0	27773
+5216	ÕÅïÚüö	Òü¿ÒééÒüáÒüí	t├│c	1018	0	27203
+5217	Ú½¬	ÒüïÒü┐	sß╗úi t├│c, sß╗úi l├┤ng	1018	0	27812
+5225	õ╝Ü	Òüé	bß╗®c tranh	1019	0	27058
+5226	þÁÁµ£¼	ÒüêÒü╗Òéô	s├ích truyß╗çn bß║▒ng tranh ß║únh	1019	0	29155
+5227	þÁÁ	Òüê	dß╗Ñng cß╗Ñ ─æß╗â vß║¢ tranh, m├áu vß║¢	1019	0	27445
+5238	Õ¢ô	Òüé	khi ß║Ñy, ─æã░ãíng thß╗Øi	1021	0	27058
+5241	õ║îõ║║	ÒüÁÒüƒÒéè	tin nhß║»n	1022	0	29178
+5251	þü½õ║ï	ÒüïÒüÿ	miß╗àn ph├¡	1024	0	29025
+4295	þ«▒	Òü»Òüô	cuß╗Öc thi ─æß║Ñu, trß║¡n ─æß║Ñu	807	0	27496
+4355	Þ┐æµëÇ	ÒüìÒéôÒüÿÒéç	x├│m giß╗üng ,v├╣ng phß╗Ñ cß║¡n, nh├á h├áng x├│m, h├áng x├│m, l├íng giß╗üng	819	0	28742
+4373	Úâ¢ÕÉê	ÒüñÒüöÒüå	t├¼nh huß╗æng, ho├án cß║únh, ─æiß╗üu kiß╗çn	822	0	28071
+4422	µùàÚñ¿	ÒéèÒéçÒüïÒéô	Nh├á trß╗ì cho kh├ích du lß╗ïch	830	0	29560
+4456	þü░þÜ┐	Òü»ÒüäÒüûÒéë	Gß║ít t├án thuß╗æc	840	0	29586
+4535	þºü	ÒéÅÒüƒÒüù	T├¼nh cß║úm; t├óm trß║íng; cß║úm x├║c; cß║úm gi├íc	864	0	26968
+4540	µâàÕá▒	ÒüÿÒéçÒüåÒü╗Òüå	Th├┤ng tin, tin tß╗®c	864	0	29149
+4596	þºü	ÒéÅÒüƒÒüù	Cãí quan h├ánh ch├¡nh th├ánh phß╗æ	878	0	26968
+4620	Úâ¿Õ▒ï	Òü©Òéä	c─ân ph├▓ng	882	0	27081
+4642	õ¢òµø£µùÑ	Òü¬ÒéôÒéêÒüåÒü│	─æß╗ô giß║Àt	890	0	27163
+4707	þÁîµ¡┤	ÒüæÒüäÒéîÒüì	L├¢ lß╗ïch; qu├í tr├¼nh l├ám viß╗çc; qu├í tr├¼nh kinh nghiß╗çm	903	0	29572
+4736	þÄäÚûó	ÒüÆÒéôÒüïÒéô	sß║únh trong nh├á, bß║¡c thß╗üm ─æi v├áo nh├á	908	0	28437
+4788	Õ┐â	ÒüôÒüôÒéì	cß╗¡a sß╗ò	923	0	29546
+4800	Þ¿ÇÞæë	ÒüôÒü¿Òü░	tß╗½ ngß╗», ng├┤n ngß╗»	925	0	27969
+4876	þÑûµ»ì	ÒüØÒü╝	b├á	941	0	29166
+4883	þºü	ÒéÅÒüƒÒüù	sß╗▒ gi├ío dß╗Ñc	942	0	26968
+4903	þØÇþë®	ÒüìÒééÒü«	trã░ß╗øc hß║┐t ,mß╗øi ─æß║ºu ,l├║c ─æß║ºu ,lß║ºn ─æß║ºu ti├¬n ,─æß║ºu ti├¬n	947	0	27970
+4956	õ┐íÕÅÀ	ÒüùÒéôÒüöÒüå	─æ├¿n giao th├┤ng	956	0	28106
+5003	µëï	Òüª	Thã░ bß║ín ─æß╗ìc; b├ái cß╗Öng t├íc cho b├ío; thã░ gß╗¡i ngã░ß╗Øi bi├¬n tß║¡p	969	0	27318
+5040	Ú│Ñ	Òü¿Òéè	m├íy bay	977	0	28242
+5045	µ®ƒµó░	ÒüìÒüïÒüä	m├íy m├│c, cãí kh├¡	978	0	28123
+5125	õ║║	Òü▓Òü¿	─æ├¿n giao th├┤ng	996	0	27202
+5166	ÕÉø	ÒüìÒü┐	bß║ín, em (─æß║íi tß╗½ nh├ón xã░ng, khi ─æß╗æi phã░ãíng l├á nß╗»)	1003	0	27965
+5209	Õ¢╝	ÒüïÒéî	kh├│ kh─ân, vß║Ñt vß║ú	1016	0	27204
 \.
 
 
@@ -11688,6 +11928,107 @@ COPY public."PodcastResource" (id, "externalKey", title, description, url, level
 3	jpod101	JapanesePod101 ÔÇö Newbie	Podcast miß╗àn ph├¡ cß║Ñp sãí cß║Ñp, ─æ─âng k├¢ free tier ─æß╗â nghe.	https://www.japanesepod101.com/japanese-podcasts/	N5	2	2026-06-25 10:52:31.265	2026-06-25 10:52:31.265
 4	tofugu	Tofugu Podcast	Chß╗º ─æß╗ü v─ân h├│a & ng├┤n ngß╗», n├│i chß║¡m hãín podcast th├┤ng thã░ß╗Øng.	https://www.tofugu.com/podcast/	N5ÔÇôN4	3	2026-06-25 10:52:31.265	2026-06-25 10:52:31.265
 5	jlpt-samples	JLPT ÔÇö ─Éß╗ü mß║½u (nghe)	Audio ─æß╗ü thi ch├¡nh thß╗®c ─æß╗â luyß╗çn nghe c├│ cß║Ñu tr├║c.	https://jlpt.jp/e/samples/forlearners.html	N5	4	2026-06-25 10:52:31.265	2026-06-25 10:52:31.265
+\.
+
+
+--
+-- Data for Name: PronunciationRuleExample; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."PronunciationRuleExample" (id, "sectionId", japanese, romaji, meaning, note, "sortOrder") FROM stdin;
+1	1	ÒüéÒéü	ame	mã░a / kß║╣o	\N	0
+2	1	ÒüäÒü¼	inu	ch├│	\N	1
+3	1	ÒüåÒü┐	umi	biß╗ân	\N	2
+4	2	Òü½Òü╗Òéô	ni-ho-n	Nhß║¡t Bß║ún	4 mora	0
+5	2	ÒüîÒüúÒüôÒüå	ga-k-ko-u	trã░ß╗Øng hß╗ìc	Òüú = mora dß╗½ng	1
+6	3	ÒüìÒéçÒüå	kyou	h├┤m nay	\N	0
+7	3	ÒüùÒéâÒüùÒéô	shashin	ß║únh	\N	1
+8	3	ÒüíÒéçÒüúÒü¿	chotto	mß╗Öt ch├║t	\N	2
+9	4	ÒüäÒüúÒüÀÒéô	ippun	mß╗Öt ph├║t	\N	0
+10	4	ÒüìÒüúÒüª	kitte	tem	\N	1
+11	4	ÒüûÒüúÒüù	zasshi	tß║íp ch├¡	\N	2
+12	5	ÒüèÒü░ÒüòÒéô	obasan	c├┤, d├¼	\N	0
+13	5	ÒüèÒü░ÒüéÒüòÒéô	obaasan	b├á	\N	1
+14	5	ÒâôÒâ╝Òâ½	biiru	bia	\N	2
+15	6	ÒüïÒüÄ	kagi	ch├¼a kh├│a	\N	0
+16	6	Òü▒Òéô	pan	b├ính m├¼	\N	1
+17	6	ÒüÿÒüïÒéô	jikan	thß╗Øi gian	\N	2
+18	7	ÒüÁÒéì	furo	bß╗ôn tß║»m	\N	0
+19	7	ÒüñÒüì	tsuki	mß║Àt tr─âng	\N	1
+20	7	ÒüøÒéôÒüøÒüä	sensei	thß║ºy/c├┤	\N	2
+21	8	Òü»Òüù	hashi	─æ┼®a / cß║ºu	Pitch kh├íc nhau	0
+22	8	ÒüäÒü¥	ima	b├óy giß╗Ø / ph├▓ng	\N	1
+\.
+
+
+--
+-- Data for Name: PronunciationRulePoint; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."PronunciationRulePoint" (id, "sectionId", label, japanese, romaji, explanation, "sortOrder") FROM stdin;
+1	1	\N	Òüé Òüä Òüå Òüê Òüè	a i u e o	N─âm nguy├¬n ├óm thuß║ºn. Mß╗ùi ├óm mß╗Öt mora, ─æß╗Ö d├ái ß╗òn ─æß╗ïnh. Òüå m├┤i tr├▓n nhß║╣, kh├┤ng phß║úi "u" m├¡m chß║Àt.	0
+2	1	Bß║úng kana	\N	\N	Hiragana d├╣ng cho tß╗½ gß╗æc Nhß║¡t; katakana cho tß╗½ mã░ß╗ún. C├╣ng ├óm, kh├íc c├ích viß║┐t.	1
+3	2	\N	\N	\N	Mß╗ùi kana (trß╗½ Òüú, Òéô ─æß║Àc biß╗çt) thã░ß╗Øng = 1 mora. ÒüìÒéçÒüå (kyo) = 3 mora: Òüì + Òéç + Òüå.	0
+4	2	\N	\N	\N	N├│i ─æß╗üu nhß╗ïp, kh├┤ng nhß║Ñn mß║ính tß╗½ng ├óm tiß║┐t nhã░ tiß║┐ng Viß╗çt. Thß╗Øi lã░ß╗úng mß╗ùi mora gß║ºn bß║▒ng nhau.	1
+5	3	\N	ÒüìÒéâ ÒüìÒéà ÒüìÒéç	kya kyu kyo	Gh├®p trong mß╗Öt mora ÔÇö kh├┤ng ─æß╗ìc "ki-ya" t├ích ─æ├┤i.	0
+6	3	\N	ÒüùÒéâ ÒüùÒéà ÒüùÒéç	sha shu sho	├ém sh ÔÇö m├┤i tr├▓n, lã░ß╗íi n├óng. Kh├┤ng ─æß╗ìc "si-ya".	1
+7	3	\N	ÒüíÒéâ ÒüíÒéà ÒüíÒéç	cha chu cho	Gß║ºn "chi" + y nhß╗Å; kh├íc vß╗øi ÒüùÒéâ (sh).	2
+8	4	\N	Òüú	\N	Kh├┤ng ph├ít ├óm ri├¬ng ÔÇö tß║ím dß╗½ng rß╗ôi ph├ít ├óm phß╗Ñ ├óm kß║┐ tiß║┐p mß║ính hãín (kk, pp, ttÔÇª).	0
+9	4	\N	\N	\N	V├¡ dß╗Ñ ÒüîÒüúÒüôÒüå: dß╗½ng nhß║╣ trã░ß╗øc Òüô, nhã░ "gak-kou" chß╗® kh├┤ng "gatsukou".	1
+10	5	\N	\N	\N	ÒüèÒü░ÒüòÒéô (c├┤) vs ÒüèÒü░ÒüéÒüòÒéô (b├á) ÔÇö mora Òüé k├®o d├ái gß║Ñp ─æ├┤i. ÒüìÒéçÒüå vs ÒüìÒéêÒüå c┼®ng kh├íc mora.	0
+11	5	\N	\N	\N	Katakana d├╣ng Òâ╝ ─æß╗â k├®o d├ái: Òé│Òâ╝ÒâÆÒâ╝ (koohii). Hiragana thã░ß╗Øng lß║Àp nguy├¬n ├óm.	1
+12	6	\N	Òüï ÔåÆ Òüî	\N	Th├¬m rung thanh hß║ºu ÔÇö ga, kh├┤ng phß║úi ka.	0
+13	6	\N	Òü» ÔåÆ Òü░ / Òü▒	\N	Òü░ ─æß╗Ñc; Òü▒ yß║┐u (p gß║ºn b). Òü» ─æß╗ìc "wa" khi l├á trß╗ú tß╗½.	1
+14	6	\N	Òüû Òüÿ ÒüÜ Òü£ Òü×	\N	Òüÿ Ôëê "ji", ÒüÜ Ôëê "zu" ÔÇö kh├┤ng giß╗æng "di", "du" tiß║┐ng Viß╗çt.	2
+15	7	\N	ÒéëÒéèÒéïÒéîÒéì	ra ri ru re ro	Mß╗Öt ├óm r lß║½n l ÔÇö lã░ß╗íi chß║ím v├▓m, kh├┤ng lß║»c.	0
+16	7	\N	ÒüÁ	fu	Thß╗òi nhß║╣ qua m├┤i, gß║ºn "hu".	1
+17	7	\N	Òüñ	tsu	├ém x├ít nhß║╣, mß╗Öt mora duy nhß║Ñt.	2
+18	7	\N	Òéô	n	├ém m┼®i cuß╗æi ├óm tiß║┐t; trã░ß╗øc b/p/m l├á m┼®i m├┤i.	3
+19	8	\N	\N	\N	Tiß║┐ng Nhß║¡t d├╣ng cao ─æß╗Ö mora, kh├┤ng nhß║Ñn trß╗ìng ├óm nhã░ tiß║┐ng Anh. Mß╗ùi tß╗½ c├│ kiß╗âu l├¬nÔÇôxuß╗æng ri├¬ng.	0
+20	8	\N	\N	\N	N5: nghe mß║½u v├á bß║»t chã░ß╗øc. Òü» trß╗ú tß╗½ thã░ß╗Øng thß║Ñp; mß╗Öt sß╗æ tß╗½ danh tß╗½ cao ß╗ƒ mora ─æß║ºu.	1
+21	9	\N	\N	\N	Tab Kana: luyß╗çn tß╗½ng ├óm hiragana/katakana. Bß║¡t "Ph├ít ├óm mß║½u khi chuyß╗ân thß║╗" ─æß╗â nghe ngay.	0
+22	9	\N	\N	\N	Tab Tß╗½ vß╗▒ng Minna: luyß╗çn theo b├ái. Ghi ├óm ÔåÆ nghe lß║íi ÔåÆ so vß╗øi mß║½u.	1
+23	9	\N	\N	\N	Lß║¡t thß║╗ xem gß╗úi ├¢ romaji/ngh─®a. Lß║Àp lß║íi ├óm kh├│ (Òéë, Òüñ, Òüú, trã░ß╗Øng ├óm) mß╗ùi ng├áy.	2
+\.
+
+
+--
+-- Data for Name: PronunciationRuleSection; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."PronunciationRuleSection" (id, slug, title, summary, "sortOrder", "createdAt", "updatedAt") FROM stdin;
+1	vowels	N─âm nguy├¬n ├óm ÒüéÒâ╗ÒüäÒâ╗ÒüåÒâ╗ÒüêÒâ╗Òüè	Nß╗ün tß║úng cß╗ºa mß╗ìi ├óm tiß║┐ng Nhß║¡t.	0	2026-06-28 09:04:53.529	2026-06-28 09:04:53.529
+2	mora	Mora ÔÇö nhß╗ïp ph├ít ├óm	Tiß║┐ng Nhß║¡t ─æß║┐m theo mora, kh├┤ng phß║úi ├óm tiß║┐t.	1	2026-06-28 09:04:53.54	2026-06-28 09:04:53.54
+3	yoon	├ém gh├®p ÒüìÒéâÒâ╗ÒüùÒéàÒâ╗ÒüíÒéçÔÇª	Gh├®p ├óm i-row + ÒéäÒâ╗ÒéåÒâ╗Òéê nhß╗Å.	2	2026-06-28 09:04:53.544	2026-06-28 09:04:53.544
+4	sokuon	├ém ─æ├┤i Òüú (sokuon)	Dß║Ñu nhß╗Å ÔÇö tß║ío khoß║úng dß╗½ng / phß╗Ñ ├óm k├®p.	3	2026-06-28 09:04:53.549	2026-06-28 09:04:53.549
+5	long-vowel	Trã░ß╗Øng ├óm (chouon)	K├®o d├ái nguy├¬n ├óm ÔÇö ─æß╗òi ngh─®a nß║┐u ─æß╗ìc sai ─æß╗Ö d├ái.	4	2026-06-28 09:04:53.553	2026-06-28 09:04:53.553
+6	dakuten	├ém ─æß╗Ñc ÒüîÒâ╗Òüû & yß║┐u Òü▒	Dß║Ñu Òéø (dakuten) v├á Òé£ (handakuten).	5	2026-06-28 09:04:53.557	2026-06-28 09:04:53.557
+7	special	├ém ─æß║Àc biß╗çt: ÒéëÒâ╗ÒüÁÒâ╗ÒüñÒâ╗Òéô	Hay sai vß╗øi ngã░ß╗Øi Viß╗çt.	6	2026-06-28 09:04:53.561	2026-06-28 09:04:53.561
+8	pitch	Pitch accent (├óm caoÔÇôthß║Ñp)	C├╣ng kana nhã░ng cao ─æß╗Ö kh├íc ÔåÆ ngh─®a kh├íc (├¡t gß║Àp N5).	7	2026-06-28 09:04:53.565	2026-06-28 09:04:53.565
+9	practice	Luyß╗çn tr├¬n app	C├ích d├╣ng tab Ph├ít ├óm hiß╗çu quß║ú.	8	2026-06-28 09:04:53.569	2026-06-28 09:04:53.569
+\.
+
+
+--
+-- Data for Name: PronunciationRuleTip; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."PronunciationRuleTip" (id, text, "sortOrder", "createdAt", "updatedAt") FROM stdin;
+1	Giß╗» miß╗çng mß╗ƒ vß╗½a phß║úi; ├óm Òüé gß║ºn ├óm "a" ngß║»n, kh├┤ng k├®o d├ái nhã░ "a" trong "ba".	0	2026-06-28 09:04:53.523	2026-06-28 09:04:53.523
+2	├ém Òéë h├áng r kh├┤ng lß║»c lã░ß╗íi ÔÇö lã░ß╗íi chß║ím v├▓m miß╗çng nhß║╣ rß╗ôi bu├┤ng.	1	2026-06-28 09:04:53.523	2026-06-28 09:04:53.523
+3	├ém ÒüÁ/Òâò gß║ºn "hu" thß╗òi nhß║╣, kh├┤ng phß║úi "ph" hay "f" cß╗®ng nhã░ tiß║┐ng Anh.	2	2026-06-28 09:04:53.523	2026-06-28 09:04:53.523
+4	├ém Òüñ nhß╗Å, s├ít r─âng ÔÇö kh├┤ng ph├ít ├óm nhã░ "ts" t├ích rß╗Øi hai ├óm.	3	2026-06-28 09:04:53.523	2026-06-28 09:04:53.523
+5	├ém Òéô l├á m┼®i ÔÇö cuß╗æi tß╗½, kh├┤ng th├¬m nguy├¬n ├óm sau.	4	2026-06-28 09:04:53.523	2026-06-28 09:04:53.523
+6	K├®o d├ái nguy├¬n ├óm (ÒüèÒü░ÒüéÒüòÒéô) kh├íc hß║│n nguy├¬n ├óm ngß║»n (ÒüèÒü░ÒüòÒéô) ÔÇö sai ─æß╗Ö d├ái l├á sai ngh─®a.	5	2026-06-28 09:04:53.523	2026-06-28 09:04:53.523
+\.
+
+
+--
+-- Data for Name: PronunciationRulesMeta; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."PronunciationRulesMeta" (id, intro, "createdAt", "updatedAt") FROM stdin;
+1	Tiß║┐ng Nhß║¡t c├│ khoß║úng 46 ├óm cãí bß║ún (mora). Mß╗ùi chß╗» hiragana/katakana thã░ß╗Øng tã░ãíng ß╗®ng mß╗Öt mora ÔÇö ph├ít ├óm ─æß╗üu, kh├┤ng nhß║Ñn ├óm tiß║┐t nhã░ tiß║┐ng Viß╗çt.	2026-06-28 09:04:53.515	2026-06-28 09:04:53.515
 \.
 
 
@@ -11958,6 +12299,12 @@ cmqw72r3u0001ff6c8ruup5w9	$2b$12$5vesUcjz7dQVlWrH7Ql.ruVhCBKMtIkgsxiQNUmctkenbYg
 cmqwhg3hc0001ffq8rlpa33rv	$2b$12$RA7Dvp.d2NeopFfeIufELewJsSCQzaXfN26d8Lamh/5VawtCSyira	1	2026-07-04 14:56:12.943	f	2026-06-27 14:56:12.953
 cmqwhtkp00001ff0kzboujs94	$2b$12$nYAQK.tRJr2W0QYZMvqN5uAuXtq7ffJJIfk0/8XrUJLUvsBW2MWSe	1	2026-07-04 15:06:41.782	f	2026-06-27 15:06:41.783
 cmqwj7wtu0001ffrkr3ij1d4m	$2b$12$5KU3Pp776HDU5eUd/Jkp8ea8KQd988n0CLjNWTbonw2Iya55V0wSq	1	2026-07-04 15:45:50.318	f	2026-06-27 15:45:50.32
+cmqx490kd0001ffr87srob9uk	$2b$12$znjw7rwCYGsqn1UNKs544.OyfZ6Ykt.Uj9fvU3fRTYytzCCnBtgfS	1	2026-07-05 01:34:33.75	f	2026-06-28 01:34:33.753
+cmqx492pm0003ffr8ta0on5xb	$2b$12$lo041F9VAQXrrx63uFvrKepnzXrfF.Texry8d796MgBCCMRuVPv4m	1	2026-07-05 01:34:36.536	f	2026-06-28 01:34:36.538
+cmqx4956u0005ffr8fnen1qvv	$2b$12$l.FTclMukf6VvVdUKEK8tONlDl3KrVYbVOBPMeZgkfrPDam5OWDMW	1	2026-07-05 01:34:39.75	f	2026-06-28 01:34:39.751
+cmqx49csw0007ffr865imtyxs	$2b$12$GbYPza5GrD.eHPd5IhX25uO9w0FjYbTMxRMN22JklB5z2XGqIM0R.	1	2026-07-05 01:34:49.615	t	2026-06-28 01:34:49.616
+cmqx4ca3b0009ffr8lt9gpw96	$2b$12$Jqv3AQFlL2egC3i1ZAk68.SAoN2juRm4RfXze9CALIkabdIwsAMaG	2	2026-07-05 01:37:06.07	f	2026-06-28 01:37:06.072
+cmqx4cu3t000bffr8vk1k4jck	$2b$12$wlbl/cRKaQmxJOhNAS/otOZigULdwvW8KXBl.GnmXggpKGYbo8iea	1	2026-07-05 01:37:32.008	f	2026-06-28 01:37:32.009
 \.
 
 
@@ -12006,6 +12353,7 @@ COPY public."StudyTip" (id, text, "sortOrder", "createdAt", "updatedAt") FROM st
 
 COPY public."Subscription" (id, "userId", plan, status, "stripeCustomerId", "stripeSubscriptionId", "stripePriceId", "currentPeriodStart", "currentPeriodEnd", "trialEnd", "canceledAt", "cancelAtPeriodEnd", "createdAt", "updatedAt") FROM stdin;
 1	1	BASIC	TRIALING	cus_UmRQd5YX7zfU1D	sub_1TmtCpR9EzTwyHwwjcwjrLlT	price_1TmsXHR9EzTwyHww08aPARlc	2026-06-27 10:11:23	2026-07-04 10:11:23	\N	\N	f	2026-06-27 09:28:41.685	2026-06-27 10:11:24.623
+47	2	FREE	ACTIVE	cus_Umh8W0krymhpWl	\N	\N	\N	\N	\N	\N	f	2026-06-28 01:42:48.325	2026-06-28 01:42:48.325
 \.
 
 
@@ -12052,7 +12400,7 @@ COPY public."User" (id, email, "passwordHash", role, name, "createdAt", "updated
 9	test-1782290564181@nihongo.test	$2b$12$yGDpe2jTxhK2fD/IVvGYwO2YsagspwDLR0.Of0MPDSzC38U.a4Q56	USER	\N	2026-06-24 08:42:44.777	2026-06-24 08:42:44.777	\N	vi	\N	30	\N	\N
 10	test-1782290585904@nihongo.test	$2b$12$7WUOFdJuajFpPJuQoS1UheQ4lwGmUvFWSn50R9UGXQansKiGfTXdG	USER	\N	2026-06-24 08:43:06.539	2026-06-24 08:43:06.539	\N	vi	\N	30	\N	\N
 1	admin@nihongo.local	$2b$10$xAfATdjckIL07P00FR5t/OLlZmGwJGUmzJneViqnMAtfoxgeGC9gO	ADMIN	Administrator	2026-06-24 07:34:49.518	2026-06-27 08:38:06.95	\N	vi	N2	30	\N	\N
-2	letiendungdt@gmail.com	$2b$12$eHZrXmigbNg09Hm8WMGF4.MNkpcqZgr1CuhuA9lTaewNwmejhWtSK	USER	Tiß║┐n D┼®ng L├¬	2026-06-24 08:30:35.151	2026-06-27 08:56:20.86	https://lh3.googleusercontent.com/a/ACg8ocJIYvwR2dG_YkmufeNRd4R8x4x4tWfoXgXlxHLU8gGhaA3LoYep=s96-c	vi	N2	30	\N	115294476264893247829
+2	letiendungdt@gmail.com	$2b$12$eHZrXmigbNg09Hm8WMGF4.MNkpcqZgr1CuhuA9lTaewNwmejhWtSK	USER	Tiß║┐n D┼®ng L├¬	2026-06-24 08:30:35.151	2026-06-28 01:37:05.771	https://lh3.googleusercontent.com/a/ACg8ocJIYvwR2dG_YkmufeNRd4R8x4x4tWfoXgXlxHLU8gGhaA3LoYep=s96-c	vi	N2	30	\N	115294476264893247829
 \.
 
 
@@ -12061,23 +12409,94 @@ COPY public."User" (id, email, "passwordHash", role, name, "createdAt", "updated
 --
 
 COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "createdAt", "updatedAt", "meaningEn", "partOfSpeech", "jlptLevel", "pitchAccent", "audioUrl", "frequencyRank", "imageUrl", "sortOrder") FROM stdin;
-27021	µ£¼	Òü╗Òéô	hon	s├ích	2	2026-06-25 10:52:56.247	2026-06-27 02:18:02.682	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6	0
-27038	\N	Òâ®Òé©Òé¬	rajio	c├íi radio	2	2026-06-25 10:52:56.289	2026-06-27 02:22:16.2	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4FB	0
-27039	\N	Òé½ÒâíÒâ®	kamera	c├íi m├íy chß╗Ñp h├¼nh	2	2026-06-25 10:52:56.291	2026-06-27 02:22:16.203	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F7	0
-27042	µ£║	ÒüñÒüÅÒüê	tsukue	c├íi b├án	2	2026-06-25 10:52:56.296	2026-06-27 02:22:16.207	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC	0
+27021	µ£¼	Òü╗Òéô	hon	s├ích	2	2026-06-25 10:52:56.247	2026-06-27 02:18:02.682	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6.svg	0
+27038	\N	Òâ®Òé©Òé¬	rajio	c├íi radio	2	2026-06-25 10:52:56.289	2026-06-27 02:22:16.2	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4FB.svg	0
+27039	\N	Òé½ÒâíÒâ®	kamera	c├íi m├íy chß╗Ñp h├¼nh	2	2026-06-25 10:52:56.291	2026-06-27 02:22:16.203	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F7.svg	0
+27042	µ£║	ÒüñÒüÅÒüê	tsukue	c├íi b├án	2	2026-06-25 10:52:56.296	2026-06-27 02:22:16.207	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC.svg	0
+27064	Þç¬ÕïòÞ╗è	ÒüÿÒü®ÒüåÒüùÒéâ	jidosha	xe hãíi	2	2026-06-25 10:52:56.349	2026-06-27 02:18:02.694	\N	\N	\N	\N	\N	\N	/media/openmoji/1F697.svg	0
+27034	Õéÿ	ÒüïÒüò	kasa	c├íi d├╣	2	2026-06-25 10:52:56.277	2026-06-27 02:22:16.196	\N	\N	\N	\N	\N	\N	/media/openmoji/2602.svg	0
+27171	\N	ÒâïÒâÑÒâ╝Òâ¿Òâ╝Òé»	nyuyoku	New York	4	2026-06-25 10:52:56.832	2026-06-27 02:25:26.616	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8.svg	0
+27030	\N	Òâ£Òâ╝Òâ½ÒâÜÒâ│	borupen	ballpoint pen	2	2026-06-25 10:52:56.27	2026-06-27 02:22:16.25	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A.svg	0
+27031	\N	ÒéÀÒâúÒâ╝ÒâùÒâÜÒâ│ÒéÀÒâ½	shapupenshiru	b├║t ch├¼ bß║Ñm	2	2026-06-25 10:52:56.272	2026-06-27 02:22:16.252	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A.svg	0
+27033	µÖéÞ¿ê	Òü¿ÒüæÒüä	tokei	─æß╗ông hß╗ô	2	2026-06-25 10:52:56.276	2026-06-27 02:22:16.257	\N	\N	\N	\N	\N	\N	/media/openmoji/23F0.svg	0
+27037	\N	ÒâåÒâ¼Òâô	terebi	TV	2	2026-06-25 10:52:56.287	2026-06-27 02:22:16.261	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4FA.svg	0
+27040	\N	Òé│Òâ│ÒâöÒâÑÒâ╝Òé┐Òâ╝	konpyuta	m├íy vi t├¡nh	2	2026-06-25 10:52:56.292	2026-06-27 02:22:16.264	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BB.svg	0
+27043	µñàÕ¡É	ÒüäÒüÖ	isu	chair	2	2026-06-25 10:52:56.3	2026-06-27 02:22:16.266	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA91.svg	0
+27044	\N	ÒâüÒâºÒé│Òâ¼Òâ╝Òâê	chokoreto	kß║╣o s├┤c├┤la	2	2026-06-25 10:52:56.304	2026-06-27 02:22:16.269	\N	\N	\N	\N	\N	\N	/media/openmoji/1F36B.svg	0
+27046	´╝╗Òüè´╝¢Õ£ƒþöú	´╝╗Òüè´╝¢Òü┐ÒéäÒüÆ	[o] miyage	souvenir, present	2	2026-06-25 10:52:56.307	2026-06-27 02:22:16.271	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381.svg	0
+27048	µùÑµ£¼Þ¬×	Òü½Òü╗ÒéôÒüö	nihongo	tiß║┐ng Nhß║¡t	2	2026-06-25 10:52:56.31	2026-06-27 02:22:16.278	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4AC.svg	0
+27035	Ú×ä	ÒüïÒü░Òéô	kaban	c├íi cß║Àp	2	2026-06-25 10:52:56.279	2026-06-27 02:22:16.285	\N	\N	\N	\N	\N	\N	/media/openmoji/1F392.svg	0
+27063	\N	ÒâåÒâ╝ÒâùÒâ¼Òé│Òâ╝ÒâÇÒâ╝	tepurekoda	m├íy casset	2	2026-06-25 10:52:56.344	2026-06-27 02:25:26.628	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4FC.svg	0
+27493	µ£¿	Òüì	ki	c├óy, gß╗ù	10	2026-06-25 10:52:58.271	2026-06-27 02:18:02.807	\N	\N	\N	\N	\N	\N	/media/openmoji/1F333.svg	0
+27265	\N	ÒâæÒâ│	pan	b├ính m├¼	6	2026-06-25 10:52:57.295	2026-06-27 02:22:16.288	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35E.svg	0
+27275	\N	Òé©ÒâÑÒâ╝Òé╣	jusu	nã░ß╗øc hoa quß║ú	6	2026-06-25 10:52:57.322	2026-06-27 02:22:16.292	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
+27324	\N	ÒâæÒé¢Òé│Òâ│	pasokon	m├íy t├¡nh c├í nh├ón	7	2026-06-25 10:52:57.561	2026-06-27 02:22:16.295	\N	\N	\N	\N	\N	\N	/media/openmoji/1F41F.svg	0
+27419	Õ»îÕú½Õ▒▒	ÒüÁÒüÿÒüòÒéô	fujisan	N├║i Ph├║ S─®	8	2026-06-25 10:52:57.845	2026-06-27 02:22:16.301	\N	\N	\N	\N	\N	\N	/media/openmoji/26F0.svg	0
+27473	\N	ÒüéÒüé	a	a (c├ích n├│i khi ─æ├ú gß║Àp ─æã░ß╗úc ─æ├║ng ngã░ß╗Øi tr├¬n ─æiß╗çn thoß║íi)	9	2026-06-25 10:52:58.073	2026-06-27 02:22:16.303	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE.svg	0
+27198	\N	ÒâÉÒé╣	basu	xe Bu├¢t	5	2026-06-25 10:52:56.987	2026-06-27 02:25:26.632	\N	\N	\N	\N	\N	\N	/media/openmoji/1F68C.svg	0
+27200	Þç¬Þ╗óÞ╗è	ÒüÿÒüªÒéôÒüùÒéâ	jitensha	xe ─æß║íp	5	2026-06-25 10:52:56.993	2026-06-27 02:25:26.635	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6B2.svg	0
+27250	ÚúƒÒü╣Òü¥ÒüÖ	ÒüƒÒü╣Òü¥ÒüÖ	tabemasu	─ân	6	2026-06-25 10:52:57.253	2026-06-27 02:25:26.638	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372.svg	0
+27251	Úú▓Òü┐Òü¥ÒüÖ	Òü«Òü┐Òü¥ÒüÖ	nomimasu	uß╗æng	6	2026-06-25 10:52:57.255	2026-06-27 02:25:26.641	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375.svg	0
+27253	ÞªïÒü¥ÒüÖ	Òü┐Òü¥ÒüÖ	mimasu	xem, nh├¼n, tr├┤ng	6	2026-06-25 10:52:57.261	2026-06-27 02:25:26.644	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC.svg	0
+27282	\N	ÒâôÒâçÒé¬	bideo	video, b─âng video	6	2026-06-25 10:52:57.339	2026-06-27 02:25:26.648	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4FD.svg	0
+27285	Õ«┐Úíî	ÒüùÒéàÒüÅÒüáÒüä	shukudai	b├ái tß║¡p vß╗ü nh├á	6	2026-06-25 10:52:57.345	2026-06-27 02:25:26.65	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA.svg	0
+27328	\N	ÒâæÒâ│Òâü	panchi	c├íi bß║Ñm lß╗ù	7	2026-06-25 10:52:57.57	2026-06-27 02:25:26.652	\N	\N	\N	\N	\N	\N	/media/openmoji/1F587.svg	0
+29074	õ║îµ¼íõ╝Ü	Òü½ÒüÿÒüïÒüä	nijikai	bß╗»a tiß╗çc thß╗® hai, t─âng hai	40	2026-06-25 10:53:04.737	2026-06-27 02:25:26.674	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+29160	µëïÞóï	ÒüªÒüÂÒüÅÒéì	tebukuro	g─âng tay	41	2026-06-25 10:53:05.03	2026-06-27 02:25:26.677	\N	\N	\N	\N	\N	\N	/media/openmoji/270B.svg	0
+29276	\N	Òé½ÒââÒâùÒâ®Òâ╝ÒâíÒâ│	kappuramen	m├¼ ─ân liß╗ün ─æß╗▒ng trong cß╗æc	42	2026-06-25 10:53:05.4	2026-06-27 02:25:26.681	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35C.svg	0
+29083	\N	Òé║Òâ£Òâ│	zubon	c├íi quß║ºn	40	2026-06-25 10:53:04.759	2026-06-27 02:26:21.894	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455.svg	0
 27016	ÕàÂÒéî	ÒüØÒéî	sore	c├íi ─æ├│, ─æ├│( vß║¡t ß╗ƒ gß║ºn ngã░ß╗Øi nghe)	2	2026-06-25 10:52:56.236	2026-06-27 02:18:02.677	\N	\N	\N	\N	\N	\N	\N	0
-27064	Þç¬ÕïòÞ╗è	ÒüÿÒü®ÒüåÒüùÒéâ	jidosha	xe hãíi	2	2026-06-25 10:52:56.349	2026-06-27 02:18:02.694	\N	\N	\N	\N	\N	\N	/media/openmoji/1F697	0
+29035	\N	Òé┐Òé¬Òâ½	taoru	kh─ân lau, kh─ân tß║»m	39	2026-06-25 10:53:04.588	2026-06-27 02:26:21.898	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9FB.svg	0
+27053	\N	ÒüêÒüú	e'	Oh? What! (used when hearing something unexpected)	2	2026-06-25 10:52:56.321	2026-06-27 02:25:26.624	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A8.svg	0
+27112	\N	Òé©ÒâúÒé½Òâ½Òé┐	jakaruta	Jakarta	3	2026-06-25 10:52:56.596	2026-06-27 02:25:26.702	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1E9.svg	0
+27114	\N	ÒâÖÒâ½Òâ¬Òâ│	berurin	Berlin	3	2026-06-25 10:52:56.601	2026-06-27 02:25:26.706	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E9-1F1EA.svg	0
 27050	õ¢ò	Òü¬Òéô	nan	c├íi g├¼	2	2026-06-25 10:52:56.312	2026-06-27 02:18:02.692	\N	\N	\N	\N	\N	\N	\N	0
+27138	µ£Ø	ÒüéÒüò	asa	s├íng	4	2026-06-25 10:52:56.76	2026-06-27 02:25:26.713	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305.svg	0
 27118	\N	MT´╝ÅÒâ¿Òâ╝ÒâìÒâ│´╝ÅÒéóÒé¡ÒââÒé»Òé╣	MT/yonen/akikkusu	c├┤ng ty giß║ú ─æß╗ïnh (trong s├ích)	3	2026-06-25 10:52:56.608	2026-06-27 02:18:02.699	\N	\N	\N	\N	\N	\N	\N	0
-27034	Õéÿ	ÒüïÒüò	kasa	c├íi d├╣	2	2026-06-25 10:52:56.277	2026-06-27 02:22:16.196	\N	\N	\N	\N	\N	\N	/media/openmoji/2602	0
-27171	\N	ÒâïÒâÑÒâ╝Òâ¿Òâ╝Òé»	nyuyoku	New York	4	2026-06-25 10:52:56.832	2026-06-27 02:25:26.616	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8	0
+27140	µÖ®´╝êÕñ£´╝ë	Òü░Òéô´╝êÒéêÒéï´╝ë	ban (yoru)	tß╗æi	4	2026-06-25 10:52:56.764	2026-06-27 02:25:26.717	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+27143	\N	ÒüìÒéçÒüå	kyo	h├┤m nay	4	2026-06-25 10:52:56.771	2026-06-27 02:25:26.721	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+27146	\N	ÒüæÒüò	kesa	s├íng nay	4	2026-06-25 10:52:56.776	2026-06-27 02:25:26.725	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305.svg	0
+27149	µÿ╝õ╝æÒü┐	Òü▓ÒéïÒéäÒüÖÒü┐	hiruyasumi	nghß╗ë trã░a	4	2026-06-25 10:52:56.785	2026-06-27 02:25:26.73	\N	\N	\N	\N	\N	\N	/media/openmoji/2600.svg	0
+27153	µ»Äµ£Ø	Òü¥ÒüäÒüéÒüò	maiasa	mß╗ùi s├íng	4	2026-06-25 10:52:56.791	2026-06-27 02:25:26.735	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305.svg	0
+27156	µ£êµø£µùÑ	ÒüÆÒüñÒéêÒüåÒü│	getsuyobi	Monday	4	2026-06-25 10:52:56.799	2026-06-27 02:25:26.74	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+27158	µ░┤µø£µùÑ	ÒüÖÒüäÒéêÒüåÒü│	suiyobi	Wednesday	4	2026-06-25 10:52:56.806	2026-06-27 02:25:26.744	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+27161	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	doyobi	Saturday	4	2026-06-25 10:52:56.811	2026-06-27 02:25:26.753	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
 26968	þºü	ÒéÅÒüƒÒüù	watashi	t├┤i	1	2026-06-25 10:52:55.955	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	0
+27045	\N	Òé│Òâ╝ÒâÆÒâ╝	kohii	c├á ph├¬	2	2026-06-25 10:52:56.305	2026-06-27 02:18:02.718	\N	\N	\N	\N	\N	\N	/media/openmoji/2615.svg	0
+27024	µû░Þü×	ÒüùÒéôÒüÂÒéô	shinbun	b├ío	2	2026-06-25 10:52:56.257	2026-06-27 02:22:16.233	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
+27036	\N	CD	CD	CD, compact disc	2	2026-06-25 10:52:56.282	2026-06-27 02:25:26.621	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BF.svg	0
+27041	Þ╗è	ÒüÅÒéïÒü¥	kuruma	car, vehicle	2	2026-06-25 10:52:56.294	2026-06-27 02:18:02.716	\N	\N	\N	\N	\N	\N	/media/openmoji/1F697.svg	0
+27022	Þ¥×µø©	ÒüÿÒüùÒéç	jisho	tß╗½ ─æiß╗ân	2	2026-06-25 10:52:56.252	2026-06-27 02:22:16.227	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA.svg	0
+27023	ÚøæÞ¬î	ÒüûÒüúÒüù	zasshi	tß║íp ch├¡	2	2026-06-25 10:52:56.255	2026-06-27 02:22:16.23	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D1.svg	0
+27025	\N	ÒâÄÒâ╝Òâê	noto	tß║¡p	2	2026-06-25 10:52:56.258	2026-06-27 02:22:16.236	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D3.svg	0
+27026	µëïÕ©│	ÒüªÒüíÒéçÒüå	techo	sß╗ò tay	2	2026-06-25 10:52:56.26	2026-06-27 02:22:16.238	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D3.svg	0
+27027	ÕÉìÕê║	ÒéüÒüäÒüù	meishi	danh thiß║┐p	2	2026-06-25 10:52:56.262	2026-06-27 02:22:16.242	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC.svg	0
+27028	\N	Òé½Òâ╝Òâë	kado	thß║╗ (card)	2	2026-06-25 10:52:56.264	2026-06-27 02:22:16.245	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B3.svg	0
+27029	Úëøþ¡å	ÒüêÒéôÒü┤Òüñ	enpitsu	pencil	2	2026-06-25 10:52:56.268	2026-06-27 02:22:16.247	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A.svg	0
 27018	\N	ÒüôÒü« ´¢×	kono ~	~ n├áy( gß║ºn ngã░ß╗Øi n├│i)	2	2026-06-25 10:52:56.241	2026-06-25 10:52:56.241	\N	\N	\N	\N	\N	\N	\N	0
 27019	\N	ÒüØÒü« ´¢×	sono ~	~ ─æ├│( gß║ºn ngã░ß╗Øi nghe)	2	2026-06-25 10:52:56.243	2026-06-25 10:52:56.243	\N	\N	\N	\N	\N	\N	\N	0
 27020	\N	ÒüéÒü« ´¢×	ano ~	~ kia( xa cß║ú ngã░ß╗Øi n├│i v├á ngã░ß╗Øi nghe)	2	2026-06-25 10:52:56.244	2026-06-25 10:52:56.244	\N	\N	\N	\N	\N	\N	\N	0
+27032	ÚìÁ	ÒüïÒüÄ	kagi	ch├¼a kho├í	2	2026-06-25 10:52:56.274	2026-06-27 02:22:16.254	\N	\N	\N	\N	\N	\N	/media/openmoji/1F511.svg	0
+27194	Þê╣	ÒüÁÒü¡	fune	thuyß╗ün, t├áu thß╗ºy	5	2026-06-25 10:52:56.97	2026-06-27 02:25:26.768	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6A2.svg	0
+27201	µ¡®ÒüäÒüª	ÒüéÒéïÒüäÒüª	aruite	─æi bß╗Ö, ─æi dß║ío	5	2026-06-25 10:52:56.997	2026-06-27 02:25:26.772	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6B6.svg	0
+27247	ÕñºÚÿ¬ÕƒÄ	ÒüèÒüèÒüòÒüïÒüÿÒéçÒüå	osakajo	Osaka Castle, a famous castle in Osaka	5	2026-06-25 10:52:57.137	2026-06-27 02:25:26.781	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3F0.svg	0
+27256	µø©ÒüìÒü¥ÒüÖ	ÒüïÒüìÒü¥ÒüÖ	kakimasu	viß║┐t, vß║¢	6	2026-06-25 10:52:57.269	2026-06-27 02:25:26.789	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A.svg	0
+27277	´╝╗Òüè´╝¢ÚàÆ	´╝╗Òüè´╝¢ÒüòÒüæ	[o] sake	rã░ß╗úu, rã░ß╗úu sake	6	2026-06-25 10:52:57.327	2026-06-27 02:25:26.793	\N	\N	\N	\N	\N	\N	/media/openmoji/1F377.svg	0
+27283	Õ║ù	Òü┐Òüø	mise	cß╗¡a h├áng, cß╗ºa tiß╗çm	6	2026-06-25 10:52:57.341	2026-06-27 02:25:26.803	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA.svg	0
+27286	\N	ÒâåÒâïÒé╣	tenisu	quß║ºn vß╗út (´¢×ÒéÆÒüùÒü¥ÒüÖ: ─æ├ính quß║ºn vß╗út)	6	2026-06-25 10:52:57.348	2026-06-27 02:25:26.808	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3BE.svg	0
+27306	\N	CD	CD	CD, compact disc	6	2026-06-25 10:52:57.392	2026-06-27 02:25:26.82	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BF.svg	0
+27318	µëï	Òüª	te	tay	7	2026-06-25 10:52:57.543	2026-06-27 02:25:26.823	\N	\N	\N	\N	\N	\N	/media/openmoji/270B.svg	0
+27320	\N	Òé╣ÒâùÒâ╝Òâ│	supun	muß╗ùng, th├¼a	7	2026-06-25 10:52:57.553	2026-06-27 02:25:26.83	\N	\N	\N	\N	\N	\N	/media/openmoji/1F944.svg	0
+27322	\N	ÒâòÒé®Òâ╝Òé»	foku	n─®a	7	2026-06-25 10:52:57.557	2026-06-27 02:25:26.837	\N	\N	\N	\N	\N	\N	/media/openmoji/1F374.svg	0
+27325	\N	Òé▒Òâ╝Òé┐Òéñ	ketai	mobile phone, cell phone	7	2026-06-25 10:52:57.564	2026-06-27 02:25:26.843	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F1.svg	0
+27331	µÂêÒüùÒé┤Òâ×	ÒüæÒüùÒé┤Òâ×	keshigoma	rubber, eraser	7	2026-06-25 10:52:57.575	2026-06-27 02:25:26.851	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A.svg	0
+27336	ÞìÀþë®	Òü½ÒééÒüñ	nimotsu	h├ánh l├¡, ─æß╗ô ─æß║íc	7	2026-06-25 10:52:57.59	2026-06-27 02:25:26.858	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9F3.svg	0
+27339	\N	Òé»Òâ¬Òé╣Òâ×Òé╣	kurisumasu	lß╗à Noel	7	2026-06-25 10:52:57.595	2026-06-27 02:25:26.866	\N	\N	\N	\N	\N	\N	/media/openmoji/1F384.svg	0
 27049	´¢×Þ¬×	´¢×Òüö	~go	tiß║┐ng ~	2	2026-06-25 10:52:56.311	2026-06-25 10:52:56.311	\N	\N	\N	\N	\N	\N	\N	0
+27341	µ»ì	Òü»Òü»	haha	mß║╣ t├┤i	7	2026-06-25 10:52:57.6	2026-06-27 02:25:26.87	\N	\N	\N	\N	\N	\N	/media/openmoji/1F469.svg	0
 27051	\N	ÒüØÒüå	so	thß║┐ n├áo	2	2026-06-25 10:52:56.316	2026-06-25 10:52:56.316	\N	\N	\N	\N	\N	\N	\N	0
 27052	\N	ÒüéÒü«Òüå	anou	├áÔÇª..ß╗Ø ( ngß║¡p ngß╗½ng khi ─æß╗ü nghß╗ï hoß║Àc suy ngh─® 1 vß║Ñn ─æß╗ü)	2	2026-06-25 10:52:56.319	2026-06-25 10:52:56.319	\N	\N	\N	\N	\N	\N	\N	0
+27343	Òüèµ»ìÒüòÒéô	ÒüèÒüïÒüéÒüòÒéô	okasan	mß║╣ cß╗ºa ngã░ß╗Øi kh├íc	7	2026-06-25 10:52:57.604	2026-06-27 02:25:26.874	\N	\N	\N	\N	\N	\N	/media/openmoji/1F469.svg	0
 27054	\N	Òü®ÒüåÒü×ÒÇé	dozo.	xin mß╗Øi	2	2026-06-25 10:52:56.323	2026-06-25 10:52:56.323	\N	\N	\N	\N	\N	\N	\N	0
 27055	\N	´╝╗Òü®ÒüåÒéé´╝¢ÒüéÒéèÒüîÒü¿Òüå´╝╗ÒüöÒüûÒüäÒü¥ÒüÖ´╝¢ÒÇé	[domo] arigato [gozaimasu].	Thank you [very much].	2	2026-06-25 10:52:56.325	2026-06-25 10:52:56.325	\N	\N	\N	\N	\N	\N	\N	0
 27056	\N	ÒüØÒüåÒüºÒüÖÒüïÒÇé	sodesuka.	thß║┐ ├á?	2	2026-06-25 10:52:56.326	2026-06-25 10:52:56.326	\N	\N	\N	\N	\N	\N	\N	0
@@ -12085,38 +12504,59 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27058	\N	Òüé	a	Oh! (used when becoming aware of something)	2	2026-06-25 10:52:56.333	2026-06-25 10:52:56.333	\N	\N	\N	\N	\N	\N	\N	0
 27059	ÒüôÒéîÒüïÒéë Òüèõ©ûÞ®▒Òü½ Òü¬ÒéèÒü¥ÒüÖÒÇé	ÒüôÒéîÒüïÒéë ÒüèÒüøÒéÅÒü½ Òü¬ÒéèÒü¥ÒüÖÒÇé	korekara osewani narimasu.	Tß╗½ nay mong ─æã░ß╗úc gi├║p ─æß╗í	2	2026-06-25 10:52:56.336	2026-06-25 10:52:56.336	\N	\N	\N	\N	\N	\N	\N	0
 27060	ÒüôÒüíÒéëÒüôÒüØ´╝╗Òü®ÒüåÒü×´╝¢ÒéêÒéìÒüùÒüÅ´╝╗ÒüèÚíÿÒüäÒüùÒü¥ÒüÖ´╝¢ÒÇé	ÒüôÒüíÒéëÒüôÒüØ´╝╗Òü®ÒüåÒü×´╝¢ÒéêÒéìÒüùÒüÅ´╝╗ÒüèÒü¡ÒüîÒüäÒüùÒü¥ÒüÖ´╝¢ÒÇé	kochirakoso [dozo] yoroshiku [onegaishimasu].	Ch├¡nh t├┤i mß╗øi l├á ngã░ß╗Øi mong ─æã░ß╗úc gi├║p ─æß╗í.	2	2026-06-25 10:52:56.338	2026-06-25 10:52:56.338	\N	\N	\N	\N	\N	\N	\N	0
+27355	\N	ÒâòÒéíÒé»Òé╣	fuakusu	fax, m├íy fax	7	2026-06-25 10:52:57.625	2026-06-27 02:25:26.883	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4E0.svg	0
 27062	\N	´╝╗Òé½Òé╗ÒââÒâê´╝¢ÒâåÒâ╝Òâù	[kasetto] tepu	[cassette] tape	2	2026-06-25 10:52:56.342	2026-06-25 10:52:56.342	\N	\N	\N	\N	\N	\N	\N	0
-27045	\N	Òé│Òâ╝ÒâÆÒâ╝	kohii	c├á ph├¬	2	2026-06-25 10:52:56.305	2026-06-27 02:18:02.718	\N	\N	\N	\N	\N	\N	/media/openmoji/2615	0
-27024	µû░Þü×	ÒüùÒéôÒüÂÒéô	shinbun	b├ío	2	2026-06-25 10:52:56.257	2026-06-27 02:22:16.233	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-27036	\N	CD	CD	CD, compact disc	2	2026-06-25 10:52:56.282	2026-06-27 02:25:26.621	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BF	0
 27015	µ¡ñÒéî	ÒüôÒéî	kore	c├íi n├áy, ─æ├óy( vß║¡t ß╗ƒ gß║ºn ngã░ß╗Øi n├│i)	2	2026-06-25 10:52:56.233	2026-06-27 02:18:02.708	\N	\N	\N	\N	\N	\N	\N	0
-27041	Þ╗è	ÒüÅÒéïÒü¥	kuruma	car, vehicle	2	2026-06-25 10:52:56.294	2026-06-27 02:18:02.716	\N	\N	\N	\N	\N	\N	/media/openmoji/1F697	0
-27022	Þ¥×µø©	ÒüÿÒüùÒéç	jisho	tß╗½ ─æiß╗ân	2	2026-06-25 10:52:56.252	2026-06-27 02:22:16.227	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA	0
-27023	ÚøæÞ¬î	ÒüûÒüúÒüù	zasshi	tß║íp ch├¡	2	2026-06-25 10:52:56.255	2026-06-27 02:22:16.23	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D1	0
-27025	\N	ÒâÄÒâ╝Òâê	noto	tß║¡p	2	2026-06-25 10:52:56.258	2026-06-27 02:22:16.236	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D3	0
 27017	Õ¢╝Òéî	ÒüéÒéî	are	c├íi kia, kia( vß║¡t ß╗ƒ xa cß║ú ngã░ß╗Øi n├│i v├á ngã░ß╗Øi nghe)	2	2026-06-25 10:52:56.239	2026-06-27 02:18:02.71	\N	\N	\N	\N	\N	\N	\N	0
 27009	þºüÒüƒÒüí	ÒéÅÒüƒÒüùÒüƒÒüí	watashitachi	ch├║ng t├┤i	1	2026-06-25 10:52:56.082	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	1
-27026	µëïÕ©│	ÒüªÒüíÒéçÒüå	techo	sß╗ò tay	2	2026-06-25 10:52:56.26	2026-06-27 02:22:16.238	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D3	0
-27027	ÕÉìÕê║	ÒéüÒüäÒüù	meishi	danh thiß║┐p	2	2026-06-25 10:52:56.262	2026-06-27 02:22:16.242	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC	0
-27028	\N	Òé½Òâ╝Òâë	kado	thß║╗ (card)	2	2026-06-25 10:52:56.264	2026-06-27 02:22:16.245	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B3	0
-27029	Úëøþ¡å	ÒüêÒéôÒü┤Òüñ	enpitsu	pencil	2	2026-06-25 10:52:56.268	2026-06-27 02:22:16.247	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A	0
-27032	ÚìÁ	ÒüïÒüÄ	kagi	ch├¼a kho├í	2	2026-06-25 10:52:56.274	2026-06-27 02:22:16.254	\N	\N	\N	\N	\N	\N	/media/openmoji/1F511	0
+27192	Úºà	ÒüêÒüì	eki	ga, nh├á ga	5	2026-06-25 10:52:56.961	2026-06-27 02:18:02.722	\N	\N	\N	\N	\N	\N	/media/openmoji/1F686.svg	0
+27195	Úø╗Þ╗è	ÒüºÒéôÒüùÒéâ	densha	t├áu ─æiß╗çn	5	2026-06-25 10:52:56.974	2026-06-27 02:18:02.724	\N	\N	\N	\N	\N	\N	/media/openmoji/1F686.svg	0
+27329	\N	ÒâøÒââÒâüÒé¡Òé╣	hotchikisu	c├íi dß║¡p ghim	7	2026-06-25 10:52:57.571	2026-06-27 02:25:26.654	\N	\N	\N	\N	\N	\N	/media/openmoji/1F587.svg	0
+27432	Úú▓Òü┐þë®	Òü«Òü┐ÒééÒü«	nomimono	─æß╗ô uß╗æng	9	2026-06-25 10:52:57.985	2026-06-27 02:25:26.656	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375.svg	0
+27433	µûÖþÉå	ÒéèÒéçÒüåÒéè	ryori	m├│n ─ân, viß╗çc nß║Ñu ─ân	9	2026-06-25 10:52:57.987	2026-06-27 02:25:26.658	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372.svg	0
+27196	Õ£░õ©ïÚëä	ÒüíÒüïÒüªÒüñ	chikatetsu	t├áu ─æiß╗çn ngß║ºm	5	2026-06-25 10:52:56.977	2026-06-27 02:26:21.871	\N	\N	\N	\N	\N	\N	/media/openmoji/1F687.svg	0
+27461	Õ¡ÉÒü®Òéé	ÒüôÒü®Òéé	kodomo	con c├íi	9	2026-06-25 10:52:58.051	2026-06-27 02:26:21.877	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2.svg	0
+27393	µí£	ÒüòÒüÅÒéë	sakura	hoa anh ─æ├áo	8	2026-06-25 10:52:57.791	2026-06-27 02:26:21.881	\N	\N	\N	\N	\N	\N	/media/openmoji/1F338.svg	0
+27268	Ú¡Ü	ÒüòÒüïÒü¬	sakana	c├í	6	2026-06-25 10:52:57.304	2026-06-27 02:18:02.765	\N	\N	\N	\N	\N	\N	/media/openmoji/1F41F.svg	0
+27271	µ░┤	Òü┐ÒüÜ	mizu	nã░ß╗øc	6	2026-06-25 10:52:57.311	2026-06-27 02:18:02.768	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
+27307	\N	Òâ¼Òé╣ÒâêÒâ®Òâ│	resutoran	nh├á h├áng	6	2026-06-25 10:52:57.394	2026-06-27 02:18:02.776	\N	\N	\N	\N	\N	\N	/media/openmoji/1F374.svg	0
+27394	Õ▒▒	ÒéäÒü¥	yama	n├║i	8	2026-06-25 10:52:57.793	2026-06-27 02:18:02.79	\N	\N	\N	\N	\N	\N	/media/openmoji/26F0.svg	0
+27421	Þ╗è	ÒüÅÒéïÒü¥	kuruma	car, vehicle	8	2026-06-25 10:52:57.85	2026-06-27 02:18:02.793	\N	\N	\N	\N	\N	\N	/media/openmoji/1F697.svg	0
+27358	µùàÞíî	ÒéèÒéçÒüôÒüå	ryoko	du lß╗ïch	7	2026-06-25 10:52:57.631	2026-06-27 02:25:26.888	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9F3.svg	0
+27378	Õ»ÆÒüä	ÒüòÒéÇÒüä	samui	(trß╗Øi) lß║ính	8	2026-06-25 10:52:57.746	2026-06-27 02:25:26.9	\N	\N	\N	\N	\N	\N	/media/openmoji/2744.svg	0
+27379	ÕåÀÒüƒÒüä	ÒüñÒéüÒüƒÒüä	tsumetai	lß║ính, buß╗æt (d├╣ng cho cß║úm gi├íc)	8	2026-06-25 10:52:57.749	2026-06-27 02:25:26.902	\N	\N	\N	\N	\N	\N	/media/openmoji/2744.svg	0
+27386	\N	ÒüèÒüäÒüùÒüä	oishii	ngon	8	2026-06-25 10:52:57.769	2026-06-27 02:25:26.916	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372.svg	0
+27389	þÖ¢Òüä	ÒüùÒéìÒüä	shiroi	trß║»ng	8	2026-06-25 10:52:57.774	2026-06-27 02:25:26.923	\N	\N	\N	\N	\N	\N	/media/openmoji/26AA.svg	0
+27330	\N	Òé╗Òâ¡ÒâåÒâ╝Òâù	serotepu	b─âng keo	7	2026-06-25 10:52:57.573	2026-06-27 02:25:26.93	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4CE.svg	0
+27398	Õ»«	ÒéèÒéçÒüå	ryo	k├¢ t├║c x├í	8	2026-06-25 10:52:57.803	2026-06-27 02:25:26.941	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E8.svg	0
 27243	µÖ«ÚÇÜ	ÒüÁÒüñÒüå	futsu	t├áu thã░ß╗Øng (dß╗½ng cß║ú ß╗ƒ c├íc ga lß║╗)	5	2026-06-25 10:52:57.122	2026-06-27 02:18:02.748	\N	\N	\N	\N	\N	\N	\N	0
-27192	Úºà	ÒüêÒüì	eki	ga, nh├á ga	5	2026-06-25 10:52:56.961	2026-06-27 02:18:02.722	\N	\N	\N	\N	\N	\N	/media/openmoji/1F686	0
-27195	Úø╗Þ╗è	ÒüºÒéôÒüùÒéâ	densha	t├áu ─æiß╗çn	5	2026-06-25 10:52:56.974	2026-06-27 02:18:02.724	\N	\N	\N	\N	\N	\N	/media/openmoji/1F686	0
-27329	\N	ÒâøÒââÒâüÒé¡Òé╣	hotchikisu	c├íi dß║¡p ghim	7	2026-06-25 10:52:57.571	2026-06-27 02:25:26.654	\N	\N	\N	\N	\N	\N	/media/openmoji/1F587	0
-27432	Úú▓Òü┐þë®	Òü«Òü┐ÒééÒü«	nomimono	─æß╗ô uß╗æng	9	2026-06-25 10:52:57.985	2026-06-27 02:25:26.656	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375	0
-27433	µûÖþÉå	ÒéèÒéçÒüåÒéè	ryori	m├│n ─ân, viß╗çc nß║Ñu ─ân	9	2026-06-25 10:52:57.987	2026-06-27 02:25:26.658	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372	0
+27400	þöƒµ┤╗	ÒüøÒüäÒüïÒüñ	seikatsu	cuß╗Öc sß╗æng	8	2026-06-25 10:52:57.806	2026-06-27 02:25:26.949	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E0.svg	0
+27417	ÚçæÚûúÕ»║	ÒüìÒéôÒüïÒüÅÒüÿ	kinkakuji	Ch├╣a V├áng ( t├¬n ch├╣a)	8	2026-06-25 10:52:57.841	2026-06-27 02:25:26.955	\N	\N	\N	\N	\N	\N	/media/openmoji/26E9.svg	0
+27434	\N	Òé╣ÒâØÒâ╝Òâä	supotsu	thß╗â thao (´¢×ÒéÆÒüùÒü¥ÒüÖ´╝Üchãíi thß╗â thao)	9	2026-06-25 10:52:57.989	2026-06-27 02:25:26.961	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD.svg	0
+27436	\N	ÒâÇÒâ│Òé╣	dansu	nhß║úy, khi├¬u v┼® (´¢×ÒéÆÒüùÒü¥ÒüÖ´╝Ünhß║úy, khi├¬u v┼®)	9	2026-06-25 10:52:57.993	2026-06-27 02:25:26.969	\N	\N	\N	\N	\N	\N	/media/openmoji/1F483.svg	0
+27439	µ¡î	ÒüåÒüƒ	uta	b├ái h├ít	9	2026-06-25 10:52:58.001	2026-06-27 02:25:26.976	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
+27441	\N	Òé©ÒâúÒé║	jazu	nhß║íc jazz	9	2026-06-25 10:52:58.005	2026-06-27 02:25:26.983	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
+27445	þÁÁ	Òüê	e	Tranh, hß╗Öi hß╗ìa	9	2026-06-25 10:52:58.015	2026-06-27 02:25:26.988	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A8.svg	0
+27636	\N	´╝╗Òüè´╝¢ÒüÖÒüù	[o] sushi	Sushi	12	2026-06-25 10:52:58.851	2026-06-27 02:25:27.035	\N	\N	\N	\N	\N	\N	/media/openmoji/1F363.svg	0
 27349	Òü®ÒüåÒü× Òüèõ©èÒüîÒéè ÒüÅÒüáÒüòÒüäÒÇé	Òü®ÒüåÒü× ÒüèÒüéÒüîÒéè ÒüÅÒüáÒüòÒüäÒÇé	dozo oagari kudasai.	Xin mß╗Øi anh(chß╗ï) v├áo nh├á.	7	2026-06-25 10:52:57.614	2026-06-27 02:18:02.787	\N	\N	\N	\N	\N	\N	\N	0
-27196	Õ£░õ©ïÚëä	ÒüíÒüïÒüªÒüñ	chikatetsu	t├áu ─æiß╗çn ngß║ºm	5	2026-06-25 10:52:56.977	2026-06-27 02:26:21.871	\N	\N	\N	\N	\N	\N	/media/openmoji/1F687	0
-27461	Õ¡ÉÒü®Òéé	ÒüôÒü®Òéé	kodomo	con c├íi	9	2026-06-25 10:52:58.051	2026-06-27 02:26:21.877	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2	0
-27393	µí£	ÒüòÒüÅÒéë	sakura	hoa anh ─æ├áo	8	2026-06-25 10:52:57.791	2026-06-27 02:26:21.881	\N	\N	\N	\N	\N	\N	/media/openmoji/1F338	0
+27674	\N	ÒâùÒâ╝Òâ½	puru	hß╗ô bãíi	13	2026-06-25 10:52:59.044	2026-06-27 02:25:27.041	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3CA.svg	0
+27711	µÇÑÒüÄÒü¥ÒüÖ	ÒüäÒüØÒüÄÒü¥ÒüÖ	isogimasu	vß╗Öi v├áng, cß║Ñp b├ích	14	2026-06-25 10:52:59.321	2026-06-27 02:25:27.048	\N	\N	\N	\N	\N	\N	/media/openmoji/1F7E1.svg	0
+27801	Úú▓Òü┐Òü¥ÒüÖ	Òü«Òü┐Òü¥ÒüÖ	nomimasu	drink alcohol	16	2026-06-25 10:52:59.737	2026-06-27 02:25:27.058	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375.svg	0
+27809	µÜùÒüä	ÒüÅÒéëÒüä	kurai	tß╗æi	16	2026-06-25 10:52:59.753	2026-06-27 02:25:27.064	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+27820	ÞÂ│	ÒüéÒüù	ashi	ch├ón	16	2026-06-25 10:52:59.776	2026-06-27 02:25:27.069	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9B6.svg	0
 27474	\N	ÒüäÒüúÒüùÒéçÒü½ ÒüäÒüïÒüîÒüºÒüÖÒüïÒÇé	isshoni ikagadesuka.	Anh/chß╗ï c├╣ng ~ (l├ám c├íi g├¼ ─æ├│) vß╗øi ch├║ng t├┤i ─æã░ß╗úc kh├┤ng?	9	2026-06-25 10:52:58.075	2026-06-27 02:18:02.806	\N	\N	\N	\N	\N	\N	\N	0
-27268	Ú¡Ü	ÒüòÒüïÒü¬	sakana	c├í	6	2026-06-25 10:52:57.304	2026-06-27 02:18:02.765	\N	\N	\N	\N	\N	\N	/media/openmoji/1F41F	0
-27271	µ░┤	Òü┐ÒüÜ	mizu	nã░ß╗øc	6	2026-06-25 10:52:57.311	2026-06-27 02:18:02.768	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-27307	\N	Òâ¼Òé╣ÒâêÒâ®Òâ│	resutoran	nh├á h├áng	6	2026-06-25 10:52:57.394	2026-06-27 02:18:02.776	\N	\N	\N	\N	\N	\N	/media/openmoji/1F374	0
-27394	Õ▒▒	ÒéäÒü¥	yama	n├║i	8	2026-06-25 10:52:57.793	2026-06-27 02:18:02.79	\N	\N	\N	\N	\N	\N	/media/openmoji/26F0	0
-27421	Þ╗è	ÒüÅÒéïÒü¥	kuruma	car, vehicle	8	2026-06-25 10:52:57.85	2026-06-27 02:18:02.793	\N	\N	\N	\N	\N	\N	/media/openmoji/1F697	0
+27825	þÀæ	Òü┐Òü®Òéè	midori	m├áu xanh l├í	16	2026-06-25 10:52:59.785	2026-06-27 02:25:27.074	\N	\N	\N	\N	\N	\N	/media/openmoji/1F535.svg	0
+27898	µ¡îÒüäÒü¥ÒüÖ	ÒüåÒüƒÒüäÒü¥ÒüÖ	utaimasu	h├ít	18	2026-06-25 10:53:00.137	2026-06-27 02:25:27.084	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
+28108	µ®ï	Òü»Òüù	hashi	cß║ºu	23	2026-06-25 10:53:01.06	2026-06-27 02:25:27.114	\N	\N	\N	\N	\N	\N	/media/openmoji/1F962.svg	0
+28118	ÕïòÒüìÒü¥ÒüÖ´╝╗µÖéÞ¿êÒüî´¢×´╝¢	ÒüåÒüöÒüìÒü¥ÒüÖ´╝╗Òü¿ÒüæÒüäÒüî´¢×´╝¢	ugokimasu [tokeiga~]	chuyß╗ân ─æß╗Öng ,chß║íy	23	2026-06-25 10:53:01.086	2026-06-27 02:25:27.117	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3.svg	0
+28235	ÞÁ░ÒéèÒü¥ÒüÖ´╝╗ÚüôÒéÆ´¢×´╝¢	Òü»ÒüùÒéèÒü¥ÒüÖ´╝╗Òü┐ÒüíÒéÆ´¢×´╝¢	hashirimasu [michiwo~]	chß║íy	27	2026-06-25 10:53:01.723	2026-06-27 02:25:27.131	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3.svg	0
+28234	Úú╝ÒüäÒü¥ÒüÖ	ÒüïÒüäÒü¥ÒüÖ	kaimasu	nu├┤i,ch─ân nu├┤i	27	2026-06-25 10:53:01.721	2026-06-27 02:25:27.139	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA.svg	0
+28293	Þ©èÒéèÒü¥ÒüÖ	ÒüèÒü®ÒéèÒü¥ÒüÖ	odorimasu	nhß║úy	28	2026-06-25 10:53:01.922	2026-06-27 02:25:27.141	\N	\N	\N	\N	\N	\N	/media/openmoji/1F483.svg	0
+28316	\N	Òé▓Òâ╝Òâá	gemu	(computer) game	28	2026-06-25 10:53:01.963	2026-06-27 02:25:27.149	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AE.svg	0
+28390	þÂ▓µúÜ	ÒüéÒü┐ÒüáÒü¬	amidana	gi├í ─æß╗â h├ánh l├¢	29	2026-06-25 10:53:02.203	2026-06-27 02:25:27.161	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9F3.svg	0
+27894	Õàêþöƒ	ÒüøÒéôÒüøÒüä	sensei	b├íc s─®(c├ích gß╗ìi b├íc s─®)	17	2026-06-25 10:53:00.01	2026-06-27 02:22:16.324	\N	\N	\N	\N	\N	\N	/media/openmoji/2695.svg	0
+27818	µ¡»	Òü»	ha	r─âng	16	2026-06-25 10:52:59.772	2026-06-27 02:25:26.661	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9B7.svg	0
+27625	Úø¿	ÒüéÒéü	ame	mã░a	12	2026-06-25 10:52:58.822	2026-06-27 02:18:02.849	\N	\N	\N	\N	\N	\N	/media/openmoji/1F327.svg	0
 27543	´╝æÒüñ	Òü▓Òü¿Òüñ	hitotsu	1 c├íi (─æß╗ô vß║¡t)	11	2026-06-25 10:52:58.511	2026-06-27 02:18:02.819	\N	\N	\N	\N	\N	\N	\N	0
 27544	´╝ÆÒüñ	ÒüÁÒüƒÒüñ	futatsu	2 c├íi	11	2026-06-25 10:52:58.514	2026-06-27 02:18:02.821	\N	\N	\N	\N	\N	\N	\N	0
 27545	´╝ôÒüñ	Òü┐ÒüúÒüñ	mittsu	3 c├íi	11	2026-06-25 10:52:58.516	2026-06-27 02:18:02.823	\N	\N	\N	\N	\N	\N	\N	0
@@ -12125,28 +12565,40 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27550	´╝ÿÒüñ	ÒéäÒüúÒüñ	yattsu	8 c├íi	11	2026-06-25 10:52:58.525	2026-06-27 02:18:02.835	\N	\N	\N	\N	\N	\N	\N	0
 27551	´╝ÖÒüñ	ÒüôÒüôÒü«Òüñ	kokonotsu	9 c├íi	11	2026-06-25 10:52:58.527	2026-06-27 02:18:02.838	\N	\N	\N	\N	\N	\N	\N	0
 27553	\N	ÒüäÒüÅÒüñ	ikutsu	bao nhi├¬u c├íi	11	2026-06-25 10:52:58.533	2026-06-27 02:18:02.841	\N	\N	\N	\N	\N	\N	\N	0
-27894	Õàêþöƒ	ÒüøÒéôÒüøÒüä	sensei	b├íc s─®(c├ích gß╗ìi b├íc s─®)	17	2026-06-25 10:53:00.01	2026-06-27 02:22:16.324	\N	\N	\N	\N	\N	\N	/media/openmoji/2695	0
-27818	µ¡»	Òü»	ha	r─âng	16	2026-06-25 10:52:59.772	2026-06-27 02:25:26.661	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9B7	0
-27625	Úø¿	ÒüéÒéü	ame	mã░a	12	2026-06-25 10:52:58.822	2026-06-27 02:18:02.849	\N	\N	\N	\N	\N	\N	/media/openmoji/1F327	0
+27630	µÁÀ	ÒüåÒü┐	umi	biß╗ân, ─æß║íi dã░ãíng	12	2026-06-25 10:52:58.837	2026-06-27 02:18:02.853	\N	\N	\N	\N	\N	\N	/media/openmoji/1F30A.svg	0
+27511	õ╣ùÒéèÕá┤	Òü«ÒéèÒü░	noriba	bß║┐n xe, ─æiß╗âm l├¬n xuß╗æng xe	10	2026-06-25 10:52:58.327	2026-06-27 02:26:21.884	\N	\N	\N	\N	\N	\N	/media/openmoji/1F689.svg	0
+27816	Ú╝╗	Òü»Òü¬	hana	nose	16	2026-06-25 10:52:59.768	2026-06-27 02:18:02.907	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A.svg	0
+27532	µ£¼Õ▒ï	Òü╗ÒéôÒéä	hon'ya	hiß╗çu s├ích	10	2026-06-25 10:52:58.395	2026-06-27 02:22:16.305	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6.svg	0
 27682	õ¢òÒüï	Òü¬Òü½Òüï	nanika	c├íi g├¼ ─æ├│	13	2026-06-25 10:52:59.07	2026-06-27 02:18:02.878	\N	\N	\N	\N	\N	\N	\N	0
-27630	µÁÀ	ÒüåÒü┐	umi	biß╗ân, ─æß║íi dã░ãíng	12	2026-06-25 10:52:58.837	2026-06-27 02:18:02.853	\N	\N	\N	\N	\N	\N	/media/openmoji/1F30A	0
-27511	õ╣ùÒéèÕá┤	Òü«ÒéèÒü░	noriba	bß║┐n xe, ─æiß╗âm l├¬n xuß╗æng xe	10	2026-06-25 10:52:58.327	2026-06-27 02:26:21.884	\N	\N	\N	\N	\N	\N	/media/openmoji/1F689	0
 27720	ÞªïÒüøÒü¥ÒüÖ	Òü┐ÒüøÒü¥ÒüÖ	misemasu	cho xem	14	2026-06-25 10:52:59.341	2026-06-27 02:18:02.891	\N	\N	\N	\N	\N	\N	\N	0
 27738	Þ¬¡Òü┐µû╣	ÒéêÒü┐ÒüïÒüƒ	yomikata	c├ích ─æß╗ìc	14	2026-06-25 10:52:59.386	2026-06-27 02:18:02.894	\N	\N	\N	\N	\N	\N	\N	0
 27791	õ╣ùÒéèÒü¥ÒüÖ´╝╗Úø╗Þ╗èÒü½´¢×´╝¢	Òü«ÒéèÒü¥ÒüÖ´╝╗ÒüºÒéôÒüùÒéâÒü½´¢×´╝¢	norimasu [denshani~]	─Éi l├¬n t├áu, xe	16	2026-06-25 10:52:59.719	2026-06-27 02:18:02.9	\N	\N	\N	\N	\N	\N	\N	0
 27792	ÚÖìÒéèÒü¥ÒüÖ´╝╗Úø╗Þ╗èÒéÆ´¢×´╝¢	ÒüèÒéèÒü¥ÒüÖ´╝╗ÒüºÒéôÒüùÒéâÒéÆ´¢×´╝¢	orimasu [denshawo~]	xuß╗æng t├áu ,xe	16	2026-06-25 10:52:59.721	2026-06-27 02:18:02.904	\N	\N	\N	\N	\N	\N	\N	0
+27578	ÕñûÕø¢	ÒüîÒüäÒüôÒüÅ	gaikoku	nã░ß╗øc ngo├ái	11	2026-06-25 10:52:58.586	2026-06-27 02:22:16.31	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
+27634	ÒüÖÒüìþä╝Òüì	ÒüÖÒüìÒéäÒüì	sukiyaki	Sukiyaki (m├│n thß╗ït b├▓ nß║Ñu rau)	12	2026-06-25 10:52:58.845	2026-06-27 02:22:16.313	\N	\N	\N	\N	\N	\N	/media/openmoji/1F969.svg	0
 27830	\N	Òü®Òü« ´¢×	dono ~	c├íiÔÇª..	16	2026-06-25 10:52:59.793	2026-06-27 02:18:02.915	\N	\N	\N	\N	\N	\N	\N	0
 27868	Úú▓Òü┐Òü¥ÒüÖ´╝╗Þû¼ÒéÆ´¢×´╝¢	Òü«Òü┐Òü¥ÒüÖ´╝╗ÒüÅÒüÖÒéèÒéÆ´¢×´╝¢	nomimasu [kusuriwo~]	uß╗æng	17	2026-06-25 10:52:59.95	2026-06-27 02:18:02.919	\N	\N	\N	\N	\N	\N	\N	0
-27816	Ú╝╗	Òü»Òü¬	hana	nose	16	2026-06-25 10:52:59.768	2026-06-27 02:18:02.907	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A	0
-27532	µ£¼Õ▒ï	Òü╗ÒéôÒéä	hon'ya	hiß╗çu s├ích	10	2026-06-25 10:52:58.395	2026-06-27 02:22:16.305	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6	0
-27578	ÕñûÕø¢	ÒüîÒüäÒüôÒüÅ	gaikoku	nã░ß╗øc ngo├ái	11	2026-06-25 10:52:58.586	2026-06-27 02:22:16.31	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-27634	ÒüÖÒüìþä╝Òüì	ÒüÖÒüìÒéäÒüì	sukiyaki	Sukiyaki (m├│n thß╗ït b├▓ nß║Ñu rau)	12	2026-06-25 10:52:58.845	2026-06-27 02:22:16.313	\N	\N	\N	\N	\N	\N	/media/openmoji/1F969	0
-27642	þöƒÒüæÞè▒	ÒüäÒüæÒü░Òü¬	ikebana	Nghß╗ç thuß║¡t cß║»m hoa (´¢×ÒéÆÒüùÒü¥ÒüÖ´╝Ücß║»m hoa)	12	2026-06-25 10:52:58.866	2026-06-27 02:22:16.315	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A	0
-27668	Úúƒõ║ïÒüùÒü¥ÒüÖ	ÒüùÒéçÒüÅÒüÿÒüùÒü¥ÒüÖ	shokujishimasu	d├╣ng bß╗»a, ─ân cãím	13	2026-06-25 10:52:59.032	2026-06-27 02:22:16.317	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A	0
-27677	ÚçúÒéè	ÒüñÒéè	tsuri	viß╗çc c├óu c├í	13	2026-06-25 10:52:59.052	2026-06-27 02:22:16.318	\N	\N	\N	\N	\N	\N	/media/openmoji/1F41F	0
-27689	þëøÒü®Òéô	ÒüÄÒéàÒüåÒü®Òéô	gyuudon	cãím thß╗ït b├▓	13	2026-06-25 10:52:59.092	2026-06-27 02:22:16.32	\N	\N	\N	\N	\N	\N	/media/openmoji/1F969	0
-27699	Õ©éÕ¢╣µëÇ	ÒüùÒéäÒüÅÒüùÒéç	shiyakusho	V─ân ph├▓ng h├ánh ch├¡nh quß║¡n, th├ánh phß╗æ.	13	2026-06-25 10:52:59.138	2026-06-27 02:22:16.321	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2	0
+27642	þöƒÒüæÞè▒	ÒüäÒüæÒü░Òü¬	ikebana	Nghß╗ç thuß║¡t cß║»m hoa (´¢×ÒéÆÒüùÒü¥ÒüÖ´╝Ücß║»m hoa)	12	2026-06-25 10:52:58.866	2026-06-27 02:22:16.315	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A.svg	0
+27668	Úúƒõ║ïÒüùÒü¥ÒüÖ	ÒüùÒéçÒüÅÒüÿÒüùÒü¥ÒüÖ	shokujishimasu	d├╣ng bß╗»a, ─ân cãím	13	2026-06-25 10:52:59.032	2026-06-27 02:22:16.317	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A.svg	0
+27677	ÚçúÒéè	ÒüñÒéè	tsuri	viß╗çc c├óu c├í	13	2026-06-25 10:52:59.052	2026-06-27 02:22:16.318	\N	\N	\N	\N	\N	\N	/media/openmoji/1F41F.svg	0
+27689	þëøÒü®Òéô	ÒüÄÒéàÒüåÒü®Òéô	gyuudon	cãím thß╗ït b├▓	13	2026-06-25 10:52:59.092	2026-06-27 02:22:16.32	\N	\N	\N	\N	\N	\N	/media/openmoji/1F969.svg	0
+27699	Õ©éÕ¢╣µëÇ	ÒüùÒéäÒüÅÒüùÒéç	shiyakusho	V─ân ph├▓ng h├ánh ch├¡nh quß║¡n, th├ánh phß╗æ.	13	2026-06-25 10:52:59.138	2026-06-27 02:22:16.321	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	0
+28492	µ©®µ│ë	ÒüèÒéôÒüøÒéô	onsen	suß╗æi nã░ß╗øc n├│ng	31	2026-06-25 10:53:02.57	2026-06-27 02:25:27.175	\N	\N	\N	\N	\N	\N	/media/openmoji/2668.svg	0
+28528	ÚüïÕïòÒüùÒü¥ÒüÖ	ÒüåÒéôÒü®ÒüåÒüùÒü¥ÒüÖ	undoshimasu	vß║¡n ─æß╗Öng, tß║¡p thß╗â thao	32	2026-06-25 10:53:02.714	2026-06-27 02:25:27.184	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD.svg	0
+28570	\N	Òâ¿Òâ╝Òâ¡ÒââÒâæ	yoroppa	Europe	32	2026-06-25 10:53:02.798	2026-06-27 02:25:27.198	\N	\N	\N	\N	\N	\N	/media/openmoji/1F30D.svg	0
+28594	\N	ÒéåÒüúÒüÅÒéè ÒüùÒü¥ÒüÖ	yukkuri shimasu	nghß╗ë ngãíi, thã░ th├íi, dã░ß╗íng sß╗®c	32	2026-06-25 10:53:02.849	2026-06-27 02:25:27.202	\N	\N	\N	\N	\N	\N	/media/openmoji/2709.svg	0
+28651	µ£¼µùÑõ╝æµÑ¡	Òü╗ÒéôÒüÿÒüñÒüìÒéàÒüåÒüÄÒéçÒüå	honjitsukyugyo	h├┤m nay ─æ├│ng cß╗¡a, h├┤m nay nghß╗ë	33	2026-06-25 10:53:03.066	2026-06-27 02:25:27.208	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+28681	\N	Òé╣ÒâØÒâ╝ÒâäÒé»Òâ®Òâû	supotsukurabu	c├óu lß║íc bß╗Ö thß╗â thao	34	2026-06-25 10:53:03.223	2026-06-27 02:25:27.218	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD.svg	0
+28684	Õø│	ÒüÜ	zu	sãí ─æß╗ô, h├¼nh vß║¢	34	2026-06-25 10:53:03.231	2026-06-27 02:25:27.222	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A8.svg	0
+28688	þÖ¢	ÒüùÒéì	shiro	m├áu trß║»ng	34	2026-06-25 10:53:03.24	2026-06-27 02:25:27.225	\N	\N	\N	\N	\N	\N	/media/openmoji/26AA.svg	0
+28690	ÚØÆ	ÒüéÒüè	ao	m├áu xanh da trß╗Øi	34	2026-06-25 10:53:03.247	2026-06-27 02:25:27.23	\N	\N	\N	\N	\N	\N	/media/openmoji/1F535.svg	0
+28698	\N	ÒéåÒüåÒü╣	yube	tß╗æi qua, ─æ├¬m qua	34	2026-06-25 10:53:03.273	2026-06-27 02:25:27.237	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+28673	þú¿ÒüìÒü¥ÒüÖ´╝╗µ¡»ÒéÆ´¢×´╝¢	Òü┐ÒüîÒüìÒü¥ÒüÖ´╝╗Òü»ÒéÆ´¢×´╝¢	migakimasu [hawo~]	m├ái, ─æ├ính (r─âng)	34	2026-06-25 10:53:03.203	2026-06-27 02:25:27.239	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9B7.svg	0
+28780	µ£▒	ÒüùÒéà	shu	─æß╗Å, m├áu ─æß╗Å	35	2026-06-25 10:53:03.637	2026-06-27 02:25:27.256	\N	\N	\N	\N	\N	\N	/media/openmoji/1F534.svg	0
+28825	\N	ÒüùÒüª ÒüäÒéëÒüúÒüùÒéâÒüäÒü¥ÒüÖ	shite irasshaimasu	─æang l├ám (t├┤n k├¡nh ngß╗» cß╗ºa ÒüùÒüªÒüäÒü¥ÒüÖ´╝ë	36	2026-06-25 10:53:03.831	2026-06-27 02:25:27.263	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
+28953	ÞÁñÒüíÒéâÒéô	ÒüéÒüïÒüíÒéâÒéô	akachan	em b├®	38	2026-06-25 10:53:04.289	2026-06-27 02:25:27.279	\N	\N	\N	\N	\N	\N	/media/openmoji/1F476.svg	0
 27902	ÚüïÞ╗óÒüùÒü¥ÒüÖ	ÒüåÒéôÒüªÒéôÒüùÒü¥ÒüÖ	untenshimasu	l├íi (xe), ─æiß╗üu khiß╗ân	18	2026-06-25 10:53:00.154	2026-06-27 02:18:02.924	\N	\N	\N	\N	\N	\N	\N	0
+27928	þÖ╗ÒéèÒü¥ÒüÖÒÇüõ©èÒéèÒü¥ÒüÖ	Òü«Òü╝ÒéèÒü¥ÒüÖ	noborimasu	leo (n├║i)	19	2026-06-25 10:53:00.342	2026-06-27 02:22:16.327	\N	\N	\N	\N	\N	\N	/media/openmoji/26F0.svg	0
 27946	\N	ÒüèÒüïÒüÆÒüòÒü¥Òüº	okagesamade	C├ím ãín (khi nhß║¡n ─æã░ß╗úc sß╗▒ gi├║p ─æß╗í cß╗ºa ai ─æ├│)	19	2026-06-25 10:53:00.376	2026-06-27 02:18:02.932	\N	\N	\N	\N	\N	\N	\N	0
 27962	Þ¬┐Òü╣Òü¥ÒüÖ	ÒüùÒéëÒü╣Òü¥ÒüÖ	shirabemasu	t├¼m hiß╗âu, ─æiß╗üu tra, xem	20	2026-06-25 10:53:00.487	2026-06-27 02:18:02.935	\N	\N	\N	\N	\N	\N	\N	0
 27964	Õâò	Òü╝ÒüÅ	boku	tß╗ø (c├ích xã░ng th├ón mß║¡t cß╗ºa nam giß╗øi)	20	2026-06-25 10:53:00.49	2026-06-27 02:18:02.938	\N	\N	\N	\N	\N	\N	\N	0
@@ -12154,134 +12606,407 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27974	\N	ÒüôÒüúÒüí	kotchi	─Éß║▒ng n├áy (c├ích n├│i tß╗▒ nhi├¬n, th├ón mß║¡t cß╗ºa ÔÇ£kochiraÔÇØ)	20	2026-06-25 10:53:00.508	2026-06-27 02:18:02.942	\N	\N	\N	\N	\N	\N	\N	0
 27976	\N	ÒüéÒüúÒüí	atchi	─Éß║▒ng kia (c├ích n├│i tß╗▒ nhi├¬n, th├ón mß║¡t cß╗ºa ÔÇ£achiraÔÇØ)	20	2026-06-25 10:53:00.515	2026-06-27 02:18:02.946	\N	\N	\N	\N	\N	\N	\N	0
 27977	\N	Òü®ÒüúÒüí	dotchi	ph├¡a n├áo (c├ích n├│i tß╗▒ nhi├¬n, th├ón mß║¡t cß╗ºa ÔÇ£dochiraÔÇØ)	20	2026-06-25 10:53:00.517	2026-06-27 02:18:02.95	\N	\N	\N	\N	\N	\N	\N	0
+27985	\N	ÒéÁÒâ®Òâ¬Òâ╝Òâ×Òâ│	sarariiman	ngã░ß╗Øi l├ám viß╗çc cho c├íc cty	20	2026-06-25 10:53:00.536	2026-06-27 02:22:16.33	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC.svg	0
 27990	\N	Òü®Òüå ÒüùÒéêÒüåÒüïÒü¬ÒÇé	do shiyoukana.	t├¡nh sao ─æ├óy nhß╗ë?/ ─æß╗â t├┤i xem	20	2026-06-25 10:53:00.545	2026-06-27 02:18:02.954	\N	\N	\N	\N	\N	\N	\N	0
 28028	´¢×ÒüºÒéé Úú▓Òü┐Òü¥ÒüøÒéôÒüïÒÇé	´¢×ÒüºÒéé Òü«Òü┐Òü¥ÒüøÒéôÒüïÒÇé	~demo nomimasenka.	Anh/chß╗ï uß╗æng (c├á ph├¬, rã░ß╗úu hay c├íi g├¼ ─æ├│) nh├®	21	2026-06-25 10:53:00.719	2026-06-27 02:18:02.956	\N	\N	\N	\N	\N	\N	\N	0
 28052	\N	ÒüùÒüïÒüƒÒüî ÒüéÒéèÒü¥ÒüøÒéôÒÇé	shikataga arimasen.	kh├┤ng c├▓n c├ích n├áo kh├íc	21	2026-06-25 10:53:00.768	2026-06-27 02:18:02.958	\N	\N	\N	\N	\N	\N	\N	0
 28077	µ¡ñµû╣	ÒüôÒüíÒéë	kochira	c├íi n├áy (c├ích n├│i lß╗ïch sß╗¡ cß╗ºa ÔÇ£ÒüôÒéîÔÇØ)	22	2026-06-25 10:53:00.912	2026-06-27 02:18:02.96	\N	\N	\N	\N	\N	\N	\N	0
 28080	ÕÆîÕ«ñ	ÒéÅÒüùÒüñ	washitsu	ph├▓ng ─ân kiß╗âu Nhß║¡t	22	2026-06-25 10:53:00.918	2026-06-27 02:18:02.967	\N	\N	\N	\N	\N	\N	\N	0
+28089	Òâ¼Òé©ÒâúÒâ╝þÖ¢µø©	Òâ¼Òé©ÒâúÒâ╝Òü»ÒüÅÒüùÒéç	rejahakusho	s├ích trß║»ng vß╗ü sß╗¡ dß╗Ñng thß╗Øi gian rß║únh rß╗ùi	22	2026-06-25 10:53:00.938	2026-06-27 02:22:16.332	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6.svg	0
 28086	\N	ÒüåÒâ╝ÒéôÒÇé	uun.	─æß╗â t├┤i xem/ß╗½/thß║┐ n├áo nhß╗ë	22	2026-06-25 10:53:00.93	2026-06-27 02:18:02.974	\N	\N	\N	\N	\N	\N	\N	0
 28088	õ¢ÖµÜçÚûïþÖ║Òé╗Òâ│Òé┐Òâ╝	ÒéêÒüïÒüïÒüäÒü»ÒüñÒé╗Òâ│Òé┐Òâ╝	yokakaihatsu senta	Trung t├óm ph├ít triß╗ân hoat ─æß╗Öng giß║úi tr├¡ cho ngã░ß╗Øi d├ón	22	2026-06-25 10:53:00.935	2026-06-27 02:18:02.98	\N	\N	\N	\N	\N	\N	\N	0
+28127	ÕñûÕø¢õ║║þÖ╗Úî▓Þ¿╝	ÒüîÒüäÒüôÒüÅÒüÿÒéôÒü¿ÒüåÒéìÒüÅÒüùÒéçÒüå	gaikokujintorokusho	thß║╗ ─æ─âng k├¡ ngã░ß╗Øi nã░ß╗øc ngo├ái / thß║╗ ─æ─âng k├¡ ngoß║íi kiß╗üu	23	2026-06-25 10:53:01.113	2026-06-27 02:22:16.334	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
 28109	ÚºÉÞ╗èÕá┤	ÒüíÒéàÒüåÒüùÒéâÒüÿÒéçÒüå	chushajo	b├úi ─æß╗ù xe	23	2026-06-25 10:53:01.063	2026-06-27 02:18:02.987	\N	\N	\N	\N	\N	\N	\N	0
 28110	Õ╗║þë®	ÒüƒÒüªÒééÒü«	tatemono	t├▓a nh├á	23	2026-06-25 10:53:01.066	2026-06-27 02:18:02.99	\N	\N	\N	\N	\N	\N	\N	0
+28172	ÞªïÒü¥ÒüÖÒÇüÞ¿║Òü¥ÒüÖ	Òü┐Òü¥ÒüÖ	mimasu	xem, kh├ím bß╗çnh	26	2026-06-25 10:53:01.494	2026-06-27 02:25:26.667	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC.svg	0
 28171	õ©ÇµØ» Úú▓Òü┐Òü¥ÒüùÒéçÒüåÒÇé	ÒüäÒüúÒü▒Òüä Òü«Òü┐Òü¥ÒüùÒéçÒüåÒÇé	ippai nomimashou.	Ch├║ng ta c├╣ng uß╗æng nh├®.	25	2026-06-25 10:53:01.408	2026-06-27 02:18:02.994	\N	\N	\N	\N	\N	\N	\N	0
+28082	Õ©âÕøú	ÒüÁÒü¿Òéô	futon	ch─ân,─æß╗çm	22	2026-06-25 10:53:00.921	2026-06-27 02:26:21.889	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6CF.svg	0
 28202	þëçÒüÑÒüìÒü¥ÒüÖ´╝╗ÞìÀþë®Òüî´¢×´╝¢	ÒüïÒüƒÒüÑÒüìÒü¥ÒüÖ´╝╗Òü½ÒééÒüñÒüî´¢×´╝¢	katazukimasu [nimotsuga~]	─æã░ß╗úc dß╗ìn dß║╣p ng─ân nß║»p, gß╗ìn g├áng [─æß╗ô ─æß║íc ~]	26	2026-06-25 10:53:01.561	2026-06-27 02:18:03.001	\N	\N	\N	\N	\N	\N	\N	0
 28208	þ╝Â	ÒüïÒéô	kan	c├íi lon, hß╗Öp kim loß║íi	26	2026-06-25 10:53:01.571	2026-06-27 02:18:03.003	\N	\N	\N	\N	\N	\N	\N	0
-27928	þÖ╗ÒéèÒü¥ÒüÖÒÇüõ©èÒéèÒü¥ÒüÖ	Òü«Òü╝ÒéèÒü¥ÒüÖ	noborimasu	leo (n├║i)	19	2026-06-25 10:53:00.342	2026-06-27 02:22:16.327	\N	\N	\N	\N	\N	\N	/media/openmoji/26F0	0
-27985	\N	ÒéÁÒâ®Òâ¬Òâ╝Òâ×Òâ│	sarariiman	ngã░ß╗Øi l├ám viß╗çc cho c├íc cty	20	2026-06-25 10:53:00.536	2026-06-27 02:22:16.33	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC	0
-28089	Òâ¼Òé©ÒâúÒâ╝þÖ¢µø©	Òâ¼Òé©ÒâúÒâ╝Òü»ÒüÅÒüùÒéç	rejahakusho	s├ích trß║»ng vß╗ü sß╗¡ dß╗Ñng thß╗Øi gian rß║únh rß╗ùi	22	2026-06-25 10:53:00.938	2026-06-27 02:22:16.332	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6	0
-28127	ÕñûÕø¢õ║║þÖ╗Úî▓Þ¿╝	ÒüîÒüäÒüôÒüÅÒüÿÒéôÒü¿ÒüåÒéìÒüÅÒüùÒéçÒüå	gaikokujintorokusho	thß║╗ ─æ─âng k├¡ ngã░ß╗Øi nã░ß╗øc ngo├ái / thß║╗ ─æ─âng k├¡ ngoß║íi kiß╗üu	23	2026-06-25 10:53:01.113	2026-06-27 02:22:16.334	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-28172	ÞªïÒü¥ÒüÖÒÇüÞ¿║Òü¥ÒüÖ	Òü┐Òü¥ÒüÖ	mimasu	xem, kh├ím bß╗çnh	26	2026-06-25 10:53:01.494	2026-06-27 02:25:26.667	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC	0
-28082	Õ©âÕøú	ÒüÁÒü¿Òéô	futon	ch─ân,─æß╗çm	22	2026-06-25 10:53:00.921	2026-06-27 02:26:21.889	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6CF	0
+28999	µø©Úí×	ÒüùÒéçÒéïÒüä	shorui	giß║Ñy tß╗Ø,t├ái liß╗çu	38	2026-06-25 10:53:04.411	2026-06-27 02:25:27.283	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4.svg	0
+29107	\N	ÒüäÒéëÒüúÒüùÒéâÒüäÒü¥ÒüÖ	irasshaimasu	─æß║┐n(k├¡nh ngß╗» cß╗ºa ÒüìÒü¥ÒüÖ´╝ë	40	2026-06-25 10:53:04.824	2026-06-27 02:25:27.292	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
+29138	\N	ÒüÅÒüáÒüòÒüäÒü¥ÒüÖ	kudasaimasu	cho, tß║Àng (t├┤i) (t├┤n k├¡nh ngß╗» cß╗ºaÒüÅÒéîÒü¥ÒüÖ)	41	2026-06-25 10:53:04.978	2026-06-27 02:25:27.299	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
+29158	\N	ÒâÅÒâ│Òé½Òâü	hankachi	kh─ân tay	41	2026-06-25 10:53:05.025	2026-06-27 02:25:27.307	\N	\N	\N	\N	\N	\N	/media/openmoji/270B.svg	0
+29218	Õ¡ÉÒü®ÒééÒüƒÒüí	ÒüôÒü®ÒééÒüƒÒüí	kodomotachi	trß║╗ em	42	2026-06-25 10:53:05.239	2026-06-27 02:25:27.322	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2.svg	0
+29381	´╝æ´╝æ´╝Éþò¬	´╝æ´╝æ´╝ÉÒü░Òéô	110ban	the emergency police telephone number	45	2026-06-25 10:53:06.115	2026-06-27 02:25:27.346	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+29364	ÕêÑÒéîÒü¥ÒüÖ	ÒéÅÒüïÒéîÒü¥ÒüÖ	wakaremasu	chia c├ích; chia tay	44	2026-06-25 10:53:05.917	2026-06-27 02:25:27.35	\N	\N	\N	\N	\N	\N	/media/openmoji/270B.svg	0
+29407	\N	Òâ¼ÒâÉÒâ╝	reba	tay bß║╗, tay sß╗æ, cß║ºn gß║ít	45	2026-06-25 10:53:06.213	2026-06-27 02:25:27.354	\N	\N	\N	\N	\N	\N	/media/openmoji/270B.svg	0
+29557	ÒüöÞªºÒü½ Òü¬ÒéèÒü¥ÒüÖ	ÒüöÒéëÒéôÒü½ Òü¬ÒéèÒü¥ÒüÖ	goranni narimasu	xem, nh├¼n (t├┤n k├¡nh ngß╗» cß╗ºa Òü┐Òü¥ÒüÖ)	49	2026-06-25 10:53:06.957	2026-06-27 02:25:27.377	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
+27197	µû░Õ╣╣þÀÜ	ÒüùÒéôÒüïÒéôÒüøÒéô	shinkansen	t├áu Shinkansen (t├áu ─æiß╗çn si├¬u tß╗æc cß╗ºa Nhß║¡t)	5	2026-06-25 10:52:56.982	2026-06-27 02:26:21.918	\N	\N	\N	\N	\N	\N	/media/openmoji/1F685.svg	0
+27443	\N	Òé½Òâ®Òé¬Òé▒	karaoke	karaoke	9	2026-06-25 10:52:58.009	2026-06-27 02:26:21.933	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A4.svg	0
+27457	Òüöõ©╗õ║║	ÒüöÒüùÒéàÒüÿÒéô	goshujin	chß╗ông (d├╣ng khi n├│i vß╗ü chß╗ông ngã░ß╗Øi kh├íc)	9	2026-06-25 10:52:58.041	2026-06-27 02:26:21.939	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	0
+27460	Õª╗´╝ÅÕ«ÂÕåà	ÒüñÒü¥´╝ÅÒüïÒü¬Òüä	tsuma/kanai	(my) wife	9	2026-06-25 10:52:58.049	2026-06-27 02:26:21.95	\N	\N	\N	\N	\N	\N	/media/openmoji/1F469.svg	0
+27499	\N	ÒâåÒâ╝ÒâûÒâ½	teburu	b├án	10	2026-06-25 10:52:58.29	2026-06-27 02:26:21.965	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC.svg	0
+27503	þ¬ô	Òü¥Òü®	mado	cß╗¡a sß╗ò	10	2026-06-25 10:52:58.302	2026-06-27 02:26:21.974	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA9F.svg	0
+27507	\N	Òé│Òâ│ÒâôÒâï	konbini	convenience store	10	2026-06-25 10:52:58.315	2026-06-27 02:26:21.983	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA.svg	0
+27509	Õû½ÞîÂÕ║ù	ÒüìÒüúÒüòÒüªÒéô	kissaten	qu├ín giß║úi kh├ít, qu├ín caffee	10	2026-06-25 10:52:58.321	2026-06-27 02:26:21.986	\N	\N	\N	\N	\N	\N	/media/openmoji/2615.svg	0
+27496	þ«▒	Òü»Òüô	hako	c├íi hß╗Öp	10	2026-06-25 10:52:58.281	2026-06-27 02:26:22.001	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4E6.svg	0
+27498	ÕåÀÞöÁÕ║½	ÒéîÒüäÒü×ÒüåÒüô	reizoko	tß╗º lß║ính	10	2026-06-25 10:52:58.287	2026-06-27 02:26:22.012	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9CA.svg	0
+27561	\N	Òü┐ÒüïÒéô	mikan	qu├¢t	11	2026-06-25 10:52:58.55	2026-06-27 02:26:22.024	\N	\N	\N	\N	\N	\N	/media/openmoji/1F34A.svg	0
 28220	þö│ÒüùÞ¥╝Òü┐Òü¥ÒüÖ	ÒééÒüåÒüùÒüôÒü┐Òü¥ÒüÖ	moshikomimasu	─æ─âng k├¢	26	2026-06-25 10:53:01.598	2026-06-27 02:18:03.005	\N	\N	\N	\N	\N	\N	\N	0
 28230	Õø░ÒüúÒüƒÒü¬ÒüéÒÇé	ÒüôÒü¥ÒüúÒüƒÒü¬ÒüéÒÇé	komattana.	L├ám thß║┐ n├áo ─æ├óy!/ c─âng qu├í nhß╗ë!/ gay qu├í!	26	2026-06-25 10:53:01.622	2026-06-27 02:18:03.007	\N	\N	\N	\N	\N	\N	\N	0
 28233	Õ£ƒõ║òÚÜåÚøä	Òü®ÒüäÒüƒÒüïÒüè	doitakao	nh├á du h├ánh v┼® trß╗Ñ ngã░ß╗Øi Nhß║¡t (1954- )	26	2026-06-25 10:53:01.631	2026-06-27 02:18:03.008	\N	\N	\N	\N	\N	\N	\N	0
+28695	\N	Òé¢Òâ╝Òé╣	sosu	nã░ß╗øc chß║Ñm, nã░ß╗øc xß╗æt	34	2026-06-25 10:53:03.263	2026-06-27 02:22:16.354	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
+28729	Òü¿ÒéèÞéë	Òü¿ÒéèÒü½ÒüÅ	toriniku	thß╗ït g├á	34	2026-06-25 10:53:03.379	2026-06-27 02:22:16.356	\N	\N	\N	\N	\N	\N	/media/openmoji/1F969.svg	0
 28321	Õ░ÅÞ¬¼Õ«Â	ÒüùÒéçÒüåÒüøÒüñÒüï	shosetsuka	tiß╗âu thuyß║┐t gia, nh├á v─ân	28	2026-06-25 10:53:01.97	2026-06-27 02:18:03.017	\N	\N	\N	\N	\N	\N	\N	0
+28730	ÕÆ▓ÒüìÒü¥ÒüÖ´╝╗Þè▒Òüî´¢×´╝¢	ÒüòÒüìÒü¥ÒüÖ´╝╗Òü»Òü¬Òüî´¢×´╝¢	sakimasu [hanaga~]	nß╗ƒ (hoa)	35	2026-06-25 10:53:03.524	2026-06-27 02:22:16.361	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A.svg	0
+28745	Õ▒▒þÖ╗Òéè	ÒéäÒü¥Òü«Òü╝Òéè	yamanobori	leo n├║i	35	2026-06-25 10:53:03.562	2026-06-27 02:22:16.362	\N	\N	\N	\N	\N	\N	/media/openmoji/26F0.svg	0
 28379	\N	Òé╣ÒâöÒâ╝Òâü	supiichi	diß╗àn v─ân	29	2026-06-25 10:53:02.179	2026-06-27 02:18:03.023	\N	\N	\N	\N	\N	\N	\N	0
+28383	õ╗èÒü« Úø╗Þ╗è	ÒüäÒü¥Òü« ÒüºÒéôÒüùÒéâ	imano densha	t├áu ─æiß╗çn vß╗½a chß║íy	29	2026-06-25 10:53:02.185	2026-06-27 02:18:03.025	\N	\N	\N	\N	\N	\N	/media/openmoji/1F686.svg	0
 28430	\N	ÒâØÒé╣Òé┐Òâ╝	posuta	tß╗Ø quß║úng c├ío, tß╗Ø ├íp ph├¡ch	30	2026-06-25 10:53:02.359	2026-06-27 02:18:03.027	\N	\N	\N	\N	\N	\N	\N	0
-28695	\N	Òé¢Òâ╝Òé╣	sosu	nã░ß╗øc chß║Ñm, nã░ß╗øc xß╗æt	34	2026-06-25 10:53:03.263	2026-06-27 02:22:16.354	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
 28435	ÚÅí	ÒüïÒüîÒü┐	kagami	c├íi gã░ãíng	30	2026-06-25 10:53:02.37	2026-06-27 02:18:03.034	\N	\N	\N	\N	\N	\N	\N	0
 28440	µ▒á	ÒüäÒüæ	ike	c├íi ao	30	2026-06-25 10:53:02.382	2026-06-27 02:18:03.036	\N	\N	\N	\N	\N	\N	\N	0
-28729	Òü¿ÒéèÞéë	Òü¿ÒéèÒü½ÒüÅ	toriniku	thß╗ït g├á	34	2026-06-25 10:53:03.379	2026-06-27 02:22:16.356	\N	\N	\N	\N	\N	\N	/media/openmoji/1F969	0
 28489	µòÖõ╝Ü	ÒüìÒéçÒüåÒüïÒüä	kyokai	nh├á thß╗Ø	31	2026-06-25 10:53:02.566	2026-06-27 02:18:03.04	\N	\N	\N	\N	\N	\N	\N	0
-28730	ÕÆ▓ÒüìÒü¥ÒüÖ´╝╗Þè▒Òüî´¢×´╝¢	ÒüòÒüìÒü¥ÒüÖ´╝╗Òü»Òü¬Òüî´¢×´╝¢	sakimasu [hanaga~]	nß╗ƒ (hoa)	35	2026-06-25 10:53:03.524	2026-06-27 02:22:16.361	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A	0
 28573	\N	Òé╣ÒâêÒâ¼Òé╣	sutoresu	stress, c─âng thß║│ng t├óm l├¢	32	2026-06-25 10:53:02.803	2026-06-27 02:18:03.045	\N	\N	\N	\N	\N	\N	\N	0
-28745	Õ▒▒þÖ╗Òéè	ÒéäÒü¥Òü«Òü╝Òéè	yamanobori	leo n├║i	35	2026-06-25 10:53:03.562	2026-06-27 02:22:16.362	\N	\N	\N	\N	\N	\N	/media/openmoji/26F0	0
 28592	\N	ÒééÒüùÒüïÒüùÒüƒÒéë	moshikashitara	c├│ thß╗â, biß║┐t d├óu l├á, c├│ khß║ú n─âng	32	2026-06-25 10:53:02.845	2026-06-27 02:18:03.05	\N	\N	\N	\N	\N	\N	\N	0
 28635	ÚºÉÞ╗èÚüòÕÅì	ÒüíÒéàÒüåÒüùÒéâÒüäÒü»Òéô	chushaihan	─æß╗ù xe tr├íi ph├®p	33	2026-06-25 10:53:03.014	2026-06-27 02:18:03.053	\N	\N	\N	\N	\N	\N	\N	0
 28646	õ©èÒüÆÒü¥ÒüÖ	ÒüéÒüÆÒü¥ÒüÖ	agemasu	n├óng l├¬n, t─âng l├¬n	33	2026-06-25 10:53:03.052	2026-06-27 02:18:03.055	\N	\N	\N	\N	\N	\N	\N	0
 28660	\N	ÒüºÒüìÒéïÒüáÒüæ	dekirudake	cß╗æ gß║»ng, trong khß║ú n─âng c├│ thß╗â	33	2026-06-25 10:53:03.083	2026-06-27 02:18:03.058	\N	\N	\N	\N	\N	\N	\N	0
 28668	þòÖÕ«êþò¬	ÒéïÒüÖÒü░Òéô	rusuban	tr├┤ng nh├á, giß╗» nh├á	33	2026-06-25 10:53:03.102	2026-06-27 02:18:03.059	\N	\N	\N	\N	\N	\N	\N	0
+28245	Þè▒þü½	Òü»Òü¬Òü│	hanabi	ph├ío hoa	27	2026-06-25 10:53:01.744	2026-06-27 02:22:16.336	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A.svg	0
 28720	\N	Òü®ÒéôÒüÂÒéè	donburi	c├íi b├ít	34	2026-06-25 10:53:03.349	2026-06-27 02:18:03.066	\N	\N	\N	\N	\N	\N	\N	0
+28259	µ£¼µúÜ	Òü╗ÒéôÒüáÒü¬	hondana	kß╗ç s├ích,gi├í s├ích	27	2026-06-25 10:53:01.769	2026-06-27 02:22:16.338	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6.svg	0
+28358	µèÿÒéîÒü¥ÒüÖ´╝╗µ£¿Òüî´¢×´╝¢	ÒüèÒéîÒü¥ÒüÖ´╝╗ÒüìÒüî´¢×´╝¢	oremasu [kiga~]	g├úy(c├óy)	29	2026-06-25 10:53:02.12	2026-06-27 02:22:16.34	\N	\N	\N	\N	\N	\N	/media/openmoji/1F333.svg	0
 28743	Õ▒ïõ©è	ÒüèÒüÅÒüÿÒéçÒüå	okujo	m├íi nh├á, n├│c nh├á	35	2026-06-25 10:53:03.557	2026-06-27 02:18:03.071	\N	\N	\N	\N	\N	\N	\N	0
-28383	õ╗èÒü« Úø╗Þ╗è	ÒüäÒü¥Òü« ÒüºÒéôÒüùÒéâ	imano densha	t├áu ─æiß╗çn vß╗½a chß║íy	29	2026-06-25 10:53:02.185	2026-06-27 02:18:03.025	\N	\N	\N	\N	\N	\N	/media/openmoji/1F686	0
-28245	Þè▒þü½	Òü»Òü¬Òü│	hanabi	ph├ío hoa	27	2026-06-25 10:53:01.744	2026-06-27 02:22:16.336	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A	0
-28259	µ£¼µúÜ	Òü╗ÒéôÒüáÒü¬	hondana	kß╗ç s├ích,gi├í s├ích	27	2026-06-25 10:53:01.769	2026-06-27 02:22:16.338	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6	0
-28358	µèÿÒéîÒü¥ÒüÖ´╝╗µ£¿Òüî´¢×´╝¢	ÒüèÒéîÒü¥ÒüÖ´╝╗ÒüìÒüî´¢×´╝¢	oremasu [kiga~]	g├úy(c├óy)	29	2026-06-25 10:53:02.12	2026-06-27 02:22:16.34	\N	\N	\N	\N	\N	\N	/media/openmoji/1F333	0
-28376	µ×Ø	ÒüêÒüá	eda	c├ánh c├óy	29	2026-06-25 10:53:02.172	2026-06-27 02:22:16.344	\N	\N	\N	\N	\N	\N	/media/openmoji/1F333	0
-28434	Þè▒þôÂ	ÒüïÒü│Òéô	kabin	lß╗ì hoa	30	2026-06-25 10:53:02.368	2026-06-27 02:22:16.346	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A	0
-28472	µ£ê	ÒüñÒüì	tsuki	mß║Àt tr─âng	30	2026-06-25 10:53:02.44	2026-06-27 02:22:16.348	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-28560	µ░┤Úüô	ÒüÖÒüäÒü®Òüå	suido	nã░ß╗øc m├íy	32	2026-06-25 10:53:02.776	2026-06-27 02:22:16.35	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-28591	µ£ê	ÒüñÒüì	tsuki	mß║Àt tr─âng	32	2026-06-25 10:53:02.842	2026-06-27 02:22:16.352	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
+28376	µ×Ø	ÒüêÒüá	eda	c├ánh c├óy	29	2026-06-25 10:53:02.172	2026-06-27 02:22:16.344	\N	\N	\N	\N	\N	\N	/media/openmoji/1F333.svg	0
+28434	Þè▒þôÂ	ÒüïÒü│Òéô	kabin	lß╗ì hoa	30	2026-06-25 10:53:02.368	2026-06-27 02:22:16.346	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A.svg	0
+28472	µ£ê	ÒüñÒüì	tsuki	mß║Àt tr─âng	30	2026-06-25 10:53:02.44	2026-06-27 02:22:16.348	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+28560	µ░┤Úüô	ÒüÖÒüäÒü®Òüå	suido	nã░ß╗øc m├íy	32	2026-06-25 10:53:02.776	2026-06-27 02:22:16.35	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
+28591	µ£ê	ÒüñÒüì	tsuki	mß║Àt tr─âng	32	2026-06-25 10:53:02.842	2026-06-27 02:22:16.352	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+27563	\N	Òé½Òâ¼Òâ╝´╝╗Òâ®ÒéñÒé╣´╝¢	kare [raisu]	c├á ri (cãím)	11	2026-06-25 10:52:58.553	2026-06-27 02:26:22.038	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35B.svg	0
+27637	\N	ÒüªÒéôÒüÀÒéë	tenpura	Tempura (m├│n hß║úi sß║ún v├á rau chi├¬n tß║®m bß╗Öt	12	2026-06-25 10:52:58.853	2026-06-27 02:26:22.052	\N	\N	\N	\N	\N	\N	/media/openmoji/1F364.svg	0
+27766	µ£ì	ÒüÁÒüÅ	fuku	quß║ºn ├ío	15	2026-06-25 10:52:59.544	2026-06-27 02:26:22.084	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455.svg	0
+27811	Úá¡	ÒüéÒüƒÒü¥	atama	─æß║ºu	16	2026-06-25 10:52:59.757	2026-06-27 02:26:22.097	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D1.svg	0
+27813	Úíö	ÒüïÒüè	kao	mß║Àt	16	2026-06-25 10:52:59.763	2026-06-27 02:26:22.1	\N	\N	\N	\N	\N	\N	/media/openmoji/1F600.svg	0
+27815	ÞÇ│	Òü┐Òü┐	mimi	tai	16	2026-06-25 10:52:59.767	2026-06-27 02:26:22.104	\N	\N	\N	\N	\N	\N	/media/openmoji/1F442.svg	0
+27873	þªüþàÖ	ÒüìÒéôÒüêÒéô	kin'en	cß║Ñm h├║t thuß╗æc	17	2026-06-25 10:52:59.961	2026-06-27 02:26:22.11	\N	\N	\N	\N	\N	\N	/media/openmoji/1F48A.svg	0
+27879	õ©èþØÇ	ÒüåÒéÅÒüÄ	uwagi	├ío kho├íc	17	2026-06-25 10:52:59.976	2026-06-27 02:26:22.119	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9E5.svg	0
+27888	\N	ÒüïÒü£	kaze	cß║úm,c├║m	17	2026-06-25 10:52:59.995	2026-06-27 02:26:22.123	\N	\N	\N	\N	\N	\N	/media/openmoji/1F32C.svg	0
+27931	µ┤ùµ┐»ÒüùÒü¥ÒüÖ	ÒüøÒéôÒüƒÒüÅÒüùÒü¥ÒüÖ	sentakushimasu	giß║Àt gi┼®, giß║Àt (quß║ºn ├ío)	19	2026-06-25 10:53:00.349	2026-06-27 02:26:22.132	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455.svg	0
+28378	õ║ñþò¬	ÒüôÒüåÒü░Òéô	koban	─æß╗ôn cß║únh s├ít,bß╗æt cß║únh s├ít	29	2026-06-25 10:53:02.176	2026-06-27 02:26:22.191	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46E.svg	0
+28464	õ║ñþò¬	ÒüôÒüåÒü░Òéô	koban	trß║ím cß║únh s├ít	30	2026-06-25 10:53:02.428	2026-06-27 02:26:22.208	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46E.svg	0
+28500	\N	Òü«Òü×Òü┐	nozomi	name of a Shinkansen train (´¢×´╝ö´╝ÆÕÅÀ : Nozomi Superexpress No.42)	31	2026-06-25 10:53:02.585	2026-06-27 02:26:22.215	\N	\N	\N	\N	\N	\N	/media/openmoji/1F685.svg	0
+29024	ÚøÀ	ÒüïÒü┐Òü¬Òéè	kaminari	thunder	39	2026-06-25 10:53:04.566	2026-06-27 02:26:22.279	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1.svg	0
+29046	µ┤ïµ£ì	ÒéêÒüåÒüÁÒüÅ	yofuku	quß║ºn ├ío kiß╗âu t├óy ├óu	39	2026-06-25 10:53:04.61	2026-06-27 02:26:22.287	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455.svg	0
+28835	µ▒¢Þ╗è	ÒüìÒüùÒéâ	kisha	t├áu hß╗Åa chß║íy bß║▒ng hãíi nã░ß╗øc	36	2026-06-25 10:53:03.852	2026-06-27 02:18:03.083	\N	\N	\N	\N	\N	\N	/media/openmoji/1F686.svg	0
+28914	õ╗▓Úûô	Òü¬ÒüïÒü¥	nakama	bß║ín b├¿,─æß╗ông nghiß╗çp	37	2026-06-25 10:53:04.117	2026-06-27 02:18:03.093	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46B.svg	0
+28836	µ▒¢Þê╣	ÒüìÒüøÒéô	kisen	thuyß╗ün chß║íy bß║▒ng hãíi nã░ß╗øc	36	2026-06-25 10:53:03.854	2026-06-27 02:22:16.364	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
+28874	þ┐╗Þ¿│ÒüùÒü¥ÒüÖ	Òü╗ÒéôÒéäÒüÅÒüùÒü¥ÒüÖ	hon'yakushimasu	dß╗ïch (s├ích, t├ái liß╗çu)	37	2026-06-25 10:53:04.031	2026-06-27 02:22:16.366	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6.svg	0
+28909	Þ▒¬ÞÅ»´╝╗Òü¬´╝¢	ÒüöÒüåÒüï´╝╗Òü¬´╝¢	goka [na]	h├áo hoa,sang trß╗ìng	37	2026-06-25 10:53:04.107	2026-06-27 02:22:16.367	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A.svg	0
+28957	µÁÀÕ▓©	ÒüïÒüäÒüîÒéô	kaigan	bß╗Ø biß╗ân	38	2026-06-25 10:53:04.299	2026-06-27 02:22:16.369	\N	\N	\N	\N	\N	\N	/media/openmoji/1F30A.svg	0
 28788	µÑ¢´╝╗Òü¬´╝¢	ÒéëÒüÅ´╝╗Òü¬´╝¢	raku [na]	thoß║úi m├íi, nh├án hß║í, dß╗à d├áng	35	2026-06-25 10:53:03.653	2026-06-27 02:18:03.076	\N	\N	\N	\N	\N	\N	\N	0
 28795	\N	ÒüÁÒüƒ	futa	c├íi nß║»p	35	2026-06-25 10:53:03.669	2026-06-27 02:18:03.08	\N	\N	\N	\N	\N	\N	\N	0
+28773	Õñ£ÞíîÒâÉÒé╣	ÒéäÒüôÒüåÒâÉÒé╣	yakobasu	(chuyß║┐n) xe bu├¢t chß║íy ─æ├¬m	35	2026-06-25 10:53:03.624	2026-06-27 02:25:26.671	\N	\N	\N	\N	\N	\N	/media/openmoji/1F68C.svg	0
+29159	ÚØ┤õ©ï	ÒüÅÒüñÒüùÒüƒ	kutsushita	vß╗ø	41	2026-06-25 10:53:05.028	2026-06-27 02:26:22.301	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F.svg	0
 28844	Õñ¬ÒéèÒü¥ÒüÖ	ÒüÁÒü¿ÒéèÒü¥ÒüÖ	futorimasu	b├®o l├¬n, t─âng c├ón	36	2026-06-25 10:53:03.87	2026-06-27 02:18:03.087	\N	\N	\N	\N	\N	\N	\N	0
+26982	ÕñºÕ¡ª	ÒüáÒüäÒüîÒüÅ	daigaku	trã░ß╗Øng ─æß║íi hß╗ìc	1	2026-06-25 10:52:56	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB.svg	15
+26983	þùàÚÖó	Òü│ÒéçÒüåÒüäÒéô	byoin	bß╗çnh viß╗çn	1	2026-06-25 10:52:56.002	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E5.svg	16
+27004	\N	ÒâûÒâ®Òé©Òâ½	burajiru	Brazil	1	2026-06-25 10:52:56.066	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E7-1F1F7.svg	37
 28954	Õ░ÅÕ¡ªµáí	ÒüùÒéçÒüåÒüîÒüúÒüôÒüå	shogakko	trã░ß╗Øng tiß╗âu hß╗ìc	38	2026-06-25 10:53:04.292	2026-06-27 02:18:03.098	\N	\N	\N	\N	\N	\N	\N	0
+27076	ÚúƒÕáé	ÒüùÒéçÒüÅÒü®Òüå	shokudo	nh├á ─ân	3	2026-06-25 10:52:56.529	2026-06-27 02:22:16.385	\N	\N	\N	\N	\N	\N	/media/openmoji/1F37D.svg	0
 28985	µÇºµá╝	ÒüøÒüäÒüïÒüÅ	seikaku	t├¡nh c├ích	38	2026-06-25 10:53:04.365	2026-06-27 02:18:03.102	\N	\N	\N	\N	\N	\N	\N	0
+27077	õ║ïÕïÖµëÇ	ÒüÿÒéÇÒüùÒéç	jimusho	v─ân ph├▓ng	3	2026-06-25 10:52:56.532	2026-06-27 02:22:16.387	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	0
 29041	\N	ÒâêÒâ®ÒââÒé»	torakku	xe tß║úi	39	2026-06-25 10:53:04.6	2026-06-27 02:18:03.107	\N	\N	\N	\N	\N	\N	\N	0
+27081	Úâ¿Õ▒ï	Òü©Òéä	heya	c─ân ph├▓ng	3	2026-06-25 10:52:56.539	2026-06-27 02:22:16.389	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6CF.svg	0
+27082	ÒâêÒéñÒâ¼´╝êÒüèµëïµ┤ùÒüä´╝ë	ÒâêÒéñÒâ¼´╝êÒüèÒüªÒüéÒéëÒüä´╝ë	toire (otearai)	nh├á vß╗ç sinh, ph├▓ng vß╗ç sinh, toa-l├®t	3	2026-06-25 10:52:56.541	2026-06-27 02:22:16.392	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6BD.svg	0
 29110	\N	Òé¬Òâ╝ÒâêÒâÉÒéñ	otobai	xe m├íy	40	2026-06-25 10:53:04.83	2026-06-27 02:18:03.119	\N	\N	\N	\N	\N	\N	\N	0
 29113	ÚüïÞ╗óµëï	ÒüåÒéôÒüªÒéôÒüùÒéà	untenshu	l├íi xe	40	2026-06-25 10:53:04.834	2026-06-27 02:18:03.123	\N	\N	\N	\N	\N	\N	\N	0
 29114	ÚøóÒéîÒüƒ	Òü»Òü¬ÒéîÒüƒ	hanareta	xa c├ích, xa	40	2026-06-25 10:53:04.836	2026-06-27 02:18:03.125	\N	\N	\N	\N	\N	\N	\N	0
 29153	\N	ÒüêÒüò	esa	─æß╗ô ─ân cho ─æß╗Öng vß║¡t, mß╗ôi	41	2026-06-25 10:53:05.016	2026-06-27 02:18:03.129	\N	\N	\N	\N	\N	\N	\N	0
+27088	´╝╗Òüè´╝¢Õø¢	´╝╗Òüè´╝¢ÒüÅÒü½	[o] kuni	─æß║Ñt nã░ß╗øc (cß╗ºa anh/chß╗ï)	3	2026-06-25 10:52:56.554	2026-06-27 02:22:16.394	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
 29195	õ©¡Þ║½	Òü¬ÒüïÒü┐	nakami	nß╗Öi dung, c├íi ß╗ƒ b├¬n trong	41	2026-06-25 10:53:05.111	2026-06-27 02:18:03.144	\N	\N	\N	\N	\N	\N	\N	0
 29199	µîçÞ╝¬	ÒéåÒü│ÒéÅ	yubiwa	c├íi nhß║½n	41	2026-06-25 10:53:05.118	2026-06-27 02:18:03.151	\N	\N	\N	\N	\N	\N	\N	0
 29221	µûçÕîû	ÒüÂÒéôÒüï	bunka	v─ân ho├í	42	2026-06-25 10:53:05.246	2026-06-27 02:18:03.155	\N	\N	\N	\N	\N	\N	\N	0
 29230	\N	ÒâƒÒé¡ÒéÁÒâ╝	mikisa	mixer, blender	42	2026-06-25 10:53:05.265	2026-06-27 02:18:03.157	\N	\N	\N	\N	\N	\N	\N	0
 29233	µáôµè£Òüì	ÒüøÒéôÒü¼Òüì	sennuki	c├íi mß╗ƒ nß║»p chai	42	2026-06-25 10:53:05.27	2026-06-27 02:18:03.159	\N	\N	\N	\N	\N	\N	\N	0
 29255	\N	Òü®ÒéôÒüÂÒéè	donburi	c├íi b├ít t├┤	42	2026-06-25 10:53:05.329	2026-06-27 02:18:03.162	\N	\N	\N	\N	\N	\N	\N	0
+27075	µòÖÕ«ñ	ÒüìÒéçÒüåÒüùÒüñ	kyoshitsu	lß╗øp hß╗ìc, ph├▓ng hß╗ìc	3	2026-06-25 10:52:56.528	2026-06-27 02:22:16.397	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB.svg	0
 29286	ÕóùÒüêÒü¥ÒüÖ´╝╗Þ╝©Õç║Òüî´¢×´╝¢	ÒüÁÒüêÒü¥ÒüÖ´╝╗ÒéåÒüùÒéàÒüñÒüî´¢×´╝¢	fuemasu [yushutsuga~]	t─âng, t─âng l├¬n [xuß║Ñt khß║®u ~]	43	2026-06-25 10:53:05.53	2026-06-27 02:18:03.167	\N	\N	\N	\N	\N	\N	\N	0
-28835	µ▒¢Þ╗è	ÒüìÒüùÒéâ	kisha	t├áu hß╗Åa chß║íy bß║▒ng hãíi nã░ß╗øc	36	2026-06-25 10:53:03.852	2026-06-27 02:18:03.083	\N	\N	\N	\N	\N	\N	/media/openmoji/1F686	0
-28914	õ╗▓Úûô	Òü¬ÒüïÒü¥	nakama	bß║ín b├¿,─æß╗ông nghiß╗çp	37	2026-06-25 10:53:04.117	2026-06-27 02:18:03.093	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46B	0
-28836	µ▒¢Þê╣	ÒüìÒüøÒéô	kisen	thuyß╗ün chß║íy bß║▒ng hãíi nã░ß╗øc	36	2026-06-25 10:53:03.854	2026-06-27 02:22:16.364	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-28874	þ┐╗Þ¿│ÒüùÒü¥ÒüÖ	Òü╗ÒéôÒéäÒüÅÒüùÒü¥ÒüÖ	hon'yakushimasu	dß╗ïch (s├ích, t├ái liß╗çu)	37	2026-06-25 10:53:04.031	2026-06-27 02:22:16.366	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6	0
-28909	Þ▒¬ÞÅ»´╝╗Òü¬´╝¢	ÒüöÒüåÒüï´╝╗Òü¬´╝¢	goka [na]	h├áo hoa,sang trß╗ìng	37	2026-06-25 10:53:04.107	2026-06-27 02:22:16.367	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A	0
-28957	µÁÀÕ▓©	ÒüïÒüäÒüîÒéô	kaigan	bß╗Ø biß╗ân	38	2026-06-25 10:53:04.299	2026-06-27 02:22:16.369	\N	\N	\N	\N	\N	\N	/media/openmoji/1F30A	0
-28773	Õñ£ÞíîÒâÉÒé╣	ÒéäÒüôÒüåÒâÉÒé╣	yakobasu	(chuyß║┐n) xe bu├¢t chß║íy ─æ├¬m	35	2026-06-25 10:53:03.624	2026-06-27 02:25:26.671	\N	\N	\N	\N	\N	\N	/media/openmoji/1F68C	0
+27078	õ╝ÜÞ¡░Õ«ñ	ÒüïÒüäÒüÄÒüùÒüñ	kaigishitsu	ph├▓ng hß╗ìp	3	2026-06-25 10:52:56.534	2026-06-27 02:22:16.404	\N	\N	\N	\N	\N	\N	/media/openmoji/1F465.svg	0
+27109	\N	ÒéñÒé┐Òâ¬Òéó	itaria	Italy	3	2026-06-25 10:52:56.591	2026-06-27 02:22:16.445	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1F9.svg	0
+27111	\N	ÒâòÒâ®Òâ│Òé╣	furansu	France	3	2026-06-25 10:52:56.594	2026-06-27 02:22:16.449	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7.svg	0
+27119	ÞÁÀÒüìÒü¥ÒüÖ	ÒüèÒüìÒü¥ÒüÖ	okimasu	thß╗®c dß║¡y	4	2026-06-25 10:52:56.721	2026-06-27 02:22:16.452	\N	\N	\N	\N	\N	\N	/media/openmoji/1F31E.svg	0
+27121	ÕâìÒüìÒü¥ÒüÖ	Òü»ÒüƒÒéëÒüìÒü¥ÒüÖ	hatarakimasu	l├ám viß╗çc	4	2026-06-25 10:52:56.725	2026-06-27 02:22:16.457	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC.svg	0
+27123	ÕïëÕ╝ÀÒüùÒü¥ÒüÖ	Òü╣ÒéôÒüìÒéçÒüåÒüùÒü¥ÒüÖ	benkyoshimasu	hß╗ìc tß║¡p	4	2026-06-25 10:52:56.728	2026-06-27 02:22:16.463	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA.svg	0
+27125	\N	ÒâçÒâæÒâ╝Òâê	depato	cß╗¡a h├áng b├ích h├│a	4	2026-06-25 10:52:56.734	2026-06-27 02:22:16.465	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6D2.svg	0
+27127	ÚâÁõ¥┐Õ▒Ç	ÒéåÒüåÒü│ÒéôÒüìÒéçÒüÅ	yubinkyoku	bã░u ─æiß╗çn	4	2026-06-25 10:52:56.739	2026-06-27 02:22:16.468	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E4.svg	0
+27129	þ¥ÄÞíôÚñ¿	Òü│ÒüÿÒéàÒüñÒüïÒéô	bijutsukan	viß╗çn bß║úo t├áng	4	2026-06-25 10:52:56.742	2026-06-27 02:22:16.472	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3DB.svg	0
+27152	µÿáþö╗	ÒüêÒüäÒüî	eiga	film, movie	4	2026-06-25 10:52:56.79	2026-06-27 02:22:16.478	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC.svg	0
+27113	\N	ÒâÉÒâ│Òé│Òé»	bankoku	Bangkok	3	2026-06-25 10:52:56.599	2026-06-27 02:25:26.704	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F9-1F1ED.svg	0
+27136	ÕìêÕëì	ÒüöÒü£Òéô	gozen	buß╗òi s├íng	4	2026-06-25 10:52:56.757	2026-06-27 02:25:26.708	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305.svg	0
+27137	ÕìêÕ¥î	ÒüöÒüö	gogo	buß╗òi chiß╗üu	4	2026-06-25 10:52:56.758	2026-06-27 02:25:26.71	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+27142	\N	ÒüìÒü«Òüå	kino	ng├áy h├┤m qua	4	2026-06-25 10:52:56.77	2026-06-27 02:25:26.719	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+27144	\N	ÒüéÒüùÒüƒ	ashita	ng├áy mai	4	2026-06-25 10:52:56.773	2026-06-27 02:25:26.723	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+27147	õ╗èµÖ®	ÒüôÒéôÒü░Òéô	konban	tß╗æi nay	4	2026-06-25 10:52:56.778	2026-06-27 02:25:26.727	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+27151	õ╝ÜÞ¡░	ÒüïÒüäÒüÄ	kaigi	meeting, conference (´¢×ÒéÆ ÒüùÒü¥ÒüÖ : hold a meeting)	4	2026-06-25 10:52:56.788	2026-06-27 02:25:26.733	\N	\N	\N	\N	\N	\N	/media/openmoji/1F465.svg	0
 29288	õ©èÒüîÒéèÒü¥ÒüÖ´╝╗ÕÇñµ«ÁÒüî´¢×´╝¢	ÒüéÒüîÒéèÒü¥ÒüÖ´╝╗Òü¡ÒüáÒéôÒüî´¢×´╝¢	agarimasu [nedanga~]	t─âng, t─âng l├¬n [gi├í ~]	43	2026-06-25 10:53:05.532	2026-06-27 02:18:03.169	\N	\N	\N	\N	\N	\N	\N	0
 29293	\N	Òü¬ÒüÅÒü¬ÒéèÒü¥ÒüÖ´╝╗Òé¼Òé¢Òâ¬Òâ│Òüî´¢×´╝¢	nakunarimasu [gasoringa~]	mß║Ñt, hß║┐t (x─âng)	43	2026-06-25 10:53:05.544	2026-06-27 02:18:03.171	\N	\N	\N	\N	\N	\N	\N	0
+29554	ÕÅ¼Òüùõ©èÒüîÒéèÒü¥ÒüÖ	ÒéüÒüùÒüéÒüîÒéèÒü¥ÒüÖ	meshiagarimasu	─ân, uß╗æng (t├┤n k├¡nh ngß╗» cß╗ºa ÒüƒÒü╣Òü¥ÒüÖ v├á Òü«Òü┐Òü¥ÒüÖ)	49	2026-06-25 10:53:06.948	2026-06-27 02:25:26.689	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
 29307	\N	ÒâëÒâ®ÒéñÒâû	doraibu	l├íi xe (─æi chãíi)	43	2026-06-25 10:53:05.589	2026-06-27 02:18:03.174	\N	\N	\N	\N	\N	\N	\N	0
 29319	\N	Òü┤ÒüúÒüƒÒéè	pittari	vß╗½a v─ân, ─æ├║ng	43	2026-06-25 10:53:05.618	2026-06-27 02:18:03.176	\N	\N	\N	\N	\N	\N	\N	0
+29601	ÒüèµîüÒüíÒüºÒüÖ	ÒüèÒééÒüíÒüºÒüÖ	omochidesu	c├│ (c├ích n├│i t├┤n k├¡nh ngß╗» cß╗ºa ÒééÒüúÒüªÒüäÒü¥ÒüÖ)	49	2026-06-25 10:53:07.083	2026-06-27 02:25:26.691	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
+29637	ÒüèÕàâµ░ùÒüº ÒüäÒéëÒüúÒüùÒéâÒüäÒü¥ÒüÖÒüïÒÇé	ÒüèÒüÆÒéôÒüìÒüº ÒüäÒéëÒüúÒüùÒéâÒüäÒü¥ÒüÖÒüïÒÇé	ogenkide irasshaimasuka.	anh/chß╗ï c├│ khß╗Åe kh├┤ng?(c├ích n├│i t├┤n k├¡nh cß╗ºa ÒüèÒüÆÒéôÒüìÒüºÒüÖÒüïÒÇé)	50	2026-06-25 10:53:07.216	2026-06-27 02:25:26.693	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
+29477	\N	ÒâæÒâêÒé½Òâ╝	patoka	xe ├┤-t├┤ cß║únh s├ít	47	2026-06-25 10:53:06.584	2026-06-27 02:26:21.902	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46E.svg	0
 29362	Þí¿þÅ¥	Òü▓ÒéçÒüåÒüÆÒéô	hyogen	c├ích n├│i, c├ích diß╗àn ─æß║ít	44	2026-06-25 10:53:05.91	2026-06-27 02:18:03.187	\N	\N	\N	\N	\N	\N	\N	0
 29392	µé®Òü┐	Òü¬ÒéäÒü┐	nayami	─æiß╗üu lo ngh─®, tr─ân trß╗ƒ, phiß╗ün muß╗Ön	45	2026-06-25 10:53:06.152	2026-06-27 02:18:03.189	\N	\N	\N	\N	\N	\N	\N	0
 29413	Õç║Òü¥ÒüÖ´╝╗ÒâÉÒé╣Òüî´¢×´╝¢	ÒüºÒü¥ÒüÖ´╝╗ÒâÉÒé╣Òüî´¢×´╝¢	demasu [basuga~]	[s├ích] ─æã░ß╗úc xuß║Ñt bß║ún	46	2026-06-25 10:53:06.344	2026-06-27 02:18:03.191	\N	\N	\N	\N	\N	\N	\N	0
 29421	Õ«àÚàìõ¥┐	ÒüƒÒüÅÒü»ÒüäÒü│Òéô	takuhaibin	dß╗ïch vß╗Ñ trao tß║¡n nh├á	46	2026-06-25 10:53:06.36	2026-06-27 02:18:03.193	\N	\N	\N	\N	\N	\N	\N	0
 29458	Õç║Òü¥ÒüÖ´╝╗µ£¼Òüî´¢×´╝¢	ÒüºÒü¥ÒüÖ´╝╗Òü╗ÒéôÒüî´¢×´╝¢	demasu [honga~]	[s├ích] ─æã░ß╗úc xuß║Ñt bß║ún	46	2026-06-25 10:53:06.434	2026-06-27 02:18:03.198	\N	\N	\N	\N	\N	\N	\N	0
 29476	µûçÕ¡ª	ÒüÂÒéôÒüîÒüÅ	bungaku	v─ân hß╗ìc	47	2026-06-25 10:53:06.582	2026-06-27 02:18:03.2	\N	\N	\N	\N	\N	\N	\N	0
+29306	\N	Òü░Òéë	bara	hoa hß╗ông	43	2026-06-25 10:53:05.586	2026-06-27 02:22:16.373	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A.svg	0
 29482	\N	´¢×Òü½ ÒéêÒéïÒü¿	~ni yoruto	theo ~ th├¼, c─ân cß╗® v├áo ~ th├¼	47	2026-06-25 10:53:06.596	2026-06-27 02:18:03.205	\N	\N	\N	\N	\N	\N	\N	0
 29509	ÚÖìÒéìÒüùÒü¥ÒüÖÒÇüõ©ïÒéìÒüùÒü¥ÒüÖ	ÒüèÒéìÒüùÒü¥ÒüÖ	oroshimasu	cho xuß╗æng, hß║í xuß╗æng	48	2026-06-25 10:53:06.726	2026-06-27 02:18:03.207	\N	\N	\N	\N	\N	\N	\N	0
 29517	Þç¬þö▒Òü½	ÒüÿÒéåÒüåÒü½	jiyuni	mß╗Öt c├ích tß╗▒ do	48	2026-06-25 10:53:06.743	2026-06-27 02:18:03.209	\N	\N	\N	\N	\N	\N	\N	0
 29543	Þè©	ÒüÆÒüä	gei	tr├▓ diß╗àn, tiß║┐t mß╗Ñc, t├ái n─âng	48	2026-06-25 10:53:06.811	2026-06-27 02:18:03.213	\N	\N	\N	\N	\N	\N	\N	0
+29338	µÂÖ	Òü¬Òü┐Òüá	namida	nã░ß╗øc mß║»t	44	2026-06-25 10:53:05.825	2026-06-27 02:22:16.376	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
 29560	µùàÚñ¿	ÒéèÒéçÒüïÒéô	ryokan	nh├á trß╗ì, nh├á nghß╗ë	49	2026-06-25 10:53:06.967	2026-06-27 02:18:03.22	\N	\N	\N	\N	\N	\N	\N	0
 29587	õ╝ÜÕá┤	ÒüïÒüäÒüÿÒéçÒüå	kaijo	hß╗Öi trã░ß╗Øng	49	2026-06-25 10:53:07.035	2026-06-27 02:18:03.222	\N	\N	\N	\N	\N	\N	\N	0
-29554	ÕÅ¼Òüùõ©èÒüîÒéèÒü¥ÒüÖ	ÒéüÒüùÒüéÒüîÒéèÒü¥ÒüÖ	meshiagarimasu	─ân, uß╗æng (t├┤n k├¡nh ngß╗» cß╗ºa ÒüƒÒü╣Òü¥ÒüÖ v├á Òü«Òü┐Òü¥ÒüÖ)	49	2026-06-25 10:53:06.948	2026-06-27 02:25:26.689	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
+29593	Þ¼øÕ©½	ÒüôÒüåÒüù	koshi	giß║úng vi├¬n, b├ío c├ío vi├¬n	49	2026-06-25 10:53:07.06	2026-06-27 02:22:16.379	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
 29613	µïØÞªïÒüùÒü¥ÒüÖ	Òü»ÒüäÒüæÒéôÒüùÒü¥ÒüÖ	haikenshimasu	xem (dß║íng khi├¬m tß╗æn cß╗ºa ÒééÒü¥ÒüÖ)	50	2026-06-25 10:53:07.176	2026-06-27 02:18:03.233	\N	\N	\N	\N	\N	\N	\N	0
-29601	ÒüèµîüÒüíÒüºÒüÖ	ÒüèÒééÒüíÒüºÒüÖ	omochidesu	c├│ (c├ích n├│i t├┤n k├¡nh ngß╗» cß╗ºa ÒééÒüúÒüªÒüäÒü¥ÒüÖ)	49	2026-06-25 10:53:07.083	2026-06-27 02:25:26.691	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
-29637	ÒüèÕàâµ░ùÒüº ÒüäÒéëÒüúÒüùÒéâÒüäÒü¥ÒüÖÒüïÒÇé	ÒüèÒüÆÒéôÒüìÒüº ÒüäÒéëÒüúÒüùÒéâÒüäÒü¥ÒüÖÒüïÒÇé	ogenkide irasshaimasuka.	anh/chß╗ï c├│ khß╗Åe kh├┤ng?(c├ích n├│i t├┤n k├¡nh cß╗ºa ÒüèÒüÆÒéôÒüìÒüºÒüÖÒüïÒÇé)	50	2026-06-25 10:53:07.216	2026-06-27 02:25:26.693	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
-29477	\N	ÒâæÒâêÒé½Òâ╝	patoka	xe ├┤-t├┤ cß║únh s├ít	47	2026-06-25 10:53:06.584	2026-06-27 02:26:21.902	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46E	0
-29306	\N	Òü░Òéë	bara	hoa hß╗ông	43	2026-06-25 10:53:05.586	2026-06-27 02:22:16.373	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A	0
-29338	µÂÖ	Òü¬Òü┐Òüá	namida	nã░ß╗øc mß║»t	44	2026-06-25 10:53:05.825	2026-06-27 02:22:16.376	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-29593	Þ¼øÕ©½	ÒüôÒüåÒüù	koshi	giß║úng vi├¬n, b├ío c├ío vi├¬n	49	2026-06-25 10:53:07.06	2026-06-27 02:22:16.379	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-29339	ÕÆîÚúƒ	ÒéÅÒüùÒéçÒüÅ	washoku	m├│n ─ân Nhß║¡t	44	2026-06-25 10:53:05.828	2026-06-27 02:25:26.684	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372	0
-29341	Õ¥íµò░	ÒüèÒüïÒüÜ	okazu	thß╗®c ─ân	44	2026-06-25 10:53:05.833	2026-06-27 02:25:26.686	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372	0
+29339	ÕÆîÚúƒ	ÒéÅÒüùÒéçÒüÅ	washoku	m├│n ─ân Nhß║¡t	44	2026-06-25 10:53:05.828	2026-06-27 02:25:26.684	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372.svg	0
+29341	Õ¥íµò░	ÒüèÒüïÒüÜ	okazu	thß╗®c ─ân	44	2026-06-25 10:53:05.833	2026-06-27 02:25:26.686	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372.svg	0
+27154	µ»ÄµÖ®	Òü¥ÒüäÒü░Òéô	maiban	mß╗ùi tß╗æi	4	2026-06-25 10:52:56.793	2026-06-27 02:25:26.737	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+27157	þü½µø£µùÑ	ÒüïÒéêÒüåÒü│	kayobi	Tuesday	4	2026-06-25 10:52:56.804	2026-06-27 02:25:26.742	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+27159	µ£¿µø£µùÑ	ÒééÒüÅÒéêÒüåÒü│	mokuyobi	Thursday	4	2026-06-25 10:52:56.808	2026-06-27 02:25:26.749	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+27160	Úçæµø£µùÑ	ÒüìÒéôÒéêÒüåÒü│	kin'yobi	Friday	4	2026-06-25 10:52:56.809	2026-06-27 02:25:26.751	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+27162	µùÑµø£µùÑ	Òü½ÒüíÒéêÒüåÒü│	nichiyobi	Sunday	4	2026-06-25 10:52:56.814	2026-06-27 02:25:26.755	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+27193	ÚúøÞíîµ®ƒ	Òü▓ÒüôÒüåÒüì	hikoki	m├íy bay	5	2026-06-25 10:52:56.965	2026-06-27 02:18:03.267	\N	\N	\N	\N	\N	\N	/media/openmoji/2708.svg	0
+27174	\N	Òâ¡Òâ│ÒâëÒâ│	rondon	London	4	2026-06-25 10:52:56.838	2026-06-27 02:25:26.759	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EC-1F1E7.svg	0
+27185	\N	ÒâÉÒâ│Òé│Òé»	bankoku	Bangkok	4	2026-06-25 10:52:56.859	2026-06-27 02:25:26.763	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F9-1F1ED.svg	0
+27191	\N	Òé╣Òâ╝ÒâæÒâ╝	supa	si├¬u thß╗ï	5	2026-06-25 10:52:56.958	2026-06-27 02:25:26.766	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6D2.svg	0
+27199	\N	Òé┐Òé»ÒéÀÒâ╝	takushii	taxi	5	2026-06-25 10:52:56.991	2026-06-27 02:25:26.77	\N	\N	\N	\N	\N	\N	/media/openmoji/1F695.svg	0
+27206	Õ«ÂµùÅ	ÒüïÒü×ÒüÅ	kazoku	gia ─æ├¼nh	5	2026-06-25 10:52:57.014	2026-06-27 02:25:26.774	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46A.svg	0
+27237	Þ¬òþöƒµùÑ	ÒüƒÒéôÒüÿÒéçÒüåÒü│	tanjobi	sinh nhß║¡t	5	2026-06-25 10:52:57.107	2026-06-27 02:25:26.776	\N	\N	\N	\N	\N	\N	/media/openmoji/1F382.svg	0
+27280	\N	Òâ¼ÒâØÒâ╝Òâê	repoto	b├ío c├ío	6	2026-06-25 10:52:57.335	2026-06-27 02:22:16.51	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
+27261	\N	ÒüöÒü»Òéô	gohan	cãím, bß╗»a ─ân	6	2026-06-25 10:52:57.283	2026-06-27 02:22:16.512	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A.svg	0
+27262	µ£ØÒüöÒü»Òéô	ÒüéÒüòÒüöÒü»Òéô	asagohan	cãím s├íng	6	2026-06-25 10:52:57.286	2026-06-27 02:22:16.481	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A.svg	0
+27254	Þü×ÒüìÒü¥ÒüÖ	ÒüìÒüìÒü¥ÒüÖ	kikimasu	nghe	6	2026-06-25 10:52:57.263	2026-06-27 02:25:26.784	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
+27263	µÿ╝ÒüöÒü»Òéô	Òü▓ÒéïÒüöÒü»Òéô	hirugohan	cãím trã░a	6	2026-06-25 10:52:57.289	2026-06-27 02:22:16.484	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A.svg	0
+27264	µÖ®ÒüöÒü»Òéô	Òü░ÒéôÒüöÒü»Òéô	bangohan	cãím tß╗æi	6	2026-06-25 10:52:57.292	2026-06-27 02:22:16.486	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A.svg	0
+27266	ÕìÁ	ÒüƒÒü¥Òüö	tamago	trß╗®ng	6	2026-06-25 10:52:57.299	2026-06-27 02:22:16.488	\N	\N	\N	\N	\N	\N	/media/openmoji/1F373.svg	0
+27269	ÚçÄÞÅ£	ÒéäÒüòÒüä	yasai	rau	6	2026-06-25 10:52:57.307	2026-06-27 02:22:16.491	\N	\N	\N	\N	\N	\N	/media/openmoji/1F966.svg	0
 28735	þø┤ÒéèÒü¥ÒüÖ´╝╗µòàÚÜ£Òüî´¢×´╝¢	Òü¬ÒüèÒéèÒü¥ÒüÖ´╝╗ÒüôÒüùÒéçÒüåÒüî´¢×´╝¢	naorimasu [koshoga~]	be fixed, be repaired	35	2026-06-25 10:53:03.538	2026-06-27 02:18:03.504	\N	\N	\N	\N	\N	\N	\N	0
 29551	µÄøÒüæÒü¥ÒüÖ´╝╗ÒüäÒüÖÒü½´¢×´╝¢	ÒüïÒüæÒü¥ÒüÖ´╝╗ÒüäÒüÖÒü½´¢×´╝¢	kakemasu [isuni~]	ngß╗ôi xuß╗æng [ ghß║┐]	49	2026-06-25 10:53:06.939	2026-06-27 02:18:03.585	\N	\N	\N	\N	\N	\N	\N	0
-27190	Õ¡ªµáí	ÒüîÒüúÒüôÒüå	gakko	trã░ß╗Øng hß╗ìc	5	2026-06-25 10:52:56.956	2026-06-27 02:18:02.72	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB	0
-27501	µúÜ	ÒüƒÒü¬	tana	gi├í s├ích	10	2026-06-25 10:52:58.295	2026-06-27 02:22:16.381	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6	0
-29228	Þ½ûµûç	ÒéìÒéôÒüÂÒéô	ronbun	luß║¡n v─ân, b├ái b├ío hß╗ìc thuß║¡t	42	2026-06-25 10:53:05.261	2026-06-27 02:22:16.383	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-27047	Þï▒Þ¬×	ÒüêÒüäÒüö	eigo	tiß║┐ng Anh	2	2026-06-25 10:52:56.308	2026-06-27 02:22:16.275	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4AC	0
-27061	\N	ÒâåÒâ¼ÒâøÒâ│Òé½Òâ╝Òâë	terehonkado	thß║╗ (card) ─æiß╗çn thoß║íi	2	2026-06-25 10:52:56.34	2026-06-27 02:22:16.281	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE	0
-27099	\N	ÒüäÒüÅÒéë	ikura	bao nhi├¬u tiß╗ün	3	2026-06-25 10:52:56.573	2026-06-27 02:22:16.441	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-27110	\N	Òé╣ÒéñÒé╣	suisu	Thß╗Ñy S─®	3	2026-06-25 10:52:56.593	2026-06-27 02:22:16.447	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E8-1F1ED	0
-27116	þàÖÞìë	ÒüƒÒü░Òüô	tabako	thuß╗æc l├í	3	2026-06-25 10:52:56.605	2026-06-27 02:22:16.451	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6AC	0
-27120	Õ»ØÒü¥ÒüÖ	Òü¡Òü¥ÒüÖ	nemasu	ngß╗º	4	2026-06-25 10:52:56.723	2026-06-27 02:22:16.454	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634	0
-27122	õ╝æÒü┐Òü¥ÒüÖ	ÒéäÒüÖÒü┐Òü¥ÒüÖ	yasumimasu	nghß╗ë ngãíi	4	2026-06-25 10:52:56.726	2026-06-27 02:22:16.46	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634	0
-27126	ÚèÇÞíî	ÒüÄÒéôÒüôÒüå	ginko	bank	4	2026-06-25 10:52:56.736	2026-06-27 02:22:16.467	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E6	0
-27128	Õø│µø©Úñ¿	Òü¿ÒüùÒéçÒüïÒéô	toshokan	thã░ viß╗çn	4	2026-06-25 10:52:56.741	2026-06-27 02:22:16.47	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA	0
-27150	Þ®ªÚ¿ô	ÒüùÒüæÒéô	shiken	examination, test	4	2026-06-25 10:52:56.786	2026-06-27 02:22:16.476	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DD	0
-27276	\N	ÒâôÒâ╝Òâ½	biiru	bia	6	2026-06-25 10:52:57.325	2026-06-27 02:22:16.499	\N	\N	\N	\N	\N	\N	/media/openmoji/1F37A	0
-27305	µÿáþö╗	ÒüêÒüäÒüî	eiga	phim, ─æiß╗çn ß║únh	6	2026-06-25 10:52:57.39	2026-06-27 02:22:16.503	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC	0
-27796	Õç║ÒüùÒü¥ÒüÖ	ÒüáÒüùÒü¥ÒüÖ	dashimasu	Lß║Ñy ra, r├║t tiß╗ün	16	2026-06-25 10:52:59.728	2026-06-27 02:22:16.568	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-27854	\N	ÒâÖÒâêÒâèÒâá	betonamu	Vietnam	16	2026-06-25 10:52:59.839	2026-06-27 02:22:16.58	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FB-1F1F3	0
-27862	Þä▒ÒüÄÒü¥ÒüÖ	Òü¼ÒüÄÒü¥ÒüÖ	nugimasu	cß╗ƒi quß║ºn ├ío, giß║ºy	17	2026-06-25 10:52:59.935	2026-06-27 02:22:16.584	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F	0
-27940	µùÑ	Òü▓	hi	ng├áy	19	2026-06-25 10:53:00.367	2026-06-27 02:22:16.603	\N	\N	\N	\N	\N	\N	/media/openmoji/2600	0
-28281	Þç¬ÕïòÞ▓®Õú▓µ®ƒ	ÒüÿÒü®ÒüåÒü»ÒéôÒü░ÒüäÒüì	jidohanbaiki	m├íy b├ín h├áng tß╗▒ ─æß╗Öng	27	2026-06-25 10:53:01.811	2026-06-27 02:22:16.633	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA	0
-28318	\N	ÒâëÒâ®Òâ×	dorama	kß╗ïch,phim truyß╗ün h├¼nh	28	2026-06-25 10:53:01.966	2026-06-27 02:22:16.638	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC	0
-28507	µÿáþö╗Úñ¿	ÒüêÒüäÒüîÒüïÒéô	eigakan	rß║íp chiß║┐u phim	31	2026-06-25 10:53:02.599	2026-06-27 02:22:16.657	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC	0
-28787	ÒüïÒüïÒéèÒü¥ÒüÖ´╝╗Úø╗Þ®▒Òüî´¢×´╝¢	ÒüïÒüïÒéèÒü¥ÒüÖ´╝╗ÒüºÒéôÒéÅÒüî´¢×´╝¢	kakarimasu [denwaga~]	c├│ ─æiß╗çn thoß║íi	35	2026-06-25 10:53:03.651	2026-06-27 02:22:16.692	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE	0
-28983	´╝òÕ╣┤þöƒ	´╝òÒü¡ÒéôÒüøÒüä	5nensei	hß╗ìc sinh n─âm thß╗® 5	38	2026-06-25 10:53:04.359	2026-06-27 02:22:16.72	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393	0
-29408	´╝╗´╝ìÕåå´╝¢µ£¡	´╝╗´╝ìÒüêÒéô´╝¢ÒüòÒüñ	[-en] satsu	tß╗Ø tiß╗ün giß║Ñy [-y├¬n]	45	2026-06-25 10:53:06.217	2026-06-27 02:22:16.77	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-27270	µ×£þë®	ÒüÅÒüáÒééÒü«	kudamono	hoa quß║ú, tr├íi c├óy	6	2026-06-25 10:52:57.309	2026-06-27 02:26:21.905	\N	\N	\N	\N	\N	\N	/media/openmoji/1F34E	0
-27492	Þ▒í	Òü×Òüå	zo	elephant	10	2026-06-25 10:52:58.267	2026-06-27 02:25:27.003	\N	\N	\N	\N	\N	\N	/media/openmoji/1F418	0
-27504	\N	ÒâØÒé╣Òâê	posuto	hß╗Öp thã░	10	2026-06-25 10:52:58.305	2026-06-27 02:25:27.008	\N	\N	\N	\N	\N	\N	/media/openmoji/2709	0
+27190	Õ¡ªµáí	ÒüîÒüúÒüôÒüå	gakko	trã░ß╗Øng hß╗ìc	5	2026-06-25 10:52:56.956	2026-06-27 02:18:02.72	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB.svg	0
+27501	µúÜ	ÒüƒÒü¬	tana	gi├í s├ích	10	2026-06-25 10:52:58.295	2026-06-27 02:22:16.381	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6.svg	0
+29228	Þ½ûµûç	ÒéìÒéôÒüÂÒéô	ronbun	luß║¡n v─ân, b├ái b├ío hß╗ìc thuß║¡t	42	2026-06-25 10:53:05.261	2026-06-27 02:22:16.383	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
+27272	ÒüèÞîÂ	ÒüèÒüíÒéâ	ocha	tr├á (n├│i chung)	6	2026-06-25 10:52:57.313	2026-06-27 02:22:16.493	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375.svg	0
+27273	þ┤àÞîÂ	ÒüôÒüåÒüíÒéâ	kocha	tr├á ─æen	6	2026-06-25 10:52:57.317	2026-06-27 02:22:16.495	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375.svg	0
+27274	þëøõ╣│´╝êÒâƒÒâ½Òé»´╝ë	ÒüÄÒéàÒüåÒü½ÒéàÒüå´╝êÒâƒÒâ½Òé»´╝ë	gyunyu (miruku)	sß╗»a b├▓	6	2026-06-25 10:52:57.32	2026-06-27 02:22:16.497	\N	\N	\N	\N	\N	\N	/media/openmoji/1F95B.svg	0
+27278	þàÖÞìë	ÒüƒÒü░Òüô	tabako	tobacco, cigarette	6	2026-06-25 10:52:57.329	2026-06-27 02:22:16.501	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6AC.svg	0
+27316	þ┐ÆÒüäÒü¥ÒüÖ	Òü¬ÒéëÒüäÒü¥ÒüÖ	naraimasu	hß╗ìc, hß╗ìc tß║¡p	7	2026-06-25 10:52:57.538	2026-06-27 02:22:16.505	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA.svg	0
+27255	Þ¬¡Òü┐Òü¥ÒüÖ	ÒéêÒü┐Òü¥ÒüÖ	yomimasu	─æß╗ìc	6	2026-06-25 10:52:57.266	2026-06-27 02:25:26.787	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6.svg	0
+27257	Þ▓ÀÒüäÒü¥ÒüÖ	ÒüïÒüäÒü¥ÒüÖ	kaimasu	mua	6	2026-06-25 10:52:57.271	2026-06-27 02:25:26.791	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA.svg	0
+27279	µëïþ┤Ö	ÒüªÒüîÒü┐	tegami	thã░	6	2026-06-25 10:52:57.332	2026-06-27 02:25:26.797	\N	\N	\N	\N	\N	\N	/media/openmoji/2709.svg	0
+27281	ÕåÖþ£ƒ	ÒüùÒéâÒüùÒéô	shashin	ß║únh, bß╗®c ß║únh	6	2026-06-25 10:52:57.336	2026-06-27 02:25:26.801	\N	\N	\N	\N	\N	\N	/media/openmoji/1F5BC.svg	0
+27284	Õ║¡	Òü½ÒéÅ	niwa	vã░ß╗Øn	6	2026-06-25 10:52:57.343	2026-06-27 02:25:26.806	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33B.svg	0
+27287	\N	ÒéÁÒââÒé½Òâ╝	sakka	─æ├í b├│ng	6	2026-06-25 10:52:57.351	2026-06-27 02:25:26.811	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD.svg	0
+27300	\N	ÒâíÒé¡ÒéÀÒé│	mekishiko	Mexico	6	2026-06-25 10:52:57.378	2026-06-27 02:25:26.817	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F2-1F1FD.svg	0
+27317	ÒüïÒüæÒü¥ÒüÖ´╝╗Úø╗Þ®▒ÒéÆ´¢×´╝¢	ÒüïÒüæÒü¥ÒüÖ´╝╗ÒüºÒéôÒéÅÒéÆ´¢×´╝¢	kakemasu [denwawo~]	gß╗ìi ─æiß╗çn	7	2026-06-25 10:52:57.541	2026-06-27 02:22:16.514	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1.svg	0
+27337	ÒüèÚçæ	ÒüèÒüïÒü¡	okane	tiß╗ün	7	2026-06-25 10:52:57.591	2026-06-27 02:22:16.517	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+27359	ÒüèÕ£ƒþöú	ÒüèÒü┐ÒéäÒüÆ	omiyage	qu├á lã░u niß╗çm	7	2026-06-25 10:52:57.633	2026-06-27 02:22:16.519	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381.svg	0
+27319	\N	Òü»Òüù	hashi	─æ┼®a	7	2026-06-25 10:52:57.544	2026-06-27 02:25:26.826	\N	\N	\N	\N	\N	\N	/media/openmoji/1F962.svg	0
+27321	\N	ÒâèÒéñÒâò	naifu	dao	7	2026-06-25 10:52:57.555	2026-06-27 02:25:26.834	\N	\N	\N	\N	\N	\N	/media/openmoji/1F52A.svg	0
+27323	\N	Òü»ÒüòÒü┐	hasami	k├®o	7	2026-06-25 10:52:57.559	2026-06-27 02:25:26.84	\N	\N	\N	\N	\N	\N	/media/openmoji/2702.svg	0
+27326	\N	ÒâíÒâ╝Òâ½	meru	e-mail	7	2026-06-25 10:52:57.566	2026-06-27 02:25:26.848	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4E7.svg	0
+27332	þ┤Ö	ÒüïÒü┐	kami	giß║Ñy	7	2026-06-25 10:52:57.577	2026-06-27 02:25:26.853	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4.svg	0
+27334	\N	ÒéÀÒâúÒâä	shatsu	├ío sãí mi	7	2026-06-25 10:52:57.584	2026-06-27 02:25:26.856	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455.svg	0
+27338	Õêçþ¼ª	ÒüìÒüúÒüÀ	kippu	v├®	7	2026-06-25 10:52:57.593	2026-06-27 02:25:26.861	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AB.svg	0
+27340	þêÂ	ÒüíÒüí	chichi	cha t├┤i, bß╗æ	7	2026-06-25 10:52:57.598	2026-06-27 02:25:26.868	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	0
+27342	ÒüèþêÂÒüòÒéô	ÒüèÒü¿ÒüåÒüòÒéô	otosan	bß╗æ cß╗ºa ngã░ß╗Øi kh├íc	7	2026-06-25 10:52:57.602	2026-06-27 02:25:26.872	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	0
+27354	Òé╣ÒâÜÒéñÒâ│	Òé╣ÒâæÒéñÒâ│	supain	Spain	7	2026-06-25 10:52:57.623	2026-06-27 02:25:26.877	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EA-1F1F8.svg	0
+27356	\N	Òâ»Òâ╝ÒâùÒâ¡	wapuro	m├íy ─æ├ính chß╗»	7	2026-06-25 10:52:57.627	2026-06-27 02:25:26.886	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BB.svg	0
+27360	\N	Òâ¿Òâ╝Òâ¡ÒââÒâæ	yoroppa	Ch├óu ├éu	7	2026-06-25 10:52:57.635	2026-06-27 02:25:26.891	\N	\N	\N	\N	\N	\N	/media/openmoji/1F30D.svg	0
+27377	µÜæÒüäÒÇüþå▒Òüä	ÒüéÒüñÒüä	atsui	n├│ng	8	2026-06-25 10:52:57.744	2026-06-27 02:25:26.894	\N	\N	\N	\N	\N	\N	/media/openmoji/1F321.svg	0
+27380	ÚøúÒüùÒüä	ÒéÇÒüÜÒüïÒüùÒüä	muzukashii	kh├│ (b├ái tß║¡p kh├│)	8	2026-06-25 10:52:57.752	2026-06-27 02:25:26.905	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA.svg	0
+27381	µÿôÒüùÒüä	ÒéäÒüòÒüùÒüä	yasashii	dß╗à (b├ái tß║¡p dß╗à), dß╗ïu d├áng	8	2026-06-25 10:52:57.756	2026-06-27 02:25:26.91	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA.svg	0
+27388	µÑ¢ÒüùÒüä	ÒüƒÒü«ÒüùÒüä	tanoshii	vui vß║╗	8	2026-06-25 10:52:57.772	2026-06-27 02:25:26.921	\N	\N	\N	\N	\N	\N	/media/openmoji/1F604.svg	0
+27390	Ú╗ÆÒüä	ÒüÅÒéìÒüä	kuroi	─æen	8	2026-06-25 10:52:57.776	2026-06-27 02:25:26.926	\N	\N	\N	\N	\N	\N	/media/openmoji/26AB.svg	0
+27422	ÕïëÕ╝À	Òü╣ÒéôÒüìÒéçÒüå	benkyo	hß╗ìc tß║¡p ( danh tß╗½ )	8	2026-06-25 10:52:57.853	2026-06-27 02:22:16.521	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA.svg	0
+27444	µ¡îÞê×õ╝Ä	ÒüïÒüÂÒüì	kabuki	kß╗ïch Kabuki (mß╗Öt loß║íi ca kß╗ïch truyß╗ün thß╗æng cß╗ºa Nhß║¡t)	9	2026-06-25 10:52:58.011	2026-06-27 02:26:21.936	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AD.svg	0
+27424	µùÑµ£¼Òü« þöƒµ┤╗Òü½ µàúÒéîÒü¥ÒüùÒüƒÒüïÒÇé	Òü½Òü╗ÒéôÒü« ÒüøÒüäÒüïÒüñÒü½ Òü¬ÒéîÒü¥ÒüùÒüƒÒüïÒÇé	nihonno seikatsuni naremashitaka.	─É├ú quen vß╗øi cuß╗Öc sß╗æng Nhß║¡t Bß║ún chã░a ?	8	2026-06-25 10:52:57.858	2026-06-27 02:22:16.524	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EF-1F1F5.svg	0
+27451	þ┤░ÒüïÒüä ÒüèÚçæ	ÒüôÒü¥ÒüïÒüä ÒüèÒüïÒü¡	komakai okane	tiß╗ün lß║╗	9	2026-06-25 10:52:58.026	2026-06-27 02:22:16.527	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+27452	\N	ÒâüÒé▒ÒââÒâê	chiketto	v├® (xem h├▓a nhß║íc, xem phim)	9	2026-06-25 10:52:58.03	2026-06-27 02:22:16.529	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC.svg	0
+27395	þö║	Òü¥Òüí	machi	th├ánh phß╗æ	8	2026-06-25 10:52:57.795	2026-06-27 02:25:26.938	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3D9.svg	0
+27399	\N	Òâ¼Òé╣ÒâêÒâ®Òâ│	resutoran	restaurant	8	2026-06-25 10:52:57.804	2026-06-27 02:25:26.944	\N	\N	\N	\N	\N	\N	/media/openmoji/1F374.svg	0
+27416	\N	ÒéÀÒâúÒâ│ÒâÅÒéñ	shanhai	Thã░ß╗úng Hß║úi	8	2026-06-25 10:52:57.839	2026-06-27 02:25:26.953	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E8-1F1F3.svg	0
+27418	ÕÑêÞë»Õà¼Õ£Æ	Òü¬ÒéëÒüôÒüåÒüêÒéô	narakoen	Nara Park	8	2026-06-25 10:52:57.843	2026-06-27 02:25:26.957	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3DE.svg	0
+27425	þÉÁþÉÂµ╣û	Òü│ÒéÅÒüô	biwako	Hß╗ô Biwaco	8	2026-06-25 10:52:57.863	2026-06-27 02:25:26.959	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3DE.svg	0
+27435	ÚçÄþÉâ	ÒéäÒüìÒéàÒüå	yakyu	b├│ng ch├áy (´¢×ÒéÆÒüùÒü¥ÒüÖ´╝Üchãíi b├│ng ch├áy)	9	2026-06-25 10:52:57.991	2026-06-27 02:25:26.965	\N	\N	\N	\N	\N	\N	/media/openmoji/26BE.svg	0
+27437	µùàÞíî	ÒéèÒéçÒüôÒüå	ryoko	trip, tour (´¢×´╝╗ÒéÆ´╝¢ÒüùÒü¥ÒüÖ : travel, make a trip)	9	2026-06-25 10:52:57.996	2026-06-27 02:25:26.972	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9F3.svg	0
+27438	Úƒ│µÑ¢	ÒüèÒéôÒüîÒüÅ	ongaku	├óm nhß║íc	9	2026-06-25 10:52:57.999	2026-06-27 02:25:26.974	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
+27440	\N	Òé»Òâ®ÒéÀÒââÒé»	kurashikku	nhß║íc cß╗ò ─æiß╗ân	9	2026-06-25 10:52:58.003	2026-06-27 02:25:26.979	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
+27442	\N	Òé│Òâ│ÒéÁÒâ╝Òâê	konsato	buß╗òi h├▓a nhß║íc	9	2026-06-25 10:52:58.007	2026-06-27 02:25:26.986	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
+27396	ÚúƒÒü╣þë®	ÒüƒÒü╣ÒééÒü«	tabemono	thß╗®c ─ân	8	2026-06-25 10:52:57.798	2026-06-27 02:25:26.99	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372.svg	0
+27047	Þï▒Þ¬×	ÒüêÒüäÒüö	eigo	tiß║┐ng Anh	2	2026-06-25 10:52:56.308	2026-06-27 02:22:16.275	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4AC.svg	0
+27061	\N	ÒâåÒâ¼ÒâøÒâ│Òé½Òâ╝Òâë	terehonkado	thß║╗ (card) ─æiß╗çn thoß║íi	2	2026-06-25 10:52:56.34	2026-06-27 02:22:16.281	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE.svg	0
+27099	\N	ÒüäÒüÅÒéë	ikura	bao nhi├¬u tiß╗ün	3	2026-06-25 10:52:56.573	2026-06-27 02:22:16.441	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+27110	\N	Òé╣ÒéñÒé╣	suisu	Thß╗Ñy S─®	3	2026-06-25 10:52:56.593	2026-06-27 02:22:16.447	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E8-1F1ED.svg	0
+27116	þàÖÞìë	ÒüƒÒü░Òüô	tabako	thuß╗æc l├í	3	2026-06-25 10:52:56.605	2026-06-27 02:22:16.451	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6AC.svg	0
+27120	Õ»ØÒü¥ÒüÖ	Òü¡Òü¥ÒüÖ	nemasu	ngß╗º	4	2026-06-25 10:52:56.723	2026-06-27 02:22:16.454	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634.svg	0
+27122	õ╝æÒü┐Òü¥ÒüÖ	ÒéäÒüÖÒü┐Òü¥ÒüÖ	yasumimasu	nghß╗ë ngãíi	4	2026-06-25 10:52:56.726	2026-06-27 02:22:16.46	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634.svg	0
+27126	ÚèÇÞíî	ÒüÄÒéôÒüôÒüå	ginko	bank	4	2026-06-25 10:52:56.736	2026-06-27 02:22:16.467	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E6.svg	0
+27128	Õø│µø©Úñ¿	Òü¿ÒüùÒéçÒüïÒéô	toshokan	thã░ viß╗çn	4	2026-06-25 10:52:56.741	2026-06-27 02:22:16.47	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA.svg	0
+27150	Þ®ªÚ¿ô	ÒüùÒüæÒéô	shiken	examination, test	4	2026-06-25 10:52:56.786	2026-06-27 02:22:16.476	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DD.svg	0
+27276	\N	ÒâôÒâ╝Òâ½	biiru	bia	6	2026-06-25 10:52:57.325	2026-06-27 02:22:16.499	\N	\N	\N	\N	\N	\N	/media/openmoji/1F37A.svg	0
+27305	µÿáþö╗	ÒüêÒüäÒüî	eiga	phim, ─æiß╗çn ß║únh	6	2026-06-25 10:52:57.39	2026-06-27 02:22:16.503	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC.svg	0
+27796	Õç║ÒüùÒü¥ÒüÖ	ÒüáÒüùÒü¥ÒüÖ	dashimasu	Lß║Ñy ra, r├║t tiß╗ün	16	2026-06-25 10:52:59.728	2026-06-27 02:22:16.568	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+27854	\N	ÒâÖÒâêÒâèÒâá	betonamu	Vietnam	16	2026-06-25 10:52:59.839	2026-06-27 02:22:16.58	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FB-1F1F3.svg	0
+27862	Þä▒ÒüÄÒü¥ÒüÖ	Òü¼ÒüÄÒü¥ÒüÖ	nugimasu	cß╗ƒi quß║ºn ├ío, giß║ºy	17	2026-06-25 10:52:59.935	2026-06-27 02:22:16.584	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F.svg	0
+27940	µùÑ	Òü▓	hi	ng├áy	19	2026-06-25 10:53:00.367	2026-06-27 02:22:16.603	\N	\N	\N	\N	\N	\N	/media/openmoji/2600.svg	0
+28281	Þç¬ÕïòÞ▓®Õú▓µ®ƒ	ÒüÿÒü®ÒüåÒü»ÒéôÒü░ÒüäÒüì	jidohanbaiki	m├íy b├ín h├áng tß╗▒ ─æß╗Öng	27	2026-06-25 10:53:01.811	2026-06-27 02:22:16.633	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA.svg	0
+28318	\N	ÒâëÒâ®Òâ×	dorama	kß╗ïch,phim truyß╗ün h├¼nh	28	2026-06-25 10:53:01.966	2026-06-27 02:22:16.638	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC.svg	0
+28507	µÿáþö╗Úñ¿	ÒüêÒüäÒüîÒüïÒéô	eigakan	rß║íp chiß║┐u phim	31	2026-06-25 10:53:02.599	2026-06-27 02:22:16.657	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC.svg	0
+28787	ÒüïÒüïÒéèÒü¥ÒüÖ´╝╗Úø╗Þ®▒Òüî´¢×´╝¢	ÒüïÒüïÒéèÒü¥ÒüÖ´╝╗ÒüºÒéôÒéÅÒüî´¢×´╝¢	kakarimasu [denwaga~]	c├│ ─æiß╗çn thoß║íi	35	2026-06-25 10:53:03.651	2026-06-27 02:22:16.692	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE.svg	0
+28983	´╝òÕ╣┤þöƒ	´╝òÒü¡ÒéôÒüøÒüä	5nensei	hß╗ìc sinh n─âm thß╗® 5	38	2026-06-25 10:53:04.359	2026-06-27 02:22:16.72	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393.svg	0
+29408	´╝╗´╝ìÕåå´╝¢µ£¡	´╝╗´╝ìÒüêÒéô´╝¢ÒüòÒüñ	[-en] satsu	tß╗Ø tiß╗ün giß║Ñy [-y├¬n]	45	2026-06-25 10:53:06.217	2026-06-27 02:22:16.77	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+27270	µ×£þë®	ÒüÅÒüáÒééÒü«	kudamono	hoa quß║ú, tr├íi c├óy	6	2026-06-25 10:52:57.309	2026-06-27 02:26:21.905	\N	\N	\N	\N	\N	\N	/media/openmoji/1F34E.svg	0
+27458	Õñ½´╝Åõ©╗õ║║	ÒüèÒüúÒü¿´╝ÅÒüùÒéàÒüÿÒéô	otto/shujin	(my) husband	9	2026-06-25 10:52:58.043	2026-06-27 02:26:21.941	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	0
+27459	ÕÑÑÒüòÒéô	ÒüèÒüÅÒüòÒéô	okusan	vß╗ú (d├╣ng khi n├│i vß╗ü vß╗ú ngã░ß╗Øi kh├íc)	9	2026-06-25 10:52:58.046	2026-06-27 02:26:21.946	\N	\N	\N	\N	\N	\N	/media/openmoji/1F469.svg	0
+27480	\N	ÒééÒüùÒééÒüù	moshimoshi	alo (gß╗ìi ─æiß╗çn thoß║íi)	9	2026-06-25 10:52:58.087	2026-06-27 02:22:16.531	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE.svg	0
+27500	\N	ÒâÖÒââÒâë	beddo	giã░ß╗Øng	10	2026-06-25 10:52:58.293	2026-06-27 02:22:16.533	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6CF.svg	0
+27531	\N	ÒâòÒéúÒâ½Òâá	firumu	phim	10	2026-06-25 10:52:58.387	2026-06-27 02:22:16.535	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC.svg	0
+27487	þöÀÒü« Õ¡É	ÒüèÒü¿ÒüôÒü« Òüô	otokono ko	cß║¡u con trai	10	2026-06-25 10:52:58.251	2026-06-27 02:25:26.993	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2.svg	0
+27488	ÕÑ│Òü« Õ¡É	ÒüèÒéôÒü¬Òü« Òüô	onnano ko	c├┤ con g├íi	10	2026-06-25 10:52:58.254	2026-06-27 02:25:26.998	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2.svg	0
+27491	\N	ÒâæÒâ│ÒâÇ	panda	panda	10	2026-06-25 10:52:58.264	2026-06-27 02:25:27.001	\N	\N	\N	\N	\N	\N	/media/openmoji/1F43C.svg	0
+27508	Õà¼Õ£Æ	ÒüôÒüåÒüêÒéô	koen	c├┤ng vi├¬n	10	2026-06-25 10:52:58.318	2026-06-27 02:25:27.012	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3DE.svg	0
+27495	Úø╗µ▒á	ÒüºÒéôÒüí	denchi	cß╗Ñc Pin	10	2026-06-25 10:52:58.277	2026-06-27 02:26:21.955	\N	\N	\N	\N	\N	\N	/media/openmoji/1F50B.svg	0
+27497	\N	Òé╣ÒéñÒââÒâü	suitchi	c├┤ng tß║»c	10	2026-06-25 10:52:58.284	2026-06-27 02:26:21.958	\N	\N	\N	\N	\N	\N	/media/openmoji/1F50C.svg	0
+27502	\N	ÒâëÒéó	doa	cß╗¡a	10	2026-06-25 10:52:58.299	2026-06-27 02:26:21.97	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6AA.svg	0
+27506	\N	ATM	ATM	cash machine, ATM (Automatic Teller Machine)	10	2026-06-25 10:52:58.312	2026-06-27 02:26:21.98	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E7.svg	0
+27526	\N	ÒâèÒâ│ÒâùÒâ®Òâ╝	nanpura	nam pla	10	2026-06-25 10:52:58.374	2026-06-27 02:26:21.991	\N	\N	\N	\N	\N	\N	/media/openmoji/1F41F.svg	0
+27529	µØ▒õ║¼ ÒâçÒéúÒé║ÒâïÒâ╝Òâ®Òâ│Òâë	Òü¿ÒüåÒüìÒéçÒüå ÒâçÒéúÒé║ÒâïÒâ╝Òâ®Òâ│Òâë	tokyo dizuniirando	Tokyo Disneyland	10	2026-06-25 10:52:58.38	2026-06-27 02:26:21.997	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3F0.svg	0
+27541	\N	ÒüïÒüïÒéèÒü¥ÒüÖ	kakarimasu	mß║Ñt, tß╗æn (thß╗Øi gian, tiß╗ün bß║íc)	11	2026-06-25 10:52:58.508	2026-06-27 02:22:16.536	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+27599	\N	Òé¬Òâ╝Òé╣ÒâêÒâ®Òâ¬Òéó	osutoraria	nã░ß╗øc ├Üc	11	2026-06-25 10:52:58.636	2026-06-27 02:22:16.541	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
+27565	Õêçµëï	ÒüìÒüúÒüª	kitte	tem	11	2026-06-25 10:52:58.557	2026-06-27 02:25:27.02	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4EF.svg	0
+27566	\N	Òü»ÒüîÒüì	hagaki	bã░u thiß║┐p	11	2026-06-25 10:52:58.563	2026-06-27 02:25:27.022	\N	\N	\N	\N	\N	\N	/media/openmoji/2709.svg	0
+27568	õ©íÞª¬	ÒéèÒéçÒüåÒüùÒéô	ryoshin	bß╗æ mß║╣	11	2026-06-25 10:52:58.567	2026-06-27 02:25:27.024	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	0
+27535	\N	ÒâüÒâ¬Òé¢Òâ╝Òé╣	chirisosu	tã░ãíng ß╗øt (chili sauce)	10	2026-06-25 10:52:58.414	2026-06-27 02:26:22.019	\N	\N	\N	\N	\N	\N	/media/openmoji/1F336.svg	0
+27587	Õà¿Úâ¿Òüº	Òü£ÒéôÒüÂÒüº	zenbude	tß║Ñt cß║ú, to├án bß╗Ö	11	2026-06-25 10:52:58.605	2026-06-27 02:26:22.032	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F.svg	0
+27676	þ¥ÄÞíô	Òü│ÒüÿÒéàÒüñ	bijutsu	mß╗╣ thuß║¡t	13	2026-06-25 10:52:59.05	2026-06-27 02:22:16.55	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8.svg	0
+27635	Õê║Þ║½	ÒüòÒüùÒü┐	sashimi	Sashimi (m├│n gß╗Åi c├í sß╗æng)	12	2026-06-25 10:52:58.848	2026-06-27 02:22:16.551	\N	\N	\N	\N	\N	\N	/media/openmoji/1F41F.svg	0
+27629	þ®║µ©»	ÒüÅÒüåÒüôÒüå	kuko	s├ón bay	12	2026-06-25 10:52:58.834	2026-06-27 02:25:27.032	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6EB.svg	0
+27663	µ││ÒüÄÒü¥ÒüÖ	ÒüèÒéêÒüÄÒü¥ÒüÖ	oyogimasu	bãíi lß╗Öi	13	2026-06-25 10:52:59.021	2026-06-27 02:25:27.038	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3CA.svg	0
+27678	\N	Òé╣Òé¡Òâ╝	sukii	trã░ß╗út tuyß║┐t	13	2026-06-25 10:52:59.054	2026-06-27 02:22:16.553	\N	\N	\N	\N	\N	\N	/media/openmoji/2744.svg	0
+27688	Õ«ÜÚúƒ	ÒüªÒüäÒüùÒéçÒüÅ	teishoku	cãím suß║Ñt, cãím phß║ºn	13	2026-06-25 10:52:59.09	2026-06-27 02:22:16.555	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A.svg	0
+27728	Úø╗µ░ù	ÒüºÒéôÒüì	denki	electricity, light	14	2026-06-25 10:52:59.363	2026-06-27 02:22:16.561	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1.svg	0
+27701	õ╝ÜÞ¡░	ÒüïÒüäÒüÄ	kaigi	hß╗Öi hß╗ìp, cuß╗Öc hß╗ìp	13	2026-06-25 10:52:59.144	2026-06-27 02:25:27.044	\N	\N	\N	\N	\N	\N	/media/openmoji/1F465.svg	0
+27729	\N	Òé¿ÒéóÒé│Òâ│	eakon	─æiß╗üu h├▓a	14	2026-06-25 10:52:59.365	2026-06-27 02:26:22.068	\N	\N	\N	\N	\N	\N	/media/openmoji/2744.svg	0
+27794	µÁ┤Òü│Òü¥ÒüÖ´╝╗ÒéÀÒâúÒâ»Òâ╝ÒéÆ´¢×´╝¢	ÒüéÒü│Òü¥ÒüÖ´╝╗ÒéÀÒâúÒâ»Òâ╝ÒéÆ´¢×´╝¢	abimasu [shawawo~]	tß║»m	16	2026-06-25 10:52:59.724	2026-06-27 02:22:16.566	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6BF.svg	0
+27765	µÖéÕê╗Þí¿	ÒüÿÒüôÒüÅÒü▓ÒéçÒüå	jigokuhyo	bß║úng ghi thß╗Øi gian t├áu chß║íy	15	2026-06-25 10:52:59.542	2026-06-27 02:25:27.052	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3.svg	0
+27788	\N	ÒâùÒâ¼ÒéñÒé¼ÒéñÒâë	pureigaido	quß║ºy b├ín v├®	15	2026-06-25 10:52:59.617	2026-06-27 02:25:27.056	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AB.svg	0
+27808	µÿÄÒéïÒüä	ÒüéÒüïÒéïÒüä	akarui	s├íng	16	2026-06-25 10:52:59.751	2026-06-27 02:25:27.06	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305.svg	0
+27812	Ú½¬	ÒüïÒü┐	kami	t├│c	16	2026-06-25 10:52:59.759	2026-06-27 02:25:27.067	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4.svg	0
+27810	õ¢ô	ÒüïÒéëÒüá	karada	cãí thß╗â	16	2026-06-25 10:52:59.754	2026-06-27 02:26:22.092	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9CD.svg	0
+27834	ÒüèÕ╝òÒüìÕç║ÒüùÒüºÒüÖÒüïÒÇé	ÒüèÒü▓ÒüìÒüáÒüùÒüºÒüÖÒüïÒÇé	ohikidashidesuka.	anh chß╗ï r├║t tiß╗ün phß║úi kh├┤ng?	16	2026-06-25 10:52:59.802	2026-06-27 02:22:16.571	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+27837	\N	Òé¡ÒâúÒââÒéÀÒâÑÒé½Òâ╝Òâë	kyasshukado	Thß║╗ ng├ón h├áng, thß║╗ ATM	16	2026-06-25 10:52:59.806	2026-06-27 02:22:16.573	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E6.svg	0
+27839	ÚçæÚíì	ÒüìÒéôÒüîÒüÅ	kingaku	sß╗æ tiß╗ün, t├ái khoß║ún	16	2026-06-25 10:52:59.809	2026-06-27 02:22:16.576	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+27852	þòÖÕ¡ªþöƒ	ÒéèÒéàÒüåÒüîÒüÅÒüøÒüä	ryugakusei	du hß╗ìc sinh	16	2026-06-25 10:52:59.836	2026-06-27 02:22:16.579	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393.svg	0
+27859	µëòÒüäÒü¥ÒüÖ	Òü»ÒéëÒüäÒü¥ÒüÖ	haraimasu	trß║ú tiß╗ün	17	2026-06-25 10:52:59.927	2026-06-27 02:22:16.582	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+27878	\N	´╝╗Òüè´╝¢ÒüÁÒéì	[o] furo	bß╗ôn tß║»m	17	2026-06-25 10:52:59.973	2026-06-27 02:22:16.586	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6BF.svg	0
+27824	\N	ÒéÀÒâúÒâ»Òâ╝	shawa	V├▓i hoa sen	16	2026-06-25 10:52:59.784	2026-06-27 02:22:16.588	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6BF.svg	0
+27846	\N	ÒâÖÒâ®Òé»Òâ½Òé╣	berakurusu	Veracruz (in Mexico)	16	2026-06-25 10:52:59.824	2026-06-27 02:25:27.077	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F2-1F1FD.svg	0
+27814	þø«	Òéü	me	mß║»t	16	2026-06-25 10:52:59.765	2026-06-27 02:26:22.102	\N	\N	\N	\N	\N	\N	/media/openmoji/1F441.svg	0
+27817	ÕÅú	ÒüÅÒüí	kuchi	miß╗çng	16	2026-06-25 10:52:59.77	2026-06-27 02:26:22.106	\N	\N	\N	\N	\N	\N	/media/openmoji/1F444.svg	0
+27877	Þû¼	ÒüÅÒüÖÒéè	kusuri	thuß╗æc	17	2026-06-25 10:52:59.97	2026-06-27 02:26:22.116	\N	\N	\N	\N	\N	\N	/media/openmoji/1F48A.svg	0
+27880	õ©ïþØÇ	ÒüùÒüƒÒüÄ	shitagi	quß║ºn ├ío l├│t	17	2026-06-25 10:52:59.978	2026-06-27 02:26:22.121	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455.svg	0
+27914	Úª¼	ÒüåÒü¥	uma	horse	18	2026-06-25 10:53:00.197	2026-06-27 02:22:16.594	\N	\N	\N	\N	\N	\N	/media/openmoji/1F434.svg	0
+27925	ÞªïÕ¡ªÒüùÒü¥ÒüÖ	ÒüæÒéôÒüîÒüÅÒüùÒü¥ÒüÖ	kengakushimasu	tham quan vß╗øi mß╗Ñc ─æ├¡ch hß╗ìc tß║¡p	18	2026-06-25 10:53:00.239	2026-06-27 02:22:16.596	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA.svg	0
+27929	µ│èÒü¥ÒéèÒü¥ÒüÖ´╝╗ÒâøÒâåÒâ½Òü½´¢×´╝¢	Òü¿Òü¥ÒéèÒü¥ÒüÖ´╝╗ÒâøÒâåÒâ½Òü½´¢×´╝¢	tomarimasu [hoteruni~]	trß╗ì, ngß╗º trß╗ì	19	2026-06-25 10:53:00.345	2026-06-27 02:22:16.598	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634.svg	0
+27933	þ£áÒüä	Òü¡ÒéÇÒüä	nemui	buß╗ôn ngß╗º	19	2026-06-25 10:53:00.352	2026-06-27 02:22:16.6	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634.svg	0
+27939	ÒüèÞîÂ	ÒüèÒüíÒéâ	ocha	tr├á ─æß║ío	19	2026-06-25 10:53:00.365	2026-06-27 02:22:16.602	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375.svg	0
+27897	Õ╝¥ÒüìÒü¥ÒüÖ	Òü▓ÒüìÒü¥ÒüÖ	hikimasu	chãíi (nhß║íc cß╗Ñ)	18	2026-06-25 10:53:00.133	2026-06-27 02:25:27.082	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
+27904	\N	ÒâöÒéóÒâÄ	piano	─æ├án piano	18	2026-06-25 10:53:00.162	2026-06-27 02:25:27.087	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B9.svg	0
+27912	þñ¥ÚòÀ	ÒüùÒéâÒüíÒéçÒüå	shacho	gi├ím ─æß╗æc	18	2026-06-25 10:53:00.191	2026-06-27 02:26:22.126	\N	\N	\N	\N	\N	\N	/media/openmoji/1F454.svg	0
+27927	þëºÕá┤	Òü╝ÒüÅÒüÿÒéçÒüå	bokujo	trang trß║íi ch─ân nu├┤i	18	2026-06-25 10:53:00.245	2026-06-27 02:26:22.136	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6CF.svg	0
+28020	µ£ê	ÒüñÒüì	tsuki	moon	21	2026-06-25 10:53:00.7	2026-06-27 02:22:16.612	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+27988	Õø¢Òü© Õ©░ÒéïÒü«´╝ƒ	ÒüÅÒü½Òü© ÒüïÒüêÒéïÒü«´╝ƒ	kunihe kaeruno´╝ƒ	Anh/ chß╗ï sß║¢ vß╗ü nã░ß╗øc kh├┤ng?	20	2026-06-25 10:53:00.54	2026-06-27 02:22:16.613	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
+27960	\N	Òé▒Òâ╝Òé¡	keki	b├ính ga-t├┤	19	2026-06-25 10:53:00.402	2026-06-27 02:25:27.092	\N	\N	\N	\N	\N	\N	/media/openmoji/1F370.svg	0
+28029	\N	ÒééÒüíÒéìÒéô	mochiron	tß║Ñt nhi├¬n	21	2026-06-25 10:53:00.721	2026-06-27 02:26:22.146	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F.svg	0
+28062	\N	Òé│Òâ╝Òâê	koto	├ío kho├íc	22	2026-06-25 10:53:00.875	2026-06-27 02:26:22.152	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9E5.svg	0
+28063	\N	Òé╗Òâ╝Òé┐Òâ╝	seta	├ío len	22	2026-06-25 10:53:00.879	2026-06-27 02:26:22.155	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9E5.svg	0
+28081	µè╝ÒüùÕàÑÒéî	ÒüèÒüùÒüäÒéî	oshiire	chß╗ù ─æß╗â ch─ân gß╗æi trong ─ân ph├▓ng kiß╗âu Nhß║¡t	22	2026-06-25 10:53:00.92	2026-06-27 02:26:22.159	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6CC.svg	0
+28121	Úø╗µ░ùÕ▒ï	ÒüºÒéôÒüìÒéä	denkiya	cß╗¡a h├áng ─æß╗ô ─æiß╗çn	23	2026-06-25 10:53:01.095	2026-06-27 02:22:16.618	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1.svg	0
+27492	Þ▒í	Òü×Òüå	zo	elephant	10	2026-06-25 10:52:58.267	2026-06-27 02:25:27.003	\N	\N	\N	\N	\N	\N	/media/openmoji/1F418.svg	0
+27504	\N	ÒâØÒé╣Òâê	posuto	hß╗Öp thã░	10	2026-06-25 10:52:58.305	2026-06-27 02:25:27.008	\N	\N	\N	\N	\N	\N	/media/openmoji/2709.svg	0
+28092	Õ╝òÒüìÒü¥ÒüÖ	Òü▓ÒüìÒü¥ÒüÖ	hikimasu	k├®o	23	2026-06-25 10:53:01.029	2026-06-27 02:25:27.107	\N	\N	\N	\N	\N	\N	/media/openmoji/2702.svg	0
+28096	µ¡®ÒüìÒü¥ÒüÖ	ÒüéÒéïÒüìÒü¥ÒüÖ	arukimasu	─æi bß╗Ö (tr├¬n ─æã░ß╗Øng)	23	2026-06-25 10:53:01.035	2026-06-27 02:25:27.109	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6B6.svg	0
+28145	µ»ìÒü« µùÑ	Òü»Òü»Òü« Òü▓	hahano hi	ng├áy cß╗ºa mß║╣	24	2026-06-25 10:53:01.261	2026-06-27 02:25:27.12	\N	\N	\N	\N	\N	\N	/media/openmoji/1F469.svg	0
+28142	Õà¿Úâ¿	Òü£ÒéôÒüÂ	zenbu	to├án bß╗Ö, tß║Ñt cß║ú	24	2026-06-25 10:53:01.254	2026-06-27 02:26:22.165	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F.svg	0
+28181	ÚüïÕïòõ╝Ü	ÒüåÒéôÒü®ÒüåÒüïÒüä	undokai	hß╗Öi thi thß╗â thao	26	2026-06-25 10:53:01.516	2026-06-27 02:25:27.123	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD.svg	0
+28186	Þ▓íÕ©â	ÒüòÒüäÒüÁ	saifu	wallet, purse	26	2026-06-25 10:53:01.528	2026-06-27 02:26:22.169	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45B.svg	0
+28223	µû░Þü×þñ¥	ÒüùÒéôÒüÂÒéôÒüùÒéâ	shinbunsha	c├┤ng ty ph├ít h├ánh b├ío, t├▓a soß║ín b├ío	26	2026-06-25 10:53:01.605	2026-06-27 02:22:16.626	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
+28283	ÕÅ░µëÇ	ÒüáÒüäÒü®ÒüôÒéì	daidokoro	nh├á bß║┐p	27	2026-06-25 10:53:01.815	2026-06-27 02:26:22.18	\N	\N	\N	\N	\N	\N	/media/openmoji/1F373.svg	0
+28231	Úø╗Õ¡ÉÒâíÒâ╝Òâ½	ÒüºÒéôÒüùÒâíÒâ╝Òâ½	denshimeru	thã░ ─æiß╗çn tß╗¡, e-mail	26	2026-06-25 10:53:01.624	2026-06-27 02:22:16.629	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1.svg	0
+28242	Ú│Ñ	Òü¿Òéè	tori	chim	27	2026-06-25 10:53:01.737	2026-06-27 02:22:16.631	\N	\N	\N	\N	\N	\N	/media/openmoji/1F414.svg	0
+28286	þºïÞæëÕÄƒ	ÒüéÒüìÒü»Òü░Òéë	akihabara	khu b├ín ─æß╗ô ─æiß╗çn tß╗¡ nß╗òi tiß║┐ng ß╗ƒ Tokyo	27	2026-06-25 10:53:01.822	2026-06-27 02:22:16.635	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1.svg	0
+28226	ÒüôÒü®ÒééÒü« µùÑ	ÒüôÒü®ÒééÒü« Òü▓	kodomono hi	ng├áy trß║╗ em	26	2026-06-25 10:53:01.613	2026-06-27 02:25:27.127	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2.svg	0
+28269	õ¥ïÒüêÒü░	ÒüƒÒü¿ÒüêÒü░	tatoeba	v├¡ dß╗Ñ	27	2026-06-25 10:53:01.789	2026-06-27 02:25:27.135	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45B.svg	0
+28285	ÚûóÞÑ┐þ®║µ©»	ÒüïÒéôÒüòÒüäÒüÅÒüåÒüôÒüå	kansaikuko	s├ón bay Kansai	27	2026-06-25 10:53:01.82	2026-06-27 02:25:27.137	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6EB.svg	0
+28338	ÒüèþƒÑÒéëÒüø	ÒüèÒüùÒéëÒüø	oshirase	th├┤ng b├ío	28	2026-06-25 10:53:02.007	2026-06-27 02:22:16.64	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
+28300	ÕüëÒüä	ÒüêÒéëÒüä	erai	v─® ─æß║íi, k├¡nh trß╗ìng	28	2026-06-25 10:53:01.934	2026-06-27 02:25:27.143	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
+28311	\N	Òé¼Òâá	gamu	kß║╣o cao su	28	2026-06-25 10:53:01.953	2026-06-27 02:25:27.147	\N	\N	\N	\N	\N	\N	/media/openmoji/1F36C.svg	0
+28304	ÕÅ░µëÇ	ÒüáÒüäÒü®ÒüôÒéì	daidokoro	kitchen	28	2026-06-25 10:53:01.94	2026-06-27 02:26:22.184	\N	\N	\N	\N	\N	\N	/media/openmoji/1F373.svg	0
+28359	þá┤ÒéîÒü¥ÒüÖ´╝╗þ┤ÖÒüî´¢×´╝¢	ÒéäÒüÂÒéîÒü¥ÒüÖ´╝╗ÒüïÒü┐Òüî´¢×´╝¢	yaburemasu [kamiga~]	r├ích(giß║Ñy)	29	2026-06-25 10:53:02.122	2026-06-27 02:25:27.153	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4.svg	0
+28406	Þ▓íÕ©â	ÒüòÒüäÒüÁ	saifu	wallet, purse	29	2026-06-25 10:53:02.235	2026-06-27 02:26:22.197	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45B.svg	0
+28415	µñìÒüêÒü¥ÒüÖ	ÒüåÒüêÒü¥ÒüÖ	uemasu	trß╗ông (c├óy)	30	2026-06-25 10:53:02.332	2026-06-27 02:22:16.647	\N	\N	\N	\N	\N	\N	/media/openmoji/1F333.svg	0
+28360	µ▒ÜÒéîÒü¥ÒüÖ´╝╗µ£ìÒüî´¢×´╝¢	ÒéêÒüöÒéîÒü¥ÒüÖ´╝╗ÒüÁÒüÅÒüî´¢×´╝¢	yogoremasu [fukuga~]	dãí,bß║®n(tay)	29	2026-06-25 10:53:02.123	2026-06-27 02:25:27.155	\N	\N	\N	\N	\N	\N	/media/openmoji/270B.svg	0
+28375	µø©Úí×	ÒüùÒéçÒéïÒüä	shorui	giß║Ñy tß╗Ø	29	2026-06-25 10:53:02.171	2026-06-27 02:25:27.158	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4.svg	0
+28377	ÚºàÕôí	ÒüêÒüìÒüäÒéô	ekiin	nh├ón vi├¬n nh├á ga	29	2026-06-25 10:53:02.174	2026-06-27 02:25:27.166	\N	\N	\N	\N	\N	\N	/media/openmoji/1F689.svg	0
+28427	ÒüèþƒÑÒéëÒüø	ÒüèÒüùÒéëÒüø	oshirase	bß║ún th├┤ng b├ío	30	2026-06-25 10:53:02.354	2026-06-27 02:22:16.648	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
+28458	þø«Òüî ÞªÜÒéüÒü¥ÒüÖ	ÒéüÒüî ÒüòÒéüÒü¥ÒüÖ	mega samemasu	tß╗ënh giß║Ñc, mß╗ƒ mß║»t	30	2026-06-25 10:53:02.418	2026-06-27 02:26:22.203	\N	\N	\N	\N	\N	\N	/media/openmoji/1F441.svg	0
+28460	þƒÑÒéëÒüøÒü¥ÒüÖ	ÒüùÒéëÒüøÒü¥ÒüÖ	shirasemasu	th├┤ng b├ío	30	2026-06-25 10:53:02.42	2026-06-27 02:22:16.651	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
+28466	ÒüöÞïªÕè┤ÒüòÒü¥ÒÇé	ÒüöÒüÅÒéìÒüåÒüòÒü¥ÒÇé	gokurosama.	anh, chß╗ï ─æ├ú l├ám viß╗çc vß║Ñt vß║ú/cß║úm ãín anh, chß╗ï	30	2026-06-25 10:53:02.431	2026-06-27 02:22:16.652	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC.svg	0
+28461	þø©Þ½çÒüùÒü¥ÒüÖ	ÒüØÒüåÒüáÒéôÒüùÒü¥ÒüÖ	sodanshimasu	thß║úo luß║¡n, trao ─æß╗òi , b├án bß║íc	30	2026-06-25 10:53:02.422	2026-06-27 02:26:22.206	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA91.svg	0
+28511	Úâ¢õ╝Ü	Òü¿ÒüïÒüä	tokai	th├ánh phß╗æ	31	2026-06-25 10:53:02.606	2026-06-27 02:25:27.179	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3D9.svg	0
+28537	ÕåÀÒéäÒüùÒü¥ÒüÖ	Òü▓ÒéäÒüùÒü¥ÒüÖ	hiyashimasu	l├ám lß║ính	32	2026-06-25 10:53:02.73	2026-06-27 02:25:27.187	\N	\N	\N	\N	\N	\N	/media/openmoji/2744.svg	0
+28554	Úó¿	ÒüïÒü£	kaze	gi├│	32	2026-06-25 10:53:02.763	2026-06-27 02:26:22.222	\N	\N	\N	\N	\N	\N	/media/openmoji/1F32C.svg	0
+28563	õ╗èÕñ£	ÒüôÒéôÒéä	kon'ya	tß╗æi nay, ─æ├¬m nay	32	2026-06-25 10:53:02.783	2026-06-27 02:25:27.191	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+28564	Õñòµû╣	ÒéåÒüåÒüîÒüƒ	yugata	chiß╗üu tß╗æi	32	2026-06-25 10:53:02.786	2026-06-27 02:25:27.193	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+28596	ÚÇâÒüÆÒü¥ÒüÖ	Òü½ÒüÆÒü¥ÒüÖ	nigemasu	chß║íy trß╗æn, bß╗Å chß║íy	33	2026-06-25 10:53:02.931	2026-06-27 02:25:27.204	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3.svg	0
+28611	Þ¡ªÕ»ƒ	ÒüæÒüäÒüòÒüñ	keisatsu	cß║únh s├ít	33	2026-06-25 10:53:02.961	2026-06-27 02:26:22.23	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46E.svg	0
+28636	þ¢░Úçæ	Òü░ÒüúÒüìÒéô	bakkin	tiß╗ün phß║ít	33	2026-06-25 10:53:03.017	2026-06-27 02:22:16.665	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+28638	þ¢«ÒüìÒü¥ÒüÖ	ÒüèÒüìÒü¥ÒüÖ	okimasu	happen	33	2026-06-25 10:53:03.023	2026-06-27 02:22:16.667	\N	\N	\N	\N	\N	\N	/media/openmoji/1F31E.svg	0
+28655	Úø╗Õá▒	ÒüºÒéôÒü¢Òüå	denpo	─æiß╗çn b├ío	33	2026-06-25 10:53:03.073	2026-06-27 02:22:16.668	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
+28658	µëôÒüíÒü¥ÒüÖ´╝╗Úø╗Õá▒ÒéÆ´¢×´╝¢	ÒüåÒüíÒü¥ÒüÖ´╝╗ÒüºÒéôÒü¢ÒüåÒéÆ´¢×´╝¢	uchimasu [denpowo~]	gß╗¡i(─æiß╗çn b├ío)	33	2026-06-25 10:53:03.08	2026-06-27 02:22:16.67	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
+28659	Úø╗Õá▒õ╗ú	ÒüºÒéôÒü¢ÒüåÒüáÒüä	denpodai	tiß╗ün cã░ß╗øc ─æiß╗çn b├ío	33	2026-06-25 10:53:03.082	2026-06-27 02:22:16.672	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
+28700	ÞîÂÚüô	ÒüòÒü®Òüå	sado	tr├á ─æß║ío	34	2026-06-25 10:53:03.282	2026-06-27 02:22:16.675	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375.svg	0
+28663	õ¥ïÒüêÒü░	ÒüƒÒü¿ÒüêÒü░	tatoeba	v├¡ dß╗Ñ	33	2026-06-25 10:53:03.089	2026-06-27 02:25:27.211	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45B.svg	0
+28666	µÿÄµùÑ	ÒüéÒüÖ	asu	ng├áy mai	33	2026-06-25 10:53:03.098	2026-06-27 02:25:27.215	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
+28682	´╝╗Òüè´╝¢ÕƒÄ	´╝╗Òüè´╝¢ÒüùÒéì	[o] shiro	m├áu trß║»ng	34	2026-06-25 10:53:03.226	2026-06-27 02:25:27.22	\N	\N	\N	\N	\N	\N	/media/openmoji/26AA.svg	0
+28687	Ú╗Æ	ÒüÅÒéì	kuro	m├áu ─æen	34	2026-06-25 10:53:03.238	2026-06-27 02:25:27.224	\N	\N	\N	\N	\N	\N	/media/openmoji/26AB.svg	0
+28689	ÞÁñ	ÒüéÒüï	aka	m├áu ─æß╗Å	34	2026-06-25 10:53:03.244	2026-06-27 02:25:27.227	\N	\N	\N	\N	\N	\N	/media/openmoji/1F534.svg	0
+28691	þ┤║	ÒüôÒéô	kon	m├áu xanh lam	34	2026-06-25 10:53:03.25	2026-06-27 02:25:27.233	\N	\N	\N	\N	\N	\N	/media/openmoji/1F535.svg	0
+28692	Ú╗äÞë▓	ÒüìÒüäÒéì	kiiro	m├áu v├áng	34	2026-06-25 10:53:03.252	2026-06-27 02:25:27.235	\N	\N	\N	\N	\N	\N	/media/openmoji/1F7E1.svg	0
+28686	þƒóÕì░	ÒéäÒüÿÒéïÒüù	yajirushi	dß║Ñu m┼®i t├¬n	34	2026-06-25 10:53:03.235	2026-06-27 02:26:22.242	\N	\N	\N	\N	\N	\N	/media/openmoji/1F443.svg	0
+28733	õ╗ÿÒüæÒü¥ÒüÖ´╝╗õ©©ÒéÆ´¢×´╝¢	ÒüñÒüæÒü¥ÒüÖ´╝╗Òü¥ÒéïÒéÆ´¢×´╝¢	tsukemasu [maruwo~]	vß║¢ , ─æ├ính dß║Ñu	35	2026-06-25 10:53:03.532	2026-06-27 02:25:27.244	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A8.svg	0
+28727	\N	Òé¡Òâ╝	kii	ch├¼a kh├│a	34	2026-06-25 10:53:03.371	2026-06-27 02:22:16.679	\N	\N	\N	\N	\N	\N	/media/openmoji/1F511.svg	0
+28744	µÁÀÕñû	ÒüïÒüäÒüîÒüä	kaigai	nã░ß╗øc ngo├ái, hß║úi ngoß║íi	35	2026-06-25 10:53:03.56	2026-06-27 02:22:16.683	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
+28748	Þ¿▒ÕÅ»	ÒüìÒéçÒüï	kyoka	ph├®p, giß║Ñy ph├®p	35	2026-06-25 10:53:03.568	2026-06-27 02:25:27.249	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4.svg	0
+28766	ÕñºÚ╗ÆÒüÜÒüù	ÒüáÒüäÒüôÒüÅÒüÜÒüù	daikokuzushi	a fictitious sushi restaurant	35	2026-06-25 10:53:03.611	2026-06-27 02:25:27.254	\N	\N	\N	\N	\N	\N	/media/openmoji/1F363.svg	0
+28754	\N	Òé½Òâ╝ÒâåÒâ│	katen	curtain	35	2026-06-25 10:53:03.583	2026-06-27 02:26:22.253	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA9E.svg	0
+28796	µø▓	ÒüìÒéçÒüÅ	kyoku	b├ái h├ít, bß║ún nhß║íc	35	2026-06-25 10:53:03.671	2026-06-27 02:25:27.259	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
+28777	Òé╣Òé¡Òâ╝Õá┤	Òé╣Òé¡Òâ╝ÒüÿÒéçÒüå	sukiijou	─æß╗ïa ─æiß╗âm trã░ß╗út tuyß║┐t	35	2026-06-25 10:53:03.632	2026-06-27 02:22:16.688	\N	\N	\N	\N	\N	\N	/media/openmoji/2744.svg	0
+28794	µû╣µ│ò	Òü╗ÒüåÒü╗Òüå	hoho	phã░ãíng ph├íp	35	2026-06-25 10:53:03.666	2026-06-27 02:22:16.695	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7.svg	0
+28802	Þ▓»ÚçæÒüùÒü¥ÒüÖ	ÒüíÒéçÒüìÒéôÒüùÒü¥ÒüÖ	chokinshimasu	tiß║┐t kiß╗çm tiß╗ün, ─æß╗â d├ánh tiß╗ün	36	2026-06-25 10:53:03.783	2026-06-27 02:22:16.698	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+28792	\N	ÒâÅÒéñÒé¡Òâ│Òé░	haikingu	─æi bß╗Ö tr├¬n n├║i	35	2026-06-25 10:53:03.662	2026-06-27 02:22:16.701	\N	\N	\N	\N	\N	\N	/media/openmoji/26F0.svg	0
+28826	µ░┤µ││	ÒüÖÒüäÒüêÒüä	suiei	m├┤n bãíi lß╗Öi	36	2026-06-25 10:53:03.833	2026-06-27 02:25:27.266	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3CA.svg	0
+28884	Þ¡ªÕ«ÿ	ÒüæÒüäÒüïÒéô	keikan	cß║únh s├ít	37	2026-06-25 10:53:04.057	2026-06-27 02:26:22.268	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46E.svg	0
+28929	\N	ÒâëÒâƒÒâïÒé½	dominika	Dominica (t├¬n mß╗Öt quß╗æc gia ß╗ƒ Trung Mß╗╣)	37	2026-06-25 10:53:04.147	2026-06-27 02:22:16.712	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8.svg	0
+28962	Úø╗µ║É	ÒüºÒéôÒüÆÒéô	dengen	nguß╗ôn ─æiß╗çn , c├┤ng tß║»c ─æiß╗çn	38	2026-06-25 10:53:04.311	2026-06-27 02:22:16.715	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1.svg	0
+28949	µ░ùµîüÒüíÒüî ÒüäÒüä	ÒüìÒééÒüíÒüî ÒüäÒüä	kimochiga ii	dß╗à chß╗ïu, thã░ giß║ún	38	2026-06-25 10:53:04.281	2026-06-27 02:25:27.276	\N	\N	\N	\N	\N	\N	/media/openmoji/2709.svg	0
+29000	\N	Òé»Òâ®Òé╣	kurasu	lß╗øp hß╗ìc, lß╗øp	38	2026-06-25 10:53:04.414	2026-06-27 02:22:16.723	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB.svg	0
+29019	µüÑÒüÜÒüïÒüùÒüä	Òü»ÒüÜÒüïÒüùÒüä	hazukashii	xß║Ñu hß╗ò, thß║╣n, hß╗ò thß║╣n	39	2026-06-25 10:53:04.554	2026-06-27 02:25:27.287	\N	\N	\N	\N	\N	\N	/media/openmoji/1F405.svg	0
+29036	\N	ÒüøÒüúÒüæÒéô	sekken	x├á ph├▓ng	39	2026-06-25 10:53:04.59	2026-06-27 02:26:22.283	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9FC.svg	0
+29038	Òüèþû▓ÒéîµºÿÒüºÒüùÒüƒÒÇé	ÒüèÒüñÒüïÒéîÒüòÒü¥ÒüºÒüùÒüƒÒÇé	otsukaresamadeshita.	chß║»c anh/chß╗ï ─æ├ú mß╗çt v├¼ l├ám viß╗çc	39	2026-06-25 10:53:04.594	2026-06-27 02:22:16.728	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC.svg	0
+29072	Õ┐ÿÕ╣┤õ╝Ü	Òü╝ÒüåÒü¡ÒéôÒüïÒüä	bonenkai	tiß╗çc tß║Ñt ni├¬n	40	2026-06-25 10:53:04.734	2026-06-27 02:26:22.292	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F.svg	0
+29104	\N	ÒâåÒé╣Òâê	tesuto	b├ái kiß╗âm tra	40	2026-06-25 10:53:04.818	2026-06-27 02:22:16.734	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DD.svg	0
+29134	\N	Òé»Òâ®Òé╣	kurasu	lß╗øp hß╗ìc	40	2026-06-25 10:53:04.88	2026-06-27 02:22:16.736	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB.svg	0
+29145	ÒüèþÑØÒüä	ÒüèÒüäÒéÅÒüä	oiwai	mß╗½ng, qu├á mß╗½ng (´¢×ÒéÆÒüùÒü¥ÒüÖ´╝Ümß╗½ng)	41	2026-06-25 10:53:04.999	2026-06-27 02:22:16.739	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381.svg	0
+29146	ÒüèÕ╣┤þÄë	ÒüèÒü¿ÒüùÒüáÒü¥	otoshidama	tiß╗ün mß╗½ng tuß╗òi	41	2026-06-25 10:53:05.001	2026-06-27 02:22:16.743	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
+29150	µûçµ│ò	ÒüÂÒéôÒü¢Òüå	bunpo	ngß╗» ph├íp	41	2026-06-25 10:53:05.011	2026-06-27 02:22:16.746	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7.svg	0
+29116	ÕïòÒüïÒüùÒü¥ÒüÖ	ÒüåÒüöÒüïÒüùÒü¥ÒüÖ	ugokashimasu	khß╗ƒi ─æß╗Öng, chß║íy	40	2026-06-25 10:53:04.839	2026-06-27 02:25:27.295	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3.svg	0
+29152	þî┐	ÒüòÒéï	saru	con khß╗ë	41	2026-06-25 10:53:05.014	2026-06-27 02:25:27.302	\N	\N	\N	\N	\N	\N	/media/openmoji/1F412.svg	0
 26969	\N	ÒüéÒü¬Òüƒ	anata	anh/chß╗ï, bß║ín	1	2026-06-25 10:52:55.96	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	2
 26970	ÒüéÒü« õ║║´╝êÒüéÒü« µû╣´╝ë	ÒüéÒü« Òü▓Òü¿´╝êÒüéÒü« ÒüïÒüƒ´╝ë	ano hito (ano kata)	ngã░ß╗Øi kia	1	2026-06-25 10:52:55.963	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	3
 26971	\N	´¢×ÒüòÒéô	~san	anh ´¢×, chß╗ï ´¢×	1	2026-06-25 10:52:55.966	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	4
@@ -12297,465 +13022,88 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 26992	Õñ▒þñ╝ÒüºÒüÖÒüî	ÒüùÒüñÒéîÒüäÒüºÒüÖÒüî	shitsureidesuga	xin lß╗ùi ( khi muß╗æn nhß╗Ø ai viß╗çc g├¼ ─æ├│)	1	2026-06-25 10:52:56.025	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	25
 26993	ÒüèÕÉìÕëìÒü»´╝ƒ	ÒüèÒü¬Òü¥ÒüêÒü»´╝ƒ	onamaewa´╝ƒ	bß║ín t├¬n g├¼?	1	2026-06-25 10:52:56.027	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	26
 26994	\N	ÒüôÒüíÒéëÒü» ´¢×ÒüòÒéôÒüºÒüÖÒÇé	kochirawa ~sandesu.	─æ├óy l├á ng├ái ´¢×	1	2026-06-25 10:52:56.031	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	27
+29156	þÁÁÒü»ÒüîÒüì	ÒüêÒü»ÒüîÒüì	ehagaki	bã░u ß║únh	41	2026-06-25 10:53:05.02	2026-06-27 02:25:27.304	\N	\N	\N	\N	\N	\N	/media/openmoji/1F5BC.svg	0
 27010	þÜåÒüòÒéô	Òü┐Òü¬ÒüòÒéô	minasan	c├íc bß║ín, c├íc anh, c├íc chß╗ï, mß╗ìi ngã░ß╗Øi	1	2026-06-25 10:52:56.086	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	42
+29224	µ│òÕ¥ï	Òü╗ÒüåÒéèÒüñ	horitsu	ph├íp luß║¡t	42	2026-06-25 10:53:05.251	2026-06-27 02:22:16.749	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7.svg	0
 26973	´¢×õ║║	´¢×ÒüÿÒéô	~jin	ngã░ß╗Øi nã░ß╗øc ´¢×	1	2026-06-25 10:52:55.973	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	6
+29231	\N	ÒéäÒüïÒéô	yakan	ß║Ñm ─æun nã░ß╗øc	42	2026-06-25 10:53:05.266	2026-06-27 02:22:16.752	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
+29194	þ£ƒÒüúþÖ¢´╝╗Òü¬´╝¢	Òü¥ÒüúÒüùÒéì´╝╗Òü¬´╝¢	masshiro [na]	trß║»ng to├ít, trß║»ng ngß║ºn	41	2026-06-25 10:53:05.105	2026-06-27 02:25:27.313	\N	\N	\N	\N	\N	\N	/media/openmoji/26AA.svg	0
+29207	´╝╗Òüè´╝¢ÕƒÄ	´╝╗Òüè´╝¢ÒüùÒéì	[o] shiro	l├óu ─æ├ái; th├ánh	41	2026-06-25 10:53:05.134	2026-06-27 02:25:27.317	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3F0.svg	0
+29217	Úƒ│µÑ¢Õ«Â	ÒüèÒéôÒüîÒüÅÒüï	ongakuka	nhß║íc s─®	42	2026-06-25 10:53:05.237	2026-06-27 02:25:27.319	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
+29238	\N	ÒüØÒéìÒü░Òéô	soroban	b├án t├¡nh	42	2026-06-25 10:53:05.282	2026-06-27 02:26:22.307	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA91.svg	0
+29302	þü½	Òü▓	hi	lß╗¡a	43	2026-06-25 10:53:05.569	2026-06-27 02:22:16.758	\N	\N	\N	\N	\N	\N	/media/openmoji/2600.svg	0
+29263	ÕÄÜÒüä	ÒüéÒüñÒüä	atsui	d├áy	42	2026-06-25 10:53:05.353	2026-06-27 02:25:27.326	\N	\N	\N	\N	\N	\N	/media/openmoji/1F321.svg	0
+29297	\N	ÒüåÒü¥Òüä	umai	ngon	43	2026-06-25 10:53:05.551	2026-06-27 02:25:27.33	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372.svg	0
+29277	\N	ÒéñÒâ│Òé╣Òé┐Òâ│ÒâêÒâ®Òâ╝ÒâíÒâ│	insutantoramen	m├¼ ─ân liß╗ün	42	2026-06-25 10:53:05.404	2026-06-27 02:25:27.333	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35C.svg	0
 27011	´¢×ÕÉø	´¢×ÒüÅÒéô	~kun	b├® (d├╣ng cho nam) hoß║Àc gß╗ìi th├ón mß║¡t	1	2026-06-25 10:52:56.089	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	43
 27006	\N	AKC	AKC	hß╗ìc viß╗çn giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.072	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	39
 27007	þÑ×µê©þùàÚÖó	ÒüôÒüåÒü╣Òü│ÒéçÒüåÒüäÒéô	kobebyoin	bß╗çnh viß╗çn giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.076	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	40
 27008	ÒüòÒüÅÒéëÕñºÕ¡ª´╝ÅÕ»îÕú½ÕñºÕ¡ª	ÒüòÒüÅÒéëÒüáÒüäÒüîÒüÅ´╝ÅÒüÁÒüÿÒüáÒüäÒüîÒüÅ	sakuradaigaku/fujidaigaku	trã░ß╗Øng ─æß║íi hß╗ìc giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.079	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	41
 27005	IMC´╝ÅÒâæÒâ»Òâ╝Úø╗µ░ù´╝ÅÒâûÒâ®Òé©Òâ½Òé¿ÒéóÒâ╝	IMC´╝ÅÒâæÒâ»Òâ╝ÒüºÒéôÒüì´╝ÅÒâûÒâ®Òé©Òâ½Òé¿ÒéóÒâ╝	IMC/pawadenki/burajiruea	c├┤ng ty giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.069	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	38
-26974	Õàêþöƒ	ÒüøÒéôÒüøÒüä	sensei	gi├ío vi├¬n (Kh├┤ng n├│i khi giß╗øi thiß╗çu nghß╗ü nghiß╗çp cß╗ºa ch├¡nh m├¼nh)	1	2026-06-25 10:52:55.975	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468	7
-26975	µòÖÕ©½	ÒüìÒéçÒüåÒüù	kyoshi	gi├ío vi├¬n ( d├╣ng ─æß╗â n├│i ─æß║┐n nghß╗ü nghiß╗çp)	1	2026-06-25 10:52:55.977	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468	8
-26976	Õ¡ªþöƒ	ÒüîÒüÅÒüøÒüä	gakusei	hß╗ìc sinh, sinh vi├¬n	1	2026-06-25 10:52:55.979	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393	9
-26977	õ╝Üþñ¥Õôí	ÒüïÒüäÒüùÒéâÒüäÒéô	kaishain	nh├ón vi├¬n c├┤ng ty	1	2026-06-25 10:52:55.983	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2	10
-26978	þñ¥Õôí	ÒüùÒéâÒüäÒéô	shain	nh├ón vi├¬n c├┤ng ty ´¢×	1	2026-06-25 10:52:55.988	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2	11
-26979	ÚèÇÞíîÕôí	ÒüÄÒéôÒüôÒüåÒüäÒéô	ginkoin	nh├ón vi├¬n ng├ón h├áng	1	2026-06-25 10:52:55.992	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E6	12
-26980	Õî╗ÞÇà	ÒüäÒüùÒéâ	isha	b├íc s─®	1	2026-06-25 10:52:55.994	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/2695	13
-26981	þáöþ®ÂÞÇà	ÒüæÒéôÒüìÒéàÒüåÒüùÒéâ	kenkyusha	nghi├¬n cß╗®u sinh	1	2026-06-25 10:52:55.996	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F52C	14
-26995	\N	ÒéóÒâíÒâ¬Òé½	amerika	Mß╗╣	1	2026-06-25 10:52:56.035	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8	28
-26996	\N	ÒéñÒé«Òâ¬Òé╣	igirisu	Anh	1	2026-06-25 10:52:56.038	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EC-1F1E7	29
-26997	\N	ÒéñÒâ│Òâë	indo	ß║ñn ─Éß╗Ö	1	2026-06-25 10:52:56.042	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1F3	30
-26998	\N	ÒéñÒâ│ÒâëÒâìÒéÀÒéó	indoneshia	Indonesia	1	2026-06-25 10:52:56.046	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1E9	31
-26999	ÚƒôÕø¢	ÒüïÒéôÒüôÒüÅ	kankoku	H├án quß╗æc	1	2026-06-25 10:52:56.049	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F0-1F1F7	32
-27000	\N	Òé┐Òéñ	tai	Th├íi Lan	1	2026-06-25 10:52:56.053	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F9-1F1ED	33
-27001	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	chugoku	Trung Quß╗æc	1	2026-06-25 10:52:56.056	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E8-1F1F3	34
-27002	\N	ÒâëÒéñÒâä	doitsu	─Éß╗®c	1	2026-06-25 10:52:56.06	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E9-1F1EA	35
-27003	µùÑµ£¼	Òü½Òü╗Òéô	nihon	Nhß║¡t Bß║ún	1	2026-06-25 10:52:56.062	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EF-1F1F5	36
-27012	\N	Òé¿Òâ│Òé©ÒâïÒéó	enjinia	kß╗╣ sã░	1	2026-06-25 10:52:56.091	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F477	44
-27013	Úø╗µ░ù	ÒüºÒéôÒüì	denki	─æiß╗çn	1	2026-06-25 10:52:56.093	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1	45
-27014	\N	ÒâòÒâ®Òâ│Òé╣	furansu	Ph├íp	1	2026-06-25 10:52:56.096	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7	46
-27030	\N	Òâ£Òâ╝Òâ½ÒâÜÒâ│	borupen	ballpoint pen	2	2026-06-25 10:52:56.27	2026-06-27 02:22:16.25	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A	0
-27031	\N	ÒéÀÒâúÒâ╝ÒâùÒâÜÒâ│ÒéÀÒâ½	shapupenshiru	b├║t ch├¼ bß║Ñm	2	2026-06-25 10:52:56.272	2026-06-27 02:22:16.252	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A	0
-27033	µÖéÞ¿ê	Òü¿ÒüæÒüä	tokei	─æß╗ông hß╗ô	2	2026-06-25 10:52:56.276	2026-06-27 02:22:16.257	\N	\N	\N	\N	\N	\N	/media/openmoji/23F0	0
-27037	\N	ÒâåÒâ¼Òâô	terebi	TV	2	2026-06-25 10:52:56.287	2026-06-27 02:22:16.261	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4FA	0
-27040	\N	Òé│Òâ│ÒâöÒâÑÒâ╝Òé┐Òâ╝	konpyuta	m├íy vi t├¡nh	2	2026-06-25 10:52:56.292	2026-06-27 02:22:16.264	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BB	0
-27043	µñàÕ¡É	ÒüäÒüÖ	isu	chair	2	2026-06-25 10:52:56.3	2026-06-27 02:22:16.266	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA91	0
-27044	\N	ÒâüÒâºÒé│Òâ¼Òâ╝Òâê	chokoreto	kß║╣o s├┤c├┤la	2	2026-06-25 10:52:56.304	2026-06-27 02:22:16.269	\N	\N	\N	\N	\N	\N	/media/openmoji/1F36B	0
-27046	´╝╗Òüè´╝¢Õ£ƒþöú	´╝╗Òüè´╝¢Òü┐ÒéäÒüÆ	[o] miyage	souvenir, present	2	2026-06-25 10:52:56.307	2026-06-27 02:22:16.271	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381	0
-27048	µùÑµ£¼Þ¬×	Òü½Òü╗ÒéôÒüö	nihongo	tiß║┐ng Nhß║¡t	2	2026-06-25 10:52:56.31	2026-06-27 02:22:16.278	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4AC	0
-27035	Ú×ä	ÒüïÒü░Òéô	kaban	c├íi cß║Àp	2	2026-06-25 10:52:56.279	2026-06-27 02:22:16.285	\N	\N	\N	\N	\N	\N	/media/openmoji/1F392	0
-27063	\N	ÒâåÒâ╝ÒâùÒâ¼Òé│Òâ╝ÒâÇÒâ╝	tepurekoda	m├íy casset	2	2026-06-25 10:52:56.344	2026-06-27 02:25:26.628	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4FC	0
-27493	µ£¿	Òüì	ki	c├óy, gß╗ù	10	2026-06-25 10:52:58.271	2026-06-27 02:18:02.807	\N	\N	\N	\N	\N	\N	/media/openmoji/1F333	0
-27265	\N	ÒâæÒâ│	pan	b├ính m├¼	6	2026-06-25 10:52:57.295	2026-06-27 02:22:16.288	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35E	0
-27275	\N	Òé©ÒâÑÒâ╝Òé╣	jusu	nã░ß╗øc hoa quß║ú	6	2026-06-25 10:52:57.322	2026-06-27 02:22:16.292	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-27324	\N	ÒâæÒé¢Òé│Òâ│	pasokon	m├íy t├¡nh c├í nh├ón	7	2026-06-25 10:52:57.561	2026-06-27 02:22:16.295	\N	\N	\N	\N	\N	\N	/media/openmoji/1F41F	0
-27419	Õ»îÕú½Õ▒▒	ÒüÁÒüÿÒüòÒéô	fujisan	N├║i Ph├║ S─®	8	2026-06-25 10:52:57.845	2026-06-27 02:22:16.301	\N	\N	\N	\N	\N	\N	/media/openmoji/26F0	0
-27473	\N	ÒüéÒüé	a	a (c├ích n├│i khi ─æ├ú gß║Àp ─æã░ß╗úc ─æ├║ng ngã░ß╗Øi tr├¬n ─æiß╗çn thoß║íi)	9	2026-06-25 10:52:58.073	2026-06-27 02:22:16.303	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE	0
-27198	\N	ÒâÉÒé╣	basu	xe Bu├¢t	5	2026-06-25 10:52:56.987	2026-06-27 02:25:26.632	\N	\N	\N	\N	\N	\N	/media/openmoji/1F68C	0
-27200	Þç¬Þ╗óÞ╗è	ÒüÿÒüªÒéôÒüùÒéâ	jitensha	xe ─æß║íp	5	2026-06-25 10:52:56.993	2026-06-27 02:25:26.635	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6B2	0
-27250	ÚúƒÒü╣Òü¥ÒüÖ	ÒüƒÒü╣Òü¥ÒüÖ	tabemasu	─ân	6	2026-06-25 10:52:57.253	2026-06-27 02:25:26.638	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372	0
-27251	Úú▓Òü┐Òü¥ÒüÖ	Òü«Òü┐Òü¥ÒüÖ	nomimasu	uß╗æng	6	2026-06-25 10:52:57.255	2026-06-27 02:25:26.641	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375	0
-27253	ÞªïÒü¥ÒüÖ	Òü┐Òü¥ÒüÖ	mimasu	xem, nh├¼n, tr├┤ng	6	2026-06-25 10:52:57.261	2026-06-27 02:25:26.644	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC	0
-27282	\N	ÒâôÒâçÒé¬	bideo	video, b─âng video	6	2026-06-25 10:52:57.339	2026-06-27 02:25:26.648	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4FD	0
-27285	Õ«┐Úíî	ÒüùÒéàÒüÅÒüáÒüä	shukudai	b├ái tß║¡p vß╗ü nh├á	6	2026-06-25 10:52:57.345	2026-06-27 02:25:26.65	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA	0
-27328	\N	ÒâæÒâ│Òâü	panchi	c├íi bß║Ñm lß╗ù	7	2026-06-25 10:52:57.57	2026-06-27 02:25:26.652	\N	\N	\N	\N	\N	\N	/media/openmoji/1F587	0
-29074	õ║îµ¼íõ╝Ü	Òü½ÒüÿÒüïÒüä	nijikai	bß╗»a tiß╗çc thß╗® hai, t─âng hai	40	2026-06-25 10:53:04.737	2026-06-27 02:25:26.674	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-29160	µëïÞóï	ÒüªÒüÂÒüÅÒéì	tebukuro	g─âng tay	41	2026-06-25 10:53:05.03	2026-06-27 02:25:26.677	\N	\N	\N	\N	\N	\N	/media/openmoji/270B	0
-29276	\N	Òé½ÒââÒâùÒâ®Òâ╝ÒâíÒâ│	kappuramen	m├¼ ─ân liß╗ün ─æß╗▒ng trong cß╗æc	42	2026-06-25 10:53:05.4	2026-06-27 02:25:26.681	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35C	0
-29083	\N	Òé║Òâ£Òâ│	zubon	c├íi quß║ºn	40	2026-06-25 10:53:04.759	2026-06-27 02:26:21.894	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455	0
-29035	\N	Òé┐Òé¬Òâ½	taoru	kh─ân lau, kh─ân tß║»m	39	2026-06-25 10:53:04.588	2026-06-27 02:26:21.898	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9FB	0
-27053	\N	ÒüêÒüú	e'	Oh? What! (used when hearing something unexpected)	2	2026-06-25 10:52:56.321	2026-06-27 02:25:26.624	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A8	0
-27112	\N	Òé©ÒâúÒé½Òâ½Òé┐	jakaruta	Jakarta	3	2026-06-25 10:52:56.596	2026-06-27 02:25:26.702	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1E9	0
-27114	\N	ÒâÖÒâ½Òâ¬Òâ│	berurin	Berlin	3	2026-06-25 10:52:56.601	2026-06-27 02:25:26.706	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E9-1F1EA	0
-27138	µ£Ø	ÒüéÒüò	asa	s├íng	4	2026-06-25 10:52:56.76	2026-06-27 02:25:26.713	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305	0
-27140	µÖ®´╝êÕñ£´╝ë	Òü░Òéô´╝êÒéêÒéï´╝ë	ban (yoru)	tß╗æi	4	2026-06-25 10:52:56.764	2026-06-27 02:25:26.717	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-27143	\N	ÒüìÒéçÒüå	kyo	h├┤m nay	4	2026-06-25 10:52:56.771	2026-06-27 02:25:26.721	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-27146	\N	ÒüæÒüò	kesa	s├íng nay	4	2026-06-25 10:52:56.776	2026-06-27 02:25:26.725	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305	0
-27149	µÿ╝õ╝æÒü┐	Òü▓ÒéïÒéäÒüÖÒü┐	hiruyasumi	nghß╗ë trã░a	4	2026-06-25 10:52:56.785	2026-06-27 02:25:26.73	\N	\N	\N	\N	\N	\N	/media/openmoji/2600	0
-27153	µ»Äµ£Ø	Òü¥ÒüäÒüéÒüò	maiasa	mß╗ùi s├íng	4	2026-06-25 10:52:56.791	2026-06-27 02:25:26.735	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305	0
-27156	µ£êµø£µùÑ	ÒüÆÒüñÒéêÒüåÒü│	getsuyobi	Monday	4	2026-06-25 10:52:56.799	2026-06-27 02:25:26.74	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-27158	µ░┤µø£µùÑ	ÒüÖÒüäÒéêÒüåÒü│	suiyobi	Wednesday	4	2026-06-25 10:52:56.806	2026-06-27 02:25:26.744	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-27161	Õ£ƒµø£µùÑ	Òü®ÒéêÒüåÒü│	doyobi	Saturday	4	2026-06-25 10:52:56.811	2026-06-27 02:25:26.753	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-27194	Þê╣	ÒüÁÒü¡	fune	thuyß╗ün, t├áu thß╗ºy	5	2026-06-25 10:52:56.97	2026-06-27 02:25:26.768	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6A2	0
-27201	µ¡®ÒüäÒüª	ÒüéÒéïÒüäÒüª	aruite	─æi bß╗Ö, ─æi dß║ío	5	2026-06-25 10:52:56.997	2026-06-27 02:25:26.772	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6B6	0
-27247	ÕñºÚÿ¬ÕƒÄ	ÒüèÒüèÒüòÒüïÒüÿÒéçÒüå	osakajo	Osaka Castle, a famous castle in Osaka	5	2026-06-25 10:52:57.137	2026-06-27 02:25:26.781	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3F0	0
-27256	µø©ÒüìÒü¥ÒüÖ	ÒüïÒüìÒü¥ÒüÖ	kakimasu	viß║┐t, vß║¢	6	2026-06-25 10:52:57.269	2026-06-27 02:25:26.789	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A	0
-27277	´╝╗Òüè´╝¢ÚàÆ	´╝╗Òüè´╝¢ÒüòÒüæ	[o] sake	rã░ß╗úu, rã░ß╗úu sake	6	2026-06-25 10:52:57.327	2026-06-27 02:25:26.793	\N	\N	\N	\N	\N	\N	/media/openmoji/1F377	0
-27283	Õ║ù	Òü┐Òüø	mise	cß╗¡a h├áng, cß╗ºa tiß╗çm	6	2026-06-25 10:52:57.341	2026-06-27 02:25:26.803	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA	0
-27286	\N	ÒâåÒâïÒé╣	tenisu	quß║ºn vß╗út (´¢×ÒéÆÒüùÒü¥ÒüÖ: ─æ├ính quß║ºn vß╗út)	6	2026-06-25 10:52:57.348	2026-06-27 02:25:26.808	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3BE	0
-27306	\N	CD	CD	CD, compact disc	6	2026-06-25 10:52:57.392	2026-06-27 02:25:26.82	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BF	0
-27318	µëï	Òüª	te	tay	7	2026-06-25 10:52:57.543	2026-06-27 02:25:26.823	\N	\N	\N	\N	\N	\N	/media/openmoji/270B	0
-27320	\N	Òé╣ÒâùÒâ╝Òâ│	supun	muß╗ùng, th├¼a	7	2026-06-25 10:52:57.553	2026-06-27 02:25:26.83	\N	\N	\N	\N	\N	\N	/media/openmoji/1F944	0
-27322	\N	ÒâòÒé®Òâ╝Òé»	foku	n─®a	7	2026-06-25 10:52:57.557	2026-06-27 02:25:26.837	\N	\N	\N	\N	\N	\N	/media/openmoji/1F374	0
-27325	\N	Òé▒Òâ╝Òé┐Òéñ	ketai	mobile phone, cell phone	7	2026-06-25 10:52:57.564	2026-06-27 02:25:26.843	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F1	0
-27331	µÂêÒüùÒé┤Òâ×	ÒüæÒüùÒé┤Òâ×	keshigoma	rubber, eraser	7	2026-06-25 10:52:57.575	2026-06-27 02:25:26.851	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A	0
-27336	ÞìÀþë®	Òü½ÒééÒüñ	nimotsu	h├ánh l├¡, ─æß╗ô ─æß║íc	7	2026-06-25 10:52:57.59	2026-06-27 02:25:26.858	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9F3	0
-27339	\N	Òé»Òâ¬Òé╣Òâ×Òé╣	kurisumasu	lß╗à Noel	7	2026-06-25 10:52:57.595	2026-06-27 02:25:26.866	\N	\N	\N	\N	\N	\N	/media/openmoji/1F384	0
-27341	µ»ì	Òü»Òü»	haha	mß║╣ t├┤i	7	2026-06-25 10:52:57.6	2026-06-27 02:25:26.87	\N	\N	\N	\N	\N	\N	/media/openmoji/1F469	0
-27343	Òüèµ»ìÒüòÒéô	ÒüèÒüïÒüéÒüòÒéô	okasan	mß║╣ cß╗ºa ngã░ß╗Øi kh├íc	7	2026-06-25 10:52:57.604	2026-06-27 02:25:26.874	\N	\N	\N	\N	\N	\N	/media/openmoji/1F469	0
-27355	\N	ÒâòÒéíÒé»Òé╣	fuakusu	fax, m├íy fax	7	2026-06-25 10:52:57.625	2026-06-27 02:25:26.883	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4E0	0
-27358	µùàÞíî	ÒéèÒéçÒüôÒüå	ryoko	du lß╗ïch	7	2026-06-25 10:52:57.631	2026-06-27 02:25:26.888	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9F3	0
-27378	Õ»ÆÒüä	ÒüòÒéÇÒüä	samui	(trß╗Øi) lß║ính	8	2026-06-25 10:52:57.746	2026-06-27 02:25:26.9	\N	\N	\N	\N	\N	\N	/media/openmoji/2744	0
-27379	ÕåÀÒüƒÒüä	ÒüñÒéüÒüƒÒüä	tsumetai	lß║ính, buß╗æt (d├╣ng cho cß║úm gi├íc)	8	2026-06-25 10:52:57.749	2026-06-27 02:25:26.902	\N	\N	\N	\N	\N	\N	/media/openmoji/2744	0
-27386	\N	ÒüèÒüäÒüùÒüä	oishii	ngon	8	2026-06-25 10:52:57.769	2026-06-27 02:25:26.916	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372	0
-27389	þÖ¢Òüä	ÒüùÒéìÒüä	shiroi	trß║»ng	8	2026-06-25 10:52:57.774	2026-06-27 02:25:26.923	\N	\N	\N	\N	\N	\N	/media/openmoji/26AA	0
-27330	\N	Òé╗Òâ¡ÒâåÒâ╝Òâù	serotepu	b─âng keo	7	2026-06-25 10:52:57.573	2026-06-27 02:25:26.93	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4CE	0
-27398	Õ»«	ÒéèÒéçÒüå	ryo	k├¢ t├║c x├í	8	2026-06-25 10:52:57.803	2026-06-27 02:25:26.941	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E8	0
-27400	þöƒµ┤╗	ÒüøÒüäÒüïÒüñ	seikatsu	cuß╗Öc sß╗æng	8	2026-06-25 10:52:57.806	2026-06-27 02:25:26.949	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E0	0
-27417	ÚçæÚûúÕ»║	ÒüìÒéôÒüïÒüÅÒüÿ	kinkakuji	Ch├╣a V├áng ( t├¬n ch├╣a)	8	2026-06-25 10:52:57.841	2026-06-27 02:25:26.955	\N	\N	\N	\N	\N	\N	/media/openmoji/26E9	0
-27434	\N	Òé╣ÒâØÒâ╝Òâä	supotsu	thß╗â thao (´¢×ÒéÆÒüùÒü¥ÒüÖ´╝Üchãíi thß╗â thao)	9	2026-06-25 10:52:57.989	2026-06-27 02:25:26.961	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD	0
-27436	\N	ÒâÇÒâ│Òé╣	dansu	nhß║úy, khi├¬u v┼® (´¢×ÒéÆÒüùÒü¥ÒüÖ´╝Ünhß║úy, khi├¬u v┼®)	9	2026-06-25 10:52:57.993	2026-06-27 02:25:26.969	\N	\N	\N	\N	\N	\N	/media/openmoji/1F483	0
-27439	µ¡î	ÒüåÒüƒ	uta	b├ái h├ít	9	2026-06-25 10:52:58.001	2026-06-27 02:25:26.976	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5	0
-27441	\N	Òé©ÒâúÒé║	jazu	nhß║íc jazz	9	2026-06-25 10:52:58.005	2026-06-27 02:25:26.983	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5	0
-27445	þÁÁ	Òüê	e	Tranh, hß╗Öi hß╗ìa	9	2026-06-25 10:52:58.015	2026-06-27 02:25:26.988	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A8	0
-27636	\N	´╝╗Òüè´╝¢ÒüÖÒüù	[o] sushi	Sushi	12	2026-06-25 10:52:58.851	2026-06-27 02:25:27.035	\N	\N	\N	\N	\N	\N	/media/openmoji/1F363	0
-27674	\N	ÒâùÒâ╝Òâ½	puru	hß╗ô bãíi	13	2026-06-25 10:52:59.044	2026-06-27 02:25:27.041	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3CA	0
-27711	µÇÑÒüÄÒü¥ÒüÖ	ÒüäÒüØÒüÄÒü¥ÒüÖ	isogimasu	vß╗Öi v├áng, cß║Ñp b├ích	14	2026-06-25 10:52:59.321	2026-06-27 02:25:27.048	\N	\N	\N	\N	\N	\N	/media/openmoji/1F7E1	0
-27801	Úú▓Òü┐Òü¥ÒüÖ	Òü«Òü┐Òü¥ÒüÖ	nomimasu	drink alcohol	16	2026-06-25 10:52:59.737	2026-06-27 02:25:27.058	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375	0
-27809	µÜùÒüä	ÒüÅÒéëÒüä	kurai	tß╗æi	16	2026-06-25 10:52:59.753	2026-06-27 02:25:27.064	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-27820	ÞÂ│	ÒüéÒüù	ashi	ch├ón	16	2026-06-25 10:52:59.776	2026-06-27 02:25:27.069	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9B6	0
-27825	þÀæ	Òü┐Òü®Òéè	midori	m├áu xanh l├í	16	2026-06-25 10:52:59.785	2026-06-27 02:25:27.074	\N	\N	\N	\N	\N	\N	/media/openmoji/1F535	0
-27898	µ¡îÒüäÒü¥ÒüÖ	ÒüåÒüƒÒüäÒü¥ÒüÖ	utaimasu	h├ít	18	2026-06-25 10:53:00.137	2026-06-27 02:25:27.084	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5	0
-28108	µ®ï	Òü»Òüù	hashi	cß║ºu	23	2026-06-25 10:53:01.06	2026-06-27 02:25:27.114	\N	\N	\N	\N	\N	\N	/media/openmoji/1F962	0
-28118	ÕïòÒüìÒü¥ÒüÖ´╝╗µÖéÞ¿êÒüî´¢×´╝¢	ÒüåÒüöÒüìÒü¥ÒüÖ´╝╗Òü¿ÒüæÒüäÒüî´¢×´╝¢	ugokimasu [tokeiga~]	chuyß╗ân ─æß╗Öng ,chß║íy	23	2026-06-25 10:53:01.086	2026-06-27 02:25:27.117	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3	0
-28235	ÞÁ░ÒéèÒü¥ÒüÖ´╝╗ÚüôÒéÆ´¢×´╝¢	Òü»ÒüùÒéèÒü¥ÒüÖ´╝╗Òü┐ÒüíÒéÆ´¢×´╝¢	hashirimasu [michiwo~]	chß║íy	27	2026-06-25 10:53:01.723	2026-06-27 02:25:27.131	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3	0
-28234	Úú╝ÒüäÒü¥ÒüÖ	ÒüïÒüäÒü¥ÒüÖ	kaimasu	nu├┤i,ch─ân nu├┤i	27	2026-06-25 10:53:01.721	2026-06-27 02:25:27.139	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA	0
-28293	Þ©èÒéèÒü¥ÒüÖ	ÒüèÒü®ÒéèÒü¥ÒüÖ	odorimasu	nhß║úy	28	2026-06-25 10:53:01.922	2026-06-27 02:25:27.141	\N	\N	\N	\N	\N	\N	/media/openmoji/1F483	0
-28316	\N	Òé▓Òâ╝Òâá	gemu	(computer) game	28	2026-06-25 10:53:01.963	2026-06-27 02:25:27.149	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AE	0
-28390	þÂ▓µúÜ	ÒüéÒü┐ÒüáÒü¬	amidana	gi├í ─æß╗â h├ánh l├¢	29	2026-06-25 10:53:02.203	2026-06-27 02:25:27.161	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9F3	0
-28492	µ©®µ│ë	ÒüèÒéôÒüøÒéô	onsen	suß╗æi nã░ß╗øc n├│ng	31	2026-06-25 10:53:02.57	2026-06-27 02:25:27.175	\N	\N	\N	\N	\N	\N	/media/openmoji/2668	0
-28528	ÚüïÕïòÒüùÒü¥ÒüÖ	ÒüåÒéôÒü®ÒüåÒüùÒü¥ÒüÖ	undoshimasu	vß║¡n ─æß╗Öng, tß║¡p thß╗â thao	32	2026-06-25 10:53:02.714	2026-06-27 02:25:27.184	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD	0
-28570	\N	Òâ¿Òâ╝Òâ¡ÒââÒâæ	yoroppa	Europe	32	2026-06-25 10:53:02.798	2026-06-27 02:25:27.198	\N	\N	\N	\N	\N	\N	/media/openmoji/1F30D	0
-28594	\N	ÒéåÒüúÒüÅÒéè ÒüùÒü¥ÒüÖ	yukkuri shimasu	nghß╗ë ngãíi, thã░ th├íi, dã░ß╗íng sß╗®c	32	2026-06-25 10:53:02.849	2026-06-27 02:25:27.202	\N	\N	\N	\N	\N	\N	/media/openmoji/2709	0
-28651	µ£¼µùÑõ╝æµÑ¡	Òü╗ÒéôÒüÿÒüñÒüìÒéàÒüåÒüÄÒéçÒüå	honjitsukyugyo	h├┤m nay ─æ├│ng cß╗¡a, h├┤m nay nghß╗ë	33	2026-06-25 10:53:03.066	2026-06-27 02:25:27.208	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-28681	\N	Òé╣ÒâØÒâ╝ÒâäÒé»Òâ®Òâû	supotsukurabu	c├óu lß║íc bß╗Ö thß╗â thao	34	2026-06-25 10:53:03.223	2026-06-27 02:25:27.218	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD	0
-28684	Õø│	ÒüÜ	zu	sãí ─æß╗ô, h├¼nh vß║¢	34	2026-06-25 10:53:03.231	2026-06-27 02:25:27.222	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A8	0
-28688	þÖ¢	ÒüùÒéì	shiro	m├áu trß║»ng	34	2026-06-25 10:53:03.24	2026-06-27 02:25:27.225	\N	\N	\N	\N	\N	\N	/media/openmoji/26AA	0
-28690	ÚØÆ	ÒüéÒüè	ao	m├áu xanh da trß╗Øi	34	2026-06-25 10:53:03.247	2026-06-27 02:25:27.23	\N	\N	\N	\N	\N	\N	/media/openmoji/1F535	0
-28698	\N	ÒéåÒüåÒü╣	yube	tß╗æi qua, ─æ├¬m qua	34	2026-06-25 10:53:03.273	2026-06-27 02:25:27.237	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-28673	þú¿ÒüìÒü¥ÒüÖ´╝╗µ¡»ÒéÆ´¢×´╝¢	Òü┐ÒüîÒüìÒü¥ÒüÖ´╝╗Òü»ÒéÆ´¢×´╝¢	migakimasu [hawo~]	m├ái, ─æ├ính (r─âng)	34	2026-06-25 10:53:03.203	2026-06-27 02:25:27.239	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9B7	0
-28780	µ£▒	ÒüùÒéà	shu	─æß╗Å, m├áu ─æß╗Å	35	2026-06-25 10:53:03.637	2026-06-27 02:25:27.256	\N	\N	\N	\N	\N	\N	/media/openmoji/1F534	0
-28825	\N	ÒüùÒüª ÒüäÒéëÒüúÒüùÒéâÒüäÒü¥ÒüÖ	shite irasshaimasu	─æang l├ám (t├┤n k├¡nh ngß╗» cß╗ºa ÒüùÒüªÒüäÒü¥ÒüÖ´╝ë	36	2026-06-25 10:53:03.831	2026-06-27 02:25:27.263	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
-28953	ÞÁñÒüíÒéâÒéô	ÒüéÒüïÒüíÒéâÒéô	akachan	em b├®	38	2026-06-25 10:53:04.289	2026-06-27 02:25:27.279	\N	\N	\N	\N	\N	\N	/media/openmoji/1F476	0
-28999	µø©Úí×	ÒüùÒéçÒéïÒüä	shorui	giß║Ñy tß╗Ø,t├ái liß╗çu	38	2026-06-25 10:53:04.411	2026-06-27 02:25:27.283	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4	0
-29107	\N	ÒüäÒéëÒüúÒüùÒéâÒüäÒü¥ÒüÖ	irasshaimasu	─æß║┐n(k├¡nh ngß╗» cß╗ºa ÒüìÒü¥ÒüÖ´╝ë	40	2026-06-25 10:53:04.824	2026-06-27 02:25:27.292	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
-29138	\N	ÒüÅÒüáÒüòÒüäÒü¥ÒüÖ	kudasaimasu	cho, tß║Àng (t├┤i) (t├┤n k├¡nh ngß╗» cß╗ºaÒüÅÒéîÒü¥ÒüÖ)	41	2026-06-25 10:53:04.978	2026-06-27 02:25:27.299	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
-29158	\N	ÒâÅÒâ│Òé½Òâü	hankachi	kh─ân tay	41	2026-06-25 10:53:05.025	2026-06-27 02:25:27.307	\N	\N	\N	\N	\N	\N	/media/openmoji/270B	0
-29218	Õ¡ÉÒü®ÒééÒüƒÒüí	ÒüôÒü®ÒééÒüƒÒüí	kodomotachi	trß║╗ em	42	2026-06-25 10:53:05.239	2026-06-27 02:25:27.322	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2	0
-29381	´╝æ´╝æ´╝Éþò¬	´╝æ´╝æ´╝ÉÒü░Òéô	110ban	the emergency police telephone number	45	2026-06-25 10:53:06.115	2026-06-27 02:25:27.346	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-29364	ÕêÑÒéîÒü¥ÒüÖ	ÒéÅÒüïÒéîÒü¥ÒüÖ	wakaremasu	chia c├ích; chia tay	44	2026-06-25 10:53:05.917	2026-06-27 02:25:27.35	\N	\N	\N	\N	\N	\N	/media/openmoji/270B	0
-29407	\N	Òâ¼ÒâÉÒâ╝	reba	tay bß║╗, tay sß╗æ, cß║ºn gß║ít	45	2026-06-25 10:53:06.213	2026-06-27 02:25:27.354	\N	\N	\N	\N	\N	\N	/media/openmoji/270B	0
-29557	ÒüöÞªºÒü½ Òü¬ÒéèÒü¥ÒüÖ	ÒüöÒéëÒéôÒü½ Òü¬ÒéèÒü¥ÒüÖ	goranni narimasu	xem, nh├¼n (t├┤n k├¡nh ngß╗» cß╗ºa Òü┐Òü¥ÒüÖ)	49	2026-06-25 10:53:06.957	2026-06-27 02:25:27.377	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
-27197	µû░Õ╣╣þÀÜ	ÒüùÒéôÒüïÒéôÒüøÒéô	shinkansen	t├áu Shinkansen (t├áu ─æiß╗çn si├¬u tß╗æc cß╗ºa Nhß║¡t)	5	2026-06-25 10:52:56.982	2026-06-27 02:26:21.918	\N	\N	\N	\N	\N	\N	/media/openmoji/1F685	0
-27443	\N	Òé½Òâ®Òé¬Òé▒	karaoke	karaoke	9	2026-06-25 10:52:58.009	2026-06-27 02:26:21.933	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A4	0
-27457	Òüöõ©╗õ║║	ÒüöÒüùÒéàÒüÿÒéô	goshujin	chß╗ông (d├╣ng khi n├│i vß╗ü chß╗ông ngã░ß╗Øi kh├íc)	9	2026-06-25 10:52:58.041	2026-06-27 02:26:21.939	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468	0
-27460	Õª╗´╝ÅÕ«ÂÕåà	ÒüñÒü¥´╝ÅÒüïÒü¬Òüä	tsuma/kanai	(my) wife	9	2026-06-25 10:52:58.049	2026-06-27 02:26:21.95	\N	\N	\N	\N	\N	\N	/media/openmoji/1F469	0
-27499	\N	ÒâåÒâ╝ÒâûÒâ½	teburu	b├án	10	2026-06-25 10:52:58.29	2026-06-27 02:26:21.965	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC	0
-27503	þ¬ô	Òü¥Òü®	mado	cß╗¡a sß╗ò	10	2026-06-25 10:52:58.302	2026-06-27 02:26:21.974	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA9F	0
-27507	\N	Òé│Òâ│ÒâôÒâï	konbini	convenience store	10	2026-06-25 10:52:58.315	2026-06-27 02:26:21.983	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA	0
-27509	Õû½ÞîÂÕ║ù	ÒüìÒüúÒüòÒüªÒéô	kissaten	qu├ín giß║úi kh├ít, qu├ín caffee	10	2026-06-25 10:52:58.321	2026-06-27 02:26:21.986	\N	\N	\N	\N	\N	\N	/media/openmoji/2615	0
-27496	þ«▒	Òü»Òüô	hako	c├íi hß╗Öp	10	2026-06-25 10:52:58.281	2026-06-27 02:26:22.001	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4E6	0
-27498	ÕåÀÞöÁÕ║½	ÒéîÒüäÒü×ÒüåÒüô	reizoko	tß╗º lß║ính	10	2026-06-25 10:52:58.287	2026-06-27 02:26:22.012	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9CA	0
-27561	\N	Òü┐ÒüïÒéô	mikan	qu├¢t	11	2026-06-25 10:52:58.55	2026-06-27 02:26:22.024	\N	\N	\N	\N	\N	\N	/media/openmoji/1F34A	0
-27563	\N	Òé½Òâ¼Òâ╝´╝╗Òâ®ÒéñÒé╣´╝¢	kare [raisu]	c├á ri (cãím)	11	2026-06-25 10:52:58.553	2026-06-27 02:26:22.038	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35B	0
-27637	\N	ÒüªÒéôÒüÀÒéë	tenpura	Tempura (m├│n hß║úi sß║ún v├á rau chi├¬n tß║®m bß╗Öt	12	2026-06-25 10:52:58.853	2026-06-27 02:26:22.052	\N	\N	\N	\N	\N	\N	/media/openmoji/1F364	0
-27766	µ£ì	ÒüÁÒüÅ	fuku	quß║ºn ├ío	15	2026-06-25 10:52:59.544	2026-06-27 02:26:22.084	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455	0
-27811	Úá¡	ÒüéÒüƒÒü¥	atama	─æß║ºu	16	2026-06-25 10:52:59.757	2026-06-27 02:26:22.097	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D1	0
-27813	Úíö	ÒüïÒüè	kao	mß║Àt	16	2026-06-25 10:52:59.763	2026-06-27 02:26:22.1	\N	\N	\N	\N	\N	\N	/media/openmoji/1F600	0
-27815	ÞÇ│	Òü┐Òü┐	mimi	tai	16	2026-06-25 10:52:59.767	2026-06-27 02:26:22.104	\N	\N	\N	\N	\N	\N	/media/openmoji/1F442	0
-27873	þªüþàÖ	ÒüìÒéôÒüêÒéô	kin'en	cß║Ñm h├║t thuß╗æc	17	2026-06-25 10:52:59.961	2026-06-27 02:26:22.11	\N	\N	\N	\N	\N	\N	/media/openmoji/1F48A	0
-27879	õ©èþØÇ	ÒüåÒéÅÒüÄ	uwagi	├ío kho├íc	17	2026-06-25 10:52:59.976	2026-06-27 02:26:22.119	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9E5	0
-27888	\N	ÒüïÒü£	kaze	cß║úm,c├║m	17	2026-06-25 10:52:59.995	2026-06-27 02:26:22.123	\N	\N	\N	\N	\N	\N	/media/openmoji/1F32C	0
-27931	µ┤ùµ┐»ÒüùÒü¥ÒüÖ	ÒüøÒéôÒüƒÒüÅÒüùÒü¥ÒüÖ	sentakushimasu	giß║Àt gi┼®, giß║Àt (quß║ºn ├ío)	19	2026-06-25 10:53:00.349	2026-06-27 02:26:22.132	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455	0
-28378	õ║ñþò¬	ÒüôÒüåÒü░Òéô	koban	─æß╗ôn cß║únh s├ít,bß╗æt cß║únh s├ít	29	2026-06-25 10:53:02.176	2026-06-27 02:26:22.191	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46E	0
-28464	õ║ñþò¬	ÒüôÒüåÒü░Òéô	koban	trß║ím cß║únh s├ít	30	2026-06-25 10:53:02.428	2026-06-27 02:26:22.208	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46E	0
-28500	\N	Òü«Òü×Òü┐	nozomi	name of a Shinkansen train (´¢×´╝ö´╝ÆÕÅÀ : Nozomi Superexpress No.42)	31	2026-06-25 10:53:02.585	2026-06-27 02:26:22.215	\N	\N	\N	\N	\N	\N	/media/openmoji/1F685	0
-29024	ÚøÀ	ÒüïÒü┐Òü¬Òéè	kaminari	thunder	39	2026-06-25 10:53:04.566	2026-06-27 02:26:22.279	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1	0
-29046	µ┤ïµ£ì	ÒéêÒüåÒüÁÒüÅ	yofuku	quß║ºn ├ío kiß╗âu t├óy ├óu	39	2026-06-25 10:53:04.61	2026-06-27 02:26:22.287	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455	0
-29159	ÚØ┤õ©ï	ÒüÅÒüñÒüùÒüƒ	kutsushita	vß╗ø	41	2026-06-25 10:53:05.028	2026-06-27 02:26:22.301	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F	0
-26982	ÕñºÕ¡ª	ÒüáÒüäÒüîÒüÅ	daigaku	trã░ß╗Øng ─æß║íi hß╗ìc	1	2026-06-25 10:52:56	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB	15
-26983	þùàÚÖó	Òü│ÒéçÒüåÒüäÒéô	byoin	bß╗çnh viß╗çn	1	2026-06-25 10:52:56.002	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E5	16
-27004	\N	ÒâûÒâ®Òé©Òâ½	burajiru	Brazil	1	2026-06-25 10:52:56.066	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E7-1F1F7	37
-27076	ÚúƒÕáé	ÒüùÒéçÒüÅÒü®Òüå	shokudo	nh├á ─ân	3	2026-06-25 10:52:56.529	2026-06-27 02:22:16.385	\N	\N	\N	\N	\N	\N	/media/openmoji/1F37D	0
-27077	õ║ïÕïÖµëÇ	ÒüÿÒéÇÒüùÒéç	jimusho	v─ân ph├▓ng	3	2026-06-25 10:52:56.532	2026-06-27 02:22:16.387	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2	0
-27081	Úâ¿Õ▒ï	Òü©Òéä	heya	c─ân ph├▓ng	3	2026-06-25 10:52:56.539	2026-06-27 02:22:16.389	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6CF	0
-27082	ÒâêÒéñÒâ¼´╝êÒüèµëïµ┤ùÒüä´╝ë	ÒâêÒéñÒâ¼´╝êÒüèÒüªÒüéÒéëÒüä´╝ë	toire (otearai)	nh├á vß╗ç sinh, ph├▓ng vß╗ç sinh, toa-l├®t	3	2026-06-25 10:52:56.541	2026-06-27 02:22:16.392	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6BD	0
-27088	´╝╗Òüè´╝¢Õø¢	´╝╗Òüè´╝¢ÒüÅÒü½	[o] kuni	─æß║Ñt nã░ß╗øc (cß╗ºa anh/chß╗ï)	3	2026-06-25 10:52:56.554	2026-06-27 02:22:16.394	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-27075	µòÖÕ«ñ	ÒüìÒéçÒüåÒüùÒüñ	kyoshitsu	lß╗øp hß╗ìc, ph├▓ng hß╗ìc	3	2026-06-25 10:52:56.528	2026-06-27 02:22:16.397	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB	0
-27078	õ╝ÜÞ¡░Õ«ñ	ÒüïÒüäÒüÄÒüùÒüñ	kaigishitsu	ph├▓ng hß╗ìp	3	2026-06-25 10:52:56.534	2026-06-27 02:22:16.404	\N	\N	\N	\N	\N	\N	/media/openmoji/1F465	0
-27109	\N	ÒéñÒé┐Òâ¬Òéó	itaria	Italy	3	2026-06-25 10:52:56.591	2026-06-27 02:22:16.445	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1F9	0
-27111	\N	ÒâòÒâ®Òâ│Òé╣	furansu	France	3	2026-06-25 10:52:56.594	2026-06-27 02:22:16.449	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7	0
-27119	ÞÁÀÒüìÒü¥ÒüÖ	ÒüèÒüìÒü¥ÒüÖ	okimasu	thß╗®c dß║¡y	4	2026-06-25 10:52:56.721	2026-06-27 02:22:16.452	\N	\N	\N	\N	\N	\N	/media/openmoji/1F31E	0
-27121	ÕâìÒüìÒü¥ÒüÖ	Òü»ÒüƒÒéëÒüìÒü¥ÒüÖ	hatarakimasu	l├ám viß╗çc	4	2026-06-25 10:52:56.725	2026-06-27 02:22:16.457	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC	0
-27123	ÕïëÕ╝ÀÒüùÒü¥ÒüÖ	Òü╣ÒéôÒüìÒéçÒüåÒüùÒü¥ÒüÖ	benkyoshimasu	hß╗ìc tß║¡p	4	2026-06-25 10:52:56.728	2026-06-27 02:22:16.463	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA	0
-27125	\N	ÒâçÒâæÒâ╝Òâê	depato	cß╗¡a h├áng b├ích h├│a	4	2026-06-25 10:52:56.734	2026-06-27 02:22:16.465	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6D2	0
-27127	ÚâÁõ¥┐Õ▒Ç	ÒéåÒüåÒü│ÒéôÒüìÒéçÒüÅ	yubinkyoku	bã░u ─æiß╗çn	4	2026-06-25 10:52:56.739	2026-06-27 02:22:16.468	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E4	0
-27129	þ¥ÄÞíôÚñ¿	Òü│ÒüÿÒéàÒüñÒüïÒéô	bijutsukan	viß╗çn bß║úo t├áng	4	2026-06-25 10:52:56.742	2026-06-27 02:22:16.472	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3DB	0
-27152	µÿáþö╗	ÒüêÒüäÒüî	eiga	film, movie	4	2026-06-25 10:52:56.79	2026-06-27 02:22:16.478	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC	0
-27113	\N	ÒâÉÒâ│Òé│Òé»	bankoku	Bangkok	3	2026-06-25 10:52:56.599	2026-06-27 02:25:26.704	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F9-1F1ED	0
-27136	ÕìêÕëì	ÒüöÒü£Òéô	gozen	buß╗òi s├íng	4	2026-06-25 10:52:56.757	2026-06-27 02:25:26.708	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305	0
-27137	ÕìêÕ¥î	ÒüöÒüö	gogo	buß╗òi chiß╗üu	4	2026-06-25 10:52:56.758	2026-06-27 02:25:26.71	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-27142	\N	ÒüìÒü«Òüå	kino	ng├áy h├┤m qua	4	2026-06-25 10:52:56.77	2026-06-27 02:25:26.719	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-27144	\N	ÒüéÒüùÒüƒ	ashita	ng├áy mai	4	2026-06-25 10:52:56.773	2026-06-27 02:25:26.723	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-27147	õ╗èµÖ®	ÒüôÒéôÒü░Òéô	konban	tß╗æi nay	4	2026-06-25 10:52:56.778	2026-06-27 02:25:26.727	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-27151	õ╝ÜÞ¡░	ÒüïÒüäÒüÄ	kaigi	meeting, conference (´¢×ÒéÆ ÒüùÒü¥ÒüÖ : hold a meeting)	4	2026-06-25 10:52:56.788	2026-06-27 02:25:26.733	\N	\N	\N	\N	\N	\N	/media/openmoji/1F465	0
-27154	µ»ÄµÖ®	Òü¥ÒüäÒü░Òéô	maiban	mß╗ùi tß╗æi	4	2026-06-25 10:52:56.793	2026-06-27 02:25:26.737	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-27157	þü½µø£µùÑ	ÒüïÒéêÒüåÒü│	kayobi	Tuesday	4	2026-06-25 10:52:56.804	2026-06-27 02:25:26.742	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-27159	µ£¿µø£µùÑ	ÒééÒüÅÒéêÒüåÒü│	mokuyobi	Thursday	4	2026-06-25 10:52:56.808	2026-06-27 02:25:26.749	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-27160	Úçæµø£µùÑ	ÒüìÒéôÒéêÒüåÒü│	kin'yobi	Friday	4	2026-06-25 10:52:56.809	2026-06-27 02:25:26.751	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-27162	µùÑµø£µùÑ	Òü½ÒüíÒéêÒüåÒü│	nichiyobi	Sunday	4	2026-06-25 10:52:56.814	2026-06-27 02:25:26.755	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-27193	ÚúøÞíîµ®ƒ	Òü▓ÒüôÒüåÒüì	hikoki	m├íy bay	5	2026-06-25 10:52:56.965	2026-06-27 02:18:03.267	\N	\N	\N	\N	\N	\N	/media/openmoji/2708	0
-27174	\N	Òâ¡Òâ│ÒâëÒâ│	rondon	London	4	2026-06-25 10:52:56.838	2026-06-27 02:25:26.759	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EC-1F1E7	0
-27185	\N	ÒâÉÒâ│Òé│Òé»	bankoku	Bangkok	4	2026-06-25 10:52:56.859	2026-06-27 02:25:26.763	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F9-1F1ED	0
-27191	\N	Òé╣Òâ╝ÒâæÒâ╝	supa	si├¬u thß╗ï	5	2026-06-25 10:52:56.958	2026-06-27 02:25:26.766	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6D2	0
-27199	\N	Òé┐Òé»ÒéÀÒâ╝	takushii	taxi	5	2026-06-25 10:52:56.991	2026-06-27 02:25:26.77	\N	\N	\N	\N	\N	\N	/media/openmoji/1F695	0
-27206	Õ«ÂµùÅ	ÒüïÒü×ÒüÅ	kazoku	gia ─æ├¼nh	5	2026-06-25 10:52:57.014	2026-06-27 02:25:26.774	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46A	0
-27237	Þ¬òþöƒµùÑ	ÒüƒÒéôÒüÿÒéçÒüåÒü│	tanjobi	sinh nhß║¡t	5	2026-06-25 10:52:57.107	2026-06-27 02:25:26.776	\N	\N	\N	\N	\N	\N	/media/openmoji/1F382	0
-27280	\N	Òâ¼ÒâØÒâ╝Òâê	repoto	b├ío c├ío	6	2026-06-25 10:52:57.335	2026-06-27 02:22:16.51	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-27261	\N	ÒüöÒü»Òéô	gohan	cãím, bß╗»a ─ân	6	2026-06-25 10:52:57.283	2026-06-27 02:22:16.512	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A	0
-27262	µ£ØÒüöÒü»Òéô	ÒüéÒüòÒüöÒü»Òéô	asagohan	cãím s├íng	6	2026-06-25 10:52:57.286	2026-06-27 02:22:16.481	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A	0
-27254	Þü×ÒüìÒü¥ÒüÖ	ÒüìÒüìÒü¥ÒüÖ	kikimasu	nghe	6	2026-06-25 10:52:57.263	2026-06-27 02:25:26.784	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5	0
-27263	µÿ╝ÒüöÒü»Òéô	Òü▓ÒéïÒüöÒü»Òéô	hirugohan	cãím trã░a	6	2026-06-25 10:52:57.289	2026-06-27 02:22:16.484	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A	0
-27264	µÖ®ÒüöÒü»Òéô	Òü░ÒéôÒüöÒü»Òéô	bangohan	cãím tß╗æi	6	2026-06-25 10:52:57.292	2026-06-27 02:22:16.486	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A	0
-27266	ÕìÁ	ÒüƒÒü¥Òüö	tamago	trß╗®ng	6	2026-06-25 10:52:57.299	2026-06-27 02:22:16.488	\N	\N	\N	\N	\N	\N	/media/openmoji/1F373	0
-27269	ÚçÄÞÅ£	ÒéäÒüòÒüä	yasai	rau	6	2026-06-25 10:52:57.307	2026-06-27 02:22:16.491	\N	\N	\N	\N	\N	\N	/media/openmoji/1F966	0
-27272	ÒüèÞîÂ	ÒüèÒüíÒéâ	ocha	tr├á (n├│i chung)	6	2026-06-25 10:52:57.313	2026-06-27 02:22:16.493	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375	0
-27273	þ┤àÞîÂ	ÒüôÒüåÒüíÒéâ	kocha	tr├á ─æen	6	2026-06-25 10:52:57.317	2026-06-27 02:22:16.495	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375	0
-27274	þëøõ╣│´╝êÒâƒÒâ½Òé»´╝ë	ÒüÄÒéàÒüåÒü½ÒéàÒüå´╝êÒâƒÒâ½Òé»´╝ë	gyunyu (miruku)	sß╗»a b├▓	6	2026-06-25 10:52:57.32	2026-06-27 02:22:16.497	\N	\N	\N	\N	\N	\N	/media/openmoji/1F95B	0
-27278	þàÖÞìë	ÒüƒÒü░Òüô	tabako	tobacco, cigarette	6	2026-06-25 10:52:57.329	2026-06-27 02:22:16.501	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6AC	0
-27316	þ┐ÆÒüäÒü¥ÒüÖ	Òü¬ÒéëÒüäÒü¥ÒüÖ	naraimasu	hß╗ìc, hß╗ìc tß║¡p	7	2026-06-25 10:52:57.538	2026-06-27 02:22:16.505	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA	0
-27255	Þ¬¡Òü┐Òü¥ÒüÖ	ÒéêÒü┐Òü¥ÒüÖ	yomimasu	─æß╗ìc	6	2026-06-25 10:52:57.266	2026-06-27 02:25:26.787	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6	0
-27257	Þ▓ÀÒüäÒü¥ÒüÖ	ÒüïÒüäÒü¥ÒüÖ	kaimasu	mua	6	2026-06-25 10:52:57.271	2026-06-27 02:25:26.791	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA	0
-27279	µëïþ┤Ö	ÒüªÒüîÒü┐	tegami	thã░	6	2026-06-25 10:52:57.332	2026-06-27 02:25:26.797	\N	\N	\N	\N	\N	\N	/media/openmoji/2709	0
-27281	ÕåÖþ£ƒ	ÒüùÒéâÒüùÒéô	shashin	ß║únh, bß╗®c ß║únh	6	2026-06-25 10:52:57.336	2026-06-27 02:25:26.801	\N	\N	\N	\N	\N	\N	/media/openmoji/1F5BC	0
-27284	Õ║¡	Òü½ÒéÅ	niwa	vã░ß╗Øn	6	2026-06-25 10:52:57.343	2026-06-27 02:25:26.806	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33B	0
-27287	\N	ÒéÁÒââÒé½Òâ╝	sakka	─æ├í b├│ng	6	2026-06-25 10:52:57.351	2026-06-27 02:25:26.811	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD	0
-27300	\N	ÒâíÒé¡ÒéÀÒé│	mekishiko	Mexico	6	2026-06-25 10:52:57.378	2026-06-27 02:25:26.817	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F2-1F1FD	0
-27317	ÒüïÒüæÒü¥ÒüÖ´╝╗Úø╗Þ®▒ÒéÆ´¢×´╝¢	ÒüïÒüæÒü¥ÒüÖ´╝╗ÒüºÒéôÒéÅÒéÆ´¢×´╝¢	kakemasu [denwawo~]	gß╗ìi ─æiß╗çn	7	2026-06-25 10:52:57.541	2026-06-27 02:22:16.514	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1	0
-27337	ÒüèÚçæ	ÒüèÒüïÒü¡	okane	tiß╗ün	7	2026-06-25 10:52:57.591	2026-06-27 02:22:16.517	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-27359	ÒüèÕ£ƒþöú	ÒüèÒü┐ÒéäÒüÆ	omiyage	qu├á lã░u niß╗çm	7	2026-06-25 10:52:57.633	2026-06-27 02:22:16.519	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381	0
-27319	\N	Òü»Òüù	hashi	─æ┼®a	7	2026-06-25 10:52:57.544	2026-06-27 02:25:26.826	\N	\N	\N	\N	\N	\N	/media/openmoji/1F962	0
-27321	\N	ÒâèÒéñÒâò	naifu	dao	7	2026-06-25 10:52:57.555	2026-06-27 02:25:26.834	\N	\N	\N	\N	\N	\N	/media/openmoji/1F52A	0
-27323	\N	Òü»ÒüòÒü┐	hasami	k├®o	7	2026-06-25 10:52:57.559	2026-06-27 02:25:26.84	\N	\N	\N	\N	\N	\N	/media/openmoji/2702	0
-27326	\N	ÒâíÒâ╝Òâ½	meru	e-mail	7	2026-06-25 10:52:57.566	2026-06-27 02:25:26.848	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4E7	0
-27332	þ┤Ö	ÒüïÒü┐	kami	giß║Ñy	7	2026-06-25 10:52:57.577	2026-06-27 02:25:26.853	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4	0
-27334	\N	ÒéÀÒâúÒâä	shatsu	├ío sãí mi	7	2026-06-25 10:52:57.584	2026-06-27 02:25:26.856	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455	0
-27338	Õêçþ¼ª	ÒüìÒüúÒüÀ	kippu	v├®	7	2026-06-25 10:52:57.593	2026-06-27 02:25:26.861	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AB	0
-27340	þêÂ	ÒüíÒüí	chichi	cha t├┤i, bß╗æ	7	2026-06-25 10:52:57.598	2026-06-27 02:25:26.868	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468	0
-27342	ÒüèþêÂÒüòÒéô	ÒüèÒü¿ÒüåÒüòÒéô	otosan	bß╗æ cß╗ºa ngã░ß╗Øi kh├íc	7	2026-06-25 10:52:57.602	2026-06-27 02:25:26.872	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468	0
-27354	Òé╣ÒâÜÒéñÒâ│	Òé╣ÒâæÒéñÒâ│	supain	Spain	7	2026-06-25 10:52:57.623	2026-06-27 02:25:26.877	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EA-1F1F8	0
-27356	\N	Òâ»Òâ╝ÒâùÒâ¡	wapuro	m├íy ─æ├ính chß╗»	7	2026-06-25 10:52:57.627	2026-06-27 02:25:26.886	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BB	0
-27360	\N	Òâ¿Òâ╝Òâ¡ÒââÒâæ	yoroppa	Ch├óu ├éu	7	2026-06-25 10:52:57.635	2026-06-27 02:25:26.891	\N	\N	\N	\N	\N	\N	/media/openmoji/1F30D	0
-27377	µÜæÒüäÒÇüþå▒Òüä	ÒüéÒüñÒüä	atsui	n├│ng	8	2026-06-25 10:52:57.744	2026-06-27 02:25:26.894	\N	\N	\N	\N	\N	\N	/media/openmoji/1F321	0
-27380	ÚøúÒüùÒüä	ÒéÇÒüÜÒüïÒüùÒüä	muzukashii	kh├│ (b├ái tß║¡p kh├│)	8	2026-06-25 10:52:57.752	2026-06-27 02:25:26.905	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA	0
-27381	µÿôÒüùÒüä	ÒéäÒüòÒüùÒüä	yasashii	dß╗à (b├ái tß║¡p dß╗à), dß╗ïu d├áng	8	2026-06-25 10:52:57.756	2026-06-27 02:25:26.91	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA	0
-27388	µÑ¢ÒüùÒüä	ÒüƒÒü«ÒüùÒüä	tanoshii	vui vß║╗	8	2026-06-25 10:52:57.772	2026-06-27 02:25:26.921	\N	\N	\N	\N	\N	\N	/media/openmoji/1F604	0
-27390	Ú╗ÆÒüä	ÒüÅÒéìÒüä	kuroi	─æen	8	2026-06-25 10:52:57.776	2026-06-27 02:25:26.926	\N	\N	\N	\N	\N	\N	/media/openmoji/26AB	0
-27422	ÕïëÕ╝À	Òü╣ÒéôÒüìÒéçÒüå	benkyo	hß╗ìc tß║¡p ( danh tß╗½ )	8	2026-06-25 10:52:57.853	2026-06-27 02:22:16.521	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA	0
-27444	µ¡îÞê×õ╝Ä	ÒüïÒüÂÒüì	kabuki	kß╗ïch Kabuki (mß╗Öt loß║íi ca kß╗ïch truyß╗ün thß╗æng cß╗ºa Nhß║¡t)	9	2026-06-25 10:52:58.011	2026-06-27 02:26:21.936	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AD	0
-27424	µùÑµ£¼Òü« þöƒµ┤╗Òü½ µàúÒéîÒü¥ÒüùÒüƒÒüïÒÇé	Òü½Òü╗ÒéôÒü« ÒüøÒüäÒüïÒüñÒü½ Òü¬ÒéîÒü¥ÒüùÒüƒÒüïÒÇé	nihonno seikatsuni naremashitaka.	─É├ú quen vß╗øi cuß╗Öc sß╗æng Nhß║¡t Bß║ún chã░a ?	8	2026-06-25 10:52:57.858	2026-06-27 02:22:16.524	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EF-1F1F5	0
-27451	þ┤░ÒüïÒüä ÒüèÚçæ	ÒüôÒü¥ÒüïÒüä ÒüèÒüïÒü¡	komakai okane	tiß╗ün lß║╗	9	2026-06-25 10:52:58.026	2026-06-27 02:22:16.527	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-27452	\N	ÒâüÒé▒ÒââÒâê	chiketto	v├® (xem h├▓a nhß║íc, xem phim)	9	2026-06-25 10:52:58.03	2026-06-27 02:22:16.529	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC	0
-27395	þö║	Òü¥Òüí	machi	th├ánh phß╗æ	8	2026-06-25 10:52:57.795	2026-06-27 02:25:26.938	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3D9	0
-27399	\N	Òâ¼Òé╣ÒâêÒâ®Òâ│	resutoran	restaurant	8	2026-06-25 10:52:57.804	2026-06-27 02:25:26.944	\N	\N	\N	\N	\N	\N	/media/openmoji/1F374	0
-27416	\N	ÒéÀÒâúÒâ│ÒâÅÒéñ	shanhai	Thã░ß╗úng Hß║úi	8	2026-06-25 10:52:57.839	2026-06-27 02:25:26.953	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E8-1F1F3	0
-27418	ÕÑêÞë»Õà¼Õ£Æ	Òü¬ÒéëÒüôÒüåÒüêÒéô	narakoen	Nara Park	8	2026-06-25 10:52:57.843	2026-06-27 02:25:26.957	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3DE	0
-27425	þÉÁþÉÂµ╣û	Òü│ÒéÅÒüô	biwako	Hß╗ô Biwaco	8	2026-06-25 10:52:57.863	2026-06-27 02:25:26.959	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3DE	0
-27435	ÚçÄþÉâ	ÒéäÒüìÒéàÒüå	yakyu	b├│ng ch├áy (´¢×ÒéÆÒüùÒü¥ÒüÖ´╝Üchãíi b├│ng ch├áy)	9	2026-06-25 10:52:57.991	2026-06-27 02:25:26.965	\N	\N	\N	\N	\N	\N	/media/openmoji/26BE	0
-27437	µùàÞíî	ÒéèÒéçÒüôÒüå	ryoko	trip, tour (´¢×´╝╗ÒéÆ´╝¢ÒüùÒü¥ÒüÖ : travel, make a trip)	9	2026-06-25 10:52:57.996	2026-06-27 02:25:26.972	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9F3	0
-27438	Úƒ│µÑ¢	ÒüèÒéôÒüîÒüÅ	ongaku	├óm nhß║íc	9	2026-06-25 10:52:57.999	2026-06-27 02:25:26.974	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5	0
-27440	\N	Òé»Òâ®ÒéÀÒââÒé»	kurashikku	nhß║íc cß╗ò ─æiß╗ân	9	2026-06-25 10:52:58.003	2026-06-27 02:25:26.979	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5	0
-27442	\N	Òé│Òâ│ÒéÁÒâ╝Òâê	konsato	buß╗òi h├▓a nhß║íc	9	2026-06-25 10:52:58.007	2026-06-27 02:25:26.986	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5	0
-27396	ÚúƒÒü╣þë®	ÒüƒÒü╣ÒééÒü«	tabemono	thß╗®c ─ân	8	2026-06-25 10:52:57.798	2026-06-27 02:25:26.99	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372	0
-27458	Õñ½´╝Åõ©╗õ║║	ÒüèÒüúÒü¿´╝ÅÒüùÒéàÒüÿÒéô	otto/shujin	(my) husband	9	2026-06-25 10:52:58.043	2026-06-27 02:26:21.941	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468	0
-27459	ÕÑÑÒüòÒéô	ÒüèÒüÅÒüòÒéô	okusan	vß╗ú (d├╣ng khi n├│i vß╗ü vß╗ú ngã░ß╗Øi kh├íc)	9	2026-06-25 10:52:58.046	2026-06-27 02:26:21.946	\N	\N	\N	\N	\N	\N	/media/openmoji/1F469	0
-27480	\N	ÒééÒüùÒééÒüù	moshimoshi	alo (gß╗ìi ─æiß╗çn thoß║íi)	9	2026-06-25 10:52:58.087	2026-06-27 02:22:16.531	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE	0
-27500	\N	ÒâÖÒââÒâë	beddo	giã░ß╗Øng	10	2026-06-25 10:52:58.293	2026-06-27 02:22:16.533	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6CF	0
-27531	\N	ÒâòÒéúÒâ½Òâá	firumu	phim	10	2026-06-25 10:52:58.387	2026-06-27 02:22:16.535	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC	0
-27487	þöÀÒü« Õ¡É	ÒüèÒü¿ÒüôÒü« Òüô	otokono ko	cß║¡u con trai	10	2026-06-25 10:52:58.251	2026-06-27 02:25:26.993	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2	0
-27488	ÕÑ│Òü« Õ¡É	ÒüèÒéôÒü¬Òü« Òüô	onnano ko	c├┤ con g├íi	10	2026-06-25 10:52:58.254	2026-06-27 02:25:26.998	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2	0
-27491	\N	ÒâæÒâ│ÒâÇ	panda	panda	10	2026-06-25 10:52:58.264	2026-06-27 02:25:27.001	\N	\N	\N	\N	\N	\N	/media/openmoji/1F43C	0
-27508	Õà¼Õ£Æ	ÒüôÒüåÒüêÒéô	koen	c├┤ng vi├¬n	10	2026-06-25 10:52:58.318	2026-06-27 02:25:27.012	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3DE	0
-27495	Úø╗µ▒á	ÒüºÒéôÒüí	denchi	cß╗Ñc Pin	10	2026-06-25 10:52:58.277	2026-06-27 02:26:21.955	\N	\N	\N	\N	\N	\N	/media/openmoji/1F50B	0
-27497	\N	Òé╣ÒéñÒââÒâü	suitchi	c├┤ng tß║»c	10	2026-06-25 10:52:58.284	2026-06-27 02:26:21.958	\N	\N	\N	\N	\N	\N	/media/openmoji/1F50C	0
-27502	\N	ÒâëÒéó	doa	cß╗¡a	10	2026-06-25 10:52:58.299	2026-06-27 02:26:21.97	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6AA	0
-27506	\N	ATM	ATM	cash machine, ATM (Automatic Teller Machine)	10	2026-06-25 10:52:58.312	2026-06-27 02:26:21.98	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E7	0
-27526	\N	ÒâèÒâ│ÒâùÒâ®Òâ╝	nanpura	nam pla	10	2026-06-25 10:52:58.374	2026-06-27 02:26:21.991	\N	\N	\N	\N	\N	\N	/media/openmoji/1F41F	0
-27529	µØ▒õ║¼ ÒâçÒéúÒé║ÒâïÒâ╝Òâ®Òâ│Òâë	Òü¿ÒüåÒüìÒéçÒüå ÒâçÒéúÒé║ÒâïÒâ╝Òâ®Òâ│Òâë	tokyo dizuniirando	Tokyo Disneyland	10	2026-06-25 10:52:58.38	2026-06-27 02:26:21.997	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3F0	0
-27541	\N	ÒüïÒüïÒéèÒü¥ÒüÖ	kakarimasu	mß║Ñt, tß╗æn (thß╗Øi gian, tiß╗ün bß║íc)	11	2026-06-25 10:52:58.508	2026-06-27 02:22:16.536	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-27599	\N	Òé¬Òâ╝Òé╣ÒâêÒâ®Òâ¬Òéó	osutoraria	nã░ß╗øc ├Üc	11	2026-06-25 10:52:58.636	2026-06-27 02:22:16.541	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-27565	Õêçµëï	ÒüìÒüúÒüª	kitte	tem	11	2026-06-25 10:52:58.557	2026-06-27 02:25:27.02	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4EF	0
-27566	\N	Òü»ÒüîÒüì	hagaki	bã░u thiß║┐p	11	2026-06-25 10:52:58.563	2026-06-27 02:25:27.022	\N	\N	\N	\N	\N	\N	/media/openmoji/2709	0
-27568	õ©íÞª¬	ÒéèÒéçÒüåÒüùÒéô	ryoshin	bß╗æ mß║╣	11	2026-06-25 10:52:58.567	2026-06-27 02:25:27.024	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468	0
-27535	\N	ÒâüÒâ¬Òé¢Òâ╝Òé╣	chirisosu	tã░ãíng ß╗øt (chili sauce)	10	2026-06-25 10:52:58.414	2026-06-27 02:26:22.019	\N	\N	\N	\N	\N	\N	/media/openmoji/1F336	0
-27587	Õà¿Úâ¿Òüº	Òü£ÒéôÒüÂÒüº	zenbude	tß║Ñt cß║ú, to├án bß╗Ö	11	2026-06-25 10:52:58.605	2026-06-27 02:26:22.032	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F	0
-27676	þ¥ÄÞíô	Òü│ÒüÿÒéàÒüñ	bijutsu	mß╗╣ thuß║¡t	13	2026-06-25 10:52:59.05	2026-06-27 02:22:16.55	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8	0
-27635	Õê║Þ║½	ÒüòÒüùÒü┐	sashimi	Sashimi (m├│n gß╗Åi c├í sß╗æng)	12	2026-06-25 10:52:58.848	2026-06-27 02:22:16.551	\N	\N	\N	\N	\N	\N	/media/openmoji/1F41F	0
-27629	þ®║µ©»	ÒüÅÒüåÒüôÒüå	kuko	s├ón bay	12	2026-06-25 10:52:58.834	2026-06-27 02:25:27.032	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6EB	0
-27663	µ││ÒüÄÒü¥ÒüÖ	ÒüèÒéêÒüÄÒü¥ÒüÖ	oyogimasu	bãíi lß╗Öi	13	2026-06-25 10:52:59.021	2026-06-27 02:25:27.038	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3CA	0
-27678	\N	Òé╣Òé¡Òâ╝	sukii	trã░ß╗út tuyß║┐t	13	2026-06-25 10:52:59.054	2026-06-27 02:22:16.553	\N	\N	\N	\N	\N	\N	/media/openmoji/2744	0
-27688	Õ«ÜÚúƒ	ÒüªÒüäÒüùÒéçÒüÅ	teishoku	cãím suß║Ñt, cãím phß║ºn	13	2026-06-25 10:52:59.09	2026-06-27 02:22:16.555	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35A	0
-27728	Úø╗µ░ù	ÒüºÒéôÒüì	denki	electricity, light	14	2026-06-25 10:52:59.363	2026-06-27 02:22:16.561	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1	0
-27701	õ╝ÜÞ¡░	ÒüïÒüäÒüÄ	kaigi	hß╗Öi hß╗ìp, cuß╗Öc hß╗ìp	13	2026-06-25 10:52:59.144	2026-06-27 02:25:27.044	\N	\N	\N	\N	\N	\N	/media/openmoji/1F465	0
-27729	\N	Òé¿ÒéóÒé│Òâ│	eakon	─æiß╗üu h├▓a	14	2026-06-25 10:52:59.365	2026-06-27 02:26:22.068	\N	\N	\N	\N	\N	\N	/media/openmoji/2744	0
-27794	µÁ┤Òü│Òü¥ÒüÖ´╝╗ÒéÀÒâúÒâ»Òâ╝ÒéÆ´¢×´╝¢	ÒüéÒü│Òü¥ÒüÖ´╝╗ÒéÀÒâúÒâ»Òâ╝ÒéÆ´¢×´╝¢	abimasu [shawawo~]	tß║»m	16	2026-06-25 10:52:59.724	2026-06-27 02:22:16.566	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6BF	0
-27765	µÖéÕê╗Þí¿	ÒüÿÒüôÒüÅÒü▓ÒéçÒüå	jigokuhyo	bß║úng ghi thß╗Øi gian t├áu chß║íy	15	2026-06-25 10:52:59.542	2026-06-27 02:25:27.052	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3	0
-27788	\N	ÒâùÒâ¼ÒéñÒé¼ÒéñÒâë	pureigaido	quß║ºy b├ín v├®	15	2026-06-25 10:52:59.617	2026-06-27 02:25:27.056	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AB	0
-27808	µÿÄÒéïÒüä	ÒüéÒüïÒéïÒüä	akarui	s├íng	16	2026-06-25 10:52:59.751	2026-06-27 02:25:27.06	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305	0
-27812	Ú½¬	ÒüïÒü┐	kami	t├│c	16	2026-06-25 10:52:59.759	2026-06-27 02:25:27.067	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4	0
-27810	õ¢ô	ÒüïÒéëÒüá	karada	cãí thß╗â	16	2026-06-25 10:52:59.754	2026-06-27 02:26:22.092	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9CD	0
-27834	ÒüèÕ╝òÒüìÕç║ÒüùÒüºÒüÖÒüïÒÇé	ÒüèÒü▓ÒüìÒüáÒüùÒüºÒüÖÒüïÒÇé	ohikidashidesuka.	anh chß╗ï r├║t tiß╗ün phß║úi kh├┤ng?	16	2026-06-25 10:52:59.802	2026-06-27 02:22:16.571	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-27837	\N	Òé¡ÒâúÒââÒéÀÒâÑÒé½Òâ╝Òâë	kyasshukado	Thß║╗ ng├ón h├áng, thß║╗ ATM	16	2026-06-25 10:52:59.806	2026-06-27 02:22:16.573	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E6	0
-27839	ÚçæÚíì	ÒüìÒéôÒüîÒüÅ	kingaku	sß╗æ tiß╗ün, t├ái khoß║ún	16	2026-06-25 10:52:59.809	2026-06-27 02:22:16.576	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-27852	þòÖÕ¡ªþöƒ	ÒéèÒéàÒüåÒüîÒüÅÒüøÒüä	ryugakusei	du hß╗ìc sinh	16	2026-06-25 10:52:59.836	2026-06-27 02:22:16.579	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393	0
-27859	µëòÒüäÒü¥ÒüÖ	Òü»ÒéëÒüäÒü¥ÒüÖ	haraimasu	trß║ú tiß╗ün	17	2026-06-25 10:52:59.927	2026-06-27 02:22:16.582	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-27878	\N	´╝╗Òüè´╝¢ÒüÁÒéì	[o] furo	bß╗ôn tß║»m	17	2026-06-25 10:52:59.973	2026-06-27 02:22:16.586	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6BF	0
-27824	\N	ÒéÀÒâúÒâ»Òâ╝	shawa	V├▓i hoa sen	16	2026-06-25 10:52:59.784	2026-06-27 02:22:16.588	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6BF	0
-27846	\N	ÒâÖÒâ®Òé»Òâ½Òé╣	berakurusu	Veracruz (in Mexico)	16	2026-06-25 10:52:59.824	2026-06-27 02:25:27.077	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F2-1F1FD	0
-27814	þø«	Òéü	me	mß║»t	16	2026-06-25 10:52:59.765	2026-06-27 02:26:22.102	\N	\N	\N	\N	\N	\N	/media/openmoji/1F441	0
-27817	ÕÅú	ÒüÅÒüí	kuchi	miß╗çng	16	2026-06-25 10:52:59.77	2026-06-27 02:26:22.106	\N	\N	\N	\N	\N	\N	/media/openmoji/1F444	0
-27877	Þû¼	ÒüÅÒüÖÒéè	kusuri	thuß╗æc	17	2026-06-25 10:52:59.97	2026-06-27 02:26:22.116	\N	\N	\N	\N	\N	\N	/media/openmoji/1F48A	0
-27880	õ©ïþØÇ	ÒüùÒüƒÒüÄ	shitagi	quß║ºn ├ío l├│t	17	2026-06-25 10:52:59.978	2026-06-27 02:26:22.121	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455	0
-27914	Úª¼	ÒüåÒü¥	uma	horse	18	2026-06-25 10:53:00.197	2026-06-27 02:22:16.594	\N	\N	\N	\N	\N	\N	/media/openmoji/1F434	0
-27925	ÞªïÕ¡ªÒüùÒü¥ÒüÖ	ÒüæÒéôÒüîÒüÅÒüùÒü¥ÒüÖ	kengakushimasu	tham quan vß╗øi mß╗Ñc ─æ├¡ch hß╗ìc tß║¡p	18	2026-06-25 10:53:00.239	2026-06-27 02:22:16.596	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA	0
-27929	µ│èÒü¥ÒéèÒü¥ÒüÖ´╝╗ÒâøÒâåÒâ½Òü½´¢×´╝¢	Òü¿Òü¥ÒéèÒü¥ÒüÖ´╝╗ÒâøÒâåÒâ½Òü½´¢×´╝¢	tomarimasu [hoteruni~]	trß╗ì, ngß╗º trß╗ì	19	2026-06-25 10:53:00.345	2026-06-27 02:22:16.598	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634	0
-27933	þ£áÒüä	Òü¡ÒéÇÒüä	nemui	buß╗ôn ngß╗º	19	2026-06-25 10:53:00.352	2026-06-27 02:22:16.6	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634	0
-27939	ÒüèÞîÂ	ÒüèÒüíÒéâ	ocha	tr├á ─æß║ío	19	2026-06-25 10:53:00.365	2026-06-27 02:22:16.602	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375	0
-27897	Õ╝¥ÒüìÒü¥ÒüÖ	Òü▓ÒüìÒü¥ÒüÖ	hikimasu	chãíi (nhß║íc cß╗Ñ)	18	2026-06-25 10:53:00.133	2026-06-27 02:25:27.082	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5	0
-27904	\N	ÒâöÒéóÒâÄ	piano	─æ├án piano	18	2026-06-25 10:53:00.162	2026-06-27 02:25:27.087	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B9	0
-27912	þñ¥ÚòÀ	ÒüùÒéâÒüíÒéçÒüå	shacho	gi├ím ─æß╗æc	18	2026-06-25 10:53:00.191	2026-06-27 02:26:22.126	\N	\N	\N	\N	\N	\N	/media/openmoji/1F454	0
-27927	þëºÕá┤	Òü╝ÒüÅÒüÿÒéçÒüå	bokujo	trang trß║íi ch─ân nu├┤i	18	2026-06-25 10:53:00.245	2026-06-27 02:26:22.136	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6CF	0
-28020	µ£ê	ÒüñÒüì	tsuki	moon	21	2026-06-25 10:53:00.7	2026-06-27 02:22:16.612	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-27988	Õø¢Òü© Õ©░ÒéïÒü«´╝ƒ	ÒüÅÒü½Òü© ÒüïÒüêÒéïÒü«´╝ƒ	kunihe kaeruno´╝ƒ	Anh/ chß╗ï sß║¢ vß╗ü nã░ß╗øc kh├┤ng?	20	2026-06-25 10:53:00.54	2026-06-27 02:22:16.613	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-27960	\N	Òé▒Òâ╝Òé¡	keki	b├ính ga-t├┤	19	2026-06-25 10:53:00.402	2026-06-27 02:25:27.092	\N	\N	\N	\N	\N	\N	/media/openmoji/1F370	0
-28029	\N	ÒééÒüíÒéìÒéô	mochiron	tß║Ñt nhi├¬n	21	2026-06-25 10:53:00.721	2026-06-27 02:26:22.146	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F	0
-28062	\N	Òé│Òâ╝Òâê	koto	├ío kho├íc	22	2026-06-25 10:53:00.875	2026-06-27 02:26:22.152	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9E5	0
-28063	\N	Òé╗Òâ╝Òé┐Òâ╝	seta	├ío len	22	2026-06-25 10:53:00.879	2026-06-27 02:26:22.155	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9E5	0
-28081	µè╝ÒüùÕàÑÒéî	ÒüèÒüùÒüäÒéî	oshiire	chß╗ù ─æß╗â ch─ân gß╗æi trong ─ân ph├▓ng kiß╗âu Nhß║¡t	22	2026-06-25 10:53:00.92	2026-06-27 02:26:22.159	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6CC	0
-28121	Úø╗µ░ùÕ▒ï	ÒüºÒéôÒüìÒéä	denkiya	cß╗¡a h├áng ─æß╗ô ─æiß╗çn	23	2026-06-25 10:53:01.095	2026-06-27 02:22:16.618	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1	0
-28092	Õ╝òÒüìÒü¥ÒüÖ	Òü▓ÒüìÒü¥ÒüÖ	hikimasu	k├®o	23	2026-06-25 10:53:01.029	2026-06-27 02:25:27.107	\N	\N	\N	\N	\N	\N	/media/openmoji/2702	0
-28096	µ¡®ÒüìÒü¥ÒüÖ	ÒüéÒéïÒüìÒü¥ÒüÖ	arukimasu	─æi bß╗Ö (tr├¬n ─æã░ß╗Øng)	23	2026-06-25 10:53:01.035	2026-06-27 02:25:27.109	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6B6	0
-28145	µ»ìÒü« µùÑ	Òü»Òü»Òü« Òü▓	hahano hi	ng├áy cß╗ºa mß║╣	24	2026-06-25 10:53:01.261	2026-06-27 02:25:27.12	\N	\N	\N	\N	\N	\N	/media/openmoji/1F469	0
-28142	Õà¿Úâ¿	Òü£ÒéôÒüÂ	zenbu	to├án bß╗Ö, tß║Ñt cß║ú	24	2026-06-25 10:53:01.254	2026-06-27 02:26:22.165	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F	0
-28181	ÚüïÕïòõ╝Ü	ÒüåÒéôÒü®ÒüåÒüïÒüä	undokai	hß╗Öi thi thß╗â thao	26	2026-06-25 10:53:01.516	2026-06-27 02:25:27.123	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD	0
-28186	Þ▓íÕ©â	ÒüòÒüäÒüÁ	saifu	wallet, purse	26	2026-06-25 10:53:01.528	2026-06-27 02:26:22.169	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45B	0
-28223	µû░Þü×þñ¥	ÒüùÒéôÒüÂÒéôÒüùÒéâ	shinbunsha	c├┤ng ty ph├ít h├ánh b├ío, t├▓a soß║ín b├ío	26	2026-06-25 10:53:01.605	2026-06-27 02:22:16.626	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-28283	ÕÅ░µëÇ	ÒüáÒüäÒü®ÒüôÒéì	daidokoro	nh├á bß║┐p	27	2026-06-25 10:53:01.815	2026-06-27 02:26:22.18	\N	\N	\N	\N	\N	\N	/media/openmoji/1F373	0
-28231	Úø╗Õ¡ÉÒâíÒâ╝Òâ½	ÒüºÒéôÒüùÒâíÒâ╝Òâ½	denshimeru	thã░ ─æiß╗çn tß╗¡, e-mail	26	2026-06-25 10:53:01.624	2026-06-27 02:22:16.629	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1	0
-28242	Ú│Ñ	Òü¿Òéè	tori	chim	27	2026-06-25 10:53:01.737	2026-06-27 02:22:16.631	\N	\N	\N	\N	\N	\N	/media/openmoji/1F414	0
-28286	þºïÞæëÕÄƒ	ÒüéÒüìÒü»Òü░Òéë	akihabara	khu b├ín ─æß╗ô ─æiß╗çn tß╗¡ nß╗òi tiß║┐ng ß╗ƒ Tokyo	27	2026-06-25 10:53:01.822	2026-06-27 02:22:16.635	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1	0
-28226	ÒüôÒü®ÒééÒü« µùÑ	ÒüôÒü®ÒééÒü« Òü▓	kodomono hi	ng├áy trß║╗ em	26	2026-06-25 10:53:01.613	2026-06-27 02:25:27.127	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2	0
-28269	õ¥ïÒüêÒü░	ÒüƒÒü¿ÒüêÒü░	tatoeba	v├¡ dß╗Ñ	27	2026-06-25 10:53:01.789	2026-06-27 02:25:27.135	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45B	0
-28285	ÚûóÞÑ┐þ®║µ©»	ÒüïÒéôÒüòÒüäÒüÅÒüåÒüôÒüå	kansaikuko	s├ón bay Kansai	27	2026-06-25 10:53:01.82	2026-06-27 02:25:27.137	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6EB	0
-28338	ÒüèþƒÑÒéëÒüø	ÒüèÒüùÒéëÒüø	oshirase	th├┤ng b├ío	28	2026-06-25 10:53:02.007	2026-06-27 02:22:16.64	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-28300	ÕüëÒüä	ÒüêÒéëÒüä	erai	v─® ─æß║íi, k├¡nh trß╗ìng	28	2026-06-25 10:53:01.934	2026-06-27 02:25:27.143	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
-28311	\N	Òé¼Òâá	gamu	kß║╣o cao su	28	2026-06-25 10:53:01.953	2026-06-27 02:25:27.147	\N	\N	\N	\N	\N	\N	/media/openmoji/1F36C	0
-28304	ÕÅ░µëÇ	ÒüáÒüäÒü®ÒüôÒéì	daidokoro	kitchen	28	2026-06-25 10:53:01.94	2026-06-27 02:26:22.184	\N	\N	\N	\N	\N	\N	/media/openmoji/1F373	0
-28359	þá┤ÒéîÒü¥ÒüÖ´╝╗þ┤ÖÒüî´¢×´╝¢	ÒéäÒüÂÒéîÒü¥ÒüÖ´╝╗ÒüïÒü┐Òüî´¢×´╝¢	yaburemasu [kamiga~]	r├ích(giß║Ñy)	29	2026-06-25 10:53:02.122	2026-06-27 02:25:27.153	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4	0
-28406	Þ▓íÕ©â	ÒüòÒüäÒüÁ	saifu	wallet, purse	29	2026-06-25 10:53:02.235	2026-06-27 02:26:22.197	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45B	0
-28415	µñìÒüêÒü¥ÒüÖ	ÒüåÒüêÒü¥ÒüÖ	uemasu	trß╗ông (c├óy)	30	2026-06-25 10:53:02.332	2026-06-27 02:22:16.647	\N	\N	\N	\N	\N	\N	/media/openmoji/1F333	0
-28360	µ▒ÜÒéîÒü¥ÒüÖ´╝╗µ£ìÒüî´¢×´╝¢	ÒéêÒüöÒéîÒü¥ÒüÖ´╝╗ÒüÁÒüÅÒüî´¢×´╝¢	yogoremasu [fukuga~]	dãí,bß║®n(tay)	29	2026-06-25 10:53:02.123	2026-06-27 02:25:27.155	\N	\N	\N	\N	\N	\N	/media/openmoji/270B	0
-28375	µø©Úí×	ÒüùÒéçÒéïÒüä	shorui	giß║Ñy tß╗Ø	29	2026-06-25 10:53:02.171	2026-06-27 02:25:27.158	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4	0
-28377	ÚºàÕôí	ÒüêÒüìÒüäÒéô	ekiin	nh├ón vi├¬n nh├á ga	29	2026-06-25 10:53:02.174	2026-06-27 02:25:27.166	\N	\N	\N	\N	\N	\N	/media/openmoji/1F689	0
-28427	ÒüèþƒÑÒéëÒüø	ÒüèÒüùÒéëÒüø	oshirase	bß║ún th├┤ng b├ío	30	2026-06-25 10:53:02.354	2026-06-27 02:22:16.648	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-28458	þø«Òüî ÞªÜÒéüÒü¥ÒüÖ	ÒéüÒüî ÒüòÒéüÒü¥ÒüÖ	mega samemasu	tß╗ënh giß║Ñc, mß╗ƒ mß║»t	30	2026-06-25 10:53:02.418	2026-06-27 02:26:22.203	\N	\N	\N	\N	\N	\N	/media/openmoji/1F441	0
-28460	þƒÑÒéëÒüøÒü¥ÒüÖ	ÒüùÒéëÒüøÒü¥ÒüÖ	shirasemasu	th├┤ng b├ío	30	2026-06-25 10:53:02.42	2026-06-27 02:22:16.651	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-28466	ÒüöÞïªÕè┤ÒüòÒü¥ÒÇé	ÒüöÒüÅÒéìÒüåÒüòÒü¥ÒÇé	gokurosama.	anh, chß╗ï ─æ├ú l├ám viß╗çc vß║Ñt vß║ú/cß║úm ãín anh, chß╗ï	30	2026-06-25 10:53:02.431	2026-06-27 02:22:16.652	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC	0
-28461	þø©Þ½çÒüùÒü¥ÒüÖ	ÒüØÒüåÒüáÒéôÒüùÒü¥ÒüÖ	sodanshimasu	thß║úo luß║¡n, trao ─æß╗òi , b├án bß║íc	30	2026-06-25 10:53:02.422	2026-06-27 02:26:22.206	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA91	0
-28511	Úâ¢õ╝Ü	Òü¿ÒüïÒüä	tokai	th├ánh phß╗æ	31	2026-06-25 10:53:02.606	2026-06-27 02:25:27.179	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3D9	0
-28537	ÕåÀÒéäÒüùÒü¥ÒüÖ	Òü▓ÒéäÒüùÒü¥ÒüÖ	hiyashimasu	l├ám lß║ính	32	2026-06-25 10:53:02.73	2026-06-27 02:25:27.187	\N	\N	\N	\N	\N	\N	/media/openmoji/2744	0
-28554	Úó¿	ÒüïÒü£	kaze	gi├│	32	2026-06-25 10:53:02.763	2026-06-27 02:26:22.222	\N	\N	\N	\N	\N	\N	/media/openmoji/1F32C	0
-28563	õ╗èÕñ£	ÒüôÒéôÒéä	kon'ya	tß╗æi nay, ─æ├¬m nay	32	2026-06-25 10:53:02.783	2026-06-27 02:25:27.191	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-28564	Õñòµû╣	ÒéåÒüåÒüîÒüƒ	yugata	chiß╗üu tß╗æi	32	2026-06-25 10:53:02.786	2026-06-27 02:25:27.193	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-28596	ÚÇâÒüÆÒü¥ÒüÖ	Òü½ÒüÆÒü¥ÒüÖ	nigemasu	chß║íy trß╗æn, bß╗Å chß║íy	33	2026-06-25 10:53:02.931	2026-06-27 02:25:27.204	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3	0
-28611	Þ¡ªÕ»ƒ	ÒüæÒüäÒüòÒüñ	keisatsu	cß║únh s├ít	33	2026-06-25 10:53:02.961	2026-06-27 02:26:22.23	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46E	0
-28636	þ¢░Úçæ	Òü░ÒüúÒüìÒéô	bakkin	tiß╗ün phß║ít	33	2026-06-25 10:53:03.017	2026-06-27 02:22:16.665	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-28638	þ¢«ÒüìÒü¥ÒüÖ	ÒüèÒüìÒü¥ÒüÖ	okimasu	happen	33	2026-06-25 10:53:03.023	2026-06-27 02:22:16.667	\N	\N	\N	\N	\N	\N	/media/openmoji/1F31E	0
-28655	Úø╗Õá▒	ÒüºÒéôÒü¢Òüå	denpo	─æiß╗çn b├ío	33	2026-06-25 10:53:03.073	2026-06-27 02:22:16.668	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-28658	µëôÒüíÒü¥ÒüÖ´╝╗Úø╗Õá▒ÒéÆ´¢×´╝¢	ÒüåÒüíÒü¥ÒüÖ´╝╗ÒüºÒéôÒü¢ÒüåÒéÆ´¢×´╝¢	uchimasu [denpowo~]	gß╗¡i(─æiß╗çn b├ío)	33	2026-06-25 10:53:03.08	2026-06-27 02:22:16.67	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-28659	Úø╗Õá▒õ╗ú	ÒüºÒéôÒü¢ÒüåÒüáÒüä	denpodai	tiß╗ün cã░ß╗øc ─æiß╗çn b├ío	33	2026-06-25 10:53:03.082	2026-06-27 02:22:16.672	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-28700	ÞîÂÚüô	ÒüòÒü®Òüå	sado	tr├á ─æß║ío	34	2026-06-25 10:53:03.282	2026-06-27 02:22:16.675	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375	0
-28663	õ¥ïÒüêÒü░	ÒüƒÒü¿ÒüêÒü░	tatoeba	v├¡ dß╗Ñ	33	2026-06-25 10:53:03.089	2026-06-27 02:25:27.211	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45B	0
-28666	µÿÄµùÑ	ÒüéÒüÖ	asu	ng├áy mai	33	2026-06-25 10:53:03.098	2026-06-27 02:25:27.215	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5	0
-28682	´╝╗Òüè´╝¢ÕƒÄ	´╝╗Òüè´╝¢ÒüùÒéì	[o] shiro	m├áu trß║»ng	34	2026-06-25 10:53:03.226	2026-06-27 02:25:27.22	\N	\N	\N	\N	\N	\N	/media/openmoji/26AA	0
-28687	Ú╗Æ	ÒüÅÒéì	kuro	m├áu ─æen	34	2026-06-25 10:53:03.238	2026-06-27 02:25:27.224	\N	\N	\N	\N	\N	\N	/media/openmoji/26AB	0
-28689	ÞÁñ	ÒüéÒüï	aka	m├áu ─æß╗Å	34	2026-06-25 10:53:03.244	2026-06-27 02:25:27.227	\N	\N	\N	\N	\N	\N	/media/openmoji/1F534	0
-28691	þ┤║	ÒüôÒéô	kon	m├áu xanh lam	34	2026-06-25 10:53:03.25	2026-06-27 02:25:27.233	\N	\N	\N	\N	\N	\N	/media/openmoji/1F535	0
-28692	Ú╗äÞë▓	ÒüìÒüäÒéì	kiiro	m├áu v├áng	34	2026-06-25 10:53:03.252	2026-06-27 02:25:27.235	\N	\N	\N	\N	\N	\N	/media/openmoji/1F7E1	0
-28686	þƒóÕì░	ÒéäÒüÿÒéïÒüù	yajirushi	dß║Ñu m┼®i t├¬n	34	2026-06-25 10:53:03.235	2026-06-27 02:26:22.242	\N	\N	\N	\N	\N	\N	/media/openmoji/1F443	0
-28733	õ╗ÿÒüæÒü¥ÒüÖ´╝╗õ©©ÒéÆ´¢×´╝¢	ÒüñÒüæÒü¥ÒüÖ´╝╗Òü¥ÒéïÒéÆ´¢×´╝¢	tsukemasu [maruwo~]	vß║¢ , ─æ├ính dß║Ñu	35	2026-06-25 10:53:03.532	2026-06-27 02:25:27.244	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A8	0
-28727	\N	Òé¡Òâ╝	kii	ch├¼a kh├│a	34	2026-06-25 10:53:03.371	2026-06-27 02:22:16.679	\N	\N	\N	\N	\N	\N	/media/openmoji/1F511	0
-28744	µÁÀÕñû	ÒüïÒüäÒüîÒüä	kaigai	nã░ß╗øc ngo├ái, hß║úi ngoß║íi	35	2026-06-25 10:53:03.56	2026-06-27 02:22:16.683	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-28748	Þ¿▒ÕÅ»	ÒüìÒéçÒüï	kyoka	ph├®p, giß║Ñy ph├®p	35	2026-06-25 10:53:03.568	2026-06-27 02:25:27.249	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4	0
-28766	ÕñºÚ╗ÆÒüÜÒüù	ÒüáÒüäÒüôÒüÅÒüÜÒüù	daikokuzushi	a fictitious sushi restaurant	35	2026-06-25 10:53:03.611	2026-06-27 02:25:27.254	\N	\N	\N	\N	\N	\N	/media/openmoji/1F363	0
-28754	\N	Òé½Òâ╝ÒâåÒâ│	katen	curtain	35	2026-06-25 10:53:03.583	2026-06-27 02:26:22.253	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA9E	0
-28796	µø▓	ÒüìÒéçÒüÅ	kyoku	b├ái h├ít, bß║ún nhß║íc	35	2026-06-25 10:53:03.671	2026-06-27 02:25:27.259	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5	0
-28777	Òé╣Òé¡Òâ╝Õá┤	Òé╣Òé¡Òâ╝ÒüÿÒéçÒüå	sukiijou	─æß╗ïa ─æiß╗âm trã░ß╗út tuyß║┐t	35	2026-06-25 10:53:03.632	2026-06-27 02:22:16.688	\N	\N	\N	\N	\N	\N	/media/openmoji/2744	0
-28794	µû╣µ│ò	Òü╗ÒüåÒü╗Òüå	hoho	phã░ãíng ph├íp	35	2026-06-25 10:53:03.666	2026-06-27 02:22:16.695	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7	0
-28802	Þ▓»ÚçæÒüùÒü¥ÒüÖ	ÒüíÒéçÒüìÒéôÒüùÒü¥ÒüÖ	chokinshimasu	tiß║┐t kiß╗çm tiß╗ün, ─æß╗â d├ánh tiß╗ün	36	2026-06-25 10:53:03.783	2026-06-27 02:22:16.698	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-28792	\N	ÒâÅÒéñÒé¡Òâ│Òé░	haikingu	─æi bß╗Ö tr├¬n n├║i	35	2026-06-25 10:53:03.662	2026-06-27 02:22:16.701	\N	\N	\N	\N	\N	\N	/media/openmoji/26F0	0
-28826	µ░┤µ││	ÒüÖÒüäÒüêÒüä	suiei	m├┤n bãíi lß╗Öi	36	2026-06-25 10:53:03.833	2026-06-27 02:25:27.266	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3CA	0
-28884	Þ¡ªÕ«ÿ	ÒüæÒüäÒüïÒéô	keikan	cß║únh s├ít	37	2026-06-25 10:53:04.057	2026-06-27 02:26:22.268	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46E	0
-28929	\N	ÒâëÒâƒÒâïÒé½	dominika	Dominica (t├¬n mß╗Öt quß╗æc gia ß╗ƒ Trung Mß╗╣)	37	2026-06-25 10:53:04.147	2026-06-27 02:22:16.712	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8	0
-28962	Úø╗µ║É	ÒüºÒéôÒüÆÒéô	dengen	nguß╗ôn ─æiß╗çn , c├┤ng tß║»c ─æiß╗çn	38	2026-06-25 10:53:04.311	2026-06-27 02:22:16.715	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1	0
-28949	µ░ùµîüÒüíÒüî ÒüäÒüä	ÒüìÒééÒüíÒüî ÒüäÒüä	kimochiga ii	dß╗à chß╗ïu, thã░ giß║ún	38	2026-06-25 10:53:04.281	2026-06-27 02:25:27.276	\N	\N	\N	\N	\N	\N	/media/openmoji/2709	0
-29000	\N	Òé»Òâ®Òé╣	kurasu	lß╗øp hß╗ìc, lß╗øp	38	2026-06-25 10:53:04.414	2026-06-27 02:22:16.723	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB	0
-29019	µüÑÒüÜÒüïÒüùÒüä	Òü»ÒüÜÒüïÒüùÒüä	hazukashii	xß║Ñu hß╗ò, thß║╣n, hß╗ò thß║╣n	39	2026-06-25 10:53:04.554	2026-06-27 02:25:27.287	\N	\N	\N	\N	\N	\N	/media/openmoji/1F405	0
-29036	\N	ÒüøÒüúÒüæÒéô	sekken	x├á ph├▓ng	39	2026-06-25 10:53:04.59	2026-06-27 02:26:22.283	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9FC	0
-29038	Òüèþû▓ÒéîµºÿÒüºÒüùÒüƒÒÇé	ÒüèÒüñÒüïÒéîÒüòÒü¥ÒüºÒüùÒüƒÒÇé	otsukaresamadeshita.	chß║»c anh/chß╗ï ─æ├ú mß╗çt v├¼ l├ám viß╗çc	39	2026-06-25 10:53:04.594	2026-06-27 02:22:16.728	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC	0
-29072	Õ┐ÿÕ╣┤õ╝Ü	Òü╝ÒüåÒü¡ÒéôÒüïÒüä	bonenkai	tiß╗çc tß║Ñt ni├¬n	40	2026-06-25 10:53:04.734	2026-06-27 02:26:22.292	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F	0
-29104	\N	ÒâåÒé╣Òâê	tesuto	b├ái kiß╗âm tra	40	2026-06-25 10:53:04.818	2026-06-27 02:22:16.734	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DD	0
-29134	\N	Òé»Òâ®Òé╣	kurasu	lß╗øp hß╗ìc	40	2026-06-25 10:53:04.88	2026-06-27 02:22:16.736	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB	0
-29145	ÒüèþÑØÒüä	ÒüèÒüäÒéÅÒüä	oiwai	mß╗½ng, qu├á mß╗½ng (´¢×ÒéÆÒüùÒü¥ÒüÖ´╝Ümß╗½ng)	41	2026-06-25 10:53:04.999	2026-06-27 02:22:16.739	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381	0
-29146	ÒüèÕ╣┤þÄë	ÒüèÒü¿ÒüùÒüáÒü¥	otoshidama	tiß╗ün mß╗½ng tuß╗òi	41	2026-06-25 10:53:05.001	2026-06-27 02:22:16.743	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-29150	µûçµ│ò	ÒüÂÒéôÒü¢Òüå	bunpo	ngß╗» ph├íp	41	2026-06-25 10:53:05.011	2026-06-27 02:22:16.746	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7	0
-29116	ÕïòÒüïÒüùÒü¥ÒüÖ	ÒüåÒüöÒüïÒüùÒü¥ÒüÖ	ugokashimasu	khß╗ƒi ─æß╗Öng, chß║íy	40	2026-06-25 10:53:04.839	2026-06-27 02:25:27.295	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3	0
-29152	þî┐	ÒüòÒéï	saru	con khß╗ë	41	2026-06-25 10:53:05.014	2026-06-27 02:25:27.302	\N	\N	\N	\N	\N	\N	/media/openmoji/1F412	0
-29156	þÁÁÒü»ÒüîÒüì	ÒüêÒü»ÒüîÒüì	ehagaki	bã░u ß║únh	41	2026-06-25 10:53:05.02	2026-06-27 02:25:27.304	\N	\N	\N	\N	\N	\N	/media/openmoji/1F5BC	0
-29224	µ│òÕ¥ï	Òü╗ÒüåÒéèÒüñ	horitsu	ph├íp luß║¡t	42	2026-06-25 10:53:05.251	2026-06-27 02:22:16.749	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7	0
-29231	\N	ÒéäÒüïÒéô	yakan	ß║Ñm ─æun nã░ß╗øc	42	2026-06-25 10:53:05.266	2026-06-27 02:22:16.752	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
-29194	þ£ƒÒüúþÖ¢´╝╗Òü¬´╝¢	Òü¥ÒüúÒüùÒéì´╝╗Òü¬´╝¢	masshiro [na]	trß║»ng to├ít, trß║»ng ngß║ºn	41	2026-06-25 10:53:05.105	2026-06-27 02:25:27.313	\N	\N	\N	\N	\N	\N	/media/openmoji/26AA	0
-29207	´╝╗Òüè´╝¢ÕƒÄ	´╝╗Òüè´╝¢ÒüùÒéì	[o] shiro	l├óu ─æ├ái; th├ánh	41	2026-06-25 10:53:05.134	2026-06-27 02:25:27.317	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3F0	0
-29217	Úƒ│µÑ¢Õ«Â	ÒüèÒéôÒüîÒüÅÒüï	ongakuka	nhß║íc s─®	42	2026-06-25 10:53:05.237	2026-06-27 02:25:27.319	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5	0
-29238	\N	ÒüØÒéìÒü░Òéô	soroban	b├án t├¡nh	42	2026-06-25 10:53:05.282	2026-06-27 02:26:22.307	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA91	0
-29302	þü½	Òü▓	hi	lß╗¡a	43	2026-06-25 10:53:05.569	2026-06-27 02:22:16.758	\N	\N	\N	\N	\N	\N	/media/openmoji/2600	0
-29263	ÕÄÜÒüä	ÒüéÒüñÒüä	atsui	d├áy	42	2026-06-25 10:53:05.353	2026-06-27 02:25:27.326	\N	\N	\N	\N	\N	\N	/media/openmoji/1F321	0
-29297	\N	ÒüåÒü¥Òüä	umai	ngon	43	2026-06-25 10:53:05.551	2026-06-27 02:25:27.33	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372	0
-29277	\N	ÒéñÒâ│Òé╣Òé┐Òâ│ÒâêÒâ®Òâ╝ÒâíÒâ│	insutantoramen	m├¼ ─ân liß╗ün	42	2026-06-25 10:53:05.404	2026-06-27 02:25:27.333	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35C	0
-29313	ÕåÀµê┐	ÒéîÒüäÒü╝Òüå	reibo	thiß║┐t bß╗ï l├ám m├ít, m├íy ─æiß╗üu h├▓a	43	2026-06-25 10:53:05.601	2026-06-27 02:26:22.318	\N	\N	\N	\N	\N	\N	/media/openmoji/2744	0
-29340	µ┤ïÚúƒ	ÒéêÒüåÒüùÒéçÒüÅ	yoshoku	m├│n ─ân ├éu Mß╗╣	44	2026-06-25 10:53:05.83	2026-06-27 02:22:16.762	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8	0
-29334	ÕÄÜÒüä	ÒüéÒüñÒüä	atsui	thick	44	2026-06-25 10:53:05.813	2026-06-27 02:25:27.336	\N	\N	\N	\N	\N	\N	/media/openmoji/1F321	0
-29342	ÚçÅ	ÒéèÒéçÒüå	ryo	lã░ß╗úng	44	2026-06-25 10:53:05.837	2026-06-27 02:25:27.338	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E8	0
-29363	õ¥ïÒüêÒü░	ÒüƒÒü¿ÒüêÒü░	tatoeba	v├¡ du╠ú	44	2026-06-25 10:53:05.914	2026-06-27 02:25:27.341	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45B	0
-29375	õ┐ØÞ¿╝µø©	Òü╗ÒüùÒéçÒüåÒüùÒéç	hoshosho	giß║Ñy bß║úo h├ánh	45	2026-06-25 10:53:06.099	2026-06-27 02:25:27.343	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4	0
-29382	´╝æ´╝æ´╝Öþò¬	´╝æ´╝æ´╝ÖÒü░Òéô	119ban	the emergency fire service telephone number	45	2026-06-25 10:53:06.118	2026-06-27 02:25:27.348	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319	0
-29370	þ«¬þ¼Ñ	ÒüƒÒéôÒüÖ	tansu	tu╠ë quß║ºn ├ío	44	2026-06-25 10:53:05.938	2026-06-27 02:26:22.325	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455	0
-29404	Þ┤êÒéèþë®	ÒüèÒüÅÒéèÒééÒü«	okurimono	qu├á tß║Àng (tß║Àng qu├á)	45	2026-06-25 10:53:06.203	2026-06-27 02:22:16.766	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381	0
-29405	ÚûôÚüòÒüäÚø╗Þ®▒	Òü¥ÒüíÒüîÒüäÒüºÒéôÒéÅ	machigaidenwa	─æiß╗çn thoß║íi nhß║ºm	45	2026-06-25 10:53:06.207	2026-06-27 02:22:16.768	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE	0
-29410	þ£áÒéèÒü¥ÒüÖ	Òü¡ÒéÇÒéèÒü¥ÒüÖ	nemurimasu	ngß╗º	45	2026-06-25 10:53:06.224	2026-06-27 02:22:16.773	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634	0
-29388	\N	Òé│Òâ╝Òé╣	kosu	─æã░ß╗Øng chß║íy (maraton)	45	2026-06-25 10:53:06.14	2026-06-27 02:25:27.352	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3	0
-29394	þø«Òüî ÞªÜÒéüÒü¥ÒüÖ	ÒéüÒüî ÒüòÒéüÒü¥ÒüÖ	mega samemasu	mß╗ƒ mß║»t	45	2026-06-25 10:53:06.167	2026-06-27 02:26:22.331	\N	\N	\N	\N	\N	\N	/media/openmoji/1F441	0
-29463	ÕêÑÒéîÒü¥ÒüÖ´╝╗õ║║Òüî´¢×´╝¢	ÒéÅÒüïÒéîÒü¥ÒüÖ´╝╗Òü▓Òü¿Òüî´¢×´╝¢	wakaremasu [hitoga~]	chia tay [ ngã░ß╗Øi ~]	47	2026-06-25 10:53:06.549	2026-06-27 02:25:27.358	\N	\N	\N	\N	\N	\N	/media/openmoji/270B	0
-29496	Õñ®µ░ùõ║êÕá▒	ÒüªÒéôÒüìÒéêÒü╗Òüå	tenkeyoho	dß╗▒ b├ío thß╗Øi tiß║┐t	47	2026-06-25 10:53:06.62	2026-06-27 02:22:16.777	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
-29507	Õîûþ▓ºÕôü	ÒüæÒüùÒéçÒüåÒü▓Òéô	keshohin	mß╗╣ phß║®m	47	2026-06-25 10:53:06.641	2026-06-27 02:22:16.78	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8	0
-29515	þöƒÕ¥Æ	ÒüøÒüäÒü¿	seito	hß╗ìc tr├▓, hß╗ìc sinh	48	2026-06-25 10:53:06.739	2026-06-27 02:22:16.783	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393	0
-29484	\N	Òü®ÒüåÒéé	domo	c├│ vß║¢ nhã░ l├á, c├│ lß║¢ l├á	47	2026-06-25 10:53:06.599	2026-06-27 02:25:27.36	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A8	0
-29497	þÖ║Þí¿	Òü»ÒüúÒü┤ÒéçÒüå	happyo	c├┤ng bß╗æ, thuyß║┐t tr├¼nh	47	2026-06-25 10:53:06.623	2026-06-27 02:25:27.364	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468	0
-29541	þ½ÂÞÁ░ÒüùÒü¥ÒüÖ	ÒüìÒéçÒüåÒüØÒüåÒüùÒü¥ÒüÖ	kyososhimasu	chß║íy ─æua, chß║úy thi	48	2026-06-25 10:53:06.807	2026-06-27 02:25:27.367	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3	0
-29553	\N	ÒüäÒéëÒüúÒüùÒéâÒüäÒü¥ÒüÖ	irasshaimasu	ß╗ƒ, c├│, ─æi, ─æß║┐n ´╝êt├┤n k├¡nh ngß╗» cß╗ºa ÒüäÒü¥ÒüÖÒÇüÒüäÒüìÒü¥ÒüÖ v├á ÒüìÒü¥ÒüÖ´╝ë	49	2026-06-25 10:53:06.945	2026-06-27 02:25:27.371	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
-29555	\N	ÒüèÒüúÒüùÒéâÒüäÒü¥ÒüÖ	osshaimasu	n├│i (t├┤n k├¡nh ngß╗» cß╗ºa ÒüäÒüäÒü¥ÒüÖ)	49	2026-06-25 10:53:06.951	2026-06-27 02:25:27.372	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
-29556	\N	Òü¬ÒüòÒüäÒü¥ÒüÖ	nasaimasu	l├ám (t├┤n k├¡nh ngß╗» cß╗ºa ÒüùÒü¥ÒüÖ)	49	2026-06-25 10:53:06.954	2026-06-27 02:25:27.374	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
-29585	Õ»äÒéèÒü¥ÒüÖ´╝╗ÚèÇÞíîÒü½´¢×´╝¢	ÒéêÒéèÒü¥ÒüÖ´╝╗ÒüÄÒéôÒüôÒüåÒü½´¢×´╝¢	yorimasu [ginkoni~]	gh├® v├áo (ng├ón h├áng )	49	2026-06-25 10:53:07.031	2026-06-27 02:22:16.794	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E6	0
-29597	õ¢£Õ«Â	ÒüòÒüúÒüï	sakka	t├íc giß║ú	49	2026-06-25 10:53:07.074	2026-06-27 02:25:27.38	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD	0
-29602	õ¢£µø▓	ÒüòÒüúÒüìÒéçÒüÅ	sakkyoku	viß║┐t( s├íng t├íc) nhß║íc, b├ái h├ít	49	2026-06-25 10:53:07.085	2026-06-27 02:25:27.382	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5	0
-29621	\N	ÒâíÒâ╝Òâ½ÒéóÒâëÒâ¼Òé╣	meruadoresu	e-mail address	50	2026-06-25 10:53:07.19	2026-06-27 02:25:27.385	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4E7	0
-29586	þü░þÜ┐	Òü»ÒüäÒüûÒéë	haizara	gß║ít t├án thuß╗æc	49	2026-06-25 10:53:07.033	2026-06-27 02:26:22.341	\N	\N	\N	\N	\N	\N	/media/openmoji/1F48A	0
-27172	\N	ÒâÜÒé¡Òâ│	pekin	Beijing (Õîùõ║¼)	4	2026-06-25 10:52:56.834	2026-06-27 02:25:26.696	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E8-1F1F3	0
-27391	ÞÁñÒüä	ÒüéÒüïÒüä	akai	─æß╗Å	8	2026-06-25 10:52:57.777	2026-06-27 02:25:26.699	\N	\N	\N	\N	\N	\N	/media/openmoji/1F534	0
+26974	Õàêþöƒ	ÒüøÒéôÒüøÒüä	sensei	gi├ío vi├¬n (Kh├┤ng n├│i khi giß╗øi thiß╗çu nghß╗ü nghiß╗çp cß╗ºa ch├¡nh m├¼nh)	1	2026-06-25 10:52:55.975	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	7
+26975	µòÖÕ©½	ÒüìÒéçÒüåÒüù	kyoshi	gi├ío vi├¬n ( d├╣ng ─æß╗â n├│i ─æß║┐n nghß╗ü nghiß╗çp)	1	2026-06-25 10:52:55.977	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	8
+26976	Õ¡ªþöƒ	ÒüîÒüÅÒüøÒüä	gakusei	hß╗ìc sinh, sinh vi├¬n	1	2026-06-25 10:52:55.979	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393.svg	9
+26977	õ╝Üþñ¥Õôí	ÒüïÒüäÒüùÒéâÒüäÒéô	kaishain	nh├ón vi├¬n c├┤ng ty	1	2026-06-25 10:52:55.983	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	10
+26978	þñ¥Õôí	ÒüùÒéâÒüäÒéô	shain	nh├ón vi├¬n c├┤ng ty ´¢×	1	2026-06-25 10:52:55.988	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	11
+26979	ÚèÇÞíîÕôí	ÒüÄÒéôÒüôÒüåÒüäÒéô	ginkoin	nh├ón vi├¬n ng├ón h├áng	1	2026-06-25 10:52:55.992	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E6.svg	12
+26980	Õî╗ÞÇà	ÒüäÒüùÒéâ	isha	b├íc s─®	1	2026-06-25 10:52:55.994	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/2695.svg	13
+26981	þáöþ®ÂÞÇà	ÒüæÒéôÒüìÒéàÒüåÒüùÒéâ	kenkyusha	nghi├¬n cß╗®u sinh	1	2026-06-25 10:52:55.996	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F52C.svg	14
+26995	\N	ÒéóÒâíÒâ¬Òé½	amerika	Mß╗╣	1	2026-06-25 10:52:56.035	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8.svg	28
+26996	\N	ÒéñÒé«Òâ¬Òé╣	igirisu	Anh	1	2026-06-25 10:52:56.038	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EC-1F1E7.svg	29
+26997	\N	ÒéñÒâ│Òâë	indo	ß║ñn ─Éß╗Ö	1	2026-06-25 10:52:56.042	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1F3.svg	30
+26998	\N	ÒéñÒâ│ÒâëÒâìÒéÀÒéó	indoneshia	Indonesia	1	2026-06-25 10:52:56.046	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1E9.svg	31
+26999	ÚƒôÕø¢	ÒüïÒéôÒüôÒüÅ	kankoku	H├án quß╗æc	1	2026-06-25 10:52:56.049	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F0-1F1F7.svg	32
+27000	\N	Òé┐Òéñ	tai	Th├íi Lan	1	2026-06-25 10:52:56.053	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F9-1F1ED.svg	33
+27001	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	chugoku	Trung Quß╗æc	1	2026-06-25 10:52:56.056	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E8-1F1F3.svg	34
+27002	\N	ÒâëÒéñÒâä	doitsu	─Éß╗®c	1	2026-06-25 10:52:56.06	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E9-1F1EA.svg	35
+27003	µùÑµ£¼	Òü½Òü╗Òéô	nihon	Nhß║¡t Bß║ún	1	2026-06-25 10:52:56.062	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EF-1F1F5.svg	36
+27012	\N	Òé¿Òâ│Òé©ÒâïÒéó	enjinia	kß╗╣ sã░	1	2026-06-25 10:52:56.091	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F477.svg	44
+27013	Úø╗µ░ù	ÒüºÒéôÒüì	denki	─æiß╗çn	1	2026-06-25 10:52:56.093	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1.svg	45
+27014	\N	ÒâòÒâ®Òâ│Òé╣	furansu	Ph├íp	1	2026-06-25 10:52:56.096	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7.svg	46
+29313	ÕåÀµê┐	ÒéîÒüäÒü╝Òüå	reibo	thiß║┐t bß╗ï l├ám m├ít, m├íy ─æiß╗üu h├▓a	43	2026-06-25 10:53:05.601	2026-06-27 02:26:22.318	\N	\N	\N	\N	\N	\N	/media/openmoji/2744.svg	0
+29340	µ┤ïÚúƒ	ÒéêÒüåÒüùÒéçÒüÅ	yoshoku	m├│n ─ân ├éu Mß╗╣	44	2026-06-25 10:53:05.83	2026-06-27 02:22:16.762	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8.svg	0
+29334	ÕÄÜÒüä	ÒüéÒüñÒüä	atsui	thick	44	2026-06-25 10:53:05.813	2026-06-27 02:25:27.336	\N	\N	\N	\N	\N	\N	/media/openmoji/1F321.svg	0
+29342	ÚçÅ	ÒéèÒéçÒüå	ryo	lã░ß╗úng	44	2026-06-25 10:53:05.837	2026-06-27 02:25:27.338	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E8.svg	0
+29363	õ¥ïÒüêÒü░	ÒüƒÒü¿ÒüêÒü░	tatoeba	v├¡ du╠ú	44	2026-06-25 10:53:05.914	2026-06-27 02:25:27.341	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45B.svg	0
+29375	õ┐ØÞ¿╝µø©	Òü╗ÒüùÒéçÒüåÒüùÒéç	hoshosho	giß║Ñy bß║úo h├ánh	45	2026-06-25 10:53:06.099	2026-06-27 02:25:27.343	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4.svg	0
+29382	´╝æ´╝æ´╝Öþò¬	´╝æ´╝æ´╝ÖÒü░Òéô	119ban	the emergency fire service telephone number	45	2026-06-25 10:53:06.118	2026-06-27 02:25:27.348	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+29370	þ«¬þ¼Ñ	ÒüƒÒéôÒüÖ	tansu	tu╠ë quß║ºn ├ío	44	2026-06-25 10:53:05.938	2026-06-27 02:26:22.325	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455.svg	0
+29404	Þ┤êÒéèþë®	ÒüèÒüÅÒéèÒééÒü«	okurimono	qu├á tß║Àng (tß║Àng qu├á)	45	2026-06-25 10:53:06.203	2026-06-27 02:22:16.766	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381.svg	0
+29405	ÚûôÚüòÒüäÚø╗Þ®▒	Òü¥ÒüíÒüîÒüäÒüºÒéôÒéÅ	machigaidenwa	─æiß╗çn thoß║íi nhß║ºm	45	2026-06-25 10:53:06.207	2026-06-27 02:22:16.768	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE.svg	0
+29410	þ£áÒéèÒü¥ÒüÖ	Òü¡ÒéÇÒéèÒü¥ÒüÖ	nemurimasu	ngß╗º	45	2026-06-25 10:53:06.224	2026-06-27 02:22:16.773	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634.svg	0
+29388	\N	Òé│Òâ╝Òé╣	kosu	─æã░ß╗Øng chß║íy (maraton)	45	2026-06-25 10:53:06.14	2026-06-27 02:25:27.352	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3.svg	0
+29394	þø«Òüî ÞªÜÒéüÒü¥ÒüÖ	ÒéüÒüî ÒüòÒéüÒü¥ÒüÖ	mega samemasu	mß╗ƒ mß║»t	45	2026-06-25 10:53:06.167	2026-06-27 02:26:22.331	\N	\N	\N	\N	\N	\N	/media/openmoji/1F441.svg	0
+29463	ÕêÑÒéîÒü¥ÒüÖ´╝╗õ║║Òüî´¢×´╝¢	ÒéÅÒüïÒéîÒü¥ÒüÖ´╝╗Òü▓Òü¿Òüî´¢×´╝¢	wakaremasu [hitoga~]	chia tay [ ngã░ß╗Øi ~]	47	2026-06-25 10:53:06.549	2026-06-27 02:25:27.358	\N	\N	\N	\N	\N	\N	/media/openmoji/270B.svg	0
+29496	Õñ®µ░ùõ║êÕá▒	ÒüªÒéôÒüìÒéêÒü╗Òüå	tenkeyoho	dß╗▒ b├ío thß╗Øi tiß║┐t	47	2026-06-25 10:53:06.62	2026-06-27 02:22:16.777	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
+29507	Õîûþ▓ºÕôü	ÒüæÒüùÒéçÒüåÒü▓Òéô	keshohin	mß╗╣ phß║®m	47	2026-06-25 10:53:06.641	2026-06-27 02:22:16.78	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8.svg	0
+29515	þöƒÕ¥Æ	ÒüøÒüäÒü¿	seito	hß╗ìc tr├▓, hß╗ìc sinh	48	2026-06-25 10:53:06.739	2026-06-27 02:22:16.783	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393.svg	0
+29484	\N	Òü®ÒüåÒéé	domo	c├│ vß║¢ nhã░ l├á, c├│ lß║¢ l├á	47	2026-06-25 10:53:06.599	2026-06-27 02:25:27.36	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A8.svg	0
+29497	þÖ║Þí¿	Òü»ÒüúÒü┤ÒéçÒüå	happyo	c├┤ng bß╗æ, thuyß║┐t tr├¼nh	47	2026-06-25 10:53:06.623	2026-06-27 02:25:27.364	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	0
+29541	þ½ÂÞÁ░ÒüùÒü¥ÒüÖ	ÒüìÒéçÒüåÒüØÒüåÒüùÒü¥ÒüÖ	kyososhimasu	chß║íy ─æua, chß║úy thi	48	2026-06-25 10:53:06.807	2026-06-27 02:25:27.367	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3.svg	0
+29553	\N	ÒüäÒéëÒüúÒüùÒéâÒüäÒü¥ÒüÖ	irasshaimasu	ß╗ƒ, c├│, ─æi, ─æß║┐n ´╝êt├┤n k├¡nh ngß╗» cß╗ºa ÒüäÒü¥ÒüÖÒÇüÒüäÒüìÒü¥ÒüÖ v├á ÒüìÒü¥ÒüÖ´╝ë	49	2026-06-25 10:53:06.945	2026-06-27 02:25:27.371	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
+29555	\N	ÒüèÒüúÒüùÒéâÒüäÒü¥ÒüÖ	osshaimasu	n├│i (t├┤n k├¡nh ngß╗» cß╗ºa ÒüäÒüäÒü¥ÒüÖ)	49	2026-06-25 10:53:06.951	2026-06-27 02:25:27.372	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
+29556	\N	Òü¬ÒüòÒüäÒü¥ÒüÖ	nasaimasu	l├ám (t├┤n k├¡nh ngß╗» cß╗ºa ÒüùÒü¥ÒüÖ)	49	2026-06-25 10:53:06.954	2026-06-27 02:25:27.374	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
+29585	Õ»äÒéèÒü¥ÒüÖ´╝╗ÚèÇÞíîÒü½´¢×´╝¢	ÒéêÒéèÒü¥ÒüÖ´╝╗ÒüÄÒéôÒüôÒüåÒü½´¢×´╝¢	yorimasu [ginkoni~]	gh├® v├áo (ng├ón h├áng )	49	2026-06-25 10:53:07.031	2026-06-27 02:22:16.794	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E6.svg	0
+29597	õ¢£Õ«Â	ÒüòÒüúÒüï	sakka	t├íc giß║ú	49	2026-06-25 10:53:07.074	2026-06-27 02:25:27.38	\N	\N	\N	\N	\N	\N	/media/openmoji/26BD.svg	0
+29602	õ¢£µø▓	ÒüòÒüúÒüìÒéçÒüÅ	sakkyoku	viß║┐t( s├íng t├íc) nhß║íc, b├ái h├ít	49	2026-06-25 10:53:07.085	2026-06-27 02:25:27.382	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
+29621	\N	ÒâíÒâ╝Òâ½ÒéóÒâëÒâ¼Òé╣	meruadoresu	e-mail address	50	2026-06-25 10:53:07.19	2026-06-27 02:25:27.385	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4E7.svg	0
+29586	þü░þÜ┐	Òü»ÒüäÒüûÒéë	haizara	gß║ít t├án thuß╗æc	49	2026-06-25 10:53:07.033	2026-06-27 02:26:22.341	\N	\N	\N	\N	\N	\N	/media/openmoji/1F48A.svg	0
+27172	\N	ÒâÜÒé¡Òâ│	pekin	Beijing (Õîùõ║¼)	4	2026-06-25 10:52:56.834	2026-06-27 02:25:26.696	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E8-1F1F3.svg	0
+27391	ÞÁñÒüä	ÒüéÒüïÒüä	akai	─æß╗Å	8	2026-06-25 10:52:57.777	2026-06-27 02:25:26.699	\N	\N	\N	\N	\N	\N	/media/openmoji/1F534.svg	0
+27079	ÕÅùõ╗ÿ	ÒüåÒüæÒüñÒüæ	uketsuke	phong tiß║┐p t├ón	3	2026-06-25 10:52:56.536	2026-06-27 02:22:16.41	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4CB.svg	0
+27080	\N	Òâ¡ÒâôÒâ╝	robii	h├ánh lang, ─æß║íi sß║únh	3	2026-06-25 10:52:56.538	2026-06-27 02:22:16.413	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E8.svg	0
+27083	ÚÜÄµ«Á	ÒüïÒüäÒüáÒéô	kaidan	cß║ºu thang	3	2026-06-25 10:52:56.543	2026-06-27 02:22:16.415	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA9C.svg	0
+27084	\N	Òé¿Òâ¼ÒâÖÒâ╝Òé┐Òâ╝	erebeta	thang m├íy	3	2026-06-25 10:52:56.545	2026-06-27 02:22:16.417	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6D7.svg	0
+27085	\N	Òé¿Òé╣Òé½Òâ¼Òâ╝Òé┐Òâ╝	esukareta	thang cuß╗æn	3	2026-06-25 10:52:56.547	2026-06-27 02:22:16.42	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA97.svg	0
+27086	Þç¬ÕïòÞ▓®Õú▓µ®ƒ	ÒüÿÒü®ÒüåÒü»ÒéôÒü░ÒüäÒüì	jidohanbaiki	vending machine	3	2026-06-25 10:52:56.55	2026-06-27 02:22:16.422	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA.svg	0
+27087	Úø╗Þ®▒	ÒüºÒéôÒéÅ	denwa	m├íy ─æiß╗çn thoß║íi, ─æiß╗çn thoß║íi	3	2026-06-25 10:52:56.552	2026-06-27 02:22:16.426	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE.svg	0
 27066	\N	Òü®ÒüåÒééÒÇé	domo.	c├ím ãín	2	2026-06-25 10:52:56.359	2026-06-27 02:18:03.238	\N	\N	\N	\N	\N	\N	\N	0
-27079	ÕÅùõ╗ÿ	ÒüåÒüæÒüñÒüæ	uketsuke	phong tiß║┐p t├ón	3	2026-06-25 10:52:56.536	2026-06-27 02:22:16.41	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4CB	0
-27080	\N	Òâ¡ÒâôÒâ╝	robii	h├ánh lang, ─æß║íi sß║únh	3	2026-06-25 10:52:56.538	2026-06-27 02:22:16.413	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E8	0
-27083	ÚÜÄµ«Á	ÒüïÒüäÒüáÒéô	kaidan	cß║ºu thang	3	2026-06-25 10:52:56.543	2026-06-27 02:22:16.415	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA9C	0
-27084	\N	Òé¿Òâ¼ÒâÖÒâ╝Òé┐Òâ╝	erebeta	thang m├íy	3	2026-06-25 10:52:56.545	2026-06-27 02:22:16.417	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6D7	0
-27085	\N	Òé¿Òé╣Òé½Òâ¼Òâ╝Òé┐Òâ╝	esukareta	thang cuß╗æn	3	2026-06-25 10:52:56.547	2026-06-27 02:22:16.42	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA97	0
-27086	Þç¬ÕïòÞ▓®Õú▓µ®ƒ	ÒüÿÒü®ÒüåÒü»ÒéôÒü░ÒüäÒüì	jidohanbaiki	vending machine	3	2026-06-25 10:52:56.55	2026-06-27 02:22:16.422	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EA	0
-27087	Úø╗Þ®▒	ÒüºÒéôÒéÅ	denwa	m├íy ─æiß╗çn thoß║íi, ─æiß╗çn thoß║íi	3	2026-06-25 10:52:56.552	2026-06-27 02:22:16.426	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE	0
-27089	õ╝Üþñ¥	ÒüïÒüäÒüùÒéâ	kaisha	c├┤ng ty	3	2026-06-25 10:52:56.555	2026-06-27 02:22:16.429	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2	0
-27091	ÚØ┤	ÒüÅÒüñ	kutsu	giß║ºy	3	2026-06-25 10:52:56.558	2026-06-27 02:22:16.431	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F	0
-27092	\N	ÒâìÒé»Òé┐Òéñ	nekutai	c├á vß║ít	3	2026-06-25 10:52:56.56	2026-06-27 02:22:16.434	\N	\N	\N	\N	\N	\N	/media/openmoji/1F454	0
-27093	\N	Òâ»ÒéñÒâ│	wain	rã░ß╗úu vang	3	2026-06-25 10:52:56.561	2026-06-27 02:22:16.436	\N	\N	\N	\N	\N	\N	/media/openmoji/1F377	0
-27094	Õú▓ÒéèÕá┤	ÒüåÒéèÒü░	uriba	quß║ºy b├ín (trong mß╗Öt cß╗¡a h├áng b├ích h├│a)	3	2026-06-25 10:52:56.563	2026-06-27 02:22:16.438	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6D2	0
-27090	Õ«Â	ÒüåÒüí	uchi	nh├á	3	2026-06-25 10:52:56.557	2026-06-27 02:18:03.26	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E0	0
+27089	õ╝Üþñ¥	ÒüïÒüäÒüùÒéâ	kaisha	c├┤ng ty	3	2026-06-25 10:52:56.555	2026-06-27 02:22:16.429	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	0
+27091	ÚØ┤	ÒüÅÒüñ	kutsu	giß║ºy	3	2026-06-25 10:52:56.558	2026-06-27 02:22:16.431	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F.svg	0
+27092	\N	ÒâìÒé»Òé┐Òéñ	nekutai	c├á vß║ít	3	2026-06-25 10:52:56.56	2026-06-27 02:22:16.434	\N	\N	\N	\N	\N	\N	/media/openmoji/1F454.svg	0
+27093	\N	Òâ»ÒéñÒâ│	wain	rã░ß╗úu vang	3	2026-06-25 10:52:56.561	2026-06-27 02:22:16.436	\N	\N	\N	\N	\N	\N	/media/openmoji/1F377.svg	0
+27094	Õú▓ÒéèÕá┤	ÒüåÒéèÒü░	uriba	quß║ºy b├ín (trong mß╗Öt cß╗¡a h├áng b├ích h├│a)	3	2026-06-25 10:52:56.563	2026-06-27 02:22:16.438	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6D2.svg	0
+27090	Õ«Â	ÒüåÒüí	uchi	nh├á	3	2026-06-25 10:52:56.557	2026-06-27 02:18:03.26	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E0.svg	0
 27065	Òü╗ÒéôÒü« µ░ùµîüÒüíÒüºÒüÖÒÇé	Òü╗ÒéôÒü« ÒüìÒééÒüíÒüºÒüÖÒÇé	honno kimochidesu.	─æ├óy l├á ch├║t l├▓ng th├ánh	2	2026-06-25 10:52:56.356	2026-06-25 10:52:56.356	\N	\N	\N	\N	\N	\N	\N	0
 27067	µ¡ñÕçª	ÒüôÒüô	koko	chß╗ù n├áy, ─æ├óy	3	2026-06-25 10:52:56.513	2026-06-25 10:52:56.513	\N	\N	\N	\N	\N	\N	\N	0
 27068	ÕàÂÕçª	ÒüØÒüô	soko	chß╗ù ─æ├│, ─æ├│	3	2026-06-25 10:52:56.516	2026-06-25 10:52:56.516	\N	\N	\N	\N	\N	\N	\N	0
@@ -12769,6 +13117,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27096	´╝ìÚÜÄ	´╝ìÒüïÒüä´╝ê´╝ìÒüîÒüä´╝ë	-kai (-gai)	tß║ºng thß╗® ÔÇô	3	2026-06-25 10:52:56.568	2026-06-25 10:52:56.568	\N	\N	\N	\N	\N	\N	\N	0
 27097	õ¢òÚÜÄ	Òü¬ÒéôÒüîÒüä	nangai	tß║ºng mß║Ñy	3	2026-06-25 10:52:56.57	2026-06-25 10:52:56.57	\N	\N	\N	\N	\N	\N	\N	0
 27098	´╝ìÕåå	´╝ìÒüêÒéô	-en	´╝ì yen	3	2026-06-25 10:52:56.572	2026-06-25 10:52:56.572	\N	\N	\N	\N	\N	\N	\N	0
+27139	µÿ╝	Òü▓Òéï	hiru	trã░a	4	2026-06-25 10:52:56.761	2026-06-27 02:25:26.715	\N	\N	\N	\N	\N	\N	/media/openmoji/2600.svg	0
 27100	þÖ¥	Òü▓ÒéâÒüÅ	hyaku	tr─âm	3	2026-06-25 10:52:56.575	2026-06-25 10:52:56.575	\N	\N	\N	\N	\N	\N	\N	0
 27101	Õìâ	ÒüøÒéô	sen	ngh├¼n	3	2026-06-25 10:52:56.576	2026-06-25 10:52:56.576	\N	\N	\N	\N	\N	\N	\N	0
 27102	õ©ç	Òü¥Òéô	man	mã░ß╗Øi ngh├¼n, vß║ín	3	2026-06-25 10:52:56.578	2026-06-25 10:52:56.578	\N	\N	\N	\N	\N	\N	\N	0
@@ -12799,7 +13148,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27168	þò¬ÕÅÀ	Òü░ÒéôÒüöÒüå	bango	number	4	2026-06-25 10:52:56.826	2026-06-25 10:52:56.826	\N	\N	\N	\N	\N	\N	\N	0
 27169	õ¢òþò¬	Òü¬ÒéôÒü░Òéô	nanban	sß╗æ mß║Ñy	4	2026-06-25 10:52:56.828	2026-06-25 10:52:56.828	\N	\N	\N	\N	\N	\N	\N	0
 27170	ÕàÂµû╣	ÒüØÒüíÒéë	sochira	ph├¡a ├┤ng, b├á	4	2026-06-25 10:52:56.829	2026-06-25 10:52:56.829	\N	\N	\N	\N	\N	\N	\N	0
-27139	µÿ╝	Òü▓Òéï	hiru	trã░a	4	2026-06-25 10:52:56.761	2026-06-27 02:25:26.715	\N	\N	\N	\N	\N	\N	/media/openmoji/2600	0
+27203	ÕÅïÚüö	Òü¿ÒééÒüáÒüí	tomodachi	bß║ín, bß║ín b├¿	5	2026-06-25 10:52:57.007	2026-06-27 02:18:03.277	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46B.svg	0
 27175	\N	ÒüéÒüÖÒüï	asuka	a fictitious Japanese restaurant	4	2026-06-25 10:52:56.839	2026-06-25 10:52:56.839	\N	\N	\N	\N	\N	\N	\N	0
 27176	ÒéóÒââÒâùÒâ½ÚèÇÞíî	ÒéóÒââÒâùÒâ½ÒüÄÒéôÒüôÒüå	appuruginko	a fictitious bank	4	2026-06-25 10:52:56.841	2026-06-25 10:52:56.841	\N	\N	\N	\N	\N	\N	\N	0
 27177	Òü┐Òü®ÒéèÕø│µø©Úñ¿	Òü┐Òü®ÒéèÒü¿ÒüùÒéçÒüïÒéô	midoritoshokan	a fictitious library	4	2026-06-25 10:52:56.843	2026-06-25 10:52:56.843	\N	\N	\N	\N	\N	\N	\N	0
@@ -12810,6 +13159,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27182	\N	ÒüïÒüùÒüôÒü¥ÒéèÒü¥ÒüùÒüƒÒÇé	kashikomarimashita.	Certainly (sir, madam)	4	2026-06-25 10:52:56.854	2026-06-25 10:52:56.854	\N	\N	\N	\N	\N	\N	\N	0
 27183	ÒüèÕòÅÒüäÕÉêÒéÅÒüøÒü«þò¬ÕÅÀ	ÒüèÒü¿ÒüäÒüéÒéÅÒüøÒü«Òü░ÒéôÒüöÒüå	otoiawasenobango	the number being inquired about	4	2026-06-25 10:52:56.856	2026-06-25 10:52:56.856	\N	\N	\N	\N	\N	\N	\N	0
 27184	\N	´╝╗Òü®ÒüåÒéé´╝¢ÒüéÒéèÒüîÒü¿Òüå ÒüöÒüûÒüäÒü¥ÒüùÒüƒÒÇé	[domo] arigato gozaimashita.	Thank you very much.	4	2026-06-25 10:52:56.857	2026-06-25 10:52:56.857	\N	\N	\N	\N	\N	\N	\N	0
+27173	\N	Òâ¡ÒéÁÒâ│Òé╝Òâ½Òé╣	rosanzerusu	Los Angeles	4	2026-06-25 10:52:56.836	2026-06-27 02:25:26.757	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8.svg	0
 27186	ÕñºÚÿ¬ÒâçÒâæÒâ╝Òâê	ÒüèÒüèÒüòÒüïÒâçÒâæÒâ╝Òâê	osakadepato	fictitious department store	4	2026-06-25 10:52:56.86	2026-06-25 10:52:56.86	\N	\N	\N	\N	\N	\N	\N	0
 27187	ÞíîÒü¥ÒüÖ	ÒüäÒüìÒü¥ÒüÖ	ikimasu	─æi	5	2026-06-25 10:52:56.945	2026-06-25 10:52:56.945	\N	\N	\N	\N	\N	\N	\N	0
 27188	µØÑÒü¥ÒüÖ	ÒüìÒü¥ÒüÖ	kimasu	─æß║┐n	5	2026-06-25 10:52:56.949	2026-06-25 10:52:56.949	\N	\N	\N	\N	\N	\N	\N	0
@@ -12852,11 +13202,10 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27240	\N	Òü®Òüå ÒüäÒüƒÒüùÒü¥ÒüùÒüªÒÇé	do itashimashite.	You're welcome./Don't mention it.	5	2026-06-25 10:52:57.114	2026-06-25 10:52:57.114	\N	\N	\N	\N	\N	\N	\N	0
 27241	´╝ìþò¬þÀÜ	´╝ìÒü░ÒéôÒüøÒéô	-bansen	platform ´╝ì, -th platform	5	2026-06-25 10:52:57.117	2026-06-25 10:52:57.117	\N	\N	\N	\N	\N	\N	\N	0
 27242	µ¼íÒü«	ÒüñÒüÄÒü«	tsugino	tiß║┐p theo	5	2026-06-25 10:52:57.12	2026-06-25 10:52:57.12	\N	\N	\N	\N	\N	\N	\N	0
-27203	ÕÅïÚüö	Òü¿ÒééÒüáÒüí	tomodachi	bß║ín, bß║ín b├¿	5	2026-06-25 10:52:57.007	2026-06-27 02:18:03.277	\N	\N	\N	\N	\N	\N	/media/openmoji/1F46B	0
-27173	\N	Òâ¡ÒéÁÒâ│Òé╝Òâ½Òé╣	rosanzerusu	Los Angeles	4	2026-06-25 10:52:56.836	2026-06-27 02:25:26.757	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8	0
 27244	µÇÑÞíî	ÒüìÒéàÒüåÒüôÒüå	kyuko	t├áu tß╗æc h├ánh	5	2026-06-25 10:52:57.126	2026-06-25 10:52:57.126	\N	\N	\N	\N	\N	\N	\N	0
 27245	þë╣µÇÑ	Òü¿ÒüúÒüìÒéàÒüå	tokkyu	t├áu tß╗æc h├ánh ─æß║Àc biß╗çt	5	2026-06-25 10:52:57.13	2026-06-25 10:52:57.13	\N	\N	\N	\N	\N	\N	\N	0
 27246	þö▓Õ¡ÉÕ£Æ	ÒüôÒüåÒüùÒüêÒéô	koshien	name of a town near Osaka	5	2026-06-25 10:52:57.134	2026-06-25 10:52:57.134	\N	\N	\N	\N	\N	\N	\N	0
+27267	Þéë	Òü½ÒüÅ	niku	thß╗ït	6	2026-06-25 10:52:57.302	2026-06-27 02:18:03.288	\N	\N	\N	\N	\N	\N	/media/openmoji/1F969.svg	0
 27248	ÕìÜÕñÜ	Òü»ÒüïÒüƒ	hakata	name of a town in Kyushu	5	2026-06-25 10:52:57.139	2026-06-25 10:52:57.139	\N	\N	\N	\N	\N	\N	\N	0
 27249	õ╝ÅÞªï	ÒüÁÒüùÒü┐	fushimi	name of a town in Kyoto	5	2026-06-25 10:52:57.142	2026-06-25 10:52:57.142	\N	\N	\N	\N	\N	\N	\N	0
 27252	ÕÉ©ÒüäÒü¥ÒüÖ´╝╗ÒüƒÒü░ÒüôÒéÆ´¢×´╝¢	ÒüÖÒüäÒü¥ÒüÖ´╝╗ÒüƒÒü░ÒüôÒéÆ´¢×´╝¢	suimasu [tabakowo~]	h├║t [thuß╗æc l├í]	6	2026-06-25 10:52:57.258	2026-06-25 10:52:57.258	\N	\N	\N	\N	\N	\N	\N	0
@@ -12887,7 +13236,8 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27314	ÕÇƒÒéèÒü¥ÒüÖ	ÒüïÒéèÒü¥ÒüÖ	karimasu	mã░ß╗ún, vay	7	2026-06-25 10:52:57.533	2026-06-25 10:52:57.533	\N	\N	\N	\N	\N	\N	\N	0
 27315	µòÖÒüêÒü¥ÒüÖ	ÒüèÒüùÒüêÒü¥ÒüÖ	oshiemasu	dß║íy	7	2026-06-25 10:52:57.536	2026-06-25 10:52:57.536	\N	\N	\N	\N	\N	\N	\N	0
 27289	õ¢ò	Òü¬Òü½	nani	c├íi g├¼, g├¼	6	2026-06-25 10:52:57.355	2026-06-27 02:18:03.306	\N	\N	\N	\N	\N	\N	\N	0
-27267	Þéë	Òü½ÒüÅ	niku	thß╗ït	6	2026-06-25 10:52:57.302	2026-06-27 02:18:03.288	\N	\N	\N	\N	\N	\N	/media/openmoji/1F969	0
+27333	Þè▒	Òü»Òü¬	hana	hoa	7	2026-06-25 10:52:57.581	2026-06-27 02:18:03.316	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A.svg	0
+27335	\N	ÒâùÒâ¼Òé╝Òâ│Òâê	purezento	qu├á tß║Àng	7	2026-06-25 10:52:57.588	2026-06-27 02:22:16.515	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381.svg	0
 27327	Õ╣┤Þ│ÇþèÂ	Òü¡ÒéôÒüîÒüÿÒéçÒüå	nengajo	New Year's greeting card	7	2026-06-25 10:52:57.568	2026-06-25 10:52:57.568	\N	\N	\N	\N	\N	\N	\N	0
 27344	\N	ÒééÒüå	mo	─æ├ú, rß╗ôi	7	2026-06-25 10:52:57.605	2026-06-25 10:52:57.605	\N	\N	\N	\N	\N	\N	\N	0
 27345	\N	Òü¥Òüá	mada	chã░a	7	2026-06-25 10:52:57.606	2026-06-25 10:52:57.606	\N	\N	\N	\N	\N	\N	\N	0
@@ -12920,8 +13270,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27385	\N	ÒüèÒééÒüùÒéìÒüä	omoshiroi	th├║ vß╗ï, hay	8	2026-06-25 10:52:57.767	2026-06-25 10:52:57.767	\N	\N	\N	\N	\N	\N	\N	0
 27387	Õ┐ÖÒüùÒüä	ÒüäÒüØÒüîÒüùÒüä	isogashii	bß║¡n rß╗Ön	8	2026-06-25 10:52:57.771	2026-06-25 10:52:57.771	\N	\N	\N	\N	\N	\N	\N	0
 27357	\N	ÒüöÒéüÒéôÒüÅÒüáÒüòÒüäÒÇé	gomenkudasai.	xin lß╗ùi c├│ ai ß╗ƒ nh├á kh├┤ng ?	7	2026-06-25 10:52:57.628	2026-06-27 02:18:03.319	\N	\N	\N	\N	\N	\N	\N	0
-27333	Þè▒	Òü»Òü¬	hana	hoa	7	2026-06-25 10:52:57.581	2026-06-27 02:18:03.316	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A	0
-27335	\N	ÒâùÒâ¼Òé╝Òâ│Òâê	purezento	qu├á tß║Àng	7	2026-06-25 10:52:57.588	2026-06-27 02:22:16.515	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381	0
+27392	ÚØÆÒüä	ÒüéÒüèÒüä	aoi	xanh	8	2026-06-25 10:52:57.78	2026-06-27 02:25:26.935	\N	\N	\N	\N	\N	\N	/media/openmoji/1F535.svg	0
 27397	µëÇ	Òü¿ÒüôÒéì	tokoro	chß╗ù, nãíi	8	2026-06-25 10:52:57.801	2026-06-25 10:52:57.801	\N	\N	\N	\N	\N	\N	\N	0
 27401	´╝╗Òüè´╝¢õ╗òõ║ï	´╝╗Òüè´╝¢ÒüùÒüöÒü¿	[o] shigoto	work, business (´¢×ÒéÆ ÒüùÒü¥ÒüÖ : do one's job, work)	8	2026-06-25 10:52:57.808	2026-06-25 10:52:57.808	\N	\N	\N	\N	\N	\N	\N	0
 27402	\N	Òü®Òüå	do	nhã░ thß║┐ n├áo	8	2026-06-25 10:52:57.809	2026-06-25 10:52:57.809	\N	\N	\N	\N	\N	\N	\N	0
@@ -12955,7 +13304,8 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27455	þ┤äµØƒ	ÒéäÒüÅÒüØÒüÅ	yakusoku	cuß╗Öc hß║╣n, lß╗Øi hß╗®a	9	2026-06-25 10:52:58.037	2026-06-25 10:52:58.037	\N	\N	\N	\N	\N	\N	\N	0
 27456	\N	ÒéóÒâ½ÒâÉÒéñÒâê	arubaito	side job (´¢×ÒéÆ ÒüùÒü¥ÒüÖ : work part-time)	9	2026-06-25 10:52:58.039	2026-06-25 10:52:58.039	\N	\N	\N	\N	\N	\N	\N	0
 27423	\N	Òü®Òéî	dore	c├íi n├áo	8	2026-06-25 10:52:57.856	2026-06-27 02:18:03.324	\N	\N	\N	\N	\N	\N	\N	0
-27392	ÚØÆÒüä	ÒüéÒüèÒüä	aoi	xanh	8	2026-06-25 10:52:57.78	2026-06-27 02:25:26.935	\N	\N	\N	\N	\N	\N	/media/openmoji/1F535	0
+27490	þî½	Òü¡Òüô	neko	con m├¿o	10	2026-06-25 10:52:58.26	2026-06-27 02:18:03.335	\N	\N	\N	\N	\N	\N	/media/openmoji/1F431.svg	0
+27505	\N	ÒâôÒâ½	biru	to├á nh├á	10	2026-06-25 10:52:58.308	2026-06-27 02:26:22.005	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3D9.svg	0
 27462	\N	ÒéêÒüÅ	yoku	tß╗æt, r├Á (chß╗ë mß╗®c ─æß╗Ö)	9	2026-06-25 10:52:58.053	2026-06-25 10:52:58.053	\N	\N	\N	\N	\N	\N	\N	0
 27463	\N	ÒüáÒüäÒüƒÒüä	daitai	─æß║íi kh├íi, ─æß║íi thß╗â	9	2026-06-25 10:52:58.055	2026-06-25 10:52:58.055	\N	\N	\N	\N	\N	\N	\N	0
 27464	\N	ÒüƒÒüÅÒüòÒéô	takusan	nhiß╗üu	9	2026-06-25 10:52:58.057	2026-06-25 10:52:58.057	\N	\N	\N	\N	\N	\N	\N	0
@@ -12967,6 +13317,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27470	Þ▓©ÒüùÒüª ÒüÅÒüáÒüòÒüäÒÇé	ÒüïÒüùÒüª ÒüÅÒüáÒüòÒüäÒÇé	kashite kudasai.	Please lend (it to me)	9	2026-06-25 10:52:58.069	2026-06-25 10:52:58.069	\N	\N	\N	\N	\N	\N	\N	0
 27471	\N	ÒüäÒüäÒüºÒüÖÒéêÒÇé	iidesuyo.	Sure./Certainly.	9	2026-06-25 10:52:58.07	2026-06-25 10:52:58.07	\N	\N	\N	\N	\N	\N	\N	0
 27472	µ«ïÕ┐ÁÒüºÒüÖ´╝╗Òüî´╝¢	ÒüûÒéôÒü¡ÒéôÒüºÒüÖ´╝╗Òüî´╝¢	zannendesu [ga]	Thß║¡t ─æ├íng tiß║┐c nhß╗ë/ buß╗ôn nhß╗ë	9	2026-06-25 10:52:58.072	2026-06-25 10:52:58.072	\N	\N	\N	\N	\N	\N	\N	0
+27489	þè¼	ÒüäÒü¼	inu	con ch├│	10	2026-06-25 10:52:58.257	2026-06-27 02:18:03.332	\N	\N	\N	\N	\N	\N	/media/openmoji/1F436.svg	0
 27475	\N	´╝╗´¢×Òü»´╝¢ÒüíÒéçÒüúÒü¿ÔÇªÔÇªÒÇé	[~wa] chottoÔÇªÔÇª.	[´¢×] is a bit difficult. (a euphemism used when declining an invitation)	9	2026-06-25 10:52:58.076	2026-06-25 10:52:58.076	\N	\N	\N	\N	\N	\N	\N	0
 27476	\N	ÒüáÒéüÒüºÒüÖÒüïÒÇé	damedesuka.	Kh├┤ng ─æã░ß╗úc ├á?	9	2026-06-25 10:52:58.078	2026-06-25 10:52:58.078	\N	\N	\N	\N	\N	\N	\N	0
 27477	Òü¥Òüƒ õ╗èÕ║ª ÒüèÚíÿÒüäÒüùÒü¥ÒüÖÒÇé	Òü¥Òüƒ ÒüôÒéôÒü® ÒüèÒü¡ÒüîÒüäÒüùÒü¥ÒüÖÒÇé	mata kondo onegaishimasu.	hß║╣n lß║ºn sau	9	2026-06-25 10:52:58.081	2026-06-25 10:52:58.081	\N	\N	\N	\N	\N	\N	\N	0
@@ -12998,16 +13349,15 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27528	ÒüäÒüíÒü░Òéô õ©ï	ÒüäÒüíÒü░Òéô ÒüùÒüƒ	ichiban shita	the bottom	10	2026-06-25 10:52:58.377	2026-06-25 10:52:58.377	\N	\N	\N	\N	\N	\N	\N	0
 27530	\N	ÒéóÒé©ÒéóÒé╣ÒâêÒéó	ajiasutoa	a fictitious supermarket	10	2026-06-25 10:52:58.383	2026-06-25 10:52:58.383	\N	\N	\N	\N	\N	\N	\N	0
 27604	\N	ÒüØÒéîÒüïÒéë	sorekara	sau ─æ├│	11	2026-06-25 10:52:58.652	2026-06-25 10:52:58.652	\N	\N	\N	\N	\N	\N	\N	0
-27490	þî½	Òü¡Òüô	neko	con m├¿o	10	2026-06-25 10:52:58.26	2026-06-27 02:18:03.335	\N	\N	\N	\N	\N	\N	/media/openmoji/1F431	0
-27505	\N	ÒâôÒâ½	biru	to├á nh├á	10	2026-06-25 10:52:58.308	2026-06-27 02:26:22.005	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3D9	0
-27489	þè¼	ÒüäÒü¼	inu	con ch├│	10	2026-06-25 10:52:58.257	2026-06-27 02:18:03.332	\N	\N	\N	\N	\N	\N	/media/openmoji/1F436	0
 27533	\N	ÒüäÒüíÒü░Òéô ´¢×	ichiban ~	~ nhß║Ñt (ÒüäÒüíÒü░Òéô ÒüåÒüê´╝Üvß╗ï tr├¡ cao nhß║Ñt)	10	2026-06-25 10:52:58.399	2026-06-25 10:52:58.399	\N	\N	\N	\N	\N	\N	\N	0
 27534	´╝ìµ«Áþø«	´╝ìÒüáÒéôÒéü	~danme	the -th shelf (ÒüáÒéô is the counter for shelves)	10	2026-06-25 10:52:58.403	2026-06-25 10:52:58.403	\N	\N	\N	\N	\N	\N	\N	0
+27560	\N	ÒéèÒéôÒüö	ringo	quß║ú t├ío	11	2026-06-25 10:52:58.548	2026-06-27 02:18:03.355	\N	\N	\N	\N	\N	\N	/media/openmoji/1F34E.svg	0
 27536	ÕÑÑ	ÒüèÒüÅ	oku	the back	10	2026-06-25 10:52:58.417	2026-06-25 10:52:58.417	\N	\N	\N	\N	\N	\N	\N	0
 27537	\N	Òé╣ÒâæÒéñÒé╣Òâ╗Òé│Òâ╝ÒâèÒâ╝	supaisu kona	spice corner	10	2026-06-25 10:52:58.42	2026-06-25 10:52:58.42	\N	\N	\N	\N	\N	\N	\N	0
 27538	\N	ÒâªÒâïÒâÑÒâ╝ÒéóÒâ╗Òé╣ÒâêÒéó	yunyua sutoa	fictitious supermarket	10	2026-06-25 10:52:58.423	2026-06-25 10:52:58.423	\N	\N	\N	\N	\N	\N	\N	0
 27539	ÒüäÒü¥ÒüÖ´╝╗Õ¡ÉÒü®ÒééÒüî´¢×´╝¢	ÒüäÒü¥ÒüÖ´╝╗ÒüôÒü®ÒééÒüî´¢×´╝¢	imasu [kodomoga~]	c├│ (─æß╗Öng vß║¡t)	11	2026-06-25 10:52:58.505	2026-06-25 10:52:58.505	\N	\N	\N	\N	\N	\N	\N	0
 27540	ÒüäÒü¥ÒüÖ´╝╗µùÑµ£¼Òü½´¢×´╝¢	ÒüäÒü¥ÒüÖ´╝╗Òü½Òü╗ÒéôÒü½´¢×´╝¢	imasu [nihonni~]	c├│ (─æß╗Öng vß║¡t)	11	2026-06-25 10:52:58.506	2026-06-25 10:52:58.506	\N	\N	\N	\N	\N	\N	\N	0
+27564	\N	ÒéóÒéñÒé╣Òé»Òâ¬Òâ╝Òâá	aisukuriimu	kem	11	2026-06-25 10:52:58.555	2026-06-27 02:25:27.018	\N	\N	\N	\N	\N	\N	/media/openmoji/1F366.svg	0
 27542	õ╝æÒü┐Òü¥ÒüÖ´╝╗õ╝Üþñ¥ÒéÆ´¢×´╝¢	ÒéäÒüÖÒü┐Òü¥ÒüÖ´╝╗ÒüïÒüäÒüùÒéâÒéÆ´¢×´╝¢	yasumimasu [kaishawo~]	nghß╗ë ngãíi, nghß╗ë	11	2026-06-25 10:52:58.51	2026-06-25 10:52:58.51	\N	\N	\N	\N	\N	\N	\N	0
 27554	´╝æõ║║	Òü▓Òü¿Òéè	hitori	1 ngã░ß╗Øi	11	2026-06-25 10:52:58.535	2026-06-25 10:52:58.535	\N	\N	\N	\N	\N	\N	\N	0
 27555	´╝Æõ║║	ÒüÁÒüƒÒéè	futari	2 ngã░ß╗Øi	11	2026-06-25 10:52:58.537	2026-06-25 10:52:58.537	\N	\N	\N	\N	\N	\N	\N	0
@@ -13052,8 +13402,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27549	´╝ùÒüñ	Òü¬Òü¬Òüñ	nanatsu	7 c├íi	11	2026-06-25 10:52:58.523	2026-06-27 02:18:03.351	\N	\N	\N	\N	\N	\N	\N	0
 27552	´╝æ´╝É	Òü¿Òüè	too	10 c├íi	11	2026-06-25 10:52:58.531	2026-06-27 02:18:03.353	\N	\N	\N	\N	\N	\N	\N	0
 27546	´╝öÒüñ	ÒéêÒüúÒüñ	yottsu	4 c├íi	11	2026-06-25 10:52:58.518	2026-06-27 02:18:03.347	\N	\N	\N	\N	\N	\N	\N	0
-27560	\N	ÒéèÒéôÒüö	ringo	quß║ú t├ío	11	2026-06-25 10:52:58.548	2026-06-27 02:18:03.355	\N	\N	\N	\N	\N	\N	/media/openmoji/1F34E	0
-27564	\N	ÒéóÒéñÒé╣Òé»Òâ¬Òâ╝Òâá	aisukuriimu	kem	11	2026-06-25 10:52:58.555	2026-06-27 02:25:27.018	\N	\N	\N	\N	\N	\N	/media/openmoji/1F366	0
 27605	þ░íÕìÿ´╝╗Òü¬´╝¢	ÒüïÒéôÒüƒÒéô´╝╗Òü¬´╝¢	kantan [na]	easy, simple	12	2026-06-25 10:52:58.766	2026-06-25 10:52:58.766	\N	\N	\N	\N	\N	\N	\N	0
 27606	Þ┐æÒüä	ÒüíÒüïÒüä	chikai	gß║ºn	12	2026-06-25 10:52:58.768	2026-06-25 10:52:58.768	\N	\N	\N	\N	\N	\N	\N	0
 27607	ÚüáÒüä	Òü¿ÒüèÒüä	toi	xa	12	2026-06-25 10:52:58.77	2026-06-25 10:52:58.77	\N	\N	\N	\N	\N	\N	\N	0
@@ -13074,7 +13422,10 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27622	þºï	ÒüéÒüì	aki	m├╣a thu	12	2026-06-25 10:52:58.812	2026-06-25 10:52:58.812	\N	\N	\N	\N	\N	\N	\N	0
 27623	Õå¼	ÒüÁÒéå	fuyu	m├╣a ─æ├┤ng	12	2026-06-25 10:52:58.816	2026-06-25 10:52:58.816	\N	\N	\N	\N	\N	\N	\N	0
 27624	Õñ®µ░ù	ÒüªÒéôÒüì	tenki	thß╗Øi tiß║┐t	12	2026-06-25 10:52:58.819	2026-06-25 10:52:58.819	\N	\N	\N	\N	\N	\N	\N	0
+27626	Úø¬	ÒéåÒüì	yuki	tuyß║┐t	12	2026-06-25 10:52:58.824	2026-06-27 02:22:16.544	\N	\N	\N	\N	\N	\N	/media/openmoji/2744.svg	0
 27627	µøçÒéè	ÒüÅÒééÒéè	kumori	c├│ m├óy	12	2026-06-25 10:52:58.828	2026-06-25 10:52:58.828	\N	\N	\N	\N	\N	\N	\N	0
+27628	\N	ÒâøÒâåÒâ½	hoteru	kh├ích sß║ín	12	2026-06-25 10:52:58.832	2026-06-27 02:25:27.028	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E8.svg	0
+27658	Þ®ªÚ¿ô	ÒüùÒüæÒéô	shiken	kß╗│ thi, b├ái thi	12	2026-06-25 10:52:58.915	2026-06-27 02:22:16.547	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DD.svg	0
 27631	õ©ûþòî	ÒüøÒüïÒüä	sekai	thß║┐ giß╗øi	12	2026-06-25 10:52:58.839	2026-06-25 10:52:58.839	\N	\N	\N	\N	\N	\N	\N	0
 27632	\N	ÒâæÒâ╝ÒâåÒéúÒâ╝	pateii	tiß╗çc (~ÒéÆÒüùÒü¥ÒüÖ´╝Ütß╗ò chß╗®c tiß╗çc)	12	2026-06-25 10:52:58.841	2026-06-25 10:52:58.841	\N	\N	\N	\N	\N	\N	\N	0
 27633	´╝╗Òüè´╝¢þÑ¡Òéè	´╝╗Òüè´╝¢Òü¥ÒüñÒéè	[o] matsuri	festival	12	2026-06-25 10:52:58.843	2026-06-25 10:52:58.843	\N	\N	\N	\N	\N	\N	\N	0
@@ -13111,9 +13462,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27673	þï¡Òüä	ÒüøÒü¥Òüä	semai	hß║╣p	13	2026-06-25 10:52:59.042	2026-06-25 10:52:59.042	\N	\N	\N	\N	\N	\N	\N	0
 27675	ÕÀØ	ÒüïÒéÅ	kawa	s├┤ng, d├▓ng s├┤ng	13	2026-06-25 10:52:59.048	2026-06-25 10:52:59.048	\N	\N	\N	\N	\N	\N	\N	0
 27644	õ¢òµû╣	Òü®ÒüíÒéë	dochira	c├íi n├áo	12	2026-06-25 10:52:58.871	2026-06-27 02:18:03.366	\N	\N	\N	\N	\N	\N	\N	0
-27626	Úø¬	ÒéåÒüì	yuki	tuyß║┐t	12	2026-06-25 10:52:58.824	2026-06-27 02:22:16.544	\N	\N	\N	\N	\N	\N	/media/openmoji/2744	0
-27628	\N	ÒâøÒâåÒâ½	hoteru	kh├ích sß║ín	12	2026-06-25 10:52:58.832	2026-06-27 02:25:27.028	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E8	0
-27658	Þ®ªÚ¿ô	ÒüùÒüæÒéô	shiken	kß╗│ thi, b├ái thi	12	2026-06-25 10:52:58.915	2026-06-27 02:22:16.547	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DD	0
+27730	\N	ÒâæÒé╣ÒâØÒâ╝Òâê	pasupoto	hß╗Ö chiß║┐u	14	2026-06-25 10:52:59.367	2026-06-27 02:18:03.376	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6C2.svg	0
 27679	ÚÇ▒µ£½	ÒüùÒéàÒüåÒü¥Òüñ	shumatsu	cuß╗æi tuß║ºn	13	2026-06-25 10:52:59.063	2026-06-25 10:52:59.063	\N	\N	\N	\N	\N	\N	\N	0
 27680	´╝╗Òüè´╝¢µ¡úµ£ê	´╝╗Òüè´╝¢ÒüùÒéçÒüåÒüîÒüñ	[o] shogatsu	New Year's Day	13	2026-06-25 10:52:59.066	2026-06-25 10:52:59.066	\N	\N	\N	\N	\N	\N	\N	0
 27681	\N	´¢×ÒüöÒéì	~goro	about ´¢× (time)	13	2026-06-25 10:52:59.068	2026-06-25 10:52:59.068	\N	\N	\N	\N	\N	\N	\N	0
@@ -13170,7 +13519,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27744	\N	ÒüéÒü¿Òüº	atode	sau	14	2026-06-25 10:52:59.401	2026-06-25 10:52:59.401	\N	\N	\N	\N	\N	\N	\N	0
 27745	ÒééÒüå Õ░æÒüù	ÒééÒüå ÒüÖÒüôÒüù	mo sukoshi	th├¬m mß╗Öt ch├║t nß╗»a	14	2026-06-25 10:52:59.402	2026-06-25 10:52:59.402	\N	\N	\N	\N	\N	\N	\N	0
 27702	þÖ╗Úî▓	Òü¿ÒüåÒéìÒüÅ	toroku	─æ─âng k├¡	13	2026-06-25 10:52:59.149	2026-06-27 02:18:03.371	\N	\N	\N	\N	\N	\N	\N	0
-27730	\N	ÒâæÒé╣ÒâØÒâ╝Òâê	pasupoto	hß╗Ö chiß║┐u	14	2026-06-25 10:52:59.367	2026-06-27 02:18:03.376	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6C2	0
 27746	\N	ÒééÒüå ´¢×	mo ~	´¢× more, another ´¢×	14	2026-06-25 10:52:59.404	2026-06-25 10:52:59.404	\N	\N	\N	\N	\N	\N	\N	0
 27747	\N	ÒüòÒüé	sa	right (used when encouraging some course of action)	14	2026-06-25 10:52:59.406	2026-06-25 10:52:59.406	\N	\N	\N	\N	\N	\N	\N	0
 27748	\N	ÒüéÒéî´╝ƒ	are´╝ƒ	Oh! Eh? (in surprise or wonder)	14	2026-06-25 10:52:59.408	2026-06-25 10:52:59.408	\N	\N	\N	\N	\N	\N	\N	0
@@ -13189,6 +13537,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27762	þáöþ®ÂÒüùÒü¥ÒüÖ	ÒüæÒéôÒüìÒéàÒüåÒüùÒü¥ÒüÖ	kenkyushimasu	nghi├¬m cß╗®u	15	2026-06-25 10:52:59.534	2026-06-25 10:52:59.534	\N	\N	\N	\N	\N	\N	\N	0
 27763	Þ│çµûÖ	ÒüùÒéèÒéçÒüå	shiryo	tã░ liß╗çu, t├ái liß╗çu	15	2026-06-25 10:52:59.536	2026-06-25 10:52:59.536	\N	\N	\N	\N	\N	\N	\N	0
 27764	\N	Òé½Òé┐Òâ¡Òé░	katarogu	catalog	15	2026-06-25 10:52:59.539	2026-06-25 10:52:59.539	\N	\N	\N	\N	\N	\N	\N	0
+27757	þ¢«ÒüìÒü¥ÒüÖ	ÒüèÒüìÒü¥ÒüÖ	okimasu	─æß║Àt ─æß╗â	15	2026-06-25 10:52:59.517	2026-06-27 02:22:16.564	\N	\N	\N	\N	\N	\N	/media/openmoji/1F31E.svg	0
 27767	Þú¢Õôü	ÒüøÒüäÒü▓Òéô	seihin	sß║ún phß║®m	15	2026-06-25 10:52:59.549	2026-06-25 10:52:59.549	\N	\N	\N	\N	\N	\N	\N	0
 27768	\N	Òé¢ÒâòÒâê	sofuto	phß║ºn mß╗üm	15	2026-06-25 10:52:59.554	2026-06-25 10:52:59.554	\N	\N	\N	\N	\N	\N	\N	0
 27769	Úø╗Õ¡ÉÞ¥×µø©	ÒüºÒéôÒüùÒüÿÒüùÒéç	denshijisho	electronic dictionary	15	2026-06-25 10:52:59.557	2026-06-25 10:52:59.557	\N	\N	\N	\N	\N	\N	\N	0
@@ -13224,7 +13573,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27805	ÞïÑÒüä	ÒéÅÒüïÒüä	wakai	trß║╗	16	2026-06-25 10:52:59.746	2026-06-25 10:52:59.746	\N	\N	\N	\N	\N	\N	\N	0
 27806	ÚòÀÒüä	Òü¬ÒüîÒüä	nagai	d├ái	16	2026-06-25 10:52:59.748	2026-06-25 10:52:59.748	\N	\N	\N	\N	\N	\N	\N	0
 27807	þƒ¡Òüä	Òü┐ÒüÿÒüïÒüä	mijikai	ngß║»n	16	2026-06-25 10:52:59.75	2026-06-25 10:52:59.75	\N	\N	\N	\N	\N	\N	\N	0
-27757	þ¢«ÒüìÒü¥ÒüÖ	ÒüèÒüìÒü¥ÒüÖ	okimasu	─æß║Àt ─æß╗â	15	2026-06-25 10:52:59.517	2026-06-27 02:22:16.564	\N	\N	\N	\N	\N	\N	/media/openmoji/1F31E	0
+27823	\N	Òé©ÒâºÒé«Òâ│Òé░	jogingu	chß║íy bß╗Ö	16	2026-06-25 10:52:59.782	2026-06-27 02:25:27.072	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3.svg	0
 27819	\N	ÒüèÒü¬Òüï	onaka	bß╗Ñng	16	2026-06-25 10:52:59.773	2026-06-25 10:52:59.773	\N	\N	\N	\N	\N	\N	\N	0
 27821	Þâî	Òüø	se	height	16	2026-06-25 10:52:59.778	2026-06-25 10:52:59.778	\N	\N	\N	\N	\N	\N	\N	0
 27822	\N	ÒéÁÒâ╝ÒâôÒé╣	sabisu	dß╗ïch vß╗Ñ	16	2026-06-25 10:52:59.78	2026-06-25 10:52:59.78	\N	\N	\N	\N	\N	\N	\N	0
@@ -13272,10 +13621,10 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27882	\N	´╝ÆÒÇü´╝ô´¢×	2, 3~	two or three ´¢× (where ´¢× is a counter suffix)	17	2026-06-25 10:52:59.983	2026-06-25 10:52:59.983	\N	\N	\N	\N	\N	\N	\N	0
 27883	\N	´¢×Òü¥ÒüºÒü½	~madeni	before ´¢×, by ´¢× (indicating time limit)	17	2026-06-25 10:52:59.985	2026-06-25 10:52:59.985	\N	\N	\N	\N	\N	\N	\N	0
 27884	\N	ÒüºÒüÖÒüïÒéë	desukara	v├¼ thß║┐, v├¼ vß║¡y, do ─æ├│	17	2026-06-25 10:52:59.987	2026-06-25 10:52:59.987	\N	\N	\N	\N	\N	\N	\N	0
-27823	\N	Òé©ÒâºÒé«Òâ│Òé░	jogingu	chß║íy bß╗Ö	16	2026-06-25 10:52:59.782	2026-06-27 02:25:27.072	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3	0
 27885	\N	Òü®Òüå ÒüùÒü¥ÒüùÒüƒÒüïÒÇé	do shimashitaka.	What's the matter?	17	2026-06-25 10:52:59.989	2026-06-25 10:52:59.989	\N	\N	\N	\N	\N	\N	\N	0
 27886	\N	Òü«Òü®	nodo	throat	17	2026-06-25 10:52:59.991	2026-06-25 10:52:59.991	\N	\N	\N	\N	\N	\N	\N	0
 27887	´╝╗´¢×Òüî´╝¢þùøÒüäÒüºÒüÖÒÇé	´╝╗´¢×Òüî´╝¢ÒüäÒüƒÒüäÒüºÒüÖÒÇé	[~ga] itaidesu.	(I) have a pain [in my ´¢×].	17	2026-06-25 10:52:59.992	2026-06-25 10:52:59.992	\N	\N	\N	\N	\N	\N	\N	0
+27906	þÅ¥Úçæ	ÒüÆÒéôÒüìÒéô	genkin	tiß╗ün mß║Àt	18	2026-06-25 10:53:00.17	2026-06-27 02:22:16.591	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
 27889	\N	ÒüØÒéîÒüïÒéë	sorekara	and, furthermore	17	2026-06-25 10:52:59.998	2026-06-25 10:52:59.998	\N	\N	\N	\N	\N	\N	\N	0
 27890	ÒüèÕñºõ║ïÒü½ÒÇé	ÒüèÒüáÒüäÒüÿÒü½ÒÇé	odaijini.	Take care of yourself. (said to people who are ill)	17	2026-06-25 10:53:00	2026-06-25 10:53:00	\N	\N	\N	\N	\N	\N	\N	0
 27891	Õç║ÒüùÒü¥ÒüÖ´╝╗Òâ¼ÒâØÒâ╝ÒâêÒéÆ´¢×´╝¢	ÒüáÒüùÒü¥ÒüÖ´╝╗Òâ¼ÒâØÒâ╝ÒâêÒéÆ´¢×´╝¢	dashimasu [repotowo~]	nß╗Öp	17	2026-06-25 10:53:00.001	2026-06-25 10:53:00.001	\N	\N	\N	\N	\N	\N	\N	0
@@ -13324,14 +13673,16 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27952	µØ▒õ║¼Òé╣Òé½ÒéñÒâäÒâ¬Òâ╝	Òü¿ÒüåÒüìÒéçÒüåÒé╣Òé½ÒéñÒâäÒâ¬Òâ╝	tokyosukaitsurii	Tokyo Sky Tree (broadcasting tower with observation deck in Tokyo)	19	2026-06-25 10:53:00.387	2026-06-25 10:53:00.387	\N	\N	\N	\N	\N	\N	\N	0
 27953	ÞæøÚú¥ÕîùµûÄ	ÒüïÒüñÒüùÒüïÒü╗ÒüÅÒüòÒüä	katsushikahokusai	a famous Edo-period woodblock artist and painter (1760-1849)	19	2026-06-25 10:53:00.389	2026-06-25 10:53:00.389	\N	\N	\N	\N	\N	\N	\N	0
 27949	\N	ÒâÇÒéñÒé¿ÒââÒâê	daietto	─ân ki├¬ng	19	2026-06-25 10:53:00.383	2026-06-27 02:18:03.4	\N	\N	\N	\N	\N	\N	\N	0
-27906	þÅ¥Úçæ	ÒüÆÒéôÒüìÒéô	genkin	tiß╗ün mß║Àt	18	2026-06-25 10:53:00.17	2026-06-27 02:22:16.591	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
 27954	Þ¬┐Õ¡ÉÒüî ÒüäÒüä	ÒüíÒéçÒüåÒüùÒüî ÒüäÒüä	choshiga ii	t├¼nh trß║íng tß╗æt	19	2026-06-25 10:53:00.39	2026-06-25 10:53:00.39	\N	\N	\N	\N	\N	\N	\N	0
 27955	Þ¬┐Õ¡ÉÒüî µé¬Òüä	ÒüíÒéçÒüåÒüùÒüî ÒéÅÒéïÒüä	choshiga warui	t├¼nh trß║íng xß║Ñu	19	2026-06-25 10:53:00.392	2026-06-25 10:53:00.392	\N	\N	\N	\N	\N	\N	\N	0
 27957	Õ«ƒÒü»	ÒüÿÒüñÒü»	jitsuwa	sß╗▒ t├¼nh l├á, sß╗▒ thß║¡t l├á	19	2026-06-25 10:53:00.397	2026-06-25 10:53:00.397	\N	\N	\N	\N	\N	\N	\N	0
 27958	õ¢òÕø×Òéé	Òü¬ÒéôÒüïÒüäÒéé	nankaimo	nhiß╗üu lß║ºn	19	2026-06-25 10:53:00.399	2026-06-25 10:53:00.399	\N	\N	\N	\N	\N	\N	\N	0
 27959	\N	ÒüùÒüïÒüù	shikashi	tuy nhi├¬n	19	2026-06-25 10:53:00.401	2026-06-25 10:53:00.401	\N	\N	\N	\N	\N	\N	\N	0
+27956	\N	ÒâæÒâüÒâ│Òé│	pachinko	tr├▓ chãíi pachinko	19	2026-06-25 10:53:00.395	2026-06-27 02:25:27.09	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AE.svg	0
 27961	ÞªüÒéèÒü¥ÒüÖ´╝╗ÒâôÒéÂÒüî´¢×´╝¢	ÒüäÒéèÒü¥ÒüÖ´╝╗ÒâôÒéÂÒüî´¢×´╝¢	irimasu [bizaga~]	cß║ºn visa	20	2026-06-25 10:53:00.484	2026-06-25 10:53:00.484	\N	\N	\N	\N	\N	\N	\N	0
+27984	Úø╗Þ®▒ÒüùÒü¥ÒüÖ	ÒüºÒéôÒéÅÒüùÒü¥ÒüÖ	denwashimasu	gß╗ìi ─æiß╗çn thoß║íi	20	2026-06-25 10:53:00.534	2026-06-27 02:22:16.606	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE.svg	0
 27963	õ┐«þÉåÒüùÒü¥ÒüÖ	ÒüùÒéàÒüåÒéèÒüùÒü¥ÒüÖ	shurishimasu	sß╗¡a, chß╗»a, tu sß╗¡a	20	2026-06-25 10:53:00.489	2026-06-25 10:53:00.489	\N	\N	\N	\N	\N	\N	\N	0
+28006	Þç¬ÕïòÞ╗è	ÒüÿÒü®ÒüåÒüùÒéâ	jidosha	car, automobile	21	2026-06-25 10:53:00.667	2026-06-27 02:22:16.609	\N	\N	\N	\N	\N	\N	/media/openmoji/1F697.svg	0
 27965	ÕÉø	ÒüìÒü┐	kimi	cß║¡u, bß║ín	20	2026-06-25 10:53:00.492	2026-06-25 10:53:00.492	\N	\N	\N	\N	\N	\N	\N	0
 27966	´¢×ÕÉø	´¢×ÒüÅÒéô	~kun	(hß║¡u tß╗æ th├¬m v├áo sau t├¬n cß╗ºa em trai)	20	2026-06-25 10:53:00.494	2026-06-25 10:53:00.494	\N	\N	\N	\N	\N	\N	\N	0
 27969	\N	ÒüôÒü¿Òü░	kotoba	tiß║┐ng	20	2026-06-25 10:53:00.501	2026-06-25 10:53:00.501	\N	\N	\N	\N	\N	\N	\N	0
@@ -13381,13 +13732,12 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27975	\N	ÒüØÒüúÒüí	sotchi	ph├¡a ─æ├│ (c├ích n├│i tß╗▒ nhi├¬n cß╗ºa, th├ón mß║¡t ÔÇ£sochiraÔÇØ)	20	2026-06-25 10:53:00.51	2026-06-27 02:18:03.405	\N	\N	\N	\N	\N	\N	\N	0
 27979	\N	´¢×ÒüæÒü®	~kedo	nhã░ng(c├ích n├│i th├ón mß║¡t cß╗ºa Òüî)	20	2026-06-25 10:53:00.521	2026-06-27 02:18:03.407	\N	\N	\N	\N	\N	\N	\N	0
 27968	\N	ÒüåÒüåÒéô	uun	kh├┤ng(c├ích n├│i th├ón mß║¡t cß╗ºa ÔÇ£ÒüäÒüäÒüêÔÇØ)	20	2026-06-25 10:53:00.499	2026-06-27 02:18:03.403	\N	\N	\N	\N	\N	\N	\N	0
-27956	\N	ÒâæÒâüÒâ│Òé│	pachinko	tr├▓ chãíi pachinko	19	2026-06-25 10:53:00.395	2026-06-27 02:25:27.09	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AE	0
-27984	Úø╗Þ®▒ÒüùÒü¥ÒüÖ	ÒüºÒéôÒéÅÒüùÒü¥ÒüÖ	denwashimasu	gß╗ìi ─æiß╗çn thoß║íi	20	2026-06-25 10:53:00.534	2026-06-27 02:22:16.606	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE	0
-28006	Þç¬ÕïòÞ╗è	ÒüÿÒü®ÒüåÒüùÒéâ	jidosha	car, automobile	21	2026-06-25 10:53:00.667	2026-06-27 02:22:16.609	\N	\N	\N	\N	\N	\N	/media/openmoji/1F697	0
 28024	\N	Òü╗ÒéôÒü¿ÒüåÒü½	hontoni	thß║¡t sß╗▒	21	2026-06-25 10:53:00.709	2026-06-25 10:53:00.709	\N	\N	\N	\N	\N	\N	\N	0
 28025	\N	ÒüØÒéôÒü¬Òü½	sonnani	(kh├┤ng ) ~ lß║»m	21	2026-06-25 10:53:00.712	2026-06-25 10:53:00.712	\N	\N	\N	\N	\N	\N	\N	0
 28026	\N	´¢×Òü½ ÒüñÒüäÒüª	~ni tsuite	theo ~ vß╗ü	21	2026-06-25 10:53:00.715	2026-06-25 10:53:00.715	\N	\N	\N	\N	\N	\N	\N	0
 28027	õ╣àÒüùÒüÂÒéèÒüºÒüÖÒü¡ÒÇé	Òü▓ÒüòÒüùÒüÂÒéèÒüºÒüÖÒü¡ÒÇé	hisashiburidesune.	It's been a long time [since we last met].	21	2026-06-25 10:53:00.717	2026-06-25 10:53:00.717	\N	\N	\N	\N	\N	\N	\N	0
+28065	Õ©¢Õ¡É	Òü╝ÒüåÒüù	boshi	n├│n, m┼®	22	2026-06-25 10:53:00.886	2026-06-27 02:25:27.099	\N	\N	\N	\N	\N	\N	/media/openmoji/1F452.svg	0
+28066	þ£╝ÚÅí	ÒéüÒüîÒü¡	megane	k├¡nh	22	2026-06-25 10:53:00.888	2026-06-27 02:25:27.101	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
 28030	ÒééÒüå Õ©░ÒéëÒü¬ÒüäÒü¿ÔÇªÔÇªÒÇé	ÒééÒüå ÒüïÒüêÒéëÒü¬ÒüäÒü¿ÔÇªÔÇªÒÇé	mo kaeranaitoÔÇªÔÇª.	I have to get home now......	21	2026-06-25 10:53:00.723	2026-06-25 10:53:00.723	\N	\N	\N	\N	\N	\N	\N	0
 28031	\N	ÒéóÒéñÒâ│ÒéÀÒâÑÒé┐ÒéñÒâ│	ainshutain	Albert Einstein (1879-1955)	21	2026-06-25 10:53:00.724	2026-06-25 10:53:00.724	\N	\N	\N	\N	\N	\N	\N	0
 28032	\N	Òé¼Òé¼Òâ╝Òâ¬Òâ│	gagarin	Yuri Alekseyevich Gagarin (1934-1968)	21	2026-06-25 10:53:00.727	2026-06-25 10:53:00.727	\N	\N	\N	\N	\N	\N	\N	0
@@ -13409,6 +13759,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28049	\N	ÒâªÒâ╝ÒâóÒéó	yumoa	h├ái hã░ß╗øc	21	2026-06-25 10:53:00.763	2026-06-25 10:53:00.763	\N	\N	\N	\N	\N	\N	\N	0
 28050	\N	ÒéÇÒüá	muda	sß╗▒ l├úng ph├¡	21	2026-06-25 10:53:00.765	2026-06-25 10:53:00.765	\N	\N	\N	\N	\N	\N	\N	0
 28051	\N	Òâ®ÒââÒéÀÒâÑ	rasshu	giß╗Ø cao ─æiß╗âm	21	2026-06-25 10:53:00.766	2026-06-25 10:53:00.766	\N	\N	\N	\N	\N	\N	\N	0
+28078	Õ«ÂÞ│â	ÒéäÒüíÒéô	yachin	tiß╗ün thu├¬ nh├á	22	2026-06-25 10:53:00.914	2026-06-27 02:22:16.616	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
 28053	\N	ÒüùÒü░ÒéëÒüÅÒüºÒüÖÒü¡ÒÇé	shibarakudesune.	L├óu rß╗ôi kh├┤ng gß║Àp	21	2026-06-25 10:53:00.77	2026-06-25 10:53:00.77	\N	\N	\N	\N	\N	\N	\N	0
 28054	ÞªïÒü¬ÒüäÒü¿ÔÇªÔÇªÒÇé	Òü┐Òü¬ÒüäÒü¿ÔÇªÔÇªÒÇé	minaitoÔÇªÔÇª.	I've got to watch it.	21	2026-06-25 10:53:00.772	2026-06-25 10:53:00.772	\N	\N	\N	\N	\N	\N	\N	0
 28055	þØÇÒü¥ÒüÖ	ÒüìÒü¥ÒüÖ	kimasu	put on (a shirt, etc.)	22	2026-06-25 10:53:00.857	2026-06-25 10:53:00.857	\N	\N	\N	\N	\N	\N	\N	0
@@ -13418,6 +13769,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28059	\N	ÒüùÒü¥ÒüÖ´╝╗ÒâìÒé»Òé┐ÒéñÒéÆ´¢×´╝¢	shimasu [nekutaiwo~]	put on [tie]	22	2026-06-25 10:53:00.867	2026-06-25 10:53:00.867	\N	\N	\N	\N	\N	\N	\N	0
 28060	þöƒÒü¥ÒéîÒü¥ÒüÖ	ÒüåÒü¥ÒéîÒü¥ÒüÖ	umaremasu	sinh ra	22	2026-06-25 10:53:00.869	2026-06-25 10:53:00.869	\N	\N	\N	\N	\N	\N	\N	0
 28061	þºüÒüƒÒüí	ÒéÅÒüƒÒüùÒüƒÒüí	watashitachi	we	22	2026-06-25 10:53:00.872	2026-06-25 10:53:00.872	\N	\N	\N	\N	\N	\N	\N	0
+28067	\N	Òé▒Òâ╝Òé¡	keki	cake	22	2026-06-25 10:53:00.89	2026-06-27 02:25:27.104	\N	\N	\N	\N	\N	\N	/media/openmoji/1F370.svg	0
 28064	\N	Òé╣Òâ╝Òâä	sutsu	com-l├¬	22	2026-06-25 10:53:00.883	2026-06-25 10:53:00.883	\N	\N	\N	\N	\N	\N	\N	0
 28068	´╝╗Òüè´╝¢Õ╝üÕ¢ô	´╝╗Òüè´╝¢Òü╣ÒéôÒü¿Òüå	[o] bento	box lunch	22	2026-06-25 10:53:00.892	2026-06-25 10:53:00.892	\N	\N	\N	\N	\N	\N	\N	0
 28069	\N	Òâ¡Òâ£ÒââÒâê	robotto	robot	22	2026-06-25 10:53:00.895	2026-06-25 10:53:00.895	\N	\N	\N	\N	\N	\N	\N	0
@@ -13432,15 +13784,12 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28083	\N	ÒâæÒâ¬	pari	Pa-ri	22	2026-06-25 10:53:00.923	2026-06-25 10:53:00.923	\N	\N	\N	\N	\N	\N	\N	0
 28085	\N	Òü┐ÒéôÒü¬Òü« ÒéóÒâ│Òé▒Òâ╝Òâê	minnano anketo	title of a fictitious questionnaire	22	2026-06-25 10:53:00.927	2026-06-25 10:53:00.927	\N	\N	\N	\N	\N	\N	\N	0
 28154	þö░ÞêÄ	ÒüäÒü¬Òüï	inaka	qu├¬, n├┤ng th├┤n	25	2026-06-25 10:53:01.375	2026-06-25 10:53:01.375	\N	\N	\N	\N	\N	\N	\N	0
-28065	Õ©¢Õ¡É	Òü╝ÒüåÒüù	boshi	n├│n, m┼®	22	2026-06-25 10:53:00.886	2026-06-27 02:25:27.099	\N	\N	\N	\N	\N	\N	/media/openmoji/1F452	0
 28084	õ©çÚçîÒü« ÚòÀÕƒÄ	Òü░ÒéôÒéèÒü« ÒüíÒéçÒüåÒüÿÒéçÒüå	banrino chojo	Vß║ín l├¢ trã░ß╗Øng th├ánh	22	2026-06-25 10:53:00.924	2026-06-27 02:18:03.421	\N	\N	\N	\N	\N	\N	\N	0
 28087	\N	ÒéóÒâæÒâ╝Òâê	apato	nh├á chung cã░	22	2026-06-25 10:53:00.932	2026-06-27 02:18:03.423	\N	\N	\N	\N	\N	\N	\N	0
 28039	\N	Òé½Òâ│Òé¼Òâ½Òâ╝	kangaru	c─ân-gu-ru	21	2026-06-25 10:53:00.742	2026-06-27 02:18:03.411	\N	\N	\N	\N	\N	\N	\N	0
-28066	þ£╝ÚÅí	ÒéüÒüîÒü¡	megane	k├¡nh	22	2026-06-25 10:53:00.888	2026-06-27 02:25:27.101	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453	0
-28078	Õ«ÂÞ│â	ÒéäÒüíÒéô	yachin	tiß╗ün thu├¬ nh├á	22	2026-06-25 10:53:00.914	2026-06-27 02:22:16.616	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-28067	\N	Òé▒Òâ╝Òé¡	keki	cake	22	2026-06-25 10:53:00.89	2026-06-27 02:25:27.104	\N	\N	\N	\N	\N	\N	/media/openmoji/1F370	0
 28090	Þü×ÒüìÒü¥ÒüÖ´╝╗ÕàêþöƒÒü½´¢×´╝¢	ÒüìÒüìÒü¥ÒüÖ´╝╗ÒüøÒéôÒüøÒüäÒü½´¢×´╝¢	kikimasu [senseini~]	ask [the teacher]	23	2026-06-25 10:53:01.024	2026-06-25 10:53:01.024	\N	\N	\N	\N	\N	\N	\N	0
 28091	Õø×ÒüùÒü¥ÒüÖ	Òü¥ÒéÅÒüùÒü¥ÒüÖ	mawashimasu	vß║Àn (n├║t)	23	2026-06-25 10:53:01.025	2026-06-25 10:53:01.025	\N	\N	\N	\N	\N	\N	\N	0
+28146	\N	ÒüäÒéîÒü¥ÒüÖ´╝╗Òé│Òâ╝ÒâÆÒâ╝ÒéÆ´¢×´╝¢	iremasu [kohiiwo~]	pha(c├á ph├¬)	24	2026-06-25 10:53:01.263	2026-06-27 02:18:03.43	\N	\N	\N	\N	\N	\N	/media/openmoji/2615.svg	0
 28093	ÕñëÒüêÒü¥ÒüÖ	ÒüïÒüêÒü¥ÒüÖ	kaemasu	─æß╗òi	23	2026-06-25 10:53:01.031	2026-06-25 10:53:01.031	\N	\N	\N	\N	\N	\N	\N	0
 28094	ÞºªÒéèÒü¥ÒüÖ´╝╗ÒâëÒéóÒü½´¢×´╝¢	ÒüòÒéÅÒéèÒü¥ÒüÖ´╝╗ÒâëÒéóÒü½´¢×´╝¢	sawarimasu [doani~]	sß╗Ø, chß║ím v├áo	23	2026-06-25 10:53:01.032	2026-06-25 10:53:01.032	\N	\N	\N	\N	\N	\N	\N	0
 28095	Õç║Òü¥ÒüÖ´╝╗ÒüèÚçúÒéèÒüî´¢×´╝¢	ÒüºÒü¥ÒüÖ´╝╗ÒüèÒüñÒéèÒüî´¢×´╝¢	demasu [otsuriga~]	ra,─æi ra	23	2026-06-25 10:53:01.034	2026-06-25 10:53:01.034	\N	\N	\N	\N	\N	\N	\N	0
@@ -13492,7 +13841,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28152	ÕÅûÒéèÒü¥ÒüÖ´╝╗Õ╣┤ÒéÆ´¢×´╝¢	Òü¿ÒéèÒü¥ÒüÖ´╝╗Òü¿ÒüùÒéÆ´¢×´╝¢	torimasu [toshiwo~]	th├¬m [tuß╗òi]	25	2026-06-25 10:53:01.367	2026-06-25 10:53:01.367	\N	\N	\N	\N	\N	\N	\N	0
 28153	ÞÂ│ÒéèÒü¥ÒüÖ	ÒüƒÒéèÒü¥ÒüÖ	tarimasu	be enough, be sufficient	25	2026-06-25 10:53:01.37	2026-06-25 10:53:01.37	\N	\N	\N	\N	\N	\N	\N	0
 28120	Õ╝òÒüúÞÂèÒüùÒüùÒü¥ÒüÖ	Òü▓ÒüúÒüôÒüùÒüùÒü¥ÒüÖ	hikkoshishimasu	chuyß╗ân nh├á	23	2026-06-25 10:53:01.091	2026-06-27 02:18:03.426	\N	\N	\N	\N	\N	\N	\N	0
-28146	\N	ÒüäÒéîÒü¥ÒüÖ´╝╗Òé│Òâ╝ÒâÆÒâ╝ÒéÆ´¢×´╝¢	iremasu [kohiiwo~]	pha(c├á ph├¬)	24	2026-06-25 10:53:01.263	2026-06-27 02:18:03.43	\N	\N	\N	\N	\N	\N	/media/openmoji/2615	0
 28155	\N	ÒâüÒâúÒâ│Òé╣	chansu	cãí hß╗Öi	25	2026-06-25 10:53:01.379	2026-06-25 10:53:01.379	\N	\N	\N	\N	\N	\N	\N	0
 28156	Õää	ÒüèÒüÅ	oku	b├¬n trong c├╣ng, ph├¡a s├óu b├¬n trong	25	2026-06-25 10:53:01.381	2026-06-25 10:53:01.381	\N	\N	\N	\N	\N	\N	\N	0
 28157	\N	ÒééÒüù´╝╗´¢×ÒüƒÒéë´╝¢	moshi [~tara]	nß║┐u [~ th├¼]	25	2026-06-25 10:53:01.383	2026-06-25 10:53:01.383	\N	\N	\N	\N	\N	\N	\N	0
@@ -13507,6 +13855,8 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28168	Õñºõ¢┐Úñ¿	ÒüƒÒüäÒüùÒüïÒéô	taishikan	─æß║íi sß╗® qu├ín	25	2026-06-25 10:53:01.402	2026-06-25 10:53:01.402	\N	\N	\N	\N	\N	\N	\N	0
 28169	\N	Òé░Òâ½Òâ╝Òâù	gurupu	nh├│m, ─æo├án	25	2026-06-25 10:53:01.404	2026-06-25 10:53:01.404	\N	\N	\N	\N	\N	\N	\N	0
 28170	\N	ÒüäÒüÅÒéë´╝╗´¢×ÒüºÒéé´╝¢	ikura [~demo]	cho d├╣, thß║┐ n├áo [~ ─æi nß╗»a]	25	2026-06-25 10:53:01.405	2026-06-25 10:53:01.405	\N	\N	\N	\N	\N	\N	\N	0
+28160	Þ╗óÕïñ	ÒüªÒéôÒüìÒéô	tenkin	viß╗çc chuyß╗ân ─æß╗ïa ─æiß╗âm l├ám viß╗çc	25	2026-06-25 10:53:01.387	2026-06-27 02:22:16.62	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC.svg	0
+28166	\N	ÒâÖÒâêÒâèÒâá	betonamu	Vietnam	25	2026-06-25 10:53:01.399	2026-06-27 02:22:16.622	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FB-1F1F3.svg	0
 28173	µÄóÒüùÒü¥ÒüÖÒÇüµì£ÒüùÒü¥ÒüÖ	ÒüòÒüîÒüùÒü¥ÒüÖ	sagashimasu	t├¼m, t├¼m kiß║┐m	26	2026-06-25 10:53:01.497	2026-06-25 10:53:01.497	\N	\N	\N	\N	\N	\N	\N	0
 28174	ÚüàÒéîÒü¥ÒüÖ´╝╗µÖéÚûôÒü½´¢×´╝¢	ÒüèÒüÅÒéîÒü¥ÒüÖ´╝╗ÒüÿÒüïÒéôÒü½´¢×´╝¢	okuremasu [jikanni~]	chß║¡m, muß╗Ön [cuß╗Öc hß║╣n,v.v.]	26	2026-06-25 10:53:01.5	2026-06-25 10:53:01.5	\N	\N	\N	\N	\N	\N	\N	0
 28175	ÚûôÒü½ ÕÉêÒüäÒü¥ÒüÖ´╝╗µÖéÚûôÒü½´¢×´╝¢	Òü¥Òü½ ÒüéÒüäÒü¥ÒüÖ´╝╗ÒüÿÒüïÒéôÒü½´¢×´╝¢	mani aimasu [jikanni~]	be in time [for an appointment, etc.]	26	2026-06-25 10:53:01.502	2026-06-25 10:53:01.502	\N	\N	\N	\N	\N	\N	\N	0
@@ -13550,10 +13900,9 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28207	þôÂ	Òü│Òéô	bin	c├íi chai	26	2026-06-25 10:53:01.57	2026-06-27 02:18:03.437	\N	\N	\N	\N	\N	\N	\N	0
 28217	Õ«çÕ«ÖÚúøÞíîÕú½	ÒüåÒüíÒéàÒüåÒü▓ÒüôÒüåÒüù	uchuhikoshi	nh├á du h├ánh v┼® trß╗Ñ	26	2026-06-25 10:53:01.589	2026-06-27 02:18:03.441	\N	\N	\N	\N	\N	\N	\N	0
 28197	õ¢òÒüºÒéé	Òü¬ÒéôÒüºÒéé	nandemo	c├íi g├¼ c┼®ng	26	2026-06-25 10:53:01.55	2026-06-27 02:18:03.434	\N	\N	\N	\N	\N	\N	\N	0
-28160	Þ╗óÕïñ	ÒüªÒéôÒüìÒéô	tenkin	viß╗çc chuyß╗ân ─æß╗ïa ─æiß╗âm l├ám viß╗çc	25	2026-06-25 10:53:01.387	2026-06-27 02:22:16.62	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC	0
-28166	\N	ÒâÖÒâêÒâèÒâá	betonamu	Vietnam	25	2026-06-25 10:53:01.399	2026-06-27 02:22:16.622	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FB-1F1F3	0
 28221	Úâ¢ÕÉêÒüî ÒüäÒüä	ÒüñÒüöÒüåÒüî ÒüäÒüä	tsugoga ii	c├│ thß╗Øi gian, thuß║¡n tiß╗çn	26	2026-06-25 10:53:01.6	2026-06-25 10:53:01.6	\N	\N	\N	\N	\N	\N	\N	0
 28222	Úâ¢ÕÉêÒüî µé¬Òüä	ÒüñÒüöÒüåÒüî ÒéÅÒéïÒüä	tsugoga warui	kh├┤ng c├│ thß╗Øi gian, bß║¡n, kh├┤ng thuß║¡n tiß╗çn	26	2026-06-25 10:53:01.602	2026-06-25 10:53:01.602	\N	\N	\N	\N	\N	\N	\N	0
+28248	Õ«Â	ÒüäÒüê	ie	nh├á	27	2026-06-25 10:53:01.75	2026-06-27 02:18:03.451	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E0.svg	0
 28224	µƒöÚüô	ÒüÿÒéàÒüåÒü®Òüå	judo	Judo (nhu ─æß║ío)	26	2026-06-25 10:53:01.607	2026-06-25 10:53:01.607	\N	\N	\N	\N	\N	\N	\N	0
 28225	\N	NHK	NHK	Nippon Hoso Kyokai (broadcasting company)	26	2026-06-25 10:53:01.61	2026-06-25 10:53:01.61	\N	\N	\N	\N	\N	\N	\N	0
 28227	þçâÒüêÒü¥ÒüÖ´╝╗ÒüöÒü┐Òüî´¢×´╝¢	ÒééÒüêÒü¥ÒüÖ´╝╗ÒüöÒü┐Òüî´¢×´╝¢	moemasu [gomiga~]	ch├íy ─æã░ß╗úc [r├íc ~]	26	2026-06-25 10:53:01.615	2026-06-25 10:53:01.615	\N	\N	\N	\N	\N	\N	\N	0
@@ -13604,7 +13953,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28284	\N	Òü╗Òü¿ÒéôÒü®	hotondo	almost all (in affirmative sentences), hardly, scarcely (in negative sentences)	27	2026-06-25 10:53:01.817	2026-06-25 10:53:01.817	\N	\N	\N	\N	\N	\N	\N	0
 28287	õ╝èÞ▒å	ÒüäÒüÜ	izu	mß╗Öt ─æß║úo thuß╗Öc tß╗ënh Shizuoka	27	2026-06-25 10:53:01.824	2026-06-25 10:53:01.824	\N	\N	\N	\N	\N	\N	\N	0
 28288	µùÑµø£ÕñºÕÀÑ	Òü½ÒüíÒéêÒüåÒüáÒüäÒüÅ	nichiyodaiku	Sunday carpenter	27	2026-06-25 10:53:01.826	2026-06-25 10:53:01.826	\N	\N	\N	\N	\N	\N	\N	0
-28248	Õ«Â	ÒüäÒüê	ie	nh├á	27	2026-06-25 10:53:01.75	2026-06-27 02:18:03.451	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E0	0
 28289	Õñó	ÒéåÒéü	yume	mãí	27	2026-06-25 10:53:01.828	2026-06-25 10:53:01.828	\N	\N	\N	\N	\N	\N	\N	0
 28290	µ╝½þö╗	Òü¥ÒéôÒüî	manga	truyß╗çn tranh	27	2026-06-25 10:53:01.831	2026-06-25 10:53:01.831	\N	\N	\N	\N	\N	\N	\N	0
 28291	\N	Òâ¡Òâ£ÒââÒâê	robotto	ngã░ß╗Øi m├íy	27	2026-06-25 10:53:01.833	2026-06-25 10:53:01.833	\N	\N	\N	\N	\N	\N	\N	0
@@ -13667,6 +14015,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28356	ÕúèÒéîÒü¥ÒüÖ´╝╗ÒüäÒüÖÒüî´¢×´╝¢	ÒüôÒéÅÒéîÒü¥ÒüÖ´╝╗ÒüäÒüÖÒüî´¢×´╝¢	kowaremasu [isuga~]	hß╗Ång(ghß║┐)	29	2026-06-25 10:53:02.117	2026-06-25 10:53:02.117	\N	\N	\N	\N	\N	\N	\N	0
 28357	Õë▓ÒéîÒü¥ÒüÖ´╝╗Òé│ÒââÒâùÒüî´¢×´╝¢	ÒéÅÒéîÒü¥ÒüÖ´╝╗Òé│ÒââÒâùÒüî´¢×´╝¢	waremasu [koppuga~]	c├│ thß╗â nghe thß║Ñy	29	2026-06-25 10:53:02.119	2026-06-25 10:53:02.119	\N	\N	\N	\N	\N	\N	\N	0
 28426	õ║êÕ«Ü	ÒéêÒüªÒüä	yotei	kß║┐ hoß║ích, dß╗▒ ─æß╗ïnh	30	2026-06-25 10:53:02.352	2026-06-25 10:53:02.352	\N	\N	\N	\N	\N	\N	\N	0
+28396	ÚçØ	Òü»Òéè	hari	kim ─æß╗ông hß╗ô	29	2026-06-25 10:53:02.216	2026-06-27 02:22:16.644	\N	\N	\N	\N	\N	\N	/media/openmoji/23F0.svg	0
 28361	õ╗ÿÒüìÒü¥ÒüÖ´╝╗ÒâØÒé▒ÒââÒâêÒüî´¢×´╝¢	ÒüñÒüìÒü¥ÒüÖ´╝╗ÒâØÒé▒ÒââÒâêÒüî´¢×´╝¢	tsukimasu [pokettoga~]	d├¡nh, ─æ├¡nh (c├│ t├║i)	29	2026-06-25 10:53:02.125	2026-06-25 10:53:02.125	\N	\N	\N	\N	\N	\N	\N	0
 28362	ÕñûÒéîÒü¥ÒüÖ´╝╗Òâ£Òé┐Òâ│Òüî´¢×´╝¢	Òü»ÒüÜÒéîÒü¥ÒüÖ´╝╗Òâ£Òé┐Òâ│Òüî´¢×´╝¢	hazuremasu [botanga~]	tuß╗Öt,bung,rß╗Øi ra(s├║t n├║t)	29	2026-06-25 10:53:02.129	2026-06-25 10:53:02.129	\N	\N	\N	\N	\N	\N	\N	0
 28363	µ¡óÒü¥ÒéèÒü¥ÒüÖ´╝╗Þ╗èÒüî´¢×´╝¢	Òü¿Òü¥ÒéèÒü¥ÒüÖ´╝╗ÒüÅÒéïÒü¥Òüî´¢×´╝¢	tomarimasu [kurumaga~]	dß╗½ng	29	2026-06-25 10:53:02.143	2026-06-25 10:53:02.143	\N	\N	\N	\N	\N	\N	\N	0
@@ -13722,7 +14071,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28423	µÄêµÑ¡	ÒüÿÒéàÒüÄÒéçÒüå	jugyo	giß╗Ø hß╗ìc	30	2026-06-25 10:53:02.348	2026-06-25 10:53:02.348	\N	\N	\N	\N	\N	\N	\N	0
 28424	Þ¼øþ¥®	ÒüôÒüåÒüÄ	kogi	b├ái giß║úng	30	2026-06-25 10:53:02.349	2026-06-25 10:53:02.349	\N	\N	\N	\N	\N	\N	\N	0
 28425	\N	ÒâƒÒâ╝ÒâåÒéúÒâ│Òé░	miiteingu	meeting	30	2026-06-25 10:53:02.351	2026-06-25 10:53:02.351	\N	\N	\N	\N	\N	\N	\N	0
-28396	ÚçØ	Òü»Òéè	hari	kim ─æß╗ông hß╗ô	29	2026-06-25 10:53:02.216	2026-06-27 02:22:16.644	\N	\N	\N	\N	\N	\N	/media/openmoji/23F0	0
+28436	Õ╝òÒüìÕç║Òüù	Òü▓ÒüìÒüáÒüù	hikidashi	ng─ân k├®o	30	2026-06-25 10:53:02.371	2026-06-27 02:25:27.172	\N	\N	\N	\N	\N	\N	/media/openmoji/2702.svg	0
 28428	\N	Òé¼ÒéñÒâëÒâûÒââÒé»	gaidobukku	guidebook	30	2026-06-25 10:53:02.355	2026-06-25 10:53:02.355	\N	\N	\N	\N	\N	\N	\N	0
 28429	\N	Òé½Òâ¼Òâ│ÒâÇÒâ╝	karenda	lß╗ïch, tß╗Ø lß╗ïch	30	2026-06-25 10:53:02.357	2026-06-25 10:53:02.357	\N	\N	\N	\N	\N	\N	\N	0
 28431	õ║êÕ«ÜÞí¿	ÒéêÒüªÒüäÒü▓ÒéçÒüå	yoteihyo	thß╗Øi kh├│a biß╗âu, lß╗ïch	30	2026-06-25 10:53:02.362	2026-06-25 10:53:02.362	\N	\N	\N	\N	\N	\N	\N	0
@@ -13778,11 +14127,11 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28494	ÒüèÕ¡ÉÒüòÒéô	ÒüèÒüôÒüòÒéô	okosan	(someone else's) child	31	2026-06-25 10:53:02.573	2026-06-25 10:53:02.573	\N	\N	\N	\N	\N	\N	\N	0
 28495	´╝ìÕÅÀ	´╝ìÒüöÒüå	-go	(train number, typhoon number, etc.)	31	2026-06-25 10:53:02.576	2026-06-25 10:53:02.576	\N	\N	\N	\N	\N	\N	\N	0
 28481	õ¢£µûç	ÒüòÒüÅÒüÂÒéô	sakubun	b├ái v─ân	31	2026-06-25 10:53:02.548	2026-06-27 02:18:03.477	\N	\N	\N	\N	\N	\N	\N	0
-28436	Õ╝òÒüìÕç║Òüù	Òü▓ÒüìÒüáÒüù	hikidashi	ng─ân k├®o	30	2026-06-25 10:53:02.371	2026-06-27 02:25:27.172	\N	\N	\N	\N	\N	\N	/media/openmoji/2702	0
 28496	´¢×Òü« µû╣	´¢×Òü« Òü╗Òüå	~no hou	hã░ß╗øng~, ph├¡a	31	2026-06-25 10:53:02.578	2026-06-25 10:53:02.578	\N	\N	\N	\N	\N	\N	\N	0
 28497	\N	ÒüÜÒüúÒü¿	zutto	suß╗æt,liß╗ün	31	2026-06-25 10:53:02.58	2026-06-25 10:53:02.58	\N	\N	\N	\N	\N	\N	\N	0
 28498	\N	ÒâÉÒâ¬	bari	Bali (Indonesian island)	31	2026-06-25 10:53:02.582	2026-06-25 10:53:02.582	\N	\N	\N	\N	\N	\N	\N	0
 28499	\N	ÒâöÒé½Òé¢	pikaso	Pablo Picasso, Spanish painter (1881-1973)	31	2026-06-25 10:53:02.584	2026-06-25 10:53:02.584	\N	\N	\N	\N	\N	\N	\N	0
+28552	Õñ¬ÚÖ¢	ÒüƒÒüäÒéêÒüå	taiyo	mß║Àt trß╗Øi	32	2026-06-25 10:53:02.758	2026-06-27 02:22:16.66	\N	\N	\N	\N	\N	\N	/media/openmoji/2600.svg	0
 28501	µû░þÑ×µê©	ÒüùÒéôÒüôÒüåÒü╣	shinkobe	name of a station in Hyogo prefecture	31	2026-06-25 10:53:02.587	2026-06-25 10:53:02.587	\N	\N	\N	\N	\N	\N	\N	0
 28502	µ«ïÒéèÒü¥ÒüÖ	Òü«ÒüôÒéèÒü¥ÒüÖ	nokorimasu	ß╗ƒ lß║íi	31	2026-06-25 10:53:02.589	2026-06-25 10:53:02.589	\N	\N	\N	\N	\N	\N	\N	0
 28503	ÕàÑÕ¡ªÞ®ªÚ¿ô	Òü½ÒéàÒüåÒüîÒüÅÒüùÒüæÒéô	nyugakushiken	entrance examination	31	2026-06-25 10:53:02.59	2026-06-25 10:53:02.59	\N	\N	\N	\N	\N	\N	\N	0
@@ -13838,7 +14187,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28559	Õø¢ÚÜø´¢×	ÒüôÒüÅÒüòÒüä´¢×	kokusai~	international ´¢×	32	2026-06-25 10:53:02.773	2026-06-25 10:53:02.773	\N	\N	\N	\N	\N	\N	\N	0
 28561	\N	Òé¿Òâ│Òé©Òâ│	enjin	─æß╗Öng cãí	32	2026-06-25 10:53:02.779	2026-06-25 10:53:02.779	\N	\N	\N	\N	\N	\N	\N	0
 28562	\N	ÒâüÒâ╝Òâá	chiimu	─æß╗Öi	32	2026-06-25 10:53:02.781	2026-06-25 10:53:02.781	\N	\N	\N	\N	\N	\N	\N	0
-28552	Õñ¬ÚÖ¢	ÒüƒÒüäÒéêÒüå	taiyo	mß║Àt trß╗Øi	32	2026-06-25 10:53:02.758	2026-06-27 02:22:16.66	\N	\N	\N	\N	\N	\N	/media/openmoji/2600	0
+28577	ÕâìÒüìÒüÖÒüÄ	Òü»ÒüƒÒéëÒüìÒüÖÒüÄ	hatarakisugi	l├ám viß╗çc qu├í sß╗®c	32	2026-06-25 10:53:02.812	2026-06-27 02:22:16.662	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC.svg	0
 28565	\N	Òü¥Òüê	mae	trã░ß╗øc	32	2026-06-25 10:53:02.787	2026-06-25 10:53:02.787	\N	\N	\N	\N	\N	\N	\N	0
 28566	ÚüàÒüÅ	ÒüèÒüØÒüÅ	osoku	muß╗Ön , khuya	32	2026-06-25 10:53:02.789	2026-06-25 10:53:02.789	\N	\N	\N	\N	\N	\N	\N	0
 28567	\N	ÒüôÒéôÒü¬Òü½	konnani	nhã░ thß║┐ n├áy	32	2026-06-25 10:53:02.791	2026-06-25 10:53:02.791	\N	\N	\N	\N	\N	\N	\N	0
@@ -13897,11 +14246,11 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28628	ÕïƒÚøåõ©¡	Òü╝ÒüùÒéàÒüåÒüíÒéàÒüå	boshuchu	Applications Wanted	33	2026-06-25 10:53:02.991	2026-06-25 10:53:02.991	\N	\N	\N	\N	\N	\N	\N	0
 28629	´¢×õ©¡	´¢×ÒüíÒéàÒüå	~chu	─æang ~	33	2026-06-25 10:53:02.995	2026-06-25 10:53:02.995	\N	\N	\N	\N	\N	\N	\N	0
 28630	\N	Òü®ÒüåÒüäÒüå ´¢×	doiu ~	~ g├¼, ~ thß║┐ n├áo	33	2026-06-25 10:53:02.997	2026-06-25 10:53:02.997	\N	\N	\N	\N	\N	\N	\N	0
-28577	ÕâìÒüìÒüÖÒüÄ	Òü»ÒüƒÒéëÒüìÒüÖÒüÄ	hatarakisugi	l├ám viß╗çc qu├í sß╗®c	32	2026-06-25 10:53:02.812	2026-06-27 02:22:16.662	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC	0
 28631	\N	ÒüäÒüÅÒéë´╝╗´¢×ÒüºÒéé´╝¢	ikura [~demo]	however ´¢×, even if ´¢×	33	2026-06-25 10:53:02.999	2026-06-25 10:53:02.999	\N	\N	\N	\N	\N	\N	\N	0
 28632	\N	ÒééÒüå	mo	kh├┤ng ~ nß╗»a	33	2026-06-25 10:53:03.003	2026-06-25 10:53:03.003	\N	\N	\N	\N	\N	\N	\N	0
 28633	\N	ÒüéÒü¿ ´¢×	ato ~	´¢× left	33	2026-06-25 10:53:03.005	2026-06-25 10:53:03.005	\N	\N	\N	\N	\N	\N	\N	0
 28634	\N	´¢×Òü╗Òü®	~hodo	about ´¢×	33	2026-06-25 10:53:03.009	2026-06-25 10:53:03.009	\N	\N	\N	\N	\N	\N	\N	0
+28649	µ┤ùµ┐»µ®ƒ	ÒüøÒéôÒüƒÒüÅÒüì	sentakuki	m├íy giß║Àt	33	2026-06-25 10:53:03.061	2026-06-27 02:26:22.237	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9FA.svg	0
 28637	Õ£░Ú£ç	ÒüÿÒüùÒéô	jishin	earthquake	33	2026-06-25 10:53:03.02	2026-06-25 10:53:03.02	\N	\N	\N	\N	\N	\N	\N	0
 28639	Õè®ÒüæÕÉêÒüäÒü¥ÒüÖ	ÒüƒÒüÖÒüæÒüéÒüäÒü¥ÒüÖ	tasukeaimasu	help each other	33	2026-06-25 10:53:03.028	2026-06-25 10:53:03.028	\N	\N	\N	\N	\N	\N	\N	0
 28640	\N	ÒééÒü¿ÒééÒü¿	motomoto	originally	33	2026-06-25 10:53:03.032	2026-06-25 10:53:03.032	\N	\N	\N	\N	\N	\N	\N	0
@@ -13941,7 +14290,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28699	\N	ÒüòÒüúÒüì	sakki	vß╗½a rß╗ôi, vß╗½a l├║c n├úy	34	2026-06-25 10:53:03.277	2026-06-25 10:53:03.277	\N	\N	\N	\N	\N	\N	\N	0
 28667	þòÖÕ«ê	ÒéïÒüÖ	rusu	vß║»ng nh├á	33	2026-06-25 10:53:03.1	2026-06-27 02:18:03.495	\N	\N	\N	\N	\N	\N	\N	0
 28647	õ©ïÒüÆÒü¥ÒüÖ	ÒüòÒüÆÒü¥ÒüÖ	sagemasu	hß║í xuß╗æng, giß║úm xuß╗æng	33	2026-06-25 10:53:03.055	2026-06-27 02:18:03.489	\N	\N	\N	\N	\N	\N	\N	0
-28649	µ┤ùµ┐»µ®ƒ	ÒüøÒéôÒüƒÒüÅÒüì	sentakuki	m├íy giß║Àt	33	2026-06-25 10:53:03.061	2026-06-27 02:26:22.237	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9FA	0
 28701	ÒüèÞîÂÒéÆ ÒüƒÒüªÒü¥ÒüÖ	ÒüèÒüíÒéâÒéÆ ÒüƒÒüªÒü¥ÒüÖ	ochawo tatemasu	make (green) tea (at a tea ceremony)	34	2026-06-25 10:53:03.286	2026-06-25 10:53:03.286	\N	\N	\N	\N	\N	\N	\N	0
 28702	ÕàêÒü½	ÒüòÒüìÒü½	sakini	trã░ß╗øc	34	2026-06-25 10:53:03.289	2026-06-25 10:53:03.289	\N	\N	\N	\N	\N	\N	\N	0
 28703	Þ╝ëÒüøÒü¥ÒüÖ	Òü«ÒüøÒü¥ÒüÖ	nosemasu	─æß║Àt l├¬n	34	2026-06-25 10:53:03.292	2026-06-25 10:53:03.292	\N	\N	\N	\N	\N	\N	\N	0
@@ -13960,6 +14308,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28717	þü½Òü½ ÒüïÒüæÒü¥ÒüÖ	Òü▓Òü½ ÒüïÒüæÒü¥ÒüÖ	hini kakemasu	─æun	34	2026-06-25 10:53:03.336	2026-06-25 10:53:03.336	\N	\N	\N	\N	\N	\N	\N	0
 28718	þà«Òü¥ÒüÖ	Òü½Òü¥ÒüÖ	nimasu	nß║Ñu	34	2026-06-25 10:53:03.34	2026-06-25 10:53:03.34	\N	\N	\N	\N	\N	\N	\N	0
 28719	þà«ÒüêÒü¥ÒüÖ	Òü½ÒüêÒü¥ÒüÖ	niemasu	ch├¡n,─æã░ß╗úc nß║Ñu	34	2026-06-25 10:53:03.344	2026-06-25 10:53:03.344	\N	\N	\N	\N	\N	\N	\N	0
+28716	þü½	Òü▓	hi	lß╗¡a	34	2026-06-25 10:53:03.333	2026-06-27 02:22:16.677	\N	\N	\N	\N	\N	\N	/media/openmoji/2600.svg	0
 28721	\N	ÒüƒÒüíÒü¥ÒüÖ	tachimasu	pass (time)	34	2026-06-25 10:53:03.352	2026-06-25 10:53:03.352	\N	\N	\N	\N	\N	\N	\N	0
 28722	\N	ÒüùÒü¥ÒüÖ´╝╗ÒâìÒé»Òé┐ÒéñÒéÆ´¢×´╝¢	shimasu [nekutaiwo~]	─æeo , thß║»t	34	2026-06-25 10:53:03.355	2026-06-25 10:53:03.355	\N	\N	\N	\N	\N	\N	\N	0
 28723	þ┤░Òüä	Òü╗ÒüØÒüä	hosoi	gß║ºy, hß║╣p, thon	34	2026-06-25 10:53:03.359	2026-06-25 10:53:03.359	\N	\N	\N	\N	\N	\N	\N	0
@@ -13998,10 +14347,10 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28768	µ»ìÒü« Õæ│	Òü»Òü»Òü« ÒüéÒüÿ	hahano aji	a fictitious book	35	2026-06-25 10:53:03.615	2026-06-25 10:53:03.615	\N	\N	\N	\N	\N	\N	\N	0
 28769	\N	Òü»Òéï	haru	a fictitious hair salon	35	2026-06-25 10:53:03.616	2026-06-25 10:53:03.616	\N	\N	\N	\N	\N	\N	\N	0
 28757	Þæë	Òü»	ha	c├íi l├í	35	2026-06-25 10:53:03.59	2026-06-27 02:18:03.513	\N	\N	\N	\N	\N	\N	\N	0
-28716	þü½	Òü▓	hi	lß╗¡a	34	2026-06-25 10:53:03.333	2026-06-27 02:22:16.677	\N	\N	\N	\N	\N	\N	/media/openmoji/2600	0
 28770	õ¢ÉÞùñµ¡»þºæ	ÒüòÒü¿ÒüåÒüùÒüï	satoshika	a fictitious dental clinic	35	2026-06-25 10:53:03.618	2026-06-25 10:53:03.618	\N	\N	\N	\N	\N	\N	\N	0
 28771	µ»ÄµùÑÒé»ÒââÒé¡Òâ│Òé░	Òü¥ÒüäÒü½ÒüíÒé»ÒââÒé¡Òâ│Òé░	mainichikukkingu	a fictitious cooking school	35	2026-06-25 10:53:03.62	2026-06-25 10:53:03.62	\N	\N	\N	\N	\N	\N	\N	0
 28772	\N	ÒüØÒéîÒü¬Òéë	sorenara	nß║┐u thß║┐ th├¼, vß║¡y th├¼	35	2026-06-25 10:53:03.622	2026-06-25 10:53:03.622	\N	\N	\N	\N	\N	\N	\N	0
+28775	µùàÞíîþñ¥	ÒéèÒéçÒüôÒüåÒüùÒéâ	ryokosha	c├┤ng ty du lß╗ïch	35	2026-06-25 10:53:03.629	2026-06-27 02:22:16.685	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	0
 28774	\N	ÒüòÒüé	sa	Well, let me see. (used when unsure of something)	35	2026-06-25 10:53:03.627	2026-06-25 10:53:03.627	\N	\N	\N	\N	\N	\N	\N	0
 28776	Þ®│ÒüùÒüä	ÒüÅÒéÅÒüùÒüä	kuwashii	cß╗Ñ thß╗â, chi tiß║┐t	35	2026-06-25 10:53:03.631	2026-06-25 10:53:03.631	\N	\N	\N	\N	\N	\N	\N	0
 28778	Þìëµ┤Ñ	ÒüÅÒüòÒüñ	kusatsu	resort in Gunma prefecture	35	2026-06-25 10:53:03.634	2026-06-25 10:53:03.634	\N	\N	\N	\N	\N	\N	\N	0
@@ -14051,7 +14400,8 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28832	Òâ╝õ©ûþ┤Ç	Òâ╝ÒüøÒüäÒüì	-seiki	thß║┐ kß╗ë-	36	2026-06-25 10:53:03.847	2026-06-25 10:53:03.847	\N	\N	\N	\N	\N	\N	\N	0
 28833	ÚüáÒüÅ	Òü¿ÒüèÒüÅ	toku	xa, ß╗ƒ xa	36	2026-06-25 10:53:03.849	2026-06-25 10:53:03.849	\N	\N	\N	\N	\N	\N	\N	0
 28834	þÅìÒüùÒüä	ÒéüÒüÜÒéëÒüùÒüä	mezurashii	rare, uncommon	36	2026-06-25 10:53:03.85	2026-06-25 10:53:03.85	\N	\N	\N	\N	\N	\N	\N	0
-28775	µùàÞíîþñ¥	ÒéèÒéçÒüôÒüåÒüùÒéâ	ryokosha	c├┤ng ty du lß╗ïch	35	2026-06-25 10:53:03.629	2026-06-27 02:22:16.685	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2	0
+28848	Úø╗Õ¡É´¢×	ÒüºÒéôÒüù´¢×	denshi~	~ ─æiß╗çn tß╗¡	36	2026-06-25 10:53:03.878	2026-06-27 02:22:16.704	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1.svg	0
+28849	µÉ║Õ©»´¢×	ÒüæÒüäÒüƒÒüä´¢×	keitai~	portable ´¢×	36	2026-06-25 10:53:03.88	2026-06-27 02:25:27.269	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F1.svg	0
 28837	ÕñºÕïóÒü« ´¢×	ÒüèÒüèÒü£ÒüäÒü« ´¢×	oozeino ~	many (people)	36	2026-06-25 10:53:03.855	2026-06-25 10:53:03.855	\N	\N	\N	\N	\N	\N	\N	0
 28838	ÚüïÒü│Òü¥ÒüÖ	Òü»ÒüôÒü│Òü¥ÒüÖ	hakobimasu	vß║¡n chuyß╗ân	36	2026-06-25 10:53:03.858	2026-06-25 10:53:03.858	\N	\N	\N	\N	\N	\N	\N	0
 28839	Õê®þö¿ÒüùÒü¥ÒüÖ	ÒéèÒéêÒüåÒüùÒü¥ÒüÖ	riyoshimasu	use	36	2026-06-25 10:53:03.86	2026-06-25 10:53:03.86	\N	\N	\N	\N	\N	\N	\N	0
@@ -14114,13 +14464,12 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28903	´¢×Òü« õ©ÇÒüñ	´¢×Òü« Òü▓Òü¿Òüñ	~no hitotsu	one of the ´¢×	37	2026-06-25 10:53:04.097	2026-06-25 10:53:04.097	\N	\N	\N	\N	\N	\N	\N	0
 28867	\N	Òü¿ÒéèÒü¥ÒüÖ	torimasu	─ân trß╗Öm , lß║Ñy cß║»p	37	2026-06-25 10:53:04.008	2026-06-27 02:18:03.523	\N	\N	\N	\N	\N	\N	\N	0
 28850	ÕÀÑÕá┤	ÒüôÒüåÒüÿÒéçÒüå	kojo	nh├á m├íy, ph├ón xã░ß╗ƒng	36	2026-06-25 10:53:03.881	2026-06-27 02:18:03.52	\N	\N	\N	\N	\N	\N	\N	0
-28848	Úø╗Õ¡É´¢×	ÒüºÒéôÒüù´¢×	denshi~	~ ─æiß╗çn tß╗¡	36	2026-06-25 10:53:03.878	2026-06-27 02:22:16.704	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1	0
-28849	µÉ║Õ©»´¢×	ÒüæÒüäÒüƒÒüä´¢×	keitai~	portable ´¢×	36	2026-06-25 10:53:03.88	2026-06-27 02:25:27.269	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F1	0
 28904	ÚçæÞë▓	ÒüìÒéôÒüäÒéì	kin'iro	golden colour	37	2026-06-25 10:53:04.099	2026-06-25 10:53:04.099	\N	\N	\N	\N	\N	\N	\N	0
 28905	µ£¼þë®	Òü╗ÒéôÒééÒü«	honmono	real thing	37	2026-06-25 10:53:04.101	2026-06-25 10:53:04.101	\N	\N	\N	\N	\N	\N	\N	0
 28906	Úçæ	ÒüìÒéô	kin	gold	37	2026-06-25 10:53:04.102	2026-06-25 10:53:04.102	\N	\N	\N	\N	\N	\N	\N	0
 28907	\N	´╝ìÒé¡Òâ¡	-kiro	´╝ì kilogrammes, ´╝ì kilometres	37	2026-06-25 10:53:04.103	2026-06-25 10:53:04.103	\N	\N	\N	\N	\N	\N	\N	0
 28908	þ¥ÄÒüùÒüä	ÒüåÒüñÒüÅÒüùÒüä	utsukushii	beautiful, pretty	37	2026-06-25 10:53:04.105	2026-06-25 10:53:04.105	\N	\N	\N	\N	\N	\N	\N	0
+28912	þ£áÒéèÒü¥ÒüÖ	Òü¡ÒéÇÒéèÒü¥ÒüÖ	nemurimasu	ngß╗º	37	2026-06-25 10:53:04.114	2026-06-27 02:22:16.709	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634.svg	0
 28910	Õ¢½Õê╗	ÒüíÒéçÒüåÒüôÒüÅ	chokoku	─æi├¬u khß║»c	37	2026-06-25 10:53:04.11	2026-06-25 10:53:04.11	\N	\N	\N	\N	\N	\N	\N	0
 28911	Þ¿ÇÒüäõ╝ØÒüê	ÒüäÒüäÒüñÒüƒÒüê	iitsutae	tradition, legend	37	2026-06-25 10:53:04.112	2026-06-25 10:53:04.112	\N	\N	\N	\N	\N	\N	\N	0
 28913	Õ¢½ÒéèÒü¥ÒüÖ	Òü╗ÒéèÒü¥ÒüÖ	horimasu	khß║»c	37	2026-06-25 10:53:04.115	2026-06-25 10:53:04.115	\N	\N	\N	\N	\N	\N	\N	0
@@ -14172,7 +14521,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28968	ÒüèÕàêÒü½´╝╗Õñ▒þñ╝ÒüùÒü¥ÒüÖ´╝¢ÒÇé	ÒüèÒüòÒüìÒü½´╝╗ÒüùÒüñÒéîÒüäÒüùÒü¥ÒüÖ´╝¢ÒÇé	osakini [shitsureishimasu].	Excuse me (for leaving before you).	38	2026-06-25 10:53:04.32	2026-06-25 10:53:04.32	\N	\N	\N	\N	\N	\N	\N	0
 28955	õ©¡Õ¡ªµáí	ÒüíÒéàÒüåÒüîÒüúÒüôÒüå	chugakko	trã░ß╗Øng trung hß╗ìc cãí sß╗ƒ	38	2026-06-25 10:53:04.295	2026-06-27 02:18:03.529	\N	\N	\N	\N	\N	\N	\N	0
 28926	þºæÕ¡ªÞÇà	ÒüïÒüîÒüÅÒüùÒéâ	kagakusha	nh├á khoa hß╗ìc	37	2026-06-25 10:53:04.141	2026-06-27 02:18:03.525	\N	\N	\N	\N	\N	\N	\N	0
-28912	þ£áÒéèÒü¥ÒüÖ	Òü¡ÒéÇÒéèÒü¥ÒüÖ	nemurimasu	ngß╗º	37	2026-06-25 10:53:04.114	2026-06-27 02:22:16.709	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634	0
 28969	ÕÄƒþêåÒâëÒâ╝Òâá	ÒüÆÒéôÒü░ÒüÅÒâëÒâ╝Òâá	genbakudomu	dome commemorating the atomic bombing of Hiroshima	38	2026-06-25 10:53:04.321	2026-06-25 10:53:04.321	\N	\N	\N	\N	\N	\N	\N	0
 28970	Õç║Úø▓Õñºþñ¥	ÒüäÒüÜÒééÒüƒÒüäÒüùÒéâ	izumotaisha	a shrine in Izumo city in Shimane prefecture	38	2026-06-25 10:53:04.325	2026-06-25 10:53:04.325	\N	\N	\N	\N	\N	\N	\N	0
 28971	\N	ÒâüÒéºÒâ│Òâ×Òéñ	chenmai	Chiangmai (in Thailand)	38	2026-06-25 10:53:04.328	2026-06-25 10:53:04.328	\N	\N	\N	\N	\N	\N	\N	0
@@ -14186,6 +14534,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28980	µè╝ÒüùÒü¥ÒüÖ´╝╗Òü»ÒéôÒüôÒéÆ´¢×´╝¢	ÒüèÒüùÒü¥ÒüÖ´╝╗Òü»ÒéôÒüôÒéÆ´¢×´╝¢	oshimasu [hankowo~]	─æ├│ng(dß║Ñu)	38	2026-06-25 10:53:04.351	2026-06-25 10:53:04.351	\N	\N	\N	\N	\N	\N	\N	0
 28981	ÕÅîÕ¡É	ÒüÁÒüƒÒüö	futago	cß║Àp sinh ─æ├┤i	38	2026-06-25 10:53:04.353	2026-06-25 10:53:04.353	\N	\N	\N	\N	\N	\N	\N	0
 28982	ÕºëÕª╣	ÒüùÒü¥Òüä	shimai	chß╗ï em	38	2026-06-25 10:53:04.355	2026-06-25 10:53:04.355	\N	\N	\N	\N	\N	\N	\N	0
+28972	Õø×Þªº	ÒüïÒüäÒéëÒéô	kairan	Tß║¡p th├┤ng b├ío	38	2026-06-25 10:53:04.33	2026-06-27 02:22:16.718	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
 28984	õ╝╝Òüª ÒüäÒü¥ÒüÖ	Òü½Òüª ÒüäÒü¥ÒüÖ	nite imasu	giß╗æng	38	2026-06-25 10:53:04.362	2026-06-25 10:53:04.362	\N	\N	\N	\N	\N	\N	\N	0
 28986	\N	ÒüèÒü¿Òü¬ÒüùÒüä	otonashii	hiß╗ün l├ánh, trß║ºm	38	2026-06-25 10:53:04.367	2026-06-25 10:53:04.367	\N	\N	\N	\N	\N	\N	\N	0
 28987	Õä¬ÒüùÒüä	ÒéäÒüòÒüùÒüä	yasashii	kind, gentle, tender-hearted	38	2026-06-25 10:53:04.369	2026-06-25 10:53:04.369	\N	\N	\N	\N	\N	\N	\N	0
@@ -14233,7 +14582,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29033	\N	ÒâòÒâ¡Òâ│Òâê	furonto	bß╗Ö phß║¡n tiß║┐p t├ón	39	2026-06-25 10:53:04.584	2026-06-25 10:53:04.584	\N	\N	\N	\N	\N	\N	\N	0
 29034	´╝ìÕÅÀÕ«ñ	´╝ìÒüöÒüåÒüùÒüñ	-goshitsu	room number ´╝ì	39	2026-06-25 10:53:04.586	2026-06-25 10:53:04.586	\N	\N	\N	\N	\N	\N	\N	0
 29037	ÕñºÕïó	ÒüèÒüèÒü£Òüä	oozei	nhiß╗üu ngã░ß╗Øi	39	2026-06-25 10:53:04.592	2026-06-25 10:53:04.592	\N	\N	\N	\N	\N	\N	\N	0
-28972	Õø×Þªº	ÒüïÒüäÒéëÒéô	kairan	Tß║¡p th├┤ng b├ío	38	2026-06-25 10:53:04.33	2026-06-27 02:22:16.718	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0	0
+29057	Úø╗Þ®▒õ╗ú	ÒüºÒéôÒéÅÒüáÒüä	denwadai	tiß╗ün ─æiß╗çn thoß║íi, ph├¡ ─æiß╗çn thoß║íi	39	2026-06-25 10:53:04.631	2026-06-27 02:22:16.731	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE.svg	0
 29039	õ╝║ÒüäÒü¥ÒüÖÒÇé	ÒüåÒüïÒüîÒüäÒü¥ÒüÖÒÇé	ukagaimasu.	t├┤i ─æß║┐n th─âm	39	2026-06-25 10:53:04.597	2026-06-25 10:53:04.597	\N	\N	\N	\N	\N	\N	\N	0
 29040	ÚÇöõ©¡Òüº	Òü¿ÒüíÒéàÒüåÒüº	tochude	giß╗»a ─æã░ß╗Øng, giß╗»a chß╗½ng, dß╗ìc ─æã░ß╗Øng	39	2026-06-25 10:53:04.599	2026-06-25 10:53:04.599	\N	\N	\N	\N	\N	\N	\N	0
 29042	\N	ÒüÂÒüñÒüïÒéèÒü¥ÒüÖ	butsukarimasu	─æ├óm , va chß║ím	39	2026-06-25 10:53:04.602	2026-06-25 10:53:04.602	\N	\N	\N	\N	\N	\N	\N	0
@@ -14293,7 +14642,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29101	õ©âÕñòþÑ¡Òéè	ÒüƒÒü¬Òü░ÒüƒÒü¥ÒüñÒéè	tanabatamatsuri	the Star Festival	40	2026-06-25 10:53:04.812	2026-06-25 10:53:04.812	\N	\N	\N	\N	\N	\N	\N	0
 29102	µØ▒þàºÕ««	Òü¿ÒüåÒüùÒéçÒüåÒüÉÒüå	toshogu	shrine dedicated to Tokugawa Ieyasu in Nikko, Tochigi prefecture	40	2026-06-25 10:53:04.814	2026-06-25 10:53:04.814	\N	\N	\N	\N	\N	\N	\N	0
 29103	\N	Òü®ÒüåÒüºÒüùÒéçÒüåÒüïÒÇé	dodeshoka.	thß║┐ n├áo?(c├ích n├│i lß╗ïch sß╗▒ cß╗ºa Òü®ÒüåÒüºÒüÖÒüï´╝ë	40	2026-06-25 10:53:04.816	2026-06-27 02:18:03.533	\N	\N	\N	\N	\N	\N	\N	0
-29057	Úø╗Þ®▒õ╗ú	ÒüºÒéôÒéÅÒüáÒüä	denwadai	tiß╗ün ─æiß╗çn thoß║íi, ph├¡ ─æiß╗çn thoß║íi	39	2026-06-25 10:53:04.631	2026-06-27 02:22:16.731	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE	0
+29133	\N	Òü«Òü×Òü┐	nozomi	name of a Shinkansen train	40	2026-06-25 10:53:04.879	2026-06-27 02:26:22.298	\N	\N	\N	\N	\N	\N	/media/openmoji/1F685.svg	0
 29105	µêÉþ©¥	ÒüøÒüäÒüøÒüì	seiseki	kß║┐t quß║ú, th├ánh t├¡ch	40	2026-06-25 10:53:04.819	2026-06-25 10:53:04.819	\N	\N	\N	\N	\N	\N	\N	0
 29106	\N	Òü¿ÒüôÒéìÒüº	tokorode	nh├ón tiß╗çn	40	2026-06-25 10:53:04.821	2026-06-25 10:53:04.821	\N	\N	\N	\N	\N	\N	\N	0
 29108	µºÿÕ¡É	ÒéêÒüåÒüÖ	yosu	vß║╗, t├¼nh h├¼nh	40	2026-06-25 10:53:04.826	2026-06-25 10:53:04.826	\N	\N	\N	\N	\N	\N	\N	0
@@ -14348,7 +14697,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29174	\N	´¢×ÒüòÒéô	~san	(suffix added to a person's job title as a polite way of referring to them)	41	2026-06-25 10:53:05.061	2026-06-25 10:53:05.061	\N	\N	\N	\N	\N	\N	\N	0
 29175	ÒüôÒü«Úûô	ÒüôÒü«ÒüéÒüäÒüá	konoaida	the other day	41	2026-06-25 10:53:05.063	2026-06-25 10:53:05.063	\N	\N	\N	\N	\N	\N	\N	0
 29126	þö│ÒüùÞ¥╝Òü┐	ÒééÒüåÒüùÒüôÒü┐	moshikomi	─æ─âng k├¢	40	2026-06-25 10:53:04.864	2026-06-27 02:18:03.536	\N	\N	\N	\N	\N	\N	\N	0
-29133	\N	Òü«Òü×Òü┐	nozomi	name of a Shinkansen train	40	2026-06-25 10:53:04.879	2026-06-27 02:26:22.298	\N	\N	\N	\N	\N	\N	/media/openmoji/1F685	0
 29176	\N	Òü▓Òü¿ÒüôÒü¿	hitokoto	a few words	41	2026-06-25 10:53:05.065	2026-06-25 10:53:05.065	\N	\N	\N	\N	\N	\N	\N	0
 29177	\N	´¢×ÒüÜÒüñ	~zutsu	each	41	2026-06-25 10:53:05.067	2026-06-25 10:53:05.067	\N	\N	\N	\N	\N	\N	\N	0
 29178	õ║îõ║║	ÒüÁÒüƒÒéè	futari	couple	41	2026-06-25 10:53:05.069	2026-06-25 10:53:05.069	\N	\N	\N	\N	\N	\N	\N	0
@@ -14366,6 +14714,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29191	ÚÖ©	ÒéèÒüÅ	riku	lu╠úc ─æß╗ïa	41	2026-06-25 10:53:05.099	2026-06-25 10:53:05.099	\N	\N	\N	\N	\N	\N	\N	0
 29192	\N	ÒüÖÒéïÒü¿	suruto	thß║┐ rß╗ôi, sau ─æ├│	41	2026-06-25 10:53:05.101	2026-06-25 10:53:05.101	\N	\N	\N	\N	\N	\N	\N	0
 29193	þàÖ	ÒüæÒéÇÒéè	kemuri	kh├│i	41	2026-06-25 10:53:05.103	2026-06-25 10:53:05.103	\N	\N	\N	\N	\N	\N	\N	0
+29184	Õ¡ÉÒü®ÒééÒüƒÒüí	ÒüôÒü®ÒééÒüƒÒüí	kodomotachi	trß║╗ em, trß║╗ con, bß╗ìn trß║╗	41	2026-06-25 10:53:05.083	2026-06-27 02:25:27.309	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2.svg	0
 29196	µÁªÕ│ÂÕñ¬ÚâÄ	ÒüåÒéëÒüùÒü¥ÒüƒÒéìÒüå	urashimataro	name of the main character in an old folk tale	41	2026-06-25 10:53:05.113	2026-06-25 10:53:05.113	\N	\N	\N	\N	\N	\N	\N	0
 29197	Õæ╝Òü│Òü¥ÒüÖ	ÒéêÒü│Òü¥ÒüÖ	yobimasu	mß╗Øi	41	2026-06-25 10:53:05.115	2026-06-25 10:53:05.115	\N	\N	\N	\N	\N	\N	\N	0
 29198	ÕÅûÒéèµø┐ÒüêÒü¥ÒüÖ	Òü¿ÒéèÒüïÒüêÒü¥ÒüÖ	torikaemasu	─æß╗òi, thay	41	2026-06-25 10:53:05.117	2026-06-25 10:53:05.117	\N	\N	\N	\N	\N	\N	\N	0
@@ -14407,13 +14756,13 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29246	\N	Òé¿Òâ¬Òâ╝Òé╝Òü« ÒüƒÒéüÒü½	eriizeno tameni	F├╝r Elise (For Elise)	42	2026-06-25 10:53:05.302	2026-06-25 10:53:05.302	\N	\N	\N	\N	\N	\N	\N	0
 29247	\N	ÒâÖÒâ╝ÒâêÒâ╝ÒâÖÒâ│	betoben	Ludwig van Beethoven, German composer (1770-1827)	42	2026-06-25 10:53:05.304	2026-06-25 10:53:05.304	\N	\N	\N	\N	\N	\N	\N	0
 29237	\N	ÒüÁÒéìÒüùÒüì	furoshiki	kh─ân g├│i	42	2026-06-25 10:53:05.28	2026-06-27 02:18:03.548	\N	\N	\N	\N	\N	\N	\N	0
-29184	Õ¡ÉÒü®ÒééÒüƒÒüí	ÒüôÒü®ÒééÒüƒÒüí	kodomotachi	trß║╗ em, trß║╗ con, bß╗ìn trß║╗	41	2026-06-25 10:53:05.083	2026-06-27 02:25:27.309	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9D2	0
 29248	\N	ÒüôÒü®ÒééÒâïÒâÑÒâ╝Òé╣	kodomonyusu	a fictitious news programme	42	2026-06-25 10:53:05.309	2026-06-25 10:53:05.309	\N	\N	\N	\N	\N	\N	\N	0
 29249	Õç║Òü¥ÒüÖ´╝╗Òâ£Òâ╝ÒâèÒé╣Òüî´¢×´╝¢	ÒüºÒü¥ÒüÖ´╝╗Òâ£Òâ╝ÒâèÒé╣Òüî´¢×´╝¢	demasu [bonasuga~]	[bonus] be paid	42	2026-06-25 10:53:05.312	2026-06-25 10:53:05.312	\N	\N	\N	\N	\N	\N	\N	0
 29250	ÕìèÕêå	Òü»ÒéôÒüÂÒéô	hanbun	half	42	2026-06-25 10:53:05.314	2026-06-25 10:53:05.314	\N	\N	\N	\N	\N	\N	\N	0
 29252	\N	Òé½ÒââÒâùÒéüÒéô	kappumen	instant noodles sold in a ready-to-use disposable container, pot noodles	42	2026-06-25 10:53:05.319	2026-06-25 10:53:05.319	\N	\N	\N	\N	\N	\N	\N	0
 29253	õ©ûþòîÕêØ	ÒüøÒüïÒüäÒü»Òüñ	sekaihatsu	world's first	42	2026-06-25 10:53:05.321	2026-06-25 10:53:05.321	\N	\N	\N	\N	\N	\N	\N	0
 29254	\N	´¢×Òü½ ÒéêÒüúÒüª	~ni yotte	by ´¢×	42	2026-06-25 10:53:05.326	2026-06-25 10:53:05.326	\N	\N	\N	\N	\N	\N	\N	0
+29251	\N	Òâ¡Òâ╝Òâ│	ron	khoß║ún vay trß║ú g├│p, tiß╗ün vay g├│p	42	2026-06-25 10:53:05.317	2026-06-27 02:22:16.754	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
 29256	\N	ÒéüÒéô	men	noodles	42	2026-06-25 10:53:05.331	2026-06-25 10:53:05.331	\N	\N	\N	\N	\N	\N	\N	0
 29257	Õ║âÒéüÒü¥ÒüÖ	Òü▓ÒéìÒéüÒü¥ÒüÖ	hiromemasu	spread	42	2026-06-25 10:53:05.334	2026-06-25 10:53:05.334	\N	\N	\N	\N	\N	\N	\N	0
 29258	Õ©éÕá┤Þ¬┐µƒ╗	ÒüùÒüÿÒéçÒüåÒüíÒéçÒüåÒüò	shijochosa	market survey, market research	42	2026-06-25 10:53:05.336	2026-06-25 10:53:05.336	\N	\N	\N	\N	\N	\N	\N	0
@@ -14421,6 +14770,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29260	µ│¿ÒüÄÒü¥ÒüÖ	ÒüØÒüØÒüÄÒü¥ÒüÖ	sosogimasu	pour	42	2026-06-25 10:53:05.345	2026-06-25 10:53:05.345	\N	\N	\N	\N	\N	\N	\N	0
 29261	\N	ÒâüÒé¡Òâ│Òâ®Òâ╝ÒâíÒâ│	chikinramen	brand name of instant noodles	42	2026-06-25 10:53:05.348	2026-06-25 10:53:05.348	\N	\N	\N	\N	\N	\N	\N	0
 29262	Õ«ëÞùñþÖ¥þªÅ	ÒüéÒéôÒü®ÒüåÒééÒééÒüÁÒüÅ	andomomofuku	Japanese businessman and inventor (1910-2007)	42	2026-06-25 10:53:05.351	2026-06-25 10:53:05.351	\N	\N	\N	\N	\N	\N	\N	0
+29312	µÜûµê┐	ÒüáÒéôÒü╝Òüå	danbo	thiß║┐t bß╗ï l├ám ß║Ñm, l├▓ sã░ß╗ƒi, m├íy ─æiß╗üu h├▓a	43	2026-06-25 10:53:05.598	2026-06-27 02:26:22.315	\N	\N	\N	\N	\N	\N	/media/openmoji/2744.svg	0
 29264	ÞûäÒüä	ÒüåÒüÖÒüä	usui	mß╗Ång	42	2026-06-25 10:53:05.358	2026-06-25 10:53:05.358	\N	\N	\N	\N	\N	\N	\N	0
 29265	õ║îõ║║	ÒüÁÒüƒÒéè	futari	hai ngã░ß╗Øi, cß║Àp, ─æ├┤i	42	2026-06-25 10:53:05.362	2026-06-25 10:53:05.362	\N	\N	\N	\N	\N	\N	\N	0
 29266	µ¡┤ÕÅ▓	ÒéîÒüìÒüù	rekishi	lß╗ïch sß╗¡	42	2026-06-25 10:53:05.364	2026-06-25 10:53:05.364	\N	\N	\N	\N	\N	\N	\N	0
@@ -14462,11 +14812,10 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29289	õ©ïÒüîÒéèÒü¥ÒüÖ´╝╗ÕÇñµ«ÁÒüî´¢×´╝¢	ÒüòÒüîÒéèÒü¥ÒüÖ´╝╗Òü¡ÒüáÒéôÒüî´¢×´╝¢	sagarimasu [nedanga~]	giß║úm, giß║úm xuß╗æng [gi├í ~]	43	2026-06-25 10:53:05.534	2026-06-27 02:18:03.556	\N	\N	\N	\N	\N	\N	\N	0
 29291	\N	Òü¿ÒéîÒü¥ÒüÖ´╝╗Òâ£Òé┐Òâ│Òüî´¢×´╝¢	toremasu [botanga~]	tuß╗Öt [c├íi c├║c bß╗ï ~]	43	2026-06-25 10:53:05.537	2026-06-27 02:18:03.558	\N	\N	\N	\N	\N	\N	\N	0
 29301	\N	Òé¼Òé¢Òâ¬Òâ│	gasorin	x─âng	43	2026-06-25 10:53:05.565	2026-06-27 02:18:03.561	\N	\N	\N	\N	\N	\N	\N	0
-29251	\N	Òâ¡Òâ╝Òâ│	ron	khoß║ún vay trß║ú g├│p, tiß╗ün vay g├│p	42	2026-06-25 10:53:05.317	2026-06-27 02:22:16.754	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
-29312	µÜûµê┐	ÒüáÒéôÒü╝Òüå	danbo	thiß║┐t bß╗ï l├ám ß║Ñm, l├▓ sã░ß╗ƒi, m├íy ─æiß╗üu h├▓a	43	2026-06-25 10:53:05.598	2026-06-27 02:26:22.315	\N	\N	\N	\N	\N	\N	/media/openmoji/2744	0
 29316	Úü®Õ¢ô´╝╗Òü¬´╝¢	ÒüªÒüìÒü¿Òüå´╝╗Òü¬´╝¢	tekito [na]	suitable, proper	43	2026-06-25 10:53:05.61	2026-06-25 10:53:05.61	\N	\N	\N	\N	\N	\N	\N	0
 29317	Õ╣┤Ú¢ó	Òü¡ÒéôÒéîÒüä	nenrei	tuß╗òi	43	2026-06-25 10:53:05.613	2026-06-25 10:53:05.613	\N	\N	\N	\N	\N	\N	\N	0
 29318	ÕÅÄÕàÑ	ÒüùÒéàÒüåÒü½ÒéàÒüå	shunyu	thu nhß║¡p	43	2026-06-25 10:53:05.616	2026-06-25 10:53:05.616	\N	\N	\N	\N	\N	\N	\N	0
+29351	\N	ÒéÀÒâúÒâ│ÒâùÒâ╝	shanpu	x├á-b├┤ng gß╗Öi ─æß║ºu	44	2026-06-25 10:53:05.867	2026-06-27 02:26:22.322	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9FC.svg	0
 29320	\N	ÒüØÒü«ÒüåÒüê	sonoue	th├¬m v├áo ─æ├│, hãín thß║┐	43	2026-06-25 10:53:05.62	2026-06-25 10:53:05.62	\N	\N	\N	\N	\N	\N	\N	0
 29321	\N	´¢×Òü¿ ÒüäÒüäÒü¥ÒüÖ	~to iimasu	t├¬n l├á~/ ─æã░ß╗úc gß╗ìi l├á~	43	2026-06-25 10:53:05.623	2026-06-25 10:53:05.623	\N	\N	\N	\N	\N	\N	\N	0
 29322	µ│úÒüìÒü¥ÒüÖ	Òü¬ÒüìÒü¥ÒüÖ	nakimasu	kh├│c	44	2026-06-25 10:53:05.763	2026-06-25 10:53:05.763	\N	\N	\N	\N	\N	\N	\N	0
@@ -14519,9 +14868,9 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29383	µÇÑÒü½	ÒüìÒéàÒüåÒü½	kyuni	gß║Ñp	45	2026-06-25 10:53:06.121	2026-06-25 10:53:06.121	\N	\N	\N	\N	\N	\N	\N	0
 29384	þäíþÉåÒü½	ÒéÇÒéèÒü½	murini	unreasonably	45	2026-06-25 10:53:06.124	2026-06-25 10:53:06.124	\N	\N	\N	\N	\N	\N	\N	0
 29385	µÑ¢ÒüùÒü┐Òü½ ÒüùÒüª ÒüäÒü¥ÒüÖ	ÒüƒÒü«ÒüùÒü┐Òü½ ÒüùÒüª ÒüäÒü¥ÒüÖ	tanoshimini shite imasu	mong ─æß╗úi, lß║Ñy l├ám vui	45	2026-06-25 10:53:06.127	2026-06-25 10:53:06.127	\N	\N	\N	\N	\N	\N	\N	0
-29351	\N	ÒéÀÒâúÒâ│ÒâùÒâ╝	shanpu	x├á-b├┤ng gß╗Öi ─æß║ºu	44	2026-06-25 10:53:05.867	2026-06-27 02:26:22.322	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9FC	0
 29386	õ╗Ñõ©èÒüºÒüÖÒÇé	ÒüäÒüÿÒéçÒüåÒüºÒüÖÒÇé	ijodesu.	xin hß║┐t	45	2026-06-25 10:53:06.129	2026-06-25 10:53:06.129	\N	\N	\N	\N	\N	\N	\N	0
 29387	õ┐éÕôí	ÒüïÒüïÒéèÒüäÒéô	kakariin	nh├ón vi├¬n	45	2026-06-25 10:53:06.132	2026-06-25 10:53:06.132	\N	\N	\N	\N	\N	\N	\N	0
+29395	ÕñºÕ¡ªþöƒ	ÒüáÒüäÒüîÒüÅÒüøÒüä	daigakusei	sinh vi├¬n ─æß║íi hß╗ìc	45	2026-06-25 10:53:06.173	2026-06-27 02:22:16.764	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393.svg	0
 29389	\N	Òé╣Òé┐Òâ╝Òâê	sutato	xuß║Ñt ph├ít	45	2026-06-25 10:53:06.145	2026-06-25 10:53:06.145	\N	\N	\N	\N	\N	\N	\N	0
 29390	´╝ìõ¢ì	´╝ìÒüä	-i	-th (ranking)	45	2026-06-25 10:53:06.147	2026-06-25 10:53:06.147	\N	\N	\N	\N	\N	\N	\N	0
 29391	Õä¬ÕïØÒüùÒü¥ÒüÖ	ÒéåÒüåÒüùÒéçÒüåÒüùÒü¥ÒüÖ	yushoshimasu	vß╗Ö ─æß╗ïch, giß║úi nhß║Ñt	45	2026-06-25 10:53:06.149	2026-06-25 10:53:06.149	\N	\N	\N	\N	\N	\N	\N	0
@@ -14574,7 +14923,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29450	Õ«ØÕ║½	Òü╗ÒüåÒüô	hoko	kho b├íu	46	2026-06-25 10:53:06.415	2026-06-25 10:53:06.415	\N	\N	\N	\N	\N	\N	\N	0
 29445	Úúƒµ¼▓	ÒüùÒéçÒüÅÒéêÒüÅ	shokuyoku	sß╗▒ th├¿m ─ân	46	2026-06-25 10:53:06.403	2026-06-27 02:18:03.572	\N	\N	\N	\N	\N	\N	\N	0
 29420	þòÖÕ«ê	ÒéïÒüÖ	rusu	vß║»ng nh├á, ─æi vß║»ng	46	2026-06-25 10:53:06.357	2026-06-27 02:18:03.57	\N	\N	\N	\N	\N	\N	\N	0
-29395	ÕñºÕ¡ªþöƒ	ÒüáÒüäÒüîÒüÅÒüøÒüä	daigakusei	sinh vi├¬n ─æß║íi hß╗ìc	45	2026-06-25 10:53:06.173	2026-06-27 02:22:16.764	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393	0
 29451	µëïÒü½ÕàÑÒéèÒü¥ÒüÖ´╝╗µâàÕá▒Òüî´¢×´╝¢	ÒüªÒü½Òü»ÒüäÒéèÒü¥ÒüÖ´╝╗ÒüÿÒéçÒüåÒü╗ÒüåÒüî´¢×´╝¢	tenihairimasu [johoga~]	c├│,─æã░ß╗úc [th├┤ng tin]	46	2026-06-25 10:53:06.417	2026-06-25 10:53:06.417	\N	\N	\N	\N	\N	\N	\N	0
 29452	\N	ÒéÀÒé╣ÒâåÒâá	shisutemu	hß╗ç thß╗æng	46	2026-06-25 10:53:06.42	2026-06-25 10:53:06.42	\N	\N	\N	\N	\N	\N	\N	0
 29453	õ¥ïÒüêÒü░	ÒüƒÒü¿ÒüêÒü░	tatoeba	for example	46	2026-06-25 10:53:06.423	2026-06-25 10:53:06.423	\N	\N	\N	\N	\N	\N	\N	0
@@ -14582,6 +14930,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29455	õ©ÇÚâ¿Õêå	ÒüäÒüíÒüÂÒüÂÒéô	ichibubun	mß╗Öt bß╗Ö phß║¡n	46	2026-06-25 10:53:06.428	2026-06-25 10:53:06.428	\N	\N	\N	\N	\N	\N	\N	0
 29456	ÕàÑÕèøÒüùÒü¥ÒüÖ	Òü½ÒéàÒüåÒéèÒéçÒüÅÒüùÒü¥ÒüÖ	nyuryokushimasu	nhß║¡p v├áo	46	2026-06-25 10:53:06.43	2026-06-25 10:53:06.43	\N	\N	\N	\N	\N	\N	\N	0
 29457	þºÆ	Òü│ÒéçÒüå	byo	gi├óy	46	2026-06-25 10:53:06.432	2026-06-25 10:53:06.432	\N	\N	\N	\N	\N	\N	\N	0
+29499	\N	ÒéñÒâ®Òâ│	iran	nã░ß╗øc IRAN	47	2026-06-25 10:53:06.627	2026-06-27 02:22:16.785	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
 29459	ÕÉ╣ÒüìÒü¥ÒüÖ´╝╗Úó¿Òüî´¢×´╝¢	ÒüÁÒüìÒü¥ÒüÖ´╝╗ÒüïÒü£Òüî´¢×´╝¢	fukimasu [kazega~]	[wind] blow	47	2026-06-25 10:53:06.538	2026-06-25 10:53:06.538	\N	\N	\N	\N	\N	\N	\N	0
 29460	þçâÒüêÒü¥ÒüÖ´╝╗ÒüöÒü┐Òüî´¢×´╝¢	ÒééÒüêÒü¥ÒüÖ´╝╗ÒüöÒü┐Òüî´¢×´╝¢	moemasu [gomiga~]	[rubbish] burn	47	2026-06-25 10:53:06.541	2026-06-25 10:53:06.541	\N	\N	\N	\N	\N	\N	\N	0
 29461	õ║íÒüÅÒü¬ÒéèÒü¥ÒüÖ	Òü¬ÒüÅÒü¬ÒéèÒü¥ÒüÖ	nakunarimasu	pass away (euphemistic expression for ÒüùÒü½Òü¥ÒüÖ)	47	2026-06-25 10:53:06.544	2026-06-25 10:53:06.544	\N	\N	\N	\N	\N	\N	\N	0
@@ -14629,7 +14978,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29516	\N	ÒâòÒéíÒéñÒâ½	fuairu	file	48	2026-06-25 10:53:06.741	2026-06-25 10:53:06.741	\N	\N	\N	\N	\N	\N	\N	0
 29478	µòæµÇÑÞ╗è	ÒüìÒéàÒüåÒüìÒéàÒüåÒüùÒéâ	kyukyusha	xe cß╗®u thã░ãíng	47	2026-06-25 10:53:06.586	2026-06-27 02:18:03.579	\N	\N	\N	\N	\N	\N	\N	0
 29474	þºæÕ¡ª	ÒüïÒüîÒüÅ	kagaku	khoa hß╗ìc	47	2026-06-25 10:53:06.577	2026-06-27 02:18:03.575	\N	\N	\N	\N	\N	\N	\N	0
-29499	\N	ÒéñÒâ®Òâ│	iran	nã░ß╗øc IRAN	47	2026-06-25 10:53:06.627	2026-06-27 02:22:16.785	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7	0
+29550	ÕïñÒéüÒü¥ÒüÖ´╝╗õ╝Üþñ¥Òü½´¢×´╝¢	ÒüñÒü¿ÒéüÒü¥ÒüÖ´╝╗ÒüïÒüäÒüùÒéâÒü½´¢×´╝¢	tsutomemasu [kaishani~]	l├ám viß╗çc [ c├┤ng ty ~]	49	2026-06-25 10:53:06.935	2026-06-27 02:22:16.788	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	0
 29518	´¢×Úûô	´¢×ÒüïÒéô	~kan	trong ~(n├│i vß╗ü thß╗Øi lã░ß╗úng)	48	2026-06-25 10:53:06.745	2026-06-25 10:53:06.745	\N	\N	\N	\N	\N	\N	\N	0
 29519	\N	ÒüäÒüä ÒüôÒü¿ÒüºÒüÖÒü¡ÒÇé	ii kotodesune.	hay nhß╗ë/ ─æã░ß╗úc ─æß║Ñy nhß╗ë	48	2026-06-25 10:53:06.746	2026-06-25 10:53:06.746	\N	\N	\N	\N	\N	\N	\N	0
 29520	ÒüèÕ┐ÖÒüùÒüäÒüºÒüÖÒüïÒÇé	ÒüèÒüäÒüØÒüîÒüùÒüäÒüºÒüÖÒüïÒÇé	oisogashiidesuka.	anh/chß╗ï ─æang bß║¡n phß║úi kh├┤ng?	48	2026-06-25 10:53:06.748	2026-06-25 10:53:06.748	\N	\N	\N	\N	\N	\N	\N	0
@@ -14653,6 +15002,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29538	´╝ìõ©ûþ┤Ç	´╝ìÒüøÒüäÒüì	-seiki	-th century	48	2026-06-25 10:53:06.801	2026-06-25 10:53:06.801	\N	\N	\N	\N	\N	\N	\N	0
 29539	õ╗úÒéÅÒéèÒéÆ ÒüùÒü¥ÒüÖ	ÒüïÒéÅÒéèÒéÆ ÒüùÒü¥ÒüÖ	kawariwo shimasu	thay thß║┐	48	2026-06-25 10:53:06.802	2026-06-25 10:53:06.802	\N	\N	\N	\N	\N	\N	\N	0
 29540	\N	Òé╣ÒâöÒâ╝Òâë	supiido	tß╗æc ─æß╗Ö	48	2026-06-25 10:53:06.804	2026-06-25 10:53:06.804	\N	\N	\N	\N	\N	\N	\N	0
+29546	Õ┐â	ÒüôÒüôÒéì	kokoro	t├óm hß╗ôn ,tr├íi tim	48	2026-06-25 10:53:06.816	2026-06-27 02:25:27.369	\N	\N	\N	\N	\N	\N	/media/openmoji/2764.svg	0
 29542	\N	ÒéÁÒâ╝Òé½Òé╣	sakasu	xiß║┐c	48	2026-06-25 10:53:06.809	2026-06-25 10:53:06.809	\N	\N	\N	\N	\N	\N	\N	0
 29544	þ¥ÄÒüùÒüä	ÒüåÒüñÒüÅÒüùÒüä	utsukushii	─æß║╣p	48	2026-06-25 10:53:06.812	2026-06-25 10:53:06.812	\N	\N	\N	\N	\N	\N	\N	0
 29545	Õº┐	ÒüÖÒüîÒüƒ	sugata	d├íng h├¼nh, tã░ thß║┐	48	2026-06-25 10:53:06.814	2026-06-25 10:53:06.814	\N	\N	\N	\N	\N	\N	\N	0
@@ -14680,13 +15030,13 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29577	ÚûïþÖ║ÒüùÒü¥ÒüÖ	ÒüïÒüäÒü»ÒüñÒüùÒü¥ÒüÖ	kaihatsushimasu	develop, create	49	2026-06-25 10:53:07.012	2026-06-25 10:53:07.012	\N	\N	\N	\N	\N	\N	\N	0
 29578	\N	Òâ×ÒéªÒé╣	mausu	mouse	49	2026-06-25 10:53:07.015	2026-06-25 10:53:07.015	\N	\N	\N	\N	\N	\N	\N	0
 29579	\N	ÒâÆÒâê	hito	human	49	2026-06-25 10:53:07.017	2026-06-25 10:53:07.017	\N	\N	\N	\N	\N	\N	\N	0
-29550	ÕïñÒéüÒü¥ÒüÖ´╝╗õ╝Üþñ¥Òü½´¢×´╝¢	ÒüñÒü¿ÒéüÒü¥ÒüÖ´╝╗ÒüïÒüäÒüùÒéâÒü½´¢×´╝¢	tsutomemasu [kaishani~]	l├ám viß╗çc [ c├┤ng ty ~]	49	2026-06-25 10:53:06.935	2026-06-27 02:22:16.788	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2	0
 29561	ÒâÉÒé╣Õü£	ÒâÉÒé╣ÒüªÒüä	basutei	trß║ím dß╗½ng xe BUS	49	2026-06-25 10:53:06.969	2026-06-27 02:18:03.59	\N	\N	\N	\N	\N	\N	\N	0
-29546	Õ┐â	ÒüôÒüôÒéì	kokoro	t├óm hß╗ôn ,tr├íi tim	48	2026-06-25 10:53:06.816	2026-06-27 02:25:27.369	\N	\N	\N	\N	\N	\N	/media/openmoji/2764	0
 29580	µÄêÞ│×ÒüùÒü¥ÒüÖ	ÒüÿÒéàÒüùÒéçÒüåÒüùÒü¥ÒüÖ	jushoshimasu	─æã░ß╗úc giß║úi thã░ß╗ƒng	49	2026-06-25 10:53:07.018	2026-06-25 10:53:07.018	\N	\N	\N	\N	\N	\N	\N	0
 29581	Þ¼øµ╝öõ╝Ü	ÒüôÒüåÒüêÒéôÒüïÒüä	koenkai	lecture meeting	49	2026-06-25 10:53:07.021	2026-06-25 10:53:07.021	\N	\N	\N	\N	\N	\N	\N	0
 29582	Õ▒▒õ©¡õ╝©Õ╝Ñ	ÒéäÒü¥Òü¬ÒüïÒüùÒéôÒéä	yamanakashin'ya	Japanese medical scientist (1962-)	49	2026-06-25 10:53:07.024	2026-06-25 10:53:07.024	\N	\N	\N	\N	\N	\N	\N	0
 29583	ÒâÄÒâ╝ÒâÖÒâ½Þ│×	ÒâÄÒâ╝ÒâÖÒâ½ÒüùÒéçÒüå	noberusho	Nobel Prize	49	2026-06-25 10:53:07.026	2026-06-25 10:53:07.026	\N	\N	\N	\N	\N	\N	\N	0
+29584	õ╝æÒü┐Òü¥ÒüÖ	ÒéäÒüÖÒü┐Òü¥ÒüÖ	yasumimasu	nghß╗ë ngãíi	49	2026-06-25 10:53:07.027	2026-06-27 02:22:16.791	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634.svg	0
+29629	Þ│×Úçæ	ÒüùÒéçÒüåÒüìÒéô	shokin	tiß╗ün thã░ß╗ƒng	50	2026-06-25 10:53:07.203	2026-06-27 02:22:16.797	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0.svg	0
 29588	Þ▓┐µÿô	Òü╝ÒüåÒüêÒüì	boeki	thã░ãíng mß║íi, mß║¡u dß╗ïch	49	2026-06-25 10:53:07.038	2026-06-25 10:53:07.038	\N	\N	\N	\N	\N	\N	\N	0
 29589	Õ©░ÒéèÒü½	ÒüïÒüêÒéèÒü½	kaerini	tr├¬n ─æã░ß╗Øng vß╗ü, ß╗ƒ lã░ß╗út vß╗ü	49	2026-06-25 10:53:07.04	2026-06-25 10:53:07.04	\N	\N	\N	\N	\N	\N	\N	0
 29590	\N	ÒüíÒüúÒü¿Òéé	chittomo	mß╗Öt ch├║t c┼®ng kh├┤ng (d├╣ng vß╗øi thß╗â phß╗º ─æß╗ïnh)	49	2026-06-25 10:53:07.047	2026-06-25 10:53:07.047	\N	\N	\N	\N	\N	\N	\N	0
@@ -14731,8 +15081,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29610	\N	ÒüäÒüƒÒüáÒüìÒü¥ÒüÖ	itadakimasu	─ân,uß╗æng,nhß║¡n (dß║íng khi├¬m tß╗æn cß╗ºa ÒüƒÒü╣Òü¥ÒüÖ)	50	2026-06-25 10:53:07.171	2026-06-27 02:18:03.6	\N	\N	\N	\N	\N	\N	\N	0
 29628	þÀèÕ╝ÁÒüùÒü¥ÒüÖ	ÒüìÒéôÒüíÒéçÒüåÒüùÒü¥ÒüÖ	kinchoshimasu	c─âng thß║│ng, hß╗ôi hß╗Öp	50	2026-06-25 10:53:07.201	2026-06-27 02:18:03.603	\N	\N	\N	\N	\N	\N	\N	0
 29607	ÒâÄÒâ╝ÒâÖÒâ½µûçÕ¡ªÞ│×	ÒâÄÒâ╝ÒâÖÒâ½ÒüÂÒéôÒüîÒüÅÒüùÒéçÒüå	noberu bungakusho	giß║úi thã░ß╗ƒng Nobel v─ân hß╗ìc	49	2026-06-25 10:53:07.096	2026-06-27 02:18:03.596	\N	\N	\N	\N	\N	\N	\N	0
-29584	õ╝æÒü┐Òü¥ÒüÖ	ÒéäÒüÖÒü┐Òü¥ÒüÖ	yasumimasu	nghß╗ë ngãíi	49	2026-06-25 10:53:07.027	2026-06-27 02:22:16.791	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634	0
-29629	Þ│×Úçæ	ÒüùÒéçÒüåÒüìÒéô	shokin	tiß╗ün thã░ß╗ƒng	50	2026-06-25 10:53:07.203	2026-06-27 02:22:16.797	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B0	0
 29641	\N	ÒüöÒüûÒüäÒü¥ÒüÖ	gozaimasu	c├│ (dß║íng lß╗ïch sß╗▒ cß╗ºa ÒüéÒéèÒü¥ÒüÖ)	50	2026-06-25 10:53:07.224	2026-06-25 10:53:07.224	\N	\N	\N	\N	\N	\N	\N	0
 29642	\N	´¢×Òüº ÒüöÒüûÒüäÒü¥ÒüÖ	~de gozaimasu	l├á (dß║íng lß╗ïch sß╗▒ cß╗ºa ~ÒüºÒüÖ)	50	2026-06-25 10:53:07.225	2026-06-25 10:53:07.225	\N	\N	\N	\N	\N	\N	\N	0
 29644	ÚâèÕñû	ÒüôÒüåÒüîÒüä	kogai	ngoß║íi ├┤	50	2026-06-25 10:53:07.228	2026-06-25 10:53:07.228	\N	\N	\N	\N	\N	\N	\N	0
@@ -14747,12 +15095,2554 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29655	ÕìöÕèøÒüùÒü¥ÒüÖ	ÒüìÒéçÒüåÒéèÒéçÒüÅÒüùÒü¥ÒüÖ	kyoryokushimasu	hiß╗çp lß╗▒c, cß╗Öng t├íc	50	2026-06-25 10:53:07.252	2026-06-25 10:53:07.252	\N	\N	\N	\N	\N	\N	\N	0
 29657	þ¥ÄÒüùÒüä	ÒüåÒüñÒüÅÒüùÒüä	utsukushii	─æß║╣p	50	2026-06-25 10:53:07.259	2026-06-25 10:53:07.259	\N	\N	\N	\N	\N	\N	\N	0
 29658	´╝╗Òüè´╝¢ÕƒÄ	´╝╗Òüè´╝¢ÒüùÒéì	[o] shiro	th├ánh tr├¼	50	2026-06-25 10:53:07.262	2026-06-25 10:53:07.262	\N	\N	\N	\N	\N	\N	\N	0
+29640	\N	ÒâƒÒâÑÒâ│ÒâÿÒâ│	myunhen	Munchen (th├ánh phß╗æ lß╗øn cß╗ºa ─Éß╗®c)	50	2026-06-25 10:53:07.222	2026-06-27 02:22:16.799	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E9-1F1EA.svg	0
 29643	ÒüèÕ«à	ÒüèÒüƒÒüÅ	otaku	nh├á (cß╗ºa ngã░ß╗Øi kh├íc)	50	2026-06-25 10:53:07.227	2026-06-27 02:18:03.606	\N	\N	\N	\N	\N	\N	\N	0
-29640	\N	ÒâƒÒâÑÒâ│ÒâÿÒâ│	myunhen	Munchen (th├ánh phß╗æ lß╗øn cß╗ºa ─Éß╗®c)	50	2026-06-25 10:53:07.222	2026-06-27 02:22:16.799	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E9-1F1EA	0
-29645	\N	ÒéóÒâ½ÒâÉÒâá	arubamu	tß║¡p ß║únh,Album	50	2026-06-25 10:53:07.23	2026-06-27 02:25:27.387	\N	\N	\N	\N	\N	\N	/media/openmoji/1F5BC	0
-29653	Þ▒í	Òü×Òüå	zo	con voi	50	2026-06-25 10:53:07.243	2026-06-27 02:25:27.39	\N	\N	\N	\N	\N	\N	/media/openmoji/1F418	0
-29656	µïØÕòô	Òü»ÒüäÒüæÒüä	haikei	k├¡nh gß╗¡i, thã░a ~( viß║┐t ngay ─æß║ºu thã░)	50	2026-06-25 10:53:07.256	2026-06-27 02:25:27.392	\N	\N	\N	\N	\N	\N	/media/openmoji/2709	0
-29659	µò¼ÕàÀ	ÒüæÒüäÒüÉ	keigu	k├¡nh thã░( viß║┐t cuß╗æi thã░)	50	2026-06-25 10:53:07.265	2026-06-27 02:25:27.398	\N	\N	\N	\N	\N	\N	/media/openmoji/2709	0
+29645	\N	ÒéóÒâ½ÒâÉÒâá	arubamu	tß║¡p ß║únh,Album	50	2026-06-25 10:53:07.23	2026-06-27 02:25:27.387	\N	\N	\N	\N	\N	\N	/media/openmoji/1F5BC.svg	0
+29653	Þ▒í	Òü×Òüå	zo	con voi	50	2026-06-25 10:53:07.243	2026-06-27 02:25:27.39	\N	\N	\N	\N	\N	\N	/media/openmoji/1F418.svg	0
+29656	µïØÕòô	Òü»ÒüäÒüæÒüä	haikei	k├¡nh gß╗¡i, thã░a ~( viß║┐t ngay ─æß║ºu thã░)	50	2026-06-25 10:53:07.256	2026-06-27 02:25:27.392	\N	\N	\N	\N	\N	\N	/media/openmoji/2709.svg	0
+29659	µò¼ÕàÀ	ÒüæÒüäÒüÉ	keigu	k├¡nh thã░( viß║┐t cuß╗æi thã░)	50	2026-06-25 10:53:07.265	2026-06-27 02:25:27.398	\N	\N	\N	\N	\N	\N	/media/openmoji/2709.svg	0
+\.
+
+
+--
+-- Data for Name: VocabularyKanjiLink; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."VocabularyKanjiLink" (id, "vocabularyId", "kanjiEntryId", "createdAt") FROM stdin;
+1	27021	537	2026-06-28 08:37:43.895
+2	27064	692	2026-06-28 08:37:43.911
+3	27064	754	2026-06-28 08:37:43.915
+4	27064	616	2026-06-28 08:37:43.92
+5	27033	541	2026-06-28 08:37:43.924
+6	27033	811	2026-06-28 08:37:43.929
+7	27043	565	2026-06-28 08:37:43.934
+8	27046	535	2026-06-28 08:37:43.938
+9	27046	777	2026-06-28 08:37:43.943
+10	27048	529	2026-06-28 08:37:43.948
+11	27048	537	2026-06-28 08:37:43.953
+12	27048	640	2026-06-28 08:37:43.959
+13	27493	533	2026-06-28 08:37:43.965
+14	27419	782	2026-06-28 08:37:43.97
+15	27419	657	2026-06-28 08:37:43.973
+16	27200	692	2026-06-28 08:37:43.977
+17	27200	693	2026-06-28 08:37:43.98
+18	27200	616	2026-06-28 08:37:43.983
+19	27250	582	2026-06-28 08:37:43.986
+20	27251	583	2026-06-28 08:37:43.99
+21	27253	577	2026-06-28 08:37:43.993
+22	27285	730	2026-06-28 08:37:43.996
+23	27285	731	2026-06-28 08:37:43.999
+24	29074	514	2026-06-28 08:37:44.003
+25	29074	958	2026-06-28 08:37:44.008
+26	29074	584	2026-06-28 08:37:44.012
+27	29160	652	2026-06-28 08:37:44.016
+28	27050	569	2026-06-28 08:37:44.021
+29	27138	645	2026-06-28 08:37:44.026
+30	27140	649	2026-06-28 08:37:44.032
+31	27140	650	2026-06-28 08:37:44.038
+32	27149	646	2026-06-28 08:37:44.044
+33	27149	625	2026-06-28 08:37:44.051
+34	27153	574	2026-06-28 08:37:44.06
+35	27153	645	2026-06-28 08:37:44.066
+36	27156	530	2026-06-28 08:37:44.07
+37	27156	536	2026-06-28 08:37:44.074
+38	27156	529	2026-06-28 08:37:44.078
+39	27158	532	2026-06-28 08:37:44.082
+40	27158	536	2026-06-28 08:37:44.086
+41	27158	529	2026-06-28 08:37:44.09
+42	27161	535	2026-06-28 08:37:44.093
+43	27161	536	2026-06-28 08:37:44.097
+44	27161	529	2026-06-28 08:37:44.1
+45	26968	713	2026-06-28 08:37:44.104
+46	27024	597	2026-06-28 08:37:44.108
+47	27024	586	2026-06-28 08:37:44.112
+48	27041	616	2026-06-28 08:37:44.115
+49	27022	968	2026-06-28 08:37:44.119
+50	27022	632	2026-06-28 08:37:44.123
+51	27026	652	2026-06-28 08:37:44.127
+52	27027	639	2026-06-28 08:37:44.131
+53	27194	985	2026-06-28 08:37:44.134
+54	27201	756	2026-06-28 08:37:44.138
+55	27247	593	2026-06-28 08:37:44.142
+56	27256	632	2026-06-28 08:37:44.146
+57	27277	841	2026-06-28 08:37:44.15
+58	27283	621	2026-06-28 08:37:44.154
+59	27318	652	2026-06-28 08:37:44.158
+60	27331	846	2026-06-28 08:37:44.162
+61	27336	885	2026-06-28 08:37:44.165
+62	27336	828	2026-06-28 08:37:44.169
+63	27049	640	2026-06-28 08:37:44.173
+64	27341	571	2026-06-28 08:37:44.176
+65	27343	571	2026-06-28 08:37:44.18
+66	27057	877	2026-06-28 08:37:44.184
+67	27059	793	2026-06-28 08:37:44.188
+68	27059	588	2026-06-28 08:37:44.192
+69	27017	880	2026-06-28 08:37:44.195
+70	27009	713	2026-06-28 08:37:44.199
+71	27192	618	2026-06-28 08:37:44.202
+72	27195	615	2026-06-28 08:37:44.207
+73	27195	616	2026-06-28 08:37:44.21
+74	27432	583	2026-06-28 08:37:44.213
+75	27432	828	2026-06-28 08:37:44.216
+76	27433	673	2026-06-28 08:37:44.218
+77	27433	674	2026-06-28 08:37:44.221
+78	27196	792	2026-06-28 08:37:44.224
+79	27196	546	2026-06-28 08:37:44.227
+80	27196	980	2026-06-28 08:37:44.229
+81	27461	565	2026-06-28 08:37:44.232
+82	27268	671	2026-06-28 08:37:44.235
+83	27271	532	2026-06-28 08:37:44.239
+84	27394	657	2026-06-28 08:37:44.242
+85	27421	616	2026-06-28 08:37:44.246
+86	27358	830	2026-06-28 08:37:44.25
+87	27358	578	2026-06-28 08:37:44.254
+88	27378	741	2026-06-28 08:37:44.259
+89	27379	835	2026-06-28 08:37:44.262
+90	27389	668	2026-06-28 08:37:44.265
+91	27243	831	2026-06-28 08:37:44.269
+92	27400	567	2026-06-28 08:37:44.272
+93	27400	893	2026-06-28 08:37:44.276
+94	27417	534	2026-06-28 08:37:44.28
+95	27417	540	2026-06-28 08:37:44.284
+96	27439	691	2026-06-28 08:37:44.288
+97	27445	1019	2026-06-28 08:37:44.292
+98	27349	545	2026-06-28 08:37:44.296
+99	27711	760	2026-06-28 08:37:44.3
+100	27801	583	2026-06-28 08:37:44.304
+101	27809	747	2026-06-28 08:37:44.308
+102	27820	653	2026-06-28 08:37:44.311
+103	27898	691	2026-06-28 08:37:44.314
+104	28108	991	2026-06-28 08:37:44.317
+105	28118	754	2026-06-28 08:37:44.319
+106	28118	541	2026-06-28 08:37:44.323
+107	28118	811	2026-06-28 08:37:44.326
+108	28235	626	2026-06-28 08:37:44.329
+109	28235	656	2026-06-28 08:37:44.332
+110	28293	892	2026-06-28 08:37:44.335
+111	27894	568	2026-06-28 08:37:44.338
+112	27894	567	2026-06-28 08:37:44.341
+113	27818	1017	2026-06-28 08:37:44.344
+114	27625	614	2026-06-28 08:37:44.346
+115	27630	662	2026-06-28 08:37:44.349
+116	27511	694	2026-06-28 08:37:44.352
+117	27511	817	2026-06-28 08:37:44.355
+118	27532	537	2026-06-28 08:37:44.357
+119	27532	820	2026-06-28 08:37:44.36
+120	27682	569	2026-06-28 08:37:44.363
+121	27720	577	2026-06-28 08:37:44.366
+122	27738	631	2026-06-28 08:37:44.368
+123	27738	648	2026-06-28 08:37:44.371
+124	27791	694	2026-06-28 08:37:44.374
+125	27791	615	2026-06-28 08:37:44.378
+126	27791	616	2026-06-28 08:37:44.382
+127	27792	1007	2026-06-28 08:37:44.386
+128	27792	615	2026-06-28 08:37:44.392
+129	27792	616	2026-06-28 08:37:44.395
+130	27578	548	2026-06-28 08:37:44.399
+131	27578	576	2026-06-28 08:37:44.403
+132	27634	845	2026-06-28 08:37:44.407
+133	27868	583	2026-06-28 08:37:44.413
+134	27868	779	2026-06-28 08:37:44.417
+135	27642	567	2026-06-28 08:37:44.423
+136	27642	664	2026-06-28 08:37:44.428
+137	27668	582	2026-06-28 08:37:44.432
+138	27668	784	2026-06-28 08:37:44.438
+139	27689	677	2026-06-28 08:37:44.444
+140	27699	611	2026-06-28 08:37:44.452
+141	27699	878	2026-06-28 08:37:44.457
+142	27699	819	2026-06-28 08:37:44.461
+143	28528	753	2026-06-28 08:37:44.465
+144	28528	754	2026-06-28 08:37:44.471
+145	28651	537	2026-06-28 08:37:44.476
+146	28651	529	2026-06-28 08:37:44.481
+147	28651	625	2026-06-28 08:37:44.485
+148	28651	778	2026-06-28 08:37:44.489
+149	28684	785	2026-06-28 08:37:44.494
+150	28688	668	2026-06-28 08:37:44.498
+151	28690	667	2026-06-28 08:37:44.501
+152	28673	1017	2026-06-28 08:37:44.506
+153	28953	666	2026-06-28 08:37:44.511
+154	27902	753	2026-06-28 08:37:44.515
+155	27902	693	2026-06-28 08:37:44.519
+156	27928	545	2026-06-28 08:37:44.523
+157	27962	997	2026-06-28 08:37:44.527
+158	28028	583	2026-06-28 08:37:44.532
+159	28077	648	2026-06-28 08:37:44.538
+160	28080	898	2026-06-28 08:37:44.541
+161	28080	722	2026-06-28 08:37:44.544
+162	28089	668	2026-06-28 08:37:44.547
+163	28089	632	2026-06-28 08:37:44.55
+164	28088	761	2026-06-28 08:37:44.553
+165	28088	826	2026-06-28 08:37:44.556
+166	28127	548	2026-06-28 08:37:44.56
+167	28127	576	2026-06-28 08:37:44.563
+168	28127	538	2026-06-28 08:37:44.567
+169	28109	983	2026-06-28 08:37:44.57
+170	28109	616	2026-06-28 08:37:44.573
+171	28109	817	2026-06-28 08:37:44.576
+172	28110	827	2026-06-28 08:37:44.579
+173	28110	828	2026-06-28 08:37:44.582
+174	28172	577	2026-06-28 08:37:44.585
+175	28171	513	2026-06-28 08:37:44.588
+176	28171	583	2026-06-28 08:37:44.591
+177	28202	844	2026-06-28 08:37:44.595
+178	28202	885	2026-06-28 08:37:44.598
+179	28202	828	2026-06-28 08:37:44.601
+180	28999	632	2026-06-28 08:37:44.604
+181	29218	565	2026-06-28 08:37:44.608
+182	29381	948	2026-06-28 08:37:44.61
+183	29364	805	2026-06-28 08:37:44.613
+184	27197	597	2026-06-28 08:37:44.616
+185	27457	716	2026-06-28 08:37:44.618
+186	27457	538	2026-06-28 08:37:44.621
+187	27460	715	2026-06-28 08:37:44.623
+188	27460	705	2026-06-28 08:37:44.626
+189	27460	1002	2026-06-28 08:37:44.629
+190	27503	923	2026-06-28 08:37:44.631
+191	27509	681	2026-06-28 08:37:44.634
+192	27509	621	2026-06-28 08:37:44.637
+193	27498	835	2026-06-28 08:37:44.641
+194	28220	993	2026-06-28 08:37:44.644
+195	28220	921	2026-06-28 08:37:44.647
+196	28230	858	2026-06-28 08:37:44.65
+197	28233	535	2026-06-28 08:37:44.654
+198	28729	680	2026-06-28 08:37:44.658
+199	28321	594	2026-06-28 08:37:44.663
+200	28321	736	2026-06-28 08:37:44.668
+201	28321	705	2026-06-28 08:37:44.673
+202	28730	664	2026-06-28 08:37:44.678
+203	28745	657	2026-06-28 08:37:44.683
+204	28383	539	2026-06-28 08:37:44.689
+205	28383	615	2026-06-28 08:37:44.694
+206	28383	616	2026-06-28 08:37:44.699
+207	28440	825	2026-06-28 08:37:44.704
+208	28489	721	2026-06-28 08:37:44.708
+209	28489	584	2026-06-28 08:37:44.714
+210	28635	983	2026-06-28 08:37:44.721
+211	28635	616	2026-06-28 08:37:44.728
+212	28635	877	2026-06-28 08:37:44.733
+213	28635	675	2026-06-28 08:37:44.739
+214	28646	545	2026-06-28 08:37:44.745
+215	28668	775	2026-06-28 08:37:44.75
+216	28668	973	2026-06-28 08:37:44.756
+217	28668	948	2026-06-28 08:37:44.761
+218	28245	664	2026-06-28 08:37:44.767
+219	28245	531	2026-06-28 08:37:44.773
+220	28259	537	2026-06-28 08:37:44.778
+221	28358	533	2026-06-28 08:37:44.782
+222	28743	820	2026-06-28 08:37:44.788
+223	28743	545	2026-06-28 08:37:44.794
+224	28434	664	2026-06-28 08:37:44.802
+225	28472	530	2026-06-28 08:37:44.812
+226	28560	532	2026-06-28 08:37:44.816
+227	28560	656	2026-06-28 08:37:44.819
+228	28591	530	2026-06-28 08:37:44.823
+229	27766	702	2026-06-28 08:37:44.827
+230	27811	801	2026-06-28 08:37:44.831
+231	27813	802	2026-06-28 08:37:44.835
+232	27815	585	2026-06-28 08:37:44.839
+233	27879	545	2026-06-28 08:37:44.844
+234	27879	703	2026-06-28 08:37:44.848
+235	27931	759	2026-06-28 08:37:44.852
+236	27931	890	2026-06-28 08:37:44.856
+237	28378	992	2026-06-28 08:37:44.859
+238	28378	948	2026-06-28 08:37:44.863
+239	28464	992	2026-06-28 08:37:44.867
+240	28464	948	2026-06-28 08:37:44.87
+241	29046	701	2026-06-28 08:37:44.874
+242	29046	702	2026-06-28 08:37:44.877
+243	28835	616	2026-06-28 08:37:44.881
+244	28914	556	2026-06-28 08:37:44.886
+245	28836	985	2026-06-28 08:37:44.89
+246	28957	662	2026-06-28 08:37:44.894
+247	28788	690	2026-06-28 08:37:44.898
+248	28773	650	2026-06-28 08:37:44.901
+249	28773	578	2026-06-28 08:37:44.905
+250	29159	546	2026-06-28 08:37:44.909
+251	28844	748	2026-06-28 08:37:44.914
+252	26982	593	2026-06-28 08:37:44.918
+253	26982	566	2026-06-28 08:37:44.922
+254	26983	623	2026-06-28 08:37:44.926
+255	26983	624	2026-06-28 08:37:44.929
+256	28954	594	2026-06-28 08:37:44.933
+257	28954	566	2026-06-28 08:37:44.937
+258	28954	620	2026-06-28 08:37:44.941
+259	27076	582	2026-06-28 08:37:44.945
+260	27076	821	2026-06-28 08:37:44.949
+261	28985	943	2026-06-28 08:37:44.953
+262	27077	784	2026-06-28 08:37:44.957
+263	27077	819	2026-06-28 08:37:44.96
+264	27081	882	2026-06-28 08:37:44.964
+265	27081	820	2026-06-28 08:37:44.966
+266	27082	652	2026-06-28 08:37:44.969
+267	27082	759	2026-06-28 08:37:44.972
+268	29113	753	2026-06-28 08:37:44.975
+269	29113	693	2026-06-28 08:37:44.978
+270	29113	652	2026-06-28 08:37:44.98
+271	27088	576	2026-06-28 08:37:44.983
+272	29195	547	2026-06-28 08:37:44.985
+273	29221	732	2026-06-28 08:37:44.989
+274	29221	663	2026-06-28 08:37:44.991
+275	27075	721	2026-06-28 08:37:44.994
+276	27075	722	2026-06-28 08:37:44.997
+277	29286	610	2026-06-28 08:37:45
+278	27078	584	2026-06-28 08:37:45.003
+279	27078	911	2026-06-28 08:37:45.006
+280	27078	722	2026-06-28 08:37:45.009
+281	27119	627	2026-06-28 08:37:45.012
+282	27121	780	2026-06-28 08:37:45.015
+283	27123	634	2026-06-28 08:37:45.018
+284	27123	637	2026-06-28 08:37:45.022
+285	27127	815	2026-06-28 08:37:45.026
+286	27129	787	2026-06-28 08:37:45.03
+287	27152	698	2026-06-28 08:37:45.034
+288	27152	699	2026-06-28 08:37:45.037
+289	27136	554	2026-06-28 08:37:45.041
+290	27136	552	2026-06-28 08:37:45.046
+291	27137	554	2026-06-28 08:37:45.051
+292	27137	553	2026-06-28 08:37:45.056
+293	27147	539	2026-06-28 08:37:45.062
+294	27147	649	2026-06-28 08:37:45.069
+295	27151	584	2026-06-28 08:37:45.076
+296	27151	911	2026-06-28 08:37:45.084
+297	29288	545	2026-06-28 08:37:45.09
+298	29288	955	2026-06-28 08:37:45.096
+299	29554	545	2026-06-28 08:37:45.103
+300	29601	638	2026-06-28 08:37:45.11
+301	29637	599	2026-06-28 08:37:45.117
+302	29637	600	2026-06-28 08:37:45.124
+303	29362	875	2026-06-28 08:37:45.131
+304	29413	610	2026-06-28 08:37:45.137
+305	29421	895	2026-06-28 08:37:45.144
+306	29421	857	2026-06-28 08:37:45.15
+307	29421	815	2026-06-28 08:37:45.157
+308	29458	610	2026-06-28 08:37:45.164
+309	29458	537	2026-06-28 08:37:45.17
+310	29476	732	2026-06-28 08:37:45.177
+311	29476	566	2026-06-28 08:37:45.182
+312	29509	1007	2026-06-28 08:37:45.187
+313	29509	546	2026-06-28 08:37:45.195
+314	29517	692	2026-06-28 08:37:45.203
+315	29517	886	2026-06-28 08:37:45.212
+316	29560	830	2026-06-28 08:37:45.22
+317	29560	787	2026-06-28 08:37:45.228
+318	29587	584	2026-06-28 08:37:45.235
+319	29587	817	2026-06-28 08:37:45.242
+320	29613	577	2026-06-28 08:37:45.249
+321	29339	898	2026-06-28 08:37:45.256
+322	29339	582	2026-06-28 08:37:45.263
+323	27154	574	2026-06-28 08:37:45.27
+324	27154	649	2026-06-28 08:37:45.276
+325	27157	531	2026-06-28 08:37:45.283
+326	27157	536	2026-06-28 08:37:45.29
+327	27157	529	2026-06-28 08:37:45.298
+328	27159	533	2026-06-28 08:37:45.305
+329	27159	536	2026-06-28 08:37:45.312
+330	27159	529	2026-06-28 08:37:45.318
+331	27160	534	2026-06-28 08:37:45.324
+332	27160	536	2026-06-28 08:37:45.327
+333	27160	529	2026-06-28 08:37:45.329
+334	27162	529	2026-06-28 08:37:45.332
+335	27162	536	2026-06-28 08:37:45.335
+336	27193	977	2026-06-28 08:37:45.338
+337	27193	578	2026-06-28 08:37:45.341
+338	27193	978	2026-06-28 08:37:45.345
+339	27206	705	2026-06-28 08:37:45.348
+340	27206	707	2026-06-28 08:37:45.351
+341	27237	567	2026-06-28 08:37:45.354
+342	27237	529	2026-06-28 08:37:45.357
+343	27262	645	2026-06-28 08:37:45.359
+344	27254	586	2026-06-28 08:37:45.362
+345	27263	646	2026-06-28 08:37:45.365
+346	27264	649	2026-06-28 08:37:45.369
+347	27266	839	2026-06-28 08:37:45.374
+348	27269	683	2026-06-28 08:37:45.378
+349	27269	684	2026-06-28 08:37:45.382
+350	28735	1008	2026-06-28 08:37:45.386
+351	27190	566	2026-06-28 08:37:45.39
+352	27190	620	2026-06-28 08:37:45.394
+353	29228	732	2026-06-28 08:37:45.397
+354	27272	681	2026-06-28 08:37:45.401
+355	27273	681	2026-06-28 08:37:45.404
+356	27274	677	2026-06-28 08:37:45.408
+357	27316	724	2026-06-28 08:37:45.411
+358	27255	631	2026-06-28 08:37:45.414
+359	27257	629	2026-06-28 08:37:45.418
+360	27279	652	2026-06-28 08:37:45.422
+361	27279	720	2026-06-28 08:37:45.425
+362	27281	695	2026-06-28 08:37:45.429
+363	27281	704	2026-06-28 08:37:45.432
+364	27317	615	2026-06-28 08:37:45.436
+365	27317	588	2026-06-28 08:37:45.44
+366	27337	534	2026-06-28 08:37:45.443
+367	27359	535	2026-06-28 08:37:45.447
+368	27359	777	2026-06-28 08:37:45.45
+369	27332	720	2026-06-28 08:37:45.454
+370	27338	685	2026-06-28 08:37:45.457
+371	27340	570	2026-06-28 08:37:45.46
+372	27342	570	2026-06-28 08:37:45.464
+373	27377	740	2026-06-28 08:37:45.468
+374	27377	834	2026-06-28 08:37:45.471
+375	27388	690	2026-06-28 08:37:45.475
+376	27390	669	2026-06-28 08:37:45.478
+377	27422	634	2026-06-28 08:37:45.481
+378	27422	637	2026-06-28 08:37:45.485
+379	27444	691	2026-06-28 08:37:45.49
+380	27424	529	2026-06-28 08:37:45.493
+381	27424	537	2026-06-28 08:37:45.497
+382	27424	567	2026-06-28 08:37:45.501
+383	27424	893	2026-06-28 08:37:45.505
+384	27451	1023	2026-06-28 08:37:45.508
+385	27451	534	2026-06-28 08:37:45.512
+386	27395	612	2026-06-28 08:37:45.516
+387	27418	581	2026-06-28 08:37:45.519
+388	27418	919	2026-06-28 08:37:45.524
+389	27418	920	2026-06-28 08:37:45.528
+390	27435	683	2026-06-28 08:37:45.533
+391	27437	830	2026-06-28 08:37:45.538
+392	27437	578	2026-06-28 08:37:45.541
+393	27438	689	2026-06-28 08:37:45.544
+394	27438	690	2026-06-28 08:37:45.546
+395	27396	582	2026-06-28 08:37:45.549
+396	27396	828	2026-06-28 08:37:45.552
+397	27047	733	2026-06-28 08:37:45.555
+398	27047	640	2026-06-28 08:37:45.559
+399	27120	891	2026-06-28 08:37:45.562
+400	27122	625	2026-06-28 08:37:45.565
+401	27126	622	2026-06-28 08:37:45.568
+402	27126	578	2026-06-28 08:37:45.573
+403	27128	785	2026-06-28 08:37:45.577
+404	27128	632	2026-06-28 08:37:45.58
+405	27128	787	2026-06-28 08:37:45.585
+406	27150	728	2026-06-28 08:37:45.588
+407	27150	729	2026-06-28 08:37:45.591
+408	27305	698	2026-06-28 08:37:45.594
+409	27305	699	2026-06-28 08:37:45.598
+410	27796	610	2026-06-28 08:37:45.6
+411	27940	529	2026-06-28 08:37:45.603
+412	28281	692	2026-06-28 08:37:45.606
+413	28281	754	2026-06-28 08:37:45.608
+414	28281	630	2026-06-28 08:37:45.611
+415	28281	978	2026-06-28 08:37:45.614
+416	28507	698	2026-06-28 08:37:45.616
+417	28507	699	2026-06-28 08:37:45.619
+418	28507	787	2026-06-28 08:37:45.622
+419	28787	615	2026-06-28 08:37:45.624
+420	28787	588	2026-06-28 08:37:45.627
+421	28983	572	2026-06-28 08:37:45.63
+422	28983	567	2026-06-28 08:37:45.633
+423	29408	526	2026-06-28 08:37:45.638
+424	27270	838	2026-06-28 08:37:45.641
+425	27270	828	2026-06-28 08:37:45.643
+426	27458	714	2026-06-28 08:37:45.646
+427	27458	716	2026-06-28 08:37:45.648
+428	27458	538	2026-06-28 08:37:45.651
+429	27459	939	2026-06-28 08:37:45.654
+430	27487	563	2026-06-28 08:37:45.657
+431	27487	565	2026-06-28 08:37:45.659
+432	27488	564	2026-06-28 08:37:45.662
+433	27488	565	2026-06-28 08:37:45.664
+434	27508	919	2026-06-28 08:37:45.667
+435	27508	920	2026-06-28 08:37:45.671
+436	27495	615	2026-06-28 08:37:45.674
+437	27495	825	2026-06-28 08:37:45.677
+438	27529	557	2026-06-28 08:37:45.68
+439	27529	812	2026-06-28 08:37:45.682
+440	27565	685	2026-06-28 08:37:45.685
+441	27565	652	2026-06-28 08:37:45.689
+442	27568	934	2026-06-28 08:37:45.692
+443	27568	708	2026-06-28 08:37:45.695
+444	27587	881	2026-06-28 08:37:45.698
+445	27587	882	2026-06-28 08:37:45.7
+446	27629	661	2026-06-28 08:37:45.703
+447	27629	990	2026-06-28 08:37:45.707
+448	27663	914	2026-06-28 08:37:45.709
+449	27688	868	2026-06-28 08:37:45.712
+450	27688	582	2026-06-28 08:37:45.715
+451	27728	615	2026-06-28 08:37:45.718
+452	27728	600	2026-06-28 08:37:45.721
+453	27701	584	2026-06-28 08:37:45.724
+454	27701	911	2026-06-28 08:37:45.727
+455	27765	541	2026-06-28 08:37:45.729
+456	27765	875	2026-06-28 08:37:45.732
+457	27808	606	2026-06-28 08:37:45.735
+458	27812	1018	2026-06-28 08:37:45.739
+459	27810	654	2026-06-28 08:37:45.742
+460	27834	764	2026-06-28 08:37:45.744
+461	27834	610	2026-06-28 08:37:45.747
+462	27839	534	2026-06-28 08:37:45.75
+463	27852	775	2026-06-28 08:37:45.753
+464	27852	566	2026-06-28 08:37:45.757
+465	27852	567	2026-06-28 08:37:45.76
+466	27859	889	2026-06-28 08:37:45.762
+467	27814	528	2026-06-28 08:37:45.765
+468	27817	527	2026-06-28 08:37:45.768
+469	27877	779	2026-06-28 08:37:45.771
+470	27880	546	2026-06-28 08:37:45.774
+471	27880	703	2026-06-28 08:37:45.782
+472	27914	617	2026-06-28 08:37:45.786
+473	27925	577	2026-06-28 08:37:45.789
+474	27925	566	2026-06-28 08:37:45.792
+475	27929	984	2026-06-28 08:37:45.795
+476	27933	860	2026-06-28 08:37:45.797
+477	27939	681	2026-06-28 08:37:45.8
+478	27912	619	2026-06-28 08:37:45.81
+479	27912	605	2026-06-28 08:37:45.816
+480	27927	817	2026-06-28 08:37:45.822
+481	28020	530	2026-06-28 08:37:45.827
+482	27988	576	2026-06-28 08:37:45.833
+483	27988	633	2026-06-28 08:37:45.838
+484	28081	763	2026-06-28 08:37:45.842
+485	28081	609	2026-06-28 08:37:45.846
+486	28121	615	2026-06-28 08:37:45.85
+487	28121	600	2026-06-28 08:37:45.854
+488	28121	820	2026-06-28 08:37:45.858
+489	28092	764	2026-06-28 08:37:45.862
+490	28096	756	2026-06-28 08:37:45.867
+491	28145	571	2026-06-28 08:37:45.872
+492	28145	529	2026-06-28 08:37:45.875
+493	28142	881	2026-06-28 08:37:45.878
+494	28142	882	2026-06-28 08:37:45.881
+495	28181	753	2026-06-28 08:37:45.884
+496	28181	754	2026-06-28 08:37:45.888
+497	28181	584	2026-06-28 08:37:45.892
+498	28223	597	2026-06-28 08:37:45.895
+499	28223	586	2026-06-28 08:37:45.898
+500	28223	619	2026-06-28 08:37:45.902
+501	28283	696	2026-06-28 08:37:45.905
+502	28283	819	2026-06-28 08:37:45.909
+503	28231	615	2026-06-28 08:37:45.912
+504	28231	565	2026-06-28 08:37:45.915
+505	28242	679	2026-06-28 08:37:45.918
+506	28286	643	2026-06-28 08:37:45.921
+507	28286	925	2026-06-28 08:37:45.925
+508	28226	529	2026-06-28 08:37:45.928
+509	28285	908	2026-06-28 08:37:45.932
+510	28285	558	2026-06-28 08:37:45.936
+511	28285	661	2026-06-28 08:37:45.94
+512	28285	990	2026-06-28 08:37:45.943
+513	28338	766	2026-06-28 08:37:45.946
+514	28304	696	2026-06-28 08:37:45.95
+515	28304	819	2026-06-28 08:37:45.954
+516	28359	720	2026-06-28 08:37:45.958
+517	28360	837	2026-06-28 08:37:45.961
+518	28360	702	2026-06-28 08:37:45.965
+519	28375	632	2026-06-28 08:37:45.968
+520	28377	618	2026-06-28 08:37:45.973
+521	28377	781	2026-06-28 08:37:45.977
+522	28427	766	2026-06-28 08:37:45.981
+523	28458	528	2026-06-28 08:37:45.985
+524	28458	865	2026-06-28 08:37:45.99
+525	28460	766	2026-06-28 08:37:45.994
+526	28466	854	2026-06-28 08:37:45.998
+527	28461	999	2026-06-28 08:37:46.003
+528	28461	1000	2026-06-28 08:37:46.007
+529	28511	822	2026-06-28 08:37:46.012
+530	28511	584	2026-06-28 08:37:46.016
+531	28537	835	2026-06-28 08:37:46.02
+532	28554	752	2026-06-28 08:37:46.025
+533	28563	539	2026-06-28 08:37:46.028
+534	28563	650	2026-06-28 08:37:46.032
+535	28564	647	2026-06-28 08:37:46.037
+536	28564	648	2026-06-28 08:37:46.04
+537	28636	534	2026-06-28 08:37:46.044
+538	28655	615	2026-06-28 08:37:46.047
+539	28658	615	2026-06-28 08:37:46.05
+540	28659	615	2026-06-28 08:37:46.055
+541	28659	790	2026-06-28 08:37:46.059
+542	28700	681	2026-06-28 08:37:46.062
+543	28700	656	2026-06-28 08:37:46.066
+544	28666	606	2026-06-28 08:37:46.069
+545	28666	529	2026-06-28 08:37:46.073
+546	28687	669	2026-06-28 08:37:46.078
+547	28689	666	2026-06-28 08:37:46.082
+548	28692	670	2026-06-28 08:37:46.085
+549	28686	706	2026-06-28 08:37:46.089
+550	28733	843	2026-06-28 08:37:46.093
+551	28733	833	2026-06-28 08:37:46.097
+552	28744	662	2026-06-28 08:37:46.101
+553	28744	548	2026-06-28 08:37:46.105
+554	28766	593	2026-06-28 08:37:46.109
+555	28766	669	2026-06-28 08:37:46.113
+556	28777	817	2026-06-28 08:37:46.116
+557	28794	648	2026-06-28 08:37:46.121
+558	28794	905	2026-06-28 08:37:46.125
+559	28802	534	2026-06-28 08:37:46.129
+560	28826	532	2026-06-28 08:37:46.132
+561	28826	914	2026-06-28 08:37:46.136
+562	28962	615	2026-06-28 08:37:46.14
+563	28949	600	2026-06-28 08:37:46.144
+564	28949	638	2026-06-28 08:37:46.147
+565	29019	856	2026-06-28 08:37:46.151
+566	29038	915	2026-06-28 08:37:46.154
+567	29038	995	2026-06-28 08:37:46.158
+568	29072	866	2026-06-28 08:37:46.162
+569	29072	572	2026-06-28 08:37:46.165
+570	29072	584	2026-06-28 08:37:46.168
+571	29146	572	2026-06-28 08:37:46.172
+572	29150	732	2026-06-28 08:37:46.176
+573	29150	905	2026-06-28 08:37:46.18
+574	29116	754	2026-06-28 08:37:46.183
+575	26970	538	2026-06-28 08:37:46.19
+576	26970	648	2026-06-28 08:37:46.194
+577	26985	949	2026-06-28 08:37:46.197
+578	26986	569	2026-06-28 08:37:46.199
+579	26986	949	2026-06-28 08:37:46.202
+580	26989	947	2026-06-28 08:37:46.205
+581	26990	580	2026-06-28 08:37:46.208
+582	26992	979	2026-06-28 08:37:46.211
+583	26993	639	2026-06-28 08:37:46.213
+584	26993	552	2026-06-28 08:37:46.216
+585	29156	1019	2026-06-28 08:37:46.219
+586	27010	879	2026-06-28 08:37:46.222
+587	29224	905	2026-06-28 08:37:46.226
+588	29224	906	2026-06-28 08:37:46.229
+589	26973	538	2026-06-28 08:37:46.234
+590	29194	704	2026-06-28 08:37:46.238
+591	29194	668	2026-06-28 08:37:46.243
+592	29217	689	2026-06-28 08:37:46.247
+593	29217	690	2026-06-28 08:37:46.251
+594	29217	705	2026-06-28 08:37:46.255
+595	29302	531	2026-06-28 08:37:46.26
+596	27011	1003	2026-06-28 08:37:46.264
+597	27007	994	2026-06-28 08:37:46.269
+598	27007	818	2026-06-28 08:37:46.273
+599	27007	623	2026-06-28 08:37:46.277
+600	27007	624	2026-06-28 08:37:46.282
+601	27008	593	2026-06-28 08:37:46.286
+602	27008	566	2026-06-28 08:37:46.291
+603	27008	782	2026-06-28 08:37:46.296
+604	27005	615	2026-06-28 08:37:46.302
+605	27005	600	2026-06-28 08:37:46.307
+606	26974	568	2026-06-28 08:37:46.31
+607	26974	567	2026-06-28 08:37:46.312
+608	26975	721	2026-06-28 08:37:46.315
+609	26976	566	2026-06-28 08:37:46.318
+610	26976	567	2026-06-28 08:37:46.322
+611	26977	584	2026-06-28 08:37:46.325
+612	26977	619	2026-06-28 08:37:46.329
+613	26977	781	2026-06-28 08:37:46.332
+614	26978	619	2026-06-28 08:37:46.334
+615	26978	781	2026-06-28 08:37:46.337
+616	26979	622	2026-06-28 08:37:46.34
+617	26979	578	2026-06-28 08:37:46.343
+618	26979	781	2026-06-28 08:37:46.346
+619	26980	769	2026-06-28 08:37:46.349
+620	26980	739	2026-06-28 08:37:46.352
+621	26981	773	2026-06-28 08:37:46.356
+622	26981	774	2026-06-28 08:37:46.359
+623	26981	739	2026-06-28 08:37:46.363
+624	26999	576	2026-06-28 08:37:46.366
+625	27001	547	2026-06-28 08:37:46.37
+626	27001	576	2026-06-28 08:37:46.374
+627	27003	529	2026-06-28 08:37:46.378
+628	27003	537	2026-06-28 08:37:46.381
+629	27013	615	2026-06-28 08:37:46.385
+630	27013	600	2026-06-28 08:37:46.39
+631	29313	835	2026-06-28 08:37:46.394
+632	29340	701	2026-06-28 08:37:46.4
+633	29340	582	2026-06-28 08:37:46.405
+634	29375	632	2026-06-28 08:37:46.409
+635	29382	948	2026-06-28 08:37:46.413
+636	29404	828	2026-06-28 08:37:46.418
+637	29405	556	2026-06-28 08:37:46.424
+638	29405	877	2026-06-28 08:37:46.43
+639	29405	615	2026-06-28 08:37:46.435
+640	29405	588	2026-06-28 08:37:46.44
+641	29410	860	2026-06-28 08:37:46.446
+642	29394	528	2026-06-28 08:37:46.451
+643	29394	865	2026-06-28 08:37:46.458
+644	29463	805	2026-06-28 08:37:46.464
+645	29463	538	2026-06-28 08:37:46.47
+646	29496	665	2026-06-28 08:37:46.477
+647	29496	600	2026-06-28 08:37:46.483
+648	29496	682	2026-06-28 08:37:46.489
+649	29507	663	2026-06-28 08:37:46.495
+650	29507	829	2026-06-28 08:37:46.502
+651	29515	567	2026-06-28 08:37:46.509
+652	29515	873	2026-06-28 08:37:46.516
+653	29497	826	2026-06-28 08:37:46.522
+654	29497	875	2026-06-28 08:37:46.526
+655	29541	626	2026-06-28 08:37:46.532
+656	29585	622	2026-06-28 08:37:46.539
+657	29585	578	2026-06-28 08:37:46.544
+658	29597	686	2026-06-28 08:37:46.55
+659	29597	705	2026-06-28 08:37:46.556
+660	29602	686	2026-06-28 08:37:46.562
+661	29586	840	2026-06-28 08:37:46.568
+662	27391	666	2026-06-28 08:37:46.574
+663	27079	870	2026-06-28 08:37:46.579
+664	27079	843	2026-06-28 08:37:46.586
+665	27083	954	2026-06-28 08:37:46.594
+666	27083	955	2026-06-28 08:37:46.602
+667	27086	692	2026-06-28 08:37:46.61
+668	27086	754	2026-06-28 08:37:46.617
+669	27086	630	2026-06-28 08:37:46.624
+670	27086	978	2026-06-28 08:37:46.629
+671	27087	615	2026-06-28 08:37:46.635
+672	27087	588	2026-06-28 08:37:46.643
+673	27089	584	2026-06-28 08:37:46.649
+674	27089	619	2026-06-28 08:37:46.656
+675	27094	630	2026-06-28 08:37:46.662
+676	27094	817	2026-06-28 08:37:46.668
+677	27090	705	2026-06-28 08:37:46.674
+678	27065	600	2026-06-28 08:37:46.68
+679	27065	638	2026-06-28 08:37:46.686
+680	27069	880	2026-06-28 08:37:46.692
+681	27070	569	2026-06-28 08:37:46.699
+682	27071	648	2026-06-28 08:37:46.706
+683	27072	648	2026-06-28 08:37:46.712
+684	27073	880	2026-06-28 08:37:46.718
+685	27073	648	2026-06-28 08:37:46.725
+686	27074	569	2026-06-28 08:37:46.731
+687	27074	648	2026-06-28 08:37:46.738
+688	27095	792	2026-06-28 08:37:46.746
+689	27095	546	2026-06-28 08:37:46.751
+690	27096	954	2026-06-28 08:37:46.756
+691	27097	569	2026-06-28 08:37:46.76
+692	27097	954	2026-06-28 08:37:46.763
+693	27098	526	2026-06-28 08:37:46.766
+694	27139	646	2026-06-28 08:37:46.769
+695	27100	523	2026-06-28 08:37:46.773
+696	27101	524	2026-06-28 08:37:46.776
+697	27102	525	2026-06-28 08:37:46.779
+698	27106	577	2026-06-28 08:37:46.782
+699	27115	597	2026-06-28 08:37:46.785
+700	27115	593	2026-06-28 08:37:46.788
+701	27124	771	2026-06-28 08:37:46.791
+702	27130	539	2026-06-28 08:37:46.794
+703	27131	541	2026-06-28 08:37:46.797
+704	27132	544	2026-06-28 08:37:46.8
+705	27133	542	2026-06-28 08:37:46.804
+706	27134	569	2026-06-28 08:37:46.808
+707	27134	541	2026-06-28 08:37:46.826
+708	27135	569	2026-06-28 08:37:46.829
+709	27135	544	2026-06-28 08:37:46.835
+710	27148	625	2026-06-28 08:37:46.843
+711	27155	574	2026-06-28 08:37:46.848
+712	27155	529	2026-06-28 08:37:46.853
+713	27163	569	2026-06-28 08:37:46.859
+714	27163	536	2026-06-28 08:37:46.864
+715	27163	529	2026-06-28 08:37:46.868
+716	27167	593	2026-06-28 08:37:46.873
+717	27167	1016	2026-06-28 08:37:46.877
+718	27168	948	2026-06-28 08:37:46.881
+719	27168	956	2026-06-28 08:37:46.885
+720	27169	569	2026-06-28 08:37:46.889
+721	27169	948	2026-06-28 08:37:46.893
+722	27170	648	2026-06-28 08:37:46.897
+723	27203	608	2026-06-28 08:37:46.901
+724	27203	1004	2026-06-28 08:37:46.906
+725	27176	622	2026-06-28 08:37:46.911
+726	27176	578	2026-06-28 08:37:46.915
+727	27177	785	2026-06-28 08:37:46.919
+728	27177	632	2026-06-28 08:37:46.923
+729	27177	787	2026-06-28 08:37:46.927
+730	27178	787	2026-06-28 08:37:46.93
+731	27183	735	2026-06-28 08:37:46.934
+732	27183	807	2026-06-28 08:37:46.938
+733	27183	948	2026-06-28 08:37:46.942
+734	27183	956	2026-06-28 08:37:46.946
+735	27186	593	2026-06-28 08:37:46.951
+736	27187	578	2026-06-28 08:37:46.955
+737	27188	580	2026-06-28 08:37:46.958
+738	27189	633	2026-06-28 08:37:46.962
+739	27202	538	2026-06-28 08:37:46.966
+740	27204	880	2026-06-28 08:37:46.969
+741	27205	880	2026-06-28 08:37:46.973
+742	27205	564	2026-06-28 08:37:46.977
+743	27207	513	2026-06-28 08:37:46.98
+744	27207	538	2026-06-28 08:37:46.984
+745	27208	568	2026-06-28 08:37:46.988
+746	27208	592	2026-06-28 08:37:46.992
+747	27209	539	2026-06-28 08:37:46.996
+748	27209	592	2026-06-28 08:37:46.999
+749	27210	580	2026-06-28 08:37:47.004
+750	27210	592	2026-06-28 08:37:47.009
+751	27211	568	2026-06-28 08:37:47.013
+752	27211	530	2026-06-28 08:37:47.016
+753	27212	539	2026-06-28 08:37:47.021
+754	27212	530	2026-06-28 08:37:47.025
+755	27213	580	2026-06-28 08:37:47.028
+756	27213	530	2026-06-28 08:37:47.03
+757	27214	573	2026-06-28 08:37:47.034
+758	27214	572	2026-06-28 08:37:47.037
+759	27216	580	2026-06-28 08:37:47.04
+760	27216	572	2026-06-28 08:37:47.043
+761	27217	572	2026-06-28 08:37:47.046
+762	27218	569	2026-06-28 08:37:47.049
+763	27218	572	2026-06-28 08:37:47.052
+764	27219	530	2026-06-28 08:37:47.056
+765	27220	569	2026-06-28 08:37:47.059
+766	27220	530	2026-06-28 08:37:47.062
+767	27221	529	2026-06-28 08:37:47.065
+768	27222	529	2026-06-28 08:37:47.068
+769	27223	529	2026-06-28 08:37:47.072
+770	27224	529	2026-06-28 08:37:47.075
+771	27225	529	2026-06-28 08:37:47.078
+772	27226	529	2026-06-28 08:37:47.081
+773	27227	529	2026-06-28 08:37:47.084
+774	27228	529	2026-06-28 08:37:47.088
+775	27229	529	2026-06-28 08:37:47.092
+776	27230	529	2026-06-28 08:37:47.095
+777	27231	529	2026-06-28 08:37:47.098
+778	27232	529	2026-06-28 08:37:47.1
+779	27233	529	2026-06-28 08:37:47.104
+780	27234	529	2026-06-28 08:37:47.107
+781	27235	569	2026-06-28 08:37:47.11
+782	27235	529	2026-06-28 08:37:47.112
+783	27241	948	2026-06-28 08:37:47.115
+784	27242	958	2026-06-28 08:37:47.119
+785	27244	760	2026-06-28 08:37:47.122
+786	27244	578	2026-06-28 08:37:47.126
+787	27245	804	2026-06-28 08:37:47.13
+788	27245	760	2026-06-28 08:37:47.133
+789	27246	565	2026-06-28 08:37:47.136
+790	27246	920	2026-06-28 08:37:47.139
+791	27267	680	2026-06-28 08:37:47.142
+792	27248	601	2026-06-28 08:37:47.146
+793	27249	577	2026-06-28 08:37:47.15
+794	27252	1014	2026-06-28 08:37:47.153
+795	27258	695	2026-06-28 08:37:47.156
+796	27258	704	2026-06-28 08:37:47.159
+797	27260	584	2026-06-28 08:37:47.162
+798	27260	608	2026-06-28 08:37:47.165
+799	27260	1004	2026-06-28 08:37:47.168
+800	27288	664	2026-06-28 08:37:47.171
+801	27288	577	2026-06-28 08:37:47.174
+802	27293	541	2026-06-28 08:37:47.177
+803	27298	569	2026-06-28 08:37:47.179
+804	27301	593	2026-06-28 08:37:47.182
+805	27303	820	2026-06-28 08:37:47.187
+806	27304	574	2026-06-28 08:37:47.191
+807	27304	529	2026-06-28 08:37:47.194
+808	27304	820	2026-06-28 08:37:47.197
+809	27308	593	2026-06-28 08:37:47.201
+810	27308	919	2026-06-28 08:37:47.205
+811	27308	920	2026-06-28 08:37:47.208
+812	27309	685	2026-06-28 08:37:47.212
+813	27310	758	2026-06-28 08:37:47.216
+814	27314	789	2026-06-28 08:37:47.219
+815	27315	721	2026-06-28 08:37:47.224
+816	27289	569	2026-06-28 08:37:47.228
+817	27333	664	2026-06-28 08:37:47.231
+818	27327	572	2026-06-28 08:37:47.241
+819	27350	979	2026-06-28 08:37:47.245
+820	27363	918	2026-06-28 08:37:47.249
+821	27365	776	2026-06-28 08:37:47.254
+822	27365	639	2026-06-28 08:37:47.258
+823	27366	708	2026-06-28 08:37:47.262
+824	27366	685	2026-06-28 08:37:47.265
+825	27367	599	2026-06-28 08:37:47.269
+826	27367	600	2026-06-28 08:37:47.274
+827	27369	815	2026-06-28 08:37:47.278
+828	27369	888	2026-06-28 08:37:47.283
+829	27371	593	2026-06-28 08:37:47.289
+830	27372	594	2026-06-28 08:37:47.295
+831	27373	597	2026-06-28 08:37:47.301
+832	27374	598	2026-06-28 08:37:47.309
+833	27376	746	2026-06-28 08:37:47.316
+834	27382	595	2026-06-28 08:37:47.323
+835	27383	596	2026-06-28 08:37:47.33
+836	27384	744	2026-06-28 08:37:47.335
+837	27392	667	2026-06-28 08:37:47.342
+838	27397	819	2026-06-28 08:37:47.347
+839	27401	783	2026-06-28 08:37:47.354
+840	27401	784	2026-06-28 08:37:47.362
+841	27408	599	2026-06-28 08:37:47.367
+842	27408	600	2026-06-28 08:37:47.373
+843	27410	513	2026-06-28 08:37:47.377
+844	27413	979	2026-06-28 08:37:47.38
+845	27420	519	2026-06-28 08:37:47.383
+846	27420	538	2026-06-28 08:37:47.387
+847	27428	607	2026-06-28 08:37:47.391
+848	27430	545	2026-06-28 08:37:47.394
+849	27430	652	2026-06-28 08:37:47.397
+850	27431	546	2026-06-28 08:37:47.399
+851	27431	652	2026-06-28 08:37:47.403
+852	27446	726	2026-06-28 08:37:47.406
+853	27447	725	2026-06-28 08:37:47.412
+854	27447	726	2026-06-28 08:37:47.418
+855	27450	726	2026-06-28 08:37:47.425
+856	27453	541	2026-06-28 08:37:47.428
+857	27453	556	2026-06-28 08:37:47.431
+858	27454	797	2026-06-28 08:37:47.434
+859	27454	784	2026-06-28 08:37:47.438
+860	27455	971	2026-06-28 08:37:47.441
+861	27455	972	2026-06-28 08:37:47.444
+862	27465	602	2026-06-28 08:37:47.447
+863	27466	881	2026-06-28 08:37:47.449
+864	27467	604	2026-06-28 08:37:47.453
+865	27467	981	2026-06-28 08:37:47.456
+866	27470	791	2026-06-28 08:37:47.459
+867	27472	861	2026-06-28 08:37:47.463
+868	27472	862	2026-06-28 08:37:47.468
+869	27489	672	2026-06-28 08:37:47.473
+870	27477	539	2026-06-28 08:37:47.477
+871	27477	795	2026-06-28 08:37:47.482
+872	27478	861	2026-06-28 08:37:47.49
+873	27478	862	2026-06-28 08:37:47.495
+874	27481	594	2026-06-28 08:37:47.499
+875	27485	563	2026-06-28 08:37:47.503
+876	27485	538	2026-06-28 08:37:47.506
+877	27486	564	2026-06-28 08:37:47.509
+878	27486	538	2026-06-28 08:37:47.513
+879	27494	828	2026-06-28 08:37:47.516
+880	27510	820	2026-06-28 08:37:47.519
+881	27512	823	2026-06-28 08:37:47.523
+882	27513	545	2026-06-28 08:37:47.527
+883	27514	546	2026-06-28 08:37:47.531
+884	27515	552	2026-06-28 08:37:47.534
+885	27517	549	2026-06-28 08:37:47.538
+886	27518	551	2026-06-28 08:37:47.541
+887	27519	547	2026-06-28 08:37:47.544
+888	27520	548	2026-06-28 08:37:47.547
+889	27522	738	2026-06-28 08:37:47.55
+890	27523	556	2026-06-28 08:37:47.554
+891	27528	546	2026-06-28 08:37:47.558
+892	27534	955	2026-06-28 08:37:47.561
+893	27534	528	2026-06-28 08:37:47.564
+894	27536	939	2026-06-28 08:37:47.567
+895	27539	565	2026-06-28 08:37:47.572
+896	27540	529	2026-06-28 08:37:47.575
+897	27540	537	2026-06-28 08:37:47.579
+898	27542	625	2026-06-28 08:37:47.582
+899	27542	584	2026-06-28 08:37:47.585
+900	27542	619	2026-06-28 08:37:47.59
+901	27554	538	2026-06-28 08:37:47.594
+902	27555	538	2026-06-28 08:37:47.596
+903	27556	538	2026-06-28 08:37:47.599
+904	27557	696	2026-06-28 08:37:47.605
+905	27558	950	2026-06-28 08:37:47.608
+906	27559	796	2026-06-28 08:37:47.611
+907	27569	709	2026-06-28 08:37:47.614
+908	27569	711	2026-06-28 08:37:47.617
+909	27570	709	2026-06-28 08:37:47.622
+910	27571	709	2026-06-28 08:37:47.626
+911	27572	710	2026-06-28 08:37:47.629
+912	27573	710	2026-06-28 08:37:47.632
+913	27574	711	2026-06-28 08:37:47.637
+914	27575	711	2026-06-28 08:37:47.641
+915	27576	712	2026-06-28 08:37:47.644
+916	27577	712	2026-06-28 08:37:47.647
+917	27579	775	2026-06-28 08:37:47.65
+918	27579	566	2026-06-28 08:37:47.655
+919	27579	567	2026-06-28 08:37:47.658
+920	27581	541	2026-06-28 08:37:47.661
+921	27581	556	2026-06-28 08:37:47.664
+922	27582	592	2026-06-28 08:37:47.667
+923	27582	556	2026-06-28 08:37:47.672
+924	27583	530	2026-06-28 08:37:47.675
+925	27584	572	2026-06-28 08:37:47.678
+926	27591	665	2026-06-28 08:37:47.681
+927	27591	600	2026-06-28 08:37:47.685
+928	27592	610	2026-06-28 08:37:47.689
+929	27594	578	2026-06-28 08:37:47.693
+930	27595	578	2026-06-28 08:37:47.696
+931	27596	985	2026-06-28 08:37:47.7
+932	27596	815	2026-06-28 08:37:47.705
+933	27597	661	2026-06-28 08:37:47.709
+934	27597	815	2026-06-28 08:37:47.713
+935	27600	981	2026-06-28 08:37:47.717
+936	27600	1004	2026-06-28 08:37:47.722
+937	27601	632	2026-06-28 08:37:47.726
+938	27601	775	2026-06-28 08:37:47.73
+939	27603	578	2026-06-28 08:37:47.734
+940	27606	738	2026-06-28 08:37:47.739
+941	27607	737	2026-06-28 08:37:47.743
+942	27608	981	2026-06-28 08:37:47.747
+943	27608	604	2026-06-28 08:37:47.751
+944	27609	982	2026-06-28 08:37:47.755
+945	27610	601	2026-06-28 08:37:47.76
+946	27610	538	2026-06-28 08:37:47.764
+947	27611	602	2026-06-28 08:37:47.767
+948	27611	538	2026-06-28 08:37:47.772
+949	27612	916	2026-06-28 08:37:47.776
+950	27613	917	2026-06-28 08:37:47.78
+951	27614	836	2026-06-28 08:37:47.785
+952	27615	859	2026-06-28 08:37:47.789
+953	27616	742	2026-06-28 08:37:47.793
+954	27617	743	2026-06-28 08:37:47.797
+955	27620	641	2026-06-28 08:37:47.801
+956	27621	642	2026-06-28 08:37:47.805
+957	27622	643	2026-06-28 08:37:47.81
+958	27623	644	2026-06-28 08:37:47.814
+959	27624	665	2026-06-28 08:37:47.818
+960	27624	600	2026-06-28 08:37:47.823
+961	27626	1006	2026-06-28 08:37:47.828
+962	27658	728	2026-06-28 08:37:47.831
+963	27658	729	2026-06-28 08:37:47.835
+964	27631	793	2026-06-28 08:37:47.84
+965	27631	794	2026-06-28 08:37:47.843
+966	27633	896	2026-06-28 08:37:47.847
+967	27638	678	2026-06-28 08:37:47.85
+968	27638	680	2026-06-28 08:37:47.855
+969	27639	680	2026-06-28 08:37:47.859
+970	27640	677	2026-06-28 08:37:47.862
+971	27640	680	2026-06-28 08:37:47.866
+972	27643	925	2026-06-28 08:37:47.87
+973	27648	947	2026-06-28 08:37:47.874
+974	27650	633	2026-06-28 08:37:47.877
+975	27651	538	2026-06-28 08:37:47.879
+976	27652	915	2026-06-28 08:37:47.883
+977	27653	920	2026-06-28 08:37:47.887
+978	27653	896	2026-06-28 08:37:47.894
+979	27654	990	2026-06-28 08:37:47.907
+980	27661	574	2026-06-28 08:37:47.916
+981	27661	529	2026-06-28 08:37:47.924
+982	27661	820	2026-06-28 08:37:47.931
+983	27662	913	2026-06-28 08:37:47.94
+984	27665	915	2026-06-28 08:37:47.948
+985	27666	930	2026-06-28 08:37:47.955
+986	27666	931	2026-06-28 08:37:47.963
+987	27667	629	2026-06-28 08:37:47.971
+988	27667	828	2026-06-28 08:37:47.978
+989	27669	756	2026-06-28 08:37:47.983
+990	27669	919	2026-06-28 08:37:47.987
+991	27669	920	2026-06-28 08:37:47.991
+992	27670	593	2026-06-28 08:37:47.996
+993	27670	1016	2026-06-28 08:37:48.017
+994	27672	603	2026-06-28 08:37:48.022
+995	27675	658	2026-06-28 08:37:48.025
+996	27644	569	2026-06-28 08:37:48.029
+997	27644	648	2026-06-28 08:37:48.032
+998	27679	592	2026-06-28 08:37:48.036
+999	27679	894	2026-06-28 08:37:48.039
+1000	27680	809	2026-06-28 08:37:48.042
+1001	27680	530	2026-06-28 08:37:48.045
+1002	27687	799	2026-06-28 08:37:48.048
+1003	27687	732	2026-06-28 08:37:48.05
+1004	27690	602	2026-06-28 08:37:48.053
+1005	27690	590	2026-06-28 08:37:48.057
+1006	27692	805	2026-06-28 08:37:48.059
+1007	27695	610	2026-06-28 08:37:48.063
+1008	27695	652	2026-06-28 08:37:48.065
+1009	27695	720	2026-06-28 08:37:48.069
+1010	27696	609	2026-06-28 08:37:48.072
+1011	27696	681	2026-06-28 08:37:48.076
+1012	27696	621	2026-06-28 08:37:48.079
+1013	27697	610	2026-06-28 08:37:48.083
+1014	27697	681	2026-06-28 08:37:48.088
+1015	27697	621	2026-06-28 08:37:48.092
+1016	27700	903	2026-06-28 08:37:48.096
+1017	27700	904	2026-06-28 08:37:48.101
+1018	27708	846	2026-06-28 08:37:48.105
+1019	27709	761	2026-06-28 08:37:48.109
+1020	27710	762	2026-06-28 08:37:48.113
+1021	27712	590	2026-06-28 08:37:48.116
+1022	27713	638	2026-06-28 08:37:48.121
+1023	27714	945	2026-06-28 08:37:48.125
+1024	27715	652	2026-06-28 08:37:48.128
+1025	27715	1022	2026-06-28 08:37:48.131
+1026	27717	588	2026-06-28 08:37:48.135
+1027	27718	757	2026-06-28 08:37:48.139
+1028	27719	755	2026-06-28 08:37:48.142
+1029	27721	721	2026-06-28 08:37:48.146
+1030	27721	717	2026-06-28 08:37:48.151
+1031	27721	819	2026-06-28 08:37:48.156
+1032	27722	986	2026-06-28 08:37:48.161
+1033	27723	589	2026-06-28 08:37:48.166
+1034	27724	609	2026-06-28 08:37:48.172
+1035	27724	681	2026-06-28 08:37:48.178
+1036	27724	621	2026-06-28 08:37:48.185
+1037	27725	610	2026-06-28 08:37:48.192
+1038	27725	681	2026-06-28 08:37:48.199
+1039	27725	621	2026-06-28 08:37:48.207
+1040	27726	1007	2026-06-28 08:37:48.215
+1041	27726	614	2026-06-28 08:37:48.223
+1042	27731	639	2026-06-28 08:37:48.23
+1043	27731	552	2026-06-28 08:37:48.236
+1044	27732	717	2026-06-28 08:37:48.241
+1045	27732	819	2026-06-28 08:37:48.247
+1046	27733	792	2026-06-28 08:37:48.252
+1047	27733	785	2026-06-28 08:37:48.257
+1048	27734	842	2026-06-28 08:37:48.261
+1049	27736	735	2026-06-28 08:37:48.265
+1050	27736	731	2026-06-28 08:37:48.271
+1051	27739	648	2026-06-28 08:37:48.275
+1052	27745	602	2026-06-28 08:37:48.28
+1053	27749	996	2026-06-28 08:37:48.285
+1054	27749	956	2026-06-28 08:37:48.29
+1055	27749	549	2026-06-28 08:37:48.295
+1056	27752	612	2026-06-28 08:37:48.3
+1057	27753	549	2026-06-28 08:37:48.305
+1058	27754	770	2026-06-28 08:37:48.309
+1059	27756	561	2026-06-28 08:37:48.313
+1060	27758	686	2026-06-28 08:37:48.316
+1061	27759	630	2026-06-28 08:37:48.32
+1062	27760	766	2026-06-28 08:37:48.324
+1063	27761	717	2026-06-28 08:37:48.327
+1064	27762	773	2026-06-28 08:37:48.331
+1065	27762	774	2026-06-28 08:37:48.335
+1066	27763	673	2026-06-28 08:37:48.339
+1067	27767	829	2026-06-28 08:37:48.342
+1068	27769	615	2026-06-28 08:37:48.346
+1069	27769	565	2026-06-28 08:37:48.349
+1070	27769	968	2026-06-28 08:37:48.354
+1071	27769	632	2026-06-28 08:37:48.357
+1072	27770	903	2026-06-28 08:37:48.361
+1073	27770	904	2026-06-28 08:37:48.365
+1074	27771	611	2026-06-28 08:37:48.369
+1075	27771	878	2026-06-28 08:37:48.373
+1076	27771	819	2026-06-28 08:37:48.376
+1077	27772	595	2026-06-28 08:37:48.38
+1078	27772	620	2026-06-28 08:37:48.383
+1079	27773	1017	2026-06-28 08:37:48.387
+1080	27773	769	2026-06-28 08:37:48.391
+1081	27773	739	2026-06-28 08:37:48.395
+1082	27776	879	2026-06-28 08:37:48.399
+1083	27777	765	2026-06-28 08:37:48.403
+1084	27777	610	2026-06-28 08:37:48.406
+1085	27779	529	2026-06-28 08:37:48.409
+1086	27779	537	2026-06-28 08:37:48.412
+1087	27779	991	2026-06-28 08:37:48.417
+1088	27781	589	2026-06-28 08:37:48.421
+1089	27782	986	2026-06-28 08:37:48.424
+1090	27783	757	2026-06-28 08:37:48.428
+1091	27784	766	2026-06-28 08:37:48.431
+1092	27785	717	2026-06-28 08:37:48.436
+1093	27785	593	2026-06-28 08:37:48.439
+1094	27786	555	2026-06-28 08:37:48.444
+1095	27787	820	2026-06-28 08:37:48.447
+1096	27789	804	2026-06-28 08:37:48.452
+1097	27790	705	2026-06-28 08:37:48.456
+1098	27790	707	2026-06-28 08:37:48.459
+1099	27793	694	2026-06-28 08:37:48.462
+1100	27795	609	2026-06-28 08:37:48.465
+1101	27797	546	2026-06-28 08:37:48.468
+1102	27797	534	2026-06-28 08:37:48.471
+1103	27798	609	2026-06-28 08:37:48.474
+1104	27798	593	2026-06-28 08:37:48.477
+1105	27798	566	2026-06-28 08:37:48.48
+1106	27799	610	2026-06-28 08:37:48.482
+1107	27799	593	2026-06-28 08:37:48.486
+1108	27799	566	2026-06-28 08:37:48.489
+1109	27800	763	2026-06-28 08:37:48.492
+1110	27802	770	2026-06-28 08:37:48.496
+1111	27803	577	2026-06-28 08:37:48.5
+1112	27803	566	2026-06-28 08:37:48.504
+1113	27804	615	2026-06-28 08:37:48.507
+1114	27804	588	2026-06-28 08:37:48.511
+1115	27805	935	2026-06-28 08:37:48.515
+1116	27806	605	2026-06-28 08:37:48.52
+1117	27807	750	2026-06-28 08:37:48.524
+1118	27826	540	2026-06-28 08:37:48.528
+1119	27827	994	2026-06-28 08:37:48.533
+1120	27827	619	2026-06-28 08:37:48.538
+1121	27828	948	2026-06-28 08:37:48.545
+1122	27836	958	2026-06-28 08:37:48.55
+1123	27838	747	2026-06-28 08:37:48.556
+1124	27838	948	2026-06-28 08:37:48.562
+1125	27838	956	2026-06-28 08:37:48.567
+1126	27843	1006	2026-06-28 08:37:48.574
+1127	27843	896	2026-06-28 08:37:48.579
+1128	27847	561	2026-06-28 08:37:48.584
+1129	27848	593	2026-06-28 08:37:48.589
+1130	27848	566	2026-06-28 08:37:48.594
+1131	27848	552	2026-06-28 08:37:48.599
+1132	27849	584	2026-06-28 08:37:48.604
+1133	27849	619	2026-06-28 08:37:48.609
+1134	27850	595	2026-06-28 08:37:48.614
+1135	27851	801	2026-06-28 08:37:48.619
+1136	27856	865	2026-06-28 08:37:48.624
+1137	27857	866	2026-06-28 08:37:48.629
+1138	27861	610	2026-06-28 08:37:48.634
+1139	27863	638	2026-06-28 08:37:48.639
+1140	27863	578	2026-06-28 08:37:48.643
+1141	27864	638	2026-06-28 08:37:48.647
+1142	27864	580	2026-06-28 08:37:48.652
+1143	27865	651	2026-06-28 08:37:48.656
+1144	27865	857	2026-06-28 08:37:48.66
+1145	27866	861	2026-06-28 08:37:48.664
+1146	27866	778	2026-06-28 08:37:48.668
+1147	27867	610	2026-06-28 08:37:48.672
+1148	27869	609	2026-06-28 08:37:48.677
+1149	27870	593	2026-06-28 08:37:48.681
+1150	27870	685	2026-06-28 08:37:48.685
+1151	27871	593	2026-06-28 08:37:48.69
+1152	27871	714	2026-06-28 08:37:48.694
+1153	27872	1009	2026-06-28 08:37:48.699
+1154	27874	1010	2026-06-28 08:37:48.703
+1155	27875	834	2026-06-28 08:37:48.708
+1156	27876	623	2026-06-28 08:37:48.712
+1157	27876	600	2026-06-28 08:37:48.716
+1158	27881	529	2026-06-28 08:37:48.72
+1159	27887	855	2026-06-28 08:37:48.724
+1160	27906	534	2026-06-28 08:37:48.729
+1161	27890	593	2026-06-28 08:37:48.733
+1162	27890	784	2026-06-28 08:37:48.737
+1163	27891	610	2026-06-28 08:37:48.741
+1164	27892	735	2026-06-28 08:37:48.746
+1165	27892	731	2026-06-28 08:37:48.751
+1166	27896	759	2026-06-28 08:37:48.755
+1167	27899	813	2026-06-28 08:37:48.759
+1168	27900	1012	2026-06-28 08:37:48.763
+1169	27903	682	2026-06-28 08:37:48.767
+1170	27903	971	2026-06-28 08:37:48.77
+1171	27907	688	2026-06-28 08:37:48.774
+1172	27908	529	2026-06-28 08:37:48.778
+1173	27908	927	2026-06-28 08:37:48.782
+1174	27910	605	2026-06-28 08:37:48.785
+1175	27911	882	2026-06-28 08:37:48.788
+1176	27911	605	2026-06-28 08:37:48.793
+1177	27913	754	2026-06-28 08:37:48.797
+1178	27913	828	2026-06-28 08:37:48.8
+1179	27916	804	2026-06-28 08:37:48.803
+1180	27924	643	2026-06-28 08:37:48.808
+1181	27924	925	2026-06-28 08:37:48.812
+1182	27926	576	2026-06-28 08:37:48.816
+1183	27926	907	2026-06-28 08:37:48.819
+1184	27934	637	2026-06-28 08:37:48.822
+1185	27935	745	2026-06-28 08:37:48.826
+1186	27936	872	2026-06-28 08:37:48.83
+1187	27936	724	2026-06-28 08:37:48.834
+1188	27938	999	2026-06-28 08:37:48.838
+1189	27941	997	2026-06-28 08:37:48.841
+1190	27941	565	2026-06-28 08:37:48.845
+1191	27942	513	2026-06-28 08:37:48.85
+1192	27942	795	2026-06-28 08:37:48.855
+1193	27943	513	2026-06-28 08:37:48.86
+1194	27943	795	2026-06-28 08:37:48.865
+1195	27950	1024	2026-06-28 08:37:48.871
+1196	27950	674	2026-06-28 08:37:48.877
+1197	27951	654	2026-06-28 08:37:48.884
+1198	27952	557	2026-06-28 08:37:48.89
+1199	27952	812	2026-06-28 08:37:48.897
+1200	27953	560	2026-06-28 08:37:48.904
+1201	27954	997	2026-06-28 08:37:48.91
+1202	27954	565	2026-06-28 08:37:48.916
+1203	27955	997	2026-06-28 08:37:48.922
+1204	27955	565	2026-06-28 08:37:48.929
+1205	27955	746	2026-06-28 08:37:48.936
+1206	27958	569	2026-06-28 08:37:48.943
+1207	27958	796	2026-06-28 08:37:48.95
+1208	27961	884	2026-06-28 08:37:48.959
+1209	27984	615	2026-06-28 08:37:48.965
+1210	27984	588	2026-06-28 08:37:48.971
+1211	27963	674	2026-06-28 08:37:48.978
+1212	28006	692	2026-06-28 08:37:48.984
+1213	28006	754	2026-06-28 08:37:48.991
+1214	28006	616	2026-06-28 08:37:48.998
+1215	27965	1003	2026-06-28 08:37:49.006
+1216	27966	1003	2026-06-28 08:37:49.013
+1217	27970	703	2026-06-28 08:37:49.021
+1218	27970	828	2026-06-28 08:37:49.028
+1219	27972	947	2026-06-28 08:37:49.035
+1220	27973	771	2026-06-28 08:37:49.041
+1221	27983	1008	2026-06-28 08:37:49.047
+1222	27986	828	2026-06-28 08:37:49.054
+1223	27987	556	2026-06-28 08:37:49.058
+1224	27991	765	2026-06-28 08:37:49.062
+1225	27992	587	2026-06-28 08:37:49.065
+1226	27993	961	2026-06-28 08:37:49.069
+1227	27994	962	2026-06-28 08:37:49.072
+1228	27995	896	2026-06-28 08:37:49.076
+1229	27996	878	2026-06-28 08:37:49.079
+1230	27996	589	2026-06-28 08:37:49.083
+1231	27997	754	2026-06-28 08:37:49.086
+1232	27998	584	2026-06-28 08:37:49.09
+1233	27998	619	2026-06-28 08:37:49.093
+1234	27999	600	2026-06-28 08:37:49.096
+1235	28000	775	2026-06-28 08:37:49.101
+1236	28000	566	2026-06-28 08:37:49.105
+1237	28002	814	2026-06-28 08:37:49.108
+1238	28002	815	2026-06-28 08:37:49.112
+1239	28007	992	2026-06-28 08:37:49.115
+1240	28007	831	2026-06-28 08:37:49.119
+1241	28008	828	2026-06-28 08:37:49.123
+1242	28009	1015	2026-06-28 08:37:49.126
+1243	28009	758	2026-06-28 08:37:49.129
+1244	28014	975	2026-06-28 08:37:49.133
+1245	28015	665	2026-06-28 08:37:49.137
+1246	28016	728	2026-06-28 08:37:49.14
+1247	28016	807	2026-06-28 08:37:49.143
+1248	28017	800	2026-06-28 08:37:49.146
+1249	28017	577	2026-06-28 08:37:49.149
+1250	28018	588	2026-06-28 08:37:49.152
+1251	28019	792	2026-06-28 08:37:49.155
+1252	28021	946	2026-06-28 08:37:49.157
+1253	28021	738	2026-06-28 08:37:49.161
+1254	28065	565	2026-06-28 08:37:49.163
+1255	28030	633	2026-06-28 08:37:49.167
+1256	28037	665	2026-06-28 08:37:49.17
+1257	28037	994	2026-06-28 08:37:49.172
+1258	28037	896	2026-06-28 08:37:49.175
+1259	28038	929	2026-06-28 08:37:49.178
+1260	28038	683	2026-06-28 08:37:49.18
+1261	28038	657	2026-06-28 08:37:49.183
+1262	28042	653	2026-06-28 08:37:49.186
+1263	28043	810	2026-06-28 08:37:49.189
+1264	28044	655	2026-06-28 08:37:49.192
+1265	28044	999	2026-06-28 08:37:49.195
+1266	28045	593	2026-06-28 08:37:49.198
+1267	28046	901	2026-06-28 08:37:49.201
+1268	28046	902	2026-06-28 08:37:49.205
+1269	28078	705	2026-06-28 08:37:49.208
+1270	28054	577	2026-06-28 08:37:49.211
+1271	28055	703	2026-06-28 08:37:49.214
+1272	28060	567	2026-06-28 08:37:49.218
+1273	28061	713	2026-06-28 08:37:49.221
+1274	28068	1021	2026-06-28 08:37:49.225
+1275	28071	822	2026-06-28 08:37:49.229
+1276	28071	807	2026-06-28 08:37:49.233
+1277	28154	561	2026-06-28 08:37:49.236
+1278	28084	525	2026-06-28 08:37:49.239
+1279	28084	605	2026-06-28 08:37:49.243
+1280	28090	586	2026-06-28 08:37:49.248
+1281	28090	568	2026-06-28 08:37:49.252
+1282	28090	567	2026-06-28 08:37:49.257
+1283	28091	796	2026-06-28 08:37:49.261
+1284	28093	1016	2026-06-28 08:37:49.265
+1285	28095	610	2026-06-28 08:37:49.27
+1286	28097	991	2026-06-28 08:37:49.274
+1287	28098	549	2026-06-28 08:37:49.278
+1288	28101	689	2026-06-28 08:37:49.282
+1289	28104	656	2026-06-28 08:37:49.286
+1290	28105	992	2026-06-28 08:37:49.29
+1291	28105	953	2026-06-28 08:37:49.295
+1292	28106	996	2026-06-28 08:37:49.299
+1293	28106	956	2026-06-28 08:37:49.304
+1294	28111	569	2026-06-28 08:37:49.309
+1295	28111	796	2026-06-28 08:37:49.314
+1296	28112	528	2026-06-28 08:37:49.321
+1297	28113	748	2026-06-28 08:37:49.326
+1298	28113	565	2026-06-28 08:37:49.332
+1299	28114	905	2026-06-28 08:37:49.338
+1300	28114	540	2026-06-28 08:37:49.346
+1301	28115	599	2026-06-28 08:37:49.353
+1302	28115	600	2026-06-28 08:37:49.359
+1303	28115	681	2026-06-28 08:37:49.365
+1304	28116	537	2026-06-28 08:37:49.371
+1305	28116	561	2026-06-28 08:37:49.378
+1306	28116	618	2026-06-28 08:37:49.384
+1307	28117	785	2026-06-28 08:37:49.391
+1308	28117	632	2026-06-28 08:37:49.398
+1309	28117	787	2026-06-28 08:37:49.405
+1310	28117	552	2026-06-28 08:37:49.41
+1311	28119	600	2026-06-28 08:37:49.415
+1312	28119	616	2026-06-28 08:37:49.421
+1313	28122	820	2026-06-28 08:37:49.427
+1314	28123	978	2026-06-28 08:37:49.433
+1315	28125	809	2026-06-28 08:37:49.439
+1316	28125	530	2026-06-28 08:37:49.444
+1317	28129	1008	2026-06-28 08:37:49.45
+1318	28130	922	2026-06-28 08:37:49.456
+1319	28130	578	2026-06-28 08:37:49.46
+1320	28131	922	2026-06-28 08:37:49.465
+1321	28131	580	2026-06-28 08:37:49.469
+1322	28132	758	2026-06-28 08:37:49.473
+1323	28132	538	2026-06-28 08:37:49.476
+1324	28134	1001	2026-06-28 08:37:49.48
+1325	28134	1002	2026-06-28 08:37:49.484
+1326	28135	736	2026-06-28 08:37:49.488
+1327	28135	606	2026-06-28 08:37:49.492
+1328	28139	764	2026-06-28 08:37:49.495
+1329	28140	565	2026-06-28 08:37:49.498
+1330	28143	692	2026-06-28 08:37:49.502
+1331	28143	544	2026-06-28 08:37:49.506
+1332	28147	800	2026-06-28 08:37:49.509
+1333	28147	688	2026-06-28 08:37:49.512
+1334	28148	616	2026-06-28 08:37:49.516
+1335	28149	1021	2026-06-28 08:37:49.52
+1336	28150	767	2026-06-28 08:37:49.523
+1337	28151	703	2026-06-28 08:37:49.526
+1338	28152	945	2026-06-28 08:37:49.529
+1339	28152	572	2026-06-28 08:37:49.532
+1340	28153	653	2026-06-28 08:37:49.536
+1341	28120	764	2026-06-28 08:37:49.539
+1342	28156	952	2026-06-28 08:37:49.543
+1343	28158	800	2026-06-28 08:37:49.547
+1344	28158	688	2026-06-28 08:37:49.551
+1345	28163	793	2026-06-28 08:37:49.554
+1346	28163	588	2026-06-28 08:37:49.558
+1347	28165	599	2026-06-28 08:37:49.562
+1348	28165	600	2026-06-28 08:37:49.566
+1349	28167	775	2026-06-28 08:37:49.57
+1350	28167	566	2026-06-28 08:37:49.573
+1351	28168	593	2026-06-28 08:37:49.577
+1352	28168	757	2026-06-28 08:37:49.581
+1353	28168	787	2026-06-28 08:37:49.585
+1354	28160	693	2026-06-28 08:37:49.588
+1355	28174	982	2026-06-28 08:37:49.591
+1356	28174	541	2026-06-28 08:37:49.594
+1357	28174	556	2026-06-28 08:37:49.597
+1358	28175	556	2026-06-28 08:37:49.601
+1359	28175	807	2026-06-28 08:37:49.605
+1360	28175	541	2026-06-28 08:37:49.609
+1361	28177	1011	2026-06-28 08:37:49.613
+1362	28178	922	2026-06-28 08:37:49.617
+1363	28179	600	2026-06-28 08:37:49.621
+1364	28179	544	2026-06-28 08:37:49.626
+1365	28180	600	2026-06-28 08:37:49.629
+1366	28180	544	2026-06-28 08:37:49.634
+1367	28180	746	2026-06-28 08:37:49.638
+1368	28182	892	2026-06-28 08:37:49.642
+1369	28184	817	2026-06-28 08:37:49.646
+1370	28184	819	2026-06-28 08:37:49.651
+1371	28188	576	2026-06-28 08:37:49.656
+1372	28188	584	2026-06-28 08:37:49.66
+1373	28188	911	2026-06-28 08:37:49.664
+1374	28188	784	2026-06-28 08:37:49.669
+1375	28188	821	2026-06-28 08:37:49.672
+1376	28189	897	2026-06-28 08:37:49.676
+1377	28189	529	2026-06-28 08:37:49.68
+1378	28191	539	2026-06-28 08:37:49.685
+1379	28191	795	2026-06-28 08:37:49.689
+1380	28193	1008	2026-06-28 08:37:49.693
+1381	28203	610	2026-06-28 08:37:49.697
+1382	28205	817	2026-06-28 08:37:49.701
+1383	28206	1020	2026-06-28 08:37:49.706
+1384	28210	584	2026-06-28 08:37:49.71
+1385	28210	619	2026-06-28 08:37:49.714
+1386	28212	995	2026-06-28 08:37:49.718
+1387	28213	985	2026-06-28 08:37:49.724
+1388	28216	877	2026-06-28 08:37:49.728
+1389	28218	1005	2026-06-28 08:37:49.733
+1390	28218	610	2026-06-28 08:37:49.738
+1391	28217	977	2026-06-28 08:37:49.742
+1392	28217	578	2026-06-28 08:37:49.746
+1393	28217	782	2026-06-28 08:37:49.752
+1394	28197	569	2026-06-28 08:37:49.756
+1395	28221	822	2026-06-28 08:37:49.761
+1396	28221	807	2026-06-28 08:37:49.765
+1397	28222	822	2026-06-28 08:37:49.77
+1398	28222	807	2026-06-28 08:37:49.775
+1399	28222	746	2026-06-28 08:37:49.778
+1400	28248	705	2026-06-28 08:37:49.782
+1401	28224	656	2026-06-28 08:37:49.786
+1402	28228	530	2026-06-28 08:37:49.789
+1403	28228	532	2026-06-28 08:37:49.793
+1404	28228	534	2026-06-28 08:37:49.798
+1405	28232	805	2026-06-28 08:37:49.803
+1406	28236	577	2026-06-28 08:37:49.815
+1407	28236	657	2026-06-28 08:37:49.822
+1408	28237	586	2026-06-28 08:37:49.83
+1409	28237	689	2026-06-28 08:37:49.839
+1410	28238	656	2026-06-28 08:37:49.846
+1411	28239	761	2026-06-28 08:37:49.849
+1412	28239	721	2026-06-28 08:37:49.853
+1413	28239	722	2026-06-28 08:37:49.856
+1414	28240	651	2026-06-28 08:37:49.86
+1415	28240	857	2026-06-28 08:37:49.864
+1416	28243	803	2026-06-28 08:37:49.878
+1417	28246	656	2026-06-28 08:37:49.881
+1418	28251	721	2026-06-28 08:37:49.885
+1419	28251	722	2026-06-28 08:37:49.891
+1420	28253	648	2026-06-28 08:37:49.896
+1421	28254	553	2026-06-28 08:37:49.901
+1422	28258	705	2026-06-28 08:37:49.906
+1423	28261	827	2026-06-28 08:37:49.913
+1424	28263	565	2026-06-28 08:37:49.918
+1425	28264	593	2026-06-28 08:37:49.923
+1426	28264	607	2026-06-28 08:37:49.927
+1427	28265	716	2026-06-28 08:37:49.932
+1428	28265	538	2026-06-28 08:37:49.938
+1429	28265	919	2026-06-28 08:37:49.944
+1430	28266	928	2026-06-28 08:37:49.951
+1431	28267	814	2026-06-28 08:37:49.958
+1432	28267	765	2026-06-28 08:37:49.964
+1433	28267	911	2026-06-28 08:37:49.972
+1434	28270	843	2026-06-28 08:37:49.979
+1435	28271	692	2026-06-28 08:37:49.986
+1436	28271	886	2026-06-28 08:37:49.994
+1437	28272	661	2026-06-28 08:37:50.001
+1438	28273	977	2026-06-28 08:37:50.01
+1439	28274	788	2026-06-28 08:37:50.018
+1440	28275	692	2026-06-28 08:37:50.025
+1441	28275	544	2026-06-28 08:37:50.032
+1442	28276	940	2026-06-28 08:37:50.04
+1443	28276	580	2026-06-28 08:37:50.048
+1444	28278	945	2026-06-28 08:37:50.055
+1445	28278	625	2026-06-28 08:37:50.061
+1446	28279	926	2026-06-28 08:37:50.069
+1447	28279	670	2026-06-28 08:37:50.075
+1448	28280	646	2026-06-28 08:37:50.083
+1449	28280	556	2026-06-28 08:37:50.09
+1450	28282	831	2026-06-28 08:37:50.096
+1451	28282	996	2026-06-28 08:37:50.103
+1452	28282	630	2026-06-28 08:37:50.11
+1453	28287	749	2026-06-28 08:37:50.117
+1454	28288	529	2026-06-28 08:37:50.122
+1455	28288	536	2026-06-28 08:37:50.128
+1456	28288	593	2026-06-28 08:37:50.133
+1457	28288	550	2026-06-28 08:37:50.137
+1458	28289	975	2026-06-28 08:37:50.144
+1459	28290	699	2026-06-28 08:37:50.149
+1460	28292	630	2026-06-28 08:37:50.153
+1461	28295	970	2026-06-28 08:37:50.157
+1462	28296	831	2026-06-28 08:37:50.161
+1463	28296	593	2026-06-28 08:37:50.166
+1464	28296	566	2026-06-28 08:37:50.17
+1465	28299	834	2026-06-28 08:37:50.176
+1466	28299	651	2026-06-28 08:37:50.182
+1467	28302	926	2026-06-28 08:37:50.188
+1468	28302	670	2026-06-28 08:37:50.194
+1469	28303	624	2026-06-28 08:37:50.2
+1470	28305	903	2026-06-28 08:37:50.206
+1471	28305	729	2026-06-28 08:37:50.213
+1472	28306	562	2026-06-28 08:37:50.22
+1473	28307	538	2026-06-28 08:37:50.226
+1474	28307	600	2026-06-28 08:37:50.233
+1475	28308	928	2026-06-28 08:37:50.24
+1476	28309	670	2026-06-28 08:37:50.246
+1477	28310	688	2026-06-28 08:37:50.253
+1478	28312	829	2026-06-28 08:37:50.26
+1479	28312	828	2026-06-28 08:37:50.267
+1480	28313	955	2026-06-28 08:37:50.272
+1481	28314	673	2026-06-28 08:37:50.277
+1482	28317	948	2026-06-28 08:37:50.282
+1483	28317	941	2026-06-28 08:37:50.288
+1484	28319	691	2026-06-28 08:37:50.293
+1485	28319	652	2026-06-28 08:37:50.298
+1486	28320	594	2026-06-28 08:37:50.303
+1487	28320	736	2026-06-28 08:37:50.308
+1488	28322	705	2026-06-28 08:37:50.313
+1489	28323	978	2026-06-28 08:37:50.318
+1490	28324	937	2026-06-28 08:37:50.322
+1491	28324	565	2026-06-28 08:37:50.326
+1492	28325	937	2026-06-28 08:37:50.33
+1493	28325	565	2026-06-28 08:37:50.335
+1494	28326	938	2026-06-28 08:37:50.339
+1495	28327	938	2026-06-28 08:37:50.344
+1496	28328	692	2026-06-28 08:37:50.349
+1497	28328	544	2026-06-28 08:37:50.354
+1498	28329	940	2026-06-28 08:37:50.359
+1499	28329	580	2026-06-28 08:37:50.364
+1500	28336	584	2026-06-28 08:37:50.37
+1501	28336	588	2026-06-28 08:37:50.375
+1502	28340	529	2026-06-28 08:37:50.38
+1503	28341	535	2026-06-28 08:37:50.386
+1504	28342	654	2026-06-28 08:37:50.393
+1505	28342	942	2026-06-28 08:37:50.399
+1506	28342	787	2026-06-28 08:37:50.405
+1507	28343	1024	2026-06-28 08:37:50.41
+1508	28343	673	2026-06-28 08:37:50.414
+1509	28346	877	2026-06-28 08:37:50.418
+1510	28348	724	2026-06-28 08:37:50.423
+1511	28349	786	2026-06-28 08:37:50.428
+1512	28349	674	2026-06-28 08:37:50.432
+1513	28349	538	2026-06-28 08:37:50.437
+1514	28352	761	2026-06-28 08:37:50.441
+1515	28353	762	2026-06-28 08:37:50.446
+1516	28354	615	2026-06-28 08:37:50.451
+1517	28354	600	2026-06-28 08:37:50.456
+1518	28355	846	2026-06-28 08:37:50.462
+1519	28355	615	2026-06-28 08:37:50.468
+1520	28355	600	2026-06-28 08:37:50.473
+1521	28426	682	2026-06-28 08:37:50.479
+1522	28426	868	2026-06-28 08:37:50.486
+1523	28361	843	2026-06-28 08:37:50.491
+1524	28362	548	2026-06-28 08:37:50.496
+1525	28363	755	2026-06-28 08:37:50.501
+1526	28363	616	2026-06-28 08:37:50.506
+1527	28368	945	2026-06-28 08:37:50.511
+1528	28369	844	2026-06-28 08:37:50.516
+1529	28369	843	2026-06-28 08:37:50.521
+1530	28370	840	2026-06-28 08:37:50.526
+1531	28380	784	2026-06-28 08:37:50.534
+1532	28381	568	2026-06-28 08:37:50.538
+1533	28382	719	2026-06-28 08:37:50.542
+1534	28382	828	2026-06-28 08:37:50.546
+1535	28382	640	2026-06-28 08:37:50.55
+1536	28384	866	2026-06-28 08:37:50.554
+1537	28384	828	2026-06-28 08:37:50.557
+1538	28386	924	2026-06-28 08:37:50.562
+1539	28389	865	2026-06-28 08:37:50.567
+1540	28393	597	2026-06-28 08:37:50.571
+1541	28393	730	2026-06-28 08:37:50.576
+1542	28394	792	2026-06-28 08:37:50.582
+1543	28398	618	2026-06-28 08:37:50.587
+1544	28398	552	2026-06-28 08:37:50.592
+1545	28400	558	2026-06-28 08:37:50.597
+1546	28401	648	2026-06-28 08:37:50.603
+1547	28404	921	2026-06-28 08:37:50.608
+1548	28404	656	2026-06-28 08:37:50.615
+1549	28405	656	2026-06-28 08:37:50.621
+1550	28408	516	2026-06-28 08:37:50.628
+1551	28409	648	2026-06-28 08:37:50.635
+1552	28410	515	2026-06-28 08:37:50.641
+1553	28416	1013	2026-06-28 08:37:50.648
+1554	28419	867	2026-06-28 08:37:50.655
+1555	28420	682	2026-06-28 08:37:50.662
+1556	28420	724	2026-06-28 08:37:50.669
+1557	28421	874	2026-06-28 08:37:50.676
+1558	28421	724	2026-06-28 08:37:50.683
+1559	28423	871	2026-06-28 08:37:50.691
+1560	28423	778	2026-06-28 08:37:50.697
+1561	28424	910	2026-06-28 08:37:50.704
+1562	28436	764	2026-06-28 08:37:50.711
+1563	28436	610	2026-06-28 08:37:50.717
+1564	28431	682	2026-06-28 08:37:50.724
+1565	28431	868	2026-06-28 08:37:50.732
+1566	28431	875	2026-06-28 08:37:50.739
+1567	28433	538	2026-06-28 08:37:50.746
+1568	28433	928	2026-06-28 08:37:50.756
+1569	28437	908	2026-06-28 08:37:50.762
+1570	28438	546	2026-06-28 08:37:50.768
+1571	28441	599	2026-06-28 08:37:50.774
+1572	28441	819	2026-06-28 08:37:50.779
+1573	28442	591	2026-06-28 08:37:50.785
+1574	28443	704	2026-06-28 08:37:50.791
+1575	28443	547	2026-06-28 08:37:50.797
+1576	28448	541	2026-06-28 08:37:50.804
+1577	28449	567	2026-06-28 08:37:50.816
+1578	28449	893	2026-06-28 08:37:50.827
+1579	28450	547	2026-06-28 08:37:50.843
+1580	28450	615	2026-06-28 08:37:50.85
+1581	28452	833	2026-06-28 08:37:50.854
+1582	28454	975	2026-06-28 08:37:50.866
+1583	28454	577	2026-06-28 08:37:50.88
+1584	28459	844	2026-06-28 08:37:50.888
+1585	28459	843	2026-06-28 08:37:50.892
+1586	28462	565	2026-06-28 08:37:50.897
+1587	28463	1001	2026-06-28 08:37:50.902
+1588	28463	1002	2026-06-28 08:37:50.907
+1589	28463	632	2026-06-28 08:37:50.911
+1590	28468	569	2026-06-28 08:37:50.917
+1591	28473	792	2026-06-28 08:37:50.92
+1592	28474	967	2026-06-28 08:37:50.925
+1593	28475	577	2026-06-28 08:37:50.928
+1594	28476	945	2026-06-28 08:37:50.932
+1595	28476	625	2026-06-28 08:37:50.938
+1596	28477	870	2026-06-28 08:37:50.942
+1597	28477	728	2026-06-28 08:37:50.946
+1598	28477	729	2026-06-28 08:37:50.952
+1599	28478	993	2026-06-28 08:37:50.957
+1600	28478	921	2026-06-28 08:37:50.962
+1601	28479	625	2026-06-28 08:37:50.968
+1602	28480	922	2026-06-28 08:37:50.973
+1603	28480	625	2026-06-28 08:37:50.978
+1604	28482	826	2026-06-28 08:37:50.983
+1605	28482	875	2026-06-28 08:37:50.988
+1606	28483	584	2026-06-28 08:37:50.994
+1607	28484	930	2026-06-28 08:37:50.999
+1608	28484	931	2026-06-28 08:37:51.005
+1609	28484	727	2026-06-28 08:37:51.011
+1610	28485	727	2026-06-28 08:37:51.015
+1611	28486	727	2026-06-28 08:37:51.021
+1612	28487	537	2026-06-28 08:37:51.026
+1613	28487	619	2026-06-28 08:37:51.031
+1614	28488	621	2026-06-28 08:37:51.037
+1615	28490	593	2026-06-28 08:37:51.042
+1616	28490	566	2026-06-28 08:37:51.047
+1617	28490	624	2026-06-28 08:37:51.054
+1618	28491	754	2026-06-28 08:37:51.059
+1619	28491	828	2026-06-28 08:37:51.068
+1620	28491	920	2026-06-28 08:37:51.073
+1621	28493	633	2026-06-28 08:37:51.079
+1622	28494	565	2026-06-28 08:37:51.088
+1623	28495	956	2026-06-28 08:37:51.093
+1624	28481	686	2026-06-28 08:37:51.099
+1625	28481	732	2026-06-28 08:37:51.105
+1626	28496	648	2026-06-28 08:37:51.109
+1627	28552	748	2026-06-28 08:37:51.114
+1628	28501	597	2026-06-28 08:37:51.121
+1629	28501	994	2026-06-28 08:37:51.126
+1630	28501	818	2026-06-28 08:37:51.132
+1631	28502	861	2026-06-28 08:37:51.138
+1632	28503	609	2026-06-28 08:37:51.143
+1633	28503	566	2026-06-28 08:37:51.149
+1634	28503	728	2026-06-28 08:37:51.157
+1635	28503	729	2026-06-28 08:37:51.162
+1636	28504	530	2026-06-28 08:37:51.17
+1637	28505	613	2026-06-28 08:37:51.175
+1638	28506	876	2026-06-28 08:37:51.18
+1639	28506	778	2026-06-28 08:37:51.188
+1640	28509	661	2026-06-28 08:37:51.194
+1641	28510	762	2026-06-28 08:37:51.2
+1642	28512	565	2026-06-28 08:37:51.205
+1643	28513	692	2026-06-28 08:37:51.21
+1644	28513	886	2026-06-28 08:37:51.215
+1645	28514	770	2026-06-28 08:37:51.221
+1646	28514	727	2026-06-28 08:37:51.226
+1647	28515	609	2026-06-28 08:37:51.23
+1648	28515	566	2026-06-28 08:37:51.237
+1649	28515	593	2026-06-28 08:37:51.243
+1650	28516	610	2026-06-28 08:37:51.248
+1651	28516	987	2026-06-28 08:37:51.254
+1652	28516	584	2026-06-28 08:37:51.262
+1653	28516	911	2026-06-28 08:37:51.269
+1654	28519	545	2026-06-28 08:37:51.275
+1655	28519	683	2026-06-28 08:37:51.281
+1656	28519	919	2026-06-28 08:37:51.287
+1657	28519	920	2026-06-28 08:37:51.293
+1658	28520	831	2026-06-28 08:37:51.301
+1659	28522	793	2026-06-28 08:37:51.306
+1660	28522	794	2026-06-28 08:37:51.311
+1661	28522	547	2026-06-28 08:37:51.318
+1662	28523	813	2026-06-28 08:37:51.327
+1663	28525	692	2026-06-28 08:37:51.333
+1664	28527	600	2026-06-28 08:37:51.338
+1665	28529	964	2026-06-28 08:37:51.343
+1666	28530	979	2026-06-28 08:37:51.349
+1667	28530	728	2026-06-28 08:37:51.355
+1668	28530	729	2026-06-28 08:37:51.361
+1669	28531	807	2026-06-28 08:37:51.368
+1670	28531	728	2026-06-28 08:37:51.374
+1671	28531	729	2026-06-28 08:37:51.379
+1672	28532	614	2026-06-28 08:37:51.386
+1673	28535	967	2026-06-28 08:37:51.392
+1674	28535	834	2026-06-28 08:37:51.396
+1675	28538	921	2026-06-28 08:37:51.4
+1676	28538	656	2026-06-28 08:37:51.405
+1677	28539	656	2026-06-28 08:37:51.41
+1678	28540	610	2026-06-28 08:37:51.414
+1679	28540	728	2026-06-28 08:37:51.419
+1680	28540	807	2026-06-28 08:37:51.423
+1681	28541	610	2026-06-28 08:37:51.427
+1682	28542	1024	2026-06-28 08:37:51.435
+1683	28542	674	2026-06-28 08:37:51.439
+1684	28543	522	2026-06-28 08:37:51.442
+1685	28543	544	2026-06-28 08:37:51.445
+1686	28546	568	2026-06-28 08:37:51.448
+1687	28546	567	2026-06-28 08:37:51.452
+1688	28551	661	2026-06-28 08:37:51.455
+1689	28553	1005	2026-06-28 08:37:51.459
+1690	28555	557	2026-06-28 08:37:51.462
+1691	28556	558	2026-06-28 08:37:51.465
+1692	28557	559	2026-06-28 08:37:51.469
+1693	28558	560	2026-06-28 08:37:51.472
+1694	28559	576	2026-06-28 08:37:51.476
+1695	28559	907	2026-06-28 08:37:51.479
+1696	28577	780	2026-06-28 08:37:51.485
+1697	28566	982	2026-06-28 08:37:51.49
+1698	28571	599	2026-06-28 08:37:51.495
+1699	28571	600	2026-06-28 08:37:51.499
+1700	28575	1005	2026-06-28 08:37:51.505
+1701	28576	677	2026-06-28 08:37:51.511
+1702	28576	986	2026-06-28 08:37:51.516
+1703	28578	858	2026-06-28 08:37:51.522
+1704	28580	1021	2026-06-28 08:37:51.527
+1705	28583	538	2026-06-28 08:37:51.533
+1706	28585	772	2026-06-28 08:37:51.539
+1707	28586	1013	2026-06-28 08:37:51.545
+1708	28587	752	2026-06-28 08:37:51.552
+1709	28588	902	2026-06-28 08:37:51.556
+1710	28588	623	2026-06-28 08:37:51.56
+1711	28588	600	2026-06-28 08:37:51.563
+1712	28589	1008	2026-06-28 08:37:51.567
+1713	28590	651	2026-06-28 08:37:51.571
+1714	28590	857	2026-06-28 08:37:51.576
+1715	28595	534	2026-06-28 08:37:51.58
+1716	28595	638	2026-06-28 08:37:51.585
+1717	28599	969	2026-06-28 08:37:51.588
+1718	28600	973	2026-06-28 08:37:51.592
+1719	28601	770	2026-06-28 08:37:51.595
+1720	28601	727	2026-06-28 08:37:51.598
+1721	28602	610	2026-06-28 08:37:51.602
+1722	28602	987	2026-06-28 08:37:51.605
+1723	28602	584	2026-06-28 08:37:51.608
+1724	28602	911	2026-06-28 08:37:51.612
+1725	28603	1022	2026-06-28 08:37:51.615
+1726	28604	799	2026-06-28 08:37:51.618
+1727	28604	800	2026-06-28 08:37:51.621
+1728	28604	616	2026-06-28 08:37:51.624
+1729	28605	548	2026-06-28 08:37:51.628
+1730	28605	987	2026-06-28 08:37:51.632
+1731	28606	1013	2026-06-28 08:37:51.635
+1732	28607	615	2026-06-28 08:37:51.639
+1733	28607	588	2026-06-28 08:37:51.641
+1734	28610	810	2026-06-28 08:37:51.644
+1735	28612	987	2026-06-28 08:37:51.648
+1736	28615	685	2026-06-28 08:37:51.651
+1737	28617	1009	2026-06-28 08:37:51.654
+1738	28617	1010	2026-06-28 08:37:51.657
+1739	28618	757	2026-06-28 08:37:51.66
+1740	28618	797	2026-06-28 08:37:51.664
+1741	28618	755	2026-06-28 08:37:51.668
+1742	28619	589	2026-06-28 08:37:51.673
+1743	28619	609	2026-06-28 08:37:51.677
+1744	28619	755	2026-06-28 08:37:51.683
+1745	28620	578	2026-06-28 08:37:51.687
+1746	28621	609	2026-06-28 08:37:51.691
+1747	28621	527	2026-06-28 08:37:51.695
+1748	28622	610	2026-06-28 08:37:51.7
+1749	28622	527	2026-06-28 08:37:51.704
+1750	28623	527	2026-06-28 08:37:51.708
+1751	28624	1024	2026-06-28 08:37:51.712
+1752	28624	673	2026-06-28 08:37:51.717
+1753	28625	764	2026-06-28 08:37:51.721
+1754	28626	583	2026-06-28 08:37:51.725
+1755	28626	1015	2026-06-28 08:37:51.727
+1756	28626	731	2026-06-28 08:37:51.73
+1757	28627	757	2026-06-28 08:37:51.733
+1758	28627	797	2026-06-28 08:37:51.737
+1759	28627	547	2026-06-28 08:37:51.739
+1760	28628	813	2026-06-28 08:37:51.742
+1761	28628	547	2026-06-28 08:37:51.745
+1762	28629	547	2026-06-28 08:37:51.749
+1763	28649	759	2026-06-28 08:37:51.752
+1764	28649	890	2026-06-28 08:37:51.755
+1765	28649	978	2026-06-28 08:37:51.758
+1766	28637	792	2026-06-28 08:37:51.761
+1767	28639	807	2026-06-28 08:37:51.764
+1768	28641	853	2026-06-28 08:37:51.767
+1769	28644	999	2026-06-28 08:37:51.77
+1770	28644	652	2026-06-28 08:37:51.773
+1771	28645	600	2026-06-28 08:37:51.776
+1772	28645	638	2026-06-28 08:37:51.778
+1773	28650	978	2026-06-28 08:37:51.781
+1774	28652	778	2026-06-28 08:37:51.784
+1775	28652	547	2026-06-28 08:37:51.787
+1776	28654	816	2026-06-28 08:37:51.79
+1777	28654	1002	2026-06-28 08:37:51.793
+1778	28656	538	2026-06-28 08:37:51.795
+1779	28657	760	2026-06-28 08:37:51.799
+1780	28657	797	2026-06-28 08:37:51.801
+1781	28661	750	2026-06-28 08:37:51.804
+1782	28664	1009	2026-06-28 08:37:51.807
+1783	28665	742	2026-06-28 08:37:51.81
+1784	28665	623	2026-06-28 08:37:51.813
+1785	28665	600	2026-06-28 08:37:51.819
+1786	28671	853	2026-06-28 08:37:51.823
+1787	28672	888	2026-06-28 08:37:51.826
+1788	28672	797	2026-06-28 08:37:51.829
+1789	28674	941	2026-06-28 08:37:51.834
+1790	28674	589	2026-06-28 08:37:51.838
+1791	28675	1007	2026-06-28 08:37:51.841
+1792	28676	600	2026-06-28 08:37:51.844
+1793	28676	866	2026-06-28 08:37:51.848
+1794	28676	828	2026-06-28 08:37:51.852
+1795	28678	577	2026-06-28 08:37:51.856
+1796	28679	734	2026-06-28 08:37:51.86
+1797	28679	735	2026-06-28 08:37:51.865
+1798	28683	736	2026-06-28 08:37:51.87
+1799	28683	606	2026-06-28 08:37:51.875
+1800	28683	632	2026-06-28 08:37:51.881
+1801	28693	681	2026-06-28 08:37:51.888
+1802	28693	670	2026-06-28 08:37:51.894
+1803	28667	775	2026-06-28 08:37:51.9
+1804	28667	973	2026-06-28 08:37:51.907
+1805	28647	546	2026-06-28 08:37:51.929
+1806	28701	681	2026-06-28 08:37:51.937
+1807	28702	568	2026-06-28 08:37:51.945
+1808	28705	854	2026-06-28 08:37:51.953
+1809	28706	708	2026-06-28 08:37:51.96
+1810	28706	565	2026-06-28 08:37:51.967
+1811	28707	673	2026-06-28 08:37:51.974
+1812	28708	544	2026-06-28 08:37:51.98
+1813	28710	848	2026-06-28 08:37:51.987
+1814	28712	544	2026-06-28 08:37:51.995
+1815	28713	997	2026-06-28 08:37:52.003
+1816	28713	688	2026-06-28 08:37:52.009
+1817	28713	673	2026-06-28 08:37:52.014
+1818	28714	1021	2026-06-28 08:37:52.018
+1819	28714	593	2026-06-28 08:37:52.021
+1820	28717	531	2026-06-28 08:37:52.024
+1821	28716	531	2026-06-28 08:37:52.027
+1822	28723	1023	2026-06-28 08:37:52.03
+1823	28724	748	2026-06-28 08:37:52.034
+1824	28725	892	2026-06-28 08:37:52.038
+1825	28726	705	2026-06-28 08:37:52.043
+1826	28731	1016	2026-06-28 08:37:52.047
+1827	28731	670	2026-06-28 08:37:52.05
+1828	28732	858	2026-06-28 08:37:52.054
+1829	28734	902	2026-06-28 08:37:52.057
+1830	28734	623	2026-06-28 08:37:52.06
+1831	28734	600	2026-06-28 08:37:52.064
+1832	28737	609	2026-06-28 08:37:52.068
+1833	28737	562	2026-06-28 08:37:52.072
+1834	28738	809	2026-06-28 08:37:52.075
+1835	28740	988	2026-06-28 08:37:52.079
+1836	28741	990	2026-06-28 08:37:52.083
+1837	28742	738	2026-06-28 08:37:52.088
+1838	28742	819	2026-06-28 08:37:52.092
+1839	28747	978	2026-06-28 08:37:52.095
+1840	28747	584	2026-06-28 08:37:52.099
+1841	28749	833	2026-06-28 08:37:52.103
+1842	28756	676	2026-06-28 08:37:52.106
+1843	28758	788	2026-06-28 08:37:52.11
+1844	28760	771	2026-06-28 08:37:52.113
+1845	28762	529	2026-06-28 08:37:52.117
+1846	28762	751	2026-06-28 08:37:52.12
+1847	28765	566	2026-06-28 08:37:52.123
+1848	28765	620	2026-06-28 08:37:52.126
+1849	28767	721	2026-06-28 08:37:52.129
+1850	28767	722	2026-06-28 08:37:52.133
+1851	28768	571	2026-06-28 08:37:52.137
+1852	28768	688	2026-06-28 08:37:52.141
+1853	28757	925	2026-06-28 08:37:52.145
+1854	28770	1017	2026-06-28 08:37:52.148
+1855	28771	574	2026-06-28 08:37:52.152
+1856	28771	529	2026-06-28 08:37:52.155
+1857	28775	830	2026-06-28 08:37:52.157
+1858	28775	578	2026-06-28 08:37:52.16
+1859	28775	619	2026-06-28 08:37:52.163
+1860	28779	595	2026-06-28 08:37:52.166
+1861	28781	992	2026-06-28 08:37:52.169
+1862	28783	908	2026-06-28 08:37:52.172
+1863	28783	909	2026-06-28 08:37:52.175
+1864	28785	883	2026-06-28 08:37:52.178
+1865	28785	884	2026-06-28 08:37:52.181
+1866	28786	1011	2026-06-28 08:37:52.187
+1867	28790	648	2026-06-28 08:37:52.191
+1868	28791	613	2026-06-28 08:37:52.195
+1869	28793	686	2026-06-28 08:37:52.199
+1870	28797	690	2026-06-28 08:37:52.202
+1871	28798	947	2026-06-28 08:37:52.204
+1872	28799	771	2026-06-28 08:37:52.207
+1873	28800	668	2026-06-28 08:37:52.21
+1874	28800	617	2026-06-28 08:37:52.212
+1875	28801	784	2026-06-28 08:37:52.216
+1876	28803	974	2026-06-28 08:37:52.219
+1877	28803	541	2026-06-28 08:37:52.222
+1878	28804	783	2026-06-28 08:37:52.226
+1879	28804	784	2026-06-28 08:37:52.23
+1880	28805	582	2026-06-28 08:37:52.234
+1881	28805	828	2026-06-28 08:37:52.238
+1882	28806	656	2026-06-28 08:37:52.242
+1883	28807	656	2026-06-28 08:37:52.244
+1884	28811	574	2026-06-28 08:37:52.247
+1885	28811	592	2026-06-28 08:37:52.251
+1886	28812	574	2026-06-28 08:37:52.255
+1887	28812	530	2026-06-28 08:37:52.258
+1888	28813	574	2026-06-28 08:37:52.261
+1889	28813	572	2026-06-28 08:37:52.267
+1890	28817	883	2026-06-28 08:37:52.27
+1891	28818	965	2026-06-28 08:37:52.273
+1892	28818	966	2026-06-28 08:37:52.276
+1893	28819	545	2026-06-28 08:37:52.278
+1894	28819	652	2026-06-28 08:37:52.281
+1895	28823	995	2026-06-28 08:37:52.284
+1896	28824	804	2026-06-28 08:37:52.287
+1897	28824	805	2026-06-28 08:37:52.289
+1898	28827	877	2026-06-28 08:37:52.292
+1899	28828	757	2026-06-28 08:37:52.295
+1900	28830	600	2026-06-28 08:37:52.298
+1901	28830	638	2026-06-28 08:37:52.302
+1902	28831	694	2026-06-28 08:37:52.305
+1903	28831	828	2026-06-28 08:37:52.308
+1904	28832	793	2026-06-28 08:37:52.312
+1905	28833	737	2026-06-28 08:37:52.316
+1906	28848	615	2026-06-28 08:37:52.32
+1907	28848	565	2026-06-28 08:37:52.324
+1908	28837	593	2026-06-28 08:37:52.328
+1909	28838	753	2026-06-28 08:37:52.333
+1910	28839	888	2026-06-28 08:37:52.337
+1911	28839	797	2026-06-28 08:37:52.341
+1912	28840	692	2026-06-28 08:37:52.345
+1913	28840	886	2026-06-28 08:37:52.35
+1914	28841	887	2026-06-28 08:37:52.353
+1915	28841	885	2026-06-28 08:37:52.357
+1916	28841	828	2026-06-28 08:37:52.36
+1917	28842	610	2026-06-28 08:37:52.363
+1918	28842	728	2026-06-28 08:37:52.367
+1919	28842	807	2026-06-28 08:37:52.37
+1920	28857	977	2026-06-28 08:37:52.373
+1921	28858	596	2026-06-28 08:37:52.376
+1922	28858	881	2026-06-28 08:37:52.379
+1923	28859	792	2026-06-28 08:37:52.382
+1924	28860	709	2026-06-28 08:37:52.385
+1925	28860	711	2026-06-28 08:37:52.388
+1926	28864	944	2026-06-28 08:37:52.393
+1927	28864	590	2026-06-28 08:37:52.397
+1928	28866	799	2026-06-28 08:37:52.401
+1929	28866	800	2026-06-28 08:37:52.405
+1930	28870	837	2026-06-28 08:37:52.41
+1931	28871	578	2026-06-28 08:37:52.416
+1932	28872	610	2026-06-28 08:37:52.421
+1933	28873	609	2026-06-28 08:37:52.426
+1934	28875	826	2026-06-28 08:37:52.432
+1935	28875	606	2026-06-28 08:37:52.438
+1936	28876	826	2026-06-28 08:37:52.445
+1937	28876	577	2026-06-28 08:37:52.452
+1938	28877	579	2026-06-28 08:37:52.459
+1939	28879	772	2026-06-28 08:37:52.465
+1940	28880	673	2026-06-28 08:37:52.472
+1941	28885	793	2026-06-28 08:37:52.479
+1942	28885	794	2026-06-28 08:37:52.486
+1943	28885	547	2026-06-28 08:37:52.5
+1944	28886	547	2026-06-28 08:37:52.512
+1945	28887	793	2026-06-28 08:37:52.517
+1946	28888	569	2026-06-28 08:37:52.52
+1947	28888	640	2026-06-28 08:37:52.523
+1948	28893	557	2026-06-28 08:37:52.527
+1949	28893	593	2026-06-28 08:37:52.53
+1950	28893	540	2026-06-28 08:37:52.534
+1951	28894	593	2026-06-28 08:37:52.537
+1952	28895	818	2026-06-28 08:37:52.54
+1953	28895	541	2026-06-28 08:37:52.547
+1954	28895	790	2026-06-28 08:37:52.553
+1955	28899	879	2026-06-28 08:37:52.557
+1956	28899	995	2026-06-28 08:37:52.56
+1957	28900	845	2026-06-28 08:37:52.563
+1958	28901	553	2026-06-28 08:37:52.566
+1959	28902	793	2026-06-28 08:37:52.569
+1960	28902	794	2026-06-28 08:37:52.572
+1961	28902	777	2026-06-28 08:37:52.575
+1962	28903	513	2026-06-28 08:37:52.578
+1963	28850	550	2026-06-28 08:37:52.582
+1964	28850	817	2026-06-28 08:37:52.586
+1965	28904	534	2026-06-28 08:37:52.59
+1966	28904	670	2026-06-28 08:37:52.594
+1967	28905	537	2026-06-28 08:37:52.6
+1968	28905	828	2026-06-28 08:37:52.605
+1969	28906	534	2026-06-28 08:37:52.612
+1970	28912	860	2026-06-28 08:37:52.621
+1971	28911	587	2026-06-28 08:37:52.629
+1972	28911	1022	2026-06-28 08:37:52.638
+1973	28917	513	2026-06-28 08:37:52.646
+1974	28917	567	2026-06-28 08:37:52.653
+1975	28919	513	2026-06-28 08:37:52.66
+1976	28920	557	2026-06-28 08:37:52.668
+1977	28921	860	2026-06-28 08:37:52.675
+1978	28922	551	2026-06-28 08:37:52.682
+1979	28922	517	2026-06-28 08:37:52.689
+1980	28923	627	2026-06-28 08:37:52.696
+1981	28924	811	2026-06-28 08:37:52.703
+1982	28925	827	2026-06-28 08:37:52.71
+1983	28925	705	2026-06-28 08:37:52.717
+1984	28927	699	2026-06-28 08:37:52.724
+1985	28930	709	2026-06-28 08:37:52.731
+1986	28930	711	2026-06-28 08:37:52.738
+1987	28931	719	2026-06-28 08:37:52.744
+1988	28931	828	2026-06-28 08:37:52.752
+1989	28931	640	2026-06-28 08:37:52.759
+1990	28932	727	2026-06-28 08:37:52.766
+1991	28932	882	2026-06-28 08:37:52.773
+1992	28934	589	2026-06-28 08:37:52.781
+1993	28936	535	2026-06-28 08:37:52.787
+1994	28936	792	2026-06-28 08:37:52.794
+1995	28937	689	2026-06-28 08:37:52.8
+1996	28938	888	2026-06-28 08:37:52.805
+1997	28938	797	2026-06-28 08:37:52.812
+1998	28940	830	2026-06-28 08:37:52.817
+1999	28940	578	2026-06-28 08:37:52.822
+2000	28941	942	2026-06-28 08:37:52.826
+2001	28942	753	2026-06-28 08:37:52.831
+2002	28943	609	2026-06-28 08:37:52.835
+2003	28943	624	2026-06-28 08:37:52.84
+2004	28944	624	2026-06-28 08:37:52.846
+2005	28945	609	2026-06-28 08:37:52.856
+2006	28945	615	2026-06-28 08:37:52.862
+2007	28946	685	2026-06-28 08:37:52.867
+2008	28946	615	2026-06-28 08:37:52.88
+2009	28950	600	2026-06-28 08:37:52.886
+2010	28950	638	2026-06-28 08:37:52.892
+2011	28950	746	2026-06-28 08:37:52.897
+2012	28951	593	2026-06-28 08:37:52.902
+2013	28952	594	2026-06-28 08:37:52.907
+2014	28956	618	2026-06-28 08:37:52.913
+2015	28956	552	2026-06-28 08:37:52.916
+2016	28958	550	2026-06-28 08:37:52.919
+2017	28958	817	2026-06-28 08:37:52.924
+2018	28959	613	2026-06-28 08:37:52.927
+2019	28963	724	2026-06-28 08:37:52.931
+2020	28968	568	2026-06-28 08:37:52.936
+2021	28968	979	2026-06-28 08:37:52.941
+2022	28955	547	2026-06-28 08:37:52.947
+2023	28955	566	2026-06-28 08:37:52.954
+2024	28955	620	2026-06-28 08:37:52.959
+2025	28926	566	2026-06-28 08:37:52.966
+2026	28926	739	2026-06-28 08:37:52.972
+2027	28970	610	2026-06-28 08:37:52.979
+2028	28970	593	2026-06-28 08:37:52.988
+2029	28970	619	2026-06-28 08:37:52.995
+2030	28973	773	2026-06-28 08:37:53.002
+2031	28973	774	2026-06-28 08:37:53.009
+2032	28973	722	2026-06-28 08:37:53.017
+2033	28975	674	2026-06-28 08:37:53.024
+2034	28976	648	2026-06-28 08:37:53.031
+2035	28976	905	2026-06-28 08:37:53.038
+2036	28978	951	2026-06-28 08:37:53.044
+2037	28980	763	2026-06-28 08:37:53.052
+2038	28981	565	2026-06-28 08:37:53.059
+2039	28982	710	2026-06-28 08:37:53.066
+2040	28982	712	2026-06-28 08:37:53.072
+2041	28972	796	2026-06-28 08:37:53.078
+2042	28988	793	2026-06-28 08:37:53.084
+2043	28988	588	2026-06-28 08:37:53.09
+2044	28989	541	2026-06-28 08:37:53.096
+2045	28989	556	2026-06-28 08:37:53.102
+2046	28990	593	2026-06-28 08:37:53.107
+2047	28990	607	2026-06-28 08:37:53.113
+2048	28991	953	2026-06-28 08:37:53.119
+2049	28992	600	2026-06-28 08:37:53.124
+2050	28992	637	2026-06-28 08:37:53.13
+2051	28994	814	2026-06-28 08:37:53.135
+2052	28994	765	2026-06-28 08:37:53.141
+2053	28994	911	2026-06-28 08:37:53.148
+2054	28995	572	2026-06-28 08:37:53.155
+2055	29001	734	2026-06-28 08:37:53.162
+2056	29001	735	2026-06-28 08:37:53.169
+2057	29003	831	2026-06-28 08:37:53.176
+2058	29003	656	2026-06-28 08:37:53.183
+2059	29004	768	2026-06-28 08:37:53.19
+2060	29007	596	2026-06-28 08:37:53.196
+2061	29007	651	2026-06-28 08:37:53.202
+2062	29009	931	2026-06-28 08:37:53.208
+2063	29010	748	2026-06-28 08:37:53.212
+2064	29016	837	2026-06-28 08:37:53.216
+2065	29018	853	2026-06-28 08:37:53.22
+2066	29020	655	2026-06-28 08:37:53.223
+2067	29020	999	2026-06-28 08:37:53.227
+2068	29021	792	2026-06-28 08:37:53.231
+2069	29023	696	2026-06-28 08:37:53.234
+2070	29023	752	2026-06-28 08:37:53.237
+2071	29025	531	2026-06-28 08:37:53.241
+2072	29025	784	2026-06-28 08:37:53.244
+2073	29026	784	2026-06-28 08:37:53.247
+2074	29026	553	2026-06-28 08:37:53.25
+2075	29028	577	2026-06-28 08:37:53.253
+2076	29028	807	2026-06-28 08:37:53.257
+2077	29029	686	2026-06-28 08:37:53.26
+2078	29030	584	2026-06-28 08:37:53.264
+2079	29030	817	2026-06-28 08:37:53.267
+2080	29031	790	2026-06-28 08:37:53.27
+2081	29032	820	2026-06-28 08:37:53.273
+2082	29034	956	2026-06-28 08:37:53.276
+2083	29034	722	2026-06-28 08:37:53.279
+2084	29037	593	2026-06-28 08:37:53.283
+2085	29057	615	2026-06-28 08:37:53.287
+2086	29057	588	2026-06-28 08:37:53.291
+2087	29057	790	2026-06-28 08:37:53.294
+2088	29040	547	2026-06-28 08:37:53.298
+2089	29043	593	2026-06-28 08:37:53.301
+2090	29043	538	2026-06-28 08:37:53.304
+2091	29047	558	2026-06-28 08:37:53.307
+2092	29047	701	2026-06-28 08:37:53.31
+2093	29047	663	2026-06-28 08:37:53.313
+2094	29048	807	2026-06-28 08:37:53.316
+2095	29049	539	2026-06-28 08:37:53.319
+2096	29050	964	2026-06-28 08:37:53.322
+2097	29050	538	2026-06-28 08:37:53.325
+2098	29050	727	2026-06-28 08:37:53.328
+2099	29051	1022	2026-06-28 08:37:53.331
+2100	29051	976	2026-06-28 08:37:53.334
+2101	29052	845	2026-06-28 08:37:53.336
+2102	29053	845	2026-06-28 08:37:53.34
+2103	29054	845	2026-06-28 08:37:53.342
+2104	29054	680	2026-06-28 08:37:53.346
+2105	29055	982	2026-06-28 08:37:53.349
+2106	29056	604	2026-06-28 08:37:53.352
+2107	29063	807	2026-06-28 08:37:53.355
+2108	29064	610	2026-06-28 08:37:53.357
+2109	29064	826	2026-06-28 08:37:53.361
+2110	29065	703	2026-06-28 08:37:53.364
+2111	29068	610	2026-06-28 08:37:53.367
+2112	29068	735	2026-06-28 08:37:53.37
+2113	29068	731	2026-06-28 08:37:53.373
+2114	29069	999	2026-06-28 08:37:53.376
+2115	29069	1000	2026-06-28 08:37:53.379
+2116	29070	883	2026-06-28 08:37:53.382
+2117	29070	884	2026-06-28 08:37:53.384
+2118	29071	665	2026-06-28 08:37:53.387
+2119	29071	600	2026-06-28 08:37:53.39
+2120	29071	682	2026-06-28 08:37:53.393
+2121	29073	597	2026-06-28 08:37:53.396
+2122	29073	572	2026-06-28 08:37:53.4
+2123	29073	584	2026-06-28 08:37:53.404
+2124	29075	826	2026-06-28 08:37:53.407
+2125	29075	875	2026-06-28 08:37:53.411
+2126	29075	584	2026-06-28 08:37:53.415
+2127	29076	593	2026-06-28 08:37:53.421
+2128	29076	584	2026-06-28 08:37:53.426
+2129	29079	875	2026-06-28 08:37:53.432
+2130	29084	572	2026-06-28 08:37:53.437
+2131	29085	605	2026-06-28 08:37:53.443
+2132	29086	742	2026-06-28 08:37:53.448
+2133	29087	595	2026-06-28 08:37:53.454
+2134	29088	593	2026-06-28 08:37:53.461
+2135	29089	815	2026-06-28 08:37:53.468
+2136	29090	848	2026-06-28 08:37:53.473
+2137	29091	537	2026-06-28 08:37:53.48
+2138	29096	816	2026-06-28 08:37:53.487
+2139	29096	545	2026-06-28 08:37:53.494
+2140	29097	816	2026-06-28 08:37:53.501
+2141	29097	546	2026-06-28 08:37:53.508
+2142	29098	605	2026-06-28 08:37:53.515
+2143	29099	696	2026-06-28 08:37:53.522
+2144	29101	519	2026-06-28 08:37:53.528
+2145	29101	647	2026-06-28 08:37:53.535
+2146	29101	896	2026-06-28 08:37:53.542
+2147	29102	557	2026-06-28 08:37:53.548
+2148	29105	964	2026-06-28 08:37:53.555
+2149	29108	995	2026-06-28 08:37:53.561
+2150	29108	565	2026-06-28 08:37:53.569
+2151	29109	784	2026-06-28 08:37:53.576
+2152	29115	760	2026-06-28 08:37:53.584
+2153	29117	513	2026-06-28 08:37:53.59
+2154	29117	567	2026-06-28 08:37:53.596
+2155	29118	538	2026-06-28 08:37:53.602
+2156	29119	563	2026-06-28 08:37:53.607
+2157	29120	652	2026-06-28 08:37:53.613
+2158	29120	609	2026-06-28 08:37:53.62
+2159	29121	539	2026-06-28 08:37:53.626
+2160	29122	1009	2026-06-28 08:37:53.633
+2161	29122	1010	2026-06-28 08:37:53.639
+2162	29124	792	2026-06-28 08:37:53.645
+2163	29125	784	2026-06-28 08:37:53.65
+2164	29128	956	2026-06-28 08:37:53.655
+2165	29132	1006	2026-06-28 08:37:53.66
+2166	29132	896	2026-06-28 08:37:53.664
+2167	29140	545	2026-06-28 08:37:53.669
+2168	29141	546	2026-06-28 08:37:53.674
+2169	29142	708	2026-06-28 08:37:53.679
+2170	29142	685	2026-06-28 08:37:53.685
+2171	29147	577	2026-06-28 08:37:53.692
+2172	29148	688	2026-06-28 08:37:53.698
+2173	29149	864	2026-06-28 08:37:53.703
+2174	29151	826	2026-06-28 08:37:53.708
+2175	29151	689	2026-06-28 08:37:53.714
+2176	29155	1019	2026-06-28 08:37:53.719
+2177	29155	537	2026-06-28 08:37:53.724
+2178	29161	920	2026-06-28 08:37:53.728
+2179	29162	916	2026-06-28 08:37:53.733
+2180	29163	835	2026-06-28 08:37:53.738
+2181	29164	795	2026-06-28 08:37:53.743
+2182	29165	570	2026-06-28 08:37:53.749
+2183	29166	571	2026-06-28 08:37:53.754
+2184	29173	786	2026-06-28 08:37:53.76
+2185	29173	674	2026-06-28 08:37:53.765
+2186	29173	538	2026-06-28 08:37:53.769
+2187	29175	556	2026-06-28 08:37:53.773
+2188	29126	993	2026-06-28 08:37:53.776
+2189	29126	921	2026-06-28 08:37:53.78
+2190	29178	514	2026-06-28 08:37:53.783
+2191	29178	538	2026-06-28 08:37:53.786
+2192	29179	895	2026-06-28 08:37:53.789
+2193	29180	852	2026-06-28 08:37:53.791
+2194	29181	788	2026-06-28 08:37:53.794
+2195	29181	588	2026-06-28 08:37:53.797
+2196	29183	563	2026-06-28 08:37:53.8
+2197	29189	995	2026-06-28 08:37:53.802
+2198	29191	989	2026-06-28 08:37:53.805
+2199	29184	565	2026-06-28 08:37:53.807
+2200	29196	988	2026-06-28 08:37:53.81
+2201	29196	748	2026-06-28 08:37:53.813
+2202	29198	945	2026-06-28 08:37:53.815
+2203	29203	993	2026-06-28 08:37:53.818
+2204	29205	568	2026-06-28 08:37:53.82
+2205	29205	529	2026-06-28 08:37:53.823
+2206	29208	690	2026-06-28 08:37:53.825
+2207	29212	811	2026-06-28 08:37:53.828
+2208	29214	714	2026-06-28 08:37:53.831
+2209	29216	782	2026-06-28 08:37:53.834
+2210	29219	692	2026-06-28 08:37:53.836
+2211	29220	721	2026-06-28 08:37:53.839
+2212	29220	942	2026-06-28 08:37:53.841
+2213	29222	619	2026-06-28 08:37:53.844
+2214	29222	584	2026-06-28 08:37:53.847
+2215	29223	901	2026-06-28 08:37:53.849
+2216	29223	902	2026-06-28 08:37:53.852
+2217	29225	899	2026-06-28 08:37:53.854
+2218	29225	900	2026-06-28 08:37:53.857
+2219	29226	897	2026-06-28 08:37:53.859
+2220	29226	898	2026-06-28 08:37:53.863
+2221	29227	528	2026-06-28 08:37:53.866
+2222	29227	976	2026-06-28 08:37:53.869
+2223	29229	690	2026-06-28 08:37:53.878
+2224	29234	685	2026-06-28 08:37:53.881
+2225	29239	654	2026-06-28 08:37:53.885
+2226	29239	811	2026-06-28 08:37:53.888
+2227	29240	673	2026-06-28 08:37:53.892
+2228	29242	513	2026-06-28 08:37:53.895
+2229	29242	567	2026-06-28 08:37:53.899
+2230	29245	576	2026-06-28 08:37:53.902
+2231	29245	922	2026-06-28 08:37:53.906
+2232	29249	610	2026-06-28 08:37:53.91
+2233	29250	542	2026-06-28 08:37:53.916
+2234	29250	544	2026-06-28 08:37:53.921
+2235	29253	793	2026-06-28 08:37:53.926
+2236	29253	794	2026-06-28 08:37:53.931
+2237	29253	947	2026-06-28 08:37:53.938
+2238	29257	603	2026-06-28 08:37:53.944
+2239	29258	611	2026-06-28 08:37:53.951
+2240	29258	817	2026-06-28 08:37:53.958
+2241	29258	997	2026-06-28 08:37:53.964
+2242	29258	998	2026-06-28 08:37:53.971
+2243	29260	799	2026-06-28 08:37:53.978
+2244	29262	596	2026-06-28 08:37:53.985
+2245	29262	523	2026-06-28 08:37:53.992
+2246	29312	916	2026-06-28 08:37:53.999
+2247	29265	514	2026-06-28 08:37:54.007
+2248	29265	538	2026-06-28 08:37:54.014
+2249	29267	596	2026-06-28 08:37:54.021
+2250	29267	881	2026-06-28 08:37:54.027
+2251	29268	908	2026-06-28 08:37:54.033
+2252	29268	909	2026-06-28 08:37:54.039
+2253	29269	772	2026-06-28 08:37:54.045
+2254	29279	582	2026-06-28 08:37:54.051
+2255	29279	829	2026-06-28 08:37:54.057
+2256	29280	997	2026-06-28 08:37:54.062
+2257	29280	998	2026-06-28 08:37:54.067
+2258	29283	790	2026-06-28 08:37:54.073
+2259	29285	539	2026-06-28 08:37:54.08
+2260	29290	685	2026-06-28 08:37:54.086
+2261	29292	885	2026-06-28 08:37:54.093
+2262	29292	828	2026-06-28 08:37:54.099
+2263	29294	1016	2026-06-28 08:37:54.104
+2264	29295	852	2026-06-28 08:37:54.11
+2265	29296	690	2026-06-28 08:37:54.116
+2266	29304	539	2026-06-28 08:37:54.121
+2267	29308	674	2026-06-28 08:37:54.127
+2268	29308	886	2026-06-28 08:37:54.133
+2269	29310	766	2026-06-28 08:37:54.14
+2270	29310	807	2026-06-28 08:37:54.145
+2271	29311	714	2026-06-28 08:37:54.149
+2272	29315	584	2026-06-28 08:37:54.153
+2273	29315	781	2026-06-28 08:37:54.156
+2274	29287	610	2026-06-28 08:37:54.159
+2275	29289	546	2026-06-28 08:37:54.161
+2276	29289	955	2026-06-28 08:37:54.165
+2277	29316	1021	2026-06-28 08:37:54.167
+2278	29317	572	2026-06-28 08:37:54.17
+2279	29318	609	2026-06-28 08:37:54.173
+2280	29322	850	2026-06-28 08:37:54.175
+2281	29323	849	2026-06-28 08:37:54.178
+2282	29324	860	2026-06-28 08:37:54.181
+2283	29328	627	2026-06-28 08:37:54.184
+2284	29328	784	2026-06-28 08:37:54.187
+2285	29329	997	2026-06-28 08:37:54.189
+2286	29330	596	2026-06-28 08:37:54.192
+2287	29330	881	2026-06-28 08:37:54.195
+2288	29331	1009	2026-06-28 08:37:54.198
+2289	29331	1010	2026-06-28 08:37:54.201
+2290	29335	748	2026-06-28 08:37:54.204
+2291	29336	1023	2026-06-28 08:37:54.207
+2292	29337	661	2026-06-28 08:37:54.209
+2293	29337	600	2026-06-28 08:37:54.212
+2294	29343	957	2026-06-28 08:37:54.215
+2295	29346	759	2026-06-28 08:37:54.218
+2296	29346	890	2026-06-28 08:37:54.221
+2297	29346	828	2026-06-28 08:37:54.223
+2298	29356	915	2026-06-28 08:37:54.226
+2299	29361	596	2026-06-28 08:37:54.229
+2300	29361	651	2026-06-28 08:37:54.232
+2301	29366	627	2026-06-28 08:37:54.234
+2302	29366	746	2026-06-28 08:37:54.237
+2303	29368	1023	2026-06-28 08:37:54.24
+2304	29369	542	2026-06-28 08:37:54.242
+2305	29369	544	2026-06-28 08:37:54.245
+2306	29371	674	2026-06-28 08:37:54.248
+2307	29371	886	2026-06-28 08:37:54.251
+2308	29372	996	2026-06-28 08:37:54.253
+2309	29374	766	2026-06-28 08:37:54.256
+2310	29376	632	2026-06-28 08:37:54.259
+2311	29378	547	2026-06-28 08:37:54.261
+2312	29378	755	2026-06-28 08:37:54.265
+2313	29379	953	2026-06-28 08:37:54.269
+2314	29383	760	2026-06-28 08:37:54.272
+2315	29384	1024	2026-06-28 08:37:54.275
+2316	29384	674	2026-06-28 08:37:54.278
+2317	29385	690	2026-06-28 08:37:54.281
+2318	29386	816	2026-06-28 08:37:54.284
+2319	29386	545	2026-06-28 08:37:54.287
+2320	29387	909	2026-06-28 08:37:54.289
+2321	29387	781	2026-06-28 08:37:54.292
+2322	29395	593	2026-06-28 08:37:54.295
+2323	29395	566	2026-06-28 08:37:54.298
+2324	29395	567	2026-06-28 08:37:54.301
+2325	29391	961	2026-06-28 08:37:54.304
+2326	29393	528	2026-06-28 08:37:54.306
+2327	29393	865	2026-06-28 08:37:54.309
+2328	29393	541	2026-06-28 08:37:54.313
+2329	29393	811	2026-06-28 08:37:54.316
+2330	29396	796	2026-06-28 08:37:54.319
+2331	29401	784	2026-06-28 08:37:54.321
+2332	29402	797	2026-06-28 08:37:54.324
+2333	29402	800	2026-06-28 08:37:54.327
+2334	29406	909	2026-06-28 08:37:54.331
+2335	29412	633	2026-06-28 08:37:54.334
+2336	29412	580	2026-06-28 08:37:54.338
+2337	29414	887	2026-06-28 08:37:54.34
+2338	29414	885	2026-06-28 08:37:54.343
+2339	29414	828	2026-06-28 08:37:54.346
+2340	29415	609	2026-06-28 08:37:54.349
+2341	29415	566	2026-06-28 08:37:54.352
+2342	29415	593	2026-06-28 08:37:54.354
+2343	29416	876	2026-06-28 08:37:54.357
+2344	29416	778	2026-06-28 08:37:54.361
+2345	29416	593	2026-06-28 08:37:54.365
+2346	29416	566	2026-06-28 08:37:54.369
+2347	29417	845	2026-06-28 08:37:54.373
+2348	29418	845	2026-06-28 08:37:54.377
+2349	29419	845	2026-06-28 08:37:54.382
+2350	29419	680	2026-06-28 08:37:54.386
+2351	29423	648	2026-06-28 08:37:54.391
+2352	29424	819	2026-06-28 08:37:54.397
+2353	29425	542	2026-06-28 08:37:54.402
+2354	29425	572	2026-06-28 08:37:54.407
+2355	29427	539	2026-06-28 08:37:54.413
+2356	29428	539	2026-06-28 08:37:54.419
+2357	29431	807	2026-06-28 08:37:54.426
+2358	29432	993	2026-06-28 08:37:54.432
+2359	29433	995	2026-06-28 08:37:54.438
+2360	29434	590	2026-06-28 08:37:54.443
+2361	29438	693	2026-06-28 08:37:54.447
+2362	29442	948	2026-06-28 08:37:54.453
+2363	29443	610	2026-06-28 08:37:54.46
+2364	29443	580	2026-06-28 08:37:54.465
+2365	29443	784	2026-06-28 08:37:54.471
+2366	29444	799	2026-06-28 08:37:54.478
+2367	29448	539	2026-06-28 08:37:54.481
+2368	29449	766	2026-06-28 08:37:54.486
+2369	29445	582	2026-06-28 08:37:54.49
+2370	29420	775	2026-06-28 08:37:54.494
+2371	29420	973	2026-06-28 08:37:54.497
+2372	29451	652	2026-06-28 08:37:54.501
+2373	29451	609	2026-06-28 08:37:54.505
+2374	29451	864	2026-06-28 08:37:54.509
+2375	29455	513	2026-06-28 08:37:54.514
+2376	29455	882	2026-06-28 08:37:54.518
+2377	29455	544	2026-06-28 08:37:54.523
+2378	29456	609	2026-06-28 08:37:54.527
+2379	29456	562	2026-06-28 08:37:54.532
+2380	29459	752	2026-06-28 08:37:54.536
+2381	29462	813	2026-06-28 08:37:54.541
+2382	29462	538	2026-06-28 08:37:54.546
+2383	29464	689	2026-06-28 08:37:54.553
+2384	29464	803	2026-06-28 08:37:54.559
+2385	29465	688	2026-06-28 08:37:54.565
+2386	29470	729	2026-06-28 08:37:54.57
+2387	29472	538	2026-06-28 08:37:54.574
+2388	29472	527	2026-06-28 08:37:54.579
+2389	29475	769	2026-06-28 08:37:54.584
+2390	29475	566	2026-06-28 08:37:54.589
+2391	29479	963	2026-06-28 08:37:54.593
+2392	29479	964	2026-06-28 08:37:54.598
+2393	29480	675	2026-06-28 08:37:54.602
+2394	29480	966	2026-06-28 08:37:54.607
+2395	29481	593	2026-06-28 08:37:54.613
+2396	29483	931	2026-06-28 08:37:54.618
+2397	29483	971	2026-06-28 08:37:54.622
+2398	29485	538	2026-06-28 08:37:54.626
+2399	29486	999	2026-06-28 08:37:54.631
+2400	29486	652	2026-06-28 08:37:54.637
+2401	29487	766	2026-06-28 08:37:54.644
+2402	29487	807	2026-06-28 08:37:54.653
+2403	29488	663	2026-06-28 08:37:54.66
+2404	29489	793	2026-06-28 08:37:54.668
+2405	29489	588	2026-06-28 08:37:54.676
+2406	29490	564	2026-06-28 08:37:54.683
+2407	29490	943	2026-06-28 08:37:54.69
+2408	29491	563	2026-06-28 08:37:54.697
+2409	29491	943	2026-06-28 08:37:54.704
+2410	29492	605	2026-06-28 08:37:54.711
+2411	29492	567	2026-06-28 08:37:54.718
+2412	29493	674	2026-06-28 08:37:54.724
+2413	29493	886	2026-06-28 08:37:54.731
+2414	29494	908	2026-06-28 08:37:54.736
+2415	29494	909	2026-06-28 08:37:54.741
+2416	29498	988	2026-06-28 08:37:54.747
+2417	29502	897	2026-06-28 08:37:54.751
+2418	29503	869	2026-06-28 08:37:54.754
+2419	29503	563	2026-06-28 08:37:54.758
+2420	29503	943	2026-06-28 08:37:54.763
+2421	29504	782	2026-06-28 08:37:54.768
+2422	29508	997	2026-06-28 08:37:54.771
+2423	29510	887	2026-06-28 08:37:54.774
+2424	29511	793	2026-06-28 08:37:54.777
+2425	29511	588	2026-06-28 08:37:54.78
+2426	29512	689	2026-06-28 08:37:54.782
+2427	29478	760	2026-06-28 08:37:54.785
+2428	29478	616	2026-06-28 08:37:54.787
+2429	29474	566	2026-06-28 08:37:54.79
+2430	29550	584	2026-06-28 08:37:54.792
+2431	29550	619	2026-06-28 08:37:54.795
+2432	29518	556	2026-06-28 08:37:54.798
+2433	29521	778	2026-06-28 08:37:54.801
+2434	29524	690	2026-06-28 08:37:54.803
+2435	29525	708	2026-06-28 08:37:54.806
+2436	29526	594	2026-06-28 08:37:54.808
+2437	29526	566	2026-06-28 08:37:54.811
+2438	29526	567	2026-06-28 08:37:54.814
+2439	29528	958	2026-06-28 08:37:54.816
+2440	29529	724	2026-06-28 08:37:54.819
+2441	29529	726	2026-06-28 08:37:54.821
+2442	29530	831	2026-06-28 08:37:54.824
+2443	29533	739	2026-06-28 08:37:54.826
+2444	29534	609	2026-06-28 08:37:54.829
+2445	29534	786	2026-06-28 08:37:54.832
+2446	29535	609	2026-06-28 08:37:54.835
+2447	29535	576	2026-06-28 08:37:54.837
+2448	29538	793	2026-06-28 08:37:54.84
+2449	29539	790	2026-06-28 08:37:54.842
+2450	29546	651	2026-06-28 08:37:54.846
+2451	29549	888	2026-06-28 08:37:54.849
+2452	29549	797	2026-06-28 08:37:54.852
+2453	29552	974	2026-06-28 08:37:54.854
+2454	29562	939	2026-06-28 08:37:54.857
+2455	29562	995	2026-06-28 08:37:54.86
+2456	29563	995	2026-06-28 08:37:54.864
+2457	29567	572	2026-06-28 08:37:54.867
+2458	29567	941	2026-06-28 08:37:54.87
+2459	29568	610	2026-06-28 08:37:54.872
+2460	29568	834	2026-06-28 08:37:54.875
+2461	29569	1022	2026-06-28 08:37:54.879
+2462	29570	979	2026-06-28 08:37:54.882
+2463	29571	594	2026-06-28 08:37:54.885
+2464	29571	566	2026-06-28 08:37:54.887
+2465	29571	620	2026-06-28 08:37:54.89
+2466	29572	903	2026-06-28 08:37:54.894
+2467	29573	769	2026-06-28 08:37:54.897
+2468	29573	566	2026-06-28 08:37:54.9
+2469	29573	882	2026-06-28 08:37:54.903
+2470	29574	528	2026-06-28 08:37:54.905
+2471	29575	832	2026-06-28 08:37:54.908
+2472	29576	1023	2026-06-28 08:37:54.925
+2473	29577	761	2026-06-28 08:37:54.928
+2474	29577	826	2026-06-28 08:37:54.934
+2475	29580	871	2026-06-28 08:37:54.94
+2476	29581	584	2026-06-28 08:37:54.947
+2477	29582	657	2026-06-28 08:37:54.952
+2478	29582	547	2026-06-28 08:37:54.956
+2479	29584	625	2026-06-28 08:37:54.961
+2480	29629	534	2026-06-28 08:37:54.965
+2481	29589	633	2026-06-28 08:37:54.968
+2482	29591	737	2026-06-28 08:37:54.972
+2483	29594	601	2026-06-28 08:37:54.975
+2484	29595	686	2026-06-28 08:37:54.978
+2485	29595	829	2026-06-28 08:37:54.982
+2486	29596	793	2026-06-28 08:37:54.986
+2487	29596	794	2026-06-28 08:37:54.99
+2488	29596	976	2026-06-28 08:37:54.994
+2489	29599	605	2026-06-28 08:37:54.998
+2490	29599	563	2026-06-28 08:37:55.003
+2491	29603	893	2026-06-28 08:37:55.008
+2492	29603	754	2026-06-28 08:37:55.012
+2493	29605	593	2026-06-28 08:37:55.017
+2494	29605	515	2026-06-28 08:37:55.022
+2495	29606	557	2026-06-28 08:37:55.027
+2496	29606	812	2026-06-28 08:37:55.032
+2497	29606	593	2026-06-28 08:37:55.037
+2498	29606	566	2026-06-28 08:37:55.042
+2499	29611	993	2026-06-28 08:37:55.047
+2500	29616	528	2026-06-28 08:37:55.053
+2501	29618	797	2026-06-28 08:37:55.059
+2502	29618	800	2026-06-28 08:37:55.065
+2503	29619	713	2026-06-28 08:37:55.071
+2504	29623	580	2026-06-28 08:37:55.075
+2505	29623	592	2026-06-28 08:37:55.088
+2506	29624	580	2026-06-28 08:37:55.092
+2507	29624	530	2026-06-28 08:37:55.096
+2508	29625	580	2026-06-28 08:37:55.1
+2509	29625	572	2026-06-28 08:37:55.104
+2510	29626	947	2026-06-28 08:37:55.108
+2511	29627	818	2026-06-28 08:37:55.112
+2512	29627	557	2026-06-28 08:37:55.116
+2513	29627	812	2026-06-28 08:37:55.119
+2514	29627	828	2026-06-28 08:37:55.123
+2515	29627	787	2026-06-28 08:37:55.126
+2516	29632	975	2026-06-28 08:37:55.129
+2517	29634	651	2026-06-28 08:37:55.132
+2518	29635	863	2026-06-28 08:37:55.135
+2519	29639	567	2026-06-28 08:37:55.137
+2520	29607	732	2026-06-28 08:37:55.14
+2521	29607	566	2026-06-28 08:37:55.142
+2522	29644	548	2026-06-28 08:37:55.145
+2523	29646	542	2026-06-28 08:37:55.148
+2524	29646	572	2026-06-28 08:37:55.15
+2525	29647	946	2026-06-28 08:37:55.153
+2526	29647	947	2026-06-28 08:37:55.155
+2527	29648	946	2026-06-28 08:37:55.158
+2528	29648	553	2026-06-28 08:37:55.16
+2529	29649	539	2026-06-28 08:37:55.163
+2530	29650	1015	2026-06-28 08:37:55.166
+2531	29650	758	2026-06-28 08:37:55.168
+2532	29652	692	2026-06-28 08:37:55.171
+2533	29655	562	2026-06-28 08:37:55.174
+2534	29643	895	2026-06-28 08:37:55.176
 \.
 
 
@@ -15404,6 +18294,34 @@ SELECT pg_catalog.setval('public."PodcastResource_id_seq"', 5, true);
 
 
 --
+-- Name: PronunciationRuleExample_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."PronunciationRuleExample_id_seq"', 22, true);
+
+
+--
+-- Name: PronunciationRulePoint_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."PronunciationRulePoint_id_seq"', 23, true);
+
+
+--
+-- Name: PronunciationRuleSection_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."PronunciationRuleSection_id_seq"', 9, true);
+
+
+--
+-- Name: PronunciationRuleTip_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."PronunciationRuleTip_id_seq"', 6, true);
+
+
+--
 -- Name: ReadingAttempt_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
 --
 
@@ -15470,7 +18388,7 @@ SELECT pg_catalog.setval('public."SubscriptionPlanConfig_id_seq"', 4, true);
 -- Name: Subscription_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
 --
 
-SELECT pg_catalog.setval('public."Subscription_id_seq"', 46, true);
+SELECT pg_catalog.setval('public."Subscription_id_seq"', 47, true);
 
 
 --
@@ -15492,6 +18410,13 @@ SELECT pg_catalog.setval('public."SupportThread_id_seq"', 1, true);
 --
 
 SELECT pg_catalog.setval('public."User_id_seq"', 10, true);
+
+
+--
+-- Name: VocabularyKanjiLink_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."VocabularyKanjiLink_id_seq"', 2534, true);
 
 
 --
@@ -15877,6 +18802,46 @@ ALTER TABLE ONLY public."PodcastResource"
 
 
 --
+-- Name: PronunciationRuleExample PronunciationRuleExample_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PronunciationRuleExample"
+    ADD CONSTRAINT "PronunciationRuleExample_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PronunciationRulePoint PronunciationRulePoint_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PronunciationRulePoint"
+    ADD CONSTRAINT "PronunciationRulePoint_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PronunciationRuleSection PronunciationRuleSection_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PronunciationRuleSection"
+    ADD CONSTRAINT "PronunciationRuleSection_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PronunciationRuleTip PronunciationRuleTip_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PronunciationRuleTip"
+    ADD CONSTRAINT "PronunciationRuleTip_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PronunciationRulesMeta PronunciationRulesMeta_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PronunciationRulesMeta"
+    ADD CONSTRAINT "PronunciationRulesMeta_pkey" PRIMARY KEY (id);
+
+
+--
 -- Name: ReadingAttempt ReadingAttempt_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -15986,6 +18951,14 @@ ALTER TABLE ONLY public."SupportThread"
 
 ALTER TABLE ONLY public."User"
     ADD CONSTRAINT "User_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: VocabularyKanjiLink VocabularyKanjiLink_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."VocabularyKanjiLink"
+    ADD CONSTRAINT "VocabularyKanjiLink_pkey" PRIMARY KEY (id);
 
 
 --
@@ -16328,6 +19301,13 @@ CREATE INDEX "KanjiVocab_kanjiEntryId_sortOrder_idx" ON public."KanjiVocab" USIN
 
 
 --
+-- Name: KanjiVocab_vocabularyId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "KanjiVocab_vocabularyId_idx" ON public."KanjiVocab" USING btree ("vocabularyId");
+
+
+--
 -- Name: LearnerChatMember_roomId_userId_key; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -16451,6 +19431,41 @@ CREATE UNIQUE INDEX "Payout_stripeTransferId_key" ON public."Payout" USING btree
 --
 
 CREATE UNIQUE INDEX "PodcastResource_externalKey_key" ON public."PodcastResource" USING btree ("externalKey");
+
+
+--
+-- Name: PronunciationRuleExample_sectionId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "PronunciationRuleExample_sectionId_sortOrder_idx" ON public."PronunciationRuleExample" USING btree ("sectionId", "sortOrder");
+
+
+--
+-- Name: PronunciationRulePoint_sectionId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "PronunciationRulePoint_sectionId_sortOrder_idx" ON public."PronunciationRulePoint" USING btree ("sectionId", "sortOrder");
+
+
+--
+-- Name: PronunciationRuleSection_slug_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "PronunciationRuleSection_slug_key" ON public."PronunciationRuleSection" USING btree (slug);
+
+
+--
+-- Name: PronunciationRuleSection_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "PronunciationRuleSection_sortOrder_idx" ON public."PronunciationRuleSection" USING btree ("sortOrder");
+
+
+--
+-- Name: PronunciationRuleTip_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "PronunciationRuleTip_sortOrder_idx" ON public."PronunciationRuleTip" USING btree ("sortOrder");
 
 
 --
@@ -16619,6 +19634,20 @@ CREATE UNIQUE INDEX "User_googleId_key" ON public."User" USING btree ("googleId"
 --
 
 CREATE INDEX "User_role_idx" ON public."User" USING btree (role);
+
+
+--
+-- Name: VocabularyKanjiLink_kanjiEntryId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "VocabularyKanjiLink_kanjiEntryId_idx" ON public."VocabularyKanjiLink" USING btree ("kanjiEntryId");
+
+
+--
+-- Name: VocabularyKanjiLink_vocabularyId_kanjiEntryId_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "VocabularyKanjiLink_vocabularyId_kanjiEntryId_key" ON public."VocabularyKanjiLink" USING btree ("vocabularyId", "kanjiEntryId");
 
 
 --
@@ -16873,6 +19902,14 @@ ALTER TABLE ONLY public."KanjiVocab"
 
 
 --
+-- Name: KanjiVocab KanjiVocab_vocabularyId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."KanjiVocab"
+    ADD CONSTRAINT "KanjiVocab_vocabularyId_fkey" FOREIGN KEY ("vocabularyId") REFERENCES public."Vocabulary"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
 -- Name: LearnerChatMember LearnerChatMember_roomId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -16958,6 +19995,22 @@ ALTER TABLE ONLY public."Payment"
 
 ALTER TABLE ONLY public."Payout"
     ADD CONSTRAINT "Payout_coachId_fkey" FOREIGN KEY ("coachId") REFERENCES public."CoachProfile"(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: PronunciationRuleExample PronunciationRuleExample_sectionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PronunciationRuleExample"
+    ADD CONSTRAINT "PronunciationRuleExample_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES public."PronunciationRuleSection"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: PronunciationRulePoint PronunciationRulePoint_sectionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PronunciationRulePoint"
+    ADD CONSTRAINT "PronunciationRulePoint_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES public."PronunciationRuleSection"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -17049,6 +20102,22 @@ ALTER TABLE ONLY public."SupportThread"
 
 
 --
+-- Name: VocabularyKanjiLink VocabularyKanjiLink_kanjiEntryId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."VocabularyKanjiLink"
+    ADD CONSTRAINT "VocabularyKanjiLink_kanjiEntryId_fkey" FOREIGN KEY ("kanjiEntryId") REFERENCES public."KanjiEntry"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: VocabularyKanjiLink VocabularyKanjiLink_vocabularyId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."VocabularyKanjiLink"
+    ADD CONSTRAINT "VocabularyKanjiLink_vocabularyId_fkey" FOREIGN KEY ("vocabularyId") REFERENCES public."Vocabulary"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: Vocabulary Vocabulary_lessonId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -17060,5 +20129,5 @@ ALTER TABLE ONLY public."Vocabulary"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 0CZXvlGp0Bn1XYCf5jNeyTnvL2r4aW7LwVt5MP3b3YHc44ODJEmvoEs3K7iyDEv
+\unrestrict v3sdKQ3cRbZW0JocPd8nSMCAfP4KJxxbmjozyWeydhgYmyi7RbLd05bvGnM7hRZ
 

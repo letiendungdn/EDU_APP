@@ -2,14 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import type { ReactNode } from 'react';
+import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import AuthHeader from '@/components/AuthHeader';
 import EnglishAppSwitcher from '@/components/EnglishAppSwitcher';
+import { useAutoHideHeader } from '@/hooks/useAutoHideHeader';
 
 const navItems = [
   { href: '/', label: 'Home', end: true },
   { href: '/kana', label: 'Kana' },
   { href: '/pronunciation', label: 'Phát âm' },
+  { href: '/pronunciation-rules', label: 'Quy tắc' },
   { href: '/daily-listening', label: 'Nghe' },
   { href: '/notes', label: 'Hằng ngày' },
   { href: '/vocab', label: 'Vocabulary' },
@@ -43,10 +45,39 @@ function NavItem({ href, label, end }: { href: string; label: string; end?: bool
 export default function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? '';
   const isAuthScreen = pathname === '/login' || pathname === '/profile';
+  const headerRef = useRef<HTMLElement>(null);
+  const headerHidden = useAutoHideHeader(!isAuthScreen);
+
+  useLayoutEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+
+    const syncHeaderHeight = () => {
+      document.documentElement.style.setProperty(
+        '--app-header-height',
+        `${el.offsetHeight}px`,
+      );
+    };
+
+    syncHeaderHeight();
+    const observer = new ResizeObserver(syncHeaderHeight);
+    observer.observe(el);
+    window.addEventListener('resize', syncHeaderHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', syncHeaderHeight);
+    };
+  }, [isAuthScreen]);
 
   return (
     <div className="app-container">
-      <header className={`app-header${isAuthScreen ? ' app-header--compact' : ''}`}>
+      <header
+        ref={headerRef}
+        className={`app-header${isAuthScreen ? ' app-header--compact' : ''}${
+          headerHidden ? ' app-header--hidden' : ''
+        }`}
+      >
         <div className="container header-content">
           <Link href="/" className="logo">
             <span className="logo-icon">🇯🇵</span>

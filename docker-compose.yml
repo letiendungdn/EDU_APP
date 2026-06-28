@@ -67,7 +67,8 @@ services:
       test: ['CMD', 'kafka-broker-api-versions', '--bootstrap-server', 'localhost:9092']
       interval: 10s
       timeout: 10s
-      retries: 5
+      retries: 10
+      start_period: 40s
 
   postgres-nihongo:
     image: postgres:16-alpine
@@ -88,6 +89,7 @@ services:
       retries: 10
 
   postgres-english:
+    profiles: [english]
     image: postgres:16-alpine
     container_name: edu-postgres-english
     restart: unless-stopped
@@ -174,11 +176,10 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET:-edu-app-dev}
-      ENGLISH_DATABASE_URL: postgresql://english:${ENGLISH_POSTGRES_PASSWORD:-english}@postgres-english:5432/english_learning
+      ENGLISH_ENABLED: ${ENGLISH_ENABLED:-false}
+      ENGLISH_DATABASE_URL: ${ENGLISH_DATABASE_URL:-postgresql://english:${ENGLISH_POSTGRES_PASSWORD:-english}@postgres-english:5432/english_learning}
     depends_on:
       postgres-nihongo:
-        condition: service_healthy
-      postgres-english:
         condition: service_healthy
       content-service:
         condition: service_started
