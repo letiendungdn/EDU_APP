@@ -2,6 +2,8 @@
 
 Monorepo `edu_app` — **Windows / PowerShell**. Chạy frontend Next.js + backend NestJS qua Docker (PostgreSQL, Redis, MongoDB, Kafka).
 
+> **Chạy full stack trong Docker / chuyển sang máy khác:** xem [docker.md](./docker.md).
+
 ---
 
 ## Yêu cầu
@@ -39,12 +41,13 @@ Chỉnh `services/.env` nếu cần: `JWT_SECRET`, Stripe, Google OAuth (xem [go
 ### 3. Khởi động infrastructure
 
 ```powershell
-docker compose up -d postgres redis mongodb kafka zookeeper
+docker compose up -d postgres-nihongo postgres-english redis mongodb kafka zookeeper
 ```
 
 | Container | Port host |
 |-----------|-----------|
-| PostgreSQL (`edu-postgres`) | **5433** |
+| PostgreSQL Nihongo (`edu-postgres-nihongo`) | **5433** |
+| PostgreSQL English (`edu-postgres-english`) | **5434** |
 | Redis | 6379 |
 | MongoDB | 27017 |
 | Kafka | 9092 |
@@ -58,8 +61,8 @@ Kiểm tra: `docker ps --filter "name=edu-"`
 Đã có snapshot full trong `infra/backups/` (user, vocab, payment, …):
 
 ```powershell
-Get-Content "infra\backups\nihongo_20260627_235641.sql" | docker exec -i edu-postgres psql -U nihongo nihongo
-Get-Content "infra\backups\english_learning_20260627_235641.sql" | docker exec -i edu-postgres psql -U nihongo english_learning
+Get-Content "infra\backups\nihongo_20260627_235641.sql" | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content "infra\backups\english_learning_20260627_235641.sql" | docker exec -i edu-postgres-english psql -U english english_learning
 ```
 
 **Cách B — DB trống: migrate + seed nội dung**
@@ -95,7 +98,7 @@ Mỗi lệnh **một terminal**, thư mục gốc `edu_app`:
 ### Bước 1 — Docker
 
 ```powershell
-docker compose up -d postgres redis mongodb kafka zookeeper
+docker compose up -d postgres-nihongo postgres-english redis mongodb kafka zookeeper
 ```
 
 ### Bước 2 — Backend (3–4 terminal)
@@ -196,7 +199,7 @@ foreach ($p in $ports) {
     ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }
 }
 
-docker compose up -d postgres redis mongodb kafka zookeeper
+docker compose up -d postgres-nihongo postgres-english redis mongodb kafka zookeeper
 # Chạy lại dev:gateway, dev:content, dev:exam, dev:nihongo-web
 ```
 
@@ -237,7 +240,7 @@ npm run db:backup
 Restore:
 
 ```powershell
-Get-Content "infra\backups\nihongo_YYYYMMDD_HHMMSS.sql" | docker exec -i edu-postgres psql -U nihongo nihongo
+Get-Content "infra\backups\nihongo_YYYYMMDD_HHMMSS.sql" | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 ```
 
 Chi tiết: [infra/backups/README.md](../infra/backups/README.md)

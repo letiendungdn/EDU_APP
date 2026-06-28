@@ -17,7 +17,7 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (searchParams.get('reason') === 'forbidden') {
+    if (searchParams?.get('reason') === 'forbidden') {
       setError('Tài khoản hiện tại không có quyền admin. Đăng nhập bằng tài khoản admin.');
     }
   }, [searchParams]);

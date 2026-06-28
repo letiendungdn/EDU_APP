@@ -101,7 +101,7 @@ export default function ListeningDetailPage() {
               ))}
             </div>
           ))}
-          {track.questions?.length > 0 && (
+          {(track.questions?.length ?? 0) > 0 && (
             <button className="btn btn-primary" disabled={!allAnswered || submitting} onClick={submit}>
               {submitting ? 'Đang chấm...' : 'Nộp bài'}
             </button>

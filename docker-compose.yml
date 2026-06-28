@@ -69,9 +69,9 @@ services:
       timeout: 10s
       retries: 5
 
-  postgres:
+  postgres-nihongo:
     image: postgres:16-alpine
-    container_name: edu-postgres
+    container_name: edu-postgres-nihongo
     restart: unless-stopped
     environment:
       POSTGRES_USER: nihongo
@@ -80,10 +80,27 @@ services:
     ports:
       - '5433:5432'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./infra/postgres/init-databases.sql:/docker-entrypoint-initdb.d/01-init-databases.sql:ro
+      - postgres_nihongo_data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U nihongo -d nihongo']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-english:
+    image: postgres:16-alpine
+    container_name: edu-postgres-english
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: english
+      POSTGRES_PASSWORD: ${ENGLISH_POSTGRES_PASSWORD:-english}
+      POSTGRES_DB: english_learning
+    ports:
+      - '5434:5432'
+    volumes:
+      - postgres_english_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U english -d english_learning']
       interval: 5s
       timeout: 5s
       retries: 10
@@ -95,13 +112,13 @@ services:
     container_name: edu-content
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres:5432/nihongo
+      DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres-nihongo:5432/nihongo
       REDIS_URL: redis://redis:6379
       CONTENT_GRPC_PORT: 50051
       SERVICE_NAME: content-service
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318/v1/traces
     depends_on:
-      postgres:
+      postgres-nihongo:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -113,14 +130,14 @@ services:
     container_name: edu-exam
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres:5432/nihongo
+      DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres-nihongo:5432/nihongo
       REDIS_URL: redis://redis:6379
       KAFKA_BROKERS: kafka:9092
       EXAM_GRPC_PORT: 50052
       SERVICE_NAME: exam-service
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318/v1/traces
     depends_on:
-      postgres:
+      postgres-nihongo:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -133,14 +150,16 @@ services:
       dockerfile: services/api-gateway/Dockerfile
     container_name: edu-gateway
     restart: unless-stopped
+    ports:
+      - '3000:3000'
     environment:
       PORT: 3000
       CONTENT_GRPC_URL: content-service:50051
       EXAM_GRPC_URL: exam-service:50052
-      DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres:5432/nihongo
+      DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres-nihongo:5432/nihongo
       JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost,http://nihongo.localhost,http://english.localhost,http://localhost:5173,http://localhost:3001}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080,http://nihongo.localhost:8080,http://english.localhost:8080,http://localhost:5173,http://localhost:3001}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@nihongo.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
       SERVICE_NAME: api-gateway
@@ -155,22 +174,49 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET:-edu-app-dev}
-      ENGLISH_DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres:5432/english_learning
+      ENGLISH_DATABASE_URL: postgresql://english:${ENGLISH_POSTGRES_PASSWORD:-english}@postgres-english:5432/english_learning
     depends_on:
-      - content-service
-      - exam-service
-      - mongodb
-      - redis
+      postgres-nihongo:
+        condition: service_healthy
+      postgres-english:
+        condition: service_healthy
+      content-service:
+        condition: service_started
+      exam-service:
+        condition: service_started
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+
+  signaling-service:
+    build:
+      context: .
+      dockerfile: services/signaling-service/Dockerfile
+    container_name: edu-signaling
+    restart: unless-stopped
+    ports:
+      - '3002:3002'
+    environment:
+      PORT: 3002
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      REDIS_URL: redis://redis:6379
+      CORS_ORIGIN: ${SIGNALING_CORS_ORIGIN:-http://localhost:8080,http://localhost:5173,http://nihongo.localhost:8080}
+    depends_on:
+      redis:
+        condition: service_healthy
 
   nihongo-web:
     build:
       context: .
       dockerfile: apps/nihongo-web/Dockerfile
+      args:
+        NEXT_PUBLIC_SIGNALING_URL: ${NEXT_PUBLIC_SIGNALING_URL:-http://localhost:3002}
     container_name: edu-nihongo-web
     restart: unless-stopped
     environment:
       API_URL: http://api-gateway:3000
-      NEXT_PUBLIC_ENGLISH_APP_URL: ${NEXT_PUBLIC_ENGLISH_APP_URL:-http://english.localhost}
+      NEXT_PUBLIC_ENGLISH_APP_URL: ${NEXT_PUBLIC_ENGLISH_APP_URL:-http://english.localhost:8080}
     depends_on:
       - api-gateway
 
@@ -182,7 +228,7 @@ services:
     restart: unless-stopped
     environment:
       API_URL: http://api-gateway:3000
-      NEXT_PUBLIC_NIHONGO_APP_URL: ${NEXT_PUBLIC_NIHONGO_APP_URL:-http://nihongo.localhost}
+      NEXT_PUBLIC_NIHONGO_APP_URL: ${NEXT_PUBLIC_NIHONGO_APP_URL:-http://nihongo.localhost:8080}
     depends_on:
       - api-gateway
 
@@ -193,7 +239,7 @@ services:
     container_name: edu-nginx
     restart: unless-stopped
     ports:
-      - '80:80'
+      - '${NGINX_HTTP_PORT:-8080}:80'
     depends_on:
       - api-gateway
       - nihongo-web
@@ -235,9 +281,10 @@ services:
       - prometheus
 
 volumes:
-  # Giữ data từ stack cũ `nihongo-app` (nihongo-postgres)
-  postgres_data:
+  # Giữ data từ stack cũ `nihongo-app` (chỉ DB tiếng Nhật)
+  postgres_nihongo_data:
     external: true
     name: nihongo-app_postgres_data
+  postgres_english_data:
   mongodb_data:
   grafana_data:

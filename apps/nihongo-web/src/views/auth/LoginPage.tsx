@@ -15,15 +15,15 @@ export default function LoginPage() {
   const { login, register, isAuthenticated, isAdmin } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirect');
+  const redirectTo = searchParams?.get('redirect') ?? null;
 
   const [mode, setMode] = useState<AuthMode>(
-    searchParams.get('mode') === 'register' ? 'register' : 'login',
+    searchParams?.get('mode') === 'register' ? 'register' : 'login',
   );
 
   const switchMode = (next: AuthMode) => {
     setMode(next);
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() ?? '');
     if (next === 'register') {
       params.set('mode', 'register');
     } else {
@@ -43,7 +43,7 @@ export default function LoginPage() {
   }, [isAuthenticated, isAdmin, redirectTo, router]);
 
   useEffect(() => {
-    setMode(searchParams.get('mode') === 'register' ? 'register' : 'login');
+    setMode(searchParams?.get('mode') === 'register' ? 'register' : 'login');
   }, [searchParams]);
 
   const handleSubmit = async (e: FormEvent) => {

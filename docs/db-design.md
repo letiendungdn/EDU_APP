@@ -4,8 +4,8 @@
 
 | DB | Engine | Port | Dùng bởi |
 |----|--------|------|----------|
-| `nihongo` | PostgreSQL 16 | 5433 | api-gateway, content-service, exam-service, payment-service |
-| `english_learning` | PostgreSQL 16 | 5433 | api-gateway (`english-service` → `EnglishPrismaService`) |
+| `nihongo` | PostgreSQL 16 (`edu-postgres-nihongo`) | 5433 | api-gateway, content-service, exam-service |
+| `english_learning` | PostgreSQL 16 (`edu-postgres-english`) | 5434 | api-gateway (`english-service` → `EnglishPrismaService`) |
 | `nihongo_audit` | MongoDB 7 | 27017 | api-gateway (`AuditInterceptor`) |
 
 PostgreSQL: hai DBs dùng chung một instance, credentials `nihongo:nihongo`.

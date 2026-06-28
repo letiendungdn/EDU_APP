@@ -73,10 +73,10 @@ export default function GrammarTopicPage() {
           </div>
 
           {/* Exercises */}
-          {lesson.exercises?.length > 0 && (
+          {(lesson.exercises?.length ?? 0) > 0 && (
             <div>
-              <h2 style={{ marginBottom: '1rem' }}>Bài tập ({lesson.exercises.length})</h2>
-              {lesson.exercises.map((ex, i) => {
+              <h2 style={{ marginBottom: '1rem' }}>Bài tập ({lesson.exercises!.length})</h2>
+              {lesson.exercises!.map((ex, i) => {
                 const isChecked = checked[ex.id];
                 const isCorrect = answers[ex.id] === ex.answer;
                 const opts = Array.isArray(ex.options)

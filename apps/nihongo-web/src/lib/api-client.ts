@@ -57,7 +57,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
       const res = await fetch(`${API_BASE}${path}`, {
         ...init,
         headers,
-        credentials: credentials ?? init.credentials,
+        ...(credentials ? { credentials } : {}),
       });
 
       if (!res.ok) {

@@ -1,6 +1,6 @@
 # Database backups
 
-Script dump PostgreSQL từ Docker container `edu-postgres`.
+Script dump PostgreSQL từ 2 container Docker riêng: `edu-postgres-nihongo` và `edu-postgres-english`.
 
 ## Chạy backup
 
@@ -14,7 +14,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File infra/backups/backup.ps1
 bash infra/backups/backup.sh
 ```
 
-Yêu cầu: `docker compose up -d postgres`
+Yêu cầu: `docker compose up -d postgres-nihongo postgres-english`
 
 ## Output (cùng thư mục này)
 
@@ -28,8 +28,9 @@ File `*.sql` được commit trong repo (snapshot restore). Chạy `npm run db:b
 
 ## Restore
 
-```bash
-docker exec -i edu-postgres psql -U nihongo nihongo < infra/backups/nihongo_20260627_120000.sql
+```powershell
+Get-Content infra\backups\nihongo_20260627_235641.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content infra\backups\english_learning_20260627_235641.sql | docker exec -i edu-postgres-english psql -U english english_learning
 ```
 
 Schema chat tham khảo: [`docs/sql/chat-schema.sql`](../../docs/sql/chat-schema.sql)

@@ -9,14 +9,13 @@ ENV API_URL=http://api-gateway:3000
 RUN npm run build
 
 FROM node:22-alpine AS runner
-WORKDIR /app/apps/english-web
+WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3001
+ENV HOSTNAME=0.0.0.0
 ENV API_URL=http://api-gateway:3000
-COPY --from=builder /app/apps/english-web/package*.json ./
-COPY --from=builder /app/apps/english-web/.next ./.next
-COPY --from=builder /app/node_modules /app/node_modules
-COPY --from=builder /app/apps/english-web/public ./public
-COPY --from=builder /app/packages /app/packages
+COPY --from=builder /app/apps/english-web/.next/standalone ./
+COPY --from=builder /app/apps/english-web/.next/static ./apps/english-web/.next/static
+COPY --from=builder /app/apps/english-web/public ./apps/english-web/public
 EXPOSE 3001
-CMD ["npm", "start"]
+CMD ["node", "apps/english-web/server.js"]

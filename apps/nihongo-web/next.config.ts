@@ -28,10 +28,8 @@ const withPWA = withPWAInit({
 const monorepoRoot = path.join(__dirname, '../..');
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   outputFileTracingRoot: monorepoRoot,
-  turbopack: {
-    root: monorepoRoot,
-  },
   transpilePackages: ['@edu/vocab-images'],
   // Tránh lỗi useContext khi monorepo có nhiều bản React (Next 15 devtools)
   experimental: {

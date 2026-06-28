@@ -52,6 +52,7 @@ export type GrammarExercise = {
   question: string;
   answer: string;
   options: string | string[];
+  explanation?: string | null;
 };
 
 export type GrammarLesson = {
@@ -65,7 +66,7 @@ export type GrammarExerciseItem = GrammarExercise & {
   id: number;
 };
 
-export type GrammarLessonItem = GrammarLesson & {
+export type GrammarLessonItem = Omit<GrammarLesson, 'exercises'> & {
   id: number;
   exercises?: GrammarExerciseItem[];
 };
@@ -93,6 +94,9 @@ export type TrackDetail = {
   youtubeUrl?: string | null;
   audioUrl?: string | null;
   transcript?: string | null;
+  estimatedMin?: number | null;
+  content?: string | null;
+  source?: string | null;
   questions?: QuizQuestion[];
   error?: string;
 };
@@ -103,7 +107,7 @@ export type SubmitResult = {
   percent: number;
   correct: number;
   total: number;
-  results?: { questionId: number; correct: boolean; correctAnswer: string }[];
+  results?: { questionId: number; correct: boolean; correctAnswer: string; explanation?: string | null }[];
 };
 
 export type StudySession = {

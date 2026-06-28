@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
-# Backup PostgreSQL (nihongo + english_learning) từ container edu-postgres
+# Backup PostgreSQL — nihongo và english_learning trên 2 container riêng
 set -euo pipefail
 
-CONTAINER="edu-postgres"
-USER="nihongo"
 OUT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TS="$(date +%Y%m%d_%H%M%S)"
 
-if ! docker ps --format '{{.Names}}' | grep -qx "$CONTAINER"; then
-  echo "Container '$CONTAINER' chưa chạy. Chạy: docker compose up -d postgres"
-  exit 1
-fi
+declare -a CONTAINERS=("edu-postgres-nihongo:nihongo:nihongo" "edu-postgres-english:english:english_learning")
 
 mkdir -p "$OUT_DIR"
 
-for db in nihongo english_learning; do
+for entry in "${CONTAINERS[@]}"; do
+  IFS=':' read -r container user db <<< "$entry"
+  if ! docker ps --format '{{.Names}}' | grep -qx "$container"; then
+    echo "Container '$container' chưa chạy. Chạy: docker compose up -d postgres-nihongo postgres-english"
+    exit 1
+  fi
   file="$OUT_DIR/${db}_${TS}.sql"
   echo "Dump $db -> $file"
-  docker exec "$CONTAINER" pg_dump -U "$USER" "$db" > "$file"
+  docker exec "$container" pg_dump -U "$user" "$db" > "$file"
 done
 
 schema="$OUT_DIR/nihongo_schema_${TS}.sql"
 echo "Dump schema nihongo -> $schema"
-docker exec "$CONTAINER" pg_dump -U "$USER" --schema-only nihongo > "$schema"
+docker exec edu-postgres-nihongo pg_dump -U nihongo --schema-only nihongo > "$schema"
 
-echo "Done. SQL dumps in infra/backups/ (*.sql gitignored)"
+echo "Done. SQL dumps in infra/backups/"

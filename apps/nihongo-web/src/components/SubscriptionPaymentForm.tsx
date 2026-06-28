@@ -138,11 +138,9 @@ export default function SubscriptionPaymentForm({
       return;
     }
 
-    const paid = isPaidSubscriptionIntent(
-      clientSecret,
-      result.setupIntent,
-      result.paymentIntent,
-    );
+    const setupIntent = 'setupIntent' in result ? result.setupIntent : undefined;
+    const paymentIntent = 'paymentIntent' in result ? result.paymentIntent : undefined;
+    const paid = isPaidSubscriptionIntent(clientSecret, setupIntent, paymentIntent);
 
     if (paid) {
       onSuccess();

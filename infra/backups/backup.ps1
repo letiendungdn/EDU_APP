@@ -1,28 +1,29 @@
-# Backup PostgreSQL (nihongo + english_learning) từ container edu-postgres
+# Backup PostgreSQL — nihongo và english_learning trên 2 container riêng
 # Usage: powershell -File infra/backups/backup.ps1
 
 $ErrorActionPreference = "Stop"
-$container = "edu-postgres"
-$user = "nihongo"
 $outDir = $PSScriptRoot
 $ts = Get-Date -Format "yyyyMMdd_HHmmss"
 
-if (-not (docker ps --format "{{.Names}}" | Select-String -Quiet "^${container}$")) {
-    Write-Host "Container '$container' chưa chạy. Chạy: docker compose up -d postgres" -ForegroundColor Yellow
-    exit 1
-}
+$dumps = @(
+    @{ Container = "edu-postgres-nihongo"; User = "nihongo"; Db = "nihongo" },
+    @{ Container = "edu-postgres-english"; User = "english"; Db = "english_learning" }
+)
 
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
-$databases = @("nihongo", "english_learning")
-foreach ($db in $databases) {
-    $file = Join-Path $outDir "${db}_${ts}.sql"
-    Write-Host "Dump $db -> $file"
-    docker exec $container pg_dump -U $user $db | Set-Content -Path $file -Encoding utf8
+foreach ($item in $dumps) {
+    if (-not (docker ps --format "{{.Names}}" | Select-String -Quiet "^$($item.Container)$")) {
+        Write-Host "Container '$($item.Container)' chưa chạy. Chạy: docker compose up -d postgres-nihongo postgres-english" -ForegroundColor Yellow
+        exit 1
+    }
+    $file = Join-Path $outDir "$($item.Db)_${ts}.sql"
+    Write-Host "Dump $($item.Db) -> $file"
+    docker exec $item.Container pg_dump -U $item.User $item.Db | Set-Content -Path $file -Encoding utf8
 }
 
 $schemaFile = Join-Path $outDir "nihongo_schema_${ts}.sql"
 Write-Host "Dump schema nihongo -> $schemaFile"
-docker exec $container pg_dump -U $user --schema-only nihongo | Set-Content -Path $schemaFile -Encoding utf8
+docker exec edu-postgres-nihongo pg_dump -U nihongo --schema-only nihongo | Set-Content -Path $schemaFile -Encoding utf8
 
 Write-Host "Done. SQL dumps in infra/backups/ (*.sql gitignored)" -ForegroundColor Green

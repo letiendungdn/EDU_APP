@@ -44,7 +44,7 @@ async function clearContentTables(prisma: PrismaClient) {
 }
 
 function runSqlFile(filePath: string) {
-  const container = process.env.POSTGRES_CONTAINER ?? 'edu-postgres';
+  const container = process.env.POSTGRES_CONTAINER ?? 'edu-postgres-nihongo';
   const sql = fs.readFileSync(filePath, 'utf8');
 
   try {

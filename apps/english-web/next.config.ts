@@ -5,6 +5,7 @@ const apiUrl = process.env.API_URL ?? "http://localhost:3000";
 const monorepoRoot = path.join(__dirname, "../..");
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   outputFileTracingRoot: monorepoRoot,
   turbopack: {
     root: monorepoRoot,

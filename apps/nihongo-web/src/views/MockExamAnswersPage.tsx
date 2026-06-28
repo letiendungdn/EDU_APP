@@ -17,7 +17,7 @@ type ReviewFilter = 'all' | 'wrong' | 'correct';
 
 export default function MockExamAnswersPage() {
   const params = useParams();
-  const level = String(params.level ?? '');
+  const level = String(params?.level ?? '');
   const router = useRouter();
   const [result, setResult] = useState<MockExamResult | null>(null);
   const [filter, setFilter] = useState<ReviewFilter>('all');

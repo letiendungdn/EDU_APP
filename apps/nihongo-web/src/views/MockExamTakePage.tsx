@@ -17,7 +17,7 @@ import './QuizView.css';
 
 export default function MockExamTakePage() {
   const params = useParams();
-  const level = String(params.level ?? '');
+  const level = String(params?.level ?? '');
   const router = useRouter();
 
   const [exam, setExam] = useState<MockExamSession | null>(null);

@@ -7,7 +7,8 @@ import Link from 'next/link';
 import { fetchReadingPassage, submitReading, type ReadingResult } from '@/api';
 
 export default function ReadingDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
+  const id = params?.id ?? '';
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<ReadingResult | null>(null);
   const [submitting, setSubmitting] = useState(false);

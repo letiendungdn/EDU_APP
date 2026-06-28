@@ -2,7 +2,7 @@ import { PrismaClient, EnglishLevel, PartOfSpeech, type Prisma } from '@prisma/c
 import { PrismaPg } from '@prisma/adapter-pg';
 import { resolveVocabImage } from '@edu/vocab-images';
 
-const adapter = new PrismaPg({ connectionString: 'postgresql://nihongo:nihongo@localhost:5433/english_learning?schema=public' });
+const adapter = new PrismaPg({ connectionString: 'postgresql://english:english@localhost:5434/english_learning?schema=public' });
 const prisma = new PrismaClient({ adapter } as Prisma.PrismaClientOptions);
 
 async function main() {

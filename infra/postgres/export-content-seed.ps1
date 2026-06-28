@@ -1,6 +1,6 @@
 # Export nội dung học từ PostgreSQL → nihongo-content-seed.sql (UTF-8)
 $ErrorActionPreference = "Stop"
-$container = if ($env:POSTGRES_CONTAINER) { $env:POSTGRES_CONTAINER } else { "edu-postgres" }
+$container = if ($env:POSTGRES_CONTAINER) { $env:POSTGRES_CONTAINER } else { "edu-postgres-nihongo" }
 $dumpSh = Join-Path $PSScriptRoot "dump-content-tables.sh"
 $out = Join-Path $PSScriptRoot "nihongo-content-seed.sql"
 

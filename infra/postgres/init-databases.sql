@@ -1,3 +1,2 @@
--- Tạo database english_learning khi khởi tạo PostgreSQL lần đầu
-SELECT 'CREATE DATABASE english_learning'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'english_learning')\gexec
+-- Legacy: trước đây tạo english_learning trên cùng instance với nihongo.
+-- Hiện tại: postgres-nihongo (DB nihongo) và postgres-english (DB english_learning) tách riêng trong docker-compose.yml.

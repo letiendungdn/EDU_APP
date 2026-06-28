@@ -4,7 +4,7 @@ export default () => ({
   englishDatabase: {
     url:
       process.env.ENGLISH_DATABASE_URL ??
-      'postgresql://nihongo:nihongo@localhost:5433/english_learning',
+      'postgresql://english:english@localhost:5434/english_learning',
   },
   redis: { url: process.env.REDIS_URL ?? 'redis://localhost:6379' },
   grpc: {
