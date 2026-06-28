@@ -56,6 +56,11 @@ function mountKanjiVgSvg(
   const numbersGroup = svgEl.querySelector('[id*="StrokeNumbers"]');
 
   if (!pathsGroup) {
+    charDiv.style.cursor = 'pointer';
+    charDiv.addEventListener('click', (e) => {
+      e.stopPropagation();
+      onCharClick?.(char);
+    });
     charDiv.appendChild(svgWrapper);
     return;
   }

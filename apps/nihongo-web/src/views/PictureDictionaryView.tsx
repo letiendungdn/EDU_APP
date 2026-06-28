@@ -240,7 +240,7 @@ export default function PictureDictionaryView() {
                 kanji={selected.kanji}
                 kana={selected.kana}
                 romaji={selected.romaji}
-                onCharClick={playAudio}
+                onCharClick={() => playAudio(selected.kana)}
               />
             </div>
             <span className="picture-modal-kanji japanese-text">{selected.kanji || selected.kana}</span>
