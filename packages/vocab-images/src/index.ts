@@ -6,6 +6,8 @@ export {
   kanjiStrokeSvgUrl,
   kanjiMnemonicLocalPath,
   kanjivgCdnUrl,
+  kanjivgHex,
+  kanjivgHexVariants,
   kanjivgLocalPath,
   openmojiCdnUrl,
   openmojiLocalPath,

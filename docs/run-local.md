@@ -80,7 +80,7 @@ npm run prisma:generate
 
 ### 6. Media stroke order & ảnh từ vựng (tùy chọn, lần đầu)
 
-Cần Docker + DB đã có dữ liệu. Tải KanjiVG/OpenMoji local; nếu thiếu file vẫn fallback CDN.
+Cần Docker + DB đã có dữ liệu. Tải KanjiVG/OpenMoji/ảnh kanji về local rồi sync vào `public/media/`.
 
 ```powershell
 npm run media:setup
@@ -209,7 +209,7 @@ docker compose up -d postgres redis mongodb kafka zookeeper
 | `Cannot find module '@prisma/client'` | `npm run prisma:generate` |
 | Gateway `[ioredis] Unhandled error` | `docker compose up -d redis` → restart gateway |
 | Content `EADDRINUSE :50051` | Kill process cũ trên 50051 hoặc dùng script restart ở trên |
-| Vocab/kanji không có stroke order | `npm run media:setup` hoặc refresh (CDN fallback) |
+| Vocab/kanji không có stroke order | `npm run media:setup` hoặc refresh trang |
 | API 401 / không load bài học | Kiểm tra postgres :5433, restore backup hoặc seed lại |
 | Next.js lỗi `.next` cache | Xóa `apps/nihongo-web/.next` → chạy lại `dev:nihongo-web` |
 | Stripe `Invalid signature` | `whsec` phải khớp terminal `stripe:listen` đang chạy |

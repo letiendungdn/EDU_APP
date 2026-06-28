@@ -104,6 +104,33 @@ function extractVocabStrokeChars() {
   return [...chars];
 }
 
+function extractKanaChartChars() {
+  const chars = new Set();
+
+  if (fs.existsSync(SEED_SQL)) {
+    const sql = fs.readFileSync(SEED_SQL, 'utf8');
+    for (const m of sql.matchAll(
+      /INSERT INTO public\."KanaCell"[\s\S]*?VALUES \(\d+, \d+, \d+, \d+, '([^']*)', '[^']*'\)/g,
+    )) {
+      for (const ch of m[1] ?? '') chars.add(ch);
+    }
+  }
+
+  try {
+    const out = execSync(
+      `docker exec edu-postgres psql -U nihongo nihongo -t -A -c "SELECT DISTINCT kana FROM \\"KanaCell\\""`,
+      { encoding: 'utf8' },
+    );
+    for (const line of out.split('\n')) {
+      for (const ch of line.trim()) chars.add(ch);
+    }
+  } catch {
+    /* seed sql fallback */
+  }
+
+  return [...chars];
+}
+
 function extractKanjiMnemonicUrls() {
   const urls = new Set();
   if (!fs.existsSync(SEED_SQL)) return [];
@@ -151,7 +178,11 @@ async function main() {
   }
 
   console.log('KanjiVG...');
-  const strokeChars = new Set([...extractKanjiChars(), ...extractVocabStrokeChars()]);
+  const strokeChars = new Set([
+    ...extractKanjiChars(),
+    ...extractVocabStrokeChars(),
+    ...extractKanaChartChars(),
+  ]);
   for (const char of strokeChars) {
     const hex = char.codePointAt(0).toString(16).padStart(5, '0');
     const dest = path.join(MEDIA, 'kanjivg', `${hex}.svg`);
