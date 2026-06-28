@@ -1,93 +1,120 @@
 # Hướng dẫn chạy EDU APP (local)
 
-Tài liệu chạy monorepo `edu_app` trên **Windows** — Docker, backend NestJS, frontend Next.js, đăng nhập Gmail, Stripe webhook qua **Stripe CLI**.
+Monorepo `edu_app` — **Windows / PowerShell**. Chạy frontend Next.js + backend NestJS qua Docker (PostgreSQL, Redis, MongoDB, Kafka).
 
 ---
 
 ## Yêu cầu
 
-| Công cụ | Ghi chú |
-|---------|---------|
+| Công cụ | Phiên bản / ghi chú |
+|---------|---------------------|
 | **Node.js** | >= 22 |
 | **Docker Desktop** | Bật trước khi chạy backend |
-| **Stripe CLI** | Có sẵn trong repo (`infra/stripe-cli/`, gọi qua `stripe.cmd`) |
+| **Git** | Clone repo |
+
+Tùy chọn: **Stripe CLI** (`infra/stripe-cli/`, gọi qua `npm run stripe:...`) khi test thanh toán.
 
 ---
 
-## Cấu hình (config trong repo)
+## Lần đầu setup (sau khi clone)
 
-Project **track config trên git**. Các file chính:
-
-| File | Nội dung |
-|------|----------|
-| `services/.env` | DB, Redis, Kafka, JWT, **Stripe**, **Google OAuth** |
-| `apps/nihongo-web/.env` | `API_URL`, `NEXT_PUBLIC_GOOGLE_CLIENT_ID` |
-| `apps/english-web/.env` | `API_URL` |
-| `infra/google-oauth/client_secret_*.json` | OAuth JSON từ Google Cloud |
-| `stripe.cmd` / `stripe.ps1` | Wrapper gọi Stripe CLI |
-
-Lần đầu clone (nếu thiếu file):
+### 1. Cài dependency
 
 ```powershell
 cd C:\Users\dungle\Desktop\edu_app
 npm install
+```
+
+### 2. File môi trường
+
+```powershell
 copy services\.env.example services\.env
 copy apps\nihongo-web\.env.example apps\nihongo-web\.env
 copy apps\english-web\.env.example apps\english-web\.env
 ```
 
-### Database trống
+Chỉnh `services/.env` nếu cần: `JWT_SECRET`, Stripe, Google OAuth (xem [google-oauth-setup.md](./google-oauth-setup.md)).
+
+### 3. Khởi động infrastructure
 
 ```powershell
-docker compose up -d postgres
-npm run db:push -w @edu/prisma-nihongo
+docker compose up -d postgres redis mongodb kafka zookeeper
+```
+
+| Container | Port host |
+|-----------|-----------|
+| PostgreSQL (`edu-postgres`) | **5433** |
+| Redis | 6379 |
+| MongoDB | 27017 |
+| Kafka | 9092 |
+
+Kiểm tra: `docker ps --filter "name=edu-"`
+
+### 4. Database
+
+**Cách A — Restore backup có sẵn trong repo (khuyên dùng)**
+
+Đã có snapshot full trong `infra/backups/` (user, vocab, payment, …):
+
+```powershell
+Get-Content "infra\backups\nihongo_20260627_235641.sql" | docker exec -i edu-postgres psql -U nihongo nihongo
+Get-Content "infra\backups\english_learning_20260627_235641.sql" | docker exec -i edu-postgres psql -U nihongo english_learning
+```
+
+**Cách B — DB trống: migrate + seed nội dung**
+
+```powershell
+npm run prisma:generate
+npm run migrate:deploy -w @edu/prisma-nihongo
 npm run db:push -w @edu/prisma-english
+npm run seed -w @edu/prisma-nihongo          # import infra/postgres/nihongo-content-seed.sql + plans
+npm run seed -w @edu/prisma-english
+```
+
+### 5. Prisma client (nếu chưa chạy bước 4B)
+
+```powershell
+npm run prisma:generate
+```
+
+### 6. Media stroke order & ảnh từ vựng (tùy chọn, lần đầu)
+
+Cần Docker + DB đã có dữ liệu. Tải KanjiVG/OpenMoji local; nếu thiếu file vẫn fallback CDN.
+
+```powershell
+npm run media:setup
 ```
 
 ---
 
-## Chạy nhanh (mỗi lần mở máy)
+## Chạy hàng ngày (dev)
 
-### 1. Infrastructure
+Mỗi lệnh **một terminal**, thư mục gốc `edu_app`:
 
-**Terminal 1:**
+### Bước 1 — Docker
 
 ```powershell
-cd C:\Users\dungle\Desktop\edu_app
 docker compose up -d postgres redis mongodb kafka zookeeper
 ```
 
-| Container | Port |
-|-----------|------|
-| PostgreSQL | `5433` |
-| Redis | `6379` |
-| MongoDB | `27017` |
-| Kafka | `9092` |
+### Bước 2 — Backend (3 terminal)
 
-Kiểm tra: `docker ps --filter "name=edu-"`
+| Terminal | Lệnh | URL / port |
+|----------|------|------------|
+| 1 | `npm run dev:gateway` | http://localhost:3000 — Swagger: `/api/docs` |
+| 2 | `npm run dev:content` | gRPC **50051** |
+| 3 | `npm run dev:exam` | gRPC **50052** |
 
-### 2. Backend (ts-node)
-
-Mỗi lệnh **một terminal**, từ thư mục `edu_app`:
-
-| Terminal | Lệnh | Port |
-|----------|------|------|
-| 2 | `npm run dev:gateway` | HTTP **3000** |
-| 3 | `npm run dev:content` | gRPC **50051** |
-| 4 | `npm run dev:exam` | gRPC **50052** |
-
-Swagger: http://localhost:3000/api/docs
-
-### 3. Frontend
+### Bước 3 — Frontend (1–2 terminal)
 
 | Terminal | Lệnh | URL |
 |----------|------|-----|
-| 5 | `npm run dev:nihongo-web` | http://localhost:5173 |
-| 6 | `npm run dev:english-web` | http://localhost:3001 |
+| 4 | `npm run dev:nihongo-web` | http://localhost:5173 |
+| 5 | `npm run dev:english-web` | http://localhost:3001 *(nếu cần)* |
 
-Frontend là **thin client**: `/api/*` → rewrite sang gateway `:3000`.
+Frontend gọi API qua rewrite `/api/*` → gateway `:3000`.
 
-### 4. Mở trình duyệt
+### Mở trình duyệt
 
 ```powershell
 start http://localhost:5173
@@ -95,101 +122,79 @@ start http://localhost:5173
 
 ---
 
-## Restart toàn bộ (khi port bị kẹt)
+## Sơ đồ terminal
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  Docker: postgres + redis + mongodb + kafka + zookeeper     │
+├──────────────────────────────────────────────────────────────┤
+│  T1: npm run dev:gateway      → http://localhost:3000        │
+│  T2: npm run dev:content      → gRPC :50051                  │
+│  T3: npm run dev:exam         → gRPC :50052                  │
+│  T4: npm run dev:nihongo-web  → http://localhost:5173        │
+│  T5: npm run dev:english-web  → http://localhost:3001        │
+│  T6: npm run stripe:listen    → (chỉ khi test Stripe)        │
+└──────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Đăng nhập
+
+| Mục | URL / tài khoản |
+|-----|-----------------|
+| Login học viên | http://localhost:5173/login |
+| Google Sign-In | Nút Google (cần `GOOGLE_CLIENT_ID`) |
+| Admin | http://localhost:5173/admin/login |
+| Admin dev mặc định | `admin@nihongo.local` / `admin123` |
+
+---
+
+## Stripe webhook (khi test thanh toán)
+
+Terminal riêng — giữ chạy:
+
+```powershell
+npm run stripe:login    # một lần
+npm run stripe:listen   # forward → localhost:3000/api/webhooks/stripe
+```
+
+Copy `whsec_...` từ output → `STRIPE_WEBHOOK_SECRET` trong `services/.env` → **restart gateway**.
+
+---
+
+## NPM scripts thường dùng
+
+| Script | Mô tả |
+|--------|--------|
+| `npm run dev:gateway` | API gateway :3000 |
+| `npm run dev:content` | Content service gRPC |
+| `npm run dev:exam` | Exam service gRPC |
+| `npm run dev:nihongo-web` | Frontend tiếng Nhật :5173 |
+| `npm run dev:english-web` | Frontend tiếng Anh :3001 |
+| `npm run docker:up` | `docker compose up -d` (tất cả service) |
+| `npm run docker:down` | Dừng containers |
+| `npm run prisma:generate` | Generate Prisma client |
+| `npm run db:backup` | Dump DB → `infra/backups/` |
+| `npm run db:export-content` | Export nội dung học → `nihongo-content-seed.sql` |
+| `npm run media:setup` | Tải + sync media + cập nhật URL ảnh trong DB |
+
+---
+
+## Restart khi port bị kẹt
 
 ```powershell
 cd C:\Users\dungle\Desktop\edu_app
 
-$ports = 3000,3001,50051,50052,5173
+$ports = 3000, 3001, 50051, 50052, 5173
 foreach ($p in $ports) {
-  Get-NetTCPConnection -LocalPort $p -State Listen -ErrorAction SilentlyContinue |
+  Get-NetTCPConnection -LocalPort $p -ErrorAction SilentlyContinue |
     ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }
 }
 
 docker compose up -d postgres redis mongodb kafka zookeeper
-# Chạy lại dev:gateway, dev:content, dev:exam, dev:nihongo-web, dev:english-web
+# Chạy lại dev:gateway, dev:content, dev:exam, dev:nihongo-web
 ```
-
----
-
-## Đăng nhập / đăng ký
-
-| Cách | URL |
-|------|-----|
-| Đăng nhập / đăng ký | http://localhost:5173/login |
-| **Gmail (Google)** | Nút Google trên trang login |
-| **Admin** | http://localhost:5173/admin/login |
-| Admin dev | `admin@nihongo.local` / `admin123` |
-
-Chi tiết: [google-oauth-setup.md](./google-oauth-setup.md)
-
----
-
-## Stripe webhook (Stripe CLI)
-
-**Terminal riêng** — giữ chạy khi test thanh toán:
-
-```powershell
-cd C:\Users\dungle\Desktop\edu_app
-npm run stripe:login    # một lần
-npm run stripe:listen   # → localhost:3000/api/webhooks/stripe
-```
-
-CLI in `whsec_...` → cập nhật `STRIPE_WEBHOOK_SECRET` trong `services/.env` → **restart gateway**.
-
-```powershell
-.\stripe.cmd trigger payment_intent.succeeded
-```
-
-Keys trong `services/.env`:
-
-```env
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-```
-
----
-
-## Sơ đồ terminal
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  T1: docker compose up -d postgres redis mongodb kafka...   │
-│  T2: npm run dev:gateway                    → :3000           │
-│  T3: npm run dev:content                    → :50051          │
-│  T4: npm run dev:exam                       → :50052          │
-│  T5: npm run dev:nihongo-web                → :5173           │
-│  T6: npm run dev:english-web                → :3001           │
-│  T7: npm run stripe:listen                  (khi test Stripe) │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## NPM scripts
-
-| Script | Mô tả |
-|--------|--------|
-| `npm run dev:gateway` | API gateway |
-| `npm run dev:content` | Content gRPC |
-| `npm run dev:exam` | Exam gRPC |
-| `npm run dev:nihongo-web` | Frontend tiếng Nhật |
-| `npm run dev:english-web` | Frontend tiếng Anh |
-| `npm run docker:up` | `docker compose up -d` |
-| `npm run docker:down` | Dừng Docker |
-| `npm run stripe:login` | Đăng nhập Stripe CLI |
-| `npm run stripe:listen` | Forward webhook → local |
-
----
-
-## Checklist
-
-- [ ] Docker: `edu-postgres` + `edu-redis` healthy
-- [ ] http://localhost:3000/api/docs → **200**
-- [ ] http://localhost:5173 → **200**
-- [ ] Content `:50051` + Exam `:50052` đang listen
-- [ ] `npm run stripe:listen` chạy + `STRIPE_WEBHOOK_SECRET` khớp `whsec` từ CLI
 
 ---
 
@@ -197,11 +202,13 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 
 | Triệu chứng | Cách xử lý |
 |-------------|------------|
-| `stripe` không nhận lệnh | `.\stripe.cmd` hoặc `npm run stripe:...` |
+| `Cannot find module '@prisma/client'` | `npm run prisma:generate` |
 | Gateway `[ioredis] Unhandled error` | `docker compose up -d redis` → restart gateway |
-| Kafka error lúc start | `docker compose up -d kafka zookeeper` |
-| Port `5433` conflict | Dùng stack `edu-app`, tắt postgres container cũ |
-| Stripe `Invalid signature` | `whsec` phải từ terminal `stripe:listen` đang chạy |
+| Content `EADDRINUSE :50051` | Kill process cũ trên 50051 hoặc dùng script restart ở trên |
+| Vocab/kanji không có stroke order | `npm run media:setup` hoặc refresh (CDN fallback) |
+| API 401 / không load bài học | Kiểm tra postgres :5433, restore backup hoặc seed lại |
+| Next.js lỗi `.next` cache | Xóa `apps/nihongo-web/.next` → chạy lại `dev:nihongo-web` |
+| Stripe `Invalid signature` | `whsec` phải khớp terminal `stripe:listen` đang chạy |
 | Google login lỗi | Thêm `http://localhost:5173` vào Authorized origins |
 
 ---
@@ -211,16 +218,33 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 ```powershell
 # Ctrl+C từng terminal dev
 
-docker compose down          # giữ data
+docker compose down          # giữ data volume
 docker compose down -v       # xóa volume — mất DB
 ```
 
 ---
 
-## Tham chiếu
+## Backup & restore
 
-| Tài liệu | Nội dung |
-|----------|----------|
+```powershell
+npm run db:backup
+```
+
+Restore:
+
+```powershell
+Get-Content "infra\backups\nihongo_YYYYMMDD_HHMMSS.sql" | docker exec -i edu-postgres psql -U nihongo nihongo
+```
+
+Chi tiết: [infra/backups/README.md](../infra/backups/README.md)
+
+---
+
+## Tài liệu liên quan
+
+| File | Nội dung |
+|------|----------|
 | [README.md](../README.md) | Kiến trúc tổng quan |
+| [infra/postgres/README.md](../infra/postgres/README.md) | Content seed SQL |
+| [google-oauth-setup.md](./google-oauth-setup.md) | Google Sign-In |
 | [system-design.md](./system-design.md) | Request flows |
-| [google-oauth-setup.md](./google-oauth-setup.md) | Gmail / Google Sign-In |

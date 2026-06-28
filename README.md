@@ -93,7 +93,7 @@ edu_app/
 │   ├── prisma-nihongo/        # Schema + migrations (DB nihongo)
 │   └── prisma-english/        # Schema + seed (DB english_learning)
 ├── infra/                     # K8s, Helm, Nginx, k6, backups
-│   └── backups/               # backup.ps1, backup.sh, SQL dumps (*.sql gitignored)
+│   └── backups/               # backup.ps1 + SQL dumps (restore DB)
 ├── docs/
 │   ├── system-design.md       # Kiến trúc chi tiết, request flows
 │   ├── db-design.md           # ER diagrams, schema reference
@@ -109,26 +109,36 @@ edu_app/
 
 ## Chạy development
 
-Chi tiết từng terminal: **[docs/run-local.md](docs/run-local.md)**
+Hướng dẫn đầy đủ: **[docs/run-local.md](docs/run-local.md)**
 
-```bash
+### Lần đầu
+
+```powershell
 npm install
+copy services\.env.example services\.env
+copy apps\nihongo-web\.env.example apps\nihongo-web\.env
+docker compose up -d postgres redis mongodb kafka zookeeper
+npm run prisma:generate
 
-# Infrastructure
+# Restore DB có sẵn trong repo (khuyên dùng)
+Get-Content infra\backups\nihongo_20260627_235641.sql | docker exec -i edu-postgres psql -U nihongo nihongo
+
+# Hoặc DB trống: migrate + seed — xem docs/run-local.md
+```
+
+### Mỗi lần dev (5 terminal)
+
+```powershell
 docker compose up -d postgres redis mongodb kafka zookeeper
 
-# Backend (mỗi terminal)
-npm run dev:gateway      # http://localhost:3000
+npm run dev:gateway      # http://localhost:3000  — Swagger /api/docs
 npm run dev:content      # gRPC :50051
 npm run dev:exam         # gRPC :50052
-
-# Frontend
 npm run dev:nihongo-web  # http://localhost:5173
 npm run dev:english-web  # http://localhost:3001
-
-# Stripe webhook (terminal riêng, khi test thanh toán)
-npm run stripe:listen
 ```
+
+Stripe webhook (khi test thanh toán): `npm run stripe:listen`
 
 ## Tính năng chính
 
@@ -159,15 +169,24 @@ Swagger UI: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
 
 ## Database
 
-```bash
-# Nihongo DB — migrate + seed plans
-docker compose up -d postgres
-npm run migrate:deploy -w @edu/prisma-nihongo
+**Restore từ backup** (nhanh nhất — file trong `infra/backups/`):
 
-# English DB
+```powershell
+Get-Content infra\backups\nihongo_20260627_235641.sql | docker exec -i edu-postgres psql -U nihongo nihongo
+```
+
+**Hoặc DB trống** — migrate + seed:
+
+```powershell
+docker compose up -d postgres
+npm run prisma:generate
+npm run migrate:deploy -w @edu/prisma-nihongo
+npm run seed -w @edu/prisma-nihongo
 npm run db:push -w @edu/prisma-english
 npm run seed -w @edu/prisma-english
 ```
+
+Nội dung học (vocab, kanji, grammar): `infra/postgres/nihongo-content-seed.sql` — xem [infra/postgres/README.md](infra/postgres/README.md).
 
 ### Backup
 
