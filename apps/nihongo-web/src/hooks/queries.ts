@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys as domainQueryKeys } from '../api/query-keys';
 import {
   useExamTemplates,
@@ -14,6 +15,7 @@ import {
   fetchAdminUsers,
   fetchCommunityRoom,
   fetchCommunityRooms,
+  fetchOnlineCommunityUsers,
   fetchSupportThread,
   fetchAuthMe,
   fetchExercises,
@@ -29,6 +31,7 @@ import {
 } from '../api';
 import type { AdminPaymentsFilters } from '../api';
 import { getStoredToken } from '../lib/api-client';
+import { usePresence } from './usePresence';
 
 export { queryKeys as domainQueryKeys } from '../api/query-keys';
 export {
@@ -70,6 +73,7 @@ export const queryKeys = {
   adminSupportThread: (id: number) => ['admin', 'support', 'thread', id] as const,
   communityRooms: ['community', 'rooms'] as const,
   communityRoom: (id: number) => ['community', 'room', id] as const,
+  communityOnline: ['community', 'online'] as const,
 };
 
 const STALE_5M = 5 * 60 * 1000;
@@ -256,4 +260,25 @@ export function useCommunityRoomQuery(roomId: number | null, enabled = true) {
     staleTime: 5_000,
     refetchInterval: 5_000,
   });
+}
+
+export function useCommunityOnlineQuery(enabled = true) {
+  const token = getStoredToken();
+  const queryClient = useQueryClient();
+  const onlineIds = usePresence(token, enabled);
+
+  const query = useQuery({
+    queryKey: queryKeys.communityOnline,
+    queryFn: () => fetchOnlineCommunityUsers(token!),
+    enabled: enabled && !!token,
+    staleTime: 5_000,
+    refetchInterval: 12_000,
+  });
+
+  useEffect(() => {
+    if (!enabled || !token) return;
+    void queryClient.invalidateQueries({ queryKey: queryKeys.communityOnline });
+  }, [onlineIds, enabled, token, queryClient]);
+
+  return query;
 }

@@ -1,0 +1,317 @@
+.vc-wrapper {
+  position: fixed;
+  inset: 0;
+  background: #0a0a0f;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.vc-videos {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #111118;
+}
+
+.vc-remote {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.vc-local {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  width: 180px;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  cursor: move;
+  transition: border-color 0.2s;
+}
+
+.vc-local:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.vc-status-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: rgba(10, 10, 15, 0.82);
+  backdrop-filter: blur(6px);
+  z-index: 3;
+  color: #fff;
+}
+
+.vc-status-overlay p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.vc-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #7c6ff7;
+  border-radius: 50%;
+  animation: vc-spin 0.8s linear infinite;
+}
+
+@keyframes vc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.vc-status-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.vc-error-box {
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  max-width: 340px;
+}
+
+.vc-error-box p {
+  color: #f87171;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.vc-controls {
+  height: 88px;
+  background: rgba(15, 15, 22, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0 2rem;
+  flex-shrink: 0;
+}
+
+.vc-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: all 0.15s ease;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.vc-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(124, 111, 247, 0.5);
+}
+
+.vc-btn--normal {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.vc-btn--normal:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: scale(1.06);
+}
+
+.vc-btn--active {
+  background: rgba(124, 111, 247, 0.25);
+  color: #a78bfa;
+  border: 1px solid rgba(124, 111, 247, 0.4);
+}
+
+.vc-btn--active:hover {
+  background: rgba(124, 111, 247, 0.35);
+  transform: scale(1.06);
+}
+
+.vc-btn--off {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.vc-btn--off:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.06);
+}
+
+.vc-btn--end {
+  width: 60px;
+  height: 60px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.vc-btn--end:hover {
+  background: #b91c1c;
+  transform: scale(1.08);
+}
+
+.vc-btn--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.vc-topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.vc-topbar-title {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.vc-duration {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-variant-numeric: tabular-nums;
+}
+
+.vc-status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}
+
+.vc-status-dot::before {
+  content: '';
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6b7280;
+}
+
+.vc-status-dot--connected::before {
+  background: #22c55e;
+}
+
+.vc-status-dot--waiting::before {
+  background: #f59e0b;
+}
+
+.vc-status-dot--calling::before {
+  background: #7c6ff7;
+  animation: vc-pulse 1.2s ease infinite;
+}
+
+.vc-status-dot--error::before {
+  background: #ef4444;
+}
+
+@keyframes vc-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.vc-btn-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.vc-btn-label {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.35);
+  white-space: nowrap;
+}
+
+.vc-ended {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  color: #fff;
+  text-align: center;
+  padding: 2rem;
+}
+
+.vc-ended-icon {
+  font-size: 3rem;
+}
+
+.vc-ended h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.vc-ended p {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .vc-local {
+    width: 110px;
+    bottom: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .vc-controls {
+    gap: 0.6rem;
+    padding: 0 1rem;
+  }
+
+  .vc-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 1.1rem;
+  }
+
+  .vc-btn--end {
+    width: 54px;
+    height: 54px;
+  }
+}

@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import GroupChatPanel from '@/components/GroupChatPanel';
+import VideoCallButton from '@/components/VideoCallButton';
 import { useAuth } from '@/hooks/useAuth';
 import {
   queryKeys,
+  useCommunityOnlineQuery,
   useCommunityRoomQuery,
   useCommunityRoomsQuery,
 } from '@/hooks/queries';
@@ -45,6 +47,7 @@ export default function CommunityPage() {
 
   const { data: rooms, refetch: refetchRooms } = useCommunityRoomsQuery(isAuthenticated);
   const { data: roomDetail, refetch: refetchRoom } = useCommunityRoomQuery(selectedId);
+  const { data: onlineUsers } = useCommunityOnlineQuery(isAuthenticated);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -115,6 +118,10 @@ export default function CommunityPage() {
   }
 
   const selectedSummary = rooms?.find((r) => r.id === selectedId);
+  const directPeer =
+    selectedSummary?.type === 'DIRECT'
+      ? selectedSummary.members.find((m) => m.id !== user.id)
+      : undefined;
 
   return (
     <div className="container" style={{ padding: '1.5rem 1rem 3rem' }}>
@@ -149,6 +156,38 @@ export default function CommunityPage() {
             </button>
           </div>
 
+          <div className="community-online-section">
+            <h3>
+              <span className="community-online-dot" aria-hidden />
+              Đang online ({onlineUsers?.length ?? 0})
+            </h3>
+            {!onlineUsers?.length && (
+              <p className="support-chat-empty" style={{ margin: 0 }}>
+                Chưa có ai online. Mở trang này ở tab khác để thử.
+              </p>
+            )}
+            {onlineUsers?.map((u) => (
+              <div key={u.id} className="community-user-result">
+                <span className="community-online-name">{u.name ?? u.email}</span>
+                <div className="community-user-result-actions">
+                  <button
+                    type="button"
+                    className="btn btn-outline"
+                    style={{ fontSize: '0.78rem', padding: '0.25rem 0.5rem' }}
+                    onClick={() => void handleDirectChat(u.id)}
+                  >
+                    Chat
+                  </button>
+                  <VideoCallButton
+                    currentUserId={user.id}
+                    targetUserId={u.id}
+                    compact
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
           <div className="community-search">
             <input
               type="search"
@@ -160,14 +199,21 @@ export default function CommunityPage() {
             {searchResults.map((u) => (
               <div key={u.id} className="community-user-result">
                 <span>{u.name ?? u.email}</span>
-                <button
-                  type="button"
-                  className="btn btn-outline"
-                  style={{ fontSize: '0.78rem', padding: '0.25rem 0.5rem' }}
-                  onClick={() => void handleDirectChat(u.id)}
-                >
-                  Chat
-                </button>
+                <div className="community-user-result-actions">
+                  <button
+                    type="button"
+                    className="btn btn-outline"
+                    style={{ fontSize: '0.78rem', padding: '0.25rem 0.5rem' }}
+                    onClick={() => void handleDirectChat(u.id)}
+                  >
+                    Chat
+                  </button>
+                  <VideoCallButton
+                    currentUserId={user.id}
+                    targetUserId={u.id}
+                    compact
+                  />
+                </div>
               </div>
             ))}
           </div>
@@ -206,6 +252,14 @@ export default function CommunityPage() {
               selectedSummary?.type === 'GROUP'
                 ? `${selectedSummary.members.length} thành viên`
                 : 'Chat 1:1'
+            }
+            headerExtra={
+              directPeer ? (
+                <VideoCallButton
+                  currentUserId={user.id}
+                  targetUserId={directPeer.id}
+                />
+              ) : undefined
             }
             onSent={() => {
               void refetchRooms();

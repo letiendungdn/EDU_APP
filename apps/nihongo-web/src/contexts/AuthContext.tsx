@@ -30,10 +30,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [authReady, setAuthReady] = useState(false);
   const { data: me } = useAuthMeQuery(!!token);
 
   useEffect(() => {
     setToken(getStoredToken());
+    setAuthReady(true);
   }, []);
 
   useEffect(() => {
@@ -113,6 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       token,
       user,
       isAuthenticated: !!token,
+      authReady,
       isAdmin: user?.role === 'ADMIN',
       login,
       loginAdmin,
@@ -121,7 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       updateProfile,
       logout,
     }),
-    [token, user, login, loginAdmin, loginWithGoogle, register, updateProfile, logout],
+    [token, user, authReady, login, loginAdmin, loginWithGoogle, register, updateProfile, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

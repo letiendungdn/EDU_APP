@@ -7,6 +7,8 @@ export interface AuthContextValue {
   token: string | null;
   user: AuthUser | null;
   isAuthenticated: boolean;
+  /** true sau khi đã đọc token từ localStorage (tránh redirect sớm) */
+  authReady: boolean;
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<AuthUser>;
   loginAdmin: (email: string, password: string) => Promise<AuthUser>;

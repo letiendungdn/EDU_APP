@@ -29,11 +29,12 @@ npm install
 
 ```powershell
 copy services\.env.example services\.env
+copy services\signaling-service\.env.example services\signaling-service\.env
 copy apps\nihongo-web\.env.example apps\nihongo-web\.env
 copy apps\english-web\.env.example apps\english-web\.env
 ```
 
-Chỉnh `services/.env` nếu cần: `JWT_SECRET`, Stripe, Google OAuth (xem [google-oauth-setup.md](./google-oauth-setup.md)).
+Chỉnh `services/.env` nếu cần: `JWT_SECRET`, Stripe, Google OAuth (xem [google-oauth-setup.md](./google-oauth-setup.md)). Copy cùng `JWT_SECRET` sang `services/signaling-service/.env`. Thêm `NEXT_PUBLIC_SIGNALING_URL=http://localhost:3002` vào `apps/nihongo-web/.env`.
 
 ### 3. Khởi động infrastructure
 
@@ -97,20 +98,21 @@ Mỗi lệnh **một terminal**, thư mục gốc `edu_app`:
 docker compose up -d postgres redis mongodb kafka zookeeper
 ```
 
-### Bước 2 — Backend (3 terminal)
+### Bước 2 — Backend (3–4 terminal)
 
 | Terminal | Lệnh | URL / port |
 |----------|------|------------|
 | 1 | `npm run dev:gateway` | http://localhost:3000 — Swagger: `/api/docs` |
 | 2 | `npm run dev:content` | gRPC **50051** |
 | 3 | `npm run dev:exam` | gRPC **50052** |
+| 4 *(video call)* | `npm run dev:signaling` | WebSocket **3002** — namespace `/signal` |
 
 ### Bước 3 — Frontend (1–2 terminal)
 
 | Terminal | Lệnh | URL |
 |----------|------|-----|
-| 4 | `npm run dev:nihongo-web` | http://localhost:5173 |
-| 5 | `npm run dev:english-web` | http://localhost:3001 *(nếu cần)* |
+| 5 | `npm run dev:nihongo-web` | http://localhost:5173 |
+| 6 | `npm run dev:english-web` | http://localhost:3001 *(nếu cần)* |
 
 Frontend gọi API qua rewrite `/api/*` → gateway `:3000`.
 
@@ -131,9 +133,10 @@ start http://localhost:5173
 │  T1: npm run dev:gateway      → http://localhost:3000        │
 │  T2: npm run dev:content      → gRPC :50051                  │
 │  T3: npm run dev:exam         → gRPC :50052                  │
-│  T4: npm run dev:nihongo-web  → http://localhost:5173        │
-│  T5: npm run dev:english-web  → http://localhost:3001        │
-│  T6: npm run stripe:listen    → (chỉ khi test Stripe)        │
+│  T4: npm run dev:signaling    → WebSocket :3002 (video call) │
+│  T5: npm run dev:nihongo-web  → http://localhost:5173        │
+│  T6: npm run dev:english-web  → http://localhost:3001        │
+│  T7: npm run stripe:listen    → (chỉ khi test Stripe)        │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -170,6 +173,7 @@ Copy `whsec_...` từ output → `STRIPE_WEBHOOK_SECRET` trong `services/.env` �
 | `npm run dev:gateway` | API gateway :3000 |
 | `npm run dev:content` | Content service gRPC |
 | `npm run dev:exam` | Exam service gRPC |
+| `npm run dev:signaling` | WebRTC signaling :3002 |
 | `npm run dev:nihongo-web` | Frontend tiếng Nhật :5173 |
 | `npm run dev:english-web` | Frontend tiếng Anh :3001 |
 | `npm run docker:up` | `docker compose up -d` (tất cả service) |
@@ -186,7 +190,7 @@ Copy `whsec_...` từ output → `STRIPE_WEBHOOK_SECRET` trong `services/.env` �
 ```powershell
 cd C:\Users\dungle\Desktop\edu_app
 
-$ports = 3000, 3001, 50051, 50052, 5173
+$ports = 3000, 3001, 3002, 50051, 50052, 5173
 foreach ($p in $ports) {
   Get-NetTCPConnection -LocalPort $p -ErrorAction SilentlyContinue |
     ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }

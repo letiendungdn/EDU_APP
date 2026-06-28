@@ -249,6 +249,20 @@ export class GroupChatService {
     return { added: toAdd.length };
   }
 
+  async getOnlineUsers(currentUserId: number, onlineIds: number[]) {
+    const ids = onlineIds.filter((id) => id !== currentUserId);
+    if (!ids.length) return [];
+
+    return this.prisma.user.findMany({
+      where: {
+        id: { in: ids },
+        role: Role.USER,
+      },
+      select: senderSelect,
+      orderBy: { name: "asc" },
+    });
+  }
+
   async searchUsers(query: string, excludeUserId: number) {
     const q = query.trim();
     if (q.length < 2) return [];

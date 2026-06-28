@@ -325,6 +325,12 @@ export function searchCommunityUsers(token: string, q: string) {
   );
 }
 
+export function fetchOnlineCommunityUsers(token: string) {
+  return apiRequest<import('../types/api').CommunityChatUser[]>('/community/online', {
+    token,
+  });
+}
+
 export function adminImportVocab(token: string, lessonNumber: number, text: string) {
   return apiRequest<{ count: number; skipped: number }>('/admin/import/vocab', {
     method: 'POST',

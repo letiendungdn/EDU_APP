@@ -16,6 +16,7 @@ import {
   type AuthUserPayload,
 } from "@app/common";
 import { GroupChatService } from "../realtime/group-chat.service";
+import { VideoPresenceService } from "../realtime/video-presence.service";
 
 class CreateGroupDto {
   name!: string;
@@ -35,7 +36,10 @@ class AddMembersDto {
 @UseGuards(JwtAuthGuard)
 @Controller("api/community")
 export class CommunityController {
-  constructor(private readonly groupChat: GroupChatService) {}
+  constructor(
+    private readonly groupChat: GroupChatService,
+    private readonly presence: VideoPresenceService,
+  ) {}
 
   @Get("rooms")
   @ApiOperation({ summary: "Danh sách phòng chat của user" })
@@ -93,6 +97,13 @@ export class CommunityController {
     @Query("q") q = "",
   ) {
     return this.groupChat.searchUsers(q, user.id);
+  }
+
+  @Get("online")
+  @ApiOperation({ summary: "Học viên đang online (video call)" })
+  async listOnline(@CurrentUser() user: AuthUserPayload) {
+    const onlineIds = await this.presence.listOnlineUserIds();
+    return this.groupChat.getOnlineUsers(user.id, onlineIds);
   }
 
   @Post("rooms/:id/messages")
