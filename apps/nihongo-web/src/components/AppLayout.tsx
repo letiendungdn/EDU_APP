@@ -4,8 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import AuthHeader from '@/components/AuthHeader';
-
-const englishAppUrl = process.env.NEXT_PUBLIC_ENGLISH_APP_URL ?? 'http://localhost:3001';
+import EnglishAppSwitcher from '@/components/EnglishAppSwitcher';
 
 const navItems = [
   { href: '/', label: 'Home', end: true },
@@ -58,9 +57,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
               navItems.map(({ href, label, end }) => (
                 <NavItem key={href} href={href} label={label} end={end} />
               ))}
-            <a href={englishAppUrl} className="nav-link app-switcher">
-              🇬🇧 English
-            </a>
+            <EnglishAppSwitcher />
             <AuthHeader />
           </nav>
         </div>

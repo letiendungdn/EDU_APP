@@ -216,11 +216,13 @@ services:
     restart: unless-stopped
     environment:
       API_URL: http://api-gateway:3000
-      NEXT_PUBLIC_ENGLISH_APP_URL: ${NEXT_PUBLIC_ENGLISH_APP_URL:-http://english.localhost:8080}
+      ENGLISH_APP_INTERNAL_URL: http://english-web:3001
+      ENGLISH_APP_PUBLIC_URL: ${ENGLISH_APP_PUBLIC_URL:-http://english.localhost:8080}
     depends_on:
       - api-gateway
 
   english-web:
+    profiles: [english]
     build:
       context: .
       dockerfile: apps/english-web/Dockerfile
@@ -243,7 +245,6 @@ services:
     depends_on:
       - api-gateway
       - nihongo-web
-      - english-web
 
   jaeger:
     image: jaegertracing/all-in-one:1.57

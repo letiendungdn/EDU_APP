@@ -93,6 +93,8 @@ npm run media:setup
 
 ## Chạy hàng ngày (dev)
 
+> **Chạy full app trong Docker (chỉ Nihongo):** `npm run docker:up:nihongo` → mở http://localhost:8080. Danh sách 11 container cần chạy: xem [docker.md — Checklist Nihongo](./docker.md#checklist--chỉ-học-nihongo-docker-full).
+
 Mỗi lệnh **một terminal**, thư mục gốc `edu_app`:
 
 ### Bước 1 — Docker
