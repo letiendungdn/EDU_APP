@@ -137,6 +137,10 @@ export interface JlptLevelRoadmap {
   duration: string;
   vocabTarget: string;
   kanjiTarget: string;
+  grammarTarget: string;
+  vocabIncrement: string;
+  kanjiIncrement: string;
+  grammarIncrement: string;
   passScore: string;
   summary: string;
   examSections: ExamSection[];

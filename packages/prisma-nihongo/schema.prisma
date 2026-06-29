@@ -397,9 +397,13 @@ model JlptRoadmapLevel {
   badge        String
   color        String
   duration     String
-  vocabTarget  String
-  kanjiTarget  String
-  passScore    String
+  vocabTarget    String
+  kanjiTarget    String
+  grammarTarget  String
+  vocabIncrement String                   @default("")
+  kanjiIncrement String                   @default("")
+  grammarIncrement String                 @default("")
+  passScore      String
   summary      String
   sortOrder    Int                      @default(0)
   examSections JlptRoadmapExamSection[]

@@ -68,6 +68,44 @@ function formatFetchedAt(iso: string): string {
   });
 }
 
+function JlptAccordionItem({
+  title,
+  open,
+  onToggle,
+  children,
+}: {
+  title: string;
+  open: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={`jlpt-accordion-item${open ? ' jlpt-accordion-item--open' : ''}`}>
+      <button
+        type="button"
+        className="jlpt-accordion-header"
+        onClick={onToggle}
+        aria-expanded={open}
+      >
+        <span className="jlpt-accordion-title">{title}</span>
+        <span className="jlpt-accordion-chevron" aria-hidden>
+          {open ? '▲' : '▼'}
+        </span>
+      </button>
+      {open && <div className="jlpt-accordion-body">{children}</div>}
+    </div>
+  );
+}
+
+type ScheduleAccordionKey = 'announcements' | 'venues' | 'examday' | 'fees';
+
+const DEFAULT_SCHEDULE_OPEN: Record<ScheduleAccordionKey, boolean> = {
+  announcements: true,
+  venues: false,
+  examday: false,
+  fees: false,
+};
+
 export default function JlptRoadmapView() {
   const { data: roadmap, isLoading: roadmapLoading } = useJlptRoadmapQuery();
   const { data: staticSchedule } = useJlptDaNangStaticQuery();
@@ -77,6 +115,12 @@ export default function JlptRoadmapView() {
 
   const [activeId, setActiveId] = useState('n5');
   const [progress, setProgress] = useState(loadProgress);
+  const [scheduleOpen, setScheduleOpen] =
+    useState<Record<ScheduleAccordionKey, boolean>>(DEFAULT_SCHEDULE_OPEN);
+
+  const toggleScheduleSection = (key: ScheduleAccordionKey) => {
+    setScheduleOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
   const {
     data: scheduleData,
     isLoading: scheduleLoading,
@@ -178,36 +222,42 @@ export default function JlptRoadmapView() {
           <p className="jlpt-schedule-loading">Đang đồng bộ thông báo từ UFL…</p>
         )}
 
-        {schedule && schedule.announcements.length > 0 && (
-          <div className="jlpt-announcements">
-            <h4>Thông báo JLPT mới nhất</h4>
-            <ul className="jlpt-announcement-list">
-              {schedule.announcements.map((item) => (
-                <li key={item.url} className={`jlpt-announcement jlpt-announcement-${item.kind}`}>
-                  <div className="jlpt-announcement-head">
-                    <span className="jlpt-announcement-kind">
-                      {ANNOUNCEMENT_KIND_LABEL[item.kind]}
-                    </span>
-                    {item.examDate && (
-                      <span className="jlpt-announcement-date">Ngày thi: {item.examDate}</span>
-                    )}
-                  </div>
-                  <a href={item.url} target="_blank" rel="noreferrer" className="jlpt-announcement-title">
-                    {item.title}
-                  </a>
-                  {item.updatedAt && (
-                    <span className="jlpt-announcement-updated">Cập nhật: {item.updatedAt}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         {schedule && (
-          <div className="jlpt-schedule-grid">
-            <div className="jlpt-schedule-block">
-              <h4>Địa điểm thi theo cấp độ</h4>
+          <div className="jlpt-schedule-accordions">
+            {schedule.announcements.length > 0 && (
+              <JlptAccordionItem
+                title={`Thông báo JLPT mới nhất (${schedule.announcements.length})`}
+                open={scheduleOpen.announcements}
+                onToggle={() => toggleScheduleSection('announcements')}
+              >
+                <ul className="jlpt-announcement-list">
+                  {schedule.announcements.map((item) => (
+                    <li key={item.url} className={`jlpt-announcement jlpt-announcement-${item.kind}`}>
+                      <div className="jlpt-announcement-head">
+                        <span className="jlpt-announcement-kind">
+                          {ANNOUNCEMENT_KIND_LABEL[item.kind]}
+                        </span>
+                        {item.examDate && (
+                          <span className="jlpt-announcement-date">Ngày thi: {item.examDate}</span>
+                        )}
+                      </div>
+                      <a href={item.url} target="_blank" rel="noreferrer" className="jlpt-announcement-title">
+                        {item.title}
+                      </a>
+                      {item.updatedAt && (
+                        <span className="jlpt-announcement-updated">Cập nhật: {item.updatedAt}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </JlptAccordionItem>
+            )}
+
+            <JlptAccordionItem
+              title="Địa điểm thi theo cấp độ"
+              open={scheduleOpen.venues}
+              onToggle={() => toggleScheduleSection('venues')}
+            >
               <ul className="jlpt-venue-list">
                 {schedule.venues.map((venue) => (
                   <li key={venue.address}>
@@ -219,10 +269,13 @@ export default function JlptRoadmapView() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </JlptAccordionItem>
 
-            <div className="jlpt-schedule-block">
-              <h4>Giờ thi trong ngày</h4>
+            <JlptAccordionItem
+              title="Giờ thi trong ngày"
+              open={scheduleOpen.examday}
+              onToggle={() => toggleScheduleSection('examday')}
+            >
               <ul className="jlpt-examday-list">
                 {schedule.examDay.map((slot) => (
                   <li key={`${slot.levels}-${slot.venue}`}>
@@ -235,10 +288,13 @@ export default function JlptRoadmapView() {
                 ))}
               </ul>
               <p className="jlpt-briefing-note">{schedule.briefing}</p>
-            </div>
+            </JlptAccordionItem>
 
-            <div className="jlpt-schedule-block">
-              <h4>Lệ phí & liên hệ</h4>
+            <JlptAccordionItem
+              title="Lệ phí & liên hệ"
+              open={scheduleOpen.fees}
+              onToggle={() => toggleScheduleSection('fees')}
+            >
               <ul className="jlpt-fee-list">
                 <li>
                   <span>Hồ sơ</span>
@@ -257,7 +313,7 @@ export default function JlptRoadmapView() {
                 </a>
                 <a href={`mailto:${schedule.organizer.email}`}>{schedule.organizer.email}</a>
               </address>
-            </div>
+            </JlptAccordionItem>
           </div>
         )}
 
@@ -293,10 +349,23 @@ export default function JlptRoadmapView() {
           </div>
         </div>
 
-        <div className="jlpt-stats">
+        <div className="jlpt-stats" style={{ '--level-color': level.color } as React.CSSProperties}>
           <div><strong>Thời gian</strong><span>{level.duration}</span></div>
-          <div><strong>Từ vựng</strong><span>{level.vocabTarget}</span></div>
-          <div><strong>Kanji</strong><span>{level.kanjiTarget}</span></div>
+          <div>
+            <strong>Từ vựng</strong>
+            <span>{level.vocabTarget}</span>
+            {level.vocabIncrement ? <small className="jlpt-stat-increment">{level.vocabIncrement}</small> : null}
+          </div>
+          <div>
+            <strong>Kanji</strong>
+            <span>{level.kanjiTarget}</span>
+            {level.kanjiIncrement ? <small className="jlpt-stat-increment">{level.kanjiIncrement}</small> : null}
+          </div>
+          <div>
+            <strong>Ngữ pháp</strong>
+            <span>{level.grammarTarget}</span>
+            {level.grammarIncrement ? <small className="jlpt-stat-increment">{level.grammarIncrement}</small> : null}
+          </div>
           <div><strong>Điểm đạt</strong><span>{level.passScore}</span></div>
         </div>
 

@@ -8,6 +8,8 @@ interface LessonSelectorProps {
   onChange: (lessonNumber: number) => void;
   id?: string;
   filterWithContent?: boolean;
+  /** Hiển thị số từ vựng cạnh tên bài (mặc định: bật) */
+  showVocabCount?: boolean;
 }
 
 export default function LessonSelector({
@@ -15,6 +17,7 @@ export default function LessonSelector({
   onChange,
   id = 'lesson-select',
   filterWithContent = true,
+  showVocabCount = true,
 }: LessonSelectorProps) {
   const { data, isLoading, isError } = useLessonsQuery();
 
@@ -56,12 +59,18 @@ export default function LessonSelector({
         onChange={(e) => onChange(Number(e.target.value))}
         className="select-input"
       >
-        {lessons.map((lesson) => (
-          <option key={lesson.lessonNumber} value={lesson.lessonNumber}>
-            Bài {lesson.lessonNumber}
-            {lesson.title ? ` — ${lesson.title}` : ''}
-          </option>
-        ))}
+        {lessons.map((lesson) => {
+          const vocabCount = lesson._count?.vocabularies;
+          const countSuffix =
+            showVocabCount && vocabCount != null ? ` (${vocabCount} từ)` : '';
+
+          return (
+            <option key={lesson.lessonNumber} value={lesson.lessonNumber}>
+              Bài {lesson.lessonNumber}
+              {countSuffix}
+            </option>
+          );
+        })}
       </select>
     </div>
   );

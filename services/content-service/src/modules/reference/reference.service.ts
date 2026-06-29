@@ -236,6 +236,10 @@ export class ReferenceService {
         duration: level.duration,
         vocabTarget: level.vocabTarget,
         kanjiTarget: level.kanjiTarget,
+        grammarTarget: level.grammarTarget,
+        vocabIncrement: level.vocabIncrement,
+        kanjiIncrement: level.kanjiIncrement,
+        grammarIncrement: level.grammarIncrement,
         passScore: level.passScore,
         summary: level.summary,
         examSections: level.examSections.map((s) => ({
