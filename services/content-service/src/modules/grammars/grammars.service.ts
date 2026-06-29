@@ -52,7 +52,7 @@ export class GrammarsService {
       this.prisma.grammar.findMany({
         where,
         include: { examples: true },
-        orderBy: { id: "asc" },
+        orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
         skip: (page - 1) * limit,
         take: limit,
       }),

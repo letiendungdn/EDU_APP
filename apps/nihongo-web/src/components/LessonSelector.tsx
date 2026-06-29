@@ -3,13 +3,33 @@
 import { useMemo } from 'react';
 import { useLessonsQuery } from '../hooks/queries';
 
+export type LessonCountKind = 'vocab' | 'grammar' | 'none';
+
 interface LessonSelectorProps {
   value: number;
   onChange: (lessonNumber: number) => void;
   id?: string;
   filterWithContent?: boolean;
-  /** Hiển thị số từ vựng cạnh tên bài (mặc định: bật) */
+  /** Loại số lượng hiển thị cạnh tên bài trong dropdown */
+  countKind?: LessonCountKind;
+  /** @deprecated Dùng countKind="vocab" | "none" */
   showVocabCount?: boolean;
+}
+
+function countSuffixForLesson(
+  lesson: { _count?: { vocabularies?: number; grammars?: number } },
+  countKind: LessonCountKind,
+): string {
+  if (countKind === 'none') return '';
+
+  const count =
+    countKind === 'grammar'
+      ? lesson._count?.grammars
+      : lesson._count?.vocabularies;
+
+  if (count == null) return '';
+
+  return countKind === 'grammar' ? ` (${count} mục)` : ` (${count} từ)`;
 }
 
 export default function LessonSelector({
@@ -17,8 +37,11 @@ export default function LessonSelector({
   onChange,
   id = 'lesson-select',
   filterWithContent = true,
+  countKind,
   showVocabCount = true,
 }: LessonSelectorProps) {
+  const resolvedCountKind: LessonCountKind =
+    countKind ?? (showVocabCount ? 'vocab' : 'none');
   const { data, isLoading, isError } = useLessonsQuery();
 
   const lessons = useMemo(() => {
@@ -59,18 +82,12 @@ export default function LessonSelector({
         onChange={(e) => onChange(Number(e.target.value))}
         className="select-input"
       >
-        {lessons.map((lesson) => {
-          const vocabCount = lesson._count?.vocabularies;
-          const countSuffix =
-            showVocabCount && vocabCount != null ? ` (${vocabCount} từ)` : '';
-
-          return (
-            <option key={lesson.lessonNumber} value={lesson.lessonNumber}>
-              Bài {lesson.lessonNumber}
-              {countSuffix}
-            </option>
-          );
-        })}
+        {lessons.map((lesson) => (
+          <option key={lesson.lessonNumber} value={lesson.lessonNumber}>
+            Bài {lesson.lessonNumber}
+            {countSuffixForLesson(lesson, resolvedCountKind)}
+          </option>
+        ))}
       </select>
     </div>
   );

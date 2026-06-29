@@ -3,6 +3,9 @@ import { playAudioSequence, stopAudio } from '../utils/speech';
 
 interface PlayAllOptions {
   onItemIndex?: (index: number) => void;
+  lang?: string;
+  rate?: number;
+  pauseMs?: number;
 }
 
 export function usePlayAll(): {
@@ -22,7 +25,7 @@ export function usePlayAll(): {
   }, []);
 
   const startPlayAll = useCallback(
-    async (texts: string[], { onItemIndex }: PlayAllOptions = {}) => {
+    async (texts: string[], { onItemIndex, lang, rate, pauseMs }: PlayAllOptions = {}) => {
       const items = texts?.filter(Boolean) ?? [];
       if (!items.length || playingRef.current) return;
 
@@ -30,6 +33,9 @@ export function usePlayAll(): {
       setIsPlayingAll(true);
 
       await playAudioSequence(items, {
+        lang,
+        rate,
+        pauseMs,
         onItem: (index) => onItemIndex?.(index),
         onEnd: () => {
           playingRef.current = false;

@@ -12,8 +12,38 @@
   gap: 1rem;
 }
 
+.grammar-lesson-summary {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
 .grammar-header .btn-play-all {
   margin-top: 0.25rem;
+}
+
+.grammar-audio-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1.25rem;
+}
+
+.grammar-auto-read {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  user-select: none;
+}
+
+.grammar-auto-read input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--primary-color);
 }
 
 .btn-play-all {
@@ -54,13 +84,20 @@
 .grammar-card {
   padding: 2rem;
   text-align: left;
+  scroll-margin-top: calc(var(--app-header-height, 72px) + 1rem);
+  scroll-margin-bottom: 2rem;
+  transition:
+    outline-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
 }
 
 .grammar-pattern-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .grammar-index {
@@ -74,12 +111,61 @@
   color: var(--primary-color);
   font-weight: 700;
   flex-shrink: 0;
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.grammar-index--speaking {
+  background: var(--primary-color);
+  color: #fff;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.25);
 }
 
 .grammar-pattern {
   font-size: 1.8rem;
   color: var(--primary-color);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-grammar-read-card {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--primary-color);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.btn-grammar-read-card:hover {
+  background: rgba(239, 68, 68, 0.28);
+}
+
+.grammar-card--speaking {
+  outline: 2px solid rgba(239, 68, 68, 0.55);
+  box-shadow:
+    0 0 0 4px rgba(239, 68, 68, 0.14),
+    0 12px 32px rgba(239, 68, 68, 0.12);
+  background: color-mix(in srgb, var(--primary-color) 6%, var(--surface-color, #1a1a1a));
+}
+
+.example-item {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  scroll-margin-top: calc(var(--app-header-height, 72px) + 1rem);
+  transition: outline-color 0.25s ease, background-color 0.25s ease;
+}
+
+.example-item--speaking {
+  outline: 2px solid rgba(239, 68, 68, 0.55);
+  background: rgba(239, 68, 68, 0.16);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
 .grammar-meaning {
@@ -112,12 +198,6 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-.example-item {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 1rem 1.25rem;
-  border-radius: 0.75rem;
 }
 
 .example-jp {
