@@ -1,14 +1,22 @@
 import {
+  SPEECH_FORCE_SERVER_LANGS,
   SPEECH_PREFER_LOCAL_VOICE,
   SPEECH_RATE,
   SPEECH_VOICE_PRIORITY,
   type SpeechLangCode,
 } from '../config/speech';
 
-export { SPEECH_LANG, SPEECH_RATE, SPEECH_VOICE_PRIORITY } from '../config/speech';
+export {
+  SPEECH_FORCE_SERVER_LANGS,
+  SPEECH_LANG,
+  SPEECH_RATE,
+  SPEECH_SERVER_VOICES,
+  SPEECH_VOICE_PRIORITY,
+} from '../config/speech';
 export type { SpeechLangCode } from '../config/speech';
 
 let playSessionId = 0;
+let activeHtmlAudio: HTMLAudioElement | null = null;
 let cachedVoices: SpeechSynthesisVoice[] | null = null;
 let voicesReadyPromise: Promise<SpeechSynthesisVoice[]> | null = null;
 
@@ -114,6 +122,89 @@ export function speechRateForLang(lang: string): number {
   return SPEECH_RATE[langCode] ?? 0.9;
 }
 
+function stopHtmlAudio(): void {
+  if (!activeHtmlAudio) return;
+  activeHtmlAudio.pause();
+  activeHtmlAudio.removeAttribute('src');
+  activeHtmlAudio.load();
+  activeHtmlAudio = null;
+}
+
+function shouldUseServerTts(lang: string, voices: SpeechSynthesisVoice[]): boolean {
+  const langCode = lang as SpeechLangCode;
+  if (SPEECH_FORCE_SERVER_LANGS.includes(langCode)) return true;
+  return !pickVoiceForLang(voices, lang);
+}
+
+async function playServerAudio(text: string, lang: string): Promise<void> {
+  const sessionId = playSessionId;
+  const res = await fetch('/api/tts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, lang }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Server TTS failed (${res.status})`);
+  }
+
+  if (sessionId !== playSessionId) return;
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+
+  await new Promise<void>((resolve, reject) => {
+    if (sessionId !== playSessionId) {
+      URL.revokeObjectURL(url);
+      resolve();
+      return;
+    }
+
+    const audio = new Audio(url);
+    activeHtmlAudio = audio;
+
+    const cleanup = () => {
+      URL.revokeObjectURL(url);
+      if (activeHtmlAudio === audio) activeHtmlAudio = null;
+    };
+
+    audio.onended = () => {
+      cleanup();
+      resolve();
+    };
+    audio.onerror = () => {
+      cleanup();
+      reject(new Error('Audio playback failed'));
+    };
+
+    void audio.play().catch(reject);
+  });
+}
+
+async function speakWithBrowser(
+  text: string,
+  lang: string,
+  voice: SpeechSynthesisVoice,
+  rate: number,
+): Promise<void> {
+  const sessionId = playSessionId;
+
+  await new Promise<void>((resolve) => {
+    if (sessionId !== playSessionId) {
+      resolve();
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    applySpeechVoice(utterance, voice, lang);
+    utterance.rate = rate;
+    utterance.pitch = 1.0;
+    utterance.onend = () => resolve();
+    utterance.onerror = () => resolve();
+    window.speechSynthesis.speak(utterance);
+  });
+}
+
 function applySpeechVoice(
   utterance: SpeechSynthesisUtterance,
   voice: SpeechSynthesisVoice | undefined,
@@ -121,6 +212,26 @@ function applySpeechVoice(
 ): void {
   utterance.lang = voice?.lang ?? lang;
   if (voice) utterance.voice = voice;
+}
+
+async function speakText(
+  text: string,
+  lang: string,
+  voices: SpeechSynthesisVoice[],
+  rate: number,
+): Promise<void> {
+  if (shouldUseServerTts(lang, voices)) {
+    await playServerAudio(text, lang);
+    return;
+  }
+
+  const voice = pickVoiceForLang(voices, lang);
+  if (!voice) {
+    await playServerAudio(text, lang);
+    return;
+  }
+
+  await speakWithBrowser(text, lang, voice, rate);
 }
 
 const GRAMMAR_N_SAMPLES = ['わたし', 'がくせい', 'せんせい', 'にほんじん', 'ともだち'];
@@ -194,34 +305,20 @@ export function grammarExplanationSpeechText(grammar: {
 
 export const stopAudio = (): void => {
   playSessionId += 1;
+  stopHtmlAudio();
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
     window.speechSynthesis.cancel();
   }
 };
 
 export const playAudio = (text: string, lang = 'ja-JP'): void => {
-  if (!text || typeof window === 'undefined' || !('speechSynthesis' in window)) {
-    if (typeof window !== 'undefined' && !('speechSynthesis' in window)) {
-      console.warn('Text-to-speech not supported in this browser.');
-    }
-    return;
-  }
+  if (!text || typeof window === 'undefined') return;
 
   stopAudio();
 
-  void loadSpeechVoices().then((voices) => {
-    const voice = pickVoiceForLang(voices, lang);
-    if (!voice) {
-      console.warn(`[TTS] Không có voice cho "${lang}". Kiểm tra SPEECH_VOICE_PRIORITY trong config/speech.ts`);
-      return;
-    }
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    applySpeechVoice(utterance, voice, lang);
-    utterance.rate = speechRateForLang(lang);
-    utterance.pitch = 1.0;
-    window.speechSynthesis.speak(utterance);
-  });
+  void loadSpeechVoices()
+    .then((voices) => speakText(text, lang, voices, speechRateForLang(lang)))
+    .catch((err) => console.warn('[TTS]', err));
 };
 
 export interface PlayAudioSequenceOptions {
@@ -249,26 +346,15 @@ export function playAudioSequence(
   } = options;
 
   const items = texts.filter(Boolean);
-  if (
-    !items.length ||
-    typeof window === 'undefined' ||
-    !('speechSynthesis' in window)
-  ) {
+  if (!items.length || typeof window === 'undefined') {
     return Promise.resolve();
   }
 
   const sessionId = ++playSessionId;
   let index = 0;
+  const speechRate = rate ?? speechRateForLang(lang);
 
   return loadSpeechVoices().then((voices) => {
-    const voice = pickVoiceForLang(voices, lang);
-    if (!voice) {
-      console.warn(`[TTS] Không có voice cho "${lang}". Kiểm tra SPEECH_VOICE_PRIORITY trong config/speech.ts`);
-      return Promise.resolve();
-    }
-
-    const speechRate = rate ?? speechRateForLang(lang);
-
     return new Promise<void>((resolve) => {
       const finish = (stopped = false) => {
         if (stopped) onStop?.();
@@ -292,25 +378,21 @@ export function playAudioSequence(
         const text = items[index];
         onItem?.(index, text);
 
-        const utterance = new SpeechSynthesisUtterance(text);
-        applySpeechVoice(utterance, voice, lang);
-        utterance.rate = speechRate;
-        utterance.pitch = 1.0;
-
-        utterance.onend = () => {
-          index += 1;
-          setTimeout(speakNext, pauseMs);
-        };
-
-        utterance.onerror = () => {
-          index += 1;
-          setTimeout(speakNext, pauseMs);
-        };
-
-        window.speechSynthesis.speak(utterance);
+        void speakText(text, lang, voices, speechRate)
+          .catch((err) => console.warn('[TTS]', err))
+          .finally(() => {
+            if (!isActive()) {
+              finish(true);
+              return;
+            }
+            index += 1;
+            setTimeout(speakNext, pauseMs);
+          });
       };
 
-      window.speechSynthesis.cancel();
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
       onStart?.();
       speakNext();
     });

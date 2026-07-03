@@ -28,6 +28,8 @@ import { isEnglishEnabled } from "@app/common";
 import { NotificationController } from "./notification.controller";
 import { SupportController } from "./support.controller";
 import { CommunityController } from "./community.controller";
+import { TtsController } from "./tts.controller";
+import { TtsService } from "./tts.service";
 
 const httpImports: Array<Type | DynamicModule> = [
   PaymentModule,
@@ -61,7 +63,8 @@ const httpImports: Array<Type | DynamicModule> = [
     NotificationController,
     SupportController,
     CommunityController,
+    TtsController,
   ],
-  providers: [JlptScheduleService, UploadService],
+  providers: [JlptScheduleService, UploadService, TtsService],
 })
 export class HttpModule {}

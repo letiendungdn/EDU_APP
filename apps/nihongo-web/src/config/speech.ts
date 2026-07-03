@@ -38,3 +38,12 @@ export const SPEECH_RATE: Record<SpeechLangCode, number> = {
 
 /** false = ưu tiên Google Online (ổn định hơn khi máy chưa cài language pack). */
 export const SPEECH_PREFER_LOCAL_VOICE = false;
+
+/** Giọng Edge TTS trên server — luôn có tiếng Việt / Nhật, không phụ thuộc máy user. */
+export const SPEECH_SERVER_VOICES: Record<SpeechLangCode, string> = {
+  'vi-VN': 'vi-VN-HoaiMyNeural',
+  'ja-JP': 'ja-JP-NanamiNeural',
+};
+
+/** Ngôn ngữ luôn đọc qua server (trình duyệt thường không có voice tiếng Việt). */
+export const SPEECH_FORCE_SERVER_LANGS: readonly SpeechLangCode[] = ['vi-VN'];
