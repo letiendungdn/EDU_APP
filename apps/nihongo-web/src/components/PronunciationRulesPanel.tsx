@@ -1,7 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { playAudio } from '../utils/speech';
+import { useEffect, useState } from 'react';
+import {
+  loadSpeechVoices,
+  playAudio,
+  SPEECH_LANG,
+  speechTextFromJapanese,
+} from '../utils/speech';
 import type { JapanesePronunciationRulesPayload } from '../types/reference';
 import './PronunciationRulesPanel.css';
 
@@ -9,8 +14,42 @@ interface PronunciationRulesPanelProps {
   data: JapanesePronunciationRulesPayload;
 }
 
+function speakJapanese(jp: string) {
+  const text = speechTextFromJapanese(jp);
+  if (text) playAudio(text, SPEECH_LANG.ja);
+}
+
+function speakVietnamese(text: string) {
+  const trimmed = text.trim();
+  if (trimmed) playAudio(trimmed, SPEECH_LANG.vi);
+}
+
+function AudioButton({
+  onClick,
+  label,
+}: {
+  onClick: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      className="btn-audio-small pronunciation-rules-audio"
+      onClick={onClick}
+      title={label}
+      aria-label={label}
+    >
+      🔊
+    </button>
+  );
+}
+
 export default function PronunciationRulesPanel({ data }: PronunciationRulesPanelProps) {
   const [openId, setOpenId] = useState<string>(data.sections[0]?.id ?? '');
+
+  useEffect(() => {
+    void loadSpeechVoices();
+  }, []);
 
   return (
     <div className="pronunciation-rules">
@@ -20,7 +59,10 @@ export default function PronunciationRulesPanel({ data }: PronunciationRulesPane
         <h3 className="pronunciation-rules-tips-title">Lưu ý cho người Việt</h3>
         <ul>
           {data.tipsForVietnamese.map((tip) => (
-            <li key={tip}>{tip}</li>
+            <li key={tip}>
+              <AudioButton onClick={() => speakVietnamese(tip)} label="Đọc gợi ý tiếng Việt" />
+              {tip}
+            </li>
           ))}
         </ul>
       </div>
@@ -41,7 +83,13 @@ export default function PronunciationRulesPanel({ data }: PronunciationRulesPane
               </button>
               {isOpen && (
                 <div className="pronunciation-rules-section-body">
-                  <p className="pronunciation-rules-summary">{section.summary}</p>
+                  <p className="pronunciation-rules-summary">
+                    <AudioButton
+                      onClick={() => speakVietnamese(section.summary)}
+                      label="Đọc tóm tắt tiếng Việt"
+                    />
+                    {section.summary}
+                  </p>
                   <ul className="pronunciation-rules-points">
                     {section.points.map((point, idx) => (
                       <li key={idx}>
@@ -51,14 +99,26 @@ export default function PronunciationRulesPanel({ data }: PronunciationRulesPane
                         {(point.japanese || point.romaji) && (
                           <p className="pronunciation-rules-jp-line">
                             {point.japanese && (
-                              <span className="japanese-text">{point.japanese}</span>
+                              <>
+                                <AudioButton
+                                  onClick={() => speakJapanese(point.japanese!)}
+                                  label="Nghe mẫu tiếng Nhật"
+                                />
+                                <span className="japanese-text">{point.japanese}</span>
+                              </>
                             )}
                             {point.romaji && (
                               <span className="pronunciation-rules-romaji">{point.romaji}</span>
                             )}
                           </p>
                         )}
-                        <p>{point.explanation}</p>
+                        <p className="pronunciation-rules-explanation">
+                          <AudioButton
+                            onClick={() => speakVietnamese(point.explanation)}
+                            label="Đọc giải thích tiếng Việt"
+                          />
+                          {point.explanation}
+                        </p>
                       </li>
                     ))}
                   </ul>
@@ -68,14 +128,10 @@ export default function PronunciationRulesPanel({ data }: PronunciationRulesPane
                       <ul>
                         {section.examples.map((ex) => (
                           <li key={`${ex.japanese}-${ex.romaji}`}>
-                            <button
-                              type="button"
-                              className="pronunciation-rules-example-btn"
-                              onClick={() => playAudio(ex.japanese)}
-                              title="Nghe mẫu"
-                            >
-                              🔊
-                            </button>
+                            <AudioButton
+                              onClick={() => speakJapanese(ex.japanese)}
+                              label="Nghe ví dụ tiếng Nhật"
+                            />
                             <span className="japanese-text">{ex.japanese}</span>
                             <span className="pronunciation-rules-romaji">{ex.romaji}</span>
                             <span className="pronunciation-rules-meaning">— {ex.meaning}</span>
