@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../native/native_perf_channel.dart';
 import '../../providers.dart';
 import '../../utils/camera_image_converter.dart';
 import '../../utils/overlay_mapper.dart';
@@ -29,6 +30,7 @@ class _CameraTranslateScreenState extends ConsumerState<CameraTranslateScreen>
   List<OverlayLabel> _labels = [];
   Size _imageSize = Size.zero;
   bool _paused = false;
+  int _scanIntervalMs = 900;
 
   @override
   void initState() {
@@ -69,6 +71,8 @@ class _CameraTranslateScreenState extends ConsumerState<CameraTranslateScreen>
     }
 
     try {
+      _scanIntervalMs = await NativePerfChannel.suggestedScanIntervalMs();
+
       final cameras = await availableCameras();
       final back = cameras.firstWhere(
         (c) => c.lensDirection == CameraLensDirection.back,
@@ -125,7 +129,7 @@ class _CameraTranslateScreenState extends ConsumerState<CameraTranslateScreen>
     if (_processing || _paused) return;
 
     final now = DateTime.now();
-    if (now.difference(_lastProcessed).inMilliseconds < 900) return;
+    if (now.difference(_lastProcessed).inMilliseconds < _scanIntervalMs) return;
 
     final controller = _controller;
     final recognizer = _recognizer;
@@ -135,7 +139,10 @@ class _CameraTranslateScreenState extends ConsumerState<CameraTranslateScreen>
     _lastProcessed = now;
 
     try {
-      final input = cameraImageToInputImage(image, controller.description);
+      final input = await cameraImageToInputImageAsync(
+        image,
+        controller.description,
+      );
       if (input == null) return;
 
       _imageSize = Size(image.width.toDouble(), image.height.toDouble());

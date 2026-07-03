@@ -4,7 +4,9 @@ import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
-/// Chuyển frame camera stream → InputImage cho ML Kit.
+import '../native/native_perf_channel.dart';
+
+/// Chuyển frame camera stream → InputImage cho ML Kit (đồng bộ, pure Dart).
 InputImage? cameraImageToInputImage(
   CameraImage image,
   CameraDescription camera,
@@ -19,6 +21,32 @@ InputImage? cameraImageToInputImage(
 
   return InputImage.fromBytes(
     bytes: _concatenatePlanes(image.planes),
+    metadata: InputImageMetadata(
+      size: Size(image.width.toDouble(), image.height.toDouble()),
+      rotation: rotation,
+      format: format,
+      bytesPerRow: image.planes.first.bytesPerRow,
+    ),
+  );
+}
+
+/// Phiên bản async — Android ưu tiên gộp YUV trên native thread.
+Future<InputImage?> cameraImageToInputImageAsync(
+  CameraImage image,
+  CameraDescription camera,
+) async {
+  final rotation = _rotation(camera);
+  if (rotation == null) return null;
+
+  final format = _format(image);
+  if (format == null) return null;
+
+  if (image.planes.isEmpty) return null;
+
+  final bytes = await _concatenatePlanesAsync(image.planes);
+
+  return InputImage.fromBytes(
+    bytes: bytes,
     metadata: InputImageMetadata(
       size: Size(image.width.toDouble(), image.height.toDouble()),
       rotation: rotation,
@@ -70,4 +98,14 @@ Uint8List _concatenatePlanes(List<Plane> planes) {
     buffer.putUint8List(plane.bytes);
   }
   return buffer.done().buffer.asUint8List();
+}
+
+Future<Uint8List> _concatenatePlanesAsync(List<Plane> planes) async {
+  if (Platform.isAndroid) {
+    final native = await NativePerfChannel.concatenateYuvPlanes(
+      planes.map((p) => p.bytes).toList(),
+    );
+    if (native != null) return native;
+  }
+  return _concatenatePlanes(planes);
 }
