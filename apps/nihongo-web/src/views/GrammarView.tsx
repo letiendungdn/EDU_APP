@@ -4,7 +4,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   grammarExplanationSpeechText,
   grammarSpeechSegments,
+  loadSpeechVoices,
   playAudioSequence,
+  SPEECH_LANG,
   speechTextFromJapanese,
   stopAudio,
 } from '../utils/speech';
@@ -48,6 +50,7 @@ export default function GrammarView() {
 
   useEffect(() => {
     setAutoRead(readAutoReadPreference());
+    void loadSpeechVoices();
   }, []);
 
   useEffect(() => {
@@ -89,7 +92,7 @@ export default function GrammarView() {
     focusGrammar(index);
 
     await playAudioSequence([text], {
-      lang: 'vi-VN',
+      lang: SPEECH_LANG.vi,
       rate: 1,
       onEnd: clearFocus,
       onStop: clearFocus,
@@ -106,14 +109,14 @@ export default function GrammarView() {
 
     if (viText) {
       await playAudioSequence([viText], {
-        lang: 'vi-VN',
+        lang: SPEECH_LANG.vi,
         rate: 1,
       });
     }
 
     if (jpSegments.length) {
       await playAudioSequence(jpSegments, {
-        lang: 'ja-JP',
+        lang: SPEECH_LANG.ja,
         onItem: (itemIndex) => {
           // 0 = mẫu ngữ pháp; 1+ = ví dụ
           focusGrammar(index, itemIndex > 0 ? itemIndex - 1 : null);
@@ -135,7 +138,7 @@ export default function GrammarView() {
     const run = async () => {
       stopPlayAll();
       await playAudioSequence(segments, {
-        lang: 'vi-VN',
+        lang: SPEECH_LANG.vi,
         rate: 1,
         pauseMs: 600,
         onItem: (index) => {
@@ -165,7 +168,7 @@ export default function GrammarView() {
 
   const handlePlayAll = () => {
     startPlayAll(allSegments, {
-      lang: 'vi-VN',
+      lang: SPEECH_LANG.vi,
       rate: 1,
       pauseMs: 600,
       onItemIndex: (index) => focusGrammar(index),
@@ -181,7 +184,7 @@ export default function GrammarView() {
     stopPlayAll();
     focusGrammar(grammarIndex, exampleIndex);
     void playAudioSequence([speechTextFromJapanese(jp)], {
-      lang: 'ja-JP',
+      lang: SPEECH_LANG.ja,
       onEnd: clearFocus,
       onStop: clearFocus,
     });

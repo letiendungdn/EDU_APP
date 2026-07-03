@@ -8,13 +8,10 @@ function normalize(s: string) {
   return s.trim().toLowerCase().replace(/\s+/g, '');
 }
 
+import { playAudio } from '@/utils/speech';
+
 function speak(text: string) {
-  if (typeof window === 'undefined') return;
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = 'ja-JP';
-  utter.rate = 0.85;
-  window.speechSynthesis.speak(utter);
+  playAudio(text, 'ja-JP');
 }
 
 export default function DictationPage() {

@@ -1,4 +1,127 @@
+import {
+  SPEECH_PREFER_LOCAL_VOICE,
+  SPEECH_RATE,
+  SPEECH_VOICE_PRIORITY,
+  type SpeechLangCode,
+} from '../config/speech';
+
+export { SPEECH_LANG, SPEECH_RATE, SPEECH_VOICE_PRIORITY } from '../config/speech';
+export type { SpeechLangCode } from '../config/speech';
+
 let playSessionId = 0;
+let cachedVoices: SpeechSynthesisVoice[] | null = null;
+let voicesReadyPromise: Promise<SpeechSynthesisVoice[]> | null = null;
+
+/** Đợi danh sách voice (Chrome/Edge load bất đồng bộ qua voiceschanged). */
+export function loadSpeechVoices(): Promise<SpeechSynthesisVoice[]> {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    return Promise.resolve([]);
+  }
+
+  if (cachedVoices?.length) return Promise.resolve(cachedVoices);
+
+  if (!voicesReadyPromise) {
+    voicesReadyPromise = new Promise((resolve) => {
+      const synth = window.speechSynthesis;
+
+      const capture = () => {
+        const voices = synth.getVoices();
+        if (voices.length) {
+          cachedVoices = voices;
+          resolve(voices);
+          return true;
+        }
+        return false;
+      };
+
+      if (capture()) return;
+
+      const onChanged = () => {
+        if (capture()) synth.removeEventListener('voiceschanged', onChanged);
+      };
+      synth.addEventListener('voiceschanged', onChanged);
+
+      setTimeout(() => {
+        synth.removeEventListener('voiceschanged', onChanged);
+        cachedVoices = synth.getVoices();
+        resolve(cachedVoices);
+      }, 800);
+    });
+  }
+
+  return voicesReadyPromise;
+}
+
+function langPrefix(lang: string): string {
+  return lang.toLowerCase().split('-')[0];
+}
+
+function isVoiceForLang(voice: SpeechSynthesisVoice, lang: string): boolean {
+  const target = lang.toLowerCase();
+  const prefix = langPrefix(lang);
+  const vl = voice.lang.toLowerCase();
+  return vl === target || vl.startsWith(`${prefix}-`) || vl === prefix;
+}
+
+function voicesForLang(voices: SpeechSynthesisVoice[], lang: string): SpeechSynthesisVoice[] {
+  return voices.filter((v) => isVoiceForLang(v, lang));
+}
+
+function matchVoiceByPriority(
+  pool: SpeechSynthesisVoice[],
+  priorities: readonly string[],
+): SpeechSynthesisVoice | undefined {
+  for (const hint of priorities) {
+    const exact = pool.find((v) => v.name === hint);
+    if (exact) return exact;
+  }
+
+  const lowerHints = priorities.map((h) => h.toLowerCase());
+  for (const hint of lowerHints) {
+    const partial = pool.find((v) => v.name.toLowerCase().includes(hint));
+    if (partial) return partial;
+  }
+
+  return undefined;
+}
+
+/** Chọn voice theo config cố định; không bao giờ fallback sang tiếng Anh. */
+export function pickVoiceForLang(
+  voices: SpeechSynthesisVoice[],
+  lang: string,
+): SpeechSynthesisVoice | undefined {
+  const langCode = lang as SpeechLangCode;
+  const matches = voicesForLang(voices, lang);
+  if (!matches.length) return undefined;
+
+  const priorities = SPEECH_VOICE_PRIORITY[langCode] ?? [];
+  const fromConfig = matchVoiceByPriority(matches, priorities);
+  if (fromConfig) return fromConfig;
+
+  if (SPEECH_PREFER_LOCAL_VOICE) {
+    const local = matches.filter((v) => v.localService);
+    if (local.length) return local[0];
+  }
+
+  const remote = matches.filter((v) => !v.localService);
+  if (remote.length) return remote[0];
+
+  return matches[0];
+}
+
+export function speechRateForLang(lang: string): number {
+  const langCode = lang as SpeechLangCode;
+  return SPEECH_RATE[langCode] ?? 0.9;
+}
+
+function applySpeechVoice(
+  utterance: SpeechSynthesisUtterance,
+  voice: SpeechSynthesisVoice | undefined,
+  lang: string,
+): void {
+  utterance.lang = voice?.lang ?? lang;
+  if (voice) utterance.voice = voice;
+}
 
 const GRAMMAR_N_SAMPLES = ['わたし', 'がくせい', 'せんせい', 'にほんじん', 'ともだち'];
 const GRAMMAR_V_SAMPLES = ['いきます', 'たべます', 'のみます', 'みます', 'よみます'];
@@ -86,12 +209,19 @@ export const playAudio = (text: string, lang = 'ja-JP'): void => {
 
   stopAudio();
 
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = lang;
-  utterance.rate = 0.9;
-  utterance.pitch = 1.0;
+  void loadSpeechVoices().then((voices) => {
+    const voice = pickVoiceForLang(voices, lang);
+    if (!voice) {
+      console.warn(`[TTS] Không có voice cho "${lang}". Kiểm tra SPEECH_VOICE_PRIORITY trong config/speech.ts`);
+      return;
+    }
 
-  window.speechSynthesis.speak(utterance);
+    const utterance = new SpeechSynthesisUtterance(text);
+    applySpeechVoice(utterance, voice, lang);
+    utterance.rate = speechRateForLang(lang);
+    utterance.pitch = 1.0;
+    window.speechSynthesis.speak(utterance);
+  });
 };
 
 export interface PlayAudioSequenceOptions {
@@ -110,7 +240,7 @@ export function playAudioSequence(
 ): Promise<void> {
   const {
     lang = 'ja-JP',
-    rate = 0.9,
+    rate,
     pauseMs = 450,
     onStart,
     onItem,
@@ -130,49 +260,59 @@ export function playAudioSequence(
   const sessionId = ++playSessionId;
   let index = 0;
 
-  return new Promise((resolve) => {
-    const finish = (stopped = false) => {
-      if (stopped) onStop?.();
-      else onEnd?.();
-      resolve();
-    };
+  return loadSpeechVoices().then((voices) => {
+    const voice = pickVoiceForLang(voices, lang);
+    if (!voice) {
+      console.warn(`[TTS] Không có voice cho "${lang}". Kiểm tra SPEECH_VOICE_PRIORITY trong config/speech.ts`);
+      return Promise.resolve();
+    }
 
-    const isActive = () => sessionId === playSessionId;
+    const speechRate = rate ?? speechRateForLang(lang);
 
-    const speakNext = () => {
-      if (!isActive()) {
-        finish(true);
-        return;
-      }
-
-      if (index >= items.length) {
-        finish(false);
-        return;
-      }
-
-      const text = items[index];
-      onItem?.(index, text);
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      utterance.rate = rate;
-      utterance.pitch = 1.0;
-
-      utterance.onend = () => {
-        index += 1;
-        setTimeout(speakNext, pauseMs);
+    return new Promise<void>((resolve) => {
+      const finish = (stopped = false) => {
+        if (stopped) onStop?.();
+        else onEnd?.();
+        resolve();
       };
 
-      utterance.onerror = () => {
-        index += 1;
-        setTimeout(speakNext, pauseMs);
+      const isActive = () => sessionId === playSessionId;
+
+      const speakNext = () => {
+        if (!isActive()) {
+          finish(true);
+          return;
+        }
+
+        if (index >= items.length) {
+          finish(false);
+          return;
+        }
+
+        const text = items[index];
+        onItem?.(index, text);
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        applySpeechVoice(utterance, voice, lang);
+        utterance.rate = speechRate;
+        utterance.pitch = 1.0;
+
+        utterance.onend = () => {
+          index += 1;
+          setTimeout(speakNext, pauseMs);
+        };
+
+        utterance.onerror = () => {
+          index += 1;
+          setTimeout(speakNext, pauseMs);
+        };
+
+        window.speechSynthesis.speak(utterance);
       };
 
-      window.speechSynthesis.speak(utterance);
-    };
-
-    window.speechSynthesis.cancel();
-    onStart?.();
-    speakNext();
+      window.speechSynthesis.cancel();
+      onStart?.();
+      speakNext();
+    });
   });
 }

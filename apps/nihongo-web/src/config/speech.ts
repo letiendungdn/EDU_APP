@@ -1,0 +1,40 @@
+/**
+ * Cấu hình TTS cố định trên web.
+ * Sửa tại đây khi cần đổi giọng / tốc độ — không phụ thuộc voice mặc định của OS.
+ */
+export const SPEECH_LANG = {
+  vi: 'vi-VN',
+  ja: 'ja-JP',
+} as const;
+
+export type SpeechLangCode = (typeof SPEECH_LANG)[keyof typeof SPEECH_LANG];
+
+/** Thứ tự ưu tiên voice theo từng ngôn ngữ (khớp partial, không phân biệt hoa thường). */
+export const SPEECH_VOICE_PRIORITY: Record<SpeechLangCode, readonly string[]> = {
+  'vi-VN': [
+    'Microsoft HoaiMy Online (Natural)',
+    'Microsoft HoaiMy',
+    'Google Tiếng Việt',
+    'Google Vietnamese',
+    'Vietnamese',
+  ],
+  'ja-JP': [
+    'Microsoft Nanami Online (Natural)',
+    'Microsoft Nanami',
+    'Microsoft Ichiro',
+    'Microsoft Haruka',
+    'Microsoft Ayumi',
+    'Google 日本語',
+    'Google Japanese',
+    'Japanese',
+  ],
+};
+
+/** Tốc độ đọc theo ngôn ngữ. */
+export const SPEECH_RATE: Record<SpeechLangCode, number> = {
+  'vi-VN': 1,
+  'ja-JP': 0.9,
+};
+
+/** false = ưu tiên Google Online (ổn định hơn khi máy chưa cài language pack). */
+export const SPEECH_PREFER_LOCAL_VOICE = false;
