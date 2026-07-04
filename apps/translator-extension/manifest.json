@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Tri Ngữ Translator",
+  "version": "1.0.0",
+  "description": "Dịch nhanh Việt–Anh–Nhật khi bôi đen, có phát âm và ví dụ trong câu",
+  "icons": {
+    "16": "icons/icon16.svg",
+    "48": "icons/icon48.svg",
+    "128": "icons/icon128.svg"
+  },
+  "action": {
+    "default_popup": "popup/index.html",
+    "default_icon": { "48": "icons/icon48.svg" }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/index.js"],
+      "css": ["content/index.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["storage"],
+  "web_accessible_resources": [
+    {
+      "resources": ["content/index.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
