@@ -6,10 +6,6 @@ export const MEDIA = {
   kanji: '/media/kanji',
 } as const;
 
-export function openmojiCdnUrl(code: string): string {
-  return `https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@${OPENMOJI_VERSION}/color/svg/${code.toUpperCase()}.svg`;
-}
-
 export function openmojiLocalPath(code: string): string {
   return `${MEDIA.openmoji}/${code.toUpperCase()}.svg`;
 }
@@ -26,16 +22,17 @@ export function kanjivgHexVariants(char: string): string[] {
   return [...new Set([five, base, base.padStart(4, '0')])];
 }
 
-export function kanjivgCdnUrl(hex: string): string {
-  return `https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/${hex.toLowerCase()}.svg`;
-}
-
 export function kanjivgLocalPath(hex: string): string {
   return `${MEDIA.kanjivg}/${hex.toLowerCase()}.svg`;
 }
 
 export function kanjiStrokeSvgUrl(char: string): string {
   return kanjivgLocalPath(kanjivgHex(char));
+}
+
+/** Các đường dẫn local để fetch stroke SVG (thử nhiều biến thể tên file). */
+export function kanjivgStrokeFetchUrls(char: string): string[] {
+  return [...new Set(kanjivgHexVariants(char).map((hex) => kanjivgLocalPath(hex)))];
 }
 
 /** vnjpclub.com/... → /media/kanji/... */

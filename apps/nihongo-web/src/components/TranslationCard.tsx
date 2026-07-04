@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { playAudio, stopAudio } from '@/utils/speech';
 import './TranslationCard.css';
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -173,14 +174,11 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
   }, [result, error, anchorX, anchorY]);
 
   const speak = useCallback((word: string, lang: string) => {
-    window.speechSynthesis.cancel();
-    const utt  = new SpeechSynthesisUtterance(word);
-    utt.lang   = SPEECH_LANG[lang] ?? 'en-US';
-    utt.rate   = lang === 'ja' ? 0.8 : 0.9;
+    stopAudio();
     setSpeaking(lang);
-    utt.onend  = () => setSpeaking(null);
-    utt.onerror = () => setSpeaking(null);
-    window.speechSynthesis.speak(utt);
+    playAudio(word, SPEECH_LANG[lang] ?? 'en-US');
+    // playAudio là fire-and-forget; reset icon sau ~3s nếu không có callback
+    window.setTimeout(() => setSpeaking((cur) => (cur === lang ? null : cur)), 3000);
   }, []);
 
   return (

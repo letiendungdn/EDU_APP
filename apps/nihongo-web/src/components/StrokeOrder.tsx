@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { kanjivgHexVariants, kanjivgLocalPath } from '@edu/vocab-images';
+import { kanjivgStrokeFetchUrls } from '@edu/vocab-images';
 import { getStrokeText } from '../utils/japanese';
 
 function extractSvgMarkup(svgText: string): string {
@@ -13,7 +13,7 @@ function extractSvgMarkup(svgText: string): string {
 }
 
 async function fetchStrokeSvg(char: string): Promise<string> {
-  const urls = kanjivgHexVariants(char).map((hex) => kanjivgLocalPath(hex));
+  const urls = kanjivgStrokeFetchUrls(char);
 
   for (const url of urls) {
     try {

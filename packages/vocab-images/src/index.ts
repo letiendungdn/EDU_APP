@@ -5,11 +5,10 @@ export {
   OPENMOJI_VERSION,
   kanjiStrokeSvgUrl,
   kanjiMnemonicLocalPath,
-  kanjivgCdnUrl,
   kanjivgHex,
   kanjivgHexVariants,
   kanjivgLocalPath,
-  openmojiCdnUrl,
+  kanjivgStrokeFetchUrls,
   openmojiLocalPath,
   toLocalImageUrl,
 } from './media-paths';

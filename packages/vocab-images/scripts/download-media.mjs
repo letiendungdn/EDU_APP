@@ -44,7 +44,7 @@ function extractKanjiChars() {
   const chars = new Set();
   try {
     const out = execSync(
-      'docker exec edu-postgres psql -U nihongo nihongo -t -A -c "SELECT DISTINCT \\"character\\" FROM \\"KanjiEntry\\""',
+      'docker exec edu-postgres-nihongo psql -U nihongo nihongo -t -A -c "SELECT DISTINCT \\"character\\" FROM \\"KanjiEntry\\""',
       { encoding: 'utf8' },
     );
     for (const line of out.split('\n')) {
@@ -89,7 +89,7 @@ function extractVocabStrokeChars() {
 
   try {
     const out = execSync(
-      `docker exec edu-postgres psql -U nihongo nihongo -t -A -c "SELECT DISTINCT kanji, kana FROM \\"Vocabulary\\" WHERE kanji IS NOT NULL OR kana IS NOT NULL"`,
+      `docker exec edu-postgres-nihongo psql -U nihongo nihongo -t -A -c "SELECT DISTINCT kanji, kana FROM \\"Vocabulary\\" WHERE kanji IS NOT NULL OR kana IS NOT NULL"`,
       { encoding: 'utf8' },
     );
     for (const line of out.split('\n')) {
@@ -118,11 +118,58 @@ function extractKanaChartChars() {
 
   try {
     const out = execSync(
-      `docker exec edu-postgres psql -U nihongo nihongo -t -A -c "SELECT DISTINCT kana FROM \\"KanaCell\\""`,
+      `docker exec edu-postgres-nihongo psql -U nihongo nihongo -t -A -c "SELECT DISTINCT kana FROM \\"KanaCell\\""`,
       { encoding: 'utf8' },
     );
     for (const line of out.split('\n')) {
       for (const ch of line.trim()) chars.add(ch);
+    }
+  } catch {
+    /* seed sql fallback */
+  }
+
+  return [...chars];
+}
+
+/** Kanji/kana từ bảng Counter (vd. 零) — không nằm trong KanjiEntry */
+function extractCounterItemChars() {
+  const chars = new Set();
+
+  const addFromText = (text) => {
+    if (!text) return;
+    for (const ch of text.replace(/[~～\s]/g, '')) {
+      const code = ch.codePointAt(0) ?? 0;
+      if (
+        (code >= 0x3040 && code <= 0x309f) ||
+        (code >= 0x30a0 && code <= 0x30ff) ||
+        (code >= 0x4e00 && code <= 0x9fff)
+      ) {
+        chars.add(ch);
+      }
+    }
+  };
+
+  if (fs.existsSync(SEED_SQL)) {
+    const sql = fs.readFileSync(SEED_SQL, 'utf8');
+    for (const m of sql.matchAll(
+      /INSERT INTO public\."CounterItem"[\s\S]*?VALUES \(\d+, \d+, '[^']*', (NULL|'[^']*'), ('[^']*')/g,
+    )) {
+      const kanji = m[1] === 'NULL' ? null : m[1].slice(1, -1);
+      const kana = m[2].slice(1, -1);
+      addFromText(kanji);
+      addFromText(kana);
+    }
+  }
+
+  try {
+    const out = execSync(
+      `docker exec edu-postgres-nihongo psql -U nihongo nihongo -t -A -c "SELECT DISTINCT kanji, kana FROM \\"CounterItem\\""`,
+      { encoding: 'utf8' },
+    );
+    for (const line of out.split('\n')) {
+      const [kanji, kana] = line.split('|');
+      addFromText(kanji);
+      addFromText(kana);
     }
   } catch {
     /* seed sql fallback */
@@ -140,7 +187,7 @@ function extractKanjiMnemonicUrls() {
   }
   try {
     const out = execSync(
-      `docker exec edu-postgres psql -U nihongo nihongo -t -A -c "SELECT DISTINCT \\"imageUrl\\" FROM \\"KanjiEntry\\" WHERE \\"imageUrl\\" IS NOT NULL"`,
+      `docker exec edu-postgres-nihongo psql -U nihongo nihongo -t -A -c "SELECT DISTINCT \\"imageUrl\\" FROM \\"KanjiEntry\\" WHERE \\"imageUrl\\" IS NOT NULL"`,
       { encoding: 'utf8' },
     );
     for (const line of out.split('\n')) {
@@ -182,11 +229,12 @@ async function main() {
     ...extractKanjiChars(),
     ...extractVocabStrokeChars(),
     ...extractKanaChartChars(),
+    ...extractCounterItemChars(),
   ]);
   for (const char of strokeChars) {
     const hex = char.codePointAt(0).toString(16).padStart(5, '0');
     const dest = path.join(MEDIA, 'kanjivg', `${hex}.svg`);
-    const url = `https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/${hex}.svg`;
+    const url = `https://cdn.jsdelivr.net/gh/KanjiVG/kanjivg@master/kanji/${hex}.svg`;
     try {
       const r = await download(url, dest);
       if (r === 'skip') skip++;

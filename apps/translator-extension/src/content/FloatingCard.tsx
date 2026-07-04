@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { BgResponse, TranslationResult } from '../types';
+import { speakText, stopSpeech } from '../utils/speak';
 
 interface Props {
   text: string;
@@ -15,8 +16,6 @@ const LANG = {
   en: { flag: '🇬🇧', label: 'English',    accent: '#4ecdc4' },
   ja: { flag: '🇯🇵', label: '日本語',      accent: '#ffb347' },
 } as const;
-
-const VOICE_LANG: Record<string, string> = { vi: 'vi-VN', en: 'en-US', ja: 'ja-JP' };
 
 export default function FloatingCard({ text, anchorX, anchorY, onClose }: Props) {
   const [result, setResult]       = useState<TranslationResult | null>(null);
@@ -55,14 +54,9 @@ export default function FloatingCard({ text, anchorX, anchorY, onClose }: Props)
   }, [result, error]);
 
   const speak = useCallback((word: string, lang: 'vi' | 'en' | 'ja') => {
-    window.speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(word);
-    utt.lang = VOICE_LANG[lang];
-    utt.rate = lang === 'ja' ? 0.8 : 0.9;
+    stopSpeech();
     setSpeaking(lang);
-    utt.onend = () => setSpeaking(null);
-    utt.onerror = () => setSpeaking(null);
-    window.speechSynthesis.speak(utt);
+    void speakText(word, lang).finally(() => setSpeaking(null));
   }, []);
 
   return (
