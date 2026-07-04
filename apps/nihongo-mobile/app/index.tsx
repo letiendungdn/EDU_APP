@@ -32,6 +32,11 @@ export default function HomeScreen() {
         onPress={() => router.push('/camera-translate')}
       />
       <NavCard
+        title="Livestream"
+        subtitle="Xem coach dạy trực tiếp"
+        onPress={() => router.push('/live')}
+      />
+      <NavCard
         title="Đăng nhập"
         subtitle="Sync tiến độ lên server"
         onPress={() => router.push('/login')}

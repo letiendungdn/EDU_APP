@@ -32,6 +32,7 @@ fun HomeScreen(
     onSrs: () -> Unit,
     onLogin: () -> Unit,
     onCamera: () -> Unit,
+    onLive: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val isOnline by viewModel.isOnline.collectAsStateWithLifecycle(initialValue = true)
@@ -81,6 +82,13 @@ fun HomeScreen(
                     title = "Dịch camera",
                     subtitle = "Nhận chữ & dịch trực tiếp trên camera",
                     onClick = onCamera,
+                )
+            }
+            item {
+                NavCard(
+                    title = "Livestream",
+                    subtitle = "Xem / phát live Nihongo (LiveKit)",
+                    onClick = onLive,
                 )
             }
             item {

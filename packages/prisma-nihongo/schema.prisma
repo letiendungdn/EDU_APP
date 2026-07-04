@@ -566,8 +566,23 @@ model User {
   createdLearnerChats LearnerChatRoom[]   @relation("CreatedLearnerChats")
   learnerChatMembers  LearnerChatMember[]
   learnerChatMessages LearnerChatMessage[] @relation("LearnerChatMessages")
+  liveSessions        LiveSession[]
 
   @@index([role])
+}
+
+model LiveSession {
+  id        Int       @id @default(autoincrement())
+  roomName  String    @unique
+  coachId   Int
+  coach     User      @relation(fields: [coachId], references: [id])
+  title     String
+  status    String    @default("LIVE")
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+
+  @@index([status])
+  @@index([coachId])
 }
 
 model RefreshToken {

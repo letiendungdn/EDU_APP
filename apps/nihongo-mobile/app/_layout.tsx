@@ -24,6 +24,23 @@ export default function RootLayout() {
             headerTintColor: '#fff',
           }}
         />
+        <Stack.Screen name="live/index" options={{ title: 'Livestream' }} />
+        <Stack.Screen
+          name="live/viewer"
+          options={{
+            title: 'Xem live',
+            headerStyle: { backgroundColor: '#111' },
+            headerTintColor: '#fff',
+          }}
+        />
+        <Stack.Screen
+          name="live/host"
+          options={{
+            title: 'Phát live',
+            headerStyle: { backgroundColor: '#111' },
+            headerTintColor: '#fff',
+          }}
+        />
       </Stack>
     </>
   );

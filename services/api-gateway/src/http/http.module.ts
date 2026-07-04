@@ -32,6 +32,8 @@ import { TtsController } from "./tts.controller";
 import { TtsService } from "./tts.service";
 import { TranslateController } from "./translate.controller";
 import { TranslateService } from "./translate.service";
+import { LiveController } from "./live.controller";
+import { LiveService } from "./live.service";
 
 const httpImports: Array<Type | DynamicModule> = [
   PaymentModule,
@@ -67,7 +69,8 @@ const httpImports: Array<Type | DynamicModule> = [
     CommunityController,
     TtsController,
     TranslateController,
+    LiveController,
   ],
-  providers: [JlptScheduleService, UploadService, TtsService, TranslateService],
+  providers: [JlptScheduleService, UploadService, TtsService, TranslateService, LiveService],
 })
 export class HttpModule {}

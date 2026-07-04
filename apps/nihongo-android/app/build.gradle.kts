@@ -94,4 +94,9 @@ dependencies {
     implementation("com.google.mlkit:text-recognition-japanese:16.0.1")
 
     implementation("com.google.accompanist:accompanist-permissions:0.36.0")
+
+    val liveKitVersion = "2.26.0"
+    val liveKitComponentsVersion = "2.4.0"
+    implementation("io.livekit:livekit-android:$liveKitVersion")
+    implementation("io.livekit:livekit-android-compose-components:$liveKitComponentsVersion")
 }

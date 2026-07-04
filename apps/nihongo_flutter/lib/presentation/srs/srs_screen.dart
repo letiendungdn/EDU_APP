@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../domain/repository/result.dart';
 import '../../providers.dart';
 import '../../utils/srs_algorithm.dart';
+import '../../utils/tts_service.dart';
 
 class SrsScreen extends ConsumerStatefulWidget {
   const SrsScreen({super.key});
@@ -14,6 +16,7 @@ class SrsScreen extends ConsumerStatefulWidget {
 
 class _SrsScreenState extends ConsumerState<SrsScreen> {
   bool _showAnswer = false;
+  bool _speaking = false;
 
   Future<void> _rate(int quality) async {
     final cards = ref.read(reviewQueueProvider).valueOrNull;
@@ -21,8 +24,7 @@ class _SrsScreenState extends ConsumerState<SrsScreen> {
 
     final current = cards.first;
     final updated = SrsAlgorithm.calculateNextReview(current.card, quality);
-    final result =
-        await ref.read(vocabRepositoryProvider).updateSrsCard(updated);
+    final result = await ref.read(vocabRepositoryProvider).updateSrsCard(updated);
 
     if (!mounted) return;
     if (result is Failure) {
@@ -30,8 +32,13 @@ class _SrsScreenState extends ConsumerState<SrsScreen> {
         SnackBar(content: Text('Lỗi lưu: ${result.error}')),
       );
     }
-
     setState(() => _showAnswer = false);
+  }
+
+  Future<void> _speak(String text) async {
+    setState(() => _speaking = true);
+    await TtsService.instance.speak(text);
+    if (mounted) setState(() => _speaking = false);
   }
 
   @override
@@ -72,11 +79,13 @@ class _SrsScreenState extends ConsumerState<SrsScreen> {
           }
 
           final card = cards.first;
+          final displayText = card.kanji != null && card.kanji!.isNotEmpty
+              ? card.kanji!
+              : card.kana;
+
           return Column(
             children: [
-              LinearProgressIndicator(
-                value: 1 / (cards.length + 1),
-              ),
+              LinearProgressIndicator(value: 1 / (cards.length + 1)),
               Expanded(
                 child: Card(
                   margin: const EdgeInsets.all(16),
@@ -87,27 +96,55 @@ class _SrsScreenState extends ConsumerState<SrsScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            card.kanji != null && card.kanji!.isNotEmpty
-                                ? card.kanji!
-                                : card.kana,
+                            displayText,
                             style: Theme.of(context).textTheme.displayMedium,
                           ),
                           if (card.kanji != null && card.kanji!.isNotEmpty)
-                            Text(
-                              card.kana,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
+                            Text(card.kana,
+                                style: Theme.of(context).textTheme.titleLarge),
                           if (_showAnswer) ...[
                             const SizedBox(height: 16),
-                            Text(
-                              card.meaning,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            Text(
-                              card.romaji,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
+                            Text(card.meaning,
+                                style: Theme.of(context).textTheme.titleMedium),
+                            Text(card.romaji,
+                                style: Theme.of(context).textTheme.bodyMedium),
                           ],
+                          const SizedBox(height: 20),
+                          // TTS + Pronunciation row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Nghe phát âm
+                              IconButton.filled(
+                                onPressed: _speaking
+                                    ? null
+                                    : () => _speak(card.kana),
+                                icon: _speaking
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white),
+                                      )
+                                    : const Icon(Icons.volume_up),
+                                tooltip: 'Nghe phát âm',
+                              ),
+                              const SizedBox(width: 12),
+                              // Luyện phát âm
+                              IconButton.outlined(
+                                onPressed: () => context.push(
+                                  '/pronunciation',
+                                  extra: {
+                                    'kana': card.kana,
+                                    'meaning': card.meaning,
+                                  },
+                                ),
+                                icon: const Icon(Icons.mic),
+                                tooltip: 'Luyện phát âm',
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -115,13 +152,16 @@ class _SrsScreenState extends ConsumerState<SrsScreen> {
                 ),
               ),
               if (!_showAnswer)
-                FilledButton(
-                  onPressed: () => setState(() => _showAnswer = true),
-                  child: const Text('Xem đáp án'),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: FilledButton(
+                    onPressed: () => setState(() => _showAnswer = true),
+                    child: const Text('Xem đáp án'),
+                  ),
                 )
               else
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                   child: Row(
                     children: [
                       Expanded(
@@ -140,7 +180,8 @@ class _SrsScreenState extends ConsumerState<SrsScreen> {
                     ],
                   ),
                 ),
-              Text('Còn ${cards.length} thẻ', style: Theme.of(context).textTheme.bodySmall),
+              Text('Còn ${cards.length} thẻ',
+                  style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: 8),
             ],
           );

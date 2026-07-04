@@ -2,8 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'data/local/app_database.dart';
 import 'data/local/token_store.dart';
+import 'data/remote/ai_tutor_api.dart';
 import 'data/remote/auth_api.dart';
 import 'data/remote/dio_factory.dart';
+import 'data/remote/live_api.dart';
 import 'data/remote/translate_api.dart';
 import 'data/remote/vocabulary_api.dart';
 import 'data/repository/vocabulary_repository_impl.dart';
@@ -32,6 +34,10 @@ final authApiProvider = Provider(
 
 final translateApiProvider = Provider(
   (ref) => TranslateApi(ref.watch(dioProvider)),
+);
+
+final liveApiProvider = Provider(
+  (ref) => LiveApi(ref.watch(dioProvider)),
 );
 
 final networkMonitorProvider = Provider((ref) => NetworkMonitor());
@@ -68,3 +74,7 @@ final vocabByLessonProvider =
 });
 
 final selectedLessonProvider = StateProvider<int>((ref) => 1);
+
+final aiTutorApiProvider = Provider(
+  (ref) => AiTutorApi(ref.watch(dioProvider)),
+);

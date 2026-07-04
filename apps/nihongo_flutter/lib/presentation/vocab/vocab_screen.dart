@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/repository/result.dart';
 import '../../providers.dart';
+import '../../utils/tts_service.dart';
 
 class VocabScreen extends ConsumerStatefulWidget {
   const VocabScreen({super.key});
@@ -13,12 +14,12 @@ class VocabScreen extends ConsumerStatefulWidget {
 
 class _VocabScreenState extends ConsumerState<VocabScreen> {
   bool _syncing = false;
+  String? _speakingId; // track which tile is playing
 
   Future<void> _syncLesson() async {
     setState(() => _syncing = true);
     final lesson = ref.read(selectedLessonProvider);
-    final result =
-        await ref.read(vocabRepositoryProvider).syncLesson(lesson);
+    final result = await ref.read(vocabRepositoryProvider).syncLesson(lesson);
     if (!mounted) return;
     setState(() => _syncing = false);
 
@@ -26,8 +27,13 @@ class _VocabScreenState extends ConsumerState<VocabScreen> {
       Success() => 'Đã tải bài $lesson',
       Failure(:final error) => 'Lỗi: $error',
     };
-
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _speak(String id, String text) async {
+    setState(() => _speakingId = id);
+    await TtsService.instance.speak(text);
+    if (mounted) setState(() => _speakingId = null);
   }
 
   @override
@@ -95,6 +101,8 @@ class _VocabScreenState extends ConsumerState<VocabScreen> {
                   separatorBuilder: (_, __) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final v = vocabList[index];
+                    final speakText = v.kana;
+                    final isPlaying = _speakingId == '${v.id}';
                     return ListTile(
                       title: Text(
                         v.kanji != null && v.kanji!.isNotEmpty
@@ -103,6 +111,19 @@ class _VocabScreenState extends ConsumerState<VocabScreen> {
                         style: const TextStyle(fontSize: 18),
                       ),
                       subtitle: Text('${v.meaning} · ${v.romaji}'),
+                      trailing: IconButton(
+                        icon: isPlaying
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Icon(Icons.volume_up_outlined),
+                        onPressed: isPlaying
+                            ? null
+                            : () => _speak('${v.id}', speakText),
+                        tooltip: 'Nghe phát âm',
+                      ),
                     );
                   },
                 );

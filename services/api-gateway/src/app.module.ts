@@ -25,6 +25,7 @@ import { MicroservicesModule } from "./microservices/microservices.module";
 import { HealthModule } from "./health/health.module";
 import { HttpModule } from "./http/http.module";
 import { RealtimeModule } from "./realtime/realtime.module";
+import { AiModule } from "./ai/ai.module";
 import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
 
 @Module({
@@ -55,6 +56,7 @@ import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
     HealthModule,
     RealtimeModule,
     HttpModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [

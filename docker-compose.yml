@@ -178,6 +178,10 @@ services:
       AWS_S3_BUCKET: ${AWS_S3_BUCKET:-edu-app-dev}
       ENGLISH_ENABLED: ${ENGLISH_ENABLED:-false}
       ENGLISH_DATABASE_URL: ${ENGLISH_DATABASE_URL:-postgresql://english:${ENGLISH_POSTGRES_PASSWORD:-english}@postgres-english:5432/english_learning}
+      LIVEKIT_URL: ${LIVEKIT_URL:-http://livekit:7880}
+      LIVEKIT_PUBLIC_URL: ${LIVEKIT_PUBLIC_URL:-ws://localhost:7880}
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-devkey}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-devsecret}
     depends_on:
       postgres-nihongo:
         condition: service_healthy
@@ -189,6 +193,20 @@ services:
         condition: service_started
       redis:
         condition: service_started
+      livekit:
+        condition: service_started
+
+  livekit:
+    image: livekit/livekit-server:v1.8
+    container_name: edu-livekit
+    restart: unless-stopped
+    command: --config /etc/livekit.yaml --dev
+    ports:
+      - '7880:7880'
+      - '7881:7881'
+      - '50100-50200:50100-50200/udp'
+    volumes:
+      - ./infra/livekit.yaml:/etc/livekit.yaml:ro
 
   signaling-service:
     build:
