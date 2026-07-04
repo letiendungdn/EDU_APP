@@ -32,6 +32,8 @@ import { TtsController } from "./tts.controller";
 import { TtsService } from "./tts.service";
 import { TranslateController } from "./translate.controller";
 import { TranslateService } from "./translate.service";
+import { KanaRomajiController } from "./kana-romaji.controller";
+import { KanaRomajiService } from "./kana-romaji.service";
 import { LiveController } from "./live.controller";
 import { LiveService } from "./live.service";
 
@@ -69,8 +71,9 @@ const httpImports: Array<Type | DynamicModule> = [
     CommunityController,
     TtsController,
     TranslateController,
+    KanaRomajiController,
     LiveController,
   ],
-  providers: [JlptScheduleService, UploadService, TtsService, TranslateService, LiveService],
+  providers: [JlptScheduleService, UploadService, TtsService, TranslateService, KanaRomajiService, LiveService],
 })
 export class HttpModule {}

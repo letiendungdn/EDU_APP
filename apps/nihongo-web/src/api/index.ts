@@ -30,6 +30,7 @@ import type {
 } from '../types/api';
 import type {
   DailyListeningPayload,
+  BookAudioPayload,
   JapaneseCountersPayload,
   JapanesePronunciationRulesPayload,
   JlptDaNangSchedulePayload,
@@ -134,6 +135,10 @@ export function fetchJapanesePronunciationRules() {
 
 export function fetchDailyListeningConfig() {
   return fetchReference<DailyListeningPayload>('daily-listening');
+}
+
+export function fetchBookAudioFiles() {
+  return fetchReference<BookAudioPayload>('book-audio-files');
 }
 
 export function fetchJlptRoadmap() {

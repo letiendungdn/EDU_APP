@@ -237,6 +237,8 @@ services:
       API_URL: http://api-gateway:3000
       ENGLISH_APP_INTERNAL_URL: http://english-web:3001
       ENGLISH_APP_PUBLIC_URL: ${ENGLISH_APP_PUBLIC_URL:-http://english.localhost:8080}
+    volumes:
+      - ./apps/nihongo-web/public/media/book-audio:/app/apps/nihongo-web/public/media/book-audio
     depends_on:
       - api-gateway
 

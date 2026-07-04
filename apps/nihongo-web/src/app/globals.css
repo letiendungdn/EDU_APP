@@ -160,6 +160,63 @@ a {
   pointer-events: none;
 }
 
+.app-header--collapsed {
+  padding: 0.65rem 0;
+}
+
+.header-mini {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.logo--mini {
+  font-size: 1.1rem;
+}
+
+.logo--mini .logo-icon {
+  font-size: 1.35rem;
+}
+
+.header-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.header-toggle-btn:hover {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  background: rgba(255, 107, 107, 0.08);
+}
+
+.header-toggle-btn--collapse {
+  position: absolute;
+  right: max(1rem, calc((100vw - 1200px) / 2 + 1rem));
+  bottom: 0;
+  transform: translateY(50%);
+  padding: 0.4rem 0.55rem;
+  z-index: 101;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 768px) {
+  .header-toggle-btn--collapse {
+    right: 0.75rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .app-header {
     transition: none;

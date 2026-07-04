@@ -21,6 +21,7 @@ import {
   fetchExercises,
   fetchJlptDaNangSchedule,
   fetchDailyListeningConfig,
+  fetchBookAudioFiles,
   fetchJapaneseCounters,
   fetchJapanesePronunciationRules,
   fetchJlptRoadmap,
@@ -66,6 +67,7 @@ export const queryKeys = {
   japaneseCounters: ['reference', 'japanese-counters'] as const,
   japanesePronunciationRules: ['reference', 'japanese-pronunciation-rules'] as const,
   dailyListeningConfig: ['reference', 'daily-listening'] as const,
+  bookAudioFiles: ['reference', 'book-audio-files'] as const,
   jlptRoadmap: ['reference', 'jlpt-roadmap'] as const,
   jlptDaNangStatic: ['reference', 'jlpt-danang-schedule'] as const,
   authMe: ['auth', 'me'] as const,
@@ -167,6 +169,14 @@ export function useDailyListeningConfigQuery() {
   return useQuery({
     queryKey: queryKeys.dailyListeningConfig,
     queryFn: fetchDailyListeningConfig,
+    staleTime: STALE_5M,
+  });
+}
+
+export function useBookAudioFilesQuery() {
+  return useQuery({
+    queryKey: queryKeys.bookAudioFiles,
+    queryFn: fetchBookAudioFiles,
     staleTime: STALE_5M,
   });
 }

@@ -187,6 +187,16 @@ model KanaCell {
   @@index([sectionId])
 }
 
+/// Tra cứu kana → romaji (dùng cho dịch nhanh, TTS overlay)
+model KanaRomaji {
+  id        Int      @id @default(autoincrement())
+  kana      String   @unique
+  romaji    String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // ─────────────────────────────────────────────
 // Japanese counters
 // ─────────────────────────────────────────────
@@ -307,6 +317,68 @@ model ListeningPreset {
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+/// File nghe / link sách (Mailee Books & tương tự)
+model BookAudioMeta {
+  id        Int      @id @default(1)
+  sourceUrl String
+  publisher String
+  updatedAt DateTime @updatedAt
+}
+
+model BookAudioItem {
+  id          Int      @id @default(autoincrement())
+  externalKey String   @unique
+  level       String
+  title       String
+  url         String
+  note        String?
+  listNo      Int?
+  sortOrder   Int      @default(0)
+  driveId     String?
+  driveKind   String?
+  folderId    Int?
+  folder      BookAudioDriveFolder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  files       BookAudioFile[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([level, sortOrder])
+  @@index([folderId])
+  @@index([driveId])
+}
+
+model BookAudioDriveFolder {
+  id           Int              @id @default(autoincrement())
+  driveId      String           @unique
+  title        String?
+  localPath    String?
+  fileCount    Int              @default(0)
+  downloadedAt DateTime?
+  items        BookAudioItem[]
+  files        BookAudioFile[]
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model BookAudioFile {
+  id          Int                   @id @default(autoincrement())
+  folderId    Int?
+  folder      BookAudioDriveFolder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  itemId      Int?
+  item        BookAudioItem?        @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  driveFileId String?
+  fileName    String
+  localPath   String
+  mimeType    String?
+  sizeBytes   Int?
+  sortOrder   Int                   @default(0)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@index([folderId, sortOrder])
+  @@index([itemId, sortOrder])
 }
 
 // ─────────────────────────────────────────────

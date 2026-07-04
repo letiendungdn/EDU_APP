@@ -7,6 +7,7 @@ const SLUGS = [
   "japanese-counters",
   "japanese-pronunciation-rules",
   "daily-listening",
+  "book-audio-files",
   "jlpt-roadmap",
   "jlpt-danang-schedule",
 ] as const;
@@ -45,6 +46,8 @@ export class ReferenceService {
         return this.getJapanesePronunciationRules();
       case "daily-listening":
         return this.getDailyListening();
+      case "book-audio-files":
+        return this.getBookAudioFiles();
       case "jlpt-roadmap":
         return this.getJlptRoadmap();
       case "jlpt-danang-schedule":
@@ -60,6 +63,7 @@ export class ReferenceService {
       "japanese-counters": "Đếm số & thứ tự tiếng Nhật",
       "japanese-pronunciation-rules": "Quy tắc phát âm tiếng Nhật",
       "daily-listening": "Nghe mỗi ngày — podcast & preset",
+      "book-audio-files": "File nghe sách tiếng Nhật",
       "jlpt-roadmap": "Lộ trình JLPT",
       "jlpt-danang-schedule": "Lịch thi JLPT Đà Nẵng",
     };
@@ -206,6 +210,77 @@ export class ReferenceService {
         lessonTo: p.lessonTo,
       })),
     };
+  }
+
+  private async getBookAudioFiles() {
+    const [meta, items] = await Promise.all([
+      this.prisma.bookAudioMeta.findUnique({ where: { id: 1 } }),
+      this.prisma.bookAudioItem.findMany({
+        orderBy: { sortOrder: "asc" },
+        include: {
+          folder: {
+            include: { files: { orderBy: { sortOrder: "asc" } } },
+          },
+          files: { orderBy: { sortOrder: "asc" } },
+        },
+      }),
+    ]);
+
+    if (!meta) {
+      throw new NotFoundException("Book audio files not seeded");
+    }
+
+    const levelOrder = ["N5", "N4", "N3", "N2", "N1", "OTHER", "ANSWERS"];
+    const grouped = new Map<string, typeof items>();
+    for (const item of items) {
+      const list = grouped.get(item.level) ?? [];
+      list.push(item);
+      grouped.set(item.level, list);
+    }
+
+    return {
+      sourceUrl: meta.sourceUrl,
+      publisher: meta.publisher,
+      sections: levelOrder
+        .filter((level) => grouped.has(level))
+        .map((level) => ({
+          level,
+          label: this.bookAudioLevelLabel(level),
+          items: (grouped.get(level) ?? []).map((item) => {
+            const localFiles =
+              item.files.length > 0
+                ? item.files
+                : (item.folder?.files ?? []);
+            return {
+              id: item.externalKey,
+              no: item.listNo ?? undefined,
+              title: item.title,
+              url: item.url,
+              note: item.note ?? undefined,
+              localFileCount: localFiles.length,
+              localFiles: localFiles.map((f) => ({
+                id: f.id,
+                fileName: f.fileName,
+                localPath: f.localPath,
+                sizeBytes: f.sizeBytes ?? undefined,
+              })),
+            };
+          }),
+        })),
+    };
+  }
+
+  private bookAudioLevelLabel(level: string): string {
+    const labels: Record<string, string> = {
+      N5: "JLPT N5",
+      N4: "JLPT N4",
+      N3: "JLPT N3",
+      N2: "JLPT N2",
+      N1: "JLPT N1",
+      OTHER: "Sách khác",
+      ANSWERS: "Đáp án Minna",
+    };
+    return labels[level] ?? level;
   }
 
   private async getJlptRoadmap() {

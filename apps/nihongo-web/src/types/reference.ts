@@ -91,6 +91,33 @@ export interface DailyListeningPayload {
   presets: ListeningPreset[];
 }
 
+export interface BookAudioItem {
+  id: string;
+  no?: number;
+  title: string;
+  url: string;
+  note?: string;
+  localFileCount?: number;
+  localFiles?: Array<{
+    id: number;
+    fileName: string;
+    localPath: string;
+    sizeBytes?: number;
+  }>;
+}
+
+export interface BookAudioSection {
+  level: string;
+  label: string;
+  items: BookAudioItem[];
+}
+
+export interface BookAudioPayload {
+  sourceUrl: string;
+  publisher: string;
+  sections: BookAudioSection[];
+}
+
 export interface InAppLink {
   to: string;
   label: string;

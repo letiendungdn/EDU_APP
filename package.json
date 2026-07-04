@@ -35,7 +35,11 @@
     "db:export-content": "powershell -NoProfile -ExecutionPolicy Bypass -File infra/postgres/export-content-seed.ps1",
     "media:download": "node packages/vocab-images/scripts/download-media.mjs",
     "media:sync": "node packages/vocab-images/scripts/sync-public.mjs",
-    "media:setup": "npm run media:download && npm run media:sync && npm run seed:vocab-images"
+    "media:setup": "npm run media:download && npm run media:sync && npm run seed:vocab-images",
+    "book-audio:fetch": "python scripts/parse-mailee-book-audio.py",
+    "book-audio:download": "python scripts/download-book-audio-drive.py --fetch-csv",
+    "book-audio:sync-db": "npm run generate -w @edu/prisma-nihongo && npx ts-node packages/prisma-nihongo/sync-book-audio-drive.ts",
+    "book-audio:setup": "npm run book-audio:download && npm run book-audio:sync-db"
   },
   "engines": {
     "node": ">=22"

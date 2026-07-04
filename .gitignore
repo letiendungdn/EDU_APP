@@ -27,8 +27,10 @@ out/
 infra/stripe-cli/stripe.exe
 infra/stripe-cli/stripe.zip
 
-# OS
-.DS_Store
+# Media tải về (Drive — không commit)
+apps/nihongo-web/public/media/book-audio/
+tmp-drive-test/
+tmp-mailee.csv
 Thumbs.db
 
 # IDE

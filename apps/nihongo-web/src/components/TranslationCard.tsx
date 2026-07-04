@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { apiRequest } from '@/lib/api-client';
 import { playAudio, stopAudio } from '@/utils/speech';
 import './TranslationCard.css';
 
@@ -35,7 +36,7 @@ const SPEECH_LANG: Record<string, string> = {
   ja: 'ja-JP',
 };
 
-// ── Free translation — MyMemory API (no AI, no key, CORS-enabled) ──────────
+// ── Dịch qua api-gateway (MyMemory phía server, có cache) ─────────────────
 
 type Lang = 'vi' | 'en' | 'ja';
 
@@ -45,91 +46,35 @@ function detectLang(text: string): Lang {
   return 'en';
 }
 
-async function myMemory(text: string, from: Lang, to: Lang): Promise<string> {
-  const url =
-    `https://api.mymemory.translated.web/get` +
-    `?q=${encodeURIComponent(text)}&langpair=${from}|${to}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Dịch thất bại (HTTP ${res.status})`);
-  const data = (await res.json()) as {
-    responseStatus: number;
-    responseData: { translatedText: string };
-    responseDetails: string;
-  };
-  if (data.responseStatus !== 200) throw new Error(data.responseDetails ?? 'Dịch thất bại');
-  return data.responseData.translatedText;
+async function translateViaApi(text: string, from: Lang, to: Lang): Promise<string> {
+  const data = await apiRequest<{ translation: string }>('/translate', {
+    method: 'POST',
+    body: JSON.stringify({ text, sourceLang: from, targetLang: to }),
+  });
+  const translated = data.translation?.trim();
+  if (!translated) throw new Error('Dịch thất bại — không có kết quả');
+  return translated;
 }
 
-// Kana → romaji (covers hiragana + katakana, no npm needed)
-function kanaToRomaji(text: string): string {
-  const combo: Record<string, string> = {
-    'きゃ':'kya','きゅ':'kyu','きょ':'kyo','しゃ':'sha','しゅ':'shu','しょ':'sho',
-    'ちゃ':'cha','ちゅ':'chu','ちょ':'cho','にゃ':'nya','にゅ':'nyu','にょ':'nyo',
-    'ひゃ':'hya','ひゅ':'hyu','ひょ':'hyo','みゃ':'mya','みゅ':'myu','みょ':'myo',
-    'りゃ':'rya','りゅ':'ryu','りょ':'ryo','ぎゃ':'gya','ぎゅ':'gyu','ぎょ':'gyo',
-    'じゃ':'ja', 'じゅ':'ju', 'じょ':'jo', 'びゃ':'bya','びゅ':'byu','びょ':'byo',
-    'ぴゃ':'pya','ぴゅ':'pyu','ぴょ':'pyo',
-    'キャ':'kya','キュ':'kyu','キョ':'kyo','シャ':'sha','シュ':'shu','ショ':'sho',
-    'チャ':'cha','チュ':'chu','チョ':'cho','ニャ':'nya','ニュ':'nyu','ニョ':'nyo',
-    'ヒャ':'hya','ヒュ':'hyu','ヒョ':'hyo','ミャ':'mya','ミュ':'myu','ミョ':'myo',
-    'リャ':'rya','リュ':'ryu','リョ':'ryo','ギャ':'gya','ギュ':'gyu','ギョ':'gyo',
-    'ジャ':'ja', 'ジュ':'ju', 'ジョ':'jo', 'ビャ':'bya','ビュ':'byu','ビョ':'byo',
-    'ピャ':'pya','ピュ':'pyu','ピョ':'pyo',
-  };
-  const single: Record<string, string> = {
-    'あ':'a','い':'i','う':'u','え':'e','お':'o',
-    'か':'ka','き':'ki','く':'ku','け':'ke','こ':'ko',
-    'さ':'sa','し':'shi','す':'su','せ':'se','そ':'so',
-    'た':'ta','ち':'chi','つ':'tsu','て':'te','と':'to',
-    'な':'na','に':'ni','ぬ':'nu','ね':'ne','の':'no',
-    'は':'ha','ひ':'hi','ふ':'fu','へ':'he','ほ':'ho',
-    'ま':'ma','み':'mi','む':'mu','め':'me','も':'mo',
-    'や':'ya','ゆ':'yu','よ':'yo',
-    'ら':'ra','り':'ri','る':'ru','れ':'re','ろ':'ro',
-    'わ':'wa','を':'wo','ん':'n','っ':'tt',
-    'が':'ga','ぎ':'gi','ぐ':'gu','げ':'ge','ご':'go',
-    'ざ':'za','じ':'ji','ず':'zu','ぜ':'ze','ぞ':'zo',
-    'だ':'da','ぢ':'di','づ':'du','で':'de','ど':'do',
-    'ば':'ba','び':'bi','ぶ':'bu','べ':'be','ぼ':'bo',
-    'ぱ':'pa','ぴ':'pi','ぷ':'pu','ぺ':'pe','ぽ':'po',
-    'ア':'a','イ':'i','ウ':'u','エ':'e','オ':'o',
-    'カ':'ka','キ':'ki','ク':'ku','ケ':'ke','コ':'ko',
-    'サ':'sa','シ':'shi','ス':'su','セ':'se','ソ':'so',
-    'タ':'ta','チ':'chi','ツ':'tsu','テ':'te','ト':'to',
-    'ナ':'na','ニ':'ni','ヌ':'nu','ネ':'ne','ノ':'no',
-    'ハ':'ha','ヒ':'hi','フ':'fu','ヘ':'he','ホ':'ho',
-    'マ':'ma','ミ':'mi','ム':'mu','メ':'me','モ':'mo',
-    'ヤ':'ya','ユ':'yu','ヨ':'yo',
-    'ラ':'ra','リ':'ri','ル':'ru','レ':'re','ロ':'ro',
-    'ワ':'wa','ヲ':'wo','ン':'n','ッ':'tt','ー':'-',
-    'ガ':'ga','ギ':'gi','グ':'gu','ゲ':'ge','ゴ':'go',
-    'ザ':'za','ジ':'ji','ズ':'zu','ゼ':'ze','ゾ':'zo',
-    'ダ':'da','ヂ':'di','ヅ':'du','デ':'de','ド':'do',
-    'バ':'ba','ビ':'bi','ブ':'bu','ベ':'be','ボ':'bo',
-    'パ':'pa','ピ':'pi','プ':'pu','ペ':'pe','ポ':'po',
-  };
-  let result = '';
-  let i = 0;
-  while (i < text.length) {
-    const two = text.slice(i, i + 2);
-    if (combo[two]) { result += combo[two]; i += 2; continue; }
-    result += single[text[i]] ?? text[i];
-    i++;
-  }
-  return result;
+async function fetchRomaji(jaText: string): Promise<string> {
+  const data = await apiRequest<{ romaji: string }>('/kana/romaji', {
+    method: 'POST',
+    body: JSON.stringify({ text: jaText }),
+  });
+  return data.romaji;
 }
 
 async function fetchTranslation(text: string): Promise<TranslationResult> {
   const detected = detectLang(text);
   const others   = (['vi', 'en', 'ja'] as Lang[]).filter((l) => l !== detected);
 
-  const translated = await Promise.all(others.map((to) => myMemory(text, detected, to)));
+  const translated = await Promise.all(others.map((to) => translateViaApi(text, detected, to)));
 
   const byLang = { [detected]: text } as Record<Lang, string>;
   others.forEach((lang, i) => { byLang[lang] = translated[i]; });
 
   const jaText = byLang.ja;
-  const romaji = kanaToRomaji(jaText);
+  const romaji = await fetchRomaji(jaText);
 
   return {
     detected,
@@ -220,7 +165,12 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
               const isSource = result.detected === lang;
               const mainText = lang === 'ja' ? result.ja.text : result[lang].text;
               const sub      = lang === 'ja'
-                ? `${result.ja.kana}　${result.ja.romaji}`
+                ? (() => {
+                    const { kana, romaji } = result.ja;
+                    if (romaji && romaji !== kana) return `${kana}　${romaji}`;
+                    if (romaji && romaji !== result.ja.text) return romaji;
+                    return '';
+                  })()
                 : result[lang].pronunciation;
 
               return (
