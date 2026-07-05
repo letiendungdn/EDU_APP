@@ -56,12 +56,12 @@ async function translateViaApi(text: string, from: Lang, to: Lang): Promise<stri
   return translated;
 }
 
-async function fetchRomaji(jaText: string): Promise<string> {
-  const data = await apiRequest<{ romaji: string }>('/kana/romaji', {
+async function fetchJaReading(jaText: string): Promise<{ kana: string; romaji: string }> {
+  const data = await apiRequest<{ kana: string; romaji: string }>('/kana/romaji', {
     method: 'POST',
     body: JSON.stringify({ text: jaText }),
   });
-  return data.romaji;
+  return { kana: data.kana, romaji: data.romaji };
 }
 
 async function fetchTranslation(text: string): Promise<TranslationResult> {
@@ -74,13 +74,13 @@ async function fetchTranslation(text: string): Promise<TranslationResult> {
   others.forEach((lang, i) => { byLang[lang] = translated[i]; });
 
   const jaText = byLang.ja;
-  const romaji = await fetchRomaji(jaText);
+  const { kana, romaji } = await fetchJaReading(jaText);
 
   return {
     detected,
     vi: { text: byLang.vi, pronunciation: '' },
     en: { text: byLang.en, pronunciation: '' },
-    ja: { text: jaText, kana: jaText, romaji },
+    ja: { text: jaText, kana, romaji },
     examples: [],
   };
 }
@@ -167,9 +167,12 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
               const sub      = lang === 'ja'
                 ? (() => {
                     const { kana, romaji } = result.ja;
-                    if (romaji && romaji !== kana) return `${kana}　${romaji}`;
-                    if (romaji && romaji !== result.ja.text) return romaji;
-                    return '';
+                    const parts: string[] = [];
+                    if (kana && kana !== result.ja.text) parts.push(kana);
+                    if (romaji && !parts.includes(romaji) && romaji !== result.ja.text) {
+                      parts.push(romaji);
+                    }
+                    return parts.join(' · ');
                   })()
                 : result[lang].pronunciation;
 
