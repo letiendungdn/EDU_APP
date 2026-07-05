@@ -8,6 +8,7 @@
     "migrate:dev": "prisma migrate dev",
     "seed": "ts-node seed.ts",
     "seed:pronunciation-rules": "ts-node seed-pronunciation-rules.ts",
+    "seed:english-katakana": "ts-node seed-english-katakana.ts",
     "studio": "prisma studio"
   },
   "prisma": {

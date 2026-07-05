@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { seedContent } from './seed-content';
 import { seedPronunciationRules } from './seed-pronunciation-rules';
+import { seedEnglishKatakana } from './seed-english-katakana';
 import { seedKanaRomaji } from './seed-kana-romaji';
 import { seedBookAudio } from './seed-book-audio';
 import { seedSubscriptionPlans } from './seed-plans';
@@ -10,6 +11,7 @@ const prisma = new PrismaClient();
 async function main() {
   await seedContent(prisma);
   await seedPronunciationRules(prisma);
+  await seedEnglishKatakana(prisma);
   await seedKanaRomaji(prisma);
   await seedBookAudio(prisma);
   await seedSubscriptionPlans(prisma);

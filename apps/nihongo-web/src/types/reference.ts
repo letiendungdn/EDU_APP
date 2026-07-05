@@ -70,6 +70,43 @@ export interface JapanesePronunciationRulesPayload {
   sections: PronunciationRuleSection[];
 }
 
+export interface EnglishKatakanaPoint {
+  explanation: string;
+  english?: string;
+  katakana?: string;
+  romaji?: string;
+}
+
+export interface EnglishKatakanaMapping {
+  english: string;
+  katakana: string;
+  romaji: string;
+  note?: string;
+}
+
+export interface EnglishKatakanaExample {
+  english: string;
+  katakana: string;
+  romaji: string;
+  meaningVi: string;
+  note?: string;
+}
+
+export interface EnglishKatakanaSection {
+  id: string;
+  title: string;
+  summary: string;
+  points?: EnglishKatakanaPoint[];
+  mappings?: EnglishKatakanaMapping[];
+  examples?: EnglishKatakanaExample[];
+}
+
+export interface EnglishKatakanaPayload {
+  intro: string;
+  tipsForVietnamese: string[];
+  sections: EnglishKatakanaSection[];
+}
+
 export interface PodcastItem {
   id: string;
   title: string;

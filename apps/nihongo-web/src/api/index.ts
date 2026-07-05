@@ -33,6 +33,7 @@ import type {
   BookAudioPayload,
   JapaneseCountersPayload,
   JapanesePronunciationRulesPayload,
+  EnglishKatakanaPayload,
   JlptDaNangSchedulePayload,
   JlptRoadmapPayload,
   KanaChartsPayload,
@@ -131,6 +132,10 @@ export function fetchJapanesePronunciationRules() {
   return fetchReference<JapanesePronunciationRulesPayload>(
     'japanese-pronunciation-rules',
   );
+}
+
+export function fetchEnglishKatakana() {
+  return fetchReference<EnglishKatakanaPayload>('english-katakana');
 }
 
 export function fetchDailyListeningConfig() {

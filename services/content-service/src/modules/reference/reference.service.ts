@@ -6,6 +6,7 @@ const SLUGS = [
   "kana-charts",
   "japanese-counters",
   "japanese-pronunciation-rules",
+  "english-katakana",
   "daily-listening",
   "book-audio-files",
   "jlpt-roadmap",
@@ -44,6 +45,8 @@ export class ReferenceService {
         return this.getJapaneseCounters();
       case "japanese-pronunciation-rules":
         return this.getJapanesePronunciationRules();
+      case "english-katakana":
+        return this.getEnglishKatakana();
       case "daily-listening":
         return this.getDailyListening();
       case "book-audio-files":
@@ -62,6 +65,7 @@ export class ReferenceService {
       "kana-charts": "Bảng kana Hiragana/Katakana",
       "japanese-counters": "Đếm số & thứ tự tiếng Nhật",
       "japanese-pronunciation-rules": "Quy tắc phát âm tiếng Nhật",
+      "english-katakana": "Tiếng Anh ↔ Katakana",
       "daily-listening": "Nghe mỗi ngày — podcast & preset",
       "book-audio-files": "File nghe sách tiếng Nhật",
       "jlpt-roadmap": "Lộ trình JLPT",
@@ -179,6 +183,70 @@ export class ReferenceService {
                 japanese: example.japanese,
                 romaji: example.romaji,
                 meaning: example.meaning,
+                ...(example.note ? { note: example.note } : {}),
+              })),
+            }
+          : {}),
+      })),
+    };
+  }
+
+  private async getEnglishKatakana() {
+    const meta = await this.prisma.englishKatakanaMeta.findUnique({
+      where: { id: 1 },
+    });
+    if (!meta) {
+      throw new NotFoundException("English–Katakana reference not seeded");
+    }
+
+    const [tips, sections] = await Promise.all([
+      this.prisma.englishKatakanaTip.findMany({
+        orderBy: { sortOrder: "asc" },
+      }),
+      this.prisma.englishKatakanaSection.findMany({
+        orderBy: { sortOrder: "asc" },
+        include: {
+          points: { orderBy: { sortOrder: "asc" } },
+          mappings: { orderBy: { sortOrder: "asc" } },
+          examples: { orderBy: { sortOrder: "asc" } },
+        },
+      }),
+    ]);
+
+    return {
+      intro: meta.intro,
+      tipsForVietnamese: tips.map((tip) => tip.text),
+      sections: sections.map((section) => ({
+        id: section.slug,
+        title: section.title,
+        summary: section.summary,
+        ...(section.points.length > 0
+          ? {
+              points: section.points.map((point) => ({
+                explanation: point.explanation,
+                ...(point.english ? { english: point.english } : {}),
+                ...(point.katakana ? { katakana: point.katakana } : {}),
+                ...(point.romaji ? { romaji: point.romaji } : {}),
+              })),
+            }
+          : {}),
+        ...(section.mappings.length > 0
+          ? {
+              mappings: section.mappings.map((mapping) => ({
+                english: mapping.english,
+                katakana: mapping.katakana,
+                romaji: mapping.romaji,
+                ...(mapping.note ? { note: mapping.note } : {}),
+              })),
+            }
+          : {}),
+        ...(section.examples.length > 0
+          ? {
+              examples: section.examples.map((example) => ({
+                english: example.english,
+                katakana: example.katakana,
+                romaji: example.romaji,
+                meaningVi: example.meaningVi,
                 ...(example.note ? { note: example.note } : {}),
               })),
             }

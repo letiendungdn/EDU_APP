@@ -14,6 +14,7 @@ const navItems = [
   { href: '/kana', label: 'Kana' },
   { href: '/pronunciation', label: 'Phát âm' },
   { href: '/pronunciation-rules', label: 'Quy tắc' },
+  { href: '/english-katakana', label: 'EN↔カナ' },
   { href: '/daily-listening', label: 'Nghe' },
   { href: '/book-audio', label: 'File nghe' },
   { href: '/notes', label: 'Hằng ngày' },

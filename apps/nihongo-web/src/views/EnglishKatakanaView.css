@@ -1,0 +1,23 @@
+.english-katakana-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-bottom: 2rem;
+}
+
+.english-katakana-view-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.english-katakana-view-subtitle {
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 52rem;
+}
+
+.english-katakana-view .english-katakana {
+  width: 100%;
+}

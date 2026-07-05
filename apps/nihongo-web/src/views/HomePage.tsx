@@ -58,6 +58,12 @@ const features = [
     desc: 'Nguyên âm, phụ âm, trường âm, âm đục và các quy tắc đọc — có ví dụ nghe mẫu.',
   },
   {
+    to: '/english-katakana',
+    icon: 'EN',
+    title: 'Tiếng Anh ↔ Katakana',
+    desc: 'Gairaigo, map âm Anh–Nhật, trường âm ー và từ mượn thường gặp — có nghe mẫu.',
+  },
+  {
     to: '/jlpt',
     icon: '🎯',
     title: 'Lộ trình JLPT',

@@ -288,6 +288,82 @@ model PronunciationRuleExample {
 }
 
 // ─────────────────────────────────────────────
+// English ↔ Katakana (reference)
+// ─────────────────────────────────────────────
+
+model EnglishKatakanaMeta {
+  id        Int      @id @default(1)
+  intro     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EnglishKatakanaTip {
+  id        Int      @id @default(autoincrement())
+  text      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model EnglishKatakanaSection {
+  id        Int                      @id @default(autoincrement())
+  slug      String                   @unique
+  title     String
+  summary   String
+  sortOrder Int                      @default(0)
+  points    EnglishKatakanaPoint[]
+  mappings  EnglishKatakanaMapping[]
+  examples  EnglishKatakanaExample[]
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+
+  @@index([sortOrder])
+}
+
+model EnglishKatakanaPoint {
+  id          Int                    @id @default(autoincrement())
+  sectionId   Int
+  section     EnglishKatakanaSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  explanation String
+  english     String?
+  katakana    String?
+  romaji      String?
+  sortOrder   Int                    @default(0)
+
+  @@index([sectionId, sortOrder])
+}
+
+model EnglishKatakanaMapping {
+  id        Int                    @id @default(autoincrement())
+  sectionId Int
+  section   EnglishKatakanaSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  english   String
+  katakana  String
+  romaji    String
+  note      String?
+  sortOrder Int                    @default(0)
+
+  @@index([sectionId, sortOrder])
+}
+
+model EnglishKatakanaExample {
+  id        Int                    @id @default(autoincrement())
+  sectionId Int
+  section   EnglishKatakanaSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  english   String
+  katakana  String
+  romaji    String
+  meaningVi String
+  note      String?
+  sortOrder Int                    @default(0)
+
+  @@index([sectionId, sortOrder])
+}
+
+// ─────────────────────────────────────────────
 // Daily listening
 // ─────────────────────────────────────────────
 
