@@ -32,6 +32,7 @@ import {
   fetchKanjiLessons,
   fetchKanjiSearch,
   fetchKanjiByJlpt,
+  fetchVocabulariesRange,
   fetchListeningPlaylist,
 } from '../api';
 import type { AdminPaymentsFilters } from '../api';
@@ -64,6 +65,7 @@ export const queryKeys = {
   kanjiEntries: (lesson: number) => ['kanji', lesson] as const,
   kanjiSearch: (query: string) => ['kanji-search', query] as const,
   kanjiByJlpt: (level: string) => ['kanji-jlpt', level] as const,
+  vocabRange: (from: number, to: number) => domainQueryKeys.vocab.byRange(from, to),
   listeningPlaylist: (from: number, to: number) => ['listening-playlist', from, to] as const,
   jlptDaNangSchedule: ['jlpt-da-nang-schedule'] as const,
   kanaCharts: ['reference', 'kana-charts'] as const,
@@ -133,6 +135,22 @@ export function useKanjiByJlptQuery(jlptLevel: string) {
     queryKey: queryKeys.kanjiByJlpt(jlptLevel),
     queryFn: () => fetchKanjiByJlpt(jlptLevel),
     enabled: Boolean(jlptLevel),
+    staleTime: STALE_5M,
+  });
+}
+
+export function useVocabRangeQuery(
+  lessonFrom: number,
+  lessonTo: number,
+  enabled = true,
+) {
+  const from = Math.min(lessonFrom, lessonTo);
+  const to = Math.max(lessonFrom, lessonTo);
+
+  return useQuery({
+    queryKey: queryKeys.vocabRange(from, to),
+    queryFn: () => fetchVocabulariesRange(from, to),
+    enabled: enabled && from > 0 && to >= from,
     staleTime: STALE_5M,
   });
 }

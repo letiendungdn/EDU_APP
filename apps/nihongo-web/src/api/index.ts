@@ -76,6 +76,22 @@ export function fetchVocabularies(lessonNumber: number) {
   );
 }
 
+export type VocabularyWithLesson = Vocabulary & { lessonNumber: number };
+
+export async function fetchVocabulariesRange(
+  lessonFrom: number,
+  lessonTo: number,
+): Promise<VocabularyWithLesson[]> {
+  const from = Math.min(lessonFrom, lessonTo);
+  const to = Math.max(lessonFrom, lessonTo);
+  const lessonNumbers = Array.from({ length: to - from + 1 }, (_, index) => from + index);
+  const batches = await Promise.all(lessonNumbers.map((n) => fetchVocabularies(n)));
+
+  return batches.flatMap((list, index) =>
+    list.map((entry) => ({ ...entry, lessonNumber: lessonNumbers[index] })),
+  );
+}
+
 export function fetchGrammars(lessonNumber: number) {
   return fetchPaginatedAll<Grammar>((page, limit) =>
     `/grammars?lessonNumber=${lessonNumber}&page=${page}&limit=${limit}`,

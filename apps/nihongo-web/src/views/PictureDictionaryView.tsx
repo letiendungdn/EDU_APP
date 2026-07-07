@@ -4,14 +4,25 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import LessonSelector from '../components/LessonSelector';
 import StrokeOrder from '../components/StrokeOrder';
-import { useVocabulariesQuery } from '../hooks/queries';
+import { useLessonsQuery, useVocabRangeQuery, useVocabulariesQuery } from '../hooks/queries';
 import { playAudio } from '../utils/speech';
 import { getStrokeText, parseReadingVariants, shouldShowKanaStroke } from '../utils/japanese';
 import { resolveVocabImage } from '@edu/vocab-images';
 import type { Vocabulary } from '../types/api';
 import './PictureDictionaryView.css';
 
-type PictureVocab = Vocabulary & { resolvedImage: string | null };
+type ScopeMode = 'single' | 'range';
+
+type PictureVocab = Vocabulary & {
+  resolvedImage: string | null;
+  lessonNumber?: number;
+};
+
+const RANGE_PRESETS = [
+  { label: '1 → 50', from: 1, to: 50 },
+  { label: '1 → 25', from: 1, to: 25 },
+  { label: '26 → 50', from: 26, to: 50 },
+] as const;
 
 function PictureImg({ src, alt, className }: { src: string; alt: string; className?: string }) {
   const [failed, setFailed] = useState(false);
@@ -129,26 +140,65 @@ function ModalReadingStrokes({
   return <ModalStrokeBlock text={kanji || kana} onCharClick={onCharClick} />;
 }
 
+function mapPictureVocab(list: Vocabulary[], lessonNumber?: number): PictureVocab[] {
+  return list.map((v) => ({
+    ...v,
+    lessonNumber,
+    resolvedImage: resolveVocabImage({
+      word: v.romaji,
+      meaning: v.meaning,
+      kana: v.kana,
+      kanji: v.kanji,
+      imageUrl: v.imageUrl,
+    }),
+  }));
+}
+
 export default function PictureDictionaryView() {
+  const { data: lessons = [] } = useLessonsQuery();
+  const maxLesson = lessons[lessons.length - 1]?.lessonNumber ?? 50;
+
+  const [scopeMode, setScopeMode] = useState<ScopeMode>('single');
   const [lesson, setLesson] = useState(1);
+  const [lessonFrom, setLessonFrom] = useState(1);
+  const [lessonTo, setLessonTo] = useState(50);
   const [picturesOnly, setPicturesOnly] = useState(true);
+  const [searchInput, setSearchInput] = useState('');
   const [selected, setSelected] = useState<PictureVocab | null>(null);
 
-  const { data: vocabList = [], isLoading } = useVocabulariesQuery(lesson);
+  const { data: singleLessonVocab = [], isLoading: loadingSingle } = useVocabulariesQuery(lesson);
+  const { data: rangeVocab = [], isLoading: loadingRange } = useVocabRangeQuery(
+    lessonFrom,
+    lessonTo,
+    scopeMode === 'range',
+  );
+
+  const rawItems = useMemo(() => {
+    if (scopeMode === 'single') {
+      return mapPictureVocab(singleLessonVocab, lesson);
+    }
+    return mapPictureVocab(rangeVocab);
+  }, [scopeMode, singleLessonVocab, lesson, rangeVocab]);
 
   const items = useMemo(() => {
-    const mapped: PictureVocab[] = vocabList.map((v) => ({
-      ...v,
-      resolvedImage: resolveVocabImage({
-        word: v.romaji,
-        meaning: v.meaning,
-        kana: v.kana,
-        kanji: v.kanji,
-        imageUrl: v.imageUrl,
-      }),
-    }));
-    return picturesOnly ? mapped.filter((v) => v.resolvedImage) : mapped;
-  }, [vocabList, picturesOnly]);
+    const withPictures = picturesOnly ? rawItems.filter((v) => v.resolvedImage) : rawItems;
+    const query = searchInput.trim().toLowerCase();
+    if (!query) return withPictures;
+
+    return withPictures.filter((item) =>
+      [item.kanji, item.kana, item.romaji, item.meaning, item.lessonNumber != null ? `bài ${item.lessonNumber}` : '']
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+        .includes(query),
+    );
+  }, [rawItems, picturesOnly, searchInput]);
+
+  const isLoading = scopeMode === 'single' ? loadingSingle : loadingRange;
+  const rangeLabel =
+    scopeMode === 'range'
+      ? `Bài ${Math.min(lessonFrom, lessonTo)}–${Math.max(lessonFrom, lessonTo)}`
+      : `Bài ${lesson}`;
 
   useEffect(() => {
     if (!selected?.kana) return;
@@ -161,13 +211,18 @@ export default function PictureDictionaryView() {
     playAudio(v.kana);
   };
 
+  const lessonOptions = useMemo(
+    () => lessons.map((entry) => entry.lessonNumber).filter((n) => n > 0),
+    [lessons],
+  );
+
   return (
     <div className="container picture-dict-view">
       <div className="picture-dict-header">
         <div>
           <h2 className="view-title">Từ điển hình ảnh</h2>
           <p className="picture-dict-subtitle">
-            Minna no Nihongo · {items.length} từ {picturesOnly ? 'có ảnh' : ''}
+            Minna no Nihongo · {rangeLabel} · {items.length} từ {picturesOnly ? 'có ảnh' : ''}
             {items.length === 0 && !isLoading && ' · thử bài 3–15 cho từ vật thể'}
           </p>
         </div>
@@ -181,22 +236,107 @@ export default function PictureDictionaryView() {
         </div>
       </div>
 
-      <LessonSelector value={lesson} onChange={setLesson} />
+      <div className="picture-dict-scope-tabs" role="tablist" aria-label="Phạm vi bài học">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={scopeMode === 'single'}
+          className={`btn tab-btn ${scopeMode === 'single' ? 'active' : ''}`}
+          onClick={() => setScopeMode('single')}
+        >
+          Một bài
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={scopeMode === 'range'}
+          className={`btn tab-btn ${scopeMode === 'range' ? 'active' : ''}`}
+          onClick={() => setScopeMode('range')}
+        >
+          Nhiều bài
+        </button>
+      </div>
 
-      <label className="picture-dict-toggle">
+      {scopeMode === 'single' ? (
+        <LessonSelector value={lesson} onChange={setLesson} />
+      ) : (
+        <div className="picture-dict-range">
+          <div className="picture-dict-range-fields">
+            <label>
+              Từ bài
+              <select
+                className="select-input"
+                value={lessonFrom}
+                onChange={(e) => setLessonFrom(Number(e.target.value))}
+              >
+                {lessonOptions.map((n) => (
+                  <option key={n} value={n}>
+                    Bài {n}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Đến bài
+              <select
+                className="select-input"
+                value={lessonTo}
+                onChange={(e) => setLessonTo(Number(e.target.value))}
+              >
+                {lessonOptions.map((n) => (
+                  <option key={n} value={n}>
+                    Bài {n}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="picture-dict-range-presets">
+            {RANGE_PRESETS.filter((preset) => preset.to <= maxLesson).map((preset) => (
+              <button
+                key={preset.label}
+                type="button"
+                className="btn btn-outline picture-dict-preset-btn"
+                onClick={() => {
+                  setLessonFrom(preset.from);
+                  setLessonTo(Math.min(preset.to, maxLesson));
+                }}
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="picture-dict-filters">
+        <label className="picture-dict-toggle">
+          <input
+            type="checkbox"
+            checked={picturesOnly}
+            onChange={(e) => setPicturesOnly(e.target.checked)}
+          />
+          Chỉ từ có ảnh
+        </label>
         <input
-          type="checkbox"
-          checked={picturesOnly}
-          onChange={(e) => setPicturesOnly(e.target.checked)}
+          type="search"
+          className="picture-dict-search"
+          placeholder="Tìm kanji, kana, romaji, nghĩa..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          aria-label="Tìm từ trong từ điển tranh"
         />
-        Chỉ từ có ảnh
-      </label>
+      </div>
 
       {isLoading ? (
-        <p className="picture-dict-empty">Đang tải...</p>
+        <p className="picture-dict-empty">Đang tải từ {rangeLabel}...</p>
       ) : items.length === 0 ? (
         <div className="empty-state glass-panel">
-          <p>Bài {lesson} chưa có từ có hình ảnh. Thử bài khác hoặc tắt lọc.</p>
+          <p>
+            {scopeMode === 'range'
+              ? `Chưa có từ có hình trong ${rangeLabel}. Thử mở rộng phạm vi hoặc tắt lọc "Chỉ từ có ảnh".`
+              : `Bài ${lesson} chưa có từ có hình ảnh. Thử bài khác, chuyển sang "Nhiều bài", hoặc tắt lọc.`}
+          </p>
         </div>
       ) : (
         <div className="picture-dict-grid">
@@ -215,6 +355,9 @@ export default function PictureDictionaryView() {
                 )}
               </div>
               <div className="picture-card-body">
+                {scopeMode === 'range' && item.lessonNumber != null ? (
+                  <span className="picture-card-lesson">Bài {item.lessonNumber}</span>
+                ) : null}
                 <span className="japanese-text">{item.kanji || item.kana}</span>
                 <span className="picture-card-meaning">{item.meaning}</span>
               </div>
@@ -243,6 +386,9 @@ export default function PictureDictionaryView() {
                 onCharClick={() => playAudio(selected.kana)}
               />
             </div>
+            {selected.lessonNumber != null ? (
+              <span className="picture-modal-lesson">Bài {selected.lessonNumber}</span>
+            ) : null}
             <span className="picture-modal-kanji japanese-text">{selected.kanji || selected.kana}</span>
             <span className="picture-modal-kana japanese-text">{selected.kana}</span>
             <span className="picture-modal-romaji">{selected.romaji}</span>
