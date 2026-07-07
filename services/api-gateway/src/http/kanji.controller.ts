@@ -27,11 +27,13 @@ export class KanjiController {
   findEntries(
     @Query("lessonNumber") lessonNumber?: string,
     @Query("q") q?: string,
+    @Query("jlptLevel") jlptLevel?: string,
   ) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.GET_KANJI_ENTRIES, {
         lessonNumber: lessonNumber ? +lessonNumber : undefined,
         query: q?.trim() || undefined,
+        jlptLevel: jlptLevel?.trim() || undefined,
       }),
     );
   }

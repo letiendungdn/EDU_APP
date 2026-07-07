@@ -1,6 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import type { Prisma } from "@prisma/client";
+import { JlptLevel, type Prisma } from "@prisma/client";
 import { PrismaService } from "@app/prisma";
+
+function parseJlptLevel(value?: string): JlptLevel | undefined {
+  if (!value) return undefined;
+  return (Object.values(JlptLevel) as string[]).includes(value)
+    ? (value as JlptLevel)
+    : undefined;
+}
 
 const entryInclude = {
   lesson: {
@@ -30,12 +37,16 @@ export class KanjiService {
     });
   }
 
-  findEntries(lessonNumber?: number, query?: string) {
+  findEntries(lessonNumber?: number, query?: string, jlptLevel?: string) {
     const q = query?.trim();
+    const level = parseJlptLevel(jlptLevel);
     const where: Prisma.KanjiEntryWhereInput = {};
 
-    if (lessonNumber) {
-      where.lesson = { lessonNumber };
+    if (lessonNumber || level) {
+      where.lesson = {
+        ...(lessonNumber ? { lessonNumber } : {}),
+        ...(level ? { jlptLevel: level } : {}),
+      };
     }
 
     if (q) {

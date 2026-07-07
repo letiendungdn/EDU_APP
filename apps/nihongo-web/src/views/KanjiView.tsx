@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { playAudio } from '../utils/speech';
 import PlayAllButton from '../components/PlayAllButton';
@@ -114,6 +115,9 @@ export default function KanjiView() {
     <div className="container vocab-view">
       <div className="vocab-header">
         <h2 className="view-title">Kanji Look and Learn</h2>
+        <p className="kanji-list-links" style={{ margin: 0 }}>
+          <Link href="/kanji/list">Xem bảng kanji N5 → N1 →</Link>
+        </p>
 
         <form className="kanji-search-form" onSubmit={handleSearchSubmit}>
           <input

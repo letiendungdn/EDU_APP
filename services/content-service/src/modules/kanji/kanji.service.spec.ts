@@ -41,6 +41,16 @@ describe("KanjiService", () => {
     );
   });
 
+  it("findEntries filters by jlptLevel", async () => {
+    prisma.kanjiEntry.findMany.mockResolvedValue([]);
+    await service.findEntries(undefined, undefined, "N5");
+    expect(prisma.kanjiEntry.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { lesson: { jlptLevel: "N5" } },
+      }),
+    );
+  });
+
   it("findEntries filters by search query", async () => {
     prisma.kanjiEntry.findMany.mockResolvedValue([]);
     await service.findEntries(undefined, "日");

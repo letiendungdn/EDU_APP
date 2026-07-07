@@ -23,6 +23,7 @@ const navItems = [
   { href: '/vocab-review', label: 'Từ sai' },
   { href: '/grammar', label: 'Grammar' },
   { href: '/kanji', label: 'Kanji' },
+  { href: '/kanji/list', label: 'Bảng kanji' },
   { href: '/counters', label: 'Đếm số' },
   { href: '/jlpt', label: 'JLPT' },
   { href: '/mock-exam', label: 'Thi thử' },

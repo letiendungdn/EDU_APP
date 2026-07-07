@@ -31,6 +31,7 @@ import {
   fetchKanjiEntries,
   fetchKanjiLessons,
   fetchKanjiSearch,
+  fetchKanjiByJlpt,
   fetchListeningPlaylist,
 } from '../api';
 import type { AdminPaymentsFilters } from '../api';
@@ -62,6 +63,7 @@ export const queryKeys = {
   kanjiLessons: ['kanji-lessons'] as const,
   kanjiEntries: (lesson: number) => ['kanji', lesson] as const,
   kanjiSearch: (query: string) => ['kanji-search', query] as const,
+  kanjiByJlpt: (level: string) => ['kanji-jlpt', level] as const,
   listeningPlaylist: (from: number, to: number) => ['listening-playlist', from, to] as const,
   jlptDaNangSchedule: ['jlpt-da-nang-schedule'] as const,
   kanaCharts: ['reference', 'kana-charts'] as const,
@@ -122,6 +124,15 @@ export function useKanjiSearchQuery(query: string) {
     queryKey: queryKeys.kanjiSearch(query),
     queryFn: () => fetchKanjiSearch(query),
     enabled: query.trim().length > 0,
+    staleTime: STALE_5M,
+  });
+}
+
+export function useKanjiByJlptQuery(jlptLevel: string) {
+  return useQuery({
+    queryKey: queryKeys.kanjiByJlpt(jlptLevel),
+    queryFn: () => fetchKanjiByJlpt(jlptLevel),
+    enabled: Boolean(jlptLevel),
     staleTime: STALE_5M,
   });
 }

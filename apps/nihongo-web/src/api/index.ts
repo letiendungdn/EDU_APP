@@ -98,6 +98,10 @@ export function fetchKanjiSearch(query: string) {
   return apiRequest<KanjiEntry[]>(`/kanji?q=${encodeURIComponent(query)}`);
 }
 
+export function fetchKanjiByJlpt(jlptLevel: string) {
+  return apiRequest<KanjiEntry[]>(`/kanji?jlptLevel=${encodeURIComponent(jlptLevel)}`);
+}
+
 export function fetchListeningPlaylist(lessonFrom = 1, lessonTo = 25, limit = 120) {
   return apiRequest<ListeningPlaylist>(
     `/listening/playlist?lessonFrom=${lessonFrom}&lessonTo=${lessonTo}&limit=${limit}`,
