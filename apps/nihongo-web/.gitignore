@@ -15,6 +15,8 @@ dist-ssr
 # Next.js
 .next
 out
+# Symlink/junction for Next typed routes (see scripts/ensure-app-link.mjs, Dockerfile)
+app
 
 # Editor directories and files
 .vscode/*
