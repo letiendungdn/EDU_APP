@@ -9,7 +9,8 @@ import { usePlayAll } from '../hooks/usePlayAll';
 import { useLessonsQuery, useVocabulariesQuery } from '../hooks/queries';
 import StrokeOrder from '../components/StrokeOrder';
 import VocabPicture from '../components/VocabPicture';
-import { getStrokeText, parseReadingVariants, shouldShowKanaStroke } from '../utils/japanese';
+import { getStrokeText, parseReadingVariants, shouldShowKanaStroke, flashcardTextTier, hasOptionalBracketParts } from '../utils/japanese';
+import FlashcardJapaneseText from '../components/FlashcardJapaneseText';
 import './VocabView.css';
 
 function matchesVocabSearch(
@@ -194,6 +195,20 @@ export default function VocabView() {
     currentVocab != null &&
     parseReadingVariants(currentVocab.kana, currentVocab.romaji).length > 1;
 
+  const frontTextTier =
+    currentVocab != null
+      ? flashcardTextTier(currentVocab.kanji, currentVocab.kana)
+      : 'sm';
+  const hasOptionalBrackets =
+    currentVocab != null &&
+    (hasOptionalBracketParts(currentVocab.kanji) ||
+      hasOptionalBracketParts(currentVocab.kana) ||
+      hasOptionalBracketParts(currentVocab.romaji));
+  const frontTextTierClass = [
+    frontTextTier === 'sm' ? '' : `flashcard-text-dual--tier-${frontTextTier}`,
+    hasOptionalBrackets ? ' flashcard-text-dual--optional-brackets' : '',
+  ].join('');
+
   useEffect(() => {
     if (isPlayingAll || !currentVocab?.kana) return undefined;
     const timer = setTimeout(() => playAudio(currentVocab.kana), 200);
@@ -347,11 +362,11 @@ export default function VocabView() {
             >
               <div className="flashcard-face flashcard-front">
                 <div className="flashcard-front-body">
-                  <div className="flashcard-text-dual">
+                  <div className={`flashcard-text-dual${frontTextTierClass}`}>
                     {currentVocab.kanji ? (
                       <div className="flashcard-text-col flashcard-text-col--kanji">
                         <span className="flashcard-char-label">Kanji</span>
-                        <span className="vocab-kanji japanese-text">{currentVocab.kanji}</span>
+                        <FlashcardJapaneseText text={currentVocab.kanji} className="vocab-kanji japanese-text" />
                         <button
                           type="button"
                           className="btn-audio btn-audio--card"
@@ -364,7 +379,7 @@ export default function VocabView() {
                     ) : null}
                     <div className="flashcard-text-col flashcard-text-col--kana">
                       <span className="flashcard-char-label">Kana</span>
-                      <span className="vocab-kana japanese-text">{currentVocab.kana}</span>
+                      <FlashcardJapaneseText text={currentVocab.kana} className="vocab-kana japanese-text" />
                       {!currentVocab.kanji ? (
                         <button
                           type="button"
@@ -378,7 +393,7 @@ export default function VocabView() {
                     </div>
                   </div>
                   <div className="flashcard-front-meta">
-                    <span className="vocab-romaji">{currentVocab.romaji}</span>
+                    <FlashcardJapaneseText text={currentVocab.romaji} className="vocab-romaji" />
                     <span className="vocab-meaning">{currentVocab.meaning}</span>
                   </div>
                 </div>
@@ -394,20 +409,24 @@ export default function VocabView() {
                   kana={currentVocab.kana}
                   kanji={currentVocab.kanji}
                   imageUrl={currentVocab.imageUrl}
-                  size="md"
-                  className="flashcard-vocab-picture"
+                  size="sm"
+                  className="flashcard-vocab-picture flashcard-vocab-picture-corner"
                   alt={currentVocab.kana}
                 />
-                <FlashcardReadingStrokes
-                  kanji={currentVocab.kanji}
-                  kana={currentVocab.kana}
-                  romaji={currentVocab.romaji}
-                  onCharClick={handleStrokeCharClick}
-                />
-                <span className="vocab-kana japanese-text">{currentVocab.kana}</span>
-                <span className="vocab-romaji">{currentVocab.romaji}</span>
-                <div className="divider"></div>
-                <span className="vocab-meaning">{currentVocab.meaning}</span>
+                <div className="flashcard-back-body">
+                  <FlashcardReadingStrokes
+                    kanji={currentVocab.kanji}
+                    kana={currentVocab.kana}
+                    romaji={currentVocab.romaji}
+                    onCharClick={handleStrokeCharClick}
+                  />
+                  <div className="flashcard-back-meta">
+                    <span className="vocab-kana japanese-text">{currentVocab.kana}</span>
+                    <span className="vocab-romaji">{currentVocab.romaji}</span>
+                    <div className="divider"></div>
+                    <span className="vocab-meaning">{currentVocab.meaning}</span>
+                  </div>
+                </div>
               </div>
             </div>
 

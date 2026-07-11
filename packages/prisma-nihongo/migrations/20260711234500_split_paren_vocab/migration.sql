@@ -1,0 +1,2 @@
+-- Split vocabulary entries with parenthetical reading variants into separate rows.
+-- Applied via scripts/split-paren-vocab.mjs (13 combined entries -> 28 rows).

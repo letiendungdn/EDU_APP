@@ -4,6 +4,9 @@ import {
   hasReadingVariants,
   parseReadingVariants,
   shouldShowKanaStroke,
+  flashcardTextTier,
+  parseOptionalBracketSegments,
+  hasOptionalBracketParts,
 } from './japanese';
 
 describe('getStrokeText', () => {
@@ -63,6 +66,46 @@ describe('hasReadingVariants', () => {
 
   it('false khi chỉ một cách đọc', () => {
     expect(hasReadingVariants('わたし')).toBe(false);
+  });
+});
+
+describe('flashcardTextTier', () => {
+  it('sm cho từ ngắn', () => {
+    expect(flashcardTextTier('私', 'わたし')).toBe('sm');
+  });
+
+  it('md cho cụm [] khi phần chính ngắn (よろしく)', () => {
+    expect(
+      flashcardTextTier(
+        '［どうぞ］よろしく［お願いします］。',
+        '［どうぞ］よろしく［おねがいします］。',
+      ),
+    ).toBe('md');
+  });
+
+  it('xl cho cụm dài không có []', () => {
+    expect(flashcardTextTier('あ'.repeat(20), 'あ'.repeat(20))).toBe('xl');
+  });
+});
+
+describe('parseOptionalBracketSegments', () => {
+  it('tách phần tùy chọn trong ngoặc vuông', () => {
+    expect(parseOptionalBracketSegments('［どうぞ］よろしく［おねがいします］。')).toEqual([
+      { text: 'どうぞ', optional: true, openBracket: '［', closeBracket: '］' },
+      { text: 'よろしく', optional: false },
+      { text: 'おねがいします', optional: true, openBracket: '［', closeBracket: '］' },
+      { text: '。', optional: false },
+    ]);
+  });
+});
+
+describe('hasOptionalBracketParts', () => {
+  it('true khi có []', () => {
+    expect(hasOptionalBracketParts('[dozo] yoroshiku')).toBe(true);
+  });
+
+  it('false khi không có []', () => {
+    expect(hasOptionalBracketParts('よろしく')).toBe(false);
   });
 });
 

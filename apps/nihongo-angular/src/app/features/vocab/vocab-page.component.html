@@ -78,11 +78,14 @@
           >
             <div class="flashcard-face flashcard-front">
               <div class="flashcard-front-body">
-                <div class="flashcard-text-dual">
+                <div class="flashcard-text-dual{{ frontTextTierClass() }}">
                   @if (current()!.kanji) {
                     <div class="flashcard-text-col flashcard-text-col--kanji">
                       <span class="flashcard-char-label">Kanji</span>
-                      <span class="vocab-kanji japanese-text">{{ current()!.kanji }}</span>
+                      <app-flashcard-japanese-text
+                        [text]="current()!.kanji!"
+                        className="vocab-kanji japanese-text"
+                      />
                       <button
                         type="button"
                         class="btn-audio btn-audio--card"
@@ -95,7 +98,10 @@
                   }
                   <div class="flashcard-text-col flashcard-text-col--kana">
                     <span class="flashcard-char-label">Kana</span>
-                    <span class="vocab-kana japanese-text">{{ current()!.kana }}</span>
+                    <app-flashcard-japanese-text
+                      [text]="current()!.kana"
+                      className="vocab-kana japanese-text"
+                    />
                     @if (!current()!.kanji) {
                       <button
                         type="button"
@@ -109,7 +115,10 @@
                   </div>
                 </div>
                 <div class="flashcard-front-meta">
-                  <span class="vocab-romaji">{{ current()!.romaji }}</span>
+                  <app-flashcard-japanese-text
+                    [text]="current()!.romaji"
+                    className="vocab-romaji"
+                  />
                   <span class="vocab-meaning">{{ current()!.meaning }}</span>
                 </div>
               </div>
@@ -124,17 +133,28 @@
               >
                 🔊
               </button>
-              <app-reading-strokes
-                [kanji]="current()!.kanji"
-                [kana]="current()!.kana"
-                [romaji]="current()!.romaji"
-                [flashcard]="true"
-                (charClick)="onStrokeCharClick()"
-              />
-              <span class="vocab-kana japanese-text">{{ current()!.kana }}</span>
-              <span class="vocab-romaji">{{ current()!.romaji }}</span>
-              <div class="divider"></div>
-              <span class="vocab-meaning">{{ current()!.meaning }}</span>
+              @if (currentPicture()) {
+                <img
+                  [src]="currentPicture()!"
+                  [alt]="current()!.kana"
+                  class="vocab-picture vocab-picture-sm flashcard-vocab-picture flashcard-vocab-picture-corner"
+                />
+              }
+              <div class="flashcard-back-body">
+                <app-reading-strokes
+                  [kanji]="current()!.kanji"
+                  [kana]="current()!.kana"
+                  [romaji]="current()!.romaji"
+                  [flashcard]="true"
+                  (charClick)="onStrokeCharClick()"
+                />
+                <div class="flashcard-back-meta">
+                  <span class="vocab-kana japanese-text">{{ current()!.kana }}</span>
+                  <span class="vocab-romaji">{{ current()!.romaji }}</span>
+                  <div class="divider"></div>
+                  <span class="vocab-meaning">{{ current()!.meaning }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -2,6 +2,9 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
+import { resolvePictureVocabImage } from '../../core/utils/vocab-image.util';
+import { flashcardTextTier, hasOptionalBracketParts } from '../../core/utils/japanese.util';
+import { FlashcardJapaneseTextComponent } from '../../shared/flashcard-japanese-text/flashcard-japanese-text.component';
 import { LessonSelectorComponent } from '../../shared/lesson-selector/lesson-selector.component';
 import { ReadingStrokesComponent } from '../../shared/reading-strokes/reading-strokes.component';
 import type { Lesson, Vocabulary } from '../../core/models/api.models';
@@ -17,7 +20,7 @@ function matchesVocabSearch(vocab: Vocabulary, query: string): boolean {
 @Component({
   selector: 'app-vocab-page',
   standalone: true,
-  imports: [FormsModule, LessonSelectorComponent, ReadingStrokesComponent],
+  imports: [FormsModule, LessonSelectorComponent, ReadingStrokesComponent, FlashcardJapaneseTextComponent],
   templateUrl: './vocab-page.component.html',
   styleUrl: './vocab-page.component.scss',
 })
@@ -36,6 +39,25 @@ export class VocabPageComponent {
     const list = this.vocabList();
     if (!list.length) return null;
     return list[this.index() % list.length];
+  });
+
+  readonly currentPicture = computed(() => {
+    const vocab = this.current();
+    return vocab ? resolvePictureVocabImage(vocab) : null;
+  });
+
+  readonly frontTextTierClass = computed(() => {
+    const vocab = this.current();
+    if (!vocab) return '';
+    const tier = flashcardTextTier(vocab.kanji, vocab.kana);
+    const tierClass = tier === 'sm' ? '' : ` flashcard-text-dual--tier-${tier}`;
+    const optionalClass =
+      hasOptionalBracketParts(vocab.kanji) ||
+      hasOptionalBracketParts(vocab.kana) ||
+      hasOptionalBracketParts(vocab.romaji)
+        ? ' flashcard-text-dual--optional-brackets'
+        : '';
+    return `${tierClass}${optionalClass}`;
   });
 
   readonly filteredVocab = computed(() => {

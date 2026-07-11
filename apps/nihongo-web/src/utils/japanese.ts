@@ -49,6 +49,71 @@ export function hasReadingVariants(text: string): boolean {
   return parseReadingVariants(text).length > 1;
 }
 
+export type FlashcardTextTier = 'sm' | 'md' | 'lg' | 'xl';
+
+export interface OptionalBracketSegment {
+  text: string;
+  optional: boolean;
+  openBracket?: '[' | '［';
+  closeBracket?: ']' | '］';
+}
+
+const OPTIONAL_BRACKET_RE = /(\[|［)([^\]］]+)(]|］)/g;
+
+/** Tách phần tùy chọn trong [] / ［］ (vd. ［どうぞ］よろしく［おねがいします］). */
+export function parseOptionalBracketSegments(text: string): OptionalBracketSegment[] {
+  const segments: OptionalBracketSegment[] = [];
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(OPTIONAL_BRACKET_RE)) {
+    const index = match.index ?? 0;
+    if (index > lastIndex) {
+      segments.push({ text: text.slice(lastIndex, index), optional: false });
+    }
+
+    const open = match[1] as '[' | '［';
+    segments.push({
+      text: match[2],
+      optional: true,
+      openBracket: open,
+      closeBracket: open === '[' ? ']' : '］',
+    });
+    lastIndex = index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    segments.push({ text: text.slice(lastIndex), optional: false });
+  }
+
+  return segments.length ? segments : [{ text, optional: false }];
+}
+
+export function hasOptionalBracketParts(text: string | null | undefined): boolean {
+  if (!text) return false;
+  return /(\[|［)[^\]］]+(]|］)/.test(text);
+}
+
+function flashcardEffectiveLength(text: string): number {
+  if (hasOptionalBracketParts(text)) {
+    return parseOptionalBracketSegments(text)
+      .filter((segment) => !segment.optional)
+      .map((segment) => segment.text)
+      .join('')
+      .replace(/\s/g, '').length;
+  }
+
+  return text.replace(/\s/g, '').length;
+}
+
+/** Cỡ chữ flashcard theo độ dài — tránh cụm dài bị font quá to. */
+export function flashcardTextTier(...texts: (string | null | undefined)[]): FlashcardTextTier {
+  const len = Math.max(0, ...texts.map((text) => flashcardEffectiveLength(text ?? '')));
+  if (len <= 4) return 'sm';
+  if (len <= 9) return 'md';
+  if (len <= 16) return 'lg';
+  return 'xl';
+}
+
 /** Chỉ giữ kana và kanji — bỏ ~, romaji, dấu câu (tránh HanziWriter hiện ký tự lỗi) */
 export function getStrokeText(text: string): string {
   if (!text) return '';
