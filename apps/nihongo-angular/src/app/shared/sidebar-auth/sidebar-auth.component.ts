@@ -18,7 +18,11 @@ import { AuthService } from '../../core/services/auth.service';
     } @else {
       <div class="auth-header">
         <a routerLink="/profile" class="auth-user-chip" title="Hồ sơ cá nhân">
-          <span class="auth-avatar">{{ initials() }}</span>
+          @if (auth.user()?.avatarUrl) {
+            <img [src]="auth.user()!.avatarUrl!" alt="" class="auth-avatar" />
+          } @else {
+            <span class="auth-avatar">{{ initials() }}</span>
+          }
           <span class="auth-user-name">{{ label() }}</span>
         </a>
         @if (auth.isAdmin()) {

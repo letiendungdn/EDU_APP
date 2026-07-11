@@ -1,38 +1,108 @@
-<div class="profile-page container">
-  <h1>Hồ sơ</h1>
-  <p class="subtitle">Quản lý thông tin tài khoản và thanh toán.</p>
-
+<div class="profile-page">
   @if (user(); as u) {
     <div class="profile-card glass-panel">
-      <div class="info-row">
-        <span class="label">Email</span>
-        <span>{{ u.email }}</span>
-      </div>
-      <div class="info-row">
-        <span class="label">Vai trò</span>
-        <span>{{ u.role }}</span>
+      <h1>Hồ sơ của bạn</h1>
+      <p class="profile-meta">{{ u.email }}</p>
+
+      <div class="profile-badges">
+        @if (u.isGoogleLinked) {
+          <span class="profile-badge">Google đã liên kết</span>
+        }
+        @if (u.hasPassword) {
+          <span class="profile-badge">Email + mật khẩu</span>
+        }
+        @if (u.role === 'ADMIN') {
+          <span class="profile-badge">Admin</span>
+        }
       </div>
 
-      <form (ngSubmit)="saveName()">
-        <label>
-          Tên hiển thị
-          <input type="text" [(ngModel)]="name" name="name" placeholder="Tên của bạn" />
-        </label>
-        @if (message()) {
-          <p class="success">{{ message() }}</p>
+      <div class="auth-user-chip" style="max-width: none">
+        @if (u.avatarUrl) {
+          <img [src]="u.avatarUrl" alt="" class="auth-avatar" />
+        } @else {
+          <span class="auth-avatar">{{ initials() }}</span>
         }
+        <span class="auth-user-name">{{ label() }}</span>
+      </div>
+
+      <form (ngSubmit)="submit()" class="auth-form">
         @if (error()) {
-          <p class="error">{{ error() }}</p>
+          <p class="auth-error">{{ error() }}</p>
         }
-        <button type="submit" class="btn btn-primary" [disabled]="saving()">
-          {{ saving() ? 'Đang lưu…' : 'Lưu tên' }}
+        @if (success()) {
+          <p class="auth-success">{{ success() }}</p>
+        }
+
+        <div class="auth-field">
+          <label>
+            Tên hiển thị
+            <input type="text" [(ngModel)]="name" name="name" maxlength="120" />
+          </label>
+        </div>
+
+        <div class="auth-field">
+          <label>
+            Ảnh đại diện (URL)
+            <input
+              type="url"
+              [(ngModel)]="avatarUrl"
+              name="avatarUrl"
+              placeholder="https://..."
+            />
+          </label>
+        </div>
+
+        <div class="auth-field">
+          <label>
+            Ngôn ngữ mẹ đẻ
+            <select [(ngModel)]="nativeLanguage" name="nativeLanguage">
+              <option value="vi">Tiếng Việt</option>
+              <option value="en">English</option>
+              <option value="ja">日本語</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="auth-field">
+          <label>
+            Mục tiêu JLPT
+            <select [(ngModel)]="targetJlptLevel" name="targetJlptLevel">
+              @for (lv of jlptLevels; track lv || 'none') {
+                <option [value]="lv">{{ lv || 'Chưa chọn' }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        <div class="auth-field">
+          <label>
+            Mục tiêu học mỗi ngày (phút)
+            <input
+              type="number"
+              min="5"
+              max="480"
+              [(ngModel)]="studyGoalMinutes"
+              name="studyGoalMinutes"
+            />
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">
+          {{ loading() ? 'Đang lưu...' : 'Lưu thay đổi' }}
         </button>
       </form>
 
-      <div class="actions">
+      <div class="profile-actions">
         <a routerLink="/payments" class="btn btn-outline">Lịch sử thanh toán</a>
+        <a routerLink="/" class="btn btn-outline">Về trang chủ</a>
         <button type="button" class="btn btn-outline" (click)="logout()">Đăng xuất</button>
       </div>
     </div>
+
+    @if (token(); as authToken) {
+      <app-payment-methods [token]="authToken" />
+    }
+  } @else {
+    <div class="empty-state glass-panel">Đang tải hồ sơ...</div>
   }
 </div>

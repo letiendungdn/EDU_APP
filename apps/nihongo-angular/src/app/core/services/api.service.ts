@@ -209,6 +209,13 @@ export class ApiService {
     });
   }
 
+  loginWithGoogle(credential: string): Promise<LoginResponse> {
+    return apiFetch<LoginResponse>('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ credential }),
+    });
+  }
+
   logout(token: string): Promise<{ message: string }> {
     return apiFetch('/auth/logout', { method: 'POST', token });
   }
@@ -301,6 +308,14 @@ export class ApiService {
     return apiFetch('/subscriptions', { method: 'DELETE', token });
   }
 
+  requestSubscriptionRefund(token: string, reason?: string): Promise<RefundResult> {
+    return apiFetch('/subscriptions/refund', {
+      method: 'POST',
+      token,
+      body: JSON.stringify({ reason }),
+    });
+  }
+
   getMyPayments(token: string): Promise<PaymentRecord[]> {
     return apiFetch<PaymentRecord[]>('/payments/me', { token });
   }
@@ -319,6 +334,20 @@ export class ApiService {
 
   createPaymentMethodSetup(token: string): Promise<SetupIntentResponse> {
     return apiFetch('/payment-methods/setup', { method: 'POST', token });
+  }
+
+  setDefaultPaymentMethod(token: string, paymentMethodId: string): Promise<{ message: string }> {
+    return apiFetch(`/payment-methods/${paymentMethodId}/default`, {
+      method: 'POST',
+      token,
+    });
+  }
+
+  deletePaymentMethod(token: string, paymentMethodId: string): Promise<{ message: string }> {
+    return apiFetch(`/payment-methods/${paymentMethodId}`, {
+      method: 'DELETE',
+      token,
+    });
   }
 
   getSupportThread(token: string): Promise<SupportThreadResponse> {
@@ -362,6 +391,18 @@ export class ApiService {
       method: 'POST',
       token,
       body: JSON.stringify({ userId }),
+    });
+  }
+
+  createCommunityGroup(
+    token: string,
+    name: string,
+    memberIds: number[],
+  ): Promise<CommunityRoomResponse> {
+    return apiFetch('/community/rooms/group', {
+      method: 'POST',
+      token,
+      body: JSON.stringify({ name, memberIds }),
     });
   }
 

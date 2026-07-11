@@ -66,6 +66,11 @@ export class AuthService {
     return this.applySession(res);
   }
 
+  async loginWithGoogle(credential: string): Promise<AuthUser> {
+    const res = await this.api.loginWithGoogle(credential);
+    return this.applySession(res);
+  }
+
   async updateProfile(data: UpdateProfileInput): Promise<AuthUser> {
     const token = this.tokenSignal();
     if (!token) throw new ApiError('Chưa đăng nhập', 401);

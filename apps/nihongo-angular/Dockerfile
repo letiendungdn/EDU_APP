@@ -6,6 +6,10 @@ COPY apps/nihongo-web/public/media ./apps/nihongo-angular/public/media
 COPY apps/nihongo-angular ./apps/nihongo-angular
 RUN npm ci
 WORKDIR /app/apps/nihongo-angular
+ARG GOOGLE_CLIENT_ID=
+ARG STRIPE_PUBLISHABLE_KEY=
+RUN sed -i "s|name=\"google-signin-client_id\" content=\"\"|name=\"google-signin-client_id\" content=\"${GOOGLE_CLIENT_ID}\"|" src/index.html \
+  && sed -i "s|name=\"stripe-publishable-key\" content=\"\"|name=\"stripe-publishable-key\" content=\"${STRIPE_PUBLISHABLE_KEY}\"|" src/index.html
 RUN npm run build
 
 FROM nginx:1.27-alpine AS runner

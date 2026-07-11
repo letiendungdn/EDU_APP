@@ -1,0 +1,84 @@
+<section class="profile-card glass-panel payment-methods">
+  <div class="payment-methods-header">
+    <div>
+      <h2>Thẻ thanh toán</h2>
+      <p class="profile-meta">Quản lý thẻ dùng cho subscription và coaching</p>
+    </div>
+    @if (!adding()) {
+      <button type="button" class="btn btn-primary" (click)="openAddForm()">+ Thêm thẻ</button>
+    }
+  </div>
+
+  @if (error()) { <p class="auth-error">{{ error() }}</p> }
+  @if (success()) { <p class="auth-success">{{ success() }}</p> }
+
+  @if (loading()) {
+    <p class="profile-meta">Đang tải thẻ...</p>
+  } @else if (!cards().length && !adding()) {
+    <div class="payment-methods-empty">
+      <p>Chưa có thẻ nào được lưu.</p>
+      <button type="button" class="btn btn-outline" (click)="openAddForm()">Thêm thẻ đầu tiên</button>
+    </div>
+  } @else {
+    <ul class="payment-methods-list">
+      @for (card of cards(); track card.id) {
+        <li class="payment-method-item">
+          <div class="payment-method-info">
+            <span class="payment-method-brand">{{ card.brand.toUpperCase() }}</span>
+            <span class="payment-method-number">•••• {{ card.last4 }}</span>
+            <span class="payment-method-exp">
+              {{ card.expMonth.toString().padStart(2, '0') }}/{{ card.expYear }}
+            </span>
+            @if (card.isDefault) {
+              <span class="profile-badge payment-method-default">Mặc định</span>
+            }
+          </div>
+          <div class="payment-method-actions">
+            @if (!card.isDefault) {
+              <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                [disabled]="actionId() === card.id"
+                (click)="setDefault(card.id)"
+              >
+                Đặt mặc định
+              </button>
+            }
+            <button
+              type="button"
+              class="btn btn-outline btn-sm"
+              [disabled]="actionId() === card.id"
+              (click)="remove(card.id)"
+            >
+              Xóa
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+
+  @if (adding()) {
+    <div class="add-card-panel">
+      <h3>Thêm thẻ mới</h3>
+      @if (setupLoading()) {
+        <p class="profile-meta">Đang mở form thẻ...</p>
+      }
+      @if (!stripeConfigured()) {
+        <p class="auth-error">Stripe chưa cấu hình trên Angular frontend.</p>
+      }
+      <div #cardElement></div>
+      <div class="add-card-actions">
+        <button type="button" class="btn btn-outline" (click)="closeAddForm()">Hủy</button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="setupLoading() || !stripeConfigured()"
+          (click)="confirmAddCard()"
+        >
+          {{ setupLoading() ? 'Đang xử lý...' : 'Lưu thẻ' }}
+        </button>
+      </div>
+    </div>
+  }
+</section>

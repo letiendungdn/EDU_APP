@@ -1,33 +1,94 @@
-<div class="subscribe-page container">
-  <a routerLink="/pricing" class="back btn btn-outline">← Quay lại bảng giá</a>
-
-  <h1>Thanh toán gói {{ plan }}</h1>
+<div class="checkout-page">
+  <a routerLink="/pricing" class="btn btn-outline checkout-back">← Quay lại bảng giá</a>
 
   @if (loading()) {
-    <div class="glass-panel state-panel">Đang khởi tạo thanh toán…</div>
+    <div class="page-loading">Đang khởi tạo thanh toán…</div>
   } @else if (error()) {
-    <div class="glass-panel checkout-panel">
+    <div class="checkout-error-panel glass-panel">
       <h2>Có lỗi xảy ra</h2>
       <p>{{ error() }}</p>
       <a routerLink="/pricing" class="btn btn-outline">Quay lại</a>
     </div>
   } @else if (result()) {
-    <div class="glass-panel checkout-panel">
-      <h2>Đăng ký đã tạo</h2>
-      <p>Trạng thái: <strong>{{ result()!.subscription.status }}</strong></p>
-      <p>Hết hạn kỳ: {{ result()!.subscription.currentPeriodEnd | date: 'medium' }}</p>
+    <div class="checkout-panel">
+      <h1 class="checkout-title">Hoàn tất thanh toán</h1>
+      <form class="checkout-form" (ngSubmit)="confirmPayment()">
+        <div class="checkout-summary glass-panel">
+          <h2>Thẻ thanh toán</h2>
+          <p class="checkout-plan-label">Gói {{ plan }}</p>
+          <p class="checkout-card-hint">Chọn thẻ đã lưu hoặc nhập thẻ Visa, Mastercard, JCB mới</p>
+        </div>
 
-      @if (result()!.clientSecret) {
-        <p class="hint">
-          Stripe client secret đã sẵn sàng. Tích hợp Stripe Elements trên Angular hoặc chuyển sang app React
-          để hoàn tất thanh toán thẻ.
-        </p>
-        <code class="secret">{{ result()!.clientSecret }}</code>
-      } @else {
-        <p class="hint">Gói đã được kích hoạt — không cần thanh toán thêm.</p>
-      }
+        <div class="checkout-payment glass-panel">
+          <h3>Phương thức thanh toán</h3>
 
-      <a routerLink="/payments" class="btn btn-primary">Xem lịch sử thanh toán</a>
+          @if (cardsLoading()) {
+            <p class="checkout-card-hint">Đang tải thẻ đã lưu...</p>
+          } @else if (cards().length) {
+            <div class="checkout-saved-cards">
+              <p class="checkout-saved-label">Thẻ đã lưu</p>
+              <ul class="checkout-saved-list">
+                @for (card of cards(); track card.id) {
+                  <li>
+                    <label class="checkout-saved-option">
+                      <input
+                        type="radio"
+                        name="saved-card"
+                        [checked]="!useNewCard() && selectedCardId() === card.id"
+                        (change)="selectSavedCard(card.id)"
+                      />
+                      <span>
+                        {{ card.brand.toUpperCase() }} •••• {{ card.last4 }}
+                        <span class="checkout-saved-exp">
+                          {{ card.expMonth.toString().padStart(2, '0') }}/{{ card.expYear }}
+                        </span>
+                        @if (card.isDefault) {
+                          <span class="checkout-saved-default">Mặc định</span>
+                        }
+                      </span>
+                    </label>
+                  </li>
+                }
+              </ul>
+              <label class="checkout-saved-option checkout-saved-option--new">
+                <input
+                  type="radio"
+                  name="saved-card"
+                  [checked]="useNewCard()"
+                  (change)="selectNewCard()"
+                />
+                <span>+ Dùng thẻ mới</span>
+              </label>
+            </div>
+          }
+
+          @if (useNewCard()) {
+            @if (stripeConfigured()) {
+              <div #paymentElement class="checkout-new-card"></div>
+            } @else {
+              <div class="checkout-error">
+                Stripe chưa cấu hình. Thêm meta <code>stripe-publishable-key</code> vào index.html.
+              </div>
+            }
+          }
+
+          @if (error()) {
+            <p class="checkout-error">{{ error() }}</p>
+          }
+
+          <div class="checkout-actions">
+            <a routerLink="/pricing" class="btn btn-outline">Hủy</a>
+            <button
+              type="submit"
+              class="btn btn-primary checkout-submit"
+              [disabled]="processing() || (!stripeConfigured() && useNewCard())"
+            >
+              {{ processing() ? 'Đang xử lý...' : 'Xác nhận & thanh toán' }}
+            </button>
+          </div>
+          <p class="checkout-notice">🔒 Bảo mật qua Stripe · Hủy subscription bất kỳ lúc nào</p>
+        </div>
+      </form>
     </div>
   }
 </div>

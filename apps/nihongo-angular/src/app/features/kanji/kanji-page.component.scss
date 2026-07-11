@@ -1,170 +1,258 @@
-.kanji-view {
+.vocab-view {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding-bottom: 2rem;
+  gap: 2rem;
+  animation: fadeIn var(--transition-normal);
 }
 
-.kanji-header {
-  width: 100%;
-  max-width: 720px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
+.vocab-header {
   text-align: center;
-}
-
-.view-title {
-  font-size: 2rem;
-}
-
-.kanji-links a {
-  color: #a5b4fc;
-  font-weight: 600;
-}
-
-.subtitle {
-  color: var(--text-secondary);
-}
-
-.kanji-search-form {
+  gap: 1rem;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  width: 100%;
-  justify-content: center;
-}
-
-.kanji-search-input {
-  flex: 1;
-  min-width: 220px;
-  padding: 0.65rem 0.85rem;
-  border-radius: 0.65rem;
-  border: 1px solid var(--border-color);
-  background: var(--surface-color);
-  color: var(--text-primary);
-}
-
-.kanji-search-results {
-  width: 100%;
-  padding: 1rem;
-  text-align: left;
-}
-
-.kanji-search-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.kanji-search-item {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem;
-  border: none;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-  border-radius: 0.5rem;
-  cursor: pointer;
-}
-
-.kanji-search-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.kanji-search-char {
-  font-size: 1.5rem;
-}
-
-.kanji-search-meta {
-  flex: 1;
-  color: var(--text-secondary);
-}
-
-.kanji-search-lesson {
-  font-size: 0.85rem;
-  color: #a5b4fc;
 }
 
 .lesson-selector {
+  background: var(--surface-color);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .select-input {
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border-color);
-  background: var(--surface-color);
+  background: var(--bg-color);
   color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: inherit;
+  outline: none;
 }
 
-.btn-primary {
-  background: var(--primary-color);
-  color: #fff;
-  border: none;
+.vocab-subtitle {
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
-.kanji-main {
+.vocab-body-layout {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: flex-start;
   gap: 1.5rem;
-  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.vocab-word-list {
+  width: 280px;
+  flex-shrink: 0;
+  max-height: min(560px, 78vh);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: var(--surface-color);
+}
+
+.vocab-word-list-title {
+  margin: 0 0 0.75rem;
+  padding: 0 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.vocab-word-list-search {
+  width: 100%;
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background: var(--bg-color);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.vocab-word-list-search:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+}
+
+.vocab-word-list-search::placeholder {
+  color: var(--text-secondary);
+}
+
+.vocab-word-list-warning {
+  margin: 0 0 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.4rem;
+  background: rgba(234, 179, 8, 0.12);
+  color: #fbbf24;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.vocab-word-list-empty {
+  padding: 1rem 0.5rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.vocab-word-list-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin;
+}
+
+.vocab-word-list-virtual {
+  position: relative;
   width: 100%;
 }
 
-.flashcard-wrap {
+.vocab-word-list-row {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.vocab-word-list-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.75rem 2.25rem 1fr;
+  grid-template-rows: auto auto;
+  gap: 0.1rem 0.5rem;
+  padding: 0.55rem 0.65rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.vocab-word-list-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.vocab-word-list-item.active {
+  background: rgba(239, 68, 68, 0.12);
+  box-shadow: inset 3px 0 0 var(--primary-color);
+}
+
+.vocab-word-list-num {
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.vocab-word-list-jp {
+  grid-column: 3;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vocab-word-list-meaning {
+  grid-column: 3;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vocab-main-layout {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  width: 100%;
+  flex: 1;
+  min-width: 0;
+}
+
+.vocab-body-layout .vocab-main-layout {
+  align-items: stretch;
+}
+
+.vocab-body-layout .flashcard-container {
+  max-width: none;
+  width: 100%;
+}
+
+/* Flashcard 3D effect setup */
+.flashcard-container {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 680px;
+  flex: 1;
 }
 
 .flashcard {
-  width: min(100%, 480px);
-  height: 380px;
-  perspective: 1000px;
+  display: grid;
+  width: 100%;
+  min-height: min(520px, 72vh);
+  position: relative;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
   cursor: pointer;
 }
 
-.flashcard-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.5s;
-  transform-style: preserve-3d;
+.flashcard--multi-reading {
+  min-height: min(560px, 78vh);
 }
 
-.flashcard.flipped .flashcard-inner {
+.flashcard.flipped {
   transform: rotateY(180deg);
 }
 
-.face {
-  position: absolute;
-  inset: 0;
+.flashcard-face {
+  grid-area: 1 / 1;
+  width: 100%;
+  backface-visibility: hidden;
+  border-radius: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  backface-visibility: hidden;
-  padding: 1.5rem;
+  justify-content: flex-start;
+  padding: 3.25rem 1.25rem 1.5rem;
+  box-shadow: var(--shadow-lg);
+  background: var(--surface-color);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: visible;
 }
 
-.back {
-  transform: rotateY(180deg);
+.flashcard-front-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+  width: 100%;
+  gap: 0.5rem;
+  margin-top: 0;
+  overflow: visible;
 }
 
-.kanji-char {
-  font-size: 3.5rem;
-  font-weight: 700;
+.flashcard--multi-reading .flashcard-front-body {
+  gap: 0.35rem;
 }
 
 .flashcard-stroke-block {
@@ -172,103 +260,680 @@
   flex-direction: column;
   align-items: center;
   gap: 0.35rem;
+}
+
+.flashcard-stroke-dual {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1.25rem 2rem;
   width: 100%;
-  margin-top: 0.25rem;
+}
+
+.flashcard-reading-pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.flashcard-reading-pair {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.flashcard-reading-pair-label {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  letter-spacing: 0.02em;
+}
+
+.flashcard-reading-pair-strokes {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.75rem 1.25rem;
+  width: 100%;
 }
 
 .flashcard-stroke-label {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-secondary);
+  margin: 0;
 }
 
-.stroke-drawing-box {
+.flashcard-stroke-block .stroke-order-container {
+  gap: 12px;
+}
+
+.flashcard-stroke-block .stroke-order-container > div {
+  margin: 0 6px !important;
+}
+
+.vocab-kanji-caption {
+  font-size: 1.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-top: 0.25rem;
+}
+
+.flashcard-vocab-picture-corner {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  margin: 0 !important;
+  opacity: 0.92;
+}
+
+.flashcard-front {
+  background: linear-gradient(145deg, var(--surface-color), #243044);
+}
+
+.flashcard-back {
+  background: linear-gradient(145deg, #1e293b, #151e2b);
+  transform: rotateY(180deg);
+}
+
+.flashcard:hover .flashcard-face {
+  box-shadow: 0 15px 35px -5px rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.btn-audio {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
   display: flex;
+  align-items: center;
   justify-content: center;
+  opacity: 0.7;
+}
+
+.btn-audio:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.flashcard--kanji {
+  min-height: min(680px, 86vh);
+}
+
+.kanji-flashcard-back-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  flex: 1;
+  gap: 0.45rem;
+  overflow-y: auto;
+  padding-bottom: 0.25rem;
+}
+
+.kanji-flashcard-stroke--back {
+  margin-top: 0.35rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.kanji-flashcard-back-body .kanji-mnemonic,
+.kanji-flashcard-back-body .kanji-mnemonic-jp {
+  font-size: 0.88rem;
+  margin: 0;
+  text-align: center;
+}
+
+.kanji-flashcard-back-body .vocab-meaning {
+  font-size: 1.35rem;
+  text-align: center;
+}
+
+.kanji-flashcard-back-body .vocab-kana {
+  font-size: 1.75rem;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.flashcard--kanji .flashcard-front {
+  position: relative;
+}
+
+.flashcard--kanji .flashcard-face {
+  padding: 3rem 1rem 1.25rem;
+}
+
+.vocab-main-layout--kanji {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.vocab-main-layout--kanji .flashcard-container {
+  max-width: 680px;
+  flex: 1 1 360px;
+}
+
+.kanji-vocab-sidepanel {
+  width: 320px;
+  max-width: 100%;
+  flex: 0 1 320px;
+  align-self: stretch;
+  max-height: min(720px, 86vh);
+  overflow-y: auto;
+  border-radius: 1.5rem;
+  background: var(--surface-color);
+}
+
+.kanji-flashcard-hero {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem 1.5rem;
+  width: 100%;
+}
+
+.kanji-flashcard-char {
+  font-size: clamp(3rem, 11vw, 4.75rem);
+  line-height: 1.1;
+}
+
+.kanji-flashcard-illustration {
+  display: block;
+  line-height: 0;
+}
+
+.kanji-flashcard-illustration img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, clamp(9rem, 58vw, 13rem));
+  max-height: clamp(9rem, 34vh, 13rem);
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.kanji-flashcard-stroke {
+  width: 100%;
+  margin-top: 0.35rem;
+}
+
+.kanji-flashcard-stroke .stroke-drawing-box {
   width: 100%;
   max-width: 280px;
 }
 
-.kanji-flashcard-stroke--back {
-  margin-top: 0.5rem;
+.kanji-flashcard-stroke .stroke-order-container > div {
+  max-width: 120px;
+  max-height: 120px;
 }
 
-:host ::ng-deep .kanji-flashcard-stroke .stroke-order-container > div {
-  max-width: 100px;
-  max-height: 100px;
-}
-
-.kanji-image {
-  max-width: 200px;
-  max-height: 160px;
-  object-fit: contain;
-}
-
-.han-viet {
-  color: #fcd34d;
-  font-weight: 600;
-}
-
-.readings {
-  font-size: 1.25rem;
-}
-
-.meaning {
-  font-size: 1.2rem;
-  color: #86efac;
-  font-weight: 600;
-  text-align: center;
-}
-
-.mnemonic-jp,
-.mnemonic-vi {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  text-align: center;
-}
-
-.controls {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.vocab-side {
-  width: min(100%, 360px);
-  padding: 1rem 1.25rem;
-  align-self: flex-start;
-}
-
-.vocab-side h3 {
-  margin-bottom: 0.75rem;
-}
-
-.vocab-side ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.stroke-order-sidepanel {
+  width: 350px;
+  padding: 2rem;
+  border-radius: 1.5rem;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background: var(--surface-color);
+}
+
+.stroke-order-sidepanel h3 {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+}
+
+.stroke-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
 }
 
-.vocab-side li {
+.stroke-section + .stroke-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.stroke-section-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.stroke-kanji {
+  font-size: 3rem;
+  color: var(--primary-color);
+  font-family: "Noto Sans JP", sans-serif;
+  margin-bottom: 0.5rem;
+}
+
+.stroke-kanji-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.stroke-kanji-btn:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+.stroke-drawing-box {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.stroke-order-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Typography inside card */
+.vocab-kanji {
+  font-size: 5rem;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.vocab-kana {
+  font-size: 3rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.vocab-romaji {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.divider {
+  width: 50px;
+  height: 3px;
+  background-color: var(--border-color);
+  margin-bottom: 1.5rem;
+  border-radius: 2px;
+}
+
+.vocab-meaning {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* Controls */
+.vocab-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.btn-play-all {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-play-all:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.btn-play-all:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-play-all.playing {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+.btn-nav {
+  background-color: var(--surface-color-light);
+  color: var(--text-primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.btn-nav:hover {
+  background-color: var(--border-color);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--surface-color);
+  border-radius: 1rem;
+  max-width: 600px;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.kanji-mnemonic {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.kanji-mnemonic-jp {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.kanji-illustration {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.kanji-illustration img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+}
+
+.kanji-vocab-list {
+  width: 100%;
+  margin-top: 0;
+  padding: 1.25rem 1.5rem;
+}
+
+.kanji-vocab-sidepanel.kanji-vocab-list {
+  max-width: none;
+}
+
+.kanji-vocab-list h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.kanji-vocab-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.kanji-vocab-list li {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem;
-  line-height: 1.4;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.95rem;
 }
 
-.reading,
-.vocab-meaning {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+.kanji-vocab-list li:last-child {
+  border-bottom: none;
 }
 
-.empty {
+.kanji-vocab-audio {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+}
+
+.kanji-vocab-reading {
   color: var(--text-secondary);
-  padding: 2rem;
-  text-align: center;
+}
+
+.kanji-vocab-meaning {
+  color: var(--text-primary);
+}
+
+.kanji-search-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 36rem;
+  margin: 0.75rem auto 0;
+}
+
+.kanji-search-input {
+  flex: 1 1 12rem;
+  margin: 0;
+}
+
+.kanji-search-btn,
+.kanji-search-clear {
+  flex-shrink: 0;
+}
+
+.kanji-search-results {
+  width: 100%;
+  max-width: 36rem;
+  margin: 0.75rem auto 0;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.kanji-search-status {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.kanji-search-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.kanji-search-list li + li {
+  margin-top: 0.35rem;
+}
+
+.kanji-search-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.65rem;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.kanji-search-item:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.kanji-search-char {
+  font-size: 1.35rem;
+  font-weight: 700;
+  min-width: 1.5rem;
+}
+
+.kanji-search-meta {
+  flex: 1 1 8rem;
+  font-size: 0.88rem;
+}
+
+.kanji-search-lesson {
+  font-size: 0.78rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+@media (max-width: 800px) {
+  .vocab-body-layout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .vocab-word-list {
+    width: 100%;
+    max-height: 200px;
+  }
+
+  .vocab-main-layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .vocab-main-layout--kanji {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .kanji-vocab-sidepanel {
+    width: 100%;
+    max-height: 240px;
+  }
+
+  .flashcard--kanji {
+    min-height: min(580px, 78vh);
+  }
+
+  .kanji-flashcard-stroke .stroke-order-container > div {
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  .flashcard {
+    min-height: min(480px, 68vh);
+  }
+
+  .flashcard--multi-reading {
+    min-height: min(520px, 72vh);
+  }
+
+  .flashcard-face {
+    padding: 3rem 1rem 1.25rem;
+  }
+
+  .flashcard-stroke-dual {
+    gap: 1rem;
+  }
+}
+
+.vocab-picture {
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.vocab-picture-xs {
+  width: 2rem;
+  height: 2rem;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+.vocab-picture-sm {
+  width: 3rem;
+  height: 3rem;
+}
+
+.vocab-picture-md {
+  width: 4.5rem;
+  height: 4.5rem;
+}
+
+.vocab-picture-lg {
+  width: 5.5rem;
+  height: 5.5rem;
+}
+
+.vocab-word-list-thumb {
+  opacity: 0.95;
+}
+
+.flashcard-vocab-picture {
+  margin-bottom: 0.75rem;
+}
+
+.stroke-panel-picture {
+  display: block;
+  margin: 0 auto 1rem;
+}
+
+/* ── Light mode overrides ── */
+[data-theme="light"] .vocab-word-list-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .flashcard-front {
+  background: linear-gradient(145deg, #ffffff, #f1f5f9);
+}
+
+[data-theme="light"] .flashcard-back {
+  background: linear-gradient(145deg, #f8fafc, #eef2f7);
+}
+
+[data-theme="light"] .btn-audio {
+  background: rgba(0, 0, 0, 0.07);
+}
+[data-theme="light"] .btn-audio:hover {
+  background: rgba(0, 0, 0, 0.13);
+}
+
+[data-theme="light"] .kanji-flashcard-stroke--back {
+  border-top-color: var(--border-color);
+}
+
+[data-theme="light"] .kanji-search-item {
+  border-color: var(--border-color);
+  background: var(--surface-color);
 }

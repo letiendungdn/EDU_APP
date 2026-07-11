@@ -246,6 +246,9 @@ services:
     build:
       context: .
       dockerfile: apps/nihongo-angular/Dockerfile
+      args:
+        GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+        STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-}
     container_name: edu-nihongo-angular
     restart: unless-stopped
     depends_on:

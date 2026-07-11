@@ -1,48 +1,94 @@
-<section class="container picture-view">
-  <h2 class="view-title">Từ điển hình ảnh</h2>
-  <p class="subtitle">{{ items().length }} từ {{ picturesOnly() ? 'có ảnh' : '' }}</p>
+<section class="container picture-dict-view">
+  <div class="picture-dict-header">
+    <div>
+      <h2 class="view-title">Từ điển hình ảnh</h2>
+      <p class="picture-dict-subtitle">
+        Minna no Nihongo · {{ rangeLabel() }} · {{ items().length }} từ
+        {{ picturesOnly() ? 'có ảnh' : '' }}
+      </p>
+    </div>
+    <div class="picture-dict-links">
+      <a routerLink="/vocab" class="btn btn-outline">Flashcard</a>
+      <a routerLink="/kanji" class="btn btn-primary">Kanji</a>
+    </div>
+  </div>
 
-  <div class="tabs">
-    <button type="button" [class.active]="mode() === 'single'" (click)="setMode('single')">Một bài</button>
-    <button type="button" [class.active]="mode() === 'range'" (click)="setMode('range')">Nhiều bài</button>
+  <div class="picture-dict-scope-tabs" role="tablist" aria-label="Phạm vi bài học">
+    <button type="button" class="btn tab-btn" [class.active]="mode() === 'single'" (click)="setMode('single')">
+      Một bài
+    </button>
+    <button type="button" class="btn tab-btn" [class.active]="mode() === 'range'" (click)="setMode('range')">
+      Nhiều bài
+    </button>
   </div>
 
   @if (mode() === 'single') {
-    <label>
+    <label class="picture-dict-single">
       Bài
-      <select [value]="lesson()" (change)="lesson.set(+$any($event.target).value)">
+      <select class="select-input" [value]="lesson()" (change)="lesson.set(+$any($event.target).value)">
         @for (l of lessons(); track l.lessonNumber) {
           <option [value]="l.lessonNumber">Bài {{ l.lessonNumber }}</option>
         }
       </select>
     </label>
   } @else {
-    <div class="range">
-      <button type="button" class="btn btn-outline" (click)="loadPreset(1, 50)">1 → 50</button>
-      <button type="button" class="btn btn-outline" (click)="loadPreset(1, 25)">1 → 25</button>
-      <button type="button" class="btn btn-outline" (click)="loadPreset(26, 50)">26 → 50</button>
+    <div class="picture-dict-range">
+      <div class="picture-dict-range-fields">
+        <label>
+          Từ bài
+          <select
+            class="select-input"
+            [value]="lessonFrom()"
+            (change)="setRangeBoundary('from', +$any($event.target).value)"
+          >
+            @for (l of lessons(); track l.lessonNumber) {
+              <option [value]="l.lessonNumber">Bài {{ l.lessonNumber }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          Đến bài
+          <select
+            class="select-input"
+            [value]="lessonTo()"
+            (change)="setRangeBoundary('to', +$any($event.target).value)"
+          >
+            @for (l of lessons(); track l.lessonNumber) {
+              <option [value]="l.lessonNumber">Bài {{ l.lessonNumber }}</option>
+            }
+          </select>
+        </label>
+      </div>
+      <div class="picture-dict-range-presets">
+        <button type="button" class="btn btn-outline picture-dict-preset-btn" (click)="loadPreset(1, 50)">1 → 50</button>
+        <button type="button" class="btn btn-outline picture-dict-preset-btn" (click)="loadPreset(1, 25)">1 → 25</button>
+        <button type="button" class="btn btn-outline picture-dict-preset-btn" (click)="loadPreset(26, 50)">26 → 50</button>
+      </div>
     </div>
   }
 
-  <label class="toggle">
-    <input type="checkbox" [checked]="picturesOnly()" (change)="picturesOnly.set($any($event.target).checked)" />
-    Chỉ từ có ảnh
-  </label>
-
-  <input
-    type="search"
-    class="search"
-    placeholder="Tìm kanji, kana, nghĩa..."
-    [value]="search()"
-    (input)="search.set($any($event.target).value)"
-  />
+  <div class="picture-dict-filters">
+    <label class="picture-dict-toggle">
+      <input type="checkbox" [checked]="picturesOnly()" (change)="picturesOnly.set($any($event.target).checked)" />
+      Chỉ từ có ảnh
+    </label>
+    <input
+      type="search"
+      class="picture-dict-search"
+      placeholder="Tìm kanji, kana, romaji, nghĩa..."
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+    />
+  </div>
 
   @if (loadingRange()) {
-    <p class="empty">Đang tải nhiều bài...</p>
+    <p class="picture-dict-empty">Đang tải từ {{ rangeLabel() }}...</p>
   } @else if (!items().length) {
-    <p class="empty">Không có từ phù hợp.</p>
+    <div class="empty-state glass-panel">
+      <p>Không có từ phù hợp. Thử mở rộng phạm vi hoặc tắt lọc “Chỉ từ có ảnh”.</p>
+    </div>
   } @else {
-    <div class="grid">
+    <div class="picture-dict-grid">
       @for (item of items(); track item.id) {
         <button type="button" class="picture-card glass-panel" (click)="openItem(item)">
           <div class="picture-card-image-wrap">

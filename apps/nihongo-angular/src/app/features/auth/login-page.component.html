@@ -1,52 +1,93 @@
-<div class="login-page container">
-  <div class="login-card glass-panel">
-    <h1>Chào mừng trở lại</h1>
-    <p class="subtitle">Đăng nhập hoặc tạo tài khoản để đồng bộ tiến độ học.</p>
+<div class="auth-page">
+  <div class="auth-card glass-panel">
+    <h1>{{ mode() === 'register' ? 'Tạo tài khoản' : 'Đăng nhập' }}</h1>
+    <p class="auth-sub">
+      @if (mode() === 'register') {
+        Dùng Gmail để đăng ký nhanh, hoặc email + mật khẩu bên dưới
+      } @else {
+        Đăng nhập bằng Gmail hoặc email để đồng bộ tiến độ học
+      }
+    </p>
 
-    <div class="tabs">
+    <div class="auth-tabs" role="tablist" aria-label="Chọn đăng nhập hoặc đăng ký">
       <button
         type="button"
-        class="tab"
-        [class.active]="activeTab() === 'login'"
-        (click)="setTab('login')"
+        role="tab"
+        class="auth-tab"
+        [class.active]="mode() === 'login'"
+        [attr.aria-selected]="mode() === 'login'"
+        (click)="switchMode('login')"
       >
         Đăng nhập
       </button>
       <button
         type="button"
-        class="tab"
-        [class.active]="activeTab() === 'register'"
-        (click)="setTab('register')"
+        role="tab"
+        class="auth-tab"
+        [class.active]="mode() === 'register'"
+        [attr.aria-selected]="mode() === 'register'"
+        (click)="switchMode('register')"
       >
         Đăng ký
       </button>
     </div>
 
-    @if (error()) {
-      <p class="error">{{ error() }}</p>
-    }
+    <app-google-sign-in-button
+      [mode]="mode()"
+      (googleError)="onGoogleError($event)"
+      (googleSuccess)="onGoogleSuccess($event)"
+    />
 
-    <form (ngSubmit)="submit()">
-      <label>
-        Email
-        <input type="email" [(ngModel)]="email" name="email" autocomplete="email" required />
-      </label>
-      <label>
-        Mật khẩu
-        <input
-          type="password"
-          [(ngModel)]="password"
-          name="password"
-          autocomplete="current-password"
-          required
-        />
-      </label>
-      <button type="submit" class="btn btn-primary" [disabled]="loading()">
-        {{ loading() ? 'Đang xử lý…' : activeTab() === 'login' ? 'Đăng nhập' : 'Tạo tài khoản' }}
+    <div class="auth-divider">
+      hoặc dùng email@if (mode() === 'register') { & mật khẩu }
+    </div>
+
+    <form (ngSubmit)="submit()" class="auth-form">
+      @if (error()) {
+        <p class="auth-error">{{ error() }}</p>
+      }
+
+      <div class="auth-field">
+        <label>
+          Email
+          <input
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            required
+          />
+        </label>
+      </div>
+
+      <div class="auth-field">
+        <label>
+          Mật khẩu
+          <input
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            [attr.autocomplete]="mode() === 'register' ? 'new-password' : 'current-password'"
+            placeholder="Tối thiểu 8 ký tự"
+            minlength="8"
+            required
+          />
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">
+        {{
+          loading()
+            ? 'Đang xử lý...'
+            : mode() === 'register'
+              ? 'Tạo tài khoản'
+              : 'Đăng nhập'
+        }}
       </button>
     </form>
 
-    <p class="footer-link">
+    <p class="auth-footer-link">
       <a routerLink="/">← Về trang chủ</a>
     </p>
   </div>

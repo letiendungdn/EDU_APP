@@ -147,6 +147,12 @@ export class NotesPageComponent {
     return this.goals().filter((g) => g.done).length;
   }
 
+  goalPct(): number {
+    const total = this.goals().length;
+    if (!total) return 0;
+    return Math.round((this.doneCount() / total) * 100);
+  }
+
   noteDates(): string[] {
     const dates = new Set(this.notes().filter((n) => n.content.trim()).map((n) => n.date));
     dates.add(this.selectedDate());

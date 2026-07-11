@@ -131,6 +131,13 @@ export interface AuthUser {
   email: string;
   name: string | null;
   role: 'USER' | 'ADMIN';
+  avatarUrl?: string | null;
+  nativeLanguage?: string | null;
+  targetJlptLevel?: string | null;
+  studyGoalMinutes?: number | null;
+  hasPassword?: boolean;
+  isGoogleLinked?: boolean;
+  createdAt?: string;
 }
 
 export interface LoginResponse {
@@ -140,6 +147,10 @@ export interface LoginResponse {
 
 export interface UpdateProfileInput {
   name?: string;
+  avatarUrl?: string | null;
+  nativeLanguage?: string;
+  targetJlptLevel?: string | null;
+  studyGoalMinutes?: number;
 }
 
 export interface ReadingPassageSummary {
@@ -241,32 +252,46 @@ export interface ReviewLogItem {
   lastReviewedAt?: string | null;
 }
 
-export type SubscriptionPlan = 'MONTHLY' | 'YEARLY';
+export type SubscriptionPlan = 'FREE' | 'BASIC' | 'PRO' | 'PRO_ANNUAL';
 
 export interface SubscriptionPlanConfig {
+  id?: number;
   plan: SubscriptionPlan;
   label: string;
+  displayName?: string;
   priceLabel: string;
   priceCents: number;
+  priceUsdCents?: number;
   interval: string;
+  intervalMonths?: number;
+  trialDays?: number;
   features: string[];
 }
 
 export interface Subscription {
   id: number;
   plan: SubscriptionPlan;
-  status: string;
-  currentPeriodEnd: string;
+  status: 'ACTIVE' | 'PAST_DUE' | 'CANCELED' | 'TRIALING' | 'PAUSED';
+  currentPeriodStart: string | null;
+  currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
 }
 
 export interface PaymentRecord {
   id: number;
   amountCents: number;
   currency: string;
-  status: string;
-  description: string | null;
+  status: 'SUCCEEDED' | 'PENDING' | 'FAILED' | 'REFUNDED' | 'PARTIALLY_REFUNDED';
+  description?: string | null;
   createdAt: string;
-  refundedAt: string | null;
+  refundedAt?: string | null;
+  refundAmountCents?: number | null;
+  subscription?: { plan: SubscriptionPlan } | null;
+  session?: {
+    scheduledAt: string;
+    status: string;
+    coach?: { user?: { name?: string | null } | null } | null;
+  } | null;
 }
 
 export interface AdminStats {
@@ -322,7 +347,9 @@ export interface CommunityRoomSummary {
   id: number;
   name: string;
   type: 'GROUP' | 'DIRECT';
-  lastMessage: string | null;
+  members: CommunityChatUser[];
+  lastMessage: { content: string; createdAt?: string } | string | null;
+  lastMessageAt?: string;
   unreadCount: number;
   updatedAt: string;
 }
@@ -353,8 +380,8 @@ export interface SavedCard {
 }
 
 export interface CreateSubscriptionResponse {
-  subscription: Subscription;
-  clientSecret?: string;
+  clientSecret: string;
+  subscriptionId: string;
 }
 
 export interface RefundResult {

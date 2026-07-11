@@ -1,28 +1,120 @@
 <div class="pricing-page container">
-  <h1>Bảng giá</h1>
-  <p class="subtitle">Chọn gói phù hợp để mở khóa toàn bộ tính năng học.</p>
+  <div class="pricing-header">
+    <h1>Chọn gói học phù hợp</h1>
+    <p class="pricing-sub">Nâng cấp để mở khoá toàn bộ nội dung và học không giới hạn</p>
+  </div>
+
+  @if (success()) {
+    <div class="pricing-success"><span>🎉</span> {{ success() }}</div>
+  }
+
+  @if (currentSubscription(); as sub) {
+    @if (sub.plan !== 'FREE' && sub.status !== 'CANCELED') {
+      <section class="pricing-my-plan glass-panel">
+        <div class="pricing-my-plan-header">
+          <div>
+            <p class="pricing-my-plan-label">Gói đã mua</p>
+            <h2 class="pricing-my-plan-name">{{ activePlanName() }}</h2>
+          </div>
+          <span class="pricing-my-plan-status pricing-my-plan-status--{{ sub.status.toLowerCase() }}">
+            {{ sub.status }}
+          </span>
+        </div>
+        <dl class="pricing-my-plan-details">
+          <div><dt>Mã gói</dt><dd>{{ sub.plan }}</dd></div>
+          <div>
+            <dt>Kỳ hiện tại</dt>
+            <dd>{{ sub.currentPeriodStart || '—' }} → {{ sub.currentPeriodEnd || '—' }}</dd>
+          </div>
+          @if (sub.cancelAtPeriodEnd) {
+            <div><dt>Ghi chú</dt><dd>Sẽ hủy vào cuối kỳ</dd></div>
+          }
+        </dl>
+        <div class="pricing-my-plan-actions">
+          @if (canRefund()) {
+            <button
+              type="button"
+              class="btn btn-outline pricing-refund-btn"
+              [disabled]="actionLoading() !== null"
+              (click)="refundSubscription()"
+            >
+              {{ actionLoading() === 'refund' ? 'Đang xử lý...' : 'Trả hàng & hoàn tiền' }}
+            </button>
+          }
+          @if (!sub.cancelAtPeriodEnd) {
+            <button
+              type="button"
+              class="btn btn-outline"
+              [disabled]="actionLoading() !== null"
+              (click)="cancelSubscription()"
+            >
+              {{ actionLoading() === 'cancel' ? 'Đang xử lý...' : 'Hủy cuối kỳ' }}
+            </button>
+          }
+          <a routerLink="/payments" class="btn btn-outline">Lịch sử thanh toán</a>
+        </div>
+        <p class="pricing-my-plan-policy">
+          Trả hàng trong 7 ngày kể từ thanh toán — hoàn tiền toàn bộ và hủy gói ngay.
+        </p>
+      </section>
+    }
+  }
 
   @if (loading()) {
-    <div class="glass-panel state-panel">Đang tải gói…</div>
+    <div class="page-loading">Đang tải plans...</div>
   } @else if (error()) {
-    <div class="glass-panel state-panel">{{ error() }}</div>
+    <div class="pricing-notice pricing-notice--error">
+      {{ error() }}. Thử refresh hoặc kiểm tra backend (:3000) đang chạy.
+    </div>
   } @else {
     <div class="plans-grid">
       @for (plan of plans(); track plan.plan) {
-        <article class="plan-card glass-panel">
-          <h2>{{ plan.label }}</h2>
-          <p class="price">{{ plan.priceLabel }}</p>
-          <p class="interval">{{ plan.interval }}</p>
-          <ul>
+        <div
+          class="plan-card glass-panel"
+          [class.plan-card--featured]="plan.plan === 'PRO'"
+          [class.plan-card--current]="currentSubscription()?.plan === plan.plan"
+        >
+          @if (currentSubscription()?.plan === plan.plan) {
+            <span class="plan-current-tag">Gói của bạn</span>
+          }
+          @if (plan.plan === 'PRO') {
+            <span class="plan-badge plan-badge--popular">Phổ biến nhất</span>
+          }
+          @if (plan.plan === 'PRO_ANNUAL') {
+            <span class="plan-badge plan-badge--value">Tiết kiệm nhất</span>
+          }
+
+          <div class="plan-name">{{ plan.displayName || plan.label }}</div>
+          <div class="plan-price">{{ plan.priceLabel }}</div>
+
+          <ul class="plan-features">
             @for (feature of plan.features; track feature) {
-              <li><span class="check">✓</span> {{ feature }}</li>
+              <li><span class="feature-check">✓</span> {{ feature }}</li>
             }
           </ul>
-          <a [routerLink]="['/subscribe']" [queryParams]="{ plan: plan.plan }" class="btn btn-primary">
-            Chọn gói
+
+          <a
+            [routerLink]="plan.plan === 'FREE' ? [] : ['/subscribe']"
+            [queryParams]="plan.plan === 'FREE' ? null : { plan: plan.plan }"
+            class="btn btn-block"
+            [class.btn-primary]="plan.plan === 'PRO'"
+            [class.btn-outline]="plan.plan !== 'PRO'"
+          >
+            {{
+              currentSubscription()?.plan === plan.plan
+                ? '✓ Gói hiện tại'
+                : plan.plan === 'FREE'
+                  ? 'Miễn phí'
+                  : 'Chọn gói này'
+            }}
           </a>
-        </article>
+        </div>
       }
     </div>
   }
+
+  <p class="pricing-footer">
+    Thanh toán an toàn qua Stripe ·
+    <a routerLink="/payments">Hoàn tiền & lịch sử thanh toán</a> · Không phí ẩn
+  </p>
 </div>

@@ -3,35 +3,58 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiError } from '../../core/http/api-client';
+import { GoogleSignInButtonComponent } from '../../shared/google-sign-in-button/google-sign-in-button.component';
 
-type AuthTab = 'login' | 'register';
+type AuthMode = 'login' | 'register';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, GoogleSignInButtonComponent],
   templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.scss',
 })
 export class LoginPageComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  readonly activeTab = signal<AuthTab>('login');
+  readonly mode = signal<AuthMode>(
+    this.route.snapshot.queryParamMap.get('mode') === 'register' ? 'register' : 'login',
+  );
   readonly loading = signal(false);
   readonly error = signal('');
 
   email = '';
   password = '';
 
+  constructor() {
+    if (this.auth.isAuthenticated()) {
+      void this.router.navigateByUrl(this.redirectUrl);
+    }
+  }
+
   private get redirectUrl(): string {
     return this.route.snapshot.queryParamMap.get('redirect') ?? '/';
   }
 
-  setTab(tab: AuthTab): void {
-    this.activeTab.set(tab);
+  switchMode(next: AuthMode): void {
+    this.mode.set(next);
     this.error.set('');
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { mode: next === 'register' ? 'register' : null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+
+  onGoogleSuccess(role: string): void {
+    const dest = role === 'ADMIN' && this.redirectUrl === '/' ? '/admin' : this.redirectUrl;
+    void this.router.navigateByUrl(dest);
+  }
+
+  onGoogleError(message: string): void {
+    this.error.set(message);
   }
 
   async submit(): Promise<void> {
@@ -44,10 +67,10 @@ export class LoginPageComponent {
     this.error.set('');
 
     try {
-      if (this.activeTab() === 'login') {
-        await this.auth.login(this.email.trim(), this.password);
-      } else {
+      if (this.mode() === 'register') {
         await this.auth.register(this.email.trim(), this.password);
+      } else {
+        await this.auth.login(this.email.trim(), this.password);
       }
       await this.router.navigateByUrl(this.redirectUrl);
     } catch (err) {

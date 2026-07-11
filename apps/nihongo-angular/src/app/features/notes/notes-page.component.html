@@ -1,78 +1,109 @@
-<div class="notes-page container">
-  <h1>Hằng ngày</h1>
-  <p class="subtitle">Mục tiêu và ghi chú học Nhật — đồng bộ khi đăng nhập.</p>
+<div class="container" style="padding: 1.5rem 1rem">
+  <h1 style="margin-bottom: 0.25rem">Hằng ngày</h1>
+  <p style="color: var(--text-secondary); margin-bottom: 1.5rem">
+    Mục tiêu và ghi chú học Nhật — tự lưu trên trình duyệt, đồng bộ khi đăng nhập.
+  </p>
 
   @if (loading()) {
-    <div class="glass-panel state-panel">Đang tải…</div>
+    <div class="page-loading"><span class="spinner"></span></div>
   } @else {
-    <section class="goals-panel glass-panel">
-      <div class="goals-header">
+    <section class="daily-goals-panel card" style="padding: 1.25rem; margin-bottom: 1.25rem">
+      <div class="daily-goals-header">
         <div>
-          <h2>Mục tiêu {{ selectedDate() === today ? 'hôm nay' : selectedDate() }}</h2>
-          <p>{{ doneCount() }}/{{ goals().length }} hoàn thành</p>
+          <h2 style="font-size: 1.05rem; margin-bottom: 0.2rem">
+            Mục tiêu {{ selectedDate() === today ? 'hôm nay' : selectedDate() }}
+          </h2>
+          <p class="daily-goals-sub">
+            {{ doneCount() }}/{{ goals().length }} hoàn thành
+            @if (selectedDate() === today) {
+              · Nghe & ôn từ tự cập nhật
+            }
+          </p>
+        </div>
+        <div
+          class="daily-goals-ring"
+          [style.--pct]="goalPct()"
+        >
+          <span>{{ goalPct() }}%</span>
         </div>
       </div>
 
-      <ul class="goals-list">
+      <ul class="daily-goals-list">
         @for (goal of goals(); track goal.id) {
-          <li [class.done]="goal.done">
-            <label>
+          <li class="daily-goal-item" [class.done]="goal.done">
+            <label class="daily-goal-check">
               <input type="checkbox" [checked]="goal.done" (change)="toggleGoal(goal.id)" />
-              <span>{{ goal.label }}</span>
+              <span class="daily-goal-label">{{ goal.label }}</span>
             </label>
           </li>
         }
         @if (!goals().length) {
-          <li class="empty">Chưa có mục tiêu — thêm bên dưới.</li>
+          <li class="daily-goal-item">Chưa có mục tiêu — thêm bên dưới.</li>
         }
       </ul>
 
-      <div class="add-goal">
+      <div class="daily-goals-add">
         <input
           type="text"
           placeholder="Thêm mục tiêu riêng…"
           [(ngModel)]="customGoal"
           (keydown.enter)="addCustomGoal()"
         />
-        <button type="button" class="btn btn-outline" (click)="addCustomGoal()">Thêm</button>
+        <button type="button" class="btn" (click)="addCustomGoal()">Thêm</button>
       </div>
     </section>
 
-    <div class="notes-layout">
-      <aside class="glass-panel sidebar">
-        <h3>Các ngày đã ghi</h3>
-        @for (date of noteDates(); track date) {
-          <button
-            type="button"
-            class="date-btn"
-            [class.active]="date === selectedDate()"
-            (click)="selectDate(date)"
-          >
-            {{ date.split('-').reverse().join('/') }}
-          </button>
-        }
+    <div class="daily-notes-layout">
+      <aside class="daily-notes-sidebar card" style="padding: 1rem">
+        <h2>Các ngày đã ghi</h2>
+        <div class="daily-notes-date-list">
+          @for (date of noteDates(); track date) {
+            <button
+              type="button"
+              class="daily-notes-date-btn"
+              [class.active]="date === selectedDate()"
+              (click)="selectDate(date)"
+            >
+              <span class="date-label">
+                @if (date === today) {
+                  Hôm nay ·
+                }
+                {{ date.split('-').reverse().join('/') }}
+              </span>
+            </button>
+          }
+        </div>
       </aside>
 
-      <section class="editor glass-panel">
-        <div class="editor-header">
-          <h3>Ghi chú · {{ selectedDate() }}</h3>
+      <section class="daily-notes-editor card" style="padding: 1.25rem">
+        <div class="daily-notes-toolbar">
+          <div>
+            <h2 style="font-size: 1.05rem; margin-bottom: 0.2rem">
+              Ghi chú · {{ selectedDate() }}
+            </h2>
+          </div>
           @if (saveMessage() || saving()) {
-            <span class="status">{{ saving() ? 'Đang lưu…' : saveMessage() }}</span>
+            <span class="daily-notes-status">{{ saving() ? 'Đang lưu…' : saveMessage() }}</span>
           }
         </div>
 
-        <div class="prompts">
+        <div class="daily-notes-prompts">
           @for (p of prompts; track p) {
             <button type="button" (click)="appendPrompt(p)">+ {{ p }}</button>
           }
         </div>
 
         <textarea
+          class="daily-notes-textarea"
           rows="12"
           placeholder="Viết ghi chú học Nhật…"
           [(ngModel)]="content"
           (blur)="saveNote()"
         ></textarea>
+
+        <p class="daily-notes-hint">
+          Mẹo: hoàn thành mục tiêu ở trên rồi tổng kết lại trong ghi chú cuối ngày.
+        </p>
       </section>
     </div>
   }

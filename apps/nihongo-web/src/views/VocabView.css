@@ -909,31 +909,237 @@
   margin: 0 auto 1rem;
 }
 
-/* ── Light mode overrides ── */
+/* ── Light mode — Clean Desk redesign ── */
+
+/* Page background hinted at .app-content level in globals.css */
+
+[data-theme="light"] .vocab-view {
+  gap: 1.75rem;
+}
+
+/* Header */
+[data-theme="light"] .lesson-selector {
+  background: rgba(255 255 255 / 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0 0 0 / 0.07);
+  box-shadow: 0 1px 6px rgba(0 0 0 / 0.05);
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  gap: 0.6rem;
+}
+
+[data-theme="light"] .select-input {
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 0.1rem 0.25rem;
+  font-size: 0.9rem;
+}
+
+[data-theme="light"] .vocab-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.03em;
+}
+
+/* Word list panel */
+[data-theme="light"] .vocab-word-list {
+  background: rgba(255 255 255 / 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0 0 0 / 0.06);
+  box-shadow: 0 2px 24px rgba(0 0 0 / 0.05), 0 0 0 1px rgba(0 0 0 / 0.03);
+  border-radius: 16px;
+}
+
+[data-theme="light"] .vocab-word-list-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+
+[data-theme="light"] .vocab-word-list-search {
+  background: rgba(0 0 0 / 0.035);
+  border-color: rgba(0 0 0 / 0.07);
+  border-radius: 8px;
+  font-size: 0.825rem;
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .vocab-word-list-search:focus {
+  background: #fff;
+  border-color: rgba(0 0 0 / 0.15);
+  box-shadow: 0 0 0 3px rgba(0 0 0 / 0.04);
+}
+
+[data-theme="light"] .vocab-word-list-item {
+  color: var(--text-primary);
+  border-radius: 8px;
+}
+
 [data-theme="light"] .vocab-word-list-item:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(0 0 0 / 0.03);
+}
+
+[data-theme="light"] .vocab-word-list-item.active {
+  background: rgba(239 68 68 / 0.07);
+  box-shadow: inset 3px 0 0 var(--primary-color);
+}
+
+[data-theme="light"] .vocab-word-list-jp {
+  font-weight: 500;
+}
+
+[data-theme="light"] .vocab-word-list-meaning {
+  color: var(--text-secondary);
+}
+
+/* Flashcard — paper card on desk */
+[data-theme="light"] .flashcard-face {
+  background: #ffffff;
+  border: 1px solid rgba(0 0 0 / 0.055);
+  box-shadow:
+    0 1px 2px rgba(0 0 0 / 0.04),
+    0 4px 16px rgba(0 0 0 / 0.06),
+    0 20px 48px rgba(0 0 0 / 0.07);
+  border-radius: 20px;
+}
+
+[data-theme="light"] .flashcard:hover .flashcard-face {
+  box-shadow:
+    0 1px 2px rgba(0 0 0 / 0.04),
+    0 8px 24px rgba(0 0 0 / 0.09),
+    0 24px 56px rgba(0 0 0 / 0.1);
+  border-color: rgba(0 0 0 / 0.08);
 }
 
 [data-theme="light"] .flashcard-front {
-  background: linear-gradient(145deg, #ffffff, #f1f5f9);
+  background: #ffffff;
 }
 
 [data-theme="light"] .flashcard-back {
-  background: linear-gradient(145deg, #f8fafc, #eef2f7);
+  background: #ffffff;
 }
 
+/* Audio button */
 [data-theme="light"] .btn-audio {
-  background: rgba(0, 0, 0, 0.07);
+  background: rgba(0 0 0 / 0.04);
+  border: 1px solid rgba(0 0 0 / 0.07);
+  border-radius: 50%;
+  font-size: 1.25rem;
+  width: 2.6rem;
+  height: 2.6rem;
+  transition: background 0.15s, transform 0.1s;
 }
+
 [data-theme="light"] .btn-audio:hover {
-  background: rgba(0, 0, 0, 0.13);
+  background: rgba(0 0 0 / 0.08);
+  transform: scale(1.1);
+}
+
+/* Card text */
+[data-theme="light"] .vocab-kanji {
+  color: #1c1917;
+}
+
+[data-theme="light"] .vocab-kana {
+  color: var(--primary-color);
+}
+
+[data-theme="light"] .vocab-romaji {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .vocab-meaning {
+  color: #1c1917;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+[data-theme="light"] .vocab-kanji-caption {
+  color: var(--text-secondary);
+  font-size: 1.6rem;
+}
+
+[data-theme="light"] .divider {
+  background: rgba(0 0 0 / 0.1);
+}
+
+/* Flashcard reading pair */
+[data-theme="light"] .flashcard-reading-pair {
+  background: rgba(0 0 0 / 0.02);
+  border: 1px solid rgba(0 0 0 / 0.07);
+  border-radius: 10px;
+}
+
+[data-theme="light"] .flashcard-reading-pair-label {
+  color: var(--primary-color);
+}
+
+[data-theme="light"] .flashcard-stroke-label {
+  color: var(--text-muted);
+}
+
+/* Controls */
+[data-theme="light"] .btn-nav {
+  background: rgba(255 255 255 / 0.85);
+  border: 1px solid rgba(0 0 0 / 0.09);
+  box-shadow: 0 1px 6px rgba(0 0 0 / 0.06);
+  color: var(--text-primary);
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.65rem 1.5rem;
+  transition: background 0.12s, box-shadow 0.12s, transform 0.1s;
+}
+
+[data-theme="light"] .btn-nav:hover {
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgba(0 0 0 / 0.1);
+  transform: translateY(-1px);
+}
+
+/* Kanji side panel */
+[data-theme="light"] .kanji-vocab-sidepanel {
+  background: rgba(255 255 255 / 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0 0 0 / 0.06);
+  box-shadow: 0 2px 24px rgba(0 0 0 / 0.05);
+  border-radius: 16px;
 }
 
 [data-theme="light"] .kanji-flashcard-stroke--back {
-  border-top-color: var(--border-color);
+  border-top-color: rgba(0 0 0 / 0.07);
 }
 
 [data-theme="light"] .kanji-search-item {
-  border-color: var(--border-color);
-  background: var(--surface-color);
+  border-color: rgba(0 0 0 / 0.07);
+  background: rgba(0 0 0 / 0.02);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .kanji-search-item:hover {
+  background: rgba(239 68 68 / 0.06);
+}
+
+[data-theme="light"] .kanji-vocab-list {
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .kanji-vocab-list li {
+  border-bottom-color: rgba(0 0 0 / 0.06);
+}
+
+[data-theme="light"] .stroke-order-sidepanel {
+  background: rgba(255 255 255 / 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0 0 0 / 0.06);
+  box-shadow: 0 2px 24px rgba(0 0 0 / 0.05);
+  border-radius: 16px;
+}
+
+[data-theme="light"] .vocab-word-list-warning {
+  background: rgba(180 83 9 / 0.08);
+  color: #b45309;
 }

@@ -33,45 +33,75 @@
       </div>
     </div>
 
-    @if (data()!.studySessions.length) {
-      <section class="glass-panel section">
-        <h2>Phiên học gần đây</h2>
-        <ul class="session-list">
-          @for (s of data()!.studySessions.slice(-14).reverse(); track s.date) {
-            <li>
-              <span>{{ s.date }}</span>
-              <span>{{ fmtSeconds(s.seconds) }} · {{ s.cardsReviewed }} thẻ</span>
-            </li>
+    <section class="card analytics-section">
+      <h2>Lịch học (365 ngày qua)</h2>
+      <div class="heatmap-scroll">
+        <div class="heatmap-grid">
+          @for (cell of heatmapCells(); track cell.date) {
+            <span
+              class="heatmap-cell"
+              [style.background]="cell.color"
+              [title]="cell.date + ': ' + fmtSeconds(cell.seconds)"
+            ></span>
           }
-        </ul>
+        </div>
+      </div>
+      <div class="heatmap-legend">
+        <span>Ít</span>
+        @for (color of ['var(--border-color)', '#166534', '#16a34a', '#4ade80', '#86efac']; track color) {
+          <span class="heatmap-cell" [style.background]="color"></span>
+        }
+        <span>Nhiều</span>
+      </div>
+    </section>
+
+    @if (studyBars().length) {
+      <section class="card analytics-section">
+        <h2>Thời gian học (30 ngày)</h2>
+        <div class="bar-chart">
+          @for (bar of studyBars(); track $index) {
+            <div class="bar-column" [title]="bar.label + ': ' + bar.minutes + ' phút'">
+              <div class="bar bar--study" [style.height.%]="bar.height"></div>
+              @if ($index % 5 === 0 || $last) {
+                <span>{{ bar.label }}</span>
+              }
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    @if (listeningBars().length) {
+      <section class="card analytics-section">
+        <h2>Thời gian nghe (30 ngày)</h2>
+        <div class="bar-chart">
+          @for (bar of listeningBars(); track $index) {
+            <div class="bar-column" [title]="bar.label + ': ' + bar.minutes + ' phút'">
+              <div class="bar bar--listening" [style.height.%]="bar.height"></div>
+              @if ($index % 5 === 0 || $last) {
+                <span>{{ bar.label }}</span>
+              }
+            </div>
+          }
+        </div>
       </section>
     }
 
     @if (data()!.examHistory.length) {
-      <section class="glass-panel section">
-        <h2>Lịch sử thi</h2>
-        <ul class="session-list">
-          @for (e of data()!.examHistory.slice(-10).reverse(); track e.submittedAt) {
-            <li>
-              <span>{{ e.title }} ({{ e.level }})</span>
-              <span [class.passed]="e.passed">{{ e.percent }}% · {{ e.passed ? 'Đạt' : 'Chưa đạt' }}</span>
-            </li>
-          }
-        </ul>
-      </section>
-    }
-
-    @if (data()!.listeningHistory.length) {
-      <section class="glass-panel section">
-        <h2>Nghe hằng ngày</h2>
-        <ul class="session-list">
-          @for (l of data()!.listeningHistory.slice(-14).reverse(); track l.date) {
-            <li>
-              <span>{{ l.date }}</span>
-              <span>{{ fmtSeconds(l.seconds) }}</span>
-            </li>
-          }
-        </ul>
+      <section class="card analytics-section">
+        <h2>Lịch sử thi mock exam</h2>
+        <div class="line-chart">
+          <span class="pass-line"></span>
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Biểu đồ điểm thi">
+            <polyline [attr.points]="examPoints()" fill="none" stroke="#f59e0b" stroke-width="2"></polyline>
+          </svg>
+          <div class="line-chart-labels">
+            @for (exam of data()!.examHistory; track exam.submittedAt) {
+              <span [title]="exam.title + ': ' + exam.percent + '%'">{{ exam.percent }}%</span>
+            }
+          </div>
+        </div>
+        <p class="chart-note">Ngưỡng đạt: N5 ≥ 60% · N4 ≥ 65%</p>
       </section>
     }
 

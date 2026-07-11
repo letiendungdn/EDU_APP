@@ -1,4 +1,5 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
 import { ReadingStrokesComponent } from '../../shared/reading-strokes/reading-strokes.component';
@@ -23,7 +24,7 @@ function mapPictureVocab(list: Vocabulary[], lessonNumber?: number): PictureVoca
 @Component({
   selector: 'app-picture-dictionary-page',
   standalone: true,
-  imports: [ReadingStrokesComponent],
+  imports: [ReadingStrokesComponent, RouterLink],
   templateUrl: './picture-dictionary-page.component.html',
   styleUrl: './picture-dictionary-page.component.scss',
 })
@@ -44,6 +45,11 @@ export class PictureDictionaryPageComponent {
   readonly loadingRange = signal(false);
 
   readonly maxLesson = computed(() => this.lessons()[this.lessons().length - 1]?.lessonNumber ?? 50);
+  readonly rangeLabel = computed(() =>
+    this.mode() === 'range'
+      ? `Bài ${Math.min(this.lessonFrom(), this.lessonTo())}–${Math.max(this.lessonFrom(), this.lessonTo())}`
+      : `Bài ${this.lesson()}`,
+  );
 
   readonly items = computed(() => {
     const raw =
@@ -72,6 +78,13 @@ export class PictureDictionaryPageComponent {
       const n = this.lesson();
       if (this.mode() !== 'single') return;
       void this.api.getVocabularies(n).then((list) => this.singleList.set(list));
+    });
+
+    effect((onCleanup) => {
+      const item = this.selected();
+      if (!item?.kana) return;
+      const timer = setTimeout(() => playJapanese(item.kana), 200);
+      onCleanup(() => clearTimeout(timer));
     });
   }
 
@@ -106,6 +119,12 @@ export class PictureDictionaryPageComponent {
     this.lessonFrom.set(from);
     this.lessonTo.set(Math.min(to, this.maxLesson()));
     void this.loadRange(from, this.lessonTo());
+  }
+
+  setRangeBoundary(boundary: 'from' | 'to', value: number): void {
+    if (boundary === 'from') this.lessonFrom.set(value);
+    else this.lessonTo.set(value);
+    void this.loadRange(this.lessonFrom(), this.lessonTo());
   }
 
   onImageError(id: number): void {

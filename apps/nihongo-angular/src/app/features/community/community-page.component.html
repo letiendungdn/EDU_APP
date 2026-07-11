@@ -1,45 +1,96 @@
-<div class="community-page container">
-  <h1>Cộng đồng</h1>
-  <p class="subtitle">Phòng chat — làm mới tin nhắn mỗi 5 giây.</p>
+<div class="container" style="padding: 1.5rem 1rem 3rem">
+  <p style="margin-bottom: 1rem"><a routerLink="/">← Trang chủ</a></p>
+  <h1 style="margin-top: 0">Cộng đồng học viên</h1>
+  <p style="color: var(--text-secondary); margin-bottom: 1.25rem">
+    Nhắn tin nhóm và chat 1:1 với các học viên khác.
+  </p>
 
   @if (loading()) {
     <div class="glass-panel state-panel">Đang tải phòng…</div>
   } @else if (error() && !rooms().length) {
     <div class="glass-panel state-panel">{{ error() }}</div>
   } @else {
-    <div class="layout">
-      <aside class="rooms glass-panel">
-        <h3>Phòng</h3>
+    <div class="community-layout">
+      <aside class="glass-panel community-sidebar">
+        <div class="community-toolbar">
+          <button type="button" class="btn btn-primary" style="flex: 1" (click)="showGroupModal.set(true)">
+            + Tạo nhóm
+          </button>
+          <button type="button" class="btn btn-outline" (click)="loadOnlineUsers()">↻</button>
+        </div>
+
+        <div class="community-online-section">
+          <h3><span class="community-online-dot"></span> Đang online ({{ onlineUsers().length }})</h3>
+          @if (!onlineUsers().length) {
+            <p class="support-chat-empty">Chưa có ai online.</p>
+          }
+          @for (person of onlineUsers(); track person.id) {
+            <div class="community-user-result">
+              <span class="community-online-name">{{ person.name || person.email }}</span>
+              <div class="community-user-result-actions">
+                <button type="button" class="btn btn-outline btn-sm" (click)="createDirectChat(person.id)">Chat</button>
+                <a [routerLink]="callPath(person.id)" class="btn btn-call btn-call--compact" title="Gọi video">📞</a>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="community-search">
+          <input
+            type="search"
+            placeholder="Tìm học viên (email/tên)..."
+            [value]="searchQuery"
+            (input)="onSearch($any($event.target).value)"
+          />
+          @if (searching()) { <p class="support-chat-empty">Đang tìm…</p> }
+          @for (person of searchResults(); track person.id) {
+            <div class="community-user-result">
+              <span>{{ person.name || person.email }}</span>
+              <div class="community-user-result-actions">
+                <button type="button" class="btn btn-outline btn-sm" (click)="createDirectChat(person.id)">Chat</button>
+                <a [routerLink]="callPath(person.id)" class="btn btn-call btn-call--compact">📞</a>
+              </div>
+            </div>
+          }
+        </div>
+
+        <h3 style="margin: 0 0 0.5rem; font-size: 0.95rem">Hội thoại</h3>
         @for (room of rooms(); track room.id) {
           <button
             type="button"
-            class="room-btn"
-            [class.active]="room.id === selectedRoomId()"
+            class="community-room-item"
+            [class.community-room-item--active]="room.id === selectedRoomId()"
             (click)="selectRoom(room.id)"
           >
-            <strong>{{ room.name }}</strong>
-            @if (room.lastMessage) {
-              <span>{{ room.lastMessage.slice(0, 40) }}{{ room.lastMessage.length > 40 ? '…' : '' }}</span>
-            }
+            <strong>
+              {{ room.type === 'GROUP' ? '👥' : '💬' }} {{ room.name }}
             @if (room.unreadCount) {
-              <em class="badge">{{ room.unreadCount }}</em>
+                <span class="community-unread">{{ room.unreadCount }}</span>
             }
+            </strong>
+            <span>{{ roomPreview(room) }}</span>
           </button>
         }
         @if (!rooms().length) {
-          <p class="empty">Chưa có phòng nào.</p>
+          <p class="support-chat-empty">Chưa có hội thoại.</p>
         }
       </aside>
 
-      <section class="chat glass-panel">
+      <section class="support-chat-panel glass-panel">
         @if (selectedRoomId(); as roomId) {
-          <header>
-            <h2>{{ roomName() || ('Phòng #' + roomId) }}</h2>
+          <header class="support-chat-header">
+            <div>
+              <h2>{{ roomName() || ('Phòng #' + roomId) }}</h2>
+              <p>{{ directPeer() ? 'Chat 1:1' : 'Nhóm học viên' }}</p>
+            </div>
+            @if (directPeer(); as peer) {
+              <a [routerLink]="callPath(peer.id)" class="btn btn-call">📞 Gọi</a>
+            }
           </header>
 
-          <div class="messages">
+          <div class="support-chat-messages">
             @for (msg of messages(); track msg.id) {
-              <div class="bubble" [class.mine]="isMine(msg)">
+              <div class="support-chat-bubble" [class.support-chat-bubble--mine]="isMine(msg)">
                 <strong>{{ msg.senderName ?? 'User' }}</strong>
                 <p>{{ msg.content }}</p>
                 <time>{{ msg.createdAt | date: 'short' }}</time>
@@ -50,7 +101,7 @@
             }
           </div>
 
-          <form class="composer" (ngSubmit)="send()">
+          <form class="support-chat-composer" (ngSubmit)="send()">
             <input
               type="text"
               placeholder="Nhập tin nhắn…"
@@ -66,6 +117,44 @@
           <p class="empty">Chọn một phòng để bắt đầu chat.</p>
         }
       </section>
+    </div>
+  }
+
+  @if (showGroupModal()) {
+    <div class="community-modal-backdrop" (click)="showGroupModal.set(false)">
+      <form class="glass-panel community-modal" (ngSubmit)="createGroup()" (click)="$event.stopPropagation()">
+        <h3>Tạo nhóm mới</h3>
+        <label>
+          Tên nhóm
+          <input [(ngModel)]="groupName" name="groupName" placeholder="VD: N5 ôn thi tháng 7" required />
+        </label>
+        <label>Thành viên (tìm ở ô sidebar trước)</label>
+        <div class="community-member-pick">
+          @if (!searchResults().length) {
+            <p class="support-chat-empty">Tìm học viên ở ô sidebar rồi chọn thành viên.</p>
+          }
+          @for (person of searchResults(); track person.id) {
+            <label>
+              <input
+                type="checkbox"
+                [checked]="pickedMembers().includes(person.id)"
+                (change)="toggleMember(person.id)"
+              />
+              {{ person.name || person.email }}
+            </label>
+          }
+        </div>
+        <div class="community-modal-actions">
+          <button type="button" class="btn btn-outline" (click)="showGroupModal.set(false)">Hủy</button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="creatingGroup() || !groupName.trim() || !pickedMembers().length"
+          >
+            {{ creatingGroup() ? 'Đang tạo…' : 'Tạo nhóm' }}
+          </button>
+        </div>
+      </form>
     </div>
   }
 </div>
