@@ -3,6 +3,7 @@ import "./tracing";
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { NestFactory } from "@nestjs/core";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { ConfigService } from "@nestjs/config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import cookieParser from "cookie-parser";
@@ -12,10 +13,12 @@ import { AllExceptionsFilter, ResponseInterceptor } from "@app/common";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
     rawBody: true,
   });
+  // Banner upload gửi ảnh base64 — nới limit JSON body
+  app.useBodyParser("json", { limit: "8mb" });
   app.useLogger(app.get(PinoLogger));
   const configService = app.get(ConfigService);
   const logger = new Logger("Bootstrap");

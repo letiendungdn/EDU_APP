@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { kanjivgStrokeFetchUrls } from '@edu/vocab-images';
 import { getStrokeText } from '../utils/japanese';
+import { getStrokeThemeColors, strokeWidthForSize } from '../utils/stroke-order-theme';
 
 function extractSvgMarkup(svgText: string): string {
   const start = svgText.indexOf('<svg');
@@ -27,6 +28,16 @@ async function fetchStrokeSvg(char: string): Promise<string> {
   throw new Error(`SVG not found for ${char}`);
 }
 
+function styleGuidePaths(paths: SVGPathElement[], color: string, width: number): void {
+  paths.forEach((path) => {
+    path.style.stroke = color;
+    path.style.strokeWidth = `${width}`;
+    path.style.fill = 'none';
+    path.style.strokeLinecap = 'round';
+    path.style.strokeLinejoin = 'round';
+  });
+}
+
 function mountKanjiVgSvg(
   charDiv: HTMLDivElement,
   char: string,
@@ -35,7 +46,11 @@ function mountKanjiVgSvg(
   height: number,
   onCharClick?: (char: string) => void,
 ) {
+  const colors = getStrokeThemeColors();
+  const strokeWidth = strokeWidthForSize(Math.min(width, height));
+
   const svgWrapper = document.createElement('div');
+  svgWrapper.className = 'stroke-order-char';
   svgWrapper.innerHTML = extractSvgMarkup(svgText);
   svgWrapper.style.width = `${width}px`;
   svgWrapper.style.height = `${height}px`;
@@ -44,18 +59,21 @@ function mountKanjiVgSvg(
   const svgEl = svgWrapper.querySelector('svg');
   if (!svgEl) {
     charDiv.textContent = char;
-    charDiv.style.fontSize = '3rem';
+    charDiv.style.fontSize = `${Math.round(Math.min(width, height) * 0.55)}px`;
     charDiv.style.fontFamily = 'var(--font-jp)';
+    charDiv.style.color = colors.fallback;
     return;
   }
 
   svgEl.style.width = '100%';
   svgEl.style.height = '100%';
+  svgEl.style.display = 'block';
 
   const pathsGroup = svgEl.querySelector('[id*="StrokePaths"]');
   const numbersGroup = svgEl.querySelector('[id*="StrokeNumbers"]');
 
   if (!pathsGroup) {
+    styleGuidePaths(Array.from(svgEl.querySelectorAll('path')), colors.guide, strokeWidth);
     charDiv.style.cursor = 'pointer';
     charDiv.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -66,18 +84,14 @@ function mountKanjiVgSvg(
   }
 
   const bgPaths = Array.from(pathsGroup.querySelectorAll('path'));
-  bgPaths.forEach((path) => {
-    path.style.stroke = '#334155';
-    path.style.strokeWidth = '4';
-    path.style.fill = 'none';
-  });
+  styleGuidePaths(bgPaths, colors.guide, strokeWidth);
 
   const fgPathsGroup = pathsGroup.cloneNode(true) as Element;
   const fgPaths = Array.from(fgPathsGroup.querySelectorAll('path'));
 
   fgPaths.forEach((path) => {
-    path.style.stroke = '#ef4444';
-    path.style.strokeWidth = '4';
+    path.style.stroke = colors.active;
+    path.style.strokeWidth = `${strokeWidth}`;
     path.style.fill = 'none';
     path.style.strokeLinecap = 'round';
     path.style.strokeLinejoin = 'round';
@@ -91,7 +105,9 @@ function mountKanjiVgSvg(
 
   if (numbersGroup) {
     Array.from(numbersGroup.querySelectorAll('text')).forEach((el) => {
-      (el as SVGTextElement).style.fill = 'rgba(248, 250, 252, 0.4)';
+      const textEl = el as SVGTextElement;
+      textEl.style.fill = colors.number;
+      textEl.style.fontWeight = '700';
     });
   }
 
@@ -104,14 +120,15 @@ function mountKanjiVgSvg(
 
     svgEl.getBoundingClientRect();
 
-    let delay = 0.5;
+    let delay = 0.35;
     fgPaths.forEach((path) => {
-      path.style.transition = `stroke-dashoffset 0.6s ease-in-out ${delay}s`;
+      path.style.transition = `stroke-dashoffset 0.55s ease-in-out ${delay}s`;
       path.style.strokeDashoffset = '0';
-      delay += 0.8;
+      delay += 0.7;
     });
   };
 
+  charDiv.className = 'stroke-order-char-host';
   charDiv.style.cursor = 'pointer';
   charDiv.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -120,7 +137,7 @@ function mountKanjiVgSvg(
   });
 
   charDiv.appendChild(svgWrapper);
-  setTimeout(animateStrokes, 100);
+  setTimeout(animateStrokes, 80);
 }
 
 interface Props {
@@ -133,11 +150,13 @@ interface Props {
 
 export default function StrokeOrder({
   text,
-  width = 100,
-  height = 100,
+  width,
+  height,
   compact = false,
   onCharClick,
 }: Props) {
+  const resolvedWidth = width ?? (compact ? 96 : 200);
+  const resolvedHeight = height ?? (compact ? 96 : 200);
   const containerRef = useRef<HTMLDivElement>(null);
   const onCharClickRef = useRef(onCharClick);
   onCharClickRef.current = onCharClick;
@@ -150,7 +169,7 @@ export default function StrokeOrder({
 
     if (!writableText) {
       containerRef.current.innerHTML =
-        '<p style="color: var(--text-secondary); font-size: 0.9rem;">Không có hướng dẫn viết cho mục này.</p>';
+        '<p class="stroke-empty">Không có hướng dẫn viết cho mục này.</p>';
       return;
     }
 
@@ -159,19 +178,21 @@ export default function StrokeOrder({
     chars.forEach((char, index) => {
       const charDiv = document.createElement('div');
       charDiv.style.display = 'inline-block';
-      charDiv.style.margin = '0 5px';
+      charDiv.style.margin = compact ? '0 4px' : '0 6px';
       containerRef.current?.appendChild(charDiv);
 
       const handleCharClick = () => onCharClickRef.current?.(char, index);
 
       fetchStrokeSvg(char)
         .then((svgText) =>
-          mountKanjiVgSvg(charDiv, char, svgText, width, height, handleCharClick),
+          mountKanjiVgSvg(charDiv, char, svgText, resolvedWidth, resolvedHeight, handleCharClick),
         )
         .catch(() => {
+          const colors = getStrokeThemeColors();
           charDiv.textContent = char;
-          charDiv.style.fontSize = '3rem';
+          charDiv.style.fontSize = `${Math.round(Math.min(resolvedWidth, resolvedHeight) * 0.55)}px`;
           charDiv.style.fontFamily = 'var(--font-jp)';
+          charDiv.style.color = colors.fallback;
           charDiv.style.cursor = 'pointer';
           charDiv.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -179,34 +200,17 @@ export default function StrokeOrder({
           });
         });
     });
-  }, [writableText, width, height]);
+  }, [writableText, resolvedWidth, resolvedHeight, compact]);
 
   return (
-    <div
-      className="stroke-order-wrapper"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
+    <div className={`stroke-order-wrapper${compact ? ' stroke-order-wrapper--compact' : ''}`}>
       <div
         ref={containerRef}
         className="stroke-order-container"
-        title={onCharClick ? 'Nhấn vào chữ để xem lại và nghe phát âm' : 'Nhấn vào chữ để xem lại'}
+        title="Nhấn vào chữ để xem lại nét vẽ"
       />
       {writableText && !compact && (
-        <p
-          style={{
-            fontSize: '0.85rem',
-            color: 'var(--text-secondary)',
-            marginTop: '0.5rem',
-          }}
-        >
-          {onCharClick
-            ? '(Nhấn vào chữ để xem lại và nghe phát âm)'
-            : '(Nhấn vào chữ để xem lại)'}
-        </p>
+        <p className="stroke-hint">(Nhấn vào chữ để xem lại)</p>
       )}
     </div>
   );

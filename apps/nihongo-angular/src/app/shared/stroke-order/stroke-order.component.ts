@@ -17,10 +17,10 @@ import { renderStrokeOrder } from '../../core/utils/stroke-order.util';
   selector: 'app-stroke-order',
   standalone: true,
   template: `
-    <div class="stroke-order-wrapper">
+    <div class="stroke-order-wrapper" [class.stroke-order-wrapper--compact]="compact()">
       <div #container class="stroke-order-container" title="Nhấn vào chữ để xem lại nét vẽ"></div>
       @if (writableText() && !compact()) {
-        <p class="stroke-hint">Nhấn vào chữ để xem lại nét vẽ</p>
+        <p class="stroke-hint">(Nhấn vào chữ để xem lại)</p>
       }
     </div>
   `,
@@ -28,8 +28,8 @@ import { renderStrokeOrder } from '../../core/utils/stroke-order.util';
 })
 export class StrokeOrderComponent implements AfterViewInit, OnDestroy {
   readonly text = input.required<string>();
-  readonly width = input(100);
-  readonly height = input(100);
+  readonly width = input<number>();
+  readonly height = input<number>();
   readonly compact = input(false);
   readonly charClick = output<string>();
 
@@ -44,8 +44,8 @@ export class StrokeOrderComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       if (!this.viewReady()) return;
       const t = this.writableText();
-      const w = this.width();
-      const h = this.height();
+      const w = this.width() ?? (this.compact() ? 96 : 200);
+      const h = this.height() ?? (this.compact() ? 96 : 200);
       void this.render(t, w, h);
     });
   }

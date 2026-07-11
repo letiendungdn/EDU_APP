@@ -75,9 +75,9 @@
         <aside class="kana-detail-panel glass-panel">
           <h3>Cách viết chữ: <span class="japanese-text">{{ selectedKana() }}</span></h3>
           <div class="stroke-drawing-box">
-            <app-stroke-order [text]="selectedKana()!" />
+            <app-stroke-order [text]="selectedKana()!" [width]="200" [height]="200" />
           </div>
-          <button type="button" class="btn btn-primary" (click)="playSelected()">🔊 Nghe phát âm</button>
+          <button type="button" class="btn btn-primary" (click)="playSelected()">🔊 Hỗ trợ phát âm</button>
         </aside>
       }
     </div>

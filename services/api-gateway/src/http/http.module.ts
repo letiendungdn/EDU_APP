@@ -36,6 +36,8 @@ import { KanaRomajiController } from "./kana-romaji.controller";
 import { KanaRomajiService } from "./kana-romaji.service";
 import { LiveController } from "./live.controller";
 import { LiveService } from "./live.service";
+import { BannersController } from "./banners.controller";
+import { BannersService } from "./banners.service";
 
 const httpImports: Array<Type | DynamicModule> = [
   PaymentModule,
@@ -73,7 +75,16 @@ const httpImports: Array<Type | DynamicModule> = [
     TranslateController,
     KanaRomajiController,
     LiveController,
+    BannersController,
   ],
-  providers: [JlptScheduleService, UploadService, TtsService, TranslateService, KanaRomajiService, LiveService],
+  providers: [
+    JlptScheduleService,
+    UploadService,
+    TtsService,
+    TranslateService,
+    KanaRomajiService,
+    LiveService,
+    BannersService,
+  ],
 })
 export class HttpModule {}

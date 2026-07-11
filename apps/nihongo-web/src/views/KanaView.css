@@ -162,6 +162,14 @@
   display: flex;
   justify-content: center;
   width: 100%;
+  padding: 0.5rem 0 0.25rem;
+}
+
+.kana-detail-panel .btn-primary {
+  width: 100%;
+  max-width: 280px;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
 .kana-grid {
@@ -249,4 +257,31 @@
   .kana-romaji {
     font-size: 0.75rem;
   }
+}
+
+[data-theme="light"] .kana-detail-panel {
+  background: rgba(255 255 255 / 0.92);
+  border: 1px solid rgba(0 0 0 / 0.06);
+  box-shadow: 0 8px 32px rgba(0 0 0 / 0.08);
+}
+
+[data-theme="light"] .kana-detail-panel h3 {
+  color: #1c1917;
+}
+
+[data-theme="light"] .kana-grid {
+  background: rgba(255 255 255 / 0.9);
+  border: 1px solid rgba(0 0 0 / 0.05);
+  box-shadow: 0 4px 24px rgba(0 0 0 / 0.06);
+}
+
+[data-theme="light"] .active-card {
+  background: #fff;
+  border: 1px solid rgba(0 0 0 / 0.06);
+  box-shadow: 0 2px 8px rgba(0 0 0 / 0.04);
+}
+
+[data-theme="light"] .active-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 14px rgba(239 68 68 / 0.12);
 }

@@ -149,9 +149,11 @@ export default function KanaView() {
           <div className="kana-detail-panel glass-panel">
             <h3>Cách viết chữ: {selectedKana}</h3>
             <div className="stroke-drawing-box">
-              <StrokeOrder text={selectedKana} />
+              <StrokeOrder text={selectedKana} width={200} height={200} />
             </div>
-            <button className="btn btn-primary" onClick={() => playAudio(selectedKana)}>🔊 Nghe phát âm</button>
+            <button type="button" className="btn btn-primary" onClick={() => playAudio(selectedKana)}>
+              🔊 Hỗ trợ phát âm
+            </button>
           </div>
         )}
       </div>

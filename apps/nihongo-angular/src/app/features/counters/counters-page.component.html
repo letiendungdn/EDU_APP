@@ -1,18 +1,18 @@
 <section class="container counters-view">
   @if (loading() || !category()) {
-    <p class="empty">Đang tải dữ liệu đếm số...</p>
+    <p class="counters-empty">Đang tải dữ liệu đếm số...</p>
   } @else {
     <header class="counters-header">
-      <h2 class="view-title">Đếm số & thứ tự</h2>
+      <h2 class="view-title counters-view-title">Đếm số & thứ tự</h2>
       <p class="counters-subtitle">
-        Tiếng Nhật dùng nhiều cách đếm khác nhau tùy loại sự vật. Chọn chủ đề bên dưới để học.
+        Tiếng Nhật dùng nhiều chất đếm khác nhau tùy loại sự vật. Chọn chủ đề bên dưới để học.
       </p>
 
-      <div class="tab-buttons counters-tabs">
+      <div class="counters-tabs">
         @for (cat of categories(); track cat.id) {
           <button
             type="button"
-            class="btn tab-btn"
+            class="tab-btn"
             [class.active]="category()!.id === cat.id"
             (click)="setCategory(cat.id)"
           >
@@ -20,40 +20,76 @@
           </button>
         }
       </div>
-
-      <p class="counters-hint glass-panel">{{ category()!.hint }}</p>
     </header>
 
-    <div class="counters-grid">
-      @for (item of category()!.items; track item.n + item.kana) {
-        @let writableText = getWritableText(item);
-        @let strokeDims = writableText ? counterStrokeDims(writableText) : null;
-        <div
-          class="counter-card glass-panel"
-          role="button"
-          tabindex="0"
-          (click)="speak(item.kana)"
-          (keyup.enter)="speak(item.kana)"
-        >
-          <span class="counter-num">{{ item.n }}</span>
-          @if (writableText && strokeDims) {
-            <div class="counter-stroke" (click)="$event.stopPropagation()">
-              <app-stroke-order
-                [text]="writableText"
-                [width]="strokeDims.width"
-                [height]="strokeDims.height"
-                [compact]="true"
-              />
-            </div>
-          } @else if (item.kanji) {
-            <span class="counter-kanji japanese-text">{{ item.kanji }}</span>
+    <div class="counters-panel">
+      <div class="counters-hint-box">
+        <ul class="counters-hint-list">
+          @for (line of currentHintBullets(); track line) {
+            <li>{{ line }}</li>
           }
-          <span class="counter-kana japanese-text">{{ item.kana }}</span>
-          <span class="counter-romaji">{{ item.romaji }}</span>
-          <span class="counter-vi">{{ item.vi }}</span>
-          <span class="counter-audio" aria-hidden="true">🔊</span>
-        </div>
-      }
+        </ul>
+      </div>
+
+      <div class="counters-play-top">
+        <button
+          type="button"
+          class="btn btn-play-all"
+          [class.playing]="playingAll()"
+          [disabled]="playingAll()"
+          (click)="playAll()"
+        >
+          @if (playingAll()) {
+            ⏹ Dừng
+          } @else {
+            🔊 Phát tất cả
+          }
+        </button>
+      </div>
+
+      <div class="counters-grid">
+        @for (item of category()!.items; track item.n + item.kana) {
+          <div
+            class="counter-card"
+            role="button"
+            tabindex="0"
+            (click)="speak(item.kana)"
+            (keyup.enter)="speak(item.kana)"
+          >
+            <span class="counter-num">{{ item.n }}</span>
+            <button
+              type="button"
+              class="counter-audio-btn"
+              title="Nghe phát âm"
+              (click)="speak(item.kana, $event)"
+            >
+              🔊
+            </button>
+            @if (item.kanji) {
+              <span class="counter-kanji japanese-text">{{ item.kanji }}</span>
+            }
+            <span class="counter-kana japanese-text">{{ item.kana }}</span>
+            <span class="counter-romaji">{{ item.romaji }}</span>
+            <span class="counter-vi">{{ item.vi }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="counters-play-bottom">
+        <button
+          type="button"
+          class="btn btn-play-all"
+          [class.playing]="playingAll()"
+          [disabled]="playingAll()"
+          (click)="playAll()"
+        >
+          @if (playingAll()) {
+            ⏹ Dừng
+          } @else {
+            🔊 Phát toàn bộ bài học
+          }
+        </button>
+      </div>
     </div>
   }
 </section>

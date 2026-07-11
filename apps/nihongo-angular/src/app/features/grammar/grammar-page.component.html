@@ -1,30 +1,67 @@
 <section class="container grammar-view">
-  <h2 class="view-title">Ngữ pháp Minna no Nihongo</h2>
+  <div class="grammar-header">
+    <h2 class="view-title grammar-view-title">Ngữ pháp Minna no Nihongo</h2>
 
-  <app-lesson-selector
-    [lessons]="lessons()"
-    [value]="lesson()"
-    (valueChange)="onLessonChange($event)"
-  />
+    <app-lesson-selector
+      [lessons]="lessons()"
+      [value]="lesson()"
+      (valueChange)="onLessonChange($event)"
+    />
+
+    @if (hasData()) {
+      <p class="grammar-lesson-summary">
+        Bài {{ lesson() }} gồm {{ grammars().length }} mục ngữ pháp
+      </p>
+    }
+  </div>
 
   @if (!hasData()) {
-    <div class="empty glass-panel">
+    <div class="empty-state glass-panel">
       <p>Chưa có ngữ pháp cho Bài {{ lesson() }}.</p>
     </div>
   } @else {
     <div class="grammar-content">
-      @for (grammar of grammars(); track grammar.id) {
+      @for (grammar of grammars(); track grammar.id; let i = $index) {
         <article class="grammar-card glass-panel">
-          <h3 class="pattern japanese-text">{{ grammar.pattern }}</h3>
-          <p class="meaning"><strong>Ý nghĩa:</strong> {{ grammar.meaning }}</p>
-          @if (grammar.explanation) {
-            <p class="explanation">{{ grammar.explanation }}</p>
+          <div class="grammar-pattern-header">
+            <span class="grammar-index">{{ i + 1 }}</span>
+            <h3 class="grammar-pattern japanese-text">{{ grammar.pattern }}</h3>
+          </div>
+
+          <div class="grammar-meaning">
+            <strong>Ý nghĩa:</strong> {{ grammar.meaning }}
+          </div>
+
+          @let parsed = parseExplanation(grammar.explanation);
+          @let bullets = usageBullets(parsed.usage);
+
+          @if (bullets.length > 0) {
+            <div class="grammar-explanation">
+              <strong>Giải thích:</strong>
+              <ul class="grammar-bullet-list">
+                @for (line of bullets; track line) {
+                  <li>{{ line }}</li>
+                }
+              </ul>
+            </div>
+          }
+
+          @if (parsed.note) {
+            <div class="grammar-note">
+              <strong>Chú ý:</strong> {{ parsed.note }}
+            </div>
+          }
+
+          @if (!bullets.length && !parsed.note && grammar.explanation) {
+            <div class="grammar-explanation">
+              <strong>Giải thích:</strong> {{ grammar.explanation }}
+            </div>
           }
 
           @if (grammar.examples?.length) {
-            <div class="examples">
+            <div class="grammar-examples">
               <h4>Ví dụ:</h4>
-              <ul>
+              <ul class="example-list">
                 @for (ex of grammar.examples; track ex.id) {
                   <li class="example-item">
                     <div class="example-jp">
@@ -32,6 +69,7 @@
                       <button
                         type="button"
                         class="btn-audio-small"
+                        title="Nghe phát âm"
                         (click)="speak(ex.jp, $event)"
                       >
                         🔊
@@ -42,6 +80,10 @@
                     }
                     @if (ex.vi || ex.en) {
                       <div class="example-vi">{{ ex.vi || ex.en }}</div>
+                    }
+                    @let analysis = quickAnalysis(grammar.pattern, ex.jp);
+                    @if (analysis) {
+                      <div class="example-analysis">{{ analysis }}</div>
                     }
                   </li>
                 }

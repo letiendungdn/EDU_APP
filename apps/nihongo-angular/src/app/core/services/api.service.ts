@@ -45,6 +45,7 @@ import type {
   Vocabulary,
   VocabularyWithLesson,
 } from '../models/api.models';
+import type { BannerScope, BannerStore } from '../utils/page-banner.util';
 import type {
   BookAudioPayload,
   DailyListeningPayload,
@@ -489,6 +490,36 @@ export class ApiService {
     return apiFetch<SentencePracticeFeedback>('/sentence-practice', {
       method: 'POST',
       body: JSON.stringify({ sentence }),
+    });
+  }
+
+  getBannerConfig(): Promise<BannerStore> {
+    return apiFetch<BannerStore>('/banners');
+  }
+
+  upsertBanner(
+    token: string,
+    scope: BannerScope,
+    path: string | undefined,
+    image: string,
+  ): Promise<BannerStore> {
+    return apiFetch<BannerStore>('/banners', {
+      method: 'PUT',
+      token,
+      body: JSON.stringify({ scope, path, image }),
+    });
+  }
+
+  deleteBanner(
+    token: string,
+    scope: 'global' | 'page' | 'all',
+    path?: string,
+  ): Promise<BannerStore> {
+    const params = new URLSearchParams({ scope });
+    if (scope === 'page' && path) params.set('path', path);
+    return apiFetch<BannerStore>(`/banners?${params.toString()}`, {
+      method: 'DELETE',
+      token,
     });
   }
 

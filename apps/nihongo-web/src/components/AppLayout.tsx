@@ -5,7 +5,10 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import AuthHeader from '@/components/AuthHeader';
 import EnglishAppSwitcher from '@/components/EnglishAppSwitcher';
+import PageBannerControl from '@/components/PageBannerControl';
 import { useTheme } from '@/lib/theme';
+import { bannerBackgroundStyle } from '@/utils/pageBanner';
+import { usePageBanner } from '@/hooks/usePageBanner';
 
 // ── Nav structure ──────────────────────────────────────────────────────────
 
@@ -154,6 +157,8 @@ export default function MainLayout({ children }: { children: ReactNode }) {
   const isAuth    = pathname === '/login' || pathname === '/profile';
   const [open, setOpen] = useState(false);
   const sidebarRef = useRef<HTMLElement>(null);
+  const { theme } = useTheme();
+  const { bannerUrl } = usePageBanner();
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -235,7 +240,10 @@ export default function MainLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main content */}
-      <div className="app-content">
+      <div
+        className={`app-content${bannerUrl ? ' app-content--custom-banner' : ''}`}
+        style={bannerUrl ? bannerBackgroundStyle(bannerUrl, theme) : undefined}
+      >
         <main className="app-main">{children}</main>
         <footer className="app-footer">
           <div className="container">
@@ -246,6 +254,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
             </p>
           </div>
         </footer>
+        <PageBannerControl />
       </div>
     </div>
   );

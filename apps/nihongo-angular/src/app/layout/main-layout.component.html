@@ -98,7 +98,11 @@
       </div>
     </aside>
 
-    <div class="app-content">
+    <div
+      class="app-content"
+      [class.app-content--custom-banner]="banners.bannerUrl()"
+      [ngStyle]="banners.contentStyle()"
+    >
       <main class="app-main">
         <router-outlet />
       </main>
@@ -111,6 +115,7 @@
           </p>
         </div>
       </footer>
+      <app-page-banner-control />
     </div>
   </div>
 }

@@ -1,15 +1,23 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
-import { parseReadingVariants, shouldShowKanaStroke } from '../../core/utils/japanese.util';
 import { playJapanese } from '../../core/utils/speech.util';
 import { LessonSelectorComponent } from '../../shared/lesson-selector/lesson-selector.component';
 import { ReadingStrokesComponent } from '../../shared/reading-strokes/reading-strokes.component';
 import type { Lesson, Vocabulary } from '../../core/models/api.models';
 
+function matchesVocabSearch(vocab: Vocabulary, query: string): boolean {
+  const haystack = [vocab.kanji, vocab.kana, vocab.romaji, vocab.meaning]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+  return haystack.includes(query);
+}
+
 @Component({
   selector: 'app-vocab-page',
   standalone: true,
-  imports: [LessonSelectorComponent, ReadingStrokesComponent],
+  imports: [FormsModule, LessonSelectorComponent, ReadingStrokesComponent],
   templateUrl: './vocab-page.component.html',
   styleUrl: './vocab-page.component.scss',
 })
@@ -19,6 +27,8 @@ export class VocabPageComponent {
   readonly lesson = signal(1);
   readonly index = signal(0);
   readonly flipped = signal(false);
+  readonly searchQuery = signal('');
+  readonly playingAll = signal(false);
   readonly lessons = signal<Lesson[]>([]);
   readonly vocabList = signal<Vocabulary[]>([]);
 
@@ -28,22 +38,21 @@ export class VocabPageComponent {
     return list[this.index() % list.length];
   });
 
-  readonly hasMultipleReadings = computed(() => {
-    const v = this.current();
-    if (!v) return false;
-    return parseReadingVariants(v.kana, v.romaji).length > 1;
+  readonly filteredVocab = computed(() => {
+    const query = this.searchQuery().trim().toLowerCase();
+    const list = this.vocabList();
+    if (!query) {
+      return list.map((vocab, vocabIndex) => ({ vocab, index: vocabIndex }));
+    }
+    return list
+      .map((vocab, vocabIndex) => ({ vocab, index: vocabIndex }))
+      .filter(({ vocab }) => matchesVocabSearch(vocab, query));
   });
 
-  readonly showDualStroke = computed(() => {
-    const v = this.current();
-    if (!v) return false;
-    return shouldShowKanaStroke(v.kanji, v.kana);
-  });
-
-  readonly showKanjiCaption = computed(() => {
-    const v = this.current();
-    if (!v) return false;
-    return !this.hasMultipleReadings() && !this.showDualStroke();
+  readonly progressWidth = computed(() => {
+    const total = this.vocabList().length;
+    if (!total) return '0%';
+    return `${((this.index() + 1) / total) * 100}%`;
   });
 
   constructor() {
@@ -58,6 +67,16 @@ export class VocabPageComponent {
   onLessonChange(n: number): void {
     this.lesson.set(n);
     this.index.set(0);
+    this.flipped.set(false);
+    this.searchQuery.set('');
+  }
+
+  onSearchChange(value: string): void {
+    this.searchQuery.set(value);
+  }
+
+  selectWord(wordIndex: number): void {
+    this.index.set(wordIndex);
     this.flipped.set(false);
   }
 
@@ -79,12 +98,29 @@ export class VocabPageComponent {
     this.index.update((i) => (i - 1 + len) % len);
   }
 
-  speak(text?: string): void {
+  speak(text?: string, event?: Event): void {
+    event?.stopPropagation();
     const v = this.current();
     if (v) playJapanese(text ?? v.kana);
   }
 
   onStrokeCharClick(): void {
     this.speak();
+  }
+
+  async playAll(): Promise<void> {
+    if (this.playingAll()) return;
+    const list = this.vocabList();
+    if (!list.length) return;
+
+    this.playingAll.set(true);
+    try {
+      for (const vocab of list) {
+        playJapanese(vocab.kana);
+        await new Promise((resolve) => window.setTimeout(resolve, 1200));
+      }
+    } finally {
+      this.playingAll.set(false);
+    }
   }
 }

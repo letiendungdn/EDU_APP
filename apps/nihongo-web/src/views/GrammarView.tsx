@@ -15,6 +15,11 @@ import LessonSelector from '../components/LessonSelector';
 import PlayAllButton from '../components/PlayAllButton';
 import { usePlayAll } from '../hooks/usePlayAll';
 import { useGrammarsQuery } from '../hooks/queries';
+import {
+  grammarQuickAnalysis,
+  grammarUsageBullets,
+  parseGrammarExplanation,
+} from '../utils/grammar';
 import './GrammarView.css';
 
 const AUTO_READ_KEY = 'nihongo-grammar-auto-read';
@@ -193,7 +198,7 @@ export default function GrammarView() {
   return (
     <div className="container grammar-view">
       <div className="grammar-header">
-        <h2 className="view-title">Ngữ pháp Minna no Nihongo</h2>
+        <h2 className="view-title grammar-view-title">Ngữ pháp Minna no Nihongo</h2>
 
         <LessonSelector
           id="grammar-lesson-select"
@@ -238,6 +243,8 @@ export default function GrammarView() {
           lessonGrammar.map((grammar, index) => {
             const isCardActive = speechFocus?.grammarIndex === index;
             const activeExampleIndex = isCardActive ? speechFocus?.exampleIndex : null;
+            const parsedExplanation = parseGrammarExplanation(grammar.explanation);
+            const usageBullets = grammarUsageBullets(parsedExplanation.usage);
 
             return (
               <div
@@ -277,7 +284,24 @@ export default function GrammarView() {
                   <strong>Ý nghĩa:</strong> {grammar.meaning}
                 </div>
 
-                {grammar.explanation && (
+                {usageBullets.length > 0 && (
+                  <div className="grammar-explanation">
+                    <strong>Giải thích:</strong>
+                    <ul className="grammar-bullet-list">
+                      {usageBullets.map((line, lineIndex) => (
+                        <li key={lineIndex}>{line}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {parsedExplanation.note && (
+                  <div className="grammar-note">
+                    <strong>Chú ý:</strong> {parsedExplanation.note}
+                  </div>
+                )}
+
+                {!usageBullets.length && !parsedExplanation.note && grammar.explanation && (
                   <div className="grammar-explanation" style={{ whiteSpace: 'pre-wrap' }}>
                     <strong>Giải thích:</strong> {grammar.explanation}
                   </div>
@@ -289,6 +313,7 @@ export default function GrammarView() {
                     <ul className="example-list">
                       {(grammar.examples || []).map((ex, exIndex) => {
                         const isExActive = isCardActive && activeExampleIndex === exIndex;
+                        const quickAnalysis = grammarQuickAnalysis(grammar.pattern, ex.jp);
 
                         return (
                           <li
@@ -313,6 +338,9 @@ export default function GrammarView() {
                             {ex.romaji && <div className="example-romaji">{ex.romaji}</div>}
                             {(ex.vi || ex.en) && (
                               <div className="example-vi">{ex.vi || ex.en}</div>
+                            )}
+                            {quickAnalysis && (
+                              <div className="example-analysis">{quickAnalysis}</div>
                             )}
                           </li>
                         );

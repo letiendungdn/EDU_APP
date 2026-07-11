@@ -1,0 +1,77 @@
+@if (auth.isAdmin()) {
+  <div class="page-banner-control">
+    <button
+      type="button"
+      class="page-banner-control__toggle"
+      (click)="toggle()"
+      [attr.aria-expanded]="open()"
+      aria-label="Đổi ảnh nền trang"
+      title="Đổi ảnh nền (admin)"
+    >
+      🖼️
+    </button>
+
+    @if (open()) {
+      <div class="page-banner-control__panel glass-panel" role="dialog" aria-label="Cài đặt ảnh nền">
+        <div class="page-banner-control__header">
+          <h3>Ảnh nền trang</h3>
+          <button type="button" class="btn-ghost" (click)="close()" aria-label="Đóng">✕</button>
+        </div>
+
+        <p class="page-banner-control__path">
+          Trang hiện tại: <code>{{ banners.currentPath() }}</code>
+        </p>
+
+        <div
+          class="page-banner-control__preview"
+          [style.background-image]="(preview() || banners.bannerUrl()) ? 'url(' + (preview() || banners.bannerUrl()) + ')' : null"
+        >
+          @if (!preview() && !banners.bannerUrl()) {
+            <span>Chưa có ảnh nền</span>
+          }
+        </div>
+
+        <label class="page-banner-control__upload btn-outline">
+          {{ busy() ? 'Đang xử lý…' : 'Chọn ảnh từ máy' }}
+          <input type="file" accept="image/*" hidden [disabled]="busy()" (change)="onFileSelected($event)" />
+        </label>
+
+        <fieldset class="page-banner-control__scope">
+          <legend>Áp dụng cho</legend>
+          <label>
+            <input
+              type="radio"
+              name="banner-scope"
+              [checked]="scope() === 'global'"
+              (change)="setScope('global')"
+            />
+            <span>Tất cả các trang</span>
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="banner-scope"
+              [checked]="scope() === 'page'"
+              (change)="setScope('page')"
+            />
+            <span>Chỉ trang này</span>
+          </label>
+        </fieldset>
+
+        @if (error()) {
+          <p class="page-banner-control__error">{{ error() }}</p>
+        }
+
+        <div class="page-banner-control__actions">
+          <button type="button" class="btn-primary" (click)="apply()" [disabled]="busy() || !preview()">
+            Áp dụng
+          </button>
+          <button type="button" class="btn-outline" (click)="clearCurrent()" [disabled]="busy()">
+            Xóa {{ scope() === 'global' ? 'nền chung' : 'nền trang này' }}
+          </button>
+          <button type="button" class="btn-ghost" (click)="clearAll()" [disabled]="busy()">Xóa tất cả</button>
+        </div>
+      </div>
+    }
+  </div>
+}

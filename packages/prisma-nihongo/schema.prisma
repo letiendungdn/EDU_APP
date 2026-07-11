@@ -1351,3 +1351,16 @@ model LearnerChatMessage {
 
   @@index([roomId, createdAt])
 }
+
+// ─────────────────────────────────────────────
+// Site appearance
+// ─────────────────────────────────────────────
+
+model PageBanner {
+  id        Int      @id @default(autoincrement())
+  // Normalized route path; "__global__" áp dụng cho toàn site
+  path      String   @unique
+  imageData String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

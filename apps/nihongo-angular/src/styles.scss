@@ -65,6 +65,12 @@
   /* Transition */
   --transition-fast:   0.15s ease;
   --transition-normal: 0.25s ease;
+
+  /* Stroke order (KanjiVG) */
+  --stroke-guide-color:   #334155;
+  --stroke-active-color:  #ef4444;
+  --stroke-number-color:  rgba(248, 250, 252, 0.55);
+  --stroke-fallback-color:#f8fafc;
 }
 
 /* ── Light theme overrides ── */
@@ -102,6 +108,10 @@
   --glass-border: rgba(0 0 0 / 0.07);
 
   --icon-surface: rgba(0 0 0 / 0.05);
+
+  --stroke-guide-color:   #cbd5e1;
+  --stroke-number-color:  #6b7280;
+  --stroke-fallback-color:#1c1917;
 
   --shadow-sm:   0 1px 4px rgba(0 0 0 / 0.05), 0 0 0 1px rgba(0 0 0 / 0.03);
   --shadow-md:   0 4px 16px rgba(0 0 0 / 0.08), 0 0 0 1px rgba(0 0 0 / 0.04);
@@ -216,6 +226,33 @@ a { color: inherit; text-decoration: none; }
    ═══════════════════════════════════════════════════════ */
 
 .japanese-text { font-family: var(--font-jp); }
+
+.stroke-order-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.stroke-order-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.stroke-order-wrapper--compact .stroke-order-container {
+  gap: 0.15rem;
+}
+
+.stroke-hint,
+.stroke-empty {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0 0;
+  text-align: center;
+}
 
 .container {
   width: 100%;
@@ -895,11 +932,15 @@ textarea::placeholder { color: var(--text-muted); }
 }
 
 /* Light mode desk aesthetic — subtle warm radial light from top-right */
-[data-theme="light"] .app-content {
+[data-theme="light"] .app-content:not(.app-content--custom-banner) {
   background:
     radial-gradient(ellipse 70% 55% at 85% 8%, rgba(255 253 248 / 0.9) 0%, transparent 60%),
     radial-gradient(ellipse 50% 45% at 5% 95%, rgba(244 240 234 / 0.6) 0%, transparent 55%),
     #f5f3ef;
+}
+
+.app-content--custom-banner {
+  transition: background 0.25s ease;
 }
 
 .app-footer {

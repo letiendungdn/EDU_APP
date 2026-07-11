@@ -1,8 +1,5 @@
 import { kanjivgStrokeFetchUrls } from '@edu/vocab-images';
-
-const STROKE_BG_COLOR = '#f8fafc';
-const STROKE_FG_COLOR = '#ef4444';
-const STROKE_FALLBACK_TEXT_COLOR = '#f8fafc';
+import { getStrokeThemeColors, strokeWidthForSize } from './stroke-order-theme.util';
 
 function extractSvgMarkup(svgText: string): string {
   const start = svgText.indexOf('<svg');
@@ -12,21 +9,22 @@ function extractSvgMarkup(svgText: string): string {
   return svgText.slice(start, end + '</svg>'.length);
 }
 
-function styleFallbackCharDiv(charDiv: HTMLDivElement, char: string): void {
-  charDiv.textContent = char;
-  charDiv.style.fontSize = '3rem';
-  charDiv.style.fontFamily = 'var(--font-jp)';
-  charDiv.style.color = STROKE_FALLBACK_TEXT_COLOR;
-}
-
-function styleGuidePaths(paths: SVGPathElement[]): void {
+function styleGuidePaths(paths: SVGPathElement[], color: string, width: number): void {
   paths.forEach((path) => {
-    path.style.stroke = STROKE_BG_COLOR;
-    path.style.strokeWidth = '4';
+    path.style.stroke = color;
+    path.style.strokeWidth = `${width}`;
     path.style.fill = 'none';
     path.style.strokeLinecap = 'round';
     path.style.strokeLinejoin = 'round';
   });
+}
+
+function styleFallbackCharDiv(charDiv: HTMLDivElement, char: string, size: number): void {
+  const colors = getStrokeThemeColors();
+  charDiv.textContent = char;
+  charDiv.style.fontSize = `${Math.round(size * 0.55)}px`;
+  charDiv.style.fontFamily = 'var(--font-jp)';
+  charDiv.style.color = colors.fallback;
 }
 
 export async function fetchStrokeSvg(char: string): Promise<string> {
@@ -52,7 +50,11 @@ export function mountKanjiVgSvg(
   height: number,
   onCharClick?: (char: string) => void,
 ): void {
+  const colors = getStrokeThemeColors();
+  const strokeWidth = strokeWidthForSize(Math.min(width, height));
+
   const svgWrapper = document.createElement('div');
+  svgWrapper.className = 'stroke-order-char';
   svgWrapper.innerHTML = extractSvgMarkup(svgText);
   svgWrapper.style.width = `${width}px`;
   svgWrapper.style.height = `${height}px`;
@@ -60,18 +62,20 @@ export function mountKanjiVgSvg(
 
   const svgEl = svgWrapper.querySelector('svg');
   if (!svgEl) {
-    styleFallbackCharDiv(charDiv, char);
+    styleFallbackCharDiv(charDiv, char, Math.min(width, height));
     return;
   }
 
   svgEl.style.width = '100%';
   svgEl.style.height = '100%';
+  svgEl.style.display = 'block';
 
   const pathsGroup = svgEl.querySelector('[id*="StrokePaths"]');
   const numbersGroup = svgEl.querySelector('[id*="StrokeNumbers"]');
 
   if (!pathsGroup) {
-    styleGuidePaths(Array.from(svgEl.querySelectorAll('path')));
+    styleGuidePaths(Array.from(svgEl.querySelectorAll('path')), colors.guide, strokeWidth);
+    charDiv.className = 'stroke-order-char-host';
     charDiv.style.cursor = 'pointer';
     charDiv.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -82,14 +86,14 @@ export function mountKanjiVgSvg(
   }
 
   const bgPaths = Array.from(pathsGroup.querySelectorAll('path'));
-  styleGuidePaths(bgPaths);
+  styleGuidePaths(bgPaths, colors.guide, strokeWidth);
 
   const fgPathsGroup = pathsGroup.cloneNode(true) as Element;
   const fgPaths = Array.from(fgPathsGroup.querySelectorAll('path'));
 
   fgPaths.forEach((path) => {
-    path.style.stroke = STROKE_FG_COLOR;
-    path.style.strokeWidth = '4';
+    path.style.stroke = colors.active;
+    path.style.strokeWidth = `${strokeWidth}`;
     path.style.fill = 'none';
     path.style.strokeLinecap = 'round';
     path.style.strokeLinejoin = 'round';
@@ -103,7 +107,9 @@ export function mountKanjiVgSvg(
 
   if (numbersGroup) {
     Array.from(numbersGroup.querySelectorAll('text')).forEach((el) => {
-      (el as SVGTextElement).style.fill = 'rgba(248, 250, 252, 0.55)';
+      const textEl = el as SVGTextElement;
+      textEl.style.fill = colors.number;
+      textEl.style.fontWeight = '700';
     });
   }
 
@@ -116,14 +122,15 @@ export function mountKanjiVgSvg(
 
     svgEl.getBoundingClientRect();
 
-    let delay = 0.5;
+    let delay = 0.35;
     fgPaths.forEach((path) => {
-      path.style.transition = `stroke-dashoffset 0.6s ease-in-out ${delay}s`;
+      path.style.transition = `stroke-dashoffset 0.55s ease-in-out ${delay}s`;
       path.style.strokeDashoffset = '0';
-      delay += 0.8;
+      delay += 0.7;
     });
   };
 
+  charDiv.className = 'stroke-order-char-host';
   charDiv.style.cursor = 'pointer';
   charDiv.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -132,7 +139,7 @@ export function mountKanjiVgSvg(
   });
 
   charDiv.appendChild(svgWrapper);
-  setTimeout(animateStrokes, 100);
+  setTimeout(animateStrokes, 80);
 }
 
 export async function renderStrokeOrder(
@@ -156,15 +163,15 @@ export async function renderStrokeOrder(
     chars.map(async (char) => {
       const charDiv = document.createElement('div');
       charDiv.style.display = 'inline-block';
-      charDiv.style.margin = '0 5px';
-      charDiv.style.color = STROKE_FALLBACK_TEXT_COLOR;
+      charDiv.style.margin = width <= 100 ? '0 4px' : '0 6px';
       container.appendChild(charDiv);
 
       try {
         const svgText = await fetchStrokeSvg(char);
         mountKanjiVgSvg(charDiv, char, svgText, width, height, () => onCharClick?.(char));
       } catch {
-        styleFallbackCharDiv(charDiv, char);
+        styleFallbackCharDiv(charDiv, char, Math.min(width, height));
+        charDiv.className = 'stroke-order-char-host';
         charDiv.style.cursor = 'pointer';
         charDiv.addEventListener('click', (e) => {
           e.stopPropagation();
