@@ -1,0 +1,55 @@
+<section class="container grammar-view">
+  <h2 class="view-title">Grammar Notes</h2>
+
+  <app-lesson-selector
+    [lessons]="lessons()"
+    [value]="lesson()"
+    (valueChange)="onLessonChange($event)"
+  />
+
+  @if (!hasData()) {
+    <div class="empty glass-panel">
+      <p>Chưa có ngữ pháp cho Bài {{ lesson() }}.</p>
+    </div>
+  } @else {
+    <div class="grammar-content">
+      @for (grammar of grammars(); track grammar.id) {
+        <article class="grammar-card glass-panel">
+          <h3 class="pattern japanese-text">{{ grammar.pattern }}</h3>
+          <p class="meaning"><strong>Ý nghĩa:</strong> {{ grammar.meaning }}</p>
+          @if (grammar.explanation) {
+            <p class="explanation">{{ grammar.explanation }}</p>
+          }
+
+          @if (grammar.examples?.length) {
+            <div class="examples">
+              <h4>Ví dụ:</h4>
+              <ul>
+                @for (ex of grammar.examples; track ex.id) {
+                  <li class="example-item">
+                    <div class="example-jp">
+                      <span class="japanese-text">{{ ex.jp }}</span>
+                      <button
+                        type="button"
+                        class="btn-audio-small"
+                        (click)="speak(ex.jp, $event)"
+                      >
+                        🔊
+                      </button>
+                    </div>
+                    @if (ex.romaji) {
+                      <div class="example-romaji">{{ ex.romaji }}</div>
+                    }
+                    @if (ex.vi || ex.en) {
+                      <div class="example-vi">{{ ex.vi || ex.en }}</div>
+                    }
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </article>
+      }
+    </div>
+  }
+</section>

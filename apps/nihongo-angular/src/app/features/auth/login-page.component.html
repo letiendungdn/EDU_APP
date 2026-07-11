@@ -1,0 +1,53 @@
+<div class="login-page container">
+  <div class="login-card glass-panel">
+    <h1>Chào mừng trở lại</h1>
+    <p class="subtitle">Đăng nhập hoặc tạo tài khoản để đồng bộ tiến độ học.</p>
+
+    <div class="tabs">
+      <button
+        type="button"
+        class="tab"
+        [class.active]="activeTab() === 'login'"
+        (click)="setTab('login')"
+      >
+        Đăng nhập
+      </button>
+      <button
+        type="button"
+        class="tab"
+        [class.active]="activeTab() === 'register'"
+        (click)="setTab('register')"
+      >
+        Đăng ký
+      </button>
+    </div>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <form (ngSubmit)="submit()">
+      <label>
+        Email
+        <input type="email" [(ngModel)]="email" name="email" autocomplete="email" required />
+      </label>
+      <label>
+        Mật khẩu
+        <input
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          autocomplete="current-password"
+          required
+        />
+      </label>
+      <button type="submit" class="btn btn-primary" [disabled]="loading()">
+        {{ loading() ? 'Đang xử lý…' : activeTab() === 'login' ? 'Đăng nhập' : 'Tạo tài khoản' }}
+      </button>
+    </form>
+
+    <p class="footer-link">
+      <a routerLink="/">← Về trang chủ</a>
+    </p>
+  </div>
+</div>

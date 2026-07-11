@@ -1,0 +1,108 @@
+<section class="container picture-view">
+  <h2 class="view-title">Từ điển hình ảnh</h2>
+  <p class="subtitle">{{ items().length }} từ {{ picturesOnly() ? 'có ảnh' : '' }}</p>
+
+  <div class="tabs">
+    <button type="button" [class.active]="mode() === 'single'" (click)="setMode('single')">Một bài</button>
+    <button type="button" [class.active]="mode() === 'range'" (click)="setMode('range')">Nhiều bài</button>
+  </div>
+
+  @if (mode() === 'single') {
+    <label>
+      Bài
+      <select [value]="lesson()" (change)="lesson.set(+$any($event.target).value)">
+        @for (l of lessons(); track l.lessonNumber) {
+          <option [value]="l.lessonNumber">Bài {{ l.lessonNumber }}</option>
+        }
+      </select>
+    </label>
+  } @else {
+    <div class="range">
+      <button type="button" class="btn btn-outline" (click)="loadPreset(1, 50)">1 → 50</button>
+      <button type="button" class="btn btn-outline" (click)="loadPreset(1, 25)">1 → 25</button>
+      <button type="button" class="btn btn-outline" (click)="loadPreset(26, 50)">26 → 50</button>
+    </div>
+  }
+
+  <label class="toggle">
+    <input type="checkbox" [checked]="picturesOnly()" (change)="picturesOnly.set($any($event.target).checked)" />
+    Chỉ từ có ảnh
+  </label>
+
+  <input
+    type="search"
+    class="search"
+    placeholder="Tìm kanji, kana, nghĩa..."
+    [value]="search()"
+    (input)="search.set($any($event.target).value)"
+  />
+
+  @if (loadingRange()) {
+    <p class="empty">Đang tải nhiều bài...</p>
+  } @else if (!items().length) {
+    <p class="empty">Không có từ phù hợp.</p>
+  } @else {
+    <div class="grid">
+      @for (item of items(); track item.id) {
+        <button type="button" class="picture-card glass-panel" (click)="openItem(item)">
+          <div class="picture-card-image-wrap">
+            @if (item.resolvedImage && !imageFailed(item.id)) {
+              <img
+                [src]="item.resolvedImage"
+                [alt]="item.kana"
+                loading="lazy"
+                (error)="onImageError(item.id)"
+              />
+            } @else {
+              <span class="picture-card-placeholder">📷</span>
+            }
+          </div>
+          <div class="picture-card-body">
+            @if (item.lessonNumber) {
+              <span class="picture-card-lesson">Bài {{ item.lessonNumber }}</span>
+            }
+            <span class="japanese-text picture-card-word">{{ item.kanji || item.kana }}</span>
+            <span class="picture-card-meaning">{{ item.meaning }}</span>
+          </div>
+        </button>
+      }
+    </div>
+  }
+
+  @if (selected()) {
+    <div class="picture-modal-backdrop" (click)="closeModal()">
+      <div class="picture-modal glass-panel" (click)="$event.stopPropagation()">
+        <button type="button" class="picture-modal-close" (click)="closeModal()">✕</button>
+        @if (selected()!.resolvedImage && !imageFailed(selected()!.id)) {
+          <img
+            [src]="selected()!.resolvedImage!"
+            [alt]="selected()!.kana"
+            class="picture-modal-image"
+          />
+        }
+        <button
+          type="button"
+          class="btn-audio picture-modal-audio"
+          (click)="speak(selected()!.kana, $event)"
+        >
+          🔊
+        </button>
+        <div class="picture-modal-strokes">
+          <app-reading-strokes
+            [kanji]="selected()!.kanji"
+            [kana]="selected()!.kana"
+            [romaji]="selected()!.romaji"
+            (charClick)="onStrokeCharClick()"
+          />
+        </div>
+        @if (selected()!.lessonNumber) {
+          <span class="picture-modal-lesson">Bài {{ selected()!.lessonNumber }}</span>
+        }
+        <span class="picture-modal-kanji japanese-text">{{ selected()!.kanji || selected()!.kana }}</span>
+        <span class="picture-modal-kana japanese-text">{{ selected()!.kana }}</span>
+        <span class="picture-modal-romaji">{{ selected()!.romaji }}</span>
+        <p class="picture-modal-meaning">{{ selected()!.meaning }}</p>
+      </div>
+    </div>
+  }
+</section>

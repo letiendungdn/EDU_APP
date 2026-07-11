@@ -1,0 +1,254 @@
+:host {
+  display: block;
+  color: #f8fafc;
+}
+
+.picture-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: #f8fafc;
+}
+
+.view-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #f8fafc;
+}
+
+.picture-view label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-secondary);
+}
+
+.picture-view select {
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: #f8fafc;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tabs button {
+  padding: 0.55rem 1rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 600;
+  appearance: none;
+}
+
+.tabs button.active {
+  background: var(--primary-color);
+  color: #fff;
+  border-color: transparent;
+}
+
+.range {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-secondary);
+}
+
+.search {
+  max-width: 420px;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: #f8fafc;
+}
+
+.search::placeholder {
+  color: var(--text-secondary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.85rem;
+}
+
+.picture-card {
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  border: none;
+  text-align: left;
+  font: inherit;
+  appearance: none;
+  color: #f8fafc;
+  -webkit-text-fill-color: #f8fafc;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.picture-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.picture-card-image-wrap {
+  aspect-ratio: 4 / 3;
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+
+.picture-card-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.picture-card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--text-secondary);
+}
+
+.picture-card-body {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.picture-card-word {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.picture-card-meaning {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.picture-card-lesson {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.empty {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 2rem;
+}
+
+.picture-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+}
+
+.picture-modal {
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  padding: 1.5rem;
+  max-height: min(92vh, 720px);
+  overflow-y: auto;
+  color: #f8fafc;
+}
+
+.picture-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  appearance: none;
+}
+
+.picture-modal-image {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.picture-modal-audio {
+  margin: 0 auto 0.75rem;
+}
+
+.picture-modal-strokes {
+  margin: 0.25rem 0 1rem;
+  width: 100%;
+}
+
+.picture-modal-kanji {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.picture-modal-kana {
+  display: block;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.picture-modal-romaji {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 0.15rem;
+}
+
+.picture-modal-lesson {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.picture-modal-meaning {
+  font-size: 1.15rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-top: 0.75rem;
+}

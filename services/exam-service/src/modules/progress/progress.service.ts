@@ -3,6 +3,8 @@ import { PrismaService } from "@app/prisma";
 import { SrsCardRepository } from "@app/prisma/srs-card.repository";
 import {
   LogListeningDto,
+  SrsAddLessonDto,
+  SrsReviewDto,
   SyncReviewDto,
   UpsertDailyGoalsDto,
   UpsertDailyNoteDto,
@@ -194,5 +196,23 @@ export class ProgressService {
         updatedAt: true,
       },
     });
+  }
+
+  // ── SRS (SM-2) ──────────────────────────────────────────────────────────
+
+  getSrsDueCards(userId: number, limit = 20) {
+    return this.srsCards.getSrsDueCards(userId, limit);
+  }
+
+  submitSrsReview(userId: number, dto: SrsReviewDto) {
+    return this.srsCards.submitSrsReview(userId, dto.vocabId, dto.quality);
+  }
+
+  getSrsStats(userId: number) {
+    return this.srsCards.getSrsStats(userId);
+  }
+
+  addLessonToSrs(userId: number, dto: SrsAddLessonDto) {
+    return this.srsCards.addLessonToSrs(userId, dto.lessonNumber);
   }
 }

@@ -1,0 +1,56 @@
+:host {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+.stroke-dual,
+.stroke-pair-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.stroke-dual--flashcard {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.stroke-pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.stroke-pair {
+  text-align: center;
+}
+
+.stroke-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+}
+
+.stroke-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+:host.reading-strokes--flashcard ::ng-deep .stroke-order-container {
+  max-width: 100%;
+  gap: 0.35rem;
+}
+
+:host.reading-strokes--flashcard ::ng-deep .stroke-order-container > div {
+  margin: 0 3px !important;
+  flex: 0 1 auto;
+}

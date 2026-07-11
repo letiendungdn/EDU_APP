@@ -1,0 +1,85 @@
+<section class="container kana-view">
+  @if (loading()) {
+    <p class="empty">Đang tải bảng kana...</p>
+  } @else {
+    <header class="kana-header">
+      <h2 class="view-title">Kana Alphabet</h2>
+      <div class="tab-buttons">
+        <button
+          type="button"
+          class="btn tab-btn"
+          [class.active]="activeTab() === 'hiragana'"
+          (click)="setTab('hiragana')"
+        >
+          Hiragana
+        </button>
+        <button
+          type="button"
+          class="btn tab-btn"
+          [class.active]="activeTab() === 'katakana'"
+          (click)="setTab('katakana')"
+        >
+          Katakana
+        </button>
+      </div>
+    </header>
+
+    <div class="kana-main-layout">
+      <div class="kana-grid-container">
+        <div class="kana-controls">
+          <label class="toggle-label">
+            <input
+              type="checkbox"
+              [checked]="playAudioEnabled()"
+              (change)="togglePlayAudio($event)"
+            />
+            Phát âm khi nhấn
+          </label>
+        </div>
+
+        <div class="kana-sections">
+          @for (section of currentSections(); track section.id) {
+            <section class="kana-section">
+              <h3 class="kana-section-title">
+                <span class="kana-section-title-jp japanese-text">{{ section.title }}</span>
+                @if (section.subtitle) {
+                  <span class="kana-section-title-sub">{{ section.subtitle }}</span>
+                }
+              </h3>
+              <div
+                class="kana-grid glass-panel"
+                [style.grid-template-columns]="'repeat(' + (section.columns ?? 5) + ', 1fr)'"
+              >
+                @for (item of section.rows.flat(); track $index) {
+                  <div
+                    class="kana-card"
+                    [class.active-card]="item.kana"
+                    [class.empty-card]="!item.kana"
+                    [class.selected]="item.kana && selectedKana() === item.kana"
+                    (click)="onCharClick(item)"
+                    (keyup.enter)="onCharClick(item)"
+                    [tabindex]="item.kana ? 0 : -1"
+                    role="button"
+                  >
+                    <span class="kana-char japanese-text">{{ item.kana }}</span>
+                    <span class="kana-romaji">{{ item.romaji }}</span>
+                  </div>
+                }
+              </div>
+            </section>
+          }
+        </div>
+      </div>
+
+      @if (selectedKana()) {
+        <aside class="kana-detail-panel glass-panel">
+          <h3>Cách viết chữ: <span class="japanese-text">{{ selectedKana() }}</span></h3>
+          <div class="stroke-drawing-box">
+            <app-stroke-order [text]="selectedKana()!" />
+          </div>
+          <button type="button" class="btn btn-primary" (click)="playSelected()">🔊 Nghe phát âm</button>
+        </aside>
+      }
+    </div>
+  }
+</section>

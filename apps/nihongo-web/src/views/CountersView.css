@@ -185,3 +185,9 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* ── Light mode overrides ── */
+[data-theme="light"] .counter-kanji { color: var(--text-primary); }
+[data-theme="light"] .counter-kana  { color: var(--text-primary); }
+[data-theme="light"] .counter-romaji { color: var(--text-secondary); }
+[data-theme="light"] .counter-vi    { color: #16a34a; }

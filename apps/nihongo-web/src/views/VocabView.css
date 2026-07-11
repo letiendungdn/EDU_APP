@@ -908,3 +908,32 @@
   display: block;
   margin: 0 auto 1rem;
 }
+
+/* ── Light mode overrides ── */
+[data-theme="light"] .vocab-word-list-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .flashcard-front {
+  background: linear-gradient(145deg, #ffffff, #f1f5f9);
+}
+
+[data-theme="light"] .flashcard-back {
+  background: linear-gradient(145deg, #f8fafc, #eef2f7);
+}
+
+[data-theme="light"] .btn-audio {
+  background: rgba(0, 0, 0, 0.07);
+}
+[data-theme="light"] .btn-audio:hover {
+  background: rgba(0, 0, 0, 0.13);
+}
+
+[data-theme="light"] .kanji-flashcard-stroke--back {
+  border-top-color: var(--border-color);
+}
+
+[data-theme="light"] .kanji-search-item {
+  border-color: var(--border-color);
+  background: var(--surface-color);
+}

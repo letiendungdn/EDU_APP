@@ -1,0 +1,50 @@
+.admin-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  margin: 1rem 1rem 0;
+}
+
+.user {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 0.15rem;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+nav a {
+  padding: 0.4rem 0.65rem;
+  border-radius: 0.45rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+nav a.active {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--text-primary);
+}
+
+nav a.muted {
+  opacity: 0.75;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 1.25rem 1rem 2.5rem;
+}

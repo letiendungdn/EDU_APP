@@ -112,3 +112,22 @@ export class UpsertDailyGoalsDto {
   @Type(() => DailyGoalItemDto)
   items: DailyGoalItemDto[];
 }
+
+export class SrsReviewDto {
+  @ApiProperty({ description: 'Vocabulary ID' })
+  @IsInt()
+  vocabId: number;
+
+  /** 1=Again  2=Hard  3=Good  4=Easy */
+  @ApiProperty({ minimum: 1, maximum: 4 })
+  @IsInt()
+  @Min(1)
+  quality: number;
+}
+
+export class SrsAddLessonDto {
+  @ApiProperty({ description: 'Lesson number to add to SRS deck' })
+  @IsInt()
+  @Min(1)
+  lessonNumber: number;
+}

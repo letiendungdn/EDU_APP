@@ -1,0 +1,46 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  padding: 0.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+th {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.status {
+  font-size: 0.78rem;
+  color: #86efac;
+}
+
+.state-panel {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+}

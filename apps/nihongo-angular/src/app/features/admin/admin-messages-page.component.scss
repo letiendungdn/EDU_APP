@@ -1,0 +1,131 @@
+.subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 1rem;
+  min-height: 480px;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.threads {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.thread-btn {
+  text-align: left;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  padding: 0.6rem;
+  border-radius: 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.thread-btn span {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.thread-btn .preview {
+  font-size: 0.75rem;
+}
+
+.thread-btn.active {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.badge {
+  font-style: normal;
+  font-size: 0.72rem;
+  color: #fca5a5;
+}
+
+.chat {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat header .email {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  max-height: 360px;
+  margin: 0.75rem 0;
+}
+
+.bubble {
+  max-width: 85%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.65);
+  align-self: flex-start;
+}
+
+.bubble.admin {
+  align-self: flex-end;
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.bubble time {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.composer {
+  display: flex;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  padding-top: 0.85rem;
+}
+
+.composer input {
+  flex: 1;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--text-primary);
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+}
+
+.empty,
+.state-panel {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.error {
+  color: #fca5a5;
+  font-size: 0.88rem;
+}

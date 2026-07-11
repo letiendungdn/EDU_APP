@@ -1,0 +1,56 @@
+<section class="container vocab-view">
+  <h2 class="view-title">Vocabulary Flashcard</h2>
+
+  <app-lesson-selector
+    [lessons]="lessons()"
+    [value]="lesson()"
+    (valueChange)="onLessonChange($event)"
+  />
+
+  @if (!current()) {
+    <p class="empty">Đang tải hoặc chưa có từ vựng bài {{ lesson() }}.</p>
+  } @else {
+    <div
+      class="flashcard"
+      [class.flipped]="flipped()"
+      [class.flashcard--multi-reading]="hasMultipleReadings()"
+      [class.flashcard--dual-stroke]="showDualStroke()"
+      (click)="toggleFlip()"
+      (keyup.enter)="toggleFlip()"
+      tabindex="0"
+      role="button"
+    >
+      <div class="flashcard-inner">
+        <div class="face front glass-panel">
+          <button type="button" class="btn-audio" (click)="speak(); $event.stopPropagation()">🔊</button>
+          <div class="flashcard-front-body">
+            <app-reading-strokes
+              [kanji]="current()!.kanji"
+              [kana]="current()!.kana"
+              [romaji]="current()!.romaji"
+              [flashcard]="true"
+              (charClick)="onStrokeCharClick()"
+            />
+            @if (showKanjiCaption()) {
+              <span class="vocab-kanji-caption japanese-text">
+                {{ current()!.kanji || current()!.kana }}
+              </span>
+            }
+          </div>
+        </div>
+        <div class="face back glass-panel">
+          <button type="button" class="btn-audio" (click)="speak(); $event.stopPropagation()">🔊</button>
+          <span class="kana japanese-text">{{ current()!.kana }}</span>
+          <span class="romaji">{{ current()!.romaji }}</span>
+          <span class="meaning">{{ current()!.meaning }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button type="button" class="btn btn-nav" (click)="prev()">⬅️ Trước</button>
+      <span>{{ index() + 1 }} / {{ vocabList().length }}</span>
+      <button type="button" class="btn btn-nav" (click)="next()">Sau ➡️</button>
+    </div>
+  }
+</section>

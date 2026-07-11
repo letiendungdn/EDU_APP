@@ -196,3 +196,34 @@
     max-width: none;
   }
 }
+
+/* ── Light mode overrides ── */
+[data-theme="light"] .kanji-list-meta        { color: var(--text-secondary); }
+[data-theme="light"] .kanji-list-meta strong  { color: var(--text-primary); }
+
+[data-theme="light"] .kanji-list-table-wrap {
+  border-color: var(--border-color);
+  background: var(--surface-color);
+}
+
+[data-theme="light"] .kanji-list-table th {
+  background: var(--surface-color-light);
+  color: var(--text-primary);
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="light"] .kanji-list-table th,
+[data-theme="light"] .kanji-list-table td {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="light"] .kanji-list-table tbody tr:hover { background: var(--primary-subtle); }
+
+[data-theme="light"] .kanji-list-char    { color: var(--text-primary); }
+[data-theme="light"] .kanji-list-char:hover { color: var(--primary-color); }
+[data-theme="light"] .kanji-list-hanviet { color: #b45309; }
+[data-theme="light"] .kanji-list-reading { color: var(--text-secondary); }
+[data-theme="light"] .kanji-list-meaning { color: var(--text-primary); }
+[data-theme="light"] .kanji-list-lesson  { color: var(--text-muted); }
+[data-theme="light"] .kanji-list-empty   { color: var(--text-secondary); }
+[data-theme="light"] .kanji-list-links a { color: var(--primary-color); }

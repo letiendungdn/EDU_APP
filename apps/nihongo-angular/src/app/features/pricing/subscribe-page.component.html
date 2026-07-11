@@ -1,0 +1,33 @@
+<div class="subscribe-page container">
+  <a routerLink="/pricing" class="back btn btn-outline">← Quay lại bảng giá</a>
+
+  <h1>Thanh toán gói {{ plan }}</h1>
+
+  @if (loading()) {
+    <div class="glass-panel state-panel">Đang khởi tạo thanh toán…</div>
+  } @else if (error()) {
+    <div class="glass-panel checkout-panel">
+      <h2>Có lỗi xảy ra</h2>
+      <p>{{ error() }}</p>
+      <a routerLink="/pricing" class="btn btn-outline">Quay lại</a>
+    </div>
+  } @else if (result()) {
+    <div class="glass-panel checkout-panel">
+      <h2>Đăng ký đã tạo</h2>
+      <p>Trạng thái: <strong>{{ result()!.subscription.status }}</strong></p>
+      <p>Hết hạn kỳ: {{ result()!.subscription.currentPeriodEnd | date: 'medium' }}</p>
+
+      @if (result()!.clientSecret) {
+        <p class="hint">
+          Stripe client secret đã sẵn sàng. Tích hợp Stripe Elements trên Angular hoặc chuyển sang app React
+          để hoàn tất thanh toán thẻ.
+        </p>
+        <code class="secret">{{ result()!.clientSecret }}</code>
+      } @else {
+        <p class="hint">Gói đã được kích hoạt — không cần thanh toán thêm.</p>
+      }
+
+      <a routerLink="/payments" class="btn btn-primary">Xem lịch sử thanh toán</a>
+    </div>
+  }
+</div>

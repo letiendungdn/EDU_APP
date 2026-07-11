@@ -1,0 +1,84 @@
+<section class="container dictation-view">
+  <h2 class="view-title">Nghe chép chính tả</h2>
+  <p class="subtitle">Nghe từ tiếng Nhật → gõ lại kana/kanji</p>
+
+  @if (!queue().length) {
+    <div class="start-card glass-panel">
+      <app-lesson-selector
+        [lessons]="lessons()"
+        [value]="lesson()"
+        (valueChange)="onLessonChange($event)"
+      />
+      <button
+        type="button"
+        class="btn btn-primary start-btn"
+        (click)="startSession()"
+        [disabled]="loading()"
+      >
+        Bắt đầu (20 từ)
+      </button>
+    </div>
+  }
+
+  @if (isDone()) {
+    <div class="done-card glass-panel">
+      <div class="score-big">{{ scorePercent() }}%</div>
+      <div class="score-meta">{{ score().correct }}/{{ score().total }} từ đúng</div>
+      <button type="button" class="btn btn-primary" (click)="resetSession()">Luyện lại</button>
+    </div>
+  }
+
+  @if (current() && !isDone()) {
+    <div class="session">
+      <div class="session-meta">
+        <span>{{ index() + 1 }} / {{ queue().length }}</span>
+        <span>✅ {{ score().correct }} ❌ {{ score().total - score().correct }}</span>
+      </div>
+
+      <div class="play-card glass-panel">
+        <button type="button" class="play-btn" (click)="replay()" title="Nghe lại">🔊</button>
+        <div class="hint">Nghĩa: <strong>{{ current()!.meaning }}</strong></div>
+        @if (revealed()) {
+          <div class="answer-reveal japanese-text">{{ current()!.kanji || current()!.kana }}</div>
+          <div class="romaji">{{ current()!.romaji }}</div>
+        }
+      </div>
+
+      <input
+        class="dictation-input"
+        [class.correct]="feedback() === 'correct'"
+        [class.wrong]="feedback() === 'wrong'"
+        [value]="input()"
+        (input)="input.set($any($event.target).value)"
+        (keydown.enter)="onEnter()"
+        placeholder="Gõ từ bạn nghe được..."
+        [disabled]="!!feedback()"
+      />
+
+      @if (feedback()) {
+        <div class="feedback" [class.correct]="feedback() === 'correct'" [class.wrong]="feedback() === 'wrong'">
+          @if (feedback() === 'correct') {
+            ✅ Chính xác!
+          } @else {
+            ❌ Đáp án đúng: "{{ current()!.kana }}"
+          }
+        </div>
+      }
+
+      <div class="actions">
+        @if (!feedback()) {
+          <button type="button" class="btn btn-primary flex" [disabled]="!input().trim()" (click)="check()">
+            Kiểm tra
+          </button>
+          <button type="button" class="btn btn-outline" [disabled]="revealed()" (click)="revealed.set(true)">
+            Gợi ý
+          </button>
+        } @else {
+          <button type="button" class="btn btn-primary flex" (click)="next()">
+            {{ index() + 1 >= queue().length ? 'Xem kết quả' : 'Tiếp →' }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</section>

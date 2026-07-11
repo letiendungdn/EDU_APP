@@ -1,0 +1,131 @@
+@if (loading()) {
+  <section class="container mock-exam-page">
+    <div class="empty-state glass-panel">
+      <p>Đang tạo đề thi {{ level().toUpperCase() }}...</p>
+    </div>
+  </section>
+} @else if (error() || !exam() || !current()) {
+  <section class="container mock-exam-page">
+    <div class="empty-state glass-panel">
+      <p>{{ error() || 'Không có câu hỏi trong đề thi.' }}</p>
+      <a routerLink="/mock-exam" class="btn btn-primary">Quay lại</a>
+    </div>
+  </section>
+} @else {
+  <section class="container mock-exam-page mock-exam-take">
+    <div class="mock-exam-toolbar glass-panel">
+      <div>
+        <h3>{{ exam()!.title }}</h3>
+        <p class="toolbar-meta">Đã làm {{ answeredCount() }}/{{ questions().length }} câu</p>
+      </div>
+      <div class="mock-exam-timer" [class.urgent]="isLowTime()">
+        ⏱ {{ formatTime(timeLeft()) }}
+      </div>
+    </div>
+
+    <div class="mock-exam-layout">
+      <aside class="mock-exam-palette glass-panel">
+        <p class="palette-title">Danh sách câu</p>
+        @for (sec of exam()!.sections; track sec.id) {
+          <div class="palette-section">
+            <span class="palette-section-name">{{ sec.name }}</span>
+            <div class="palette-grid">
+              @for (q of questions(); track q.id; let idx = $index) {
+                @if (q.sectionId === sec.id) {
+                  <button
+                    type="button"
+                    class="palette-btn"
+                    [class.active]="currentIndex() === idx"
+                    [class.answered]="isAnswered(q.id)"
+                    (click)="goToQuestion(idx)"
+                  >
+                    {{ idx + 1 }}
+                  </button>
+                }
+              }
+            </div>
+          </div>
+        }
+      </aside>
+
+      <div class="mock-exam-main">
+        <div class="question-card glass-panel">
+          <div class="question-head">
+            <span class="type-badge">{{ current()!.sectionName }} · Câu {{ currentIndex() + 1 }}</span>
+            <span class="type-label">{{ typeLabel(current()) }}</span>
+          </div>
+
+          @if (current()!.type === 'listening' && current()!.audioText) {
+            <button type="button" class="btn btn-outline" (click)="playAudio(current()!.audioText!)">
+              🔊 Nghe câu hỏi
+            </button>
+          }
+
+          <h3 class="question-text">{{ current()!.question }}</h3>
+
+          @if (current()!.type === 'multiple_choice' || current()!.type === 'listening') {
+            <div class="quiz-options">
+              @for (option of current()!.options ?? []; track option) {
+                <button
+                  type="button"
+                  class="quiz-option"
+                  [class.selected]="answers()[current()!.id] === option"
+                  (click)="setAnswer(current()!.id, option)"
+                >
+                  {{ option }}
+                </button>
+              }
+            </div>
+          } @else {
+            <input
+              type="text"
+              class="fill-input"
+              placeholder="Nhập đáp án..."
+              [value]="getAnswer(current()!.id)"
+              (input)="setAnswer(current()!.id, $any($event.target).value)"
+            />
+          }
+
+          <div class="mock-exam-nav">
+            <button
+              type="button"
+              class="btn btn-outline"
+              [disabled]="currentIndex() === 0"
+              (click)="prevQuestion()"
+            >
+              ← Câu trước
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline"
+              [disabled]="currentIndex() >= questions().length - 1"
+              (click)="nextQuestion()"
+            >
+              Câu sau →
+            </button>
+          </div>
+        </div>
+
+        <div class="submit-bar glass-panel">
+          @if (!confirmSubmit()) {
+            <button type="button" class="btn btn-primary" (click)="confirmSubmit.set(true)" [disabled]="submitting()">
+              Nộp bài
+            </button>
+          } @else {
+            <div class="submit-confirm">
+              <p>Bạn đã làm {{ answeredCount() }}/{{ questions().length }} câu. Nộp bài ngay?</p>
+              <div class="submit-confirm-actions">
+                <button type="button" class="btn btn-outline" (click)="confirmSubmit.set(false)" [disabled]="submitting()">
+                  Tiếp tục làm
+                </button>
+                <button type="button" class="btn btn-primary" (click)="doSubmit()" [disabled]="submitting()">
+                  {{ submitting() ? 'Đang nộp...' : 'Xác nhận nộp' }}
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+}

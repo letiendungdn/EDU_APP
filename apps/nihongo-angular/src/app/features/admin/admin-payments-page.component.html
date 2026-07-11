@@ -1,0 +1,42 @@
+<div class="admin-payments">
+  <div class="header">
+    <div>
+      <h1>Thanh toán</h1>
+      <p class="subtitle">Tổng {{ total() }} giao dịch</p>
+    </div>
+    <button type="button" class="btn btn-outline" (click)="load()">Làm mới</button>
+  </div>
+
+  @if (loading()) {
+    <div class="glass-panel state-panel">Đang tải…</div>
+  } @else if (error()) {
+    <div class="glass-panel state-panel">{{ error() }}</div>
+  } @else if (!payments().length) {
+    <div class="glass-panel state-panel">Chưa có giao dịch.</div>
+  } @else {
+    <div class="table-wrap glass-panel">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Mô tả</th>
+            <th>Số tiền</th>
+            <th>Trạng thái</th>
+            <th>Thời gian</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of payments(); track p.id) {
+            <tr>
+              <td>#{{ p.id }}</td>
+              <td>{{ p.description ?? '—' }}</td>
+              <td>{{ formatMoney(p.amountCents, p.currency) }}</td>
+              <td><span class="status">{{ p.status }}</span></td>
+              <td>{{ p.createdAt | date: 'medium' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

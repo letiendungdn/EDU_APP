@@ -1,0 +1,94 @@
+@if (!result()) {
+  <section class="container mock-exam-page">
+    <div class="empty-state glass-panel">
+      <p>Đang tải kết quả...</p>
+    </div>
+  </section>
+} @else {
+  <section class="container mock-exam-page mock-exam-answers">
+    <header class="mock-exam-header">
+      <h2 class="view-title">Đáp án &amp; kết quả</h2>
+      <p class="subtitle">{{ result()!.title }}</p>
+    </header>
+
+    <section class="score-summary glass-panel">
+      <div class="score-circle" [class.passed]="result()!.passed" [class.failed]="!result()!.passed">
+        <span class="score-percent">{{ result()!.percent }}%</span>
+        <span class="score-label">{{ result()!.correctCount }}/{{ result()!.total }} đúng</span>
+      </div>
+      <div class="score-details">
+        <h3>{{ result()!.passed ? '🎉 Đạt đề thử!' : '📚 Cần ôn thêm' }}</h3>
+        <p>Ngưỡng gợi ý: {{ result()!.passThreshold }}% · Bạn đạt {{ result()!.percent }}%</p>
+        <div class="section-scores">
+          @for (sec of result()!.sectionScores; track sec.sectionId) {
+            <div class="section-score-item">
+              <strong>{{ sec.sectionName }}</strong>
+              <span>{{ sec.correct }}/{{ sec.total }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <div class="answers-filter-bar">
+      <button type="button" class="filter-btn" [class.active]="filter() === 'all'" (click)="filter.set('all')">
+        Tất cả ({{ result()!.total }})
+      </button>
+      <button type="button" class="filter-btn" [class.active]="filter() === 'wrong'" (click)="filter.set('wrong')">
+        Sai ({{ wrongCount() }})
+      </button>
+      <button type="button" class="filter-btn" [class.active]="filter() === 'correct'" (click)="filter.set('correct')">
+        Đúng ({{ result()!.correctCount }})
+      </button>
+    </div>
+
+    <div class="answers-list">
+      @for (item of filteredReview(); track item.id) {
+        <article class="answer-card glass-panel" [class.correct]="item.isCorrect" [class.wrong]="!item.isCorrect">
+          <div class="answer-card-head">
+            <span class="answer-badge">{{ item.sectionName }} · Câu {{ questionNumber(item) }}</span>
+            <span class="answer-status" [class.ok]="item.isCorrect" [class.bad]="!item.isCorrect">
+              {{ item.isCorrect ? '✓ Đúng' : '✗ Sai' }}
+            </span>
+          </div>
+
+          <p class="answer-question">{{ item.question }}</p>
+
+          @if (item.type === 'listening' && item.audioText) {
+            <button type="button" class="btn btn-outline" (click)="playAudio(item.audioText!)">🔊 Nghe lại</button>
+          }
+
+          @if ((item.type === 'multiple_choice' || item.type === 'listening') && item.options?.length) {
+            <ul class="answer-options-review">
+              @for (opt of item.options!; track opt) {
+                <li
+                  [class.opt-correct]="opt === item.correctAnswer"
+                  [class.opt-wrong]="opt === item.userAnswer && !item.isCorrect"
+                >
+                  {{ opt }}
+                  @if (opt === item.correctAnswer) { ✓ }
+                  @if (opt === item.userAnswer && !item.isCorrect) { (bạn chọn) }
+                </li>
+              }
+            </ul>
+          }
+
+          @if (item.type === 'fill_in_blank') {
+            <div class="answer-fill-review">
+              <p>Bạn trả lời: <strong>{{ item.userAnswer || '(bỏ trống)' }}</strong></p>
+              <p>Đáp án đúng: <strong class="text-correct">{{ item.correctAnswer }}</strong></p>
+            </div>
+          }
+        </article>
+      }
+    </div>
+
+    <div class="footer-actions">
+      <a [routerLink]="['/mock-exam', result()!.level]" class="btn btn-primary" (click)="clearAndNavigate()">
+        Làm đề mới
+      </a>
+      <a routerLink="/mock-exam" class="btn btn-outline">Chọn đề khác</a>
+      <a routerLink="/vocab-review" class="btn btn-outline">Bảng từ sai</a>
+    </div>
+  </section>
+}

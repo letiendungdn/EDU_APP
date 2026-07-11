@@ -161,7 +161,7 @@ services:
       DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres-nihongo:5432/nihongo
       JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080,http://nihongo.localhost:8080,http://english.localhost:8080,http://localhost:5173,http://localhost:3001}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080,http://nihongo.localhost:8080,http://nihongo-angular.localhost:8080,http://english.localhost:8080,http://localhost:5173,http://localhost:5174,http://localhost:3001}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@nihongo.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
       SERVICE_NAME: api-gateway
@@ -242,6 +242,15 @@ services:
     depends_on:
       - api-gateway
 
+  nihongo-angular:
+    build:
+      context: .
+      dockerfile: apps/nihongo-angular/Dockerfile
+    container_name: edu-nihongo-angular
+    restart: unless-stopped
+    depends_on:
+      - api-gateway
+
   english-web:
     profiles: [english]
     build:
@@ -266,6 +275,7 @@ services:
     depends_on:
       - api-gateway
       - nihongo-web
+      - nihongo-angular
 
   jaeger:
     image: jaegertracing/all-in-one:1.57

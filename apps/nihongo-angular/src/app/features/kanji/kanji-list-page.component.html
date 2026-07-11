@@ -1,0 +1,78 @@
+<section class="container kanji-list-view">
+  <h2 class="view-title">Bảng Kanji theo JLPT</h2>
+  <p class="subtitle">Tổng {{ totalKanji() }} kanji — dữ liệu từ DB qua API.</p>
+
+  <p class="links">
+    <a routerLink="/kanji">← Flashcard theo bài</a>
+  </p>
+
+  <div class="toolbar">
+    <div class="tabs">
+      @for (item of summary(); track item.level) {
+        <button
+          type="button"
+          class="tab-btn"
+          [class.active]="activeLevel() === item.level"
+          (click)="setLevel(item.level)"
+        >
+          {{ item.level }} ({{ item.count }})
+        </button>
+      }
+    </div>
+
+    <input
+      type="search"
+      class="search"
+      placeholder="Lọc kanji, Hán Việt, âm đọc, nghĩa..."
+      [value]="searchInput()"
+      (input)="onSearch($event)"
+      [disabled]="!activeMeta().hasData"
+    />
+  </div>
+
+  @if (activeMeta(); as meta) {
+    <div class="meta glass-panel">
+      <span><strong>{{ meta.level }}</strong> — {{ meta.hint }}</span>
+      <span>Hiển thị <strong>{{ filteredEntries().length }}</strong> / {{ displayCount() }} kanji</span>
+    </div>
+  }
+
+  @if (!activeMeta().hasData) {
+    <p class="empty">Chưa có kanji {{ activeLevel() }} trong database.</p>
+  } @else if (filteredEntries().length === 0) {
+    <p class="empty">Không tìm thấy kanji phù hợp.</p>
+  } @else {
+    <div class="table-wrap glass-panel">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Kanji</th>
+            <th>Hán Việt</th>
+            <th>Âm ON</th>
+            <th>Âm KUN</th>
+            <th>Nghĩa</th>
+            <th>Bài</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of filteredEntries(); track entry.id; let i = $index) {
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td>
+                <button type="button" class="kanji-char" (click)="speak(entry)">
+                  {{ entry.character }}
+                </button>
+              </td>
+              <td class="hanviet">{{ entry.hanViet ?? '—' }}</td>
+              <td>{{ entry.onyomi ?? '—' }}</td>
+              <td>{{ entry.kunyomi ?? '—' }}</td>
+              <td>{{ entry.meaningVi }}</td>
+              <td>{{ entry.lesson?.lessonNumber ? 'Bài ' + entry.lesson?.lessonNumber : '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

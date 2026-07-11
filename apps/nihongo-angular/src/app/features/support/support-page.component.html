@@ -1,0 +1,39 @@
+<div class="support-page container">
+  <h1>Hỗ trợ</h1>
+  <p class="subtitle">Chat với admin — tự làm mới mỗi 5 giây.</p>
+
+  <div class="chat glass-panel">
+    @if (loading()) {
+      <p class="state">Đang tải hội thoại…</p>
+    } @else {
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      <div class="messages">
+        @if (!messages().length) {
+          <p class="empty">Gửi tin nhắn — admin sẽ phản hồi sớm.</p>
+        }
+        @for (msg of messages(); track msg.id) {
+          <div class="bubble" [class.mine]="isMine(msg)">
+            <p>{{ msg.content }}</p>
+            <time>{{ msg.createdAt | date: 'short' }}</time>
+          </div>
+        }
+      </div>
+
+      <form class="composer" (ngSubmit)="send()">
+        <input
+          type="text"
+          placeholder="Nhập tin nhắn…"
+          [(ngModel)]="draft"
+          name="draft"
+          [disabled]="sending()"
+        />
+        <button type="submit" class="btn btn-primary" [disabled]="sending() || !draft.trim()">
+          {{ sending() ? '…' : 'Gửi' }}
+        </button>
+      </form>
+    }
+  </div>
+</div>

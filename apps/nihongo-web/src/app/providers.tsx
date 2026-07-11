@@ -6,6 +6,7 @@ import { useState, type ReactNode } from 'react';
 import { AuthProvider } from '@/contexts/AuthContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import SelectionTranslate from '@/components/SelectionTranslate';
+import { ThemeProvider } from '@/lib/theme';
 import WebVitals from './web-vitals';
 
 const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? '';
@@ -25,15 +26,17 @@ export default function Providers({ children }: { children: ReactNode }) {
   );
 
   const tree = (
-    <ErrorBoundary>
-      <WebVitals />
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          {children}
-          <SelectionTranslate />
-        </AuthProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
+    <ThemeProvider>
+      <ErrorBoundary>
+        <WebVitals />
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            {children}
+            <SelectionTranslate />
+          </AuthProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 
   if (!googleClientId) {

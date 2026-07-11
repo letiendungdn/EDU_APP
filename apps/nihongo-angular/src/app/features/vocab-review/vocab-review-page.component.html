@@ -1,0 +1,145 @@
+<section class="container vocab-review-view">
+  <header class="vr-header">
+    <h2 class="view-title">Bảng từ vựng sai</h2>
+    <p class="subtitle">
+      Tự động lưu từ làm sai trong Quiz &amp; thi thử. Ôn {{ stats().dailyGoal }} từ mỗi ngày.
+    </p>
+  </header>
+
+  <section class="vr-stats glass-panel">
+    <div>
+      <strong>Trong bảng</strong>
+      <span>{{ stats().total }} từ</span>
+    </div>
+    <div>
+      <strong>Hôm nay</strong>
+      <span>0/{{ stats().dailyGoal }} từ</span>
+    </div>
+  </section>
+
+  <div class="vr-tabs">
+    <button
+      type="button"
+      class="vr-tab"
+      [class.active]="tab() === 'review'"
+      (click)="switchTab('review')"
+    >
+      Ôn hôm nay
+    </button>
+    <button
+      type="button"
+      class="vr-tab"
+      [class.active]="tab() === 'bank'"
+      (click)="switchTab('bank')"
+    >
+      Bảng từ sai ({{ stats().total }})
+    </button>
+  </div>
+
+  @if (tab() === 'review') {
+    <div class="vr-review">
+      @if (!sessionActive() && !sessionDone()) {
+        <div class="vr-start glass-panel">
+          @if (stats().total === 0) {
+            <p>Chưa có từ nào trong bảng sai.</p>
+            <p class="vr-hint">
+              Làm <a routerLink="/quiz">Quiz</a> hoặc
+              <a routerLink="/mock-exam">thi thử</a> — từ trả lời sai sẽ được lưu tự động.
+            </p>
+          } @else {
+            <p>
+              Hôm nay ôn <strong>{{ stats().dueToday }}</strong> từ ưu tiên lâu chưa ôn / sai nhiều lần.
+            </p>
+            <button type="button" class="btn btn-primary" (click)="startReview()">
+              Bắt đầu ôn {{ stats().dueToday }} từ
+            </button>
+          }
+        </div>
+      }
+
+      @if (sessionActive() && current()) {
+        <p class="vr-progress">{{ progressLabel() }}</p>
+        <div
+          class="vr-card glass-panel"
+          [class.revealed]="revealed()"
+          (click)="toggleReveal()"
+          (keyup.enter)="toggleReveal()"
+          tabindex="0"
+          role="button"
+        >
+          <button type="button" class="btn-audio vr-audio" (click)="speak($event)">🔊</button>
+          <span class="vr-display japanese-text">{{ current()!.kanji || current()!.kana }}</span>
+          @if (!revealed()) {
+            <p class="vr-tap-hint">Chạm để xem nghĩa</p>
+          } @else {
+            <span class="vr-kana japanese-text">{{ current()!.kana }}</span>
+            <p class="vr-meaning">{{ current()!.meaning }}</p>
+            <p class="vr-meta">Bài {{ current()!.lessonNumber }} · Sai {{ current()!.wrongCount }} lần</p>
+          }
+        </div>
+
+        @if (revealed()) {
+          <div class="vr-actions">
+            <button type="button" class="btn btn-outline" (click)="finishCard(false)">😅 Chưa nhớ</button>
+            <button type="button" class="btn btn-primary" (click)="finishCard(true)">✅ Nhớ rồi</button>
+          </div>
+        }
+      }
+
+      @if (sessionDone()) {
+        <div class="vr-done glass-panel">
+          <h3>🎉 Xong phiên ôn hôm nay!</h3>
+          <p>Nhớ: <strong>{{ rememberedCount() }}</strong> / {{ queue().length }} từ</p>
+          <button type="button" class="btn btn-primary" (click)="startReview()">
+            Ôn thêm (nếu còn từ)
+          </button>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="vr-bank">
+      @if (!bank().length) {
+        <div class="empty-state glass-panel">
+          <p>Bảng trống — hãy làm quiz và trả lời sai để tích lũy từ cần ôn.</p>
+        </div>
+      } @else {
+        <div class="vr-table-wrap glass-panel">
+          <table class="vr-table">
+            <thead>
+              <tr>
+                <th>Từ</th>
+                <th>Nghĩa</th>
+                <th>Bài</th>
+                <th>Sai</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (word of bank(); track word.kana + word.lessonNumber) {
+                <tr>
+                  <td>
+                    <span class="japanese-text">{{ word.kanji || word.kana }}</span>
+                    <small class="vr-table-kana">{{ word.kana }}</small>
+                  </td>
+                  <td>{{ word.meaning }}</td>
+                  <td><a routerLink="/vocab">#{{ word.lessonNumber }}</a></td>
+                  <td>{{ word.wrongCount }}</td>
+                  <td>
+                    <button
+                      type="button"
+                      class="vr-remove-btn"
+                      (click)="removeWord(word)"
+                      title="Xóa khỏi bảng"
+                    >
+                      ✕
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+</section>

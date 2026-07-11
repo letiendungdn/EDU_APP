@@ -1,0 +1,292 @@
+.jlpt-roadmap {
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.jlpt-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.view-title {
+  font-size: 2rem;
+}
+
+.jlpt-subtitle {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.jlpt-level-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+}
+
+.jlpt-level-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.65rem 1rem;
+  border-radius: 0.75rem;
+  border: 2px solid var(--border-color);
+  background: var(--surface-color);
+  color: inherit;
+  min-width: 100px;
+}
+
+.jlpt-level-tab.active {
+  border-color: var(--level-color, var(--primary-color));
+  background: color-mix(in srgb, var(--level-color, var(--primary-color)) 18%, transparent);
+}
+
+.jlpt-level-label {
+  font-weight: 700;
+}
+
+.jlpt-level-badge {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.jlpt-schedule,
+.jlpt-overview,
+.jlpt-tips {
+  padding: 1.25rem;
+}
+
+.jlpt-schedule-intro,
+.jlpt-briefing-note,
+.jlpt-fee-note,
+.jlpt-schedule-note {
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0.75rem 0;
+}
+
+.jlpt-accordion {
+  border: 1px solid var(--border-color);
+  border-radius: 0.65rem;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.jlpt-accordion-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.jlpt-venue-list,
+.jlpt-examday-list,
+.jlpt-fee-list,
+.jlpt-task-list,
+.jlpt-tips ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 1rem 1rem;
+}
+
+.jlpt-venue-list li,
+.jlpt-examday-list li,
+.jlpt-fee-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  color: var(--text-secondary);
+}
+
+.jlpt-fee-list li {
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.jlpt-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-style: normal;
+  padding: 0 1rem 1rem;
+  color: var(--text-secondary);
+}
+
+.jlpt-contact a {
+  color: #a5b4fc;
+}
+
+.jlpt-schedule-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.jlpt-overview-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.jlpt-overview-top p {
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-top: 0.35rem;
+}
+
+.jlpt-progress-ring {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: conic-gradient(
+    var(--color, var(--primary-color)) calc(var(--pct) * 1%),
+    var(--border-color) 0
+  );
+  position: relative;
+}
+
+.jlpt-progress-ring::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: var(--surface-color);
+}
+
+.jlpt-progress-ring span,
+.jlpt-progress-ring small {
+  position: relative;
+  z-index: 1;
+}
+
+.jlpt-progress-ring small {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+}
+
+.jlpt-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.jlpt-stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.65rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.jlpt-stats strong {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.jlpt-stats small {
+  font-size: 0.75rem;
+  color: var(--level-color, var(--primary-color));
+}
+
+.jlpt-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.jlpt-phase {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.jlpt-phase-marker {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+}
+
+.jlpt-phase-sub {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.jlpt-task-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.jlpt-task-list li.done span {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.jlpt-task-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.jlpt-task-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  padding-left: 1.5rem;
+}
+
+.jlpt-task-link {
+  font-size: 0.85rem;
+  color: #a5b4fc;
+}
+
+.jlpt-tips ul {
+  padding: 0;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.jlpt-tips li + li {
+  margin-top: 0.35rem;
+}
+
+.empty {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 2rem;
+}

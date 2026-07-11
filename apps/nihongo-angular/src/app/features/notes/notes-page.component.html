@@ -1,0 +1,79 @@
+<div class="notes-page container">
+  <h1>Hằng ngày</h1>
+  <p class="subtitle">Mục tiêu và ghi chú học Nhật — đồng bộ khi đăng nhập.</p>
+
+  @if (loading()) {
+    <div class="glass-panel state-panel">Đang tải…</div>
+  } @else {
+    <section class="goals-panel glass-panel">
+      <div class="goals-header">
+        <div>
+          <h2>Mục tiêu {{ selectedDate() === today ? 'hôm nay' : selectedDate() }}</h2>
+          <p>{{ doneCount() }}/{{ goals().length }} hoàn thành</p>
+        </div>
+      </div>
+
+      <ul class="goals-list">
+        @for (goal of goals(); track goal.id) {
+          <li [class.done]="goal.done">
+            <label>
+              <input type="checkbox" [checked]="goal.done" (change)="toggleGoal(goal.id)" />
+              <span>{{ goal.label }}</span>
+            </label>
+          </li>
+        }
+        @if (!goals().length) {
+          <li class="empty">Chưa có mục tiêu — thêm bên dưới.</li>
+        }
+      </ul>
+
+      <div class="add-goal">
+        <input
+          type="text"
+          placeholder="Thêm mục tiêu riêng…"
+          [(ngModel)]="customGoal"
+          (keydown.enter)="addCustomGoal()"
+        />
+        <button type="button" class="btn btn-outline" (click)="addCustomGoal()">Thêm</button>
+      </div>
+    </section>
+
+    <div class="notes-layout">
+      <aside class="glass-panel sidebar">
+        <h3>Các ngày đã ghi</h3>
+        @for (date of noteDates(); track date) {
+          <button
+            type="button"
+            class="date-btn"
+            [class.active]="date === selectedDate()"
+            (click)="selectDate(date)"
+          >
+            {{ date.split('-').reverse().join('/') }}
+          </button>
+        }
+      </aside>
+
+      <section class="editor glass-panel">
+        <div class="editor-header">
+          <h3>Ghi chú · {{ selectedDate() }}</h3>
+          @if (saveMessage() || saving()) {
+            <span class="status">{{ saving() ? 'Đang lưu…' : saveMessage() }}</span>
+          }
+        </div>
+
+        <div class="prompts">
+          @for (p of prompts; track p) {
+            <button type="button" (click)="appendPrompt(p)">+ {{ p }}</button>
+          }
+        </div>
+
+        <textarea
+          rows="12"
+          placeholder="Viết ghi chú học Nhật…"
+          [(ngModel)]="content"
+          (blur)="saveNote()"
+        ></textarea>
+      </section>
+    </div>
+  }
+</div>

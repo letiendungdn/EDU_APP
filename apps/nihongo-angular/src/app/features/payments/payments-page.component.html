@@ -1,0 +1,27 @@
+<div class="payments-page container">
+  <h1>Lịch sử thanh toán</h1>
+  <p class="subtitle">Các giao dịch gói học và hoàn tiền.</p>
+
+  @if (loading()) {
+    <div class="glass-panel state-panel">Đang tải…</div>
+  } @else if (error()) {
+    <div class="glass-panel state-panel">{{ error() }}</div>
+  } @else if (!payments().length) {
+    <div class="glass-panel state-panel">Chưa có giao dịch nào.</div>
+  } @else {
+    <div class="payments-list">
+      @for (p of payments(); track p.id) {
+        <article class="payment-row glass-panel">
+          <div>
+            <strong>{{ p.description ?? ('Giao dịch #' + p.id) }}</strong>
+            <p>{{ p.createdAt | date: 'medium' }}</p>
+          </div>
+          <div class="meta">
+            <span class="amount">{{ formatMoney(p.amountCents, p.currency) }}</span>
+            <span class="status" [class.refunded]="p.refundedAt">{{ p.status }}</span>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>

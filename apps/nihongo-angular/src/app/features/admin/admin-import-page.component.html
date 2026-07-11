@@ -1,0 +1,29 @@
+<div class="admin-import">
+  <h1>Import từ vựng</h1>
+  <p class="subtitle">Dán dữ liệu tab-separated: Kanji | Kana | Romaji | Meaning</p>
+
+  <form class="glass-panel import-form" (ngSubmit)="submit()">
+    <label>
+      Số bài
+      <input type="number" min="1" [(ngModel)]="lessonNumber" name="lessonNumber" />
+    </label>
+
+    <label>
+      Dữ liệu
+      <textarea
+        rows="14"
+        [(ngModel)]="text"
+        name="text"
+        placeholder="食べる	たべる	taberu	ăn"
+      ></textarea>
+    </label>
+
+    <button type="submit" class="btn btn-primary" [disabled]="loading() || !text.trim()">
+      {{ loading() ? 'Đang import…' : 'Import' }}
+    </button>
+
+    @if (result()) {
+      <p class="result">{{ result() }}</p>
+    }
+  </form>
+</div>

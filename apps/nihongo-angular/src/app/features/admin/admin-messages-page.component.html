@@ -1,0 +1,70 @@
+<div class="admin-messages">
+  <h1>Tin nhắn hỗ trợ</h1>
+  <p class="subtitle">Chat với học viên — polling 5 giây.</p>
+
+  @if (loading()) {
+    <div class="glass-panel state-panel">Đang tải…</div>
+  } @else {
+    <div class="layout">
+      <aside class="threads glass-panel">
+        <h3>Hội thoại</h3>
+        @for (t of threads(); track t.threadId) {
+          <button
+            type="button"
+            class="thread-btn"
+            [class.active]="t.threadId === selectedThreadId()"
+            (click)="selectThread(t)"
+          >
+            <strong>{{ t.userName ?? t.userEmail }}</strong>
+            <span>{{ t.userEmail }}</span>
+            <span class="preview">{{ t.lastMessage.slice(0, 48) }}{{ t.lastMessage.length > 48 ? '…' : '' }}</span>
+            @if (t.unreadCount) {
+              <em class="badge">{{ t.unreadCount }}</em>
+            }
+          </button>
+        }
+        @if (!threads().length) {
+          <p class="empty">Chưa có tin nhắn.</p>
+        }
+      </aside>
+
+      <section class="chat glass-panel">
+        @if (selectedThreadId(); as threadId) {
+          <header>
+            <h2>{{ activeUser()?.name ?? activeUser()?.email ?? ('Thread #' + threadId) }}</h2>
+            <span class="email">{{ activeUser()?.email }}</span>
+          </header>
+
+          @if (error()) {
+            <p class="error">{{ error() }}</p>
+          }
+
+          <div class="messages">
+            @for (msg of messages(); track msg.id) {
+              <div class="bubble" [class.admin]="isAdmin(msg)">
+                <p>{{ msg.content }}</p>
+                <time>{{ msg.createdAt | date: 'short' }}</time>
+              </div>
+            }
+            @if (!messages().length) {
+              <p class="empty">Chưa có tin nhắn trong hội thoại này.</p>
+            }
+          </div>
+
+          <form class="composer" (ngSubmit)="send()">
+            <input
+              type="text"
+              placeholder="Trả lời học viên…"
+              [(ngModel)]="draft"
+              name="draft"
+              [disabled]="sending()"
+            />
+            <button type="submit" class="btn btn-primary" [disabled]="sending() || !draft.trim()">Gửi</button>
+          </form>
+        } @else {
+          <p class="empty">Chọn hội thoại để bắt đầu.</p>
+        }
+      </section>
+    </div>
+  }
+</div>

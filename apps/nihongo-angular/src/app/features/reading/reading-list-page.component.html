@@ -1,0 +1,52 @@
+<section class="container reading-list-view">
+  <h2 class="view-title">Đọc hiểu</h2>
+  <p class="subtitle">Luyện đọc và trả lời câu hỏi</p>
+
+  <div class="level-filters">
+    <button
+      type="button"
+      class="btn"
+      [class.btn-primary]="!filterLevel()"
+      (click)="setFilter('')"
+    >
+      Tất cả
+    </button>
+    @for (lvl of levels; track lvl) {
+      <button
+        type="button"
+        class="btn"
+        [class.btn-primary]="filterLevel() === lvl"
+        (click)="setFilter(lvl)"
+      >
+        {{ lvl }}
+      </button>
+    }
+  </div>
+
+  @if (loading()) {
+    <p class="loading">Đang tải...</p>
+  } @else if (!passages().length) {
+    <div class="empty-state glass-panel">
+      <p>Chưa có bài đọc nào. Thêm data qua seeder.</p>
+    </div>
+  } @else {
+    @for (group of grouped(); track group[0]) {
+      <section class="level-group">
+        <h3 class="level-badge">{{ group[0] }}</h3>
+        <div class="passage-grid">
+          @for (p of group[1]; track p.id) {
+            <a [routerLink]="['/reading', p.id]" class="passage-card glass-panel">
+              <div class="passage-meta">
+                @if (p.jlptLevel) {
+                  <span class="badge">{{ p.jlptLevel }}</span>
+                }
+                <span>~{{ p.estimatedMin }}p · {{ p._count.questions }} câu</span>
+              </div>
+              <h4>{{ p.title }}</h4>
+            </a>
+          }
+        </div>
+      </section>
+    }
+  }
+</section>

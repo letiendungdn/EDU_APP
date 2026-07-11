@@ -1,0 +1,306 @@
+/* ── Input card ──────────────────────────────────────────────── */
+
+.sp-input-card {
+  margin-bottom: 1.5rem;
+}
+
+.sp-input-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.6rem;
+}
+
+.sp-textarea {
+  width: 100%;
+  min-height: 72px;
+  padding: 0.85rem 1rem;
+  background: var(--bg-color);
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  resize: none;
+  overflow: hidden;
+  font-family: inherit;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.sp-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.sp-textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.sp-textarea:disabled { opacity: 0.6; }
+
+.sp-input-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sp-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.sp-error {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-error);
+  background: color-mix(in srgb, var(--color-error) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-error) 30%, transparent);
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+}
+
+/* small spinner inside button */
+.spinner-sm {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Starters ────────────────────────────────────────────────── */
+
+.sp-starters {
+  margin-bottom: 1.5rem;
+}
+
+.sp-starters__label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.6rem;
+}
+
+.sp-starters__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sp-starter {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.sp-starter:hover {
+  background: var(--bg-color);
+  border-color: var(--primary-color);
+  color: var(--text-primary);
+}
+
+/* ── Result card ─────────────────────────────────────────────── */
+
+.sp-result-card {
+  margin-bottom: 0.85rem;
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+
+.sp-result-card--open {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.sp-result-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  padding: 0;
+  user-select: none;
+}
+
+.sp-result-card__header:hover .sp-chevron {
+  color: var(--primary-color);
+}
+
+.sp-result-card__sent {
+  font-size: 1rem;
+  color: var(--text-primary);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sp-result-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.sp-chevron {
+  font-size: 0.7rem;
+}
+
+/* badges */
+.sp-badge {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-family: system-ui, sans-serif;
+}
+
+.sp-badge--fix {
+  background: color-mix(in srgb, var(--color-warning) 15%, transparent);
+  color: var(--color-warning);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
+}
+
+.sp-badge--ok {
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
+  color: var(--color-success);
+  border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent);
+}
+
+/* expanded body */
+.sp-result-card__body {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Sections inside card ────────────────────────────────────── */
+
+.sp-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sp-section--corrected {
+  background: color-mix(in srgb, var(--color-warning) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 25%, transparent);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+}
+
+.sp-section__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.sp-corrected {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-warning);
+  margin: 0;
+}
+
+[data-theme="light"] .sp-corrected { color: #b45309; }
+
+.sp-reading {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.sp-meaning {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.sp-explanation {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.sp-examples {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.sp-examples li {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  padding: 0.5rem 0.85rem;
+  background: var(--bg-color);
+  border-radius: 8px;
+  border-left: 3px solid var(--primary-color);
+}
+
+/* ── History section ─────────────────────────────────────────── */
+
+.sp-history {
+  margin-top: 0.5rem;
+}
+
+.sp-history__title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0 0 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* light mode adjustments */
+[data-theme="light"] .sp-textarea {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .sp-textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+[data-theme="light"] .sp-starter {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .sp-starter:hover {
+  background: #f8fafc;
+  border-color: var(--primary-color);
+}

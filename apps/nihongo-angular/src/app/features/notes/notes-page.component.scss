@@ -1,0 +1,152 @@
+.notes-page {
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+}
+
+.goals-panel {
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.goals-header h2 {
+  font-size: 1.05rem;
+}
+
+.goals-header p {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+.goals-list {
+  list-style: none;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.goals-list li label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+}
+
+.goals-list li.done span {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.goals-list .empty {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+.add-goal {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.add-goal input {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--text-primary);
+}
+
+.notes-layout {
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 720px) {
+  .notes-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sidebar {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.sidebar h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.35rem;
+}
+
+.date-btn {
+  text-align: left;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.45rem;
+}
+
+.date-btn.active {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: var(--text-primary);
+}
+
+.editor {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.status {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.prompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.prompts button {
+  border: 1px solid var(--border-color);
+  background: rgba(15, 23, 42, 0.5);
+  color: var(--text-secondary);
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+
+textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border-color);
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--text-primary);
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.55;
+}
+
+.state-panel {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+}

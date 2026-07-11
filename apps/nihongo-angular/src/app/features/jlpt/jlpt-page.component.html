@@ -1,0 +1,199 @@
+<section class="container jlpt-roadmap">
+  @if (loading() || !level()) {
+    <p class="empty">Đang tải lộ trình JLPT...</p>
+  } @else {
+    <header class="jlpt-header">
+      <h2 class="view-title">Lộ trình luyện thi JLPT</h2>
+      <p class="jlpt-subtitle">
+        Lộ trình gắn Minna, Kanji KLL trong app — kèm sách luyện thi N5: Shin Nihongo no Kiso,
+        Shin Kanzen Master, Sō-Matome (文法 · 語彙 · 漢字) và đề Choukai / Dokkai.
+      </p>
+
+      <div class="jlpt-level-tabs">
+        @for (lv of levels(); track lv.id) {
+          <button
+            type="button"
+            class="jlpt-level-tab"
+            [class.active]="activeId() === lv.id"
+            [ngStyle]="levelStyle(lv.color)"
+            (click)="setLevel(lv.id)"
+          >
+            <span class="jlpt-level-label">{{ lv.label }}</span>
+            <span class="jlpt-level-badge">{{ lv.badge }}</span>
+          </button>
+        }
+      </div>
+    </header>
+
+    @if (staticSchedule(); as schedule) {
+      <section class="jlpt-section jlpt-schedule glass-panel">
+        <h3>📍 Lịch thi JLPT tại Đà Nẵng</h3>
+        <p class="jlpt-schedule-intro">
+          Điểm thi do <strong>{{ schedule.organizer.shortName }}</strong> tổ chức — 2 kỳ/năm (tháng 7 & 12).
+        </p>
+
+        <div class="jlpt-schedule-accordions">
+          <div class="jlpt-accordion" [class.open]="scheduleOpen().venues">
+            <button type="button" class="jlpt-accordion-header" (click)="toggleScheduleSection('venues')">
+              <span>Địa điểm thi theo cấp độ</span>
+              <span>{{ scheduleOpen().venues ? '▲' : '▼' }}</span>
+            </button>
+            @if (scheduleOpen().venues) {
+              <ul class="jlpt-venue-list">
+                @for (venue of schedule.venues; track venue.address) {
+                  <li>
+                    <strong>{{ venue.levels }}</strong>
+                    <span>{{ venue.address }}, {{ venue.district }}</span>
+                    @if (venue.note) {
+                      <small>{{ venue.note }}</small>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+
+          <div class="jlpt-accordion" [class.open]="scheduleOpen().examday">
+            <button type="button" class="jlpt-accordion-header" (click)="toggleScheduleSection('examday')">
+              <span>Giờ thi trong ngày</span>
+              <span>{{ scheduleOpen().examday ? '▲' : '▼' }}</span>
+            </button>
+            @if (scheduleOpen().examday) {
+              <ul class="jlpt-examday-list">
+                @for (slot of schedule.examDay; track slot.levels + slot.venue) {
+                  <li>
+                    <strong>{{ slot.levels }}</strong>
+                    <span>Có mặt {{ slot.arriveAt }} · Thi {{ slot.startAt }}</span>
+                    <small>{{ slot.venue }}</small>
+                  </li>
+                }
+              </ul>
+              <p class="jlpt-briefing-note">{{ schedule.briefing }}</p>
+            }
+          </div>
+
+          <div class="jlpt-accordion" [class.open]="scheduleOpen().fees">
+            <button type="button" class="jlpt-accordion-header" (click)="toggleScheduleSection('fees')">
+              <span>Lệ phí & liên hệ</span>
+              <span>{{ scheduleOpen().fees ? '▲' : '▼' }}</span>
+            </button>
+            @if (scheduleOpen().fees) {
+              <ul class="jlpt-fee-list">
+                <li><span>Hồ sơ</span><strong>{{ schedule.fees.formFee }}</strong></li>
+                <li><span>Lệ phí thi</span><strong>{{ schedule.fees.examFee }}</strong></li>
+              </ul>
+              <p class="jlpt-fee-note">{{ schedule.fees.note }}</p>
+              <address class="jlpt-contact">
+                <span>{{ schedule.organizer.address }}</span>
+                <a [href]="phoneTel(schedule.organizer.phone)">{{ schedule.organizer.phone }}</a>
+                <a [href]="'mailto:' + schedule.organizer.email">{{ schedule.organizer.email }}</a>
+              </address>
+            }
+          </div>
+        </div>
+
+        <div class="jlpt-schedule-actions">
+          <a [href]="schedule.organizer.website" target="_blank" rel="noreferrer" class="btn btn-outline">
+            Website UFL ↗
+          </a>
+          <a href="http://jlpt.ufl.udn.vn/" target="_blank" rel="noreferrer" class="btn btn-outline">
+            Cổng đăng ký JLPT ↗
+          </a>
+        </div>
+      </section>
+    }
+
+    <section class="jlpt-overview glass-panel">
+      <div class="jlpt-overview-top">
+        <div>
+          <h3>{{ level()!.label }} — {{ level()!.badge }}</h3>
+          <p>{{ level()!.summary }}</p>
+        </div>
+        <div class="jlpt-progress-ring" [style]="progressRingStyle(level()!.color, progressPct())">
+          <span>{{ progressPct() }}%</span>
+          <small>hoàn thành</small>
+        </div>
+      </div>
+
+      <div class="jlpt-stats" [style]="levelStyle(level()!.color)">
+        <div><strong>Thời gian</strong><span>{{ level()!.duration }}</span></div>
+        <div>
+          <strong>Từ vựng</strong><span>{{ level()!.vocabTarget }}</span>
+          @if (level()!.vocabIncrement) {
+            <small>{{ level()!.vocabIncrement }}</small>
+          }
+        </div>
+        <div>
+          <strong>Kanji</strong><span>{{ level()!.kanjiTarget }}</span>
+          @if (level()!.kanjiIncrement) {
+            <small>{{ level()!.kanjiIncrement }}</small>
+          }
+        </div>
+        <div>
+          <strong>Ngữ pháp</strong><span>{{ level()!.grammarTarget }}</span>
+          @if (level()!.grammarIncrement) {
+            <small>{{ level()!.grammarIncrement }}</small>
+          }
+        </div>
+        <div><strong>Điểm đạt</strong><span>{{ level()!.passScore }}</span></div>
+      </div>
+    </section>
+
+    <section class="jlpt-section">
+      <h3>🗓️ Lộ trình theo giai đoạn</h3>
+      <div class="jlpt-timeline">
+        @for (phase of level()!.phases; track phase.id; let i = $index) {
+          <article class="jlpt-phase glass-panel">
+            <div class="jlpt-phase-marker" [style.background]="level()!.color">{{ i + 1 }}</div>
+            <div class="jlpt-phase-body">
+              <h4>{{ phase.title }}</h4>
+              <p class="jlpt-phase-sub">{{ phase.subtitle }}</p>
+              <ul class="jlpt-task-list">
+                @for (task of phase.tasks; track task.id) {
+                  <li [class.done]="progress()[task.id]">
+                    <label class="jlpt-task-label">
+                      <input
+                        type="checkbox"
+                        [checked]="!!progress()[task.id]"
+                        (change)="toggleTask(task.id)"
+                      />
+                      <span>{{ task.text }}</span>
+                    </label>
+                    <div class="jlpt-task-actions">
+                      @if (task.inApp) {
+                        <a [routerLink]="task.inApp.to" class="jlpt-task-link">{{ task.inApp.label }}</a>
+                      }
+                      @if (task.external) {
+                        <a
+                          [href]="task.external.url"
+                          target="_blank"
+                          rel="noreferrer"
+                          class="jlpt-task-link external"
+                        >
+                          {{ task.external.label }} ↗
+                        </a>
+                      }
+                    </div>
+                  </li>
+                }
+              </ul>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="jlpt-section jlpt-tips glass-panel">
+      <h3>💡 Mẹo luyện thi</h3>
+      <ul>
+        @for (tip of studyTips(); track tip) {
+          <li>{{ tip }}</li>
+        }
+      </ul>
+      <p class="jlpt-schedule-note">{{ examScheduleNote() }}</p>
+      <a href="https://jlpt.jp/e/index.html" target="_blank" rel="noreferrer" class="btn btn-outline">
+        Trang JLPT chính thức ↗
+      </a>
+    </section>
+  }
+</section>

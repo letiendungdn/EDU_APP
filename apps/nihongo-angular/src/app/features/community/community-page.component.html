@@ -1,0 +1,71 @@
+<div class="community-page container">
+  <h1>Cộng đồng</h1>
+  <p class="subtitle">Phòng chat — làm mới tin nhắn mỗi 5 giây.</p>
+
+  @if (loading()) {
+    <div class="glass-panel state-panel">Đang tải phòng…</div>
+  } @else if (error() && !rooms().length) {
+    <div class="glass-panel state-panel">{{ error() }}</div>
+  } @else {
+    <div class="layout">
+      <aside class="rooms glass-panel">
+        <h3>Phòng</h3>
+        @for (room of rooms(); track room.id) {
+          <button
+            type="button"
+            class="room-btn"
+            [class.active]="room.id === selectedRoomId()"
+            (click)="selectRoom(room.id)"
+          >
+            <strong>{{ room.name }}</strong>
+            @if (room.lastMessage) {
+              <span>{{ room.lastMessage.slice(0, 40) }}{{ room.lastMessage.length > 40 ? '…' : '' }}</span>
+            }
+            @if (room.unreadCount) {
+              <em class="badge">{{ room.unreadCount }}</em>
+            }
+          </button>
+        }
+        @if (!rooms().length) {
+          <p class="empty">Chưa có phòng nào.</p>
+        }
+      </aside>
+
+      <section class="chat glass-panel">
+        @if (selectedRoomId(); as roomId) {
+          <header>
+            <h2>{{ roomName() || ('Phòng #' + roomId) }}</h2>
+          </header>
+
+          <div class="messages">
+            @for (msg of messages(); track msg.id) {
+              <div class="bubble" [class.mine]="isMine(msg)">
+                <strong>{{ msg.senderName ?? 'User' }}</strong>
+                <p>{{ msg.content }}</p>
+                <time>{{ msg.createdAt | date: 'short' }}</time>
+              </div>
+            }
+            @if (!messages().length) {
+              <p class="empty">Chưa có tin nhắn — hãy chào mọi người!</p>
+            }
+          </div>
+
+          <form class="composer" (ngSubmit)="send()">
+            <input
+              type="text"
+              placeholder="Nhập tin nhắn…"
+              [(ngModel)]="draft"
+              name="draft"
+              [disabled]="sending()"
+            />
+            <button type="submit" class="btn btn-primary" [disabled]="sending() || !draft.trim()">
+              Gửi
+            </button>
+          </form>
+        } @else {
+          <p class="empty">Chọn một phòng để bắt đầu chat.</p>
+        }
+      </section>
+    </div>
+  }
+</div>

@@ -1,0 +1,72 @@
+.analytics-page {
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.stat-card {
+  padding: 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.stat-card strong {
+  font-size: 1.35rem;
+}
+
+.stat-card span {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.section {
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.section h2 {
+  font-size: 0.95rem;
+  margin-bottom: 0.85rem;
+}
+
+.session-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.session-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.88rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.passed {
+  color: #86efac;
+}
+
+.state-panel {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}

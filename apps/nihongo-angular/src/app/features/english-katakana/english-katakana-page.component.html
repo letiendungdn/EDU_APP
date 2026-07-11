@@ -1,0 +1,154 @@
+<section class="container english-katakana-view">
+  <header class="english-katakana-view-header">
+    <h2 class="view-title">Tiếng Anh ↔ Katakana</h2>
+    <p class="english-katakana-view-subtitle">
+      6 quy luật chuyển âm giáo trình hay bỏ sót, bảng map âm, trường âm ー, âm ngắt ッ và từ thường gặp — có nghe mẫu.
+    </p>
+  </header>
+
+  @if (loading() || !data()) {
+    <div class="empty glass-panel">
+      <p>Đang tải nội dung...</p>
+    </div>
+  } @else {
+    <div class="english-katakana">
+      <p class="english-katakana-intro glass-panel">{{ data()!.intro }}</p>
+
+      <div class="english-katakana-tips glass-panel">
+        <h3>Lưu ý cho người Việt</h3>
+        <ul>
+          @for (tip of data()!.tipsForVietnamese; track tip) {
+            <li>
+              <button type="button" class="btn-audio-small" (click)="speakVietnamese(tip)" title="Đọc gợi ý">
+                🔊
+              </button>
+              {{ tip }}
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="english-katakana-sections">
+        @for (section of data()!.sections; track section.id) {
+          <div class="english-katakana-section glass-panel">
+            <button
+              type="button"
+              class="english-katakana-section-header"
+              [attr.aria-expanded]="isOpen(section)"
+              (click)="toggleSection(section)"
+            >
+              <span>{{ section.title }}</span>
+              <span>{{ isOpen(section) ? '▲' : '▼' }}</span>
+            </button>
+            @if (isOpen(section)) {
+              <div class="english-katakana-section-body">
+                <p class="english-katakana-summary">
+                  <button type="button" class="btn-audio-small" (click)="speakVietnamese(section.summary)">
+                    🔊
+                  </button>
+                  {{ section.summary }}
+                </p>
+
+                @if (section.points?.length) {
+                  <ul class="english-katakana-points">
+                    @for (point of section.points!; track $index) {
+                      <li>
+                        @if (point.english || point.katakana) {
+                          <p class="english-katakana-pair-line">
+                            @if (point.english) {
+                              <button type="button" class="btn-audio-small" (click)="speakEnglish(point.english!)">
+                                🔊
+                              </button>
+                              <span class="english-katakana-en">{{ point.english }}</span>
+                            }
+                            @if (point.katakana) {
+                              <span class="english-katakana-arrow">→</span>
+                              <button type="button" class="btn-audio-small" (click)="speakJapanese(point.katakana!)">
+                                🔊
+                              </button>
+                              <span class="japanese-text english-katakana-kana">{{ point.katakana }}</span>
+                            }
+                            @if (point.romaji) {
+                              <span class="english-katakana-romaji">{{ point.romaji }}</span>
+                            }
+                          </p>
+                        }
+                        <p class="english-katakana-explanation">
+                          <button type="button" class="btn-audio-small" (click)="speakVietnamese(point.explanation)">
+                            🔊
+                          </button>
+                          {{ point.explanation }}
+                        </p>
+                      </li>
+                    }
+                  </ul>
+                }
+
+                @if (section.mappings?.length) {
+                  <div class="english-katakana-table-wrap">
+                    <table class="english-katakana-table">
+                      <thead>
+                        <tr>
+                          <th>Tiếng Anh</th>
+                          <th>Katakana</th>
+                          <th>Romaji</th>
+                          <th>Ghi chú</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (row of section.mappings!; track row.english + row.katakana) {
+                          <tr>
+                            <td>
+                              <button type="button" class="btn-audio-small" (click)="speakEnglish(row.english)">
+                                🔊
+                              </button>
+                              {{ row.english }}
+                            </td>
+                            <td class="japanese-text">
+                              <button type="button" class="btn-audio-small" (click)="speakJapanese(row.katakana)">
+                                🔊
+                              </button>
+                              {{ row.katakana }}
+                            </td>
+                            <td class="english-katakana-romaji">{{ row.romaji }}</td>
+                            <td class="english-katakana-note">{{ row.note ?? '—' }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                }
+
+                @if (section.examples?.length) {
+                  <div class="english-katakana-examples">
+                    <h4>Ví dụ</h4>
+                    <ul>
+                      @for (ex of section.examples!; track ex.english + ex.katakana) {
+                        <li>
+                          <span class="english-katakana-example-en">
+                            <button type="button" class="btn-audio-small" (click)="speakEnglish(ex.english)">🔊</button>
+                            {{ ex.english }}
+                          </span>
+                          <span class="english-katakana-arrow">→</span>
+                          <span class="japanese-text english-katakana-kana">
+                            <button type="button" class="btn-audio-small" (click)="speakJapanese(ex.katakana)">🔊</button>
+                            {{ ex.katakana }}
+                          </span>
+                          <span class="english-katakana-romaji">{{ ex.romaji }}</span>
+                          <span class="english-katakana-meaning">— {{ ex.meaningVi }}</span>
+                          @if (ex.note) {
+                            <span class="english-katakana-note">({{ ex.note }})</span>
+                          }
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</section>

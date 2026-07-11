@@ -1,0 +1,43 @@
+<section class="container mock-exam-page">
+  <header class="mock-exam-header">
+    <h2 class="view-title">Thi thử JLPT</h2>
+    <p class="subtitle">
+      Làm bài theo format thi thật — có giới hạn thời gian, nộp bài một lần, sau đó xem đáp án chi tiết.
+    </p>
+  </header>
+
+  @if (loading()) {
+    <div class="empty-state glass-panel">
+      <p>Đang tải đề thi...</p>
+    </div>
+  } @else if (error()) {
+    <div class="empty-state glass-panel">
+      <p>Không tải được danh sách đề thi. Hãy kiểm tra backend.</p>
+    </div>
+  } @else {
+    <div class="mock-exam-grid">
+      @for (tpl of templates(); track tpl.level) {
+        <article class="mock-exam-card glass-panel">
+          <span class="level-badge">{{ tpl.level.toUpperCase() }}</span>
+          <h3>{{ tpl.title }}</h3>
+          <p>{{ tpl.description }}</p>
+          <ul class="mock-exam-meta">
+            <li>⏱ {{ tpl.durationMinutes }} phút</li>
+            <li>📝 {{ tpl.questionCount }} câu</li>
+          </ul>
+          <a [routerLink]="['/mock-exam', tpl.level]" class="btn btn-primary">Bắt đầu thi</a>
+        </article>
+      }
+    </div>
+  }
+
+  <section class="mock-exam-notes glass-panel">
+    <h3>Lưu ý khi thi</h3>
+    <ul>
+      <li>Không hiện đáp án trong lúc làm bài — giống kỳ thi thật.</li>
+      <li>Phần Nghe: audio TTS tự phát, nghe lại tối đa 2 lần/câu.</li>
+      <li>Có thể chuyển qua lại giữa các câu trước khi nộp bài.</li>
+      <li>Hết giờ hệ thống tự nộp bài với các câu đã chọn.</li>
+    </ul>
+  </section>
+</section>

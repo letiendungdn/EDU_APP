@@ -1,0 +1,45 @@
+<section class="container pronunciation-view">
+  <header class="pronunciation-header">
+    <h2 class="view-title">Luyện phát âm</h2>
+    <p class="subtitle">Nghe mẫu từ vựng Minna — bấm 🔊 để nghe từng từ.</p>
+  </header>
+
+  <app-lesson-selector
+    [lessons]="lessons()"
+    [value]="lesson()"
+    (valueChange)="onLessonChange($event)"
+  />
+
+  @if (loading()) {
+    <div class="empty-state glass-panel">
+      <p>Đang tải...</p>
+    </div>
+  } @else if (!vocabList().length) {
+    <div class="empty-state glass-panel">
+      <p>Chưa có từ vựng bài {{ lesson() }}.</p>
+    </div>
+  } @else {
+    <ul class="vocab-list">
+      @for (word of vocabList(); track word.id) {
+        <li class="vocab-row glass-panel">
+          <div class="vocab-main">
+            <span class="japanese-text display">{{ word.kanji || word.kana }}</span>
+            @if (word.kanji) {
+              <span class="kana japanese-text">{{ word.kana }}</span>
+            }
+            <span class="romaji">{{ word.romaji }}</span>
+            <span class="meaning">{{ word.meaning }}</span>
+          </div>
+          <button
+            type="button"
+            class="btn-audio"
+            (click)="speak(word.kana, $event)"
+            [attr.aria-label]="'Nghe ' + word.kana"
+          >
+            🔊
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</section>

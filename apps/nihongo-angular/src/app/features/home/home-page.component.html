@@ -1,0 +1,50 @@
+<div class="home-page">
+  <section class="home-hero">
+    <div class="home-hero__text">
+      <p class="home-hero__eyebrow">Học tiếng Nhật hiệu quả</p>
+      <h1 class="home-title">
+        Chinh phục <em>JLPT</em><br />từng bước một
+      </h1>
+      <p class="home-subtitle">
+        Kana, từ vựng, ngữ pháp, kanji — bài học tương tác theo giáo trình
+        Minna no Nihongo với audio chuẩn và flashcard thông minh.
+      </p>
+      <div class="home-cta-row">
+        <a routerLink="/kana" class="btn btn-primary">Bắt đầu học</a>
+        <a routerLink="/jlpt" class="btn btn-outline">Lộ trình JLPT →</a>
+      </div>
+    </div>
+    <div class="home-hero__kanji" aria-hidden="true">日本語</div>
+  </section>
+
+  <div class="home-stats">
+    @for (stat of stats; track stat.label) {
+      <div class="home-stat">
+        <div class="home-stat__value">
+          {{ stat.value }}<span style="font-size: 1rem; opacity: 0.6">{{ stat.suffix }}</span>
+        </div>
+        <div class="home-stat__label">{{ stat.label }}</div>
+      </div>
+    }
+  </div>
+
+  @for (section of sections; track section.title) {
+    <section class="home-section">
+      <div class="home-section__header">
+        <h2 class="home-section__title">{{ section.title }}</h2>
+        <span class="home-section__count">{{ section.items.length }} mục</span>
+      </div>
+      <div class="feature-grid">
+        @for (item of section.items; track item.path) {
+          <a [routerLink]="item.path" class="feature-card">
+            <div class="feature-card__icon">{{ item.icon }}</div>
+            <div class="feature-card__body">
+              <div class="feature-card__title">{{ item.title }}</div>
+              <div class="feature-card__desc">{{ item.desc }}</div>
+            </div>
+          </a>
+        }
+      </div>
+    </section>
+  }
+</div>

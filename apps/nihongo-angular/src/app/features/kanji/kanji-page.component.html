@@ -1,0 +1,167 @@
+<section class="container kanji-view">
+  <header class="kanji-header">
+    <h2 class="view-title">Kanji Look and Learn</h2>
+    <p class="kanji-links">
+      <a routerLink="/kanji/list">Xem bảng kanji N5 → N1 →</a>
+    </p>
+
+    <form class="kanji-search-form" (submit)="submitSearch($event)">
+      <input
+        type="search"
+        class="kanji-search-input"
+        placeholder="Tìm kanji, Hán Việt, âm đọc, nghĩa..."
+        [value]="searchInput()"
+        (input)="onSearchInput($event)"
+        aria-label="Tìm kanji"
+      />
+      <button type="submit" class="btn btn-primary" [disabled]="searching()">
+        {{ searching() ? 'Đang tìm...' : 'Tìm' }}
+      </button>
+      @if (isSearchActive()) {
+        <button type="button" class="btn btn-nav" (click)="clearSearch()">Xóa</button>
+      }
+    </form>
+
+    @if (isSearchActive()) {
+      <div class="kanji-search-results glass-panel" role="region" aria-label="Kết quả tìm kanji">
+        @if (searching()) {
+          <p class="kanji-search-status">Đang tìm...</p>
+        } @else if (searchResults().length === 0) {
+          <p class="kanji-search-status">Không tìm thấy kanji phù hợp.</p>
+        } @else {
+          <p class="kanji-search-status">{{ searchResults().length }} kết quả</p>
+          <ul class="kanji-search-list">
+            @for (entry of searchResults(); track entry.id) {
+              <li>
+                <button type="button" class="kanji-search-item" (click)="selectSearchResult(entry)">
+                  <span class="kanji-search-char japanese-text">{{ entry.character }}</span>
+                  <span class="kanji-search-meta">
+                    @if (entry.hanViet) {
+                      {{ entry.hanViet }} ·
+                    }
+                    {{ entry.meaningVi }}
+                  </span>
+                  <span class="kanji-search-lesson">Bài {{ entry.lesson?.lessonNumber ?? '?' }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    }
+
+    <div class="lesson-selector">
+      <label for="kanji-lesson-select">Chọn bài học:</label>
+      <select
+        id="kanji-lesson-select"
+        class="select-input"
+        [value]="lesson()"
+        (change)="onLessonChange($event)"
+      >
+        @for (l of kanjiLessons(); track l.lessonNumber) {
+          <option [value]="l.lessonNumber">
+            Bài {{ l.lessonNumber }}
+            @if (l.jlptLevel) {
+              ({{ l.jlptLevel }})
+            }
+            @if (l._count) {
+              — {{ l._count.entries }} kanji
+            }
+          </option>
+        }
+      </select>
+    </div>
+
+    @if (currentLessonMeta()?.jlptLevel) {
+      <p class="subtitle">JLPT {{ currentLessonMeta()!.jlptLevel }}</p>
+    }
+
+    @if (kanjiList().length) {
+      <p class="subtitle">Kanji {{ index() + 1 }} / {{ kanjiList().length }}</p>
+    }
+  </header>
+
+  @if (loading()) {
+    <p class="empty">Đang tải dữ liệu...</p>
+  } @else if (current()) {
+    <div class="kanji-main">
+      <div class="flashcard-wrap">
+        <div
+          class="flashcard"
+          [class.flipped]="flipped()"
+          (click)="toggleFlip()"
+          (keyup.enter)="toggleFlip()"
+          tabindex="0"
+          role="button"
+        >
+          <div class="flashcard-inner">
+            <div class="face front glass-panel">
+              <button type="button" class="btn-audio" (click)="speak(undefined, $event)">🔊</button>
+              @if (!current()!.imageUrl) {
+                <span class="kanji-char japanese-text">{{ current()!.character }}</span>
+              } @else {
+                <img [src]="current()!.imageUrl!" [alt]="current()!.character" class="kanji-image" />
+              }
+              @if (current()!.hanViet) {
+                <span class="han-viet">{{ current()!.hanViet }}</span>
+              }
+              <div class="flashcard-stroke-block kanji-flashcard-stroke" (click)="$event.stopPropagation()">
+                <span class="flashcard-stroke-label">Cách viết chữ</span>
+                <div class="stroke-drawing-box">
+                  <app-stroke-order [text]="current()!.character" />
+                </div>
+              </div>
+            </div>
+            <div class="face back glass-panel">
+              <button type="button" class="btn-audio" (click)="speak(undefined, $event)">🔊</button>
+              @if (readings()) {
+                <span class="readings japanese-text">{{ readings() }}</span>
+              }
+              <span class="meaning">{{ current()!.meaningVi }}</span>
+              @if (current()!.mnemonicJp) {
+                <p class="mnemonic-jp japanese-text">{{ current()!.mnemonicJp }}</p>
+              }
+              @if (current()!.mnemonicVi) {
+                <p class="mnemonic-vi">{{ current()!.mnemonicVi }}</p>
+              }
+              <div
+                class="flashcard-stroke-block kanji-flashcard-stroke kanji-flashcard-stroke--back"
+                (click)="$event.stopPropagation()"
+              >
+                <span class="flashcard-stroke-label">Cách viết chữ</span>
+                <div class="stroke-drawing-box">
+                  <app-stroke-order [text]="current()!.character" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button type="button" class="btn btn-nav" (click)="prev()">⬅️ Trước</button>
+          <button type="button" class="btn btn-nav" (click)="next()">Sau ➡️</button>
+        </div>
+      </div>
+
+      @if (current()!.vocabularies?.length) {
+        <aside class="vocab-side glass-panel">
+          <h3>Từ vựng liên quan</h3>
+          <ul>
+            @for (v of current()!.vocabularies!; track v.id) {
+              <li>
+                <button type="button" class="btn-audio-small" (click)="speak(v.reading, $event)">🔊</button>
+                <span class="japanese-text">{{ v.word }}</span>
+                <span class="reading">（{{ v.reading }}）</span>
+                <span class="vocab-meaning">— {{ v.meaningVi }}</span>
+              </li>
+            }
+          </ul>
+        </aside>
+      }
+    </div>
+  } @else {
+    <p class="empty">
+      Dữ liệu kanji cho Bài {{ lesson() }} chưa có.
+    </p>
+  }
+</section>

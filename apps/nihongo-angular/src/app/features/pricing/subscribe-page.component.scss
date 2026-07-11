@@ -1,0 +1,43 @@
+.subscribe-page {
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+.back {
+  margin-bottom: 1rem;
+}
+
+.checkout-panel {
+  max-width: 560px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.hint {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.secret {
+  display: block;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  font-size: 0.75rem;
+  word-break: break-all;
+  color: #fde68a;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  align-self: flex-start;
+}
+
+.state-panel {
+  padding: 2rem;
+  color: var(--text-secondary);
+}

@@ -1,0 +1,133 @@
+.pronunciation-rules-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 2rem;
+}
+
+.pronunciation-rules-view-header {
+  text-align: center;
+}
+
+.view-title {
+  font-size: 2rem;
+}
+
+.pronunciation-rules-view-subtitle {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-top: 0.5rem;
+}
+
+.pronunciation-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pronunciation-rules-intro,
+.pronunciation-rules-tips {
+  padding: 1.25rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.pronunciation-rules-tips ul,
+.pronunciation-rules-points,
+.pronunciation-rules-examples ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pronunciation-rules-tips li,
+.pronunciation-rules-summary,
+.pronunciation-rules-explanation {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.55;
+}
+
+.pronunciation-rules-tips li + li {
+  margin-top: 0.5rem;
+}
+
+.pronunciation-rules-section-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pronunciation-rules-section-body {
+  padding: 0 1.25rem 1.25rem;
+}
+
+.pronunciation-rules-summary {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.pronunciation-rules-points li + li {
+  margin-top: 0.85rem;
+}
+
+.pronunciation-rules-point-label {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.35rem;
+  background: rgba(239, 68, 68, 0.15);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.pronunciation-rules-jp-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.35rem 0;
+}
+
+.pronunciation-rules-romaji {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.pronunciation-rules-examples {
+  margin-top: 1rem;
+}
+
+.pronunciation-rules-examples h4 {
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.pronunciation-rules-examples li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0;
+}
+
+.pronunciation-rules-meaning,
+.pronunciation-rules-note {
+  color: var(--text-secondary);
+}
+
+.empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}

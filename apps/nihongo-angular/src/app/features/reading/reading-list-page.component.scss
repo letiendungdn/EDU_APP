@@ -1,0 +1,86 @@
+.reading-list-view {
+  padding: 1.5rem 0 2rem;
+}
+
+.view-title {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle,
+.loading {
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+}
+
+.level-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.btn {
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: inherit;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+}
+
+.level-group {
+  margin-bottom: 2rem;
+}
+
+.level-badge {
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.passage-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.passage-card {
+  display: block;
+  padding: 1rem 1.1rem;
+  transition: border-color 0.15s;
+}
+
+.passage-card:hover {
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.passage-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.badge {
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.35rem;
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+}
+
+.passage-card h4 {
+  font-size: 1.05rem;
+}
+
+.empty-state {
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-secondary);
+}

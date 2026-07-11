@@ -1,0 +1,23 @@
+<div class="call-page container">
+  <div class="call-card glass-panel">
+    <h1>Video call</h1>
+    <p class="lead">
+      Cuộc gọi video cần WebRTC hoặc app React (<code>nihongo-web</code>) — Angular chưa tích hợp signaling/media.
+    </p>
+
+    @if (sessionId) {
+      <p class="session">
+        Session ID: <code>{{ sessionId }}</code>
+      </p>
+    } @else {
+      <p class="session muted">Không có session ID trong URL.</p>
+    }
+
+    <ul>
+      <li>Dùng app React để tham gia cuộc gọi thật.</li>
+      <li>Hoặc tích hợp WebRTC + signaling server sau.</li>
+    </ul>
+
+    <a routerLink="/community" class="btn btn-outline">← Về cộng đồng</a>
+  </div>
+</div>

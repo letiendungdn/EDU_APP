@@ -48,4 +48,8 @@ export const PROGRESS_PATTERNS = {
   GET_DAILY_NOTES: 'progress.notes.list',
   UPSERT_DAILY_GOALS: 'progress.goals.upsert',
   GET_DAILY_GOALS: 'progress.goals.list',
+  SRS_GET_DUE:      'progress.srs.due',
+  SRS_SUBMIT_REVIEW:'progress.srs.review',
+  SRS_GET_STATS:    'progress.srs.stats',
+  SRS_ADD_LESSON:   'progress.srs.add-lesson',
 } as const;

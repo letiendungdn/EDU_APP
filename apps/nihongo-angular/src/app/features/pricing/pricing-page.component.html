@@ -1,0 +1,28 @@
+<div class="pricing-page container">
+  <h1>Bảng giá</h1>
+  <p class="subtitle">Chọn gói phù hợp để mở khóa toàn bộ tính năng học.</p>
+
+  @if (loading()) {
+    <div class="glass-panel state-panel">Đang tải gói…</div>
+  } @else if (error()) {
+    <div class="glass-panel state-panel">{{ error() }}</div>
+  } @else {
+    <div class="plans-grid">
+      @for (plan of plans(); track plan.plan) {
+        <article class="plan-card glass-panel">
+          <h2>{{ plan.label }}</h2>
+          <p class="price">{{ plan.priceLabel }}</p>
+          <p class="interval">{{ plan.interval }}</p>
+          <ul>
+            @for (feature of plan.features; track feature) {
+              <li><span class="check">✓</span> {{ feature }}</li>
+            }
+          </ul>
+          <a [routerLink]="['/subscribe']" [queryParams]="{ plan: plan.plan }" class="btn btn-primary">
+            Chọn gói
+          </a>
+        </article>
+      }
+    </div>
+  }
+</div>

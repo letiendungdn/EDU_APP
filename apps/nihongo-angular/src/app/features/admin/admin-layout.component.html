@@ -1,0 +1,22 @@
+<div class="admin-layout">
+  <header class="admin-nav glass-panel">
+    <div>
+      <strong>Admin</strong>
+      @if (user(); as u) {
+        <span class="user">{{ u.name ?? u.email }}</span>
+      }
+    </div>
+    <nav>
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+      <a routerLink="/admin/payments" routerLinkActive="active">Thanh toán</a>
+      <a routerLink="/admin/messages" routerLinkActive="active">Tin nhắn</a>
+      <a routerLink="/admin/import" routerLinkActive="active">Import</a>
+      <a routerLink="/" class="muted">App học</a>
+      <button type="button" class="btn btn-outline" (click)="logout()">Đăng xuất</button>
+    </nav>
+  </header>
+
+  <main class="admin-content container">
+    <router-outlet />
+  </main>
+</div>

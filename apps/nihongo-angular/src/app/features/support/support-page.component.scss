@@ -1,0 +1,82 @@
+.support-page {
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.chat {
+  max-width: 720px;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.5rem 0 1rem;
+  max-height: 360px;
+}
+
+.bubble {
+  max-width: 80%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.65);
+  align-self: flex-start;
+}
+
+.bubble.mine {
+  align-self: flex-end;
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.bubble time {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.composer {
+  display: flex;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  padding-top: 0.85rem;
+}
+
+.composer input {
+  flex: 1;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--text-primary);
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+}
+
+.empty,
+.state {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.error {
+  color: #fca5a5;
+  font-size: 0.88rem;
+  margin-bottom: 0.5rem;
+}

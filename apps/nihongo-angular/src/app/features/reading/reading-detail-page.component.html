@@ -1,0 +1,85 @@
+<section class="container reading-detail-view">
+  <a routerLink="/reading" class="back-link">← Đọc hiểu</a>
+
+  @if (loading()) {
+    <p class="loading">Đang tải...</p>
+  } @else if (!passage()) {
+    <div class="empty-state glass-panel">
+      <p>Không tìm thấy bài đọc.</p>
+    </div>
+  } @else {
+    <div class="reading-head">
+      @if (passage()!.jlptLevel) {
+        <span class="badge">{{ passage()!.jlptLevel }}</span>
+      }
+      <span class="meta">~{{ passage()!.estimatedMin }} phút</span>
+    </div>
+    <h2 class="view-title">{{ passage()!.title }}</h2>
+
+    <article class="passage-content glass-panel">
+      <div class="passage-text japanese-text">{{ passage()!.content }}</div>
+      @if (passage()!.source) {
+        <p class="source">Source: {{ passage()!.source }}</p>
+      }
+    </article>
+
+    @if (!result()) {
+      <div class="questions-section">
+        <h3>Câu hỏi ({{ passage()!.questions.length }})</h3>
+        @for (q of passage()!.questions; track q.id; let idx = $index) {
+          <div class="question-card glass-panel">
+            <p class="question-text">{{ idx + 1 }}. {{ q.question }}</p>
+            @for (opt of q.options; track opt.id) {
+              <label class="option-label" [class.selected]="answers()[q.id + ''] === opt.text">
+                <input
+                  type="radio"
+                  [name]="'q-' + q.id"
+                  [checked]="answers()[q.id + ''] === opt.text"
+                  (change)="selectAnswer(q.id, opt.text)"
+                />
+                {{ opt.text }}
+              </label>
+            }
+          </div>
+        }
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="!allAnswered() || submitting()"
+          (click)="submit()"
+        >
+          {{ submitting() ? 'Đang chấm...' : 'Nộp bài' }}
+        </button>
+      </div>
+    } @else {
+      <div class="result-section">
+        <div
+          class="score-card glass-panel"
+          [class.pass]="result()!.percent >= 60"
+          [class.fail]="result()!.percent < 60"
+        >
+          <div class="score-percent">{{ result()!.percent }}%</div>
+          <div>{{ result()!.correct }}/{{ result()!.total }} câu đúng</div>
+        </div>
+
+        @for (q of passage()!.questions; track q.id; let idx = $index) {
+          @let r = getResult(q.id);
+          <div class="question-card glass-panel" [class.correct]="r?.correct" [class.wrong]="r && !r.correct">
+            <p class="question-text">{{ idx + 1 }}. {{ q.question }}</p>
+            <p class="answer-line">
+              Đáp án: <strong>{{ r?.correctAnswer }}</strong>
+              @if (r && !r.correct) {
+                <span class="user-wrong"> · Bạn chọn: {{ answers()[q.id + ''] }}</span>
+              }
+            </p>
+            @if (r?.explanation) {
+              <p class="explanation">💡 {{ r!.explanation }}</p>
+            }
+          </div>
+        }
+
+        <button type="button" class="btn btn-outline" (click)="reset()">Làm lại</button>
+      </div>
+    }
+  }
+</section>

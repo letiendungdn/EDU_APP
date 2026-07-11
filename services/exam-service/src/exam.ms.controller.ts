@@ -5,6 +5,8 @@ import {
   EXAM_PATTERNS,
   LogListeningDto,
   PROGRESS_PATTERNS,
+  SrsAddLessonDto,
+  SrsReviewDto,
   SyncReviewDto,
   UpsertDailyNoteDto,
   UpsertDailyGoalsDto,
@@ -64,6 +66,14 @@ export class ExamMsController implements OnModuleInit {
         ),
       [PROGRESS_PATTERNS.GET_DAILY_GOALS]: (data) =>
         this.getDailyGoals(data as { userId: number; limit?: number }),
+      [PROGRESS_PATTERNS.SRS_GET_DUE]: (data) =>
+        this.getSrsDue(data as { userId: number; limit?: number }),
+      [PROGRESS_PATTERNS.SRS_SUBMIT_REVIEW]: (data) =>
+        this.submitSrsReview(data as { userId: number; dto: SrsReviewDto }),
+      [PROGRESS_PATTERNS.SRS_GET_STATS]: (data) =>
+        this.getSrsStats(data as { userId: number }),
+      [PROGRESS_PATTERNS.SRS_ADD_LESSON]: (data) =>
+        this.addLessonToSrs(data as { userId: number; dto: SrsAddLessonDto }),
     };
   }
 
@@ -134,5 +144,21 @@ export class ExamMsController implements OnModuleInit {
 
   getDailyGoals(data: { userId: number; limit?: number }) {
     return this.progressService.listDailyGoals(data.userId, data.limit);
+  }
+
+  getSrsDue(data: { userId: number; limit?: number }) {
+    return this.progressService.getSrsDueCards(data.userId, data.limit);
+  }
+
+  submitSrsReview(data: { userId: number; dto: SrsReviewDto }) {
+    return this.progressService.submitSrsReview(data.userId, data.dto);
+  }
+
+  getSrsStats(data: { userId: number }) {
+    return this.progressService.getSrsStats(data.userId);
+  }
+
+  addLessonToSrs(data: { userId: number; dto: SrsAddLessonDto }) {
+    return this.progressService.addLessonToSrs(data.userId, data.dto);
   }
 }

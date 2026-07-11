@@ -1,0 +1,26 @@
+<div class="admin-login container">
+  <div class="login-card glass-panel">
+    <h1>Admin login</h1>
+    <p class="subtitle">Chỉ tài khoản có quyền ADMIN.</p>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <form (ngSubmit)="submit()">
+      <label>
+        Email
+        <input type="email" [(ngModel)]="email" name="email" autocomplete="username" required />
+      </label>
+      <label>
+        Mật khẩu
+        <input type="password" [(ngModel)]="password" name="password" autocomplete="current-password" required />
+      </label>
+      <button type="submit" class="btn btn-primary" [disabled]="loading()">
+        {{ loading() ? 'Đang đăng nhập…' : 'Đăng nhập' }}
+      </button>
+    </form>
+
+    <a routerLink="/" class="footer-link">← Về app học</a>
+  </div>
+</div>

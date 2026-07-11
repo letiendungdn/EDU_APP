@@ -1,0 +1,131 @@
+<section class="container pronunciation-rules-view">
+  <header class="pronunciation-rules-view-header">
+    <h2 class="view-title">Quy tắc phát âm</h2>
+    <p class="pronunciation-rules-view-subtitle">
+      Nguyên âm, phụ âm, trường âm, âm đục, hàng âm và các quy tắc đọc thường gặp — có ví dụ nghe mẫu.
+    </p>
+  </header>
+
+  @if (loading() || !data()) {
+    <div class="empty glass-panel">
+      <p>Đang tải quy tắc phát âm...</p>
+    </div>
+  } @else {
+    <div class="pronunciation-rules">
+      <p class="pronunciation-rules-intro glass-panel">{{ data()!.intro }}</p>
+
+      <div class="pronunciation-rules-tips glass-panel">
+        <h3>Lưu ý cho người Việt</h3>
+        <ul>
+          @for (tip of data()!.tipsForVietnamese; track tip) {
+            <li>
+              <button
+                type="button"
+                class="btn-audio-small"
+                (click)="speakVietnamese(tip)"
+                title="Đọc gợi ý tiếng Việt"
+              >
+                🔊
+              </button>
+              {{ tip }}
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="pronunciation-rules-sections">
+        @for (section of data()!.sections; track section.id) {
+          <div class="pronunciation-rules-section glass-panel">
+            <button
+              type="button"
+              class="pronunciation-rules-section-header"
+              [attr.aria-expanded]="isOpen(section)"
+              (click)="toggleSection(section)"
+            >
+              <span>{{ section.title }}</span>
+              <span>{{ isOpen(section) ? '▲' : '▼' }}</span>
+            </button>
+            @if (isOpen(section)) {
+              <div class="pronunciation-rules-section-body">
+                <p class="pronunciation-rules-summary">
+                  <button
+                    type="button"
+                    class="btn-audio-small"
+                    (click)="speakVietnamese(section.summary)"
+                    title="Đọc tóm tắt tiếng Việt"
+                  >
+                    🔊
+                  </button>
+                  {{ section.summary }}
+                </p>
+                <ul class="pronunciation-rules-points">
+                  @for (point of section.points; track $index) {
+                    <li>
+                      @if (point.label) {
+                        <span class="pronunciation-rules-point-label">{{ point.label }}</span>
+                      }
+                      @if (point.japanese || point.romaji) {
+                        <p class="pronunciation-rules-jp-line">
+                          @if (point.japanese) {
+                            <button
+                              type="button"
+                              class="btn-audio-small"
+                              (click)="speakJapanese(point.japanese!)"
+                              title="Nghe mẫu tiếng Nhật"
+                            >
+                              🔊
+                            </button>
+                            <span class="japanese-text">{{ point.japanese }}</span>
+                          }
+                          @if (point.romaji) {
+                            <span class="pronunciation-rules-romaji">{{ point.romaji }}</span>
+                          }
+                        </p>
+                      }
+                      <p class="pronunciation-rules-explanation">
+                        <button
+                          type="button"
+                          class="btn-audio-small"
+                          (click)="speakVietnamese(point.explanation)"
+                          title="Đọc giải thích tiếng Việt"
+                        >
+                          🔊
+                        </button>
+                        {{ point.explanation }}
+                      </p>
+                    </li>
+                  }
+                </ul>
+                @if (section.examples?.length) {
+                  <div class="pronunciation-rules-examples">
+                    <h4>Ví dụ</h4>
+                    <ul>
+                      @for (ex of section.examples!; track ex.japanese + ex.romaji) {
+                        <li>
+                          <button
+                            type="button"
+                            class="btn-audio-small"
+                            (click)="speakJapanese(ex.japanese)"
+                            title="Nghe ví dụ tiếng Nhật"
+                          >
+                            🔊
+                          </button>
+                          <span class="japanese-text">{{ ex.japanese }}</span>
+                          <span class="pronunciation-rules-romaji">{{ ex.romaji }}</span>
+                          <span class="pronunciation-rules-meaning">— {{ ex.meaning }}</span>
+                          @if (ex.note) {
+                            <span class="pronunciation-rules-note">({{ ex.note }})</span>
+                          }
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</section>

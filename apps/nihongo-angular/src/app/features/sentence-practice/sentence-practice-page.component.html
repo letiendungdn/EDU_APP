@@ -1,0 +1,178 @@
+<div class="page-wrap">
+  <div class="page-hero">
+    <div class="page-hero__main">
+      <p class="page-hero__eyebrow">AI Sentence Practice</p>
+      <h1 class="page-hero__title">Luyện câu cùng AI</h1>
+      <p class="page-hero__desc">
+        Viết một câu tiếng Nhật — AI sẽ sửa lỗi, giải thích ngữ pháp, và
+        cho ví dụ thêm. Cũng có thể nhờ dịch câu tiếng Việt sang tiếng Nhật.
+      </p>
+    </div>
+  </div>
+
+  <div class="sp-input-card card">
+    <label class="sp-input-label">
+      Nhập câu tiếng Nhật hoặc "Dịch: câu tiếng Việt"
+    </label>
+    <textarea
+      #textareaRef
+      class="sp-textarea japanese-text"
+      [value]="sentence()"
+      (input)="onSentenceInput($any($event.target).value)"
+      (keydown)="onKeyDown($event)"
+      placeholder="例: わたしは がくせい です。"
+      rows="2"
+      [disabled]="loading()"
+    ></textarea>
+    <div class="sp-input-actions">
+      <span class="sp-hint">
+        {{ loading() ? '🤖 Đang phân tích…' : 'Ctrl+Enter để gửi' }}
+      </span>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="submit()"
+        [disabled]="!sentence().trim() || loading()"
+      >
+        @if (loading()) {
+          <span class="spinner-sm"></span>
+        }
+        {{ loading() ? 'Đang xử lý…' : 'Phân tích câu' }}
+      </button>
+    </div>
+    @if (error()) {
+      <p class="sp-error">{{ error() }}</p>
+    }
+  </div>
+
+  @if (!history().length) {
+    <div class="sp-starters">
+      <p class="sp-starters__label">Thử ngay:</p>
+      <div class="sp-starters__grid">
+        @for (s of starters; track s) {
+          <button type="button" class="sp-starter" (click)="useStarter(s)">{{ s }}</button>
+        }
+      </div>
+    </div>
+  }
+
+  @if (newest(); as entry) {
+    <div
+      class="sp-result-card card sp-result-card--open"
+    >
+      <div class="sp-result-card__header" (click)="setEntryOpen(entry.id, !isOpen(entry, true))">
+        <div class="sp-result-card__sent japanese-text">
+          {{ entry.sentence }}
+          @if (hasCorrection(entry)) {
+            <span class="sp-badge sp-badge--fix">修正あり</span>
+          } @else {
+            <span class="sp-badge sp-badge--ok">✓ 正しい</span>
+          }
+        </div>
+        <div class="sp-result-card__meta">
+          <span>{{ formatTime(entry.timestamp) }}</span>
+          <span class="sp-chevron">{{ isOpen(entry, true) ? '▲' : '▼' }}</span>
+        </div>
+      </div>
+      @if (isOpen(entry, true)) {
+        <div class="sp-result-card__body">
+          @if (hasCorrection(entry)) {
+            <div class="sp-section sp-section--corrected">
+              <span class="sp-section__label">Câu đã sửa</span>
+              <p class="japanese-text sp-corrected">{{ entry.feedback.corrected }}</p>
+              @if (entry.feedback.reading) {
+                <p class="sp-reading">{{ entry.feedback.reading }}</p>
+              }
+            </div>
+          } @else if (entry.feedback.reading) {
+            <div class="sp-section">
+              <span class="sp-section__label">Phiên âm</span>
+              <p class="sp-reading">{{ entry.feedback.reading }}</p>
+            </div>
+          }
+          <div class="sp-section">
+            <span class="sp-section__label">Nghĩa</span>
+            <p class="sp-meaning">{{ entry.feedback.meaning }}</p>
+          </div>
+          <div class="sp-section">
+            <span class="sp-section__label">Giải thích</span>
+            <p class="sp-explanation">{{ entry.feedback.explanation }}</p>
+          </div>
+          @if (entry.feedback.examples.length) {
+            <div class="sp-section">
+              <span class="sp-section__label">Ví dụ tương tự</span>
+              <ul class="sp-examples">
+                @for (ex of entry.feedback.examples; track ex) {
+                  <li class="japanese-text">{{ ex }}</li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (history().length > 1) {
+    <div class="sp-history">
+      <h3 class="sp-history__title">Lịch sử ({{ history().length - 1 }} câu trước)</h3>
+      @for (entry of history().slice(1); track entry.id) {
+        <div
+          class="sp-result-card card"
+          [class.sp-result-card--open]="isOpen(entry)"
+        >
+          <div class="sp-result-card__header" (click)="setEntryOpen(entry.id, !isOpen(entry))">
+            <div class="sp-result-card__sent japanese-text">
+              {{ entry.sentence }}
+              @if (hasCorrection(entry)) {
+                <span class="sp-badge sp-badge--fix">修正あり</span>
+              } @else {
+                <span class="sp-badge sp-badge--ok">✓ 正しい</span>
+              }
+            </div>
+            <div class="sp-result-card__meta">
+              <span>{{ formatTime(entry.timestamp) }}</span>
+              <span class="sp-chevron">{{ isOpen(entry) ? '▲' : '▼' }}</span>
+            </div>
+          </div>
+          @if (isOpen(entry)) {
+            <div class="sp-result-card__body">
+              @if (hasCorrection(entry)) {
+                <div class="sp-section sp-section--corrected">
+                  <span class="sp-section__label">Câu đã sửa</span>
+                  <p class="japanese-text sp-corrected">{{ entry.feedback.corrected }}</p>
+                  @if (entry.feedback.reading) {
+                    <p class="sp-reading">{{ entry.feedback.reading }}</p>
+                  }
+                </div>
+              } @else if (entry.feedback.reading) {
+                <div class="sp-section">
+                  <span class="sp-section__label">Phiên âm</span>
+                  <p class="sp-reading">{{ entry.feedback.reading }}</p>
+                </div>
+              }
+              <div class="sp-section">
+                <span class="sp-section__label">Nghĩa</span>
+                <p class="sp-meaning">{{ entry.feedback.meaning }}</p>
+              </div>
+              <div class="sp-section">
+                <span class="sp-section__label">Giải thích</span>
+                <p class="sp-explanation">{{ entry.feedback.explanation }}</p>
+              </div>
+              @if (entry.feedback.examples.length) {
+                <div class="sp-section">
+                  <span class="sp-section__label">Ví dụ tương tự</span>
+                  <ul class="sp-examples">
+                    @for (ex of entry.feedback.examples; track ex) {
+                      <li class="japanese-text">{{ ex }}</li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

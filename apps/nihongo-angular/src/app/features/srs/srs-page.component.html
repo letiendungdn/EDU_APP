@@ -1,0 +1,215 @@
+@if (phase() === 'loading') {
+  <div class="page-wrap">
+    <div class="page-loading"><span class="spinner"></span></div>
+  </div>
+} @else if (phase() === 'needs-auth') {
+  <div class="page-wrap">
+    <div class="srs-auth-gate card">
+      <span style="font-size: 2.5rem">🔐</span>
+      <h2>Đăng nhập để dùng SRS</h2>
+      <p>Tiến độ ôn tập được lưu theo tài khoản — cần đăng nhập để sử dụng.</p>
+      <a routerLink="/login" class="btn btn-primary">Đăng nhập</a>
+    </div>
+  </div>
+} @else if (phase() === 'done') {
+  <div class="page-wrap">
+    <div class="srs-done card">
+      <div class="srs-done__emoji">{{ doneEmoji() }}</div>
+      <h2 class="srs-done__title">Xong phiên ôn!</h2>
+      <div class="srs-done__score">
+        <span>{{ sessionCorrect() }}/{{ sessionTotal() }}</span>
+        <span class="srs-done__pct">{{ sessionPct() }}%</span>
+      </div>
+      <div class="srs-done__stats">
+        @if (stats(); as s) {
+          <div class="srs-stat-pill srs-stat-pill--due">
+            <span>{{ s.dueToday }}</span> còn hôm nay
+          </div>
+          <div class="srs-stat-pill srs-stat-pill--mastered">
+            <span>{{ s.mastered }}</span> đã thuộc
+          </div>
+        }
+      </div>
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center">
+        @if (stats(); as s) {
+          @if (s.dueToday > 0) {
+            <button type="button" class="btn btn-primary" (click)="startSession()">
+              Tiếp tục ({{ s.dueToday }} thẻ)
+            </button>
+          }
+        }
+        <button type="button" class="btn btn-outline" (click)="phase.set('stats')">
+          Về trang SRS
+        </button>
+      </div>
+    </div>
+  </div>
+} @else if (phase() === 'review') {
+  @if (card(); as c) {
+  <div class="srs-session">
+    <div class="srs-session__bar">
+      <button type="button" class="btn btn-ghost btn-sm" (click)="exitSession()">✕ Thoát</button>
+      <div class="srs-session__prog-wrap">
+        <div class="progress-bar">
+          <div class="progress-bar__fill" [style.width.%]="progressPct()"></div>
+        </div>
+      </div>
+      <span class="srs-session__count">{{ index() + 1 }}/{{ queue().length }}</span>
+    </div>
+
+    <div
+      class="srs-card"
+      [class.srs-card--flipped]="flipped()"
+      (click)="flipCard()"
+    >
+      <div class="srs-card__inner">
+        <div class="srs-card__face srs-card__front">
+          <span class="srs-card__lesson">Bài {{ c.lessonNumber }}</span>
+          <div class="srs-card__word japanese-text">{{ c.kanji || c.kana }}</div>
+          @if (c.kanji) {
+            <div class="srs-card__kana japanese-text">{{ c.kana }}</div>
+          }
+          <p class="srs-card__hint">Nhấn để xem nghĩa</p>
+        </div>
+        <div class="srs-card__face srs-card__back">
+          <span class="srs-card__lesson">Bài {{ c.lessonNumber }}</span>
+          <div class="srs-card__word japanese-text">{{ c.kanji || c.kana }}</div>
+          @if (c.kanji) {
+            <div class="srs-card__kana japanese-text">{{ c.kana }}</div>
+          }
+          <div class="srs-card__meaning">{{ c.meaning }}</div>
+          @if (lastResult()) {
+            <div class="srs-card__next">
+              ⏱ Ôn lại: {{ previewInterval(3, c.easeFactor, c.interval, c.repetitions) }}
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (flipped() && !lastResult()) {
+      <div class="srs-ratings">
+        @for (r of ratings; track r.quality) {
+          <button
+            type="button"
+            class="srs-btn srs-btn--{{ r.color }}"
+            (click)="rate(r.quality); $event.stopPropagation()"
+            [disabled]="submitting()"
+          >
+            <span class="srs-btn__label">{{ r.label }}</span>
+            <span class="srs-btn__interval">
+              {{ previewInterval(r.quality, c.easeFactor, c.interval, c.repetitions) }}
+            </span>
+          </button>
+        }
+      </div>
+    }
+
+    @if (!flipped()) {
+      <p class="srs-hint">Nhấn <kbd>Space</kbd> để lật thẻ</p>
+    }
+    @if (flipped() && !lastResult()) {
+      <p class="srs-hint">
+        <kbd>1</kbd> Lại &nbsp;·&nbsp; <kbd>2</kbd> Khó &nbsp;·&nbsp;
+        <kbd>3</kbd> Ổn &nbsp;·&nbsp; <kbd>4</kbd> Dễ
+      </p>
+    }
+  </div>
+  }
+} @else {
+  <div class="page-wrap">
+    <div class="page-hero">
+      <div class="page-hero__main">
+        <p class="page-hero__eyebrow">Spaced Repetition</p>
+        <h1 class="page-hero__title">Luyện từ vựng SRS</h1>
+        <p class="page-hero__desc">
+          Hệ thống lập lịch thông minh SM-2 — tự động đưa từ khó ôn sớm hơn,
+          từ dễ ôn thưa hơn. Học đúng lúc, nhớ lâu hơn.
+        </p>
+      </div>
+    </div>
+
+    @if (stats(); as s) {
+      <div class="srs-stats-grid">
+        <div class="srs-stat-card srs-stat-card--due">
+          <div class="srs-stat-card__value">{{ s.dueToday }}</div>
+          <div class="srs-stat-card__label">Đến hạn hôm nay</div>
+        </div>
+        <div class="srs-stat-card srs-stat-card--learning">
+          <div class="srs-stat-card__value">{{ s.learning }}</div>
+          <div class="srs-stat-card__label">Đang học</div>
+        </div>
+        <div class="srs-stat-card srs-stat-card--mastered">
+          <div class="srs-stat-card__value">{{ s.mastered }}</div>
+          <div class="srs-stat-card__label">Đã thuộc</div>
+        </div>
+        <div class="srs-stat-card">
+          <div class="srs-stat-card__value">{{ s.total }}</div>
+          <div class="srs-stat-card__label">Tổng thẻ</div>
+        </div>
+      </div>
+    }
+
+    <div class="srs-actions">
+      @if (stats(); as s) {
+        @if (s.dueToday > 0) {
+          <button type="button" class="btn btn-primary btn-lg" (click)="startSession()">
+            Ôn ngay ({{ s.dueToday }} thẻ)
+          </button>
+        } @else {
+          <div class="srs-empty">
+            <span class="srs-empty__icon">✅</span>
+            <p><strong>Hết thẻ hôm nay!</strong></p>
+            <p>Quay lại sau để ôn các thẻ tiếp theo.</p>
+          </div>
+        }
+      }
+    </div>
+
+    <div class="srs-add-panel card card--sm">
+      <h3 class="srs-add-panel__title">Thêm bài học vào bộ thẻ</h3>
+      <p class="srs-add-panel__desc">
+        Chọn bài Minna no Nihongo để thêm toàn bộ từ vựng vào hàng ôn.
+      </p>
+      <div class="srs-add-form">
+        <input
+          type="number"
+          min="1"
+          max="50"
+          placeholder="Số bài (1–50)"
+          class="input"
+          style="max-width: 160px"
+          [value]="addLesson()"
+          (input)="onAddLessonInput($any($event.target).value)"
+          (keydown.enter)="handleAddLesson()"
+        />
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="handleAddLesson()"
+          [disabled]="addingLesson() || !addLesson()"
+        >
+          {{ addingLesson() ? 'Đang thêm…' : 'Thêm bài' }}
+        </button>
+      </div>
+      @if (addMsg()) {
+        <p class="srs-add-msg">{{ addMsg() }}</p>
+      }
+    </div>
+
+    <div class="srs-info card card--sm">
+      <h3 class="srs-info__title">Cách hoạt động</h3>
+      <div class="srs-info__grid">
+        @for (item of srsInfo; track item.label) {
+          <div class="srs-info__item">
+            <span class="srs-info__icon">{{ item.icon }}</span>
+            <div>
+              <strong>{{ item.label }}</strong>
+              <p>{{ item.desc }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

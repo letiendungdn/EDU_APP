@@ -1,0 +1,112 @@
+<section class="container quiz-view">
+  <header class="quiz-header">
+    <h2 class="view-title">Luyện tập & Quiz</h2>
+    <app-lesson-selector
+      [lessons]="lessons()"
+      [value]="lesson()"
+      (valueChange)="onLessonChange($event)"
+    />
+    @if (exercises().length && !finished()) {
+      <p class="quiz-progress">
+        Câu {{ index() + 1 }} / {{ exercises().length }}
+        @if (scoreTotal() > 0) {
+          <span class="quiz-score"> · Đúng {{ scoreCorrect() }}/{{ scoreTotal() }}</span>
+        }
+      </p>
+    }
+  </header>
+
+  @if (loading()) {
+    <div class="empty glass-panel">
+      <p>Đang tải câu hỏi...</p>
+    </div>
+  } @else if (!exercises().length) {
+    <div class="empty glass-panel">
+      <p>Chưa có bài tập cho Bài {{ lesson() }}. Hãy thử chọn bài khác nhé!</p>
+    </div>
+  } @else if (finished()) {
+    <div class="quiz-result glass-panel">
+      <div class="result-icon">{{ scoreCorrect() === exercises().length ? '🎉' : '📚' }}</div>
+      <h3>Hoàn thành!</h3>
+      <p class="result-score">
+        Bạn trả lời đúng <strong>{{ scoreCorrect() }}</strong> /
+        <strong>{{ exercises().length }}</strong> câu
+      </p>
+      <p class="result-percent">{{ scorePercent() }}%</p>
+      <div class="quiz-actions">
+        <button type="button" class="btn btn-primary" (click)="retry()">Làm lại</button>
+        @if (scoreCorrect() < exercises().length) {
+          <a routerLink="/vocab-review" class="btn btn-outline">Ôn từ sai →</a>
+        }
+      </div>
+    </div>
+  } @else if (current()) {
+    <div class="quiz-card glass-panel">
+      <span class="quiz-type-badge">
+        {{ current()!.type === 'multiple_choice' ? 'Trắc nghiệm' : 'Điền từ' }}
+      </span>
+
+      <h3 class="quiz-question">{{ current()!.question }}</h3>
+
+      @if (current()!.type === 'multiple_choice') {
+        <div class="quiz-options">
+          @for (option of options(); track option) {
+            <button
+              type="button"
+              class="quiz-option"
+              [class.selected]="selectedAnswer() === option"
+              [class.correct-answer]="result() !== null && option === current()!.answer"
+              [class.wrong-answer]="result() === 'wrong' && selectedAnswer() === option"
+              [disabled]="result() !== null"
+              (click)="onSelectAnswer(option)"
+            >
+              {{ option }}
+            </button>
+          }
+        </div>
+      } @else {
+        <div class="quiz-fill">
+          <input
+            type="text"
+            class="fill-input"
+            [class.input-correct]="result() === 'correct'"
+            [class.input-wrong]="result() === 'wrong'"
+            placeholder="Nhập đáp án..."
+            [value]="fillAnswer()"
+            (input)="onFillInput($event)"
+            (keydown)="onFillKeydown($event)"
+            [disabled]="result() !== null"
+          />
+          @if (result() === 'wrong') {
+            <p class="correct-hint">
+              Đáp án đúng: <strong>{{ current()!.answer }}</strong>
+            </p>
+          }
+        </div>
+      }
+
+      @if (result() !== null) {
+        <div class="feedback" [class.correct]="result() === 'correct'" [class.wrong]="result() === 'wrong'">
+          {{ result() === 'correct' ? '✅ Chính xác!' : '❌ Chưa đúng rồi!' }}
+        </div>
+      }
+
+      <div class="quiz-actions">
+        @if (result() === null) {
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="submit()"
+            [disabled]="current()!.type === 'fill_in_blank' ? !fillAnswer().trim() : !selectedAnswer()"
+          >
+            Kiểm tra
+          </button>
+        } @else {
+          <button type="button" class="btn btn-primary" (click)="next()">
+            {{ index() + 1 >= exercises().length ? 'Xem kết quả' : 'Câu tiếp →' }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</section>

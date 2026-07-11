@@ -1,0 +1,85 @@
+<section class="container book-audio-view">
+  @if (loading()) {
+    <p class="book-audio-loading">Đang tải danh sách file nghe...</p>
+  } @else if (error() || !data() || !section()) {
+    <p class="book-audio-error">Không tải được danh sách file nghe sách.</p>
+  } @else {
+    <header class="book-audio-header">
+      <h2 class="view-title">File nghe sách</h2>
+      <p class="book-audio-subtitle">
+        Tổng hợp link file nghe & tài liệu JLPT N5–N1 — nguồn
+        <a [href]="data()!.sourceUrl" target="_blank" rel="noreferrer">{{ data()!.publisher }}</a>.
+        @if (totalLocal() > 0) {
+          <span class="book-audio-local-hint">
+            Đã tải về server: <strong>{{ totalLocal() }}</strong> file — bấm <em>Nghe</em> để phát trong app.
+          </span>
+        }
+      </p>
+    </header>
+
+    <div class="tab-buttons book-audio-tabs">
+      @for (s of sections(); track s.level) {
+        <button
+          type="button"
+          class="btn tab-btn"
+          [class.active]="section()!.level === s.level"
+          (click)="setLevel(s.level)"
+        >
+          {{ s.label }}
+          <span class="book-audio-tab-count">{{ s.items.length }}</span>
+        </button>
+      }
+    </div>
+
+    <section class="book-audio-list glass-panel">
+      <h3 class="book-audio-section-title">{{ section()!.label }}</h3>
+      <ul class="book-audio-items">
+        @for (item of section()!.items; track item.id) {
+          <li class="book-audio-item">
+            <div class="book-audio-item-top">
+              <div class="book-audio-item-main">
+                @if (item.no != null) {
+                  <span class="book-audio-no">{{ item.no }}</span>
+                }
+                <div class="book-audio-text">
+                  <span class="book-audio-title">{{ item.title }}</span>
+                  @if (item.note) {
+                    <span class="book-audio-note">{{ item.note }}</span>
+                  }
+                  @if (localFileCount(item) > 0) {
+                    <span class="book-audio-badge">{{ localFileCount(item) }} file local</span>
+                  }
+                </div>
+              </div>
+              <div class="book-audio-actions">
+                @if (localFileCount(item) > 0) {
+                  <button type="button" class="btn btn-sm book-audio-toggle" (click)="toggleExpanded(item.id)">
+                    {{ isExpanded(item.id) ? '▲ Thu' : '▼ Nghe' }}
+                  </button>
+                }
+                <a class="btn btn-sm book-audio-link" [href]="item.url" target="_blank" rel="noreferrer">
+                  {{ linkLabel(item.url) }} ↗
+                </a>
+              </div>
+            </div>
+
+            @if (isExpanded(item.id) && item.localFiles?.length) {
+              <ul class="book-audio-files">
+                @for (f of item.localFiles!; track f.id) {
+                  <li class="book-audio-file">
+                    <span class="book-audio-file-name">{{ f.fileName }}</span>
+                    @if (isPlayable(f.localPath)) {
+                      <audio controls preload="none" [src]="f.localPath" class="book-audio-player"></audio>
+                    } @else {
+                      <a class="btn btn-sm" [href]="f.localPath" target="_blank" rel="noreferrer">Tải file</a>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</section>

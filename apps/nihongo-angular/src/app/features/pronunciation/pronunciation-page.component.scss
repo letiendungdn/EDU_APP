@@ -1,0 +1,63 @@
+.pronunciation-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem 0 2rem;
+}
+
+.view-title {
+  font-size: 2rem;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.vocab-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.vocab-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+}
+
+.vocab-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+}
+
+.display {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.kana {
+  color: var(--text-secondary);
+}
+
+.romaji {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.meaning {
+  flex-basis: 100%;
+  color: #86efac;
+  font-weight: 600;
+}

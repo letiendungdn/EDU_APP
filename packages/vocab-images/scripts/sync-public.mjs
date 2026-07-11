@@ -4,7 +4,10 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(__dirname, '..', 'media');
-const TARGETS = [path.join(__dirname, '../../../apps/nihongo-web/public/media')];
+const TARGETS = [
+  path.join(__dirname, '../../../apps/nihongo-web/public/media'),
+  path.join(__dirname, '../../../apps/nihongo-angular/public/media'),
+];
 
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) {

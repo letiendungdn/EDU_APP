@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Put,
+  Query,
   UseGuards,
   Inject,
 } from "@nestjs/common";
@@ -13,6 +14,8 @@ import { firstValueFrom } from "rxjs";
 import {
   LogListeningDto,
   PROGRESS_PATTERNS,
+  SrsAddLessonDto,
+  SrsReviewDto,
   SyncReviewDto,
   UpsertDailyNoteDto,
   UpsertDailyGoalsDto,
@@ -116,6 +119,60 @@ export class ProgressController {
   ) {
     return firstValueFrom(
       this.examClient.send(PROGRESS_PATTERNS.UPSERT_DAILY_GOALS, {
+        userId: user.id,
+        dto,
+      }),
+    );
+  }
+
+  // ── SRS (SM-2) ──────────────────────────────────────────────────────────
+
+  @Get("srs/due")
+  @ApiOperation({ summary: "Get vocabulary cards due for SRS review" })
+  getSrsDue(
+    @CurrentUser() user: AuthUserPayload,
+    @Query("limit") limit?: string,
+  ) {
+    return firstValueFrom(
+      this.examClient.send(PROGRESS_PATTERNS.SRS_GET_DUE, {
+        userId: user.id,
+        limit: limit ? parseInt(limit, 10) : 20,
+      }),
+    );
+  }
+
+  @Post("srs/review")
+  @ApiOperation({ summary: "Submit an SRS card review (SM-2)" })
+  submitSrsReview(
+    @CurrentUser() user: AuthUserPayload,
+    @Body() dto: SrsReviewDto,
+  ) {
+    return firstValueFrom(
+      this.examClient.send(PROGRESS_PATTERNS.SRS_SUBMIT_REVIEW, {
+        userId: user.id,
+        dto,
+      }),
+    );
+  }
+
+  @Get("srs/stats")
+  @ApiOperation({ summary: "Get user SRS statistics" })
+  getSrsStats(@CurrentUser() user: AuthUserPayload) {
+    return firstValueFrom(
+      this.examClient.send(PROGRESS_PATTERNS.SRS_GET_STATS, {
+        userId: user.id,
+      }),
+    );
+  }
+
+  @Post("srs/add-lesson")
+  @ApiOperation({ summary: "Add all vocabulary from a lesson to SRS deck" })
+  addLessonToSrs(
+    @CurrentUser() user: AuthUserPayload,
+    @Body() dto: SrsAddLessonDto,
+  ) {
+    return firstValueFrom(
+      this.examClient.send(PROGRESS_PATTERNS.SRS_ADD_LESSON, {
         userId: user.id,
         dto,
       }),

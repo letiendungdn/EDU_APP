@@ -1,0 +1,32 @@
+<div class="admin-dashboard">
+  <h1>Dashboard</h1>
+  <p class="subtitle">Tổng quan hệ thống.</p>
+
+  @if (loading()) {
+    <div class="glass-panel state-panel">Đang tải thống kê…</div>
+  } @else if (error()) {
+    <div class="glass-panel state-panel">
+      <p>{{ error() }}</p>
+      <button type="button" class="btn btn-outline" (click)="load()">Thử lại</button>
+    </div>
+  } @else if (stats()) {
+    <div class="stats-grid">
+      <div class="stat-card glass-panel">
+        <span>Người dùng</span>
+        <strong>{{ stats()!.users }}</strong>
+      </div>
+      <div class="stat-card glass-panel">
+        <span>Giao dịch</span>
+        <strong>{{ stats()!.payments }}</strong>
+      </div>
+      <div class="stat-card glass-panel">
+        <span>Doanh thu</span>
+        <strong>{{ formatRevenue(stats()!.revenueCents) }}</strong>
+      </div>
+      <div class="stat-card glass-panel">
+        <span>Gói đang active</span>
+        <strong>{{ stats()!.activeSubscriptions }}</strong>
+      </div>
+    </div>
+  }
+</div>

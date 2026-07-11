@@ -1,0 +1,25 @@
+.stroke-order-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stroke-order-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  color: var(--text-primary);
+}
+
+:host ::ng-deep .stroke-order-container > div {
+  color: var(--text-primary);
+}
+
+.stroke-hint,
+:host ::ng-deep .stroke-empty {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  text-align: center;
+}

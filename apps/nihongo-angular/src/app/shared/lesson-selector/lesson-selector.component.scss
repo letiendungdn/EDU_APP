@@ -1,0 +1,22 @@
+.lesson-selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+
+  label {
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+}
+
+.select-input {
+  min-width: 180px;
+  padding: 0.55rem 0.85rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-primary);
+  font-family: inherit;
+}

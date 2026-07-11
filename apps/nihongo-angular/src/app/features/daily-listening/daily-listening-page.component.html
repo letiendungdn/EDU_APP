@@ -1,0 +1,94 @@
+<section class="container daily-listening-view">
+  <header class="dl-header">
+    <h2 class="view-title">Nghe mỗi ngày · N5</h2>
+    <p class="subtitle">
+      Mục tiêu {{ goalMinutes() }} phút/ngày — audio Minna trong app.
+    </p>
+  </header>
+
+  @if (configLoading()) {
+    <p class="loading">Đang tải cấu hình nghe...</p>
+  } @else {
+    <section class="dl-stats glass-panel">
+      <div class="dl-stat">
+        <strong>Thời gian</strong>
+        <span>{{ formatTime(elapsed()) }} / {{ goalMinutes() }}:00</span>
+      </div>
+      <div class="dl-progress-ring" [style.--pct]="progressPct() + '%'">
+        <span>{{ progressPct() }}%</span>
+      </div>
+    </section>
+
+    @if (goalReached()) {
+      <div class="dl-celebration glass-panel">
+        Đủ {{ goalMinutes() }} phút hôm nay! Tiếp tục nghe hoặc quay lại mai nhé.
+      </div>
+    }
+
+    <div class="dl-controls glass-panel">
+      <label>
+        Chọn phạm vi:
+        <select
+          class="select-input"
+          [value]="presetId()"
+          (change)="onPresetChange($event)"
+          [disabled]="isRunning()"
+        >
+          @for (p of presets(); track p.id) {
+            <option [value]="p.id">{{ p.label }}</option>
+          }
+        </select>
+      </label>
+      <label class="dl-checkbox">
+        <input
+          type="checkbox"
+          [checked]="showMeaning()"
+          (change)="showMeaning.set($any($event.target).checked)"
+        />
+        Hiện nghĩa tiếng Việt khi nghe
+      </label>
+    </div>
+
+    @if (playlistLoading()) {
+      <div class="empty-state glass-panel">
+        <p>Đang tạo playlist...</p>
+      </div>
+    } @else if (!playlist().length) {
+      <div class="empty-state glass-panel">
+        <p>Chưa có dữ liệu audio. Hãy seed Minna trước.</p>
+      </div>
+    } @else {
+      @if (current(); as item) {
+      <div class="dl-now-playing glass-panel">
+        <span class="dl-now-label">
+          {{ item.type === 'sentence' ? 'Câu mẫu' : 'Từ vựng' }} · Bài
+          {{ item.lessonNumber }}
+        </span>
+        <p class="dl-now-jp japanese-text">{{ item.display }}</p>
+        @if (showMeaning()) {
+          <p class="dl-now-meaning">{{ item.meaning }}</p>
+        }
+        <p class="dl-queue-meta">
+          Playlist {{ playlist().length }} mục · đang phát #{{ currentIndex() + 1 }}
+        </p>
+        <button type="button" class="btn btn-outline" (click)="replayCurrent()">🔊 Nghe lại</button>
+      </div>
+      }
+
+      <div class="dl-player-actions">
+        @if (!isRunning() && !isPaused()) {
+          <button type="button" class="btn btn-primary" (click)="startSession()">▶️ Bắt đầu nghe</button>
+        }
+        @if (isRunning()) {
+          <button type="button" class="btn btn-outline" (click)="pauseSession()">⏸ Tạm dừng</button>
+        }
+        @if (isPaused()) {
+          <button type="button" class="btn btn-primary" (click)="resumeSession()">▶️ Tiếp tục</button>
+        }
+        @if (isRunning() || isPaused()) {
+          <button type="button" class="btn btn-outline" (click)="stopSession()">⏹ Dừng hẳn</button>
+        }
+      </div>
+    }
+  }
+</section>

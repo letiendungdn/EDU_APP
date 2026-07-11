@@ -1,0 +1,38 @@
+<div class="profile-page container">
+  <h1>Hồ sơ</h1>
+  <p class="subtitle">Quản lý thông tin tài khoản và thanh toán.</p>
+
+  @if (user(); as u) {
+    <div class="profile-card glass-panel">
+      <div class="info-row">
+        <span class="label">Email</span>
+        <span>{{ u.email }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Vai trò</span>
+        <span>{{ u.role }}</span>
+      </div>
+
+      <form (ngSubmit)="saveName()">
+        <label>
+          Tên hiển thị
+          <input type="text" [(ngModel)]="name" name="name" placeholder="Tên của bạn" />
+        </label>
+        @if (message()) {
+          <p class="success">{{ message() }}</p>
+        }
+        @if (error()) {
+          <p class="error">{{ error() }}</p>
+        }
+        <button type="submit" class="btn btn-primary" [disabled]="saving()">
+          {{ saving() ? 'Đang lưu…' : 'Lưu tên' }}
+        </button>
+      </form>
+
+      <div class="actions">
+        <a routerLink="/payments" class="btn btn-outline">Lịch sử thanh toán</a>
+        <button type="button" class="btn btn-outline" (click)="logout()">Đăng xuất</button>
+      </div>
+    </div>
+  }
+</div>

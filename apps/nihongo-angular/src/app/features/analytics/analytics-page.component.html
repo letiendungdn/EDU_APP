@@ -1,0 +1,82 @@
+<div class="analytics-page container">
+  <h1>Tiến độ học</h1>
+  <p class="subtitle">Thống kê quá trình học tiếng Nhật của bạn.</p>
+
+  @if (loading()) {
+    <div class="glass-panel state-panel">Đang tải…</div>
+  } @else if (error()) {
+    <div class="glass-panel state-panel">
+      <p>{{ error() }}</p>
+      <a routerLink="/login" [queryParams]="{ redirect: '/analytics' }" class="btn btn-outline">Đăng nhập</a>
+    </div>
+  } @else if (data()) {
+    <div class="stats-grid">
+      <div class="stat-card glass-panel">
+        <strong>{{ fmtSeconds(data()!.overview.totalStudySeconds) }}</strong>
+        <span>Tổng thời gian học</span>
+      </div>
+      <div class="stat-card glass-panel">
+        <strong>{{ fmtSeconds(data()!.overview.totalListeningSeconds) }}</strong>
+        <span>Thời gian nghe</span>
+      </div>
+      <div class="stat-card glass-panel">
+        <strong>{{ data()!.overview.totalCardsReviewed }}</strong>
+        <span>Thẻ đã ôn</span>
+      </div>
+      <div class="stat-card glass-panel">
+        <strong>{{ data()!.overview.masteredVocab }}</strong>
+        <span>Từ đã thuộc</span>
+      </div>
+      <div class="stat-card glass-panel">
+        <strong>{{ data()!.overview.passedExams }}/{{ data()!.overview.totalExams }}</strong>
+        <span>Bài thi đạt</span>
+      </div>
+    </div>
+
+    @if (data()!.studySessions.length) {
+      <section class="glass-panel section">
+        <h2>Phiên học gần đây</h2>
+        <ul class="session-list">
+          @for (s of data()!.studySessions.slice(-14).reverse(); track s.date) {
+            <li>
+              <span>{{ s.date }}</span>
+              <span>{{ fmtSeconds(s.seconds) }} · {{ s.cardsReviewed }} thẻ</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (data()!.examHistory.length) {
+      <section class="glass-panel section">
+        <h2>Lịch sử thi</h2>
+        <ul class="session-list">
+          @for (e of data()!.examHistory.slice(-10).reverse(); track e.submittedAt) {
+            <li>
+              <span>{{ e.title }} ({{ e.level }})</span>
+              <span [class.passed]="e.passed">{{ e.percent }}% · {{ e.passed ? 'Đạt' : 'Chưa đạt' }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (data()!.listeningHistory.length) {
+      <section class="glass-panel section">
+        <h2>Nghe hằng ngày</h2>
+        <ul class="session-list">
+          @for (l of data()!.listeningHistory.slice(-14).reverse(); track l.date) {
+            <li>
+              <span>{{ l.date }}</span>
+              <span>{{ fmtSeconds(l.seconds) }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (!data()!.studySessions.length && !data()!.examHistory.length && !data()!.listeningHistory.length) {
+      <div class="glass-panel state-panel">Chưa có dữ liệu. Học và luyện tập để xem thống kê!</div>
+    }
+  }
+</div>
