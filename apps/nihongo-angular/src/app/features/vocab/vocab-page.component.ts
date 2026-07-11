@@ -60,6 +60,16 @@ export class VocabPageComponent {
     return `${tierClass}${optionalClass}`;
   });
 
+  readonly hasOptionalBrackets = computed(() => {
+    const vocab = this.current();
+    if (!vocab) return false;
+    return (
+      hasOptionalBracketParts(vocab.kanji) ||
+      hasOptionalBracketParts(vocab.kana) ||
+      hasOptionalBracketParts(vocab.romaji)
+    );
+  });
+
   readonly filteredVocab = computed(() => {
     const query = this.searchQuery().trim().toLowerCase();
     const list = this.vocabList();

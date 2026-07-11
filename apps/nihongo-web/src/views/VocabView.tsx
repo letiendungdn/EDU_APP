@@ -9,7 +9,14 @@ import { usePlayAll } from '../hooks/usePlayAll';
 import { useLessonsQuery, useVocabulariesQuery } from '../hooks/queries';
 import StrokeOrder from '../components/StrokeOrder';
 import VocabPicture from '../components/VocabPicture';
-import { getStrokeText, parseReadingVariants, shouldShowKanaStroke, flashcardTextTier, hasOptionalBracketParts } from '../utils/japanese';
+import {
+  getStrokeText,
+  parseOptionalBracketSegments,
+  parseReadingVariants,
+  shouldShowKanaStroke,
+  flashcardTextTier,
+  hasOptionalBracketParts,
+} from '../utils/japanese';
 import FlashcardJapaneseText from '../components/FlashcardJapaneseText';
 import './VocabView.css';
 
@@ -37,6 +44,11 @@ function strokeBoxSize(charCount: number, dense = false): number {
   return 105;
 }
 
+function flashcardSegmentStrokeSize(charCount: number, dense: boolean, optional: boolean): number {
+  const base = strokeBoxSize(charCount, dense);
+  return optional ? Math.max(40, Math.round(base * 0.62)) : base;
+}
+
 function FlashcardStroke({
   text,
   label,
@@ -48,6 +60,68 @@ function FlashcardStroke({
   dense?: boolean;
   onCharClick: (char: string) => void;
 }) {
+  const hasOptional = hasOptionalBracketParts(text);
+
+  if (hasOptional) {
+    const segments = parseOptionalBracketSegments(text);
+
+    return (
+      <div
+        className="flashcard-stroke-block flashcard-stroke-block--optional-mix"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {label ? <p className="flashcard-stroke-label">{label}</p> : null}
+        <div className="flashcard-stroke-segments">
+          {segments.map((segment, index) => {
+            const strokeText = getStrokeText(segment.text);
+            if (!strokeText) {
+              if (!segment.text.trim()) return null;
+              return (
+                <span key={index} className="flashcard-stroke-punct">
+                  {segment.text}
+                </span>
+              );
+            }
+
+            const size = flashcardSegmentStrokeSize(
+              [...strokeText].length,
+              dense,
+              segment.optional,
+            );
+
+            if (segment.optional) {
+              return (
+                <span key={index} className="flashcard-stroke-optional-wrap">
+                  <span className="flashcard-jp-bracket">{segment.openBracket ?? '['}</span>
+                  <StrokeOrder
+                    text={segment.text}
+                    width={size}
+                    height={size}
+                    compact
+                    onCharClick={onCharClick}
+                  />
+                  <span className="flashcard-jp-bracket">{segment.closeBracket ?? ']'}</span>
+                </span>
+              );
+            }
+
+            return (
+              <span key={index} className="flashcard-stroke-core-wrap">
+                <StrokeOrder
+                  text={segment.text}
+                  width={size}
+                  height={size}
+                  compact
+                  onCharClick={onCharClick}
+                />
+              </span>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   const strokeText = getStrokeText(text);
   if (!strokeText) return null;
   const size = strokeBoxSize([...strokeText].length, dense);
@@ -413,7 +487,11 @@ export default function VocabView() {
                   className="flashcard-vocab-picture flashcard-vocab-picture-corner"
                   alt={currentVocab.kana}
                 />
-                <div className="flashcard-back-body">
+                <div
+                  className={`flashcard-back-body${
+                    hasOptionalBrackets ? ' flashcard-back-body--optional-brackets' : ''
+                  }`}
+                >
                   <FlashcardReadingStrokes
                     kanji={currentVocab.kanji}
                     kana={currentVocab.kana}
@@ -421,8 +499,11 @@ export default function VocabView() {
                     onCharClick={handleStrokeCharClick}
                   />
                   <div className="flashcard-back-meta">
-                    <span className="vocab-kana japanese-text">{currentVocab.kana}</span>
-                    <span className="vocab-romaji">{currentVocab.romaji}</span>
+                    <FlashcardJapaneseText
+                      text={currentVocab.kana}
+                      className="vocab-kana japanese-text"
+                    />
+                    <FlashcardJapaneseText text={currentVocab.romaji} className="vocab-romaji" />
                     <div className="divider"></div>
                     <span className="vocab-meaning">{currentVocab.meaning}</span>
                   </div>

@@ -140,7 +140,10 @@
                   class="vocab-picture vocab-picture-sm flashcard-vocab-picture flashcard-vocab-picture-corner"
                 />
               }
-              <div class="flashcard-back-body">
+                <div
+                  class="flashcard-back-body"
+                  [class.flashcard-back-body--optional-brackets]="hasOptionalBrackets()"
+                >
                 <app-reading-strokes
                   [kanji]="current()!.kanji"
                   [kana]="current()!.kana"
@@ -149,8 +152,14 @@
                   (charClick)="onStrokeCharClick()"
                 />
                 <div class="flashcard-back-meta">
-                  <span class="vocab-kana japanese-text">{{ current()!.kana }}</span>
-                  <span class="vocab-romaji">{{ current()!.romaji }}</span>
+                  <app-flashcard-japanese-text
+                    [text]="current()!.kana"
+                    className="vocab-kana japanese-text"
+                  />
+                  <app-flashcard-japanese-text
+                    [text]="current()!.romaji"
+                    className="vocab-romaji"
+                  />
                   <div class="divider"></div>
                   <span class="vocab-meaning">{{ current()!.meaning }}</span>
                 </div>
