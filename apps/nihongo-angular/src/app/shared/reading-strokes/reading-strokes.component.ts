@@ -1,9 +1,11 @@
 import { Component, input, output } from '@angular/core';
 import { StrokeOrderComponent } from '../stroke-order/stroke-order.component';
 import {
+  flashcardSegmentStrokeSize,
   flashcardStrokeBoxSize,
   getStrokeText,
   hasOptionalBracketParts,
+  optionalBracketStrokeCharCount,
   parseOptionalBracketSegments,
   parseReadingVariants,
   shouldShowKanaStroke,
@@ -16,7 +18,7 @@ import {
   standalone: true,
   imports: [StrokeOrderComponent],
   template: `
-    @if (showDual()) {
+    @if (showDualOnBack()) {
       <div class="stroke-dual" [class.stroke-dual--flashcard]="flashcard()">
         @if (kanji()) {
           <div
@@ -34,8 +36,8 @@ import {
                         <span class="flashcard-jp-bracket">{{ segment.openBracket ?? '[' }}</span>
                         <app-stroke-order
                           [text]="segment.text"
-                          [width]="segmentSize(segment, true)"
-                          [height]="segmentSize(segment, true)"
+                          [width]="segmentSize(segment, true, kanji()!)"
+                          [height]="segmentSize(segment, true, kanji()!)"
                           [compact]="true"
                           (charClick)="charClick.emit($event)"
                         />
@@ -45,8 +47,8 @@ import {
                       <span class="flashcard-stroke-core-wrap">
                         <app-stroke-order
                           [text]="segment.text"
-                          [width]="segmentSize(segment, false)"
-                          [height]="segmentSize(segment, false)"
+                          [width]="segmentSize(segment, false, kanji()!)"
+                          [height]="segmentSize(segment, false, kanji()!)"
                           [compact]="true"
                           (charClick)="charClick.emit($event)"
                         />
@@ -83,8 +85,8 @@ import {
                       <span class="flashcard-jp-bracket">{{ segment.openBracket ?? '[' }}</span>
                       <app-stroke-order
                         [text]="segment.text"
-                        [width]="segmentSize(segment, true)"
-                        [height]="segmentSize(segment, true)"
+                        [width]="segmentSize(segment, true, kana())"
+                        [height]="segmentSize(segment, true, kana())"
                         [compact]="true"
                         (charClick)="charClick.emit($event)"
                       />
@@ -94,8 +96,8 @@ import {
                     <span class="flashcard-stroke-core-wrap">
                       <app-stroke-order
                         [text]="segment.text"
-                        [width]="segmentSize(segment, false)"
-                        [height]="segmentSize(segment, false)"
+                        [width]="segmentSize(segment, false, kana())"
+                        [height]="segmentSize(segment, false, kana())"
                         [compact]="true"
                         (charClick)="charClick.emit($event)"
                       />
@@ -166,8 +168,8 @@ import {
                     <span class="flashcard-jp-bracket">{{ segment.openBracket ?? '[' }}</span>
                     <app-stroke-order
                       [text]="segment.text"
-                      [width]="segmentSize(segment, true)"
-                      [height]="segmentSize(segment, true)"
+                      [width]="segmentSize(segment, true, kanji() || kana())"
+                      [height]="segmentSize(segment, true, kanji() || kana())"
                       [compact]="true"
                       (charClick)="charClick.emit($event)"
                     />
@@ -177,8 +179,8 @@ import {
                   <span class="flashcard-stroke-core-wrap">
                     <app-stroke-order
                       [text]="segment.text"
-                      [width]="segmentSize(segment, false)"
-                      [height]="segmentSize(segment, false)"
+                      [width]="segmentSize(segment, false, kanji() || kana())"
+                      [height]="segmentSize(segment, false, kanji() || kana())"
                       [compact]="true"
                       (charClick)="charClick.emit($event)"
                     />
@@ -222,6 +224,17 @@ export class ReadingStrokesComponent {
     return shouldShowKanaStroke(this.kanji(), this.kana());
   }
 
+  hasOptionalFlashcardBack(): boolean {
+    return Boolean(
+      this.flashcard() &&
+        (hasOptionalBracketParts(this.kanji()) || hasOptionalBracketParts(this.kana())),
+    );
+  }
+
+  showDualOnBack(): boolean {
+    return this.showDual() && !this.hasOptionalFlashcardBack();
+  }
+
   hasVariants(): boolean {
     return parseReadingVariants(this.kana(), this.romaji()).length > 1;
   }
@@ -238,9 +251,12 @@ export class ReadingStrokesComponent {
     return getStrokeText(segment.text);
   }
 
-  segmentSize(segment: OptionalBracketSegment, optional: boolean): number {
+  segmentSize(segment: OptionalBracketSegment, optional: boolean, sourceText: string): number {
     const count = [...getStrokeText(segment.text)].length;
-    const base = this.flashcard() ? flashcardStrokeBoxSize(count) : strokeBoxSize(count, true);
+    if (this.flashcard()) {
+      return flashcardSegmentStrokeSize(count, optional, optionalBracketStrokeCharCount(sourceText));
+    }
+    const base = strokeBoxSize(count, true);
     return optional ? Math.max(40, Math.round(base * 0.62)) : base;
   }
 

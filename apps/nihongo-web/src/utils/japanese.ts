@@ -114,6 +114,21 @@ export function flashcardTextTier(...texts: (string | null | undefined)[]): Flas
   return 'xl';
 }
 
+export function flashcardPhraseStrokeScale(totalChars: number): number {
+  if (totalChars <= 6) return 1;
+  if (totalChars <= 10) return 0.76;
+  if (totalChars <= 14) return 0.62;
+  return 0.52;
+}
+
+/** Chỉ chữ Latin — coi là romaji (không có kana/kanji). */
+export function isRomajiInput(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed) return false;
+  if (/[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9fff]/.test(trimmed)) return false;
+  return /^[a-zA-Z0-9\s\-'.,!?]+$/.test(trimmed);
+}
+
 /** Chỉ giữ kana và kanji — bỏ ~, romaji, dấu câu (tránh HanziWriter hiện ký tự lỗi) */
 export function getStrokeText(text: string): string {
   if (!text) return '';

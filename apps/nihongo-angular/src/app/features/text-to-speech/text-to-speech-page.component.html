@@ -1,0 +1,119 @@
+<section class="container tts-view">
+  <header class="tts-header">
+    <h2 class="view-title">Đọc văn bản</h2>
+    <p class="tts-subtitle">
+      Nhập văn bản tiếng Nhật hoặc tiếng Việt — hệ thống đọc to giúp bạn luyện nghe và phát âm.
+    </p>
+  </header>
+
+  <div class="tts-panel glass-panel">
+    <div class="tts-controls">
+      <fieldset class="tts-lang-group">
+        <legend class="tts-label">Ngôn ngữ</legend>
+        <label class="tts-lang-option">
+          <input
+            type="radio"
+            name="tts-lang"
+            [checked]="lang() === 'ja-JP'"
+            (change)="setLang('ja-JP')"
+          />
+          <span>🇯🇵 Tiếng Nhật</span>
+        </label>
+        <label class="tts-lang-option">
+          <input
+            type="radio"
+            name="tts-lang"
+            [checked]="lang() === 'vi-VN'"
+            (change)="setLang('vi-VN')"
+          />
+          <span>🇻🇳 Tiếng Việt</span>
+        </label>
+      </fieldset>
+
+      <label class="tts-rate">
+        <span class="tts-label">Tốc độ đọc: {{ rate().toFixed(1) }}×</span>
+        <input
+          type="range"
+          min="0.5"
+          max="1.5"
+          step="0.1"
+          [ngModel]="rate()"
+          (ngModelChange)="setRate($event)"
+        />
+      </label>
+
+      @if (lang() === 'ja-JP') {
+        <label class="tts-server-toggle">
+          <input
+            type="checkbox"
+            [checked]="forceServer()"
+            (change)="setForceServer($any($event.target).checked)"
+          />
+          <span>Dùng giọng server (Nanami)</span>
+        </label>
+      }
+
+      <p class="tts-voice-hint">Giọng: {{ speakLabel() }}</p>
+    </div>
+
+    <label class="tts-label" for="tts-input">Nội dung cần đọc</label>
+    <textarea
+      id="tts-input"
+      class="tts-input"
+      [class.japanese-text]="lang() === 'ja-JP'"
+      [ngModel]="text()"
+      (ngModelChange)="setText($event)"
+      [placeholder]="
+        lang() === 'ja-JP'
+          ? 'Ví dụ: こんにちは。今日はいい天気ですね。'
+          : 'Ví dụ: Xin chào. Hôm nay trời đẹp quá.'
+      "
+      rows="8"
+      spellcheck="false"
+    ></textarea>
+
+    <div class="tts-meta">
+      <span class="tts-count" [class.tts-count--over]="overLimit()">
+        {{ charCount() | number }} / {{ maxChars | number }}
+      </span>
+
+      @if (lang() === 'ja-JP' && reading(); as lookup) {
+        <dl class="tts-reading">
+          @if (lookup.kana) {
+            <dt>Hiragana</dt>
+            <dd class="japanese-text">{{ lookup.kana }}</dd>
+          }
+          @if (lookup.romaji) {
+            <dt>Romaji</dt>
+            <dd>{{ lookup.romaji }}</dd>
+          }
+          @if (lookup.meaning) {
+            <dt>Nghĩa</dt>
+            <dd>{{ lookup.meaning }}</dd>
+          }
+        </dl>
+      }
+    </div>
+
+    <div class="tts-examples">
+      <span class="tts-examples-label">Gợi ý:</span>
+      @for (example of examples[lang()]; track example) {
+        <button
+          type="button"
+          class="tts-example-btn"
+          [class.japanese-text]="lang() === 'ja-JP'"
+          (click)="useExample(example)"
+        >
+          {{ example.length > 42 ? example.slice(0, 42) + '…' : example }}
+        </button>
+      }
+    </div>
+
+    <div class="tts-actions">
+      <button type="button" class="btn btn-primary" [disabled]="!canPlay() || playing()" (click)="play()">
+        🔊 Phát giọng nói
+      </button>
+      <button type="button" class="btn btn-outline" (click)="stop()">⏹ Dừng</button>
+    </div>
+  </div>
+</section>

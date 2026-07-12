@@ -579,50 +579,8 @@
   margin: 0 6px !important;
 }
 
-.flashcard-stroke-block--optional-mix {
-  width: 100%;
-  max-width: 34rem;
-}
-
-.flashcard-stroke-segments {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 0.35rem 0.5rem;
-  width: 100%;
-}
-
-.flashcard-stroke-core-wrap,
-.flashcard-stroke-optional-wrap {
-  display: inline-flex;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.15rem;
-}
-
-.flashcard-stroke-optional-wrap {
-  opacity: 0.78;
-  transform: scale(0.98);
-  transform-origin: bottom center;
-}
-
-.flashcard-stroke-optional-wrap .stroke-order-container {
-  gap: 6px !important;
-}
-
-.flashcard-stroke-optional-wrap .stroke-order-container > div {
-  margin: 0 3px !important;
-}
-
-.flashcard-stroke-punct {
-  align-self: center;
-  font-size: 1.35rem;
-  line-height: 1;
-  color: var(--text-secondary);
-  padding: 0 0.1rem;
+.flashcard-back-body--optional-brackets {
+  gap: 0.2rem;
 }
 
 .flashcard-back-body--optional-brackets .flashcard-stroke-dual,
@@ -632,16 +590,26 @@
 }
 
 .flashcard-back-body--optional-brackets .flashcard-back-meta .flashcard-jp-text.vocab-kana {
-  font-size: clamp(1.15rem, 2.8vw, 1.55rem);
-  line-height: 1.45;
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  line-height: 1.35;
   font-weight: 600;
   text-align: center;
 }
 
 .flashcard-back-body--optional-brackets .flashcard-back-meta .flashcard-jp-text.vocab-romaji {
-  font-size: 1rem;
-  line-height: 1.45;
+  font-size: 0.92rem;
+  line-height: 1.35;
   color: var(--text-secondary);
+}
+
+.flashcard-back-body--optional-brackets .flashcard-back-meta {
+  gap: 0.12rem;
+  margin-top: 0.15rem;
+}
+
+.flashcard-back-body--optional-brackets .flashcard-back-meta .vocab-meaning {
+  font-size: 1.1rem;
+  line-height: 1.35;
 }
 
 [data-theme="light"] .flashcard-stroke-optional-wrap {

@@ -5,7 +5,11 @@ import {
   grammarUsageBullets,
   parseGrammarExplanation,
 } from '../../core/utils/grammar.util';
-import { playJapanese } from '../../core/utils/speech.util';
+import {
+  grammarExampleRomaji,
+  grammarExampleSpeechText,
+} from '../../core/utils/grammar-example.util';
+import { playSpeech } from '../../core/utils/speech.util';
 import { LessonSelectorComponent } from '../../shared/lesson-selector/lesson-selector.component';
 import type { Grammar, Lesson } from '../../core/models/api.models';
 
@@ -28,6 +32,7 @@ export class GrammarPageComponent {
   readonly parseExplanation = parseGrammarExplanation;
   readonly usageBullets = grammarUsageBullets;
   readonly quickAnalysis = grammarQuickAnalysis;
+  readonly exampleRomaji = grammarExampleRomaji;
 
   constructor() {
     void this.api.getLessons().then((data) => this.lessons.set(data));
@@ -44,6 +49,6 @@ export class GrammarPageComponent {
 
   speak(text: string, event: Event): void {
     event.stopPropagation();
-    playJapanese(text);
+    playSpeech(grammarExampleSpeechText(text), 'ja-JP');
   }
 }

@@ -32,6 +32,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'tts',
+        loadComponent: () =>
+          import('./features/text-to-speech/text-to-speech-page.component').then(
+            (m) => m.TextToSpeechPageComponent,
+          ),
+      },
+      {
+        path: 'stt',
+        loadComponent: () =>
+          import('./features/speech-to-text/speech-to-text-page.component').then(
+            (m) => m.SpeechToTextPageComponent,
+          ),
+      },
+      {
         path: 'english-katakana',
         loadComponent: () =>
           import('./features/english-katakana/english-katakana-page.component').then(
@@ -86,6 +100,11 @@ export const routes: Routes = [
         path: 'kanji',
         loadComponent: () =>
           import('./features/kanji/kanji-page.component').then((m) => m.KanjiPageComponent),
+      },
+      {
+        path: 'strokes',
+        loadComponent: () =>
+          import('./features/strokes/strokes-page.component').then((m) => m.StrokesPageComponent),
       },
       {
         path: 'kanji/list',

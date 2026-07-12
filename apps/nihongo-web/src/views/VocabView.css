@@ -580,49 +580,88 @@
 }
 
 .flashcard-stroke-block--optional-mix {
-  width: 100%;
-  max-width: 34rem;
+  width: auto;
+  max-width: 100%;
 }
 
 .flashcard-stroke-segments {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: flex-end;
   justify-content: center;
-  gap: 0.35rem 0.5rem;
-  width: 100%;
+  gap: 0.15rem 0.25rem;
+  width: auto;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.15rem;
+  scrollbar-width: thin;
 }
 
 .flashcard-stroke-core-wrap,
 .flashcard-stroke-optional-wrap {
   display: inline-flex;
   align-items: flex-end;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
-  gap: 0.15rem;
+  gap: 0.05rem;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .flashcard-stroke-optional-wrap {
-  opacity: 0.78;
-  transform: scale(0.98);
+  opacity: 0.76;
+  transform: none;
   transform-origin: bottom center;
 }
 
+.flashcard-stroke-optional-wrap .stroke-order-wrapper,
+.flashcard-stroke-core-wrap .stroke-order-wrapper {
+  width: auto;
+  align-items: flex-end;
+}
+
+.flashcard-stroke-block--optional-mix .stroke-order-container {
+  flex-wrap: nowrap;
+  gap: 2px !important;
+  width: auto;
+}
+
+.flashcard-stroke-block--optional-mix .stroke-order-container > div {
+  margin: 0 1px !important;
+}
+
 .flashcard-stroke-optional-wrap .stroke-order-container {
-  gap: 6px !important;
+  gap: 1px !important;
 }
 
 .flashcard-stroke-optional-wrap .stroke-order-container > div {
-  margin: 0 3px !important;
+  margin: 0 1px !important;
+}
+
+.flashcard-stroke-optional-wrap .flashcard-jp-bracket {
+  font-size: 0.72em;
+  line-height: 1;
+  align-self: center;
+  padding: 0 0.02rem;
 }
 
 .flashcard-stroke-punct {
   align-self: center;
-  font-size: 1.35rem;
+  font-size: 0.95rem;
   line-height: 1;
   color: var(--text-secondary);
-  padding: 0 0.1rem;
+  padding: 0;
+  flex: 0 0 auto;
+}
+
+.flashcard-back-body--optional-brackets {
+  gap: 0.2rem;
+}
+
+.flashcard-back-body--optional-brackets .flashcard-stroke-block--optional-mix {
+  margin-inline: auto;
 }
 
 .flashcard-back-body--optional-brackets .flashcard-stroke-dual,
@@ -632,16 +671,27 @@
 }
 
 .flashcard-back-body--optional-brackets .flashcard-back-meta .flashcard-jp-text.vocab-kana {
-  font-size: clamp(1.15rem, 2.8vw, 1.55rem);
-  line-height: 1.45;
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  line-height: 1.35;
   font-weight: 600;
   text-align: center;
 }
 
 .flashcard-back-body--optional-brackets .flashcard-back-meta .flashcard-jp-text.vocab-romaji {
-  font-size: 1rem;
-  line-height: 1.45;
+  font-size: 0.92rem;
+  line-height: 1.35;
   color: var(--text-secondary);
+}
+
+.flashcard-back-body--optional-brackets .flashcard-back-meta {
+  gap: 0.12rem;
+  margin-top: 0.15rem;
+}
+
+.flashcard-back-body--optional-brackets .flashcard-back .vocab-meaning,
+.flashcard-back-body--optional-brackets .flashcard-back-meta .vocab-meaning {
+  font-size: 1.1rem;
+  line-height: 1.35;
 }
 
 [data-theme="light"] .flashcard-stroke-optional-wrap {

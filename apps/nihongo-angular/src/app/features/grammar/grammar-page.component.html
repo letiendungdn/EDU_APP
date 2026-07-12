@@ -66,6 +66,9 @@
                   <li class="example-item">
                     <div class="example-jp">
                       <span class="japanese-text">{{ ex.jp }}</span>
+                      @if (exampleRomaji(ex.romaji)) {
+                        <span class="example-romaji-inline">{{ exampleRomaji(ex.romaji) }}</span>
+                      }
                       <button
                         type="button"
                         class="btn-audio-small"
@@ -75,9 +78,6 @@
                         🔊
                       </button>
                     </div>
-                    @if (ex.romaji) {
-                      <div class="example-romaji">{{ ex.romaji }}</div>
-                    }
                     @if (ex.vi || ex.en) {
                       <div class="example-vi">{{ ex.vi || ex.en }}</div>
                     }

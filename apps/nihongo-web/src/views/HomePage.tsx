@@ -19,6 +19,7 @@ const SECTIONS = [
       { href: '/vocab',   icon: '単', title: 'Từ vựng',      desc: 'Flashcard Minna no Nihongo' },
       { href: '/grammar', icon: '文', title: 'Ngữ pháp',     desc: 'Cấu trúc câu & mẫu câu' },
       { href: '/kanji',   icon: '漢', title: 'Kanji',        desc: '512 kanji có hình minh họa' },
+      { href: '/strokes', icon: '筆', title: 'Tra nét viết', desc: 'Gõ từ tiếng Nhật → xem cách vẽ' },
     ],
   },
   {
@@ -26,6 +27,8 @@ const SECTIONS = [
     items: [
       { href: '/pronunciation',       icon: '🎤', title: 'Luyện phát âm',  desc: 'Ghi âm & so sánh' },
       { href: '/pronunciation-rules', icon: '📖', title: 'Quy tắc',        desc: 'Nguyên âm, phụ âm, trường âm' },
+      { href: '/tts',                 icon: '🔊', title: 'Đọc văn bản',    desc: 'Chuyển chữ thành giọng nói' },
+      { href: '/stt',                 icon: '🎙️', title: 'Ghi âm → chữ',  desc: 'Nói vào micro → văn bản' },
       { href: '/english-katakana',    icon: 'EN', title: 'EN ↔ カナ',      desc: 'Gairaigo & từ mượn tiếng Anh' },
       { href: '/daily-listening',     icon: '🎧', title: 'Nghe mỗi ngày',  desc: '15 phút audio Minna' },
     ],

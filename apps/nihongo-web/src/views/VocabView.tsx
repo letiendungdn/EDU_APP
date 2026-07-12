@@ -44,9 +44,21 @@ function strokeBoxSize(charCount: number, dense = false): number {
   return 105;
 }
 
-function flashcardSegmentStrokeSize(charCount: number, dense: boolean, optional: boolean): number {
-  const base = strokeBoxSize(charCount, dense);
-  return optional ? Math.max(40, Math.round(base * 0.62)) : base;
+function flashcardPhraseStrokeScale(totalChars: number): number {
+  if (totalChars <= 6) return 1;
+  if (totalChars <= 10) return 0.76;
+  if (totalChars <= 14) return 0.62;
+  return 0.52;
+}
+
+function flashcardSegmentStrokeSize(
+  charCount: number,
+  optional: boolean,
+  totalChars: number,
+): number {
+  const base = strokeBoxSize(charCount, true);
+  const scaled = Math.round(base * flashcardPhraseStrokeScale(totalChars));
+  return optional ? Math.max(30, Math.round(scaled * 0.52)) : Math.max(36, scaled);
 }
 
 function FlashcardStroke({
@@ -64,6 +76,10 @@ function FlashcardStroke({
 
   if (hasOptional) {
     const segments = parseOptionalBracketSegments(text);
+    const totalChars = segments.reduce(
+      (sum, segment) => sum + [...getStrokeText(segment.text)].length,
+      0,
+    );
 
     return (
       <div
@@ -85,8 +101,8 @@ function FlashcardStroke({
 
             const size = flashcardSegmentStrokeSize(
               [...strokeText].length,
-              dense,
               segment.optional,
+              totalChars,
             );
 
             if (segment.optional) {
@@ -152,6 +168,9 @@ function FlashcardReadingStrokes({
   onCharClick: (char: string) => void;
 }) {
   const showDual = shouldShowKanaStroke(kanji, kana);
+  const hasOptionalStrokes =
+    hasOptionalBracketParts(kanji) || hasOptionalBracketParts(kana);
+  const showDualOnBack = showDual && !hasOptionalStrokes;
   const kanaVariants = parseReadingVariants(kana, romaji);
   const kanjiVariants = kanji ? parseReadingVariants(kanji, romaji) : [];
   const pairCount = showDual
@@ -196,7 +215,7 @@ function FlashcardReadingStrokes({
     );
   }
 
-  if (showDual) {
+  if (showDualOnBack) {
     return (
       <div className="flashcard-stroke-dual">
         <FlashcardStroke
@@ -210,6 +229,15 @@ function FlashcardReadingStrokes({
           onCharClick={onCharClick}
         />
       </div>
+    );
+  }
+
+  if (hasOptionalStrokes) {
+    return (
+      <FlashcardStroke
+        text={kanji || kana}
+        onCharClick={onCharClick}
+      />
     );
   }
 

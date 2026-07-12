@@ -20,6 +20,7 @@ const NAV_GROUPS = [
       { href: '/vocab',     icon: '単',  label: 'Từ vựng' },
       { href: '/grammar',   icon: '文',  label: 'Ngữ pháp' },
       { href: '/kanji',     icon: '漢',  label: 'Kanji' },
+      { href: '/strokes',   icon: '筆',  label: 'Tra nét viết' },
       { href: '/counters',  icon: '①',  label: 'Đếm số' },
     ],
   },
@@ -28,6 +29,8 @@ const NAV_GROUPS = [
     items: [
       { href: '/pronunciation',       icon: '🎤', label: 'Luyện phát âm' },
       { href: '/pronunciation-rules', icon: '📖', label: 'Quy tắc phát âm' },
+      { href: '/tts',                 icon: '🔊', label: 'Đọc văn bản' },
+      { href: '/stt',                 icon: '🎙️', label: 'Ghi âm → chữ' },
       { href: '/english-katakana',    icon: 'EN', label: 'EN ↔ カナ' },
     ],
   },

@@ -248,6 +248,20 @@
   color: var(--text-primary);
 }
 
+.example-romaji-inline {
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.example-romaji-inline::before {
+  content: '·';
+  margin: 0 0.4rem;
+  font-style: normal;
+  opacity: 0.45;
+}
+
 .btn-audio-small {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
@@ -264,12 +278,6 @@
 .btn-audio-small:hover {
   background: rgba(239, 68, 68, 0.5);
   transform: scale(1.1);
-}
-
-.example-romaji {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.25rem;
 }
 
 .example-en,

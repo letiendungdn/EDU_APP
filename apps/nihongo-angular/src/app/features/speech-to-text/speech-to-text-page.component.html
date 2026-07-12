@@ -1,0 +1,92 @@
+<section class="container stt-view">
+  <header class="stt-header">
+    <h2 class="view-title">Ghi âm → Văn bản</h2>
+    <p class="stt-subtitle">
+      Nói vào micro — trình duyệt chuyển giọng nói thành chữ (Speech Recognition). Chiều ngược lại
+      của <a routerLink="/tts" class="stt-link">Đọc văn bản</a>.
+    </p>
+  </header>
+
+  <div class="stt-panel glass-panel">
+    @if (!supported) {
+      <p class="stt-warning">
+        Trình duyệt này chưa hỗ trợ nhận dạng giọng nói. Dùng <strong>Chrome</strong> hoặc
+        <strong>Edge</strong> trên máy tính.
+      </p>
+    }
+
+    <fieldset class="stt-lang-group">
+      <legend class="stt-label">Ngôn ngữ nói</legend>
+      <label class="stt-lang-option">
+        <input
+          type="radio"
+          name="stt-lang"
+          [checked]="lang() === 'ja-JP'"
+          [disabled]="listening()"
+          (change)="setLang('ja-JP')"
+        />
+        <span>🇯🇵 Tiếng Nhật</span>
+      </label>
+      <label class="stt-lang-option">
+        <input
+          type="radio"
+          name="stt-lang"
+          [checked]="lang() === 'vi-VN'"
+          [disabled]="listening()"
+          (change)="setLang('vi-VN')"
+        />
+        <span>🇻🇳 Tiếng Việt</span>
+      </label>
+    </fieldset>
+
+    <div class="stt-output-wrap">
+      <label class="stt-label" for="stt-output">Văn bản nhận dạng</label>
+      <textarea
+        id="stt-output"
+        class="stt-output"
+        [class.japanese-text]="lang() === 'ja-JP'"
+        [value]="displayText()"
+        readonly
+        [placeholder]="
+          lang() === 'ja-JP'
+            ? 'Bấm Bắt đầu nghe rồi nói tiếng Nhật…'
+            : 'Bấm Bắt đầu nghe rồi nói tiếng Việt…'
+        "
+        rows="8"
+      ></textarea>
+      @if (listening() && interim()) {
+        <p class="stt-interim-hint">Đang nghe… (dòng xám là tạm thời, chưa chốt)</p>
+      }
+    </div>
+
+    @if (error()) {
+      <p class="stt-error">{{ error() }}</p>
+    }
+
+    <div class="stt-actions">
+      @if (!listening()) {
+        <button type="button" class="btn btn-primary" [disabled]="!supported" (click)="start()">
+          🎤 Bắt đầu nghe
+        </button>
+      } @else {
+        <button type="button" class="btn btn-primary stt-stop-btn" (click)="stop()">
+          ⏹ Dừng nghe
+        </button>
+      }
+      <button
+        type="button"
+        class="btn btn-outline"
+        [disabled]="!displayText().trim()"
+        (click)="copy()"
+      >
+        📋 Sao chép
+      </button>
+      <button type="button" class="btn btn-outline" (click)="clear()">Xóa</button>
+    </div>
+
+    <p class="stt-note">
+      Micro gửi audio lên engine nhận dạng của trình duyệt (Google trên Chrome). Cần HTTPS hoặc
+      localhost và quyền micro.
+    </p>
+  </div>
+</section>

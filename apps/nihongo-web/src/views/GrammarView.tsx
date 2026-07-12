@@ -2,12 +2,15 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
+  grammarExampleRomaji,
+  grammarExampleSpeechText,
+} from '../utils/grammarExample';
+import {
   grammarExplanationSpeechText,
   grammarSpeechSegments,
   loadSpeechVoices,
   playAudioSequence,
   SPEECH_LANG,
-  speechTextFromJapanese,
   stopAudio,
 } from '../utils/speech';
 import type { Grammar } from '../types/api';
@@ -188,7 +191,7 @@ export default function GrammarView() {
   const playExample = (grammarIndex: number, exampleIndex: number, jp: string) => {
     stopPlayAll();
     focusGrammar(grammarIndex, exampleIndex);
-    void playAudioSequence([speechTextFromJapanese(jp)], {
+    void playAudioSequence([grammarExampleSpeechText(jp)], {
       lang: SPEECH_LANG.ja,
       onEnd: clearFocus,
       onStop: clearFocus,
@@ -325,6 +328,11 @@ export default function GrammarView() {
                           >
                             <div className="example-jp">
                               <span className="japanese-text">{ex.jp}</span>
+                              {grammarExampleRomaji(ex.romaji) && (
+                                <span className="example-romaji-inline">
+                                  {grammarExampleRomaji(ex.romaji)}
+                                </span>
+                              )}
                               <button
                                 type="button"
                                 className="btn-audio-small"
@@ -335,7 +343,6 @@ export default function GrammarView() {
                                 🔊
                               </button>
                             </div>
-                            {ex.romaji && <div className="example-romaji">{ex.romaji}</div>}
                             {(ex.vi || ex.en) && (
                               <div className="example-vi">{ex.vi || ex.en}</div>
                             )}

@@ -542,4 +542,30 @@ export class ApiService {
     }
     return all;
   }
+
+  fetchKanaRomajiLookup(text: string) {
+    return apiFetch<{
+      text: string;
+      kana: string;
+      romaji: string;
+      kanji: string | null;
+      meaning: string | null;
+    }>('/kana/romaji', {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    });
+  }
+
+  fetchRomajiConversion(romaji: string) {
+    return apiFetch<{
+      romaji: string;
+      kana: string;
+      kanji: string | null;
+      meaning: string | null;
+      options: Array<{ kind: 'kana' | 'kanji'; text: string }>;
+    }>('/kana/from-romaji', {
+      method: 'POST',
+      body: JSON.stringify({ text: romaji }),
+    });
+  }
 }

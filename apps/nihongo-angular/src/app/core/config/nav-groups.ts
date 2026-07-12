@@ -18,6 +18,7 @@ export const NAV_GROUPS: NavGroupConfig[] = [
       { path: '/vocab', icon: '単', label: 'Từ vựng' },
       { path: '/grammar', icon: '文', label: 'Ngữ pháp' },
       { path: '/kanji', icon: '漢', label: 'Kanji' },
+      { path: '/strokes', icon: '筆', label: 'Tra nét viết' },
       { path: '/counters', icon: '①', label: 'Đếm số' },
     ],
   },
@@ -26,6 +27,8 @@ export const NAV_GROUPS: NavGroupConfig[] = [
     items: [
       { path: '/pronunciation', icon: '🎤', label: 'Luyện phát âm' },
       { path: '/pronunciation-rules', icon: '📖', label: 'Quy tắc phát âm' },
+      { path: '/tts', icon: '🔊', label: 'Đọc văn bản' },
+      { path: '/stt', icon: '🎙️', label: 'Ghi âm → chữ' },
       { path: '/english-katakana', icon: 'EN', label: 'EN ↔ カナ' },
     ],
   },

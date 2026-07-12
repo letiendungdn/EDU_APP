@@ -106,6 +106,14 @@ export function flashcardTextTier(...texts: (string | null | undefined)[]): Flas
   return 'xl';
 }
 
+/** Chỉ chữ Latin — coi là romaji (không có kana/kanji). */
+export function isRomajiInput(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed) return false;
+  if (/[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9fff]/.test(trimmed)) return false;
+  return /^[a-zA-Z0-9\s\-'.,!?]+$/.test(trimmed);
+}
+
 export function getStrokeText(text: string): string {
   if (!text) return '';
   return [...text]
@@ -149,6 +157,30 @@ export function flashcardStrokeBoxSize(charCount: number, rowWidth = 460): numbe
   const available = rowWidth - spacing * Math.max(0, charCount - 1);
   const size = Math.floor(available / charCount);
   return Math.max(48, Math.min(120, size));
+}
+
+export function flashcardPhraseStrokeScale(totalChars: number): number {
+  if (totalChars <= 6) return 1;
+  if (totalChars <= 10) return 0.76;
+  if (totalChars <= 14) return 0.62;
+  return 0.52;
+}
+
+export function flashcardSegmentStrokeSize(
+  charCount: number,
+  optional: boolean,
+  totalChars: number,
+): number {
+  const base = strokeBoxSize(charCount, true);
+  const scaled = Math.round(base * flashcardPhraseStrokeScale(totalChars));
+  return optional ? Math.max(30, Math.round(scaled * 0.52)) : Math.max(36, scaled);
+}
+
+export function optionalBracketStrokeCharCount(text: string): number {
+  return parseOptionalBracketSegments(text).reduce(
+    (sum, segment) => sum + [...getStrokeText(segment.text)].length,
+    0,
+  );
 }
 
 export function counterStrokeDims(text: string): { width: number; height: number } | null {

@@ -9,6 +9,13 @@ import { KanaRomajiService } from "./kana-romaji.service";
 export class KanaRomajiController {
   constructor(private readonly kanaRomajiService: KanaRomajiService) {}
 
+  @Post("from-romaji")
+  @Public()
+  @ApiOperation({ summary: "Romaji → hiragana / kanji (tra DB + từ vựng)" })
+  async fromRomaji(@Body() dto: KanaRomajiDto) {
+    return this.kanaRomajiService.resolveFromRomaji(dto.text);
+  }
+
   @Post("romaji")
   @Public()
   @ApiOperation({ summary: "Đọc kana/kanji — trả hiragana + romaji (tra DB từ vựng/kanji)" })
@@ -19,6 +26,8 @@ export class KanaRomajiController {
       text,
       kana: reading.kana,
       romaji: reading.romaji,
+      kanji: reading.kanji ?? null,
+      meaning: reading.meaning ?? null,
     };
   }
 }

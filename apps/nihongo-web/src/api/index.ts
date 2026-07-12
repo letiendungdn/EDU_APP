@@ -114,6 +114,36 @@ export function fetchKanjiSearch(query: string) {
   return apiRequest<KanjiEntry[]>(`/kanji?q=${encodeURIComponent(query)}`);
 }
 
+export interface KanaRomajiLookup {
+  text: string;
+  kana: string;
+  romaji: string;
+  kanji: string | null;
+  meaning: string | null;
+}
+
+export interface RomajiConversion {
+  romaji: string;
+  kana: string;
+  kanji: string | null;
+  meaning: string | null;
+  options: Array<{ kind: 'kana' | 'kanji'; text: string }>;
+}
+
+export function fetchKanaRomajiLookup(text: string) {
+  return apiRequest<KanaRomajiLookup>('/kana/romaji', {
+    method: 'POST',
+    body: JSON.stringify({ text }),
+  });
+}
+
+export function fetchRomajiConversion(romaji: string) {
+  return apiRequest<RomajiConversion>('/kana/from-romaji', {
+    method: 'POST',
+    body: JSON.stringify({ text: romaji }),
+  });
+}
+
 export function fetchKanjiByJlpt(jlptLevel: string) {
   return apiRequest<KanjiEntry[]>(`/kanji?jlptLevel=${encodeURIComponent(jlptLevel)}`);
 }

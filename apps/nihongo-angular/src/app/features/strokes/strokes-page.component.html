@@ -1,0 +1,163 @@
+<section class="container stroke-lookup-view">
+  <header class="stroke-lookup-header">
+    <h2 class="view-title">Tra nét viết</h2>
+    <p class="stroke-lookup-subtitle">
+      Nhập tiếng Nhật (hiragana, katakana, kanji) hoặc romaji (vd. watashi, arigatou) để xem nét
+      vẽ và cách đọc.
+    </p>
+  </header>
+
+  <div class="stroke-lookup-panel glass-panel">
+    <label class="stroke-lookup-label" for="stroke-lookup-input">Nội dung cần tra</label>
+    <input
+      id="stroke-lookup-input"
+      type="text"
+      class="stroke-lookup-input"
+      [class.japanese-text]="!isRomaji()"
+      [value]="input()"
+      (input)="setInput($any($event.target).value)"
+      placeholder="Ví dụ: 私, 医者, watashi, arigatou…"
+      autocomplete="off"
+      spellcheck="false"
+    />
+
+    @if (isRomaji() && (romajiLoading() || romajiConversion()?.kana)) {
+      <div class="stroke-lookup-romaji-bar">
+        @if (romajiLoading() && !romajiConversion()?.kana) {
+          <span class="stroke-lookup-romaji-status">Đang chuyển romaji…</span>
+        } @else {
+          <span class="stroke-lookup-romaji-label">Romaji →</span>
+          @if (showRomajiToggle()) {
+            <div class="stroke-lookup-form-toggle">
+              @for (option of romajiConversion()!.options; track option.kind) {
+                <button
+                  type="button"
+                  class="stroke-lookup-form-btn japanese-text"
+                  [class.stroke-lookup-form-btn--active]="romajiForm() === option.kind"
+                  (click)="setRomajiForm(option.kind)"
+                >
+                  {{ option.kind === 'kanji' ? 'Kanji' : 'Hiragana' }}: {{ option.text }}
+                </button>
+              }
+            </div>
+          } @else {
+            <span class="stroke-lookup-romaji-result japanese-text">{{ effectiveText() }}</span>
+          }
+        }
+      </div>
+    }
+
+    <div class="stroke-lookup-examples">
+      <span class="stroke-lookup-examples-label">Gợi ý:</span>
+      @for (example of examples; track example) {
+        <button
+          type="button"
+          class="stroke-lookup-example-btn"
+          [class.japanese-text]="!isRomajiExample(example)"
+          (click)="setInput(example)"
+        >
+          {{ example }}
+        </button>
+      }
+    </div>
+
+    <div class="stroke-lookup-result">
+      @if (strokeText()) {
+        <div class="stroke-lookup-result-head">
+          <p class="stroke-lookup-preview japanese-text">{{ previewText() }}</p>
+          <button type="button" class="btn btn-primary stroke-lookup-speak" (click)="speak()">
+            🔊 Nghe phát âm
+          </button>
+        </div>
+
+        @if (reading() || readingLoading()) {
+          <dl class="stroke-lookup-reading">
+            @if (readingLoading() && !reading()) {
+              <p class="stroke-lookup-reading-loading">Đang tra cách đọc…</p>
+            }
+            @if (reading(); as lookup) {
+              @if (displayKanji()) {
+                <div class="stroke-lookup-reading-row">
+                  <dt>Kanji</dt>
+                  <dd class="japanese-text">{{ displayKanji() }}</dd>
+                </div>
+              }
+              @if (lookup.kana) {
+                <div class="stroke-lookup-reading-row">
+                  <dt>Hiragana</dt>
+                  <dd class="japanese-text">{{ lookup.kana }}</dd>
+                </div>
+              }
+              @if (lookup.romaji) {
+                <div class="stroke-lookup-reading-row">
+                  <dt>Romaji</dt>
+                  <dd>{{ lookup.romaji }}</dd>
+                </div>
+              }
+              @if (lookup.meaning) {
+                <div class="stroke-lookup-reading-row stroke-lookup-reading-row--meaning">
+                  <dt>Nghĩa</dt>
+                  <dd>{{ lookup.meaning }}</dd>
+                </div>
+              }
+            }
+          </dl>
+        }
+
+        <div class="stroke-lookup-canvas">
+          @if (hasOptional()) {
+            <div class="stroke-lookup-segments">
+              @for (segment of segments(); track $index) {
+                @if (segmentStrokeText(segment)) {
+                  @if (segment.optional) {
+                    <span class="stroke-lookup-optional">
+                      <span class="stroke-lookup-bracket">{{ segment.openBracket ?? '[' }}</span>
+                      <app-stroke-order
+                        [text]="segment.text"
+                        [width]="segmentSize(segment, true)"
+                        [height]="segmentSize(segment, true)"
+                        [compact]="true"
+                        (charClick)="speak()"
+                      />
+                      <span class="stroke-lookup-bracket">{{ segment.closeBracket ?? ']' }}</span>
+                    </span>
+                  } @else {
+                    <span class="stroke-lookup-core">
+                      <app-stroke-order
+                        [text]="segment.text"
+                        [width]="segmentSize(segment, false)"
+                        [height]="segmentSize(segment, false)"
+                        [compact]="true"
+                        (charClick)="speak()"
+                      />
+                    </span>
+                  }
+                } @else if (segment.text.trim()) {
+                  <span class="stroke-lookup-punct">{{ segment.text }}</span>
+                }
+              }
+            </div>
+          } @else {
+            <app-stroke-order
+              [text]="effectiveText()"
+              [width]="singleSize()"
+              [height]="singleSize()"
+              [compact]="true"
+              (charClick)="speak()"
+            />
+          }
+        </div>
+
+        <p class="stroke-lookup-hint">Nhấn vào từng chữ để xem lại nét vẽ.</p>
+      } @else if (isRomaji() && !romajiLoading()) {
+        <p class="stroke-lookup-empty">
+          Không nhận dạng được romaji "{{ input().trim() }}". Thử watashi, arigatou, yoroshiku…
+        </p>
+      } @else {
+        <p class="stroke-lookup-empty">
+          Chưa có ký tự hiragana, katakana hoặc kanji để hiển thị nét vẽ.
+        </p>
+      }
+    </div>
+  </div>
+</section>

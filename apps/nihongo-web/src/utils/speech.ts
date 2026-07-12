@@ -5,6 +5,7 @@ import {
   SPEECH_VOICE_PRIORITY,
   type SpeechLangCode,
 } from '../config/speech';
+import { grammarExampleSpeechText } from './grammarExample';
 
 export {
   SPEECH_FORCE_SERVER_LANGS,
@@ -130,7 +131,12 @@ function stopHtmlAudio(): void {
   activeHtmlAudio = null;
 }
 
-function shouldUseServerTts(lang: string, voices: SpeechSynthesisVoice[]): boolean {
+function shouldUseServerTts(
+  lang: string,
+  voices: SpeechSynthesisVoice[],
+  forceServer = false,
+): boolean {
+  if (forceServer) return true;
   const langCode = lang as SpeechLangCode;
   if (SPEECH_FORCE_SERVER_LANGS.includes(langCode)) return true;
   return !pickVoiceForLang(voices, lang);
@@ -219,8 +225,9 @@ async function speakText(
   lang: string,
   voices: SpeechSynthesisVoice[],
   rate: number,
+  forceServer = false,
 ): Promise<void> {
-  if (shouldUseServerTts(lang, voices)) {
+  if (shouldUseServerTts(lang, voices, forceServer)) {
     await playServerAudio(text, lang);
     return;
   }
@@ -271,7 +278,7 @@ export function grammarSpeechSegments(pattern: string, examples: { jp: string }[
   if (patternSpeech) segments.push(patternSpeech);
 
   for (const ex of examples) {
-    const line = speechTextFromJapanese(ex.jp);
+    const line = grammarExampleSpeechText(ex.jp);
     if (line && !segments.includes(line)) segments.push(line);
   }
 
@@ -311,13 +318,19 @@ export const stopAudio = (): void => {
   }
 };
 
-export const playAudio = (text: string, lang = 'ja-JP'): void => {
+export interface PlayAudioOptions {
+  rate?: number;
+  forceServer?: boolean;
+}
+
+export const playAudio = (text: string, lang = 'ja-JP', options: PlayAudioOptions = {}): void => {
   if (!text || typeof window === 'undefined') return;
 
   stopAudio();
 
+  const rate = options.rate ?? speechRateForLang(lang);
   void loadSpeechVoices()
-    .then((voices) => speakText(text, lang, voices, speechRateForLang(lang)))
+    .then((voices) => speakText(text, lang, voices, rate, options.forceServer))
     .catch((err) => console.warn('[TTS]', err));
 };
 
@@ -325,6 +338,7 @@ export interface PlayAudioSequenceOptions {
   lang?: string;
   rate?: number;
   pauseMs?: number;
+  forceServer?: boolean;
   onStart?: () => void;
   onItem?: (index: number, text: string) => void;
   onEnd?: () => void;
@@ -339,6 +353,7 @@ export function playAudioSequence(
     lang = 'ja-JP',
     rate,
     pauseMs = 450,
+    forceServer = false,
     onStart,
     onItem,
     onEnd,
@@ -378,7 +393,7 @@ export function playAudioSequence(
         const text = items[index];
         onItem?.(index, text);
 
-        void speakText(text, lang, voices, speechRate)
+        void speakText(text, lang, voices, speechRate, forceServer)
           .catch((err) => console.warn('[TTS]', err))
           .finally(() => {
             if (!isActive()) {
