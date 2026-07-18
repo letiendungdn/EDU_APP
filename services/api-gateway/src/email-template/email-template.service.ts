@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
@@ -17,7 +18,7 @@ import {
   EMAIL_BROADCAST_QUEUE,
   type ComposeJobData,
   type SendTemplateJobData,
-} from './email-broadcast.processor';
+} from './email-broadcast.types';
 
 const COMPOSE_INLINE_LIMIT = 20;
 
@@ -25,7 +26,8 @@ const COMPOSE_INLINE_LIMIT = 20;
 export class EmailTemplateService implements MailTemplateStore {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly mail: MailService,
+    // MailService optionally injects MAIL_TEMPLATE_STORE (= this) → circular DI
+    @Inject(forwardRef(() => MailService)) private readonly mail: MailService,
     @Inject(MAIL_PORT) private readonly mailPort: MailPort,
     @InjectQueue(EMAIL_BROADCAST_QUEUE) private readonly broadcastQueue: Queue,
   ) {}

@@ -1,32 +1,19 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { Logger } from '@nestjs/common';
+import { Inject, Logger, forwardRef } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { PrismaService } from '@app/prisma';
-import { MAIL_PORT, type MailPort, type MailAttachment } from '@app/common';
-import { Inject } from '@nestjs/common';
+import { MAIL_PORT, type MailPort } from '@app/common';
 import { ConfigService } from '@nestjs/config';
 import { EmailTemplateService } from './email-template.service';
 import { TEMPLATE_SAMPLE_VARS } from './email-template.defaults';
+import {
+  EMAIL_BROADCAST_QUEUE,
+  type ComposeJobData,
+  type SendTemplateJobData,
+} from './email-broadcast.types';
 
-export const EMAIL_BROADCAST_QUEUE = 'email-broadcast';
-
-export type SendTemplateJobData = {
-  broadcastId: string;
-  userId: number;
-  email: string;
-  name: string | null;
-  templateName: string;
-  customVars?: Record<string, unknown>;
-};
-
-export type ComposeJobData = {
-  broadcastId: string;
-  email: string;
-  subject: string;
-  html: string;
-  text: string;
-  attachments?: MailAttachment[];
-};
+export { EMAIL_BROADCAST_QUEUE } from './email-broadcast.types';
+export type { ComposeJobData, SendTemplateJobData } from './email-broadcast.types';
 
 @Processor(EMAIL_BROADCAST_QUEUE)
 export class EmailBroadcastProcessor extends WorkerHost {
@@ -36,6 +23,7 @@ export class EmailBroadcastProcessor extends WorkerHost {
 
   constructor(
     private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => EmailTemplateService))
     private readonly emailTemplateService: EmailTemplateService,
     @Inject(MAIL_PORT) private readonly mailPort: MailPort,
     config: ConfigService,

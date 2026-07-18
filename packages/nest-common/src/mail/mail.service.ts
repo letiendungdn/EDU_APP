@@ -101,6 +101,7 @@ export class MailService {
   constructor(
     @Inject(MAIL_PORT) private readonly mailPort: MailPort,
     private readonly config: ConfigService,
+    // Optional override from EmailTemplateModule (same instance injects MailService → forwardRef there)
     @Optional() @Inject(MAIL_TEMPLATE_STORE)
     private readonly templateStore?: MailTemplateStore,
   ) {

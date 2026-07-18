@@ -24,16 +24,32 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
     const kafka = new Kafka({
       clientId: "payment-service",
       brokers,
+      connectionTimeout: 5_000,
+      requestTimeout: 10_000,
+      retry: { retries: 2, initialRetryTime: 300, maxRetryTime: 2_000 },
     });
 
     this.producer = kafka.producer();
     try {
-      await this.producer.connect();
+      await Promise.race([
+        this.producer.connect(),
+        new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error("Kafka connect timeout (8s)")),
+            8_000,
+          ),
+        ),
+      ]);
       this.logger.log(`Kafka producer connected to ${brokers.join(", ")}`);
     } catch (error) {
       this.logger.warn(
         `Kafka producer connection failed — events will be skipped: ${String(error)}`,
       );
+      try {
+        await this.producer.disconnect();
+      } catch {
+        /* ignore */
+      }
       this.producer = null;
     }
   }
