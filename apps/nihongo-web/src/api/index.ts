@@ -250,6 +250,28 @@ export function loginWithGoogle(credential: string) {
   });
 }
 
+export function loginWithOidc(accessToken: string, idToken?: string) {
+  return apiRequest<LoginResponse>('/auth/oidc', {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify({ accessToken, idToken }),
+  });
+}
+
+export function forgotPassword(email: string) {
+  return apiRequest<{ message: string }>('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function resetPassword(token: string, password: string) {
+  return apiRequest<{ message: string }>('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify({ token, password }),
+  });
+}
+
 export function updateProfile(token: string, data: UpdateProfileInput) {
   return apiRequest<AuthUser>('/auth/me', {
     method: 'PATCH',

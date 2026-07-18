@@ -217,6 +217,13 @@ export class ApiService {
     });
   }
 
+  loginWithOidc(accessToken: string, idToken?: string): Promise<LoginResponse> {
+    return apiFetch<LoginResponse>('/auth/oidc', {
+      method: 'POST',
+      body: JSON.stringify({ accessToken, idToken }),
+    });
+  }
+
   logout(token: string): Promise<{ message: string }> {
     return apiFetch('/auth/logout', { method: 'POST', token });
   }

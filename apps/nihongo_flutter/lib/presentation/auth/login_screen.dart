@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/remote/keycloak_oidc.dart';
 import '../../providers.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -15,12 +16,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   bool _loading = false;
+  bool _kcLoading = false;
 
   @override
   void dispose() {
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _afterLoginOk() async {
+    ref.invalidate(isLoggedInProvider);
+    if (!mounted) return;
+    context.pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Đăng nhập thành công')),
+    );
   }
 
   Future<void> _login() async {
@@ -30,12 +41,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             email: _emailCtrl.text.trim(),
             password: _passwordCtrl.text,
           );
-      ref.invalidate(isLoggedInProvider);
-      if (!mounted) return;
-      context.pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đăng nhập thành công')),
-      );
+      await _afterLoginOk();
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,8 +52,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<void> _loginKeycloak() async {
+    setState(() => _kcLoading = true);
+    try {
+      final oidc = await KeycloakOidc().login();
+      await ref.read(authApiProvider).loginWithOidc(
+            accessToken: oidc.accessToken,
+            idToken: oidc.idToken,
+          );
+      await _afterLoginOk();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Keycloak thất bại: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _kcLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final busy = _loading || _kcLoading;
     return Scaffold(
       appBar: AppBar(title: const Text('Đăng nhập')),
       body: Padding(
@@ -55,6 +81,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            FilledButton(
+              onPressed: busy ? null : _loginKeycloak,
+              child: _kcLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Đăng nhập Keycloak'),
+            ),
+            const SizedBox(height: 16),
+            const Text('Dev login (email / mật khẩu)', textAlign: TextAlign.center),
+            const SizedBox(height: 12),
             TextField(
               controller: _emailCtrl,
               decoration: const InputDecoration(labelText: 'Email'),
@@ -69,15 +108,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               autofillHints: const [AutofillHints.password],
             ),
             const SizedBox(height: 24),
-            FilledButton(
-              onPressed: _loading ? null : _login,
+            FilledButton.tonal(
+              onPressed: busy ? null : _login,
               child: _loading
                   ? const SizedBox(
                       height: 20,
                       width: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Đăng nhập'),
+                  : const Text('Đăng nhập email'),
             ),
           ],
         ),

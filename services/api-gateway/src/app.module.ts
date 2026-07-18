@@ -1,5 +1,7 @@
 import { Module } from "@nestjs/common";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
+import { ScheduleModule } from "@nestjs/schedule";
+import { BullModule } from "@nestjs/bullmq";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
@@ -13,6 +15,7 @@ import {
   AuditModule,
   configuration,
   JwtAuthGuard,
+  MailModule,
   pinoConfig,
   RedisModule,
 } from "@app/common";
@@ -26,11 +29,21 @@ import { HealthModule } from "./health/health.module";
 import { HttpModule } from "./http/http.module";
 import { RealtimeModule } from "./realtime/realtime.module";
 import { AiModule } from "./ai/ai.module";
+import { PushModule } from "./push/push.module";
+import { WebhooksModule } from "./webhooks/webhooks.module";
+import { MailSchedulerModule } from "./mail-scheduler/mail-scheduler.module";
+import { EmailTemplateModule } from "./email-template/email-template.module";
 import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: { url: config.get<string>('redis.url') ?? 'redis://localhost:6379' },
+      }),
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -47,8 +60,10 @@ import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
       defaultMetrics: { enabled: true },
     }),
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 120 }]),
+    ScheduleModule.forRoot(),
     RedisModule,
     AuditModule,
+    MailModule,
     MicroservicesModule,
     PrismaModule,
     AuthModule,
@@ -57,6 +72,10 @@ import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
     RealtimeModule,
     HttpModule,
     AiModule,
+    PushModule,
+    WebhooksModule,
+    MailSchedulerModule,
+    EmailTemplateModule,
   ],
   controllers: [AppController],
   providers: [

@@ -684,6 +684,7 @@ model User {
   email            String         @unique
   passwordHash     String?
   googleId         String?        @unique
+  keycloakId       String?        @unique
   role             Role           @default(USER)
   name             String?
   avatarUrl        String?
@@ -694,7 +695,13 @@ model User {
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
 
+  emailVerifiedAt DateTime?
+  emailBounced    Boolean   @default(false)
+
   srsCards       SrsCard[]
+  pushTokens     PushDeviceToken[]
+  emailVerificationTokens EmailVerificationToken[]
+  emailPrefs     EmailPrefs?
   examResults    ExamResult[]
   listeningLogs  ListeningLog[]
   studySessions  StudySession[]
@@ -702,6 +709,7 @@ model User {
   dailyNotes     DailyNote[]
   dailyGoals     DailyGoal[]
   refreshTokens  RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
   subscription   Subscription?
   coachProfile   CoachProfile?
   learnerSessions CoachingSession[] @relation("LearnerSessions")
@@ -743,6 +751,19 @@ model RefreshToken {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 // ─────────────────────────────────────────────
@@ -1350,6 +1371,91 @@ model LearnerChatMessage {
   createdAt DateTime        @default(now())
 
   @@index([roomId, createdAt])
+}
+
+// ─────────────────────────────────────────────
+// Email broadcast jobs
+// ─────────────────────────────────────────────
+
+model EmailBroadcast {
+  id           String    @id @default(cuid())
+  type         String    @default("template") // "template" | "compose"
+  templateName String?
+  subject      String
+  filter       Json      @default("{}")
+  totalCount   Int       @default(0)
+  sentCount    Int       @default(0)
+  failedCount  Int       @default(0)
+  status       String    @default("pending") // pending | running | completed | failed
+  startedAt    DateTime?
+  completedAt  DateTime?
+  createdById  Int
+  createdAt    DateTime  @default(now())
+
+  @@index([status])
+  @@index([createdById])
+}
+
+// ─────────────────────────────────────────────
+// Email templates (admin-editable)
+// ─────────────────────────────────────────────
+
+model EmailTemplate {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique // matches MailTemplateId
+  description String?
+  subject     String
+  htmlBody    String   @db.Text
+  textBody    String   @db.Text
+  variables   String[] // documentation of {{varName}} tokens available
+  attachments Json     @default("[]") // [{filename, url}]
+  active      Boolean  @default(true)
+  updatedById Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// Email verification & preferences
+// ─────────────────────────────────────────────
+
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model EmailPrefs {
+  id                    Int      @id @default(autoincrement())
+  userId                Int      @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  receiveProgress       Boolean  @default(true)
+  receiveStreak         Boolean  @default(true)
+  lastMilestoneNotified Int      @default(0)
+  updatedAt             DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// Push Notifications
+// ─────────────────────────────────────────────
+
+model PushDeviceToken {
+  id        String   @id @default(cuid())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  platform  String   @default("ios") // "ios" | "android"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 // ─────────────────────────────────────────────

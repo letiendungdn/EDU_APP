@@ -20,6 +20,13 @@ export default () => ({
     secret: process.env.JWT_SECRET ?? 'change-me-in-production',
     expiresIn: process.env.JWT_EXPIRES_IN ?? '15m',
   },
+  keycloak: {
+    url: process.env.KEYCLOAK_URL ?? 'http://localhost:8080',
+    issuer:
+      process.env.KEYCLOAK_ISSUER ??
+      'http://auth.localhost:8080/realms/edu-app',
+    realm: process.env.KEYCLOAK_REALM ?? 'edu-app',
+  },
   kafka: {
     brokers: process.env.KAFKA_BROKERS ?? 'localhost:9092',
   },
@@ -36,5 +43,25 @@ export default () => ({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     s3Bucket: process.env.AWS_S3_BUCKET ?? 'edu-app-dev',
+  },
+  mail: {
+    brevoApiKey: process.env.BREVO_API_KEY ?? '',
+    fromEmail: process.env.MAIL_FROM_EMAIL ?? 'noreply@nihongo.local',
+    fromName: process.env.MAIL_FROM_NAME ?? 'Nihongo EDU',
+    appName: process.env.MAIL_APP_NAME ?? 'Nihongo EDU',
+    appPublicUrl:
+      process.env.APP_PUBLIC_URL ?? 'http://nihongo.localhost:8080',
+    resetPasswordPath: process.env.MAIL_RESET_PASSWORD_PATH ?? '/reset-password',
+    resetExpiresMinutes: parseInt(
+      process.env.MAIL_RESET_EXPIRES_MINUTES ?? '30',
+      10,
+    ),
+    verifyEmailPath: process.env.MAIL_VERIFY_EMAIL_PATH ?? '/verify-email',
+    verifyExpiresMinutes: parseInt(
+      process.env.MAIL_VERIFY_EXPIRES_MINUTES ?? '1440',
+      10,
+    ),
+    unsubscribeSecret:
+      process.env.UNSUBSCRIBE_SECRET ?? process.env.JWT_SECRET ?? 'dev-unsub-secret',
   },
 });

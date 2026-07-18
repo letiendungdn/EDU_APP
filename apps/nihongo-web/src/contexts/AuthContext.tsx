@@ -5,11 +5,17 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
   login as apiLogin,
   loginWithGoogle as apiGoogleLogin,
+  loginWithOidc as apiOidcLogin,
   logoutAuth,
   register as apiRegister,
   updateProfile as apiUpdateProfile,
 } from '../api';
-import { getStoredToken, setStoredToken } from '../lib/api-client';
+import {
+  getStoredToken,
+  setStoredToken,
+  subscribeAuthToken,
+} from '../lib/api-client';
+import { signoutKeycloak } from '../lib/keycloak';
 import { queryKeys, useAuthMeQuery } from '../hooks/queries';
 import type { AuthUser, LoginResponse, UpdateProfileInput } from '../types/api';
 import { AuthContext } from './auth-context';
@@ -36,6 +42,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setToken(getStoredToken());
     setAuthReady(true);
+  }, []);
+
+  useEffect(() => {
+    return subscribeAuthToken((next) => {
+      setToken(next);
+      if (!next) setUser(null);
+    });
   }, []);
 
   useEffect(() => {
@@ -67,6 +80,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginWithGoogle = useCallback(
     async (credential: string) => {
       const res = await apiGoogleLogin(credential);
+      applySession(res, setToken, setUser, queryClient);
+      return res.user;
+    },
+    [queryClient],
+  );
+
+  const loginWithOidc = useCallback(
+    async (accessToken: string, idToken?: string) => {
+      const res = await apiOidcLogin(accessToken, idToken);
       applySession(res, setToken, setUser, queryClient);
       return res.user;
     },
@@ -108,6 +130,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     queryClient.removeQueries({ queryKey: queryKeys.authMe });
     queryClient.removeQueries({ queryKey: queryKeys.adminStats });
+
+    // End Keycloak SSO session (front-channel) if OIDC user still in sessionStorage
+    const redirected = await signoutKeycloak();
+    if (redirected) return;
   }, [queryClient]);
 
   const value = useMemo(
@@ -117,14 +143,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: !!token,
       authReady,
       isAdmin: user?.role === 'ADMIN',
+      isTeacher: user?.role === 'TEACHER' || user?.role === 'ADMIN',
       login,
       loginAdmin,
       loginWithGoogle,
+      loginWithOidc,
       register,
       updateProfile,
       logout,
     }),
-    [token, user, authReady, login, loginAdmin, loginWithGoogle, register, updateProfile, logout],
+    [
+      token,
+      user,
+      authReady,
+      login,
+      loginAdmin,
+      loginWithGoogle,
+      loginWithOidc,
+      register,
+      updateProfile,
+      logout,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

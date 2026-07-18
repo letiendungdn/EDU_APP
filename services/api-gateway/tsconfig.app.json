@@ -14,6 +14,10 @@
   ],
   "exclude": [
     "**/*.spec.ts",
+    "../../packages/nest-common/**/*.spec.ts",
+    "../../packages/nest-contracts/**/*.spec.ts",
+    "../../packages/nest-prisma/**/*.spec.ts",
+    "../../packages/nest-prisma-english/**/*.spec.ts",
     "../payment-service/**/*.spec.ts",
     "../english-service/**/*.spec.ts"
   ]

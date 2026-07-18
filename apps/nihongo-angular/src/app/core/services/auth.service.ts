@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { ApiService } from './api.service';
 import { ApiError, getStoredToken, setStoredToken } from '../http/api-client';
+import { signoutKeycloak } from '../utils/keycloak.util';
 import type { AuthUser, LoginResponse, UpdateProfileInput } from '../models/api.models';
 
 @Injectable({ providedIn: 'root' })
@@ -16,6 +17,9 @@ export class AuthService {
   readonly authReady = this.readySignal.asReadonly();
   readonly isAuthenticated = computed(() => !!this.tokenSignal());
   readonly isAdmin = computed(() => this.userSignal()?.role === 'ADMIN');
+  readonly isTeacher = computed(
+    () => this.userSignal()?.role === 'TEACHER' || this.userSignal()?.role === 'ADMIN',
+  );
 
   init(): void {
     const stored = getStoredToken();
@@ -71,6 +75,11 @@ export class AuthService {
     return this.applySession(res);
   }
 
+  async loginWithOidc(accessToken: string, idToken?: string): Promise<AuthUser> {
+    const res = await this.api.loginWithOidc(accessToken, idToken);
+    return this.applySession(res);
+  }
+
   async updateProfile(data: UpdateProfileInput): Promise<AuthUser> {
     const token = this.tokenSignal();
     if (!token) throw new ApiError('Chưa đăng nhập', 401);
@@ -91,5 +100,6 @@ export class AuthService {
     setStoredToken(null);
     this.tokenSignal.set(null);
     this.userSignal.set(null);
+    await signoutKeycloak();
   }
 }

@@ -107,6 +107,7 @@ export interface AuthUser {
   studyGoalMinutes?: number | null;
   hasPassword?: boolean;
   isGoogleLinked?: boolean;
+  isKeycloakLinked?: boolean;
   createdAt?: string;
 }
 

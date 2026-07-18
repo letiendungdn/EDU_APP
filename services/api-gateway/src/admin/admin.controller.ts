@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -23,6 +24,17 @@ import { RefundService } from "../../../payment-service/src/refund/refund.servic
 import { RequestRefundDto } from "../http/dto/refund.dto";
 import { AdminService } from "./admin.service";
 import { SupportChatService } from "../realtime/support-chat.service";
+import { EmailTemplateService } from "../email-template/email-template.service";
+import {
+  PreviewEmailTemplateDto,
+  TestSendEmailTemplateDto,
+  UpdateEmailTemplateDto,
+} from "../email-template/dto/update-email-template.dto";
+import {
+  BroadcastDto,
+  ComposeDto,
+  SendToUserDto,
+} from "../email-template/dto/send-email.dto";
 
 @ApiTags("admin")
 @ApiBearerAuth()
@@ -34,6 +46,7 @@ export class AdminController {
     private readonly adminService: AdminService,
     private readonly refundService: RefundService,
     private readonly supportChat: SupportChatService,
+    private readonly emailTemplate: EmailTemplateService,
   ) {}
 
   @Get("stats")
@@ -126,5 +139,116 @@ export class AdminController {
   ) {
     await this.supportChat.markRead(id, user.id, Role.ADMIN);
     return { ok: true };
+  }
+
+  // ─── Email templates ───────────────────────────────────────────────────────
+
+  @Get("email-templates")
+  @ApiOperation({ summary: "Danh sách email templates (hardcoded + DB override)" })
+  listEmailTemplates() {
+    return this.emailTemplate.listAll();
+  }
+
+  @Get("email-templates/:name")
+  @ApiOperation({ summary: "Chi tiết template (nội dung DB hoặc hardcoded default)" })
+  getEmailTemplate(@Param("name") name: string) {
+    return this.emailTemplate.findOne(name);
+  }
+
+  @Post("email-templates/:name")
+  @ApiOperation({ summary: "Tạo / cập nhật DB override cho template" })
+  upsertEmailTemplate(
+    @CurrentUser() user: AuthUserPayload,
+    @Param("name") name: string,
+    @Body() dto: UpdateEmailTemplateDto,
+  ) {
+    return this.emailTemplate.upsert(name, dto, user.id);
+  }
+
+  @Delete("email-templates/:name")
+  @ApiOperation({ summary: "Xoá DB override — template về lại hardcoded default" })
+  resetEmailTemplate(@Param("name") name: string) {
+    return this.emailTemplate.reset(name);
+  }
+
+  @Post("email-templates/:name/preview")
+  @ApiOperation({ summary: "Xem trước template với vars tuỳ chọn" })
+  previewEmailTemplate(
+    @Param("name") name: string,
+    @Body() dto: PreviewEmailTemplateDto,
+  ) {
+    return this.emailTemplate.preview(name, dto.vars);
+  }
+
+  @Post("email-templates/:name/test")
+  @ApiOperation({ summary: "Gửi test email tới địa chỉ chỉ định (hoặc email admin)" })
+  async testSendEmailTemplate(
+    @CurrentUser() user: AuthUserPayload,
+    @Param("name") name: string,
+    @Body() dto: TestSendEmailTemplateDto,
+  ) {
+    const toEmail = dto.toEmail ?? user.email;
+    return this.emailTemplate.testSend(name, toEmail);
+  }
+
+  @Post("email-templates/seed")
+  @ApiOperation({ summary: "Seed tất cả templates vào DB từ hardcoded defaults (bỏ qua nếu đã có)" })
+  seedEmailTemplates(@CurrentUser() user: AuthUserPayload) {
+    return this.emailTemplate.seedAll(user.id);
+  }
+
+  // ─── Send to user ──────────────────────────────────────────────────────────
+
+  @Post("email-templates/:name/send")
+  @ApiOperation({ summary: "Gửi template tới 1 user cụ thể (theo userId)" })
+  sendTemplateToUser(
+    @CurrentUser() user: AuthUserPayload,
+    @Param("name") name: string,
+    @Body() dto: SendToUserDto,
+  ) {
+    return this.emailTemplate.sendToUser(name, dto, user.id);
+  }
+
+  // ─── Broadcast ────────────────────────────────────────────────────────────
+
+  @Post("email-templates/:name/broadcast")
+  @ApiOperation({ summary: "Broadcast template tới nhóm user (queue)" })
+  broadcastTemplate(
+    @CurrentUser() user: AuthUserPayload,
+    @Param("name") name: string,
+    @Body() dto: BroadcastDto,
+  ) {
+    return this.emailTemplate.broadcast(name, dto.filter, user.id);
+  }
+
+  // ─── Composer ─────────────────────────────────────────────────────────────
+
+  @Post("email/compose")
+  @ApiOperation({ summary: "Soạn email tự do gửi tới danh sách địa chỉ" })
+  composeEmail(
+    @CurrentUser() user: AuthUserPayload,
+    @Body() dto: ComposeDto,
+  ) {
+    return this.emailTemplate.compose(dto, user.id);
+  }
+
+  // ─── Broadcast history ────────────────────────────────────────────────────
+
+  @Get("email/broadcasts")
+  @ApiOperation({ summary: "Lịch sử các lần broadcast / compose" })
+  listBroadcasts(
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
+  ) {
+    return this.emailTemplate.listBroadcasts(
+      page ? Number(page) : 1,
+      limit ? Number(limit) : 20,
+    );
+  }
+
+  @Get("email/broadcasts/:id")
+  @ApiOperation({ summary: "Chi tiết một broadcast job" })
+  getBroadcast(@Param("id") id: string) {
+    return this.emailTemplate.getBroadcast(id);
   }
 }

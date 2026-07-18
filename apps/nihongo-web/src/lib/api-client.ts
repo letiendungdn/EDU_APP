@@ -4,11 +4,14 @@ import { ApiError } from '../types/api';
 const API_BASE = '/api';
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 400;
+const TOKEN_EVENT = 'nihongo-auth-token';
 
 export type RequestOptions = RequestInit & {
   token?: string | null;
   retries?: number;
   credentials?: RequestCredentials;
+  /** Internal: already attempted refresh after 401 */
+  _authRetried?: boolean;
 };
 
 interface ApiSuccessEnvelope<T> {
@@ -39,15 +42,72 @@ function parseErrorMessage(
   return `API error: ${status}`;
 }
 
+function shouldSkipRefresh(path: string): boolean {
+  return (
+    path.startsWith('/auth/login') ||
+    path.startsWith('/auth/register') ||
+    path.startsWith('/auth/oidc') ||
+    path.startsWith('/auth/google') ||
+    path.startsWith('/auth/refresh') ||
+    path.startsWith('/auth/forgot-password') ||
+    path.startsWith('/auth/reset-password')
+  );
+}
+
+let refreshInFlight: Promise<string | null> | null = null;
+
+/** Rotate local access JWT via HttpOnly refresh cookie. */
+export async function refreshAccessToken(): Promise<string | null> {
+  if (refreshInFlight) return refreshInFlight;
+
+  refreshInFlight = (async () => {
+    try {
+      const res = await fetch(`${API_BASE}/auth/refresh`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!res.ok) {
+        setStoredToken(null);
+        return null;
+      }
+      const json = (await res.json()) as
+        | ApiSuccessEnvelope<{ access_token?: string }>
+        | { access_token?: string };
+      const data =
+        json && typeof json === 'object' && 'success' in json && json.success
+          ? json.data
+          : (json as { access_token?: string });
+      const token = data?.access_token ?? null;
+      if (token) setStoredToken(token);
+      else setStoredToken(null);
+      return token;
+    } catch {
+      setStoredToken(null);
+      return null;
+    } finally {
+      refreshInFlight = null;
+    }
+  })();
+
+  return refreshInFlight;
+}
+
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { token, retries = MAX_RETRIES, credentials, ...init } = options;
+  const {
+    token,
+    retries = MAX_RETRIES,
+    credentials,
+    _authRetried,
+    ...init
+  } = options;
   const headers = new Headers(init.headers);
 
   if (init.body && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
+  const bearer = token === undefined ? getStoredToken() : token;
+  if (bearer) {
+    headers.set('Authorization', `Bearer ${bearer}`);
   }
 
   let lastError: unknown;
@@ -63,6 +123,23 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as ApiErrorEnvelope;
         const message = parseErrorMessage(body, res.status);
+
+        if (
+          res.status === 401 &&
+          !_authRetried &&
+          !shouldSkipRefresh(path)
+        ) {
+          const next = await refreshAccessToken();
+          if (next) {
+            return apiRequest<T>(path, {
+              ...options,
+              token: next,
+              _authRetried: true,
+              retries: 0,
+            });
+          }
+        }
+
         if (res.status >= 500 && attempt < retries) {
           await sleep(RETRY_DELAY_MS * (attempt + 1));
           continue;
@@ -107,4 +184,16 @@ export function setStoredToken(token: string | null) {
   if (typeof window === 'undefined') return;
   if (token) localStorage.setItem('nihongo-auth-token', token);
   else localStorage.removeItem('nihongo-auth-token');
+  window.dispatchEvent(new CustomEvent(TOKEN_EVENT, { detail: token }));
+}
+
+export function subscribeAuthToken(
+  listener: (token: string | null) => void,
+): () => void {
+  if (typeof window === 'undefined') return () => undefined;
+  const handler = (e: Event) => {
+    listener((e as CustomEvent<string | null>).detail);
+  };
+  window.addEventListener(TOKEN_EVENT, handler);
+  return () => window.removeEventListener(TOKEN_EVENT, handler);
 }

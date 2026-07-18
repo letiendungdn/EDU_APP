@@ -23,6 +23,14 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
+    fun setLoading(loading: Boolean) {
+        _uiState.update { it.copy(isLoading = loading, error = if (loading) null else it.error) }
+    }
+
+    fun setError(message: String) {
+        _uiState.update { it.copy(isLoading = false, error = message) }
+    }
+
     fun login(email: String, password: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
@@ -34,6 +42,22 @@ class LoginViewModel @Inject constructor(
                 .onFailure { e ->
                     _uiState.update {
                         it.copy(isLoading = false, error = e.message ?: "Đăng nhập thất bại")
+                    }
+                }
+        }
+    }
+
+    fun loginWithOidc(accessToken: String, idToken: String?, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            authRepo.loginWithOidc(accessToken, idToken)
+                .onSuccess {
+                    _uiState.update { it.copy(isLoading = false) }
+                    onSuccess()
+                }
+                .onFailure { e ->
+                    _uiState.update {
+                        it.copy(isLoading = false, error = e.message ?: "OIDC thất bại")
                     }
                 }
         }

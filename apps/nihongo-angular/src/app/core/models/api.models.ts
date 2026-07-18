@@ -130,13 +130,14 @@ export interface AuthUser {
   id: number;
   email: string;
   name: string | null;
-  role: 'USER' | 'ADMIN';
+  role: 'USER' | 'TEACHER' | 'ADMIN';
   avatarUrl?: string | null;
   nativeLanguage?: string | null;
   targetJlptLevel?: string | null;
   studyGoalMinutes?: number | null;
   hasPassword?: boolean;
   isGoogleLinked?: boolean;
+  isKeycloakLinked?: boolean;
   createdAt?: string;
 }
 

@@ -9,13 +9,17 @@ import {
   View,
 } from 'react-native';
 
-import { login } from '../src/data/api';
+import { login, loginWithOidc } from '../src/data/api';
+import { loginWithKeycloak } from '../src/data/keycloakAuth';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [kcLoading, setKcLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const busy = loading || kcLoading;
 
   const onSubmit = async () => {
     setLoading(true);
@@ -30,8 +34,36 @@ export default function LoginScreen() {
     }
   };
 
+  const onKeycloak = async () => {
+    setKcLoading(true);
+    setError(null);
+    try {
+      const tokens = await loginWithKeycloak();
+      await loginWithOidc(tokens.accessToken, tokens.idToken);
+      router.back();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Keycloak thất bại');
+    } finally {
+      setKcLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
+      <Pressable
+        style={[styles.btn, styles.kcBtn, busy && styles.btnDisabled]}
+        onPress={onKeycloak}
+        disabled={busy}
+      >
+        {kcLoading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.btnText}>Đăng nhập Keycloak</Text>
+        )}
+      </Pressable>
+
+      <Text style={styles.devLabel}>Dev login (email / mật khẩu)</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -48,9 +80,9 @@ export default function LoginScreen() {
         onChangeText={setPassword}
       />
       <Pressable
-        style={[styles.btn, loading && styles.btnDisabled]}
+        style={[styles.btn, busy && styles.btnDisabled]}
         onPress={onSubmit}
-        disabled={loading}
+        disabled={busy}
       >
         {loading ? (
           <ActivityIndicator color="#fff" />
@@ -79,7 +111,14 @@ const styles = StyleSheet.create({
     padding: 14,
     alignItems: 'center',
   },
+  kcBtn: { backgroundColor: '#0f766e', marginBottom: 20 },
   btnDisabled: { opacity: 0.7 },
   btnText: { color: '#fff', fontWeight: '600' },
+  devLabel: {
+    textAlign: 'center',
+    color: '#6b7280',
+    marginBottom: 12,
+    fontSize: 13,
+  },
   error: { color: '#dc2626', marginTop: 12 },
 });

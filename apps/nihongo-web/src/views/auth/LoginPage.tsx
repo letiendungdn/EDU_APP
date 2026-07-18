@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import GoogleSignInButton from '@/components/GoogleSignInButton';
 import { useAuth } from '@/hooks/useAuth';
 import { resolvePostAuthRedirect } from '@/lib/auth-redirect';
+import { isKeycloakConfigured, startKeycloakLogin } from '@/lib/keycloak';
 import { ApiError } from '@/types/api';
 import './AuthPages.css';
 
@@ -16,10 +17,13 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams?.get('redirect') ?? null;
+  const keycloakEnabled = isKeycloakConfigured();
 
   const [mode, setMode] = useState<AuthMode>(
     searchParams?.get('mode') === 'register' ? 'register' : 'login',
   );
+  const [showDevLogin, setShowDevLogin] = useState(!keycloakEnabled);
+  const [kcLoading, setKcLoading] = useState(false);
 
   const switchMode = (next: AuthMode) => {
     setMode(next);
@@ -45,6 +49,19 @@ export default function LoginPage() {
   useEffect(() => {
     setMode(searchParams?.get('mode') === 'register' ? 'register' : 'login');
   }, [searchParams]);
+
+  const handleKeycloak = async () => {
+    setError('');
+    setKcLoading(true);
+    try {
+      if (redirectTo) sessionStorage.setItem('kc_post_login_redirect', redirectTo);
+      else sessionStorage.removeItem('kc_post_login_redirect');
+      await startKeycloakLogin();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Không mở được Keycloak');
+      setKcLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -82,10 +99,26 @@ export default function LoginPage() {
       <div className="auth-card glass-panel">
         <h1>{mode === 'register' ? 'Tạo tài khoản' : 'Đăng nhập'}</h1>
         <p className="auth-sub">
-          {mode === 'register'
-            ? 'Dùng Gmail để đăng ký nhanh, hoặc email + mật khẩu bên dưới'
-            : 'Đăng nhập bằng Gmail hoặc email để đồng bộ tiến độ học'}
+          {keycloakEnabled
+            ? 'Đăng nhập qua Keycloak (OIDC) để đồng bộ tiến độ học'
+            : mode === 'register'
+              ? 'Dùng Gmail để đăng ký nhanh, hoặc email + mật khẩu bên dưới'
+              : 'Đăng nhập bằng Gmail hoặc email để đồng bộ tiến độ học'}
         </p>
+
+        {keycloakEnabled && (
+          <>
+            <button
+              type="button"
+              className="btn btn-primary btn-block"
+              disabled={kcLoading}
+              onClick={() => void handleKeycloak()}
+            >
+              {kcLoading ? 'Đang chuyển tới Keycloak...' : 'Đăng nhập Keycloak'}
+            </button>
+            <div className="auth-divider">hoặc</div>
+          </>
+        )}
 
         <div className="auth-tabs" role="tablist" aria-label="Chọn đăng nhập hoặc đăng ký">
           <button
@@ -110,48 +143,70 @@ export default function LoginPage() {
 
         <GoogleSignInButton mode={mode} onError={setError} onSuccess={handleGoogleSuccess} />
 
-        <div className="auth-divider">hoặc dùng email{mode === 'register' ? ' & mật khẩu' : ''}</div>
-
-        <form onSubmit={handleSubmit} className="auth-form">
-          {error && <p className="auth-error">{error}</p>}
-
-          <div className="auth-field">
-            <label>
-              Email
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-                placeholder="you@example.com"
-                required
-              />
-            </label>
-          </div>
-
-          <div className="auth-field">
-            <label>
-              Mật khẩu
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
-                placeholder="Tối thiểu 8 ký tự"
-                minLength={8}
-                required
-              />
-            </label>
-          </div>
-
-          <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-            {loading
-              ? 'Đang xử lý...'
-              : mode === 'register'
-                ? 'Tạo tài khoản'
-                : 'Đăng nhập'}
+        {keycloakEnabled && !showDevLogin ? (
+          <button
+            type="button"
+            className="btn btn-ghost btn-block"
+            style={{ marginTop: '0.75rem' }}
+            onClick={() => setShowDevLogin(true)}
+          >
+            Dev login (email / mật khẩu)
           </button>
-        </form>
+        ) : (
+          <>
+            <div className="auth-divider">
+              {keycloakEnabled ? 'Dev login' : `hoặc dùng email${mode === 'register' ? ' & mật khẩu' : ''}`}
+            </div>
+
+            <form onSubmit={handleSubmit} className="auth-form">
+              {error && <p className="auth-error">{error}</p>}
+
+              <div className="auth-field">
+                <label>
+                  Email
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    required
+                  />
+                </label>
+              </div>
+
+              <div className="auth-field">
+                <label>
+                  Mật khẩu
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+                    placeholder="Tối thiểu 8 ký tự"
+                    minLength={8}
+                    required
+                  />
+                </label>
+              </div>
+
+              <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+                {loading
+                  ? 'Đang xử lý...'
+                  : mode === 'register'
+                    ? 'Tạo tài khoản'
+                    : 'Đăng nhập'}
+              </button>
+            </form>
+            {mode === 'login' ? (
+              <p className="auth-footer-link" style={{ marginTop: '0.75rem' }}>
+                <Link href="/forgot-password">Quên mật khẩu?</Link>
+              </p>
+            ) : null}
+          </>
+        )}
+
+        {error && !showDevLogin && <p className="auth-error">{error}</p>}
 
         <p className="auth-footer-link">
           <Link href="/">← Về trang chủ</Link>

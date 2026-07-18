@@ -4,6 +4,7 @@ import {
   Get,
   Patch,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -25,6 +26,13 @@ import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
 import { GoogleAuthDto } from "./dto/google-auth.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
+import { OidcAuthDto } from "./dto/oidc-auth.dto";
+import {
+  ForgotPasswordDto,
+  ResetPasswordDto,
+} from "./dto/password-reset.dto";
+import { VerifyEmailDto } from "./dto/verify-email.dto";
+import { EmailPreferencesDto } from "./dto/email-preferences.dto";
 
 const REFRESH_COOKIE = "refresh_token";
 const REFRESH_COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
@@ -84,6 +92,25 @@ export class AuthController {
   }
 
   @Public()
+  @RateLimit(10, 60)
+  @Throttle({ default: { ttl: 60_000, limit: 15 } })
+  @Post("oidc")
+  @ApiOperation({
+    summary: "Đổi Keycloak access token thành JWT local (BFF)",
+  })
+  async oidcAuth(
+    @Body() dto: OidcAuthDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.loginWithOidc(dto);
+    setRefreshCookie(res, result.refresh_token);
+    return {
+      access_token: result.access_token,
+      user: result.user,
+    };
+  }
+
+  @Public()
   @RateLimit(5, 60)
   @Throttle({ default: { ttl: 60_000, limit: 10 } })
   @Post("login")
@@ -132,6 +159,26 @@ export class AuthController {
     return { message: "Đã đăng xuất" };
   }
 
+  @Public()
+  @RateLimit(5, 3600)
+  @Throttle({ default: { ttl: 60_000, limit: 5 } })
+  @Post("forgot-password")
+  @ApiOperation({
+    summary: "Gửi email đặt lại mật khẩu (anti-enumeration, luôn 200)",
+  })
+  forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto.email);
+  }
+
+  @Public()
+  @RateLimit(10, 3600)
+  @Throttle({ default: { ttl: 60_000, limit: 10 } })
+  @Post("reset-password")
+  @ApiOperation({ summary: "Đặt lại mật khẩu bằng token từ email" })
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto.token, dto.password);
+  }
+
   @Get("me")
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -149,5 +196,64 @@ export class AuthController {
     @Body() dto: UpdateProfileDto,
   ) {
     return this.authService.updateProfile(user.id, dto);
+  }
+
+  @Public()
+  @RateLimit(5, 3600)
+  @Throttle({ default: { ttl: 60_000, limit: 5 } })
+  @Post("verify-email")
+  @ApiOperation({ summary: "Xác thực email bằng token từ link email" })
+  verifyEmail(@Body() dto: VerifyEmailDto) {
+    return this.authService.verifyEmail(dto.token);
+  }
+
+  @RateLimit(3, 3600)
+  @Throttle({ default: { ttl: 60_000, limit: 3 } })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post("resend-verification")
+  @ApiOperation({ summary: "Gửi lại email xác thực (5 phút cooldown)" })
+  resendVerification(@CurrentUser() user: AuthUserPayload) {
+    return this.authService.resendVerification(user.id);
+  }
+
+  @Public()
+  @Get("email-preferences")
+  @ApiOperation({ summary: "Lấy tuỳ chọn nhận email (JWT hoặc uid+token)" })
+  getEmailPreferences(
+    @CurrentUser() user: AuthUserPayload | null,
+    @Query("uid") uid?: string,
+    @Query("token") token?: string,
+  ) {
+    if (uid && token) {
+      return this.authService.getEmailPreferences(parseInt(uid, 10));
+    }
+    if (!user) throw new UnauthorizedException();
+    return this.authService.getEmailPreferences(user.id);
+  }
+
+  @Public()
+  @Post("email-preferences")
+  @ApiOperation({ summary: "Cập nhật tuỳ chọn nhận email (JWT hoặc uid+token)" })
+  updateEmailPreferences(
+    @CurrentUser() user: AuthUserPayload | null,
+    @Body() dto: EmailPreferencesDto,
+    @Query("uid") uid?: string,
+    @Query("token") token?: string,
+  ) {
+    if (uid && token) {
+      return this.authService.updateEmailPreferencesByToken(
+        parseInt(uid, 10),
+        token,
+        dto.receiveProgress,
+        dto.receiveStreak,
+      );
+    }
+    if (!user) throw new UnauthorizedException();
+    return this.authService.updateEmailPreferences(
+      user.id,
+      dto.receiveProgress,
+      dto.receiveStreak,
+    );
   }
 }

@@ -22,6 +22,18 @@ android {
             "API_BASE_URL",
             "\"http://10.0.2.2:3000/api/\"",
         )
+        buildConfigField(
+            "String",
+            "KEYCLOAK_URL",
+            "\"http://10.0.2.2:8080\"",
+        )
+        buildConfigField("String", "KEYCLOAK_REALM", "\"edu-app\"")
+        buildConfigField("String", "KEYCLOAK_CLIENT_ID", "\"nihongo-mobile\"")
+        buildConfigField(
+            "String",
+            "KEYCLOAK_REDIRECT_URI",
+            "\"com.edu.nihongo:/oauth2redirect\"",
+        )
         buildConfigField("String", "GEMINI_API_KEY", "\"\"") // set via local.properties or CI
     }
 
@@ -84,6 +96,9 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    implementation("net.openid:appauth:0.11.1")
+    implementation("androidx.browser:browser:1.8.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 

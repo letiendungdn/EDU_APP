@@ -31,3 +31,34 @@ export { RedisModule, REDIS_CLIENT } from './redis/redis.module';
 export { RateLimit } from './rate-limit/rate-limit.decorator';
 export { SlidingWindowRateLimitGuard } from './rate-limit/sliding-window.guard';
 export { isEnglishEnabled } from './config/english-enabled';
+export { MailModule } from './mail/mail.module';
+export { MailService } from './mail/mail.service';
+export { MAIL_PORT, MAIL_TEMPLATE_STORE } from './mail/mail.port';
+export type { MailPort, MailMessage, MailAddress, MailAttachment, MailTemplateStore } from './mail/mail.port';
+export {
+  renderWelcomeMail,
+  renderEmailVerificationMail,
+  renderPasswordResetMail,
+  renderPasswordChangedMail,
+  renderWeeklyProgressMail,
+  renderStreakMilestoneMail,
+} from './mail/mail.templates';
+export type {
+  MailTemplateId,
+  RenderedMail,
+  WelcomeTemplateVars,
+  EmailVerificationTemplateVars,
+  PasswordResetTemplateVars,
+  PasswordChangedTemplateVars,
+  WeeklyProgressTemplateVars,
+  StreakMilestoneTemplateVars,
+} from './mail/mail.templates';
+export {
+  signUnsubscribeToken,
+  verifyUnsubscribeToken,
+} from './mail/unsubscribe.util';
+export type {
+  SendEmailVerificationInput,
+  SendWeeklyProgressInput,
+  SendStreakMilestoneInput,
+} from './mail/mail.service';

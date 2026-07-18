@@ -1,10 +1,12 @@
 import SwiftUI
 
 enum AppRoute: Hashable {
-    case vocab, srs, sentencePractice
+    case vocab, srs, sentencePractice, login
 }
 
 struct HomeView: View {
+    @Environment(AuthState.self) private var authState
+    @Environment(PushService.self) private var pushService
     @State private var path = NavigationPath()
 
     var body: some View {
@@ -25,6 +27,21 @@ struct HomeView: View {
                     .background(.background, in: RoundedRectangle(cornerRadius: 20))
                     .overlay(RoundedRectangle(cornerRadius: 20).stroke(.separator, lineWidth: 0.5))
                     .padding(.bottom, 24)
+
+                    SectionLabel("TÀI KHOẢN")
+                    if authState.isLoggedIn {
+                        NavCard(title: "Đã đăng nhập", subtitle: "Keycloak / JWT local", icon: "👤") {
+                            Task {
+                                await pushService.unregisterFromBackend()
+                                await AuthAPI().logout()
+                                authState.refresh()
+                            }
+                        }
+                    } else {
+                        NavCard(title: "Đăng nhập", subtitle: "Keycloak OIDC hoặc email", icon: "🔑") {
+                            path.append(AppRoute.login)
+                        }
+                    }
 
                     SectionLabel("HỌC TẬP")
                     NavCard(title: "Từ vựng", subtitle: "Đọc offline từ SQLite, sync khi có mạng", icon: "📖") {
@@ -52,8 +69,10 @@ struct HomeView: View {
                 case .vocab:             VocabView()
                 case .srs:               SRSView()
                 case .sentencePractice:  SentencePracticeView()
+                case .login:             LoginView()
                 }
             }
+            .onAppear { authState.refresh() }
         }
     }
 }

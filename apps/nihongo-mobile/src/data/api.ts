@@ -131,13 +131,35 @@ export async function fetchAllVocabForLesson(lessonNumber: number): Promise<Voca
   return all;
 }
 
+function extractAccessToken(payload: unknown): string | null {
+  if (!payload || typeof payload !== 'object') return null;
+  const map = payload as Record<string, unknown>;
+  const nested = map.data;
+  if (nested && typeof nested === 'object') {
+    const token = (nested as Record<string, unknown>).access_token;
+    if (typeof token === 'string' && token) return token;
+  }
+  const direct = map.access_token;
+  return typeof direct === 'string' && direct ? direct : null;
+}
+
 export async function login(email: string, password: string): Promise<void> {
-  const res = await api.post<{ access_token?: string }>('/auth/login', {
-    email,
-    password,
-  });
-  const token = res.data.access_token;
+  const res = await api.post('/auth/login', { email, password });
+  const token = extractAccessToken(res.data);
   if (!token) throw new Error('Không nhận được access token');
+  await saveAccessToken(token);
+}
+
+export async function loginWithOidc(
+  accessToken: string,
+  idToken?: string,
+): Promise<void> {
+  const res = await api.post('/auth/oidc', {
+    accessToken,
+    ...(idToken ? { idToken } : {}),
+  });
+  const token = extractAccessToken(res.data);
+  if (!token) throw new Error('Không nhận được access token từ OIDC');
   await saveAccessToken(token);
 }
 

@@ -11,6 +11,7 @@ import com.edu.nihongo.data.local.entity.VocabularyEntity
 import com.edu.nihongo.data.local.toDomain
 import com.edu.nihongo.data.remote.AuthApi
 import com.edu.nihongo.data.remote.LoginRequest
+import com.edu.nihongo.data.remote.OidcRequest
 import com.edu.nihongo.data.remote.TranslateApi
 import com.edu.nihongo.data.remote.TranslateRequest
 import com.edu.nihongo.data.remote.VocabularyRemoteDataSource
@@ -31,10 +32,18 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
     override suspend fun login(email: String, password: String): Result<Unit> = runCatching {
         val res = authApi.login(LoginRequest(email, password))
-        val token = res.accessToken
+        val token = res.data?.accessToken
         require(!token.isNullOrBlank()) { "Không nhận được access token" }
         tokenStore.save(token)
     }
+
+    override suspend fun loginWithOidc(accessToken: String, idToken: String?): Result<Unit> =
+        runCatching {
+            val res = authApi.loginOidc(OidcRequest(accessToken, idToken))
+            val token = res.data?.accessToken
+            require(!token.isNullOrBlank()) { "Không nhận được access token từ OIDC" }
+            tokenStore.save(token)
+        }
 
     override suspend fun logout() {
         try {

@@ -1,5 +1,8 @@
 package com.edu.nihongo.presentation.login
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,20 +16,26 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.edu.nihongo.data.remote.KeycloakAuth
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +46,30 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val keycloakAuth = remember { KeycloakAuth(context) }
+
+    DisposableEffect(Unit) {
+        onDispose { keycloakAuth.dispose() }
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        if (result.resultCode != Activity.RESULT_OK) {
+            viewModel.setError("Đăng nhập Keycloak bị hủy")
+            return@rememberLauncherForActivityResult
+        }
+        scope.launch {
+            runCatching {
+                val tokens = keycloakAuth.exchangeCode(result.data)
+                viewModel.loginWithOidc(tokens.accessToken, tokens.idToken, onBack)
+            }.onFailure { e ->
+                viewModel.setError(e.message ?: "Keycloak thất bại")
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -56,6 +89,28 @@ fun LoginScreen(
                 .padding(padding)
                 .padding(24.dp),
         ) {
+            Button(
+                onClick = {
+                    scope.launch {
+                        viewModel.setLoading(true)
+                        runCatching {
+                            val config = keycloakAuth.fetchServiceConfig()
+                            launcher.launch(keycloakAuth.createAuthIntent(config))
+                        }.onFailure { e ->
+                            viewModel.setError(e.message ?: "Không mở được Keycloak")
+                        }
+                    }
+                },
+                enabled = !uiState.isLoading,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Đăng nhập Keycloak")
+            }
+
+            Spacer(Modifier.height(16.dp))
+            Text("Dev login (email / mật khẩu)")
+            Spacer(Modifier.height(12.dp))
+
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -73,7 +128,7 @@ fun LoginScreen(
                 visualTransformation = PasswordVisualTransformation(),
             )
             Spacer(Modifier.height(16.dp))
-            Button(
+            OutlinedButton(
                 onClick = { viewModel.login(email, password, onBack) },
                 enabled = !uiState.isLoading,
                 modifier = Modifier.fillMaxWidth(),
@@ -81,7 +136,7 @@ fun LoginScreen(
                 if (uiState.isLoading) {
                     CircularProgressIndicator()
                 } else {
-                    Text("Đăng nhập")
+                    Text("Đăng nhập email")
                 }
             }
             uiState.error?.let {

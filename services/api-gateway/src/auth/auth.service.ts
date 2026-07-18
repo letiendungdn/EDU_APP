@@ -1,7 +1,10 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
+  Logger,
+  NotFoundException,
   OnModuleInit,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -10,12 +13,21 @@ import { JwtService } from "@nestjs/jwt";
 import { Role } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 import { OAuth2Client } from "google-auth-library";
-import { randomBytes } from "crypto";
+import { createRemoteJWKSet, jwtVerify } from "jose";
+import { createHash, randomBytes, timingSafeEqual } from "crypto";
+import { MailService } from "@app/common";
+import { verifyUnsubscribeToken } from "@app/common";
 import { PrismaService } from "@app/prisma";
 import { GoogleAuthDto } from "./dto/google-auth.dto";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
+import { OidcAuthDto } from "./dto/oidc-auth.dto";
+import {
+  extractKeycloakRoles,
+  mapKeycloakRolesToAppRole,
+  type KeycloakIdentityPayload,
+} from "./keycloak-roles";
 
 const ACCESS_TOKEN_TTL = "15m";
 const REFRESH_TOKEN_DAYS = 7;
@@ -30,6 +42,7 @@ const publicUserSelect = {
   targetJlptLevel: true,
   studyGoalMinutes: true,
   googleId: true,
+  keycloakId: true,
   passwordHash: true,
   createdAt: true,
 } as const;
@@ -44,16 +57,20 @@ type PublicUserRow = {
   targetJlptLevel: string | null;
   studyGoalMinutes: number | null;
   googleId: string | null;
+  keycloakId: string | null;
   passwordHash: string | null;
   createdAt: Date;
 };
 
 @Injectable()
 export class AuthService implements OnModuleInit {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private mail: MailService,
   ) {}
 
   async onModuleInit() {
@@ -100,7 +117,133 @@ export class AuthService implements OnModuleInit {
     });
 
     const tokens = await this.generateTokens(user);
+    void this.mail.sendWelcomeSafe({ toEmail: user.email, toName: user.name });
+    void this.sendVerificationOnRegister(user.id, user.email, user.name);
     return { ...tokens, user: this.toPublicUser(user) };
+  }
+
+  async sendVerificationOnRegister(
+    userId: number,
+    email: string,
+    name: string | null,
+  ): Promise<void> {
+    const rawToken = randomBytes(32).toString("base64url");
+    const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+    const expiresAt = new Date(
+      Date.now() + this.mail.verifyTokenTtlMinutes * 60 * 1000,
+    );
+    await this.prisma.emailVerificationToken.create({
+      data: { tokenHash, userId, expiresAt },
+    });
+    void this.mail.sendEmailVerificationSafe({
+      toEmail: email,
+      toName: name,
+      verifyToken: rawToken,
+    });
+  }
+
+  async verifyEmail(rawToken: string): Promise<{ message: string }> {
+    const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+    const record = await this.prisma.emailVerificationToken.findUnique({
+      where: { tokenHash },
+    });
+
+    if (!record || record.usedAt || record.expiresAt < new Date()) {
+      throw new BadRequestException(
+        "Link xác thực không hợp lệ hoặc đã hết hạn",
+      );
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: record.userId },
+        data: { emailVerifiedAt: new Date() },
+      }),
+      this.prisma.emailVerificationToken.update({
+        where: { id: record.id },
+        data: { usedAt: new Date() },
+      }),
+    ]);
+
+    return { message: "Email đã được xác thực thành công" };
+  }
+
+  async resendVerification(userId: number): Promise<{ message: string }> {
+    const message = "Nếu email chưa được xác thực, chúng tôi đã gửi link mới.";
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, name: true, emailVerifiedAt: true },
+    });
+
+    if (!user || user.emailVerifiedAt) return { message };
+
+    // 5-minute cooldown
+    const recent = await this.prisma.emailVerificationToken.findFirst({
+      where: {
+        userId,
+        usedAt: null,
+        createdAt: { gte: new Date(Date.now() - 5 * 60 * 1000) },
+      },
+      select: { id: true },
+    });
+    if (recent) return { message };
+
+    await this.sendVerificationOnRegister(user.id, user.email, user.name);
+    return { message };
+  }
+
+  async getEmailPreferences(userId: number) {
+    const prefs = await this.prisma.emailPrefs.findUnique({
+      where: { userId },
+    });
+    return {
+      receiveProgress: prefs?.receiveProgress ?? true,
+      receiveStreak: prefs?.receiveStreak ?? true,
+    };
+  }
+
+  async updateEmailPreferences(
+    userId: number,
+    receiveProgress?: boolean,
+    receiveStreak?: boolean,
+  ) {
+    const prefs = await this.prisma.emailPrefs.upsert({
+      where: { userId },
+      create: {
+        userId,
+        receiveProgress: receiveProgress ?? true,
+        receiveStreak: receiveStreak ?? true,
+      },
+      update: {
+        ...(receiveProgress !== undefined ? { receiveProgress } : {}),
+        ...(receiveStreak !== undefined ? { receiveStreak } : {}),
+      },
+    });
+    return { receiveProgress: prefs.receiveProgress, receiveStreak: prefs.receiveStreak };
+  }
+
+  async updateEmailPreferencesByToken(
+    uid: number,
+    token: string,
+    receiveProgress?: boolean,
+    receiveStreak?: boolean,
+  ) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: uid },
+      select: { id: true, email: true },
+    });
+    if (!user) throw new NotFoundException("Không tìm thấy tài khoản");
+
+    const unsubscribeSecret =
+      this.configService.get<string>("mail.unsubscribeSecret") ??
+      this.configService.get<string>("jwt.secret") ??
+      "dev-unsub-secret";
+
+    if (!verifyUnsubscribeToken(uid, user.email, token, unsubscribeSecret)) {
+      throw new ForbiddenException("Token không hợp lệ");
+    }
+
+    return this.updateEmailPreferences(uid, receiveProgress, receiveStreak);
   }
 
   async login(dto: LoginDto) {
@@ -114,6 +257,106 @@ export class AuthService implements OnModuleInit {
       ...tokens,
       user: this.toPublicUser(user),
     };
+  }
+
+  async loginWithOidc(dto: OidcAuthDto) {
+    const keycloakUrl =
+      this.configService.get<string>("keycloak.url") ??
+      process.env.KEYCLOAK_URL ??
+      "http://localhost:8080";
+    const issuer =
+      this.configService.get<string>("keycloak.issuer") ??
+      process.env.KEYCLOAK_ISSUER ??
+      "http://auth.localhost:8080/realms/edu-app";
+    const realm =
+      this.configService.get<string>("keycloak.realm") ??
+      process.env.KEYCLOAK_REALM ??
+      "edu-app";
+
+    const jwksUrl = new URL(
+      `/realms/${realm}/protocol/openid-connect/certs`,
+      keycloakUrl.endsWith("/") ? keycloakUrl : `${keycloakUrl}/`,
+    );
+    const JWKS = createRemoteJWKSet(jwksUrl);
+
+    let payload: KeycloakIdentityPayload;
+
+    try {
+      // Access token phải hợp lệ (session Keycloak còn sống)
+      await jwtVerify(dto.accessToken, JWKS, { issuer });
+      const identityJwt = dto.idToken?.trim() || dto.accessToken;
+      const verified = await jwtVerify(identityJwt, JWKS, { issuer });
+      payload = verified.payload as KeycloakIdentityPayload;
+
+      // Merge access token so realm_access + app_roles mapper are available
+      try {
+        const accessVerified = await jwtVerify(dto.accessToken, JWKS, {
+          issuer,
+        });
+        const accessPayload = accessVerified.payload as KeycloakIdentityPayload;
+        payload = {
+          ...accessPayload,
+          ...payload,
+          sub: payload.sub ?? accessPayload.sub,
+          realm_access: payload.realm_access ?? accessPayload.realm_access,
+          app_roles: payload.app_roles ?? accessPayload.app_roles,
+        };
+      } catch {
+        // identity token already verified above
+      }
+    } catch {
+      throw new UnauthorizedException("Token Keycloak không hợp lệ");
+    }
+
+    if (!payload.sub) {
+      throw new UnauthorizedException(
+        "Token Keycloak thiếu subject — gửi kèm idToken (OIDC)",
+      );
+    }
+
+    const email = (
+      payload.email ??
+      (payload.preferred_username?.includes("@")
+        ? payload.preferred_username
+        : null) ??
+      `${payload.sub}@keycloak.local`
+    ).toLowerCase();
+
+    const roles = extractKeycloakRoles(payload);
+    const role = mapKeycloakRolesToAppRole(roles);
+    const keycloakId = payload.sub;
+    const displayName = payload.name ?? payload.preferred_username ?? null;
+
+    let user = await this.prisma.user.findFirst({
+      where: { OR: [{ keycloakId }, { email }] },
+      select: publicUserSelect,
+    });
+
+    if (user) {
+      user = await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          keycloakId: user.keycloakId ?? keycloakId,
+          name: user.name ?? displayName,
+          // Sync role from Keycloak on every OIDC login (admin > teacher > user)
+          role,
+        },
+        select: publicUserSelect,
+      });
+    } else {
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          keycloakId,
+          name: displayName,
+          role,
+        },
+        select: publicUserSelect,
+      });
+    }
+
+    const tokens = await this.generateTokens(user);
+    return { ...tokens, user: this.toPublicUser(user) };
   }
 
   async loginWithGoogle(dto: GoogleAuthDto) {
@@ -268,12 +511,129 @@ export class AuthService implements OnModuleInit {
     return this.toPublicUser(user);
   }
 
+  /**
+   * Always returns the same message (anti-enumeration).
+   * Only local password accounts receive a reset email.
+   */
+  async forgotPassword(email: string): Promise<{ message: string }> {
+    const message =
+      "Nếu email tồn tại và đăng nhập bằng mật khẩu, chúng tôi đã gửi hướng dẫn đặt lại.";
+    const normalized = email.trim().toLowerCase();
+    const user = await this.prisma.user.findUnique({
+      where: { email: normalized },
+      select: { id: true, email: true, name: true, passwordHash: true },
+    });
+
+    if (!user?.passwordHash) {
+      return { message };
+    }
+
+    // 5-minute per-user cooldown — prevents quota exhaustion from distributed abuse
+    const recentToken = await this.prisma.passwordResetToken.findFirst({
+      where: {
+        userId: user.id,
+        usedAt: null,
+        createdAt: { gte: new Date(Date.now() - 5 * 60 * 1000) },
+      },
+      select: { id: true },
+    });
+    if (recentToken) {
+      return { message };
+    }
+
+    await this.prisma.passwordResetToken.updateMany({
+      where: { userId: user.id, usedAt: null },
+      data: { usedAt: new Date() },
+    });
+
+    const rawToken = randomBytes(32).toString("base64url");
+    const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+    const expiresAt = new Date(
+      Date.now() + this.mail.resetTokenTtlMinutes * 60 * 1000,
+    );
+
+    await this.prisma.passwordResetToken.create({
+      data: {
+        tokenHash,
+        userId: user.id,
+        expiresAt,
+      },
+    });
+
+    try {
+      await this.mail.sendPasswordReset({
+        toEmail: user.email,
+        toName: user.name,
+        resetToken: rawToken,
+      });
+    } catch (err) {
+      this.logger.error(
+        { err, userId: user.id },
+        "Password reset email failed",
+      );
+      // Still return generic message — do not leak mail infra status to clients.
+    }
+
+    return { message };
+  }
+
+  async resetPassword(
+    rawToken: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
+    const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+    const record = await this.prisma.passwordResetToken.findUnique({
+      where: { tokenHash },
+      include: { user: { select: { id: true, email: true, name: true } } },
+    });
+
+    if (
+      !record ||
+      record.usedAt ||
+      record.expiresAt.getTime() < Date.now()
+    ) {
+      throw new BadRequestException(
+        "Link đặt lại mật khẩu không hợp lệ hoặc đã hết hạn",
+      );
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: record.userId },
+        data: { passwordHash },
+      }),
+      this.prisma.passwordResetToken.update({
+        where: { id: record.id },
+        data: { usedAt: new Date() },
+      }),
+      this.prisma.passwordResetToken.updateMany({
+        where: { userId: record.userId, usedAt: null },
+        data: { usedAt: new Date() },
+      }),
+      this.prisma.refreshToken.updateMany({
+        where: { userId: record.userId, revoked: false },
+        data: { revoked: true },
+      }),
+    ]);
+
+    // Notify owner: if this wasn't them, they can contact support immediately
+    void this.mail.sendPasswordChangedSafe({
+      toEmail: record.user.email,
+      toName: record.user.name,
+    });
+
+    return { message: "Đã đặt lại mật khẩu. Hãy đăng nhập lại." };
+  }
+
   toPublicUser(user: PublicUserRow) {
-    const { passwordHash, googleId, ...rest } = user;
+    const { passwordHash, googleId, keycloakId, ...rest } = user;
     return {
       ...rest,
       hasPassword: !!passwordHash,
       isGoogleLinked: !!googleId,
+      isKeycloakLinked: !!keycloakId,
     };
   }
 

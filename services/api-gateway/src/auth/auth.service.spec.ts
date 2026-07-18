@@ -5,6 +5,7 @@ import { ConflictException, UnauthorizedException } from "@nestjs/common";
 import { Role } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 import { PrismaService } from "@app/prisma";
+import { MailService } from "@app/common";
 import { AuthService } from "./auth.service";
 
 jest.mock("bcryptjs");
@@ -48,6 +49,14 @@ describe("AuthService", () => {
           provide: ConfigService,
           useValue: { get: jest.fn().mockReturnValue("test-value") },
         },
+        {
+          provide: MailService,
+          useValue: {
+            sendWelcomeSafe: jest.fn().mockResolvedValue(undefined),
+            sendPasswordReset: jest.fn().mockResolvedValue(undefined),
+            resetTokenTtlMinutes: 30,
+          },
+        },
       ],
     }).compile();
 
@@ -75,6 +84,7 @@ describe("AuthService", () => {
         targetJlptLevel: null,
         studyGoalMinutes: 30,
         googleId: null,
+        keycloakId: null,
         createdAt: new Date(),
       });
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
@@ -95,6 +105,7 @@ describe("AuthService", () => {
         targetJlptLevel: null,
         studyGoalMinutes: 30,
         googleId: null,
+        keycloakId: null,
         createdAt: new Date(),
       };
       prisma.user.findUnique.mockResolvedValue(user);
@@ -133,6 +144,7 @@ describe("AuthService", () => {
         targetJlptLevel: null,
         studyGoalMinutes: 30,
         googleId: null,
+        keycloakId: null,
         passwordHash: "hashed",
         createdAt: new Date(),
       });

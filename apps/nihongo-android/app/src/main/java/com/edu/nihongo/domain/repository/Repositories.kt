@@ -14,6 +14,7 @@ interface VocabularyRepository {
 
 interface AuthRepository {
     suspend fun login(email: String, password: String): Result<Unit>
+    suspend fun loginWithOidc(accessToken: String, idToken: String?): Result<Unit>
     suspend fun logout()
     suspend fun isLoggedIn(): Boolean
 }

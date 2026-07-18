@@ -219,6 +219,13 @@ export const routes: Routes = [
           import('./features/auth/login-page.component').then((m) => m.LoginPageComponent),
       },
       {
+        path: 'auth/callback',
+        loadComponent: () =>
+          import('./features/auth/auth-callback-page.component').then(
+            (m) => m.AuthCallbackPageComponent,
+          ),
+      },
+      {
         path: 'profile',
         canActivate: [authGuard],
         loadComponent: () =>

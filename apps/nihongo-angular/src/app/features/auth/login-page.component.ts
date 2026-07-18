@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiError } from '../../core/http/api-client';
 import { GoogleSignInButtonComponent } from '../../shared/google-sign-in-button/google-sign-in-button.component';
+import { isKeycloakConfigured, startKeycloakLogin } from '../../core/utils/keycloak.util';
 
 type AuthMode = 'login' | 'register';
 
@@ -22,7 +23,10 @@ export class LoginPageComponent {
     this.route.snapshot.queryParamMap.get('mode') === 'register' ? 'register' : 'login',
   );
   readonly loading = signal(false);
+  readonly kcLoading = signal(false);
   readonly error = signal('');
+  readonly keycloakEnabled = isKeycloakConfigured();
+  readonly showDevLogin = signal(!this.keycloakEnabled);
 
   email = '';
   password = '';
@@ -46,6 +50,27 @@ export class LoginPageComponent {
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
+  }
+
+  revealDevLogin(): void {
+    this.showDevLogin.set(true);
+  }
+
+  async onKeycloak(): Promise<void> {
+    this.error.set('');
+    this.kcLoading.set(true);
+    try {
+      const redirect = this.redirectUrl;
+      if (redirect && redirect !== '/') {
+        sessionStorage.setItem('kc_post_login_redirect', redirect);
+      } else {
+        sessionStorage.removeItem('kc_post_login_redirect');
+      }
+      await startKeycloakLogin();
+    } catch (err) {
+      this.error.set(err instanceof Error ? err.message : 'Không mở được Keycloak');
+      this.kcLoading.set(false);
+    }
   }
 
   onGoogleSuccess(role: string): void {

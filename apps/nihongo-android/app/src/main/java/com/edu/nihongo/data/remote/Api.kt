@@ -17,9 +17,31 @@ data class VocabDto(
 
 data class LoginRequest(val email: String, val password: String)
 
+data class OidcRequest(
+    val accessToken: String,
+    val idToken: String? = null,
+)
+
 data class LoginResponse(
     @SerializedName("access_token") val accessToken: String?,
 )
+
+/** Gateway wraps payloads as `{ success, data }`. */
+data class ApiEnvelope<T>(
+    val success: Boolean? = null,
+    val data: T? = null,
+)
+
+interface AuthApi {
+    @POST("auth/login")
+    suspend fun login(@Body body: LoginRequest): ApiEnvelope<LoginResponse>
+
+    @POST("auth/oidc")
+    suspend fun loginOidc(@Body body: OidcRequest): ApiEnvelope<LoginResponse>
+
+    @POST("auth/logout")
+    suspend fun logout()
+}
 
 data class TranslateRequest(
     val text: String,
@@ -38,14 +60,6 @@ interface VocabularyApi {
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 100,
     ): Any
-}
-
-interface AuthApi {
-    @POST("auth/login")
-    suspend fun login(@Body body: LoginRequest): LoginResponse
-
-    @POST("auth/logout")
-    suspend fun logout()
 }
 
 interface TranslateApi {

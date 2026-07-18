@@ -2,12 +2,26 @@
   <div class="auth-card glass-panel">
     <h1>{{ mode() === 'register' ? 'Tạo tài khoản' : 'Đăng nhập' }}</h1>
     <p class="auth-sub">
-      @if (mode() === 'register') {
+      @if (keycloakEnabled) {
+        Đăng nhập qua Keycloak (OIDC) để đồng bộ tiến độ học
+      } @else if (mode() === 'register') {
         Dùng Gmail để đăng ký nhanh, hoặc email + mật khẩu bên dưới
       } @else {
         Đăng nhập bằng Gmail hoặc email để đồng bộ tiến độ học
       }
     </p>
+
+    @if (keycloakEnabled) {
+      <button
+        type="button"
+        class="btn btn-primary btn-block"
+        [disabled]="kcLoading()"
+        (click)="onKeycloak()"
+      >
+        {{ kcLoading() ? 'Đang chuyển tới Keycloak...' : 'Đăng nhập Keycloak' }}
+      </button>
+      <div class="auth-divider">hoặc</div>
+    }
 
     <div class="auth-tabs" role="tablist" aria-label="Chọn đăng nhập hoặc đăng ký">
       <button
@@ -38,54 +52,68 @@
       (googleSuccess)="onGoogleSuccess($event)"
     />
 
-    <div class="auth-divider">
-      hoặc dùng email@if (mode() === 'register') { & mật khẩu }
-    </div>
-
-    <form (ngSubmit)="submit()" class="auth-form">
-      @if (error()) {
-        <p class="auth-error">{{ error() }}</p>
-      }
-
-      <div class="auth-field">
-        <label>
-          Email
-          <input
-            type="email"
-            [(ngModel)]="email"
-            name="email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            required
-          />
-        </label>
-      </div>
-
-      <div class="auth-field">
-        <label>
-          Mật khẩu
-          <input
-            type="password"
-            [(ngModel)]="password"
-            name="password"
-            [attr.autocomplete]="mode() === 'register' ? 'new-password' : 'current-password'"
-            placeholder="Tối thiểu 8 ký tự"
-            minlength="8"
-            required
-          />
-        </label>
-      </div>
-
-      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">
-        {{
-          loading()
-            ? 'Đang xử lý...'
-            : mode() === 'register'
-              ? 'Tạo tài khoản'
-              : 'Đăng nhập'
-        }}
+    @if (keycloakEnabled && !showDevLogin()) {
+      <button type="button" class="btn btn-ghost btn-block" style="margin-top: 0.75rem" (click)="revealDevLogin()">
+        Dev login (email / mật khẩu)
       </button>
-    </form>
+    } @else {
+      <div class="auth-divider">
+        @if (keycloakEnabled) {
+          Dev login
+        } @else {
+          hoặc dùng email@if (mode() === 'register') { & mật khẩu }
+        }
+      </div>
+
+      <form (ngSubmit)="submit()" class="auth-form">
+        @if (error()) {
+          <p class="auth-error">{{ error() }}</p>
+        }
+
+        <div class="auth-field">
+          <label>
+            Email
+            <input
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              required
+            />
+          </label>
+        </div>
+
+        <div class="auth-field">
+          <label>
+            Mật khẩu
+            <input
+              type="password"
+              [(ngModel)]="password"
+              name="password"
+              [attr.autocomplete]="mode() === 'register' ? 'new-password' : 'current-password'"
+              placeholder="Tối thiểu 8 ký tự"
+              minlength="8"
+              required
+            />
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">
+          {{
+            loading()
+              ? 'Đang xử lý...'
+              : mode() === 'register'
+                ? 'Tạo tài khoản'
+                : 'Đăng nhập'
+          }}
+        </button>
+      </form>
+    }
+
+    @if (error() && !showDevLogin()) {
+      <p class="auth-error">{{ error() }}</p>
+    }
 
     <p class="auth-footer-link">
       <a routerLink="/">← Về trang chủ</a>
