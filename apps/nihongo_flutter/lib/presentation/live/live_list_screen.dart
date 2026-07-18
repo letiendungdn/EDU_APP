@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/routes.dart';
 import '../../data/remote/live_api.dart';
 import '../../providers.dart';
 
@@ -80,7 +81,7 @@ class _LiveListScreenState extends ConsumerState<LiveListScreen> {
     try {
       final res = await ref.read(liveApiProvider).createSession(title);
       if (!mounted) return;
-      context.push('/live/host', extra: res);
+      context.push(Routes.liveHost, extra: res);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

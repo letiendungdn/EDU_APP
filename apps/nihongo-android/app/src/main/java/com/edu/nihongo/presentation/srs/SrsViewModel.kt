@@ -17,6 +17,9 @@ import javax.inject.Inject
 data class SrsUiState(
     val cards: List<ReviewCard> = emptyList(),
     val error: String? = null,
+    val sessionTotal: Int = 0,
+    val sessionCorrect: Int = 0,
+    val isDone: Boolean = false,
 )
 
 @HiltViewModel
@@ -30,17 +33,32 @@ class SrsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getReviewQueue().collect { cards ->
-                _uiState.update { it.copy(cards = cards) }
+                _uiState.update { state ->
+                    state.copy(
+                        cards = cards,
+                        isDone = cards.isEmpty() && state.sessionTotal > 0,
+                    )
+                }
             }
         }
     }
 
     fun onCardReviewed(card: ReviewCard, quality: Int) {
         viewModelScope.launch {
+            _uiState.update { state ->
+                state.copy(
+                    sessionTotal = state.sessionTotal + 1,
+                    sessionCorrect = if (quality >= 3) state.sessionCorrect + 1 else state.sessionCorrect,
+                )
+            }
             val updated = SrsAlgorithm.calculateNextReview(card.card, quality)
             vocabRepo.updateSrsCard(updated).onFailure { e ->
                 _uiState.update { it.copy(error = e.message) }
             }
         }
+    }
+
+    fun resetSession() {
+        _uiState.update { it.copy(sessionTotal = 0, sessionCorrect = 0, isDone = false) }
     }
 }

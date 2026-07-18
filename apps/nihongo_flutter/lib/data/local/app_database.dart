@@ -1,10 +1,5 @@
-import 'dart:io';
-
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 
 part 'app_database.g.dart';
 
@@ -187,13 +182,12 @@ class AppDatabase extends _$AppDatabase {
   }
 }
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    if (Platform.isAndroid || Platform.isIOS) {
-      return driftDatabase(name: 'edu_app.db');
-    }
-    final dir = await getApplicationSupportDirectory();
-    final file = File(p.join(dir.path, 'edu_app.db'));
-    return NativeDatabase.createInBackground(file);
-  });
+QueryExecutor _openConnection() {
+  return driftDatabase(
+    name: 'edu_app_db',
+    web: DriftWebOptions(
+      sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+      driftWorker: Uri.parse('drift_worker.js'),
+    ),
+  );
 }

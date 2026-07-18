@@ -20,8 +20,9 @@ android {
         buildConfigField(
             "String",
             "API_BASE_URL",
-            "\"http://10.0.2.2:8080/api/\"",
+            "\"http://10.0.2.2:3000/api/\"",
         )
+        buildConfigField("String", "GEMINI_API_KEY", "\"\"") // set via local.properties or CI
     }
 
     buildTypes {

@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 class TtsService {
@@ -15,7 +15,7 @@ class TtsService {
     await _tts.setVolume(1.0);
     await _tts.setPitch(1.0);
     // Android: chọn engine TTS tốt nhất có sẵn
-    if (Platform.isAndroid) {
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
       await _tts.setQueueMode(1); // flush queue before speak
     }
     _ready = true;

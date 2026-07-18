@@ -6,6 +6,7 @@ import 'data/remote/ai_tutor_api.dart';
 import 'data/remote/auth_api.dart';
 import 'data/remote/dio_factory.dart';
 import 'data/remote/live_api.dart';
+import 'data/remote/sentence_practice_api.dart';
 import 'data/remote/translate_api.dart';
 import 'data/remote/vocabulary_api.dart';
 import 'data/repository/vocabulary_repository_impl.dart';
@@ -78,3 +79,5 @@ final selectedLessonProvider = StateProvider<int>((ref) => 1);
 final aiTutorApiProvider = Provider(
   (ref) => AiTutorApi(ref.watch(dioProvider)),
 );
+
+final sentencePracticeApiProvider = Provider((_) => SentencePracticeApi());

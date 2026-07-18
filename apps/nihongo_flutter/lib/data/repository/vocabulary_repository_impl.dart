@@ -91,14 +91,18 @@ class VocabularyRepositoryImpl implements VocabularyRepository {
 
       for (var i = 0; i < remote.length; i++) {
         final json = remote[i];
-        final id = json['id'] as int;
+        final id = json['id'] as int? ?? 0;
+        final kana = json['kana'] as String? ?? '';
+        final meaning = json['meaning'] as String? ?? '';
+        if (id == 0 || kana.isEmpty || meaning.isEmpty) continue;
+
         companions.add(
           VocabularyTableCompanion.insert(
             id: Value(id),
             lessonNumber: lessonNumber,
-            kana: json['kana'] as String,
+            kana: kana,
             kanji: Value(json['kanji'] as String?),
-            meaning: json['meaning'] as String,
+            meaning: meaning,
             romaji: Value(json['romaji'] as String? ?? ''),
             sortOrder: i,
             syncStatus: const Value('synced'),

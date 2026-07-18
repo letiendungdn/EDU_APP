@@ -27,7 +27,9 @@ class VocabularyApi {
           .toList();
     }
 
-    final data = body['data'];
+    // Unwrap one or two levels: { data: [...] } or { data: { data: [...] } }
+    var data = body['data'];
+    if (data is Map) data = data['data'];
     if (data is List) {
       return data
           .map((e) => Map<String, dynamic>.from(e as Map))

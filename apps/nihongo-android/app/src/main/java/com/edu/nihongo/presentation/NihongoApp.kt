@@ -12,6 +12,7 @@ import com.edu.nihongo.presentation.live.LiveHostScreen
 import com.edu.nihongo.presentation.live.LiveListScreen
 import com.edu.nihongo.presentation.live.LiveViewerScreen
 import com.edu.nihongo.presentation.login.LoginScreen
+import com.edu.nihongo.presentation.sentence_practice.SentencePracticeScreen
 import com.edu.nihongo.presentation.srs.SrsScreen
 import com.edu.nihongo.presentation.vocab.VocabScreen
 
@@ -24,6 +25,7 @@ object Routes {
     const val LIVE = "live"
     const val LIVE_VIEWER = "live/viewer"
     const val LIVE_HOST = "live/host"
+    const val SENTENCE_PRACTICE = "sentence-practice"
 
     fun vocab(lesson: Int) = "vocab/$lesson"
 }
@@ -40,6 +42,7 @@ fun NihongoApp() {
                 onLogin = { navController.navigate(Routes.LOGIN) },
                 onCamera = { navController.navigate(Routes.CAMERA) },
                 onLive = { navController.navigate(Routes.LIVE) },
+                onSentencePractice = { navController.navigate(Routes.SENTENCE_PRACTICE) },
             )
         }
         composable(
@@ -73,6 +76,9 @@ fun NihongoApp() {
         }
         composable(Routes.LIVE_HOST) {
             LiveHostScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.SENTENCE_PRACTICE) {
+            SentencePracticeScreen(onBack = { navController.popBackStack() })
         }
     }
 }

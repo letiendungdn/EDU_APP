@@ -14,23 +14,28 @@ class VocabScreen extends ConsumerStatefulWidget {
 
 class _VocabScreenState extends ConsumerState<VocabScreen> {
   bool _syncing = false;
-  String? _speakingId; // track which tile is playing
+  int? _speakingId;
+  // Tracks which lessons we've already attempted auto-sync for this session.
+  final Set<int> _autoSyncedLessons = {};
 
-  Future<void> _syncLesson() async {
+  Future<void> _syncLesson({bool silent = false}) async {
+    if (_syncing) return;
     setState(() => _syncing = true);
     final lesson = ref.read(selectedLessonProvider);
     final result = await ref.read(vocabRepositoryProvider).syncLesson(lesson);
     if (!mounted) return;
     setState(() => _syncing = false);
 
+    if (silent) return; // auto-sync: no snackbar on success
     final message = switch (result) {
       Success() => 'Đã tải bài $lesson',
       Failure(:final error) => 'Lỗi: $error',
     };
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<void> _speak(String id, String text) async {
+  Future<void> _speak(int id, String text) async {
     setState(() => _speakingId = id);
     await TtsService.instance.speak(text);
     if (mounted) setState(() => _speakingId = null);
@@ -40,6 +45,7 @@ class _VocabScreenState extends ConsumerState<VocabScreen> {
   Widget build(BuildContext context) {
     final lesson = ref.watch(selectedLessonProvider);
     final vocabAsync = ref.watch(vocabByLessonProvider(lesson));
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -48,81 +54,211 @@ class _VocabScreenState extends ConsumerState<VocabScreen> {
           IconButton(
             onPressed: _syncing ? null : _syncLesson,
             icon: _syncing
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: scheme.primary),
                   )
-                : const Icon(Icons.cloud_download),
+                : const Icon(Icons.cloud_download_outlined),
             tooltip: 'Tải từ server',
           ),
         ],
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
+          // Lesson picker
+          Container(
+            margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            decoration: BoxDecoration(
+              color: scheme.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: scheme.outlineVariant),
+            ),
             child: Row(
               children: [
-                const Text('Bài'),
+                Text('Bài học',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: scheme.onSurfaceVariant)),
                 const SizedBox(width: 12),
-                DropdownButton<int>(
-                  value: lesson,
-                  items: List.generate(
-                    25,
-                    (i) => DropdownMenuItem(value: i + 1, child: Text('${i + 1}')),
+                Expanded(
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<int>(
+                      value: lesson,
+                      isExpanded: true,
+                      items: List.generate(
+                        50,
+                        (i) => DropdownMenuItem(
+                          value: i + 1,
+                          child: Text('Bài ${i + 1}'),
+                        ),
+                      ),
+                      onChanged: (v) {
+                        if (v != null) {
+                          ref.read(selectedLessonProvider.notifier).state = v;
+                        }
+                      },
+                    ),
                   ),
-                  onChanged: (v) {
-                    if (v != null) {
-                      ref.read(selectedLessonProvider.notifier).state = v;
-                    }
-                  },
                 ),
-                const Spacer(),
-                Text('${vocabAsync.valueOrNull?.length ?? 0} từ'),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: scheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${vocabAsync.valueOrNull?.length ?? 0} từ',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: scheme.onPrimaryContainer,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
+
+          const SizedBox(height: 8),
+
           Expanded(
             child: vocabAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Center(child: Text('Lỗi: $e')),
               data: (vocabList) {
                 if (vocabList.isEmpty) {
+                  // Auto-sync once per lesson per session when DB is empty.
+                  if (!_autoSyncedLessons.contains(lesson) && !_syncing) {
+                    _autoSyncedLessons.add(lesson);
+                    WidgetsBinding.instance.addPostFrameCallback(
+                      (_) => _syncLesson(silent: true),
+                    );
+                  }
+
                   return Center(
-                    child: Text(
-                      'Chưa có dữ liệu.\nBấm ☁ để tải bài $lesson (cần mạng).',
-                      textAlign: TextAlign.center,
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (_syncing)
+                            const CircularProgressIndicator()
+                          else
+                            Icon(Icons.cloud_download_outlined,
+                                size: 48,
+                                color: scheme.onSurfaceVariant
+                                    .withValues(alpha: 0.4)),
+                          const SizedBox(height: 16),
+                          Text(
+                            _syncing
+                                ? 'Đang tải bài $lesson…'
+                                : 'Chưa có dữ liệu bài $lesson',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: scheme.onSurfaceVariant),
+                            textAlign: TextAlign.center,
+                          ),
+                          if (!_syncing) ...[
+                            const SizedBox(height: 16),
+                            FilledButton.tonalIcon(
+                              onPressed: () => _syncLesson(),
+                              icon: const Icon(Icons.cloud_download_outlined,
+                                  size: 18),
+                              label: const Text('Tải từ server'),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
                   );
                 }
-                return ListView.separated(
+
+                return ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                   itemCount: vocabList.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final v = vocabList[index];
-                    final speakText = v.kana;
-                    final isPlaying = _speakingId == '${v.id}';
-                    return ListTile(
-                      title: Text(
-                        v.kanji != null && v.kanji!.isNotEmpty
-                            ? '${v.kanji}（${v.kana}）'
-                            : v.kana,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      subtitle: Text('${v.meaning} · ${v.romaji}'),
-                      trailing: IconButton(
-                        icon: isPlaying
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : const Icon(Icons.volume_up_outlined),
-                        onPressed: isPlaying
-                            ? null
-                            : () => _speak('${v.id}', speakText),
-                        tooltip: 'Nghe phát âm',
+                    final isPlaying = _speakingId == v.id;
+                    final jpText = (v.kanji != null && v.kanji!.isNotEmpty)
+                        ? v.kanji!
+                        : v.kana;
+                    final subText = (v.kanji != null && v.kanji!.isNotEmpty)
+                        ? v.kana
+                        : v.romaji;
+
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+                        leading: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: scheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '${index + 1}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: scheme.onPrimaryContainer,
+                              ),
+                            ),
+                          ),
+                        ),
+                        title: Row(
+                          children: [
+                            Text(
+                              jpText,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                height: 1.2,
+                              ),
+                            ),
+                            if (v.kanji != null && v.kanji!.isNotEmpty) ...[
+                              const SizedBox(width: 8),
+                              Text(
+                                subText,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: scheme.primary,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            v.meaning,
+                            style: TextStyle(color: scheme.onSurfaceVariant),
+                          ),
+                        ),
+                        trailing: IconButton(
+                          icon: isPlaying
+                              ? SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: scheme.primary,
+                                  ),
+                                )
+                              : Icon(Icons.volume_up_rounded,
+                                  color: scheme.primary),
+                          onPressed: isPlaying
+                              ? null
+                              : () => _speak(v.id, v.kana),
+                          tooltip: 'Nghe phát âm',
+                        ),
                       ),
                     );
                   },

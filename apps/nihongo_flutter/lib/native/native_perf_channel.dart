@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -14,7 +12,8 @@ class NativePerfChannel {
 
   static const _channel = MethodChannel('com.edu.nihongo/native_perf');
 
-  static bool get isSupported => !kIsWeb && Platform.isAndroid;
+  static bool get isSupported =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
 
   /// Gộp các plane YUV trên thread native — tránh copy lớn trên Dart isolate UI.
   static Future<Uint8List?> concatenateYuvPlanes(List<Uint8List> planes) async {

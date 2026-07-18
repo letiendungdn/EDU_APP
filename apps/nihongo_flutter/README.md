@@ -8,12 +8,17 @@ App mobile học tiếng Nhật (EDU APP), kiến trúc Clean Architecture + Dri
 cd apps/nihongo_flutter
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
-flutter run
+flutter run                 # Android / iOS device
+flutter run -d chrome       # Web (Drift WASM trong web/)
 ```
+
+Chrome cần file `web/sqlite3.wasm` + `web/drift_worker.js` (đã có sẵn).  
+Màn **Dịch camera** trên web chỉ hiện stub (ML Kit không chạy browser).
 
 ## API base URL
 
-Mặc định Android emulator: `http://10.0.2.2:8080/api` (nginx Docker).
+- Android emulator: `http://10.0.2.2:8080/api`
+- Chrome / web: `http://localhost:8080/api` (Docker nginx)
 
 Máy thật / iOS simulator:
 

@@ -1,7 +1,60 @@
 import axios, { type AxiosInstance } from 'axios';
+import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
 
 import { API_BASE_URL } from '../config/api';
+
+// ─── Gemini direct REST ────────────────────────────────────────────────────
+
+const extra = Constants.expoConfig?.extra as { geminiApiKey?: string } | undefined;
+const GEMINI_KEY = extra?.geminiApiKey ?? '';
+const GEMINI_URL =
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+
+const SENTENCE_SYSTEM_PROMPT =
+  'Bạn là gia sư tiếng Nhật. Phản hồi JSON (không markdown): ' +
+  '{"corrected":"","reading":"","meaning":"","explanation":"","examples":[]}. ' +
+  'Nếu câu đúng để corrected rỗng.';
+
+export interface SentenceFeedback {
+  corrected: string;
+  reading: string;
+  meaning: string;
+  explanation: string;
+  examples: string[];
+}
+
+export async function analyzeSentence(sentence: string): Promise<SentenceFeedback> {
+  const body = {
+    system_instruction: { parts: [{ text: SENTENCE_SYSTEM_PROMPT }] },
+    contents: [{ role: 'user', parts: [{ text: sentence }] }],
+    generationConfig: { temperature: 0.3, maxOutputTokens: 512 },
+  };
+
+  const res = await fetch(GEMINI_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) throw new Error(`Gemini error: ${res.status}`);
+
+  const json = await res.json();
+  const raw: string =
+    json?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+
+  const fenceMatch = /```(?:json)?\s*([\s\S]*?)\s*```/.exec(raw);
+  const cleaned = (fenceMatch ? fenceMatch[1] : raw).trim();
+
+  const parsed = JSON.parse(cleaned) as Partial<SentenceFeedback>;
+  return {
+    corrected: parsed.corrected ?? '',
+    reading: parsed.reading ?? '',
+    meaning: parsed.meaning ?? '',
+    explanation: parsed.explanation ?? '',
+    examples: parsed.examples ?? [],
+  };
+}
 
 const TOKEN_KEY = 'access_token';
 
