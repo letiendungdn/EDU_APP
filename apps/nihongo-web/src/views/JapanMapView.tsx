@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { PREFECTURES, PREFECTURE_BY_CODE, TYPE_COLOR, TYPE_LABEL, type Prefecture } from '@/data/japan-prefectures';
+import type { Map as MapboxMap } from 'mapbox-gl';
+import { PREFECTURES, TYPE_COLOR, TYPE_LABEL, type Prefecture } from '@/data/japan-prefectures';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
 
@@ -17,8 +18,8 @@ const REGION_COLORS: Record<string, string> = {
 
 export default function JapanMapView() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<unknown>(null);
-  const markersRef = useRef<unknown[]>([]);
+  const mapRef = useRef<MapboxMap | null>(null);
+  const markersRef = useRef<{ remove: () => void }[]>([]);
 
   const [selected, setSelected] = useState<Prefecture | null>(null);
   const [filter, setFilter] = useState<string>('all');
@@ -49,14 +50,12 @@ export default function JapanMapView() {
     if (!mapContainerRef.current) return;
     if (!MAPBOX_TOKEN) return;
 
-    let map: ReturnType<typeof import('mapbox-gl')['Map']['prototype']['constructor']>;
+    let map: MapboxMap;
 
     import('mapbox-gl').then((mapboxgl) => {
-      // @ts-expect-error -- mapbox-gl default export typing
-      const Mapbox = mapboxgl.default ?? mapboxgl;
-      Mapbox.accessToken = MAPBOX_TOKEN;
+      (mapboxgl as typeof mapboxgl & { accessToken: string }).accessToken = MAPBOX_TOKEN;
 
-      map = new Mapbox.Map({
+      map = new mapboxgl.Map({
         container: mapContainerRef.current!,
         style: 'mapbox://styles/mapbox/light-v11',
         center: [137.0, 36.5],
@@ -72,32 +71,26 @@ export default function JapanMapView() {
         PREFECTURES.forEach((pref) => {
           const el = document.createElement('div');
           const color = REGION_COLORS[pref.region] ?? '#6b7280';
-          el.innerHTML = `
-            <div style="
-              width:36px;height:36px;border-radius:50%;
-              background:${color};color:#fff;
-              display:flex;align-items:center;justify-content:center;
-              font-size:11px;font-weight:700;font-family:serif;
-              cursor:pointer;border:2px solid #fff;
-              box-shadow:0 2px 8px rgba(0,0,0,0.25);
-              transition:transform 0.15s;
-              user-select:none;
-            ">${pref.nameJa.replace(/[都道府県]$/, '').slice(0, 2)}</div>
-          `;
-          el.style.width = '36px';
-          el.style.height = '36px';
-          el.addEventListener('mouseenter', () => {
-            (el.firstElementChild as HTMLElement).style.transform = 'scale(1.25)';
+          const inner = document.createElement('div');
+          inner.textContent = pref.nameJa.replace(/[都道府県]$/, '').slice(0, 2);
+          Object.assign(inner.style, {
+            width: '36px', height: '36px', borderRadius: '50%',
+            background: color, color: '#fff',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '11px', fontWeight: '700', fontFamily: 'serif',
+            cursor: 'pointer', border: '2px solid #fff',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+            transition: 'transform 0.15s', userSelect: 'none',
           });
-          el.addEventListener('mouseleave', () => {
-            (el.firstElementChild as HTMLElement).style.transform = 'scale(1)';
-          });
+          el.appendChild(inner);
+          el.addEventListener('mouseenter', () => { inner.style.transform = 'scale(1.25)'; });
+          el.addEventListener('mouseleave', () => { inner.style.transform = 'scale(1)'; });
           el.addEventListener('click', () => {
             setSelected(pref);
             markVisited(pref.code);
           });
 
-          const marker = new Mapbox.Marker({ element: el })
+          const marker = new mapboxgl.Marker({ element: el })
             .setLngLat([pref.lng, pref.lat])
             .addTo(map);
           markersRef.current.push(marker);
@@ -129,8 +122,7 @@ export default function JapanMapView() {
     setQuizQuestion({ pref, choices });
     setQuizFeedback(null);
     // Fly to location
-    const m = mapRef.current as { flyTo: (opts: unknown) => void } | null;
-    m?.flyTo({ center: [pref.lng, pref.lat], zoom: 6.5, duration: 800 });
+    mapRef.current?.flyTo({ center: [pref.lng, pref.lat], zoom: 6.5, duration: 800 });
   }
 
   function answerQuiz(choice: string) {

@@ -58,6 +58,16 @@ const NAV_GROUPS = [
     ],
   },
   {
+    label: 'Công cụ',
+    items: [
+      { href: '/tools',          icon: '🎨', label: 'Canvas Tools' },
+      { href: '/kanji-practice', icon: '✏️', label: 'Luyện viết Kanji' },
+      { href: '/whiteboard',     icon: '🖊',  label: 'Bảng trắng' },
+      { href: '/worksheet',      icon: '📄', label: 'Tạo bài tập' },
+      { href: '/japan-map',      icon: '🗾', label: 'Bản đồ Nhật Bản' },
+    ],
+  },
+  {
     label: 'Khác',
     items: [
       { href: '/community', icon: '👥', label: 'Cộng đồng' },
