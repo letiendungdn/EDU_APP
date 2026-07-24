@@ -13,6 +13,7 @@ data class VocabDto(
     val meaning: String?,
     val romaji: String?,
     @SerializedName("lessonNumber") val lessonNumber: Int? = null,
+    @SerializedName("lessonId") val lessonId: Int? = null,
 )
 
 data class LoginRequest(val email: String, val password: String)
@@ -59,10 +60,37 @@ interface VocabularyApi {
         @Query("lessonNumber") lessonNumber: Int,
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 100,
-    ): Any
+    ): ApiEnvelope<VocabPageDto>
 }
+
+/** Paginated list nested under envelope.data */
+data class VocabPageDto(
+    val data: List<VocabDto>? = null,
+    val total: Int? = null,
+    val page: Int? = null,
+    val limit: Int? = null,
+)
 
 interface TranslateApi {
     @POST("translate")
     suspend fun translate(@Body body: TranslateRequest): TranslateResponse
+}
+
+data class LessonDto(
+    val id: Long,
+    @SerializedName("lessonNumber") val lessonNumber: Int,
+    val title: String? = null,
+    val description: String? = null,
+    @SerializedName("_count") val count: LessonCountDto? = null,
+)
+
+data class LessonCountDto(
+    val vocabularies: Int? = null,
+    val grammars: Int? = null,
+    val exercises: Int? = null,
+)
+
+interface LessonsApi {
+    @GET("lessons")
+    suspend fun list(): ApiEnvelope<List<LessonDto>>
 }

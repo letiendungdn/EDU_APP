@@ -34,15 +34,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
+private val OnlineGreen = Color(0xFF16A34A)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onVocab: (Int) -> Unit,
+    onVocab: () -> Unit,
     onSrs: () -> Unit,
     onLogin: () -> Unit,
     onCamera: () -> Unit,
@@ -61,11 +63,8 @@ fun HomeScreen(
                         imageVector = if (isOnline) Icons.Default.CloudDone else Icons.Default.CloudOff,
                         contentDescription = if (isOnline) "Online" else "Offline",
                         modifier = Modifier.padding(end = 16.dp),
-                        tint = if (isOnline) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.error
-                        },
+                        // primary theme đang là đỏ — không dùng primary cho online kẻo nhìn như lỗi mạng
+                        tint = if (isOnline) OnlineGreen else MaterialTheme.colorScheme.error,
                     )
                 },
             )
@@ -104,10 +103,10 @@ fun HomeScreen(
 
             item {
                 NavCard(
-                    title = "Từ vựng bài 1",
-                    subtitle = "Đọc offline từ SQLite, sync khi có mạng",
+                    title = "Từ vựng",
+                    subtitle = "50 bài Minna — sync khi có mạng",
                     icon = Icons.Rounded.LibraryBooks,
-                    onClick = { onVocab(1) },
+                    onClick = onVocab,
                 )
             }
             item {

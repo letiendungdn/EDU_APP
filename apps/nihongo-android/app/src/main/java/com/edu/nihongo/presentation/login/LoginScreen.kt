@@ -96,6 +96,7 @@ fun LoginScreen(
                         runCatching {
                             val config = keycloakAuth.fetchServiceConfig()
                             launcher.launch(keycloakAuth.createAuthIntent(config))
+                            viewModel.setLoading(false)
                         }.onFailure { e ->
                             viewModel.setError(e.message ?: "Không mở được Keycloak")
                         }

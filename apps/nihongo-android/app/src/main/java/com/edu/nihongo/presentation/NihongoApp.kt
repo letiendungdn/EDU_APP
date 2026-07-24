@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.edu.nihongo.presentation.camera.CameraTranslateScreen
 import com.edu.nihongo.presentation.home.HomeScreen
+import com.edu.nihongo.presentation.lessons.LessonListScreen
 import com.edu.nihongo.presentation.live.LiveHostScreen
 import com.edu.nihongo.presentation.live.LiveListScreen
 import com.edu.nihongo.presentation.live.LiveViewerScreen
@@ -18,6 +19,7 @@ import com.edu.nihongo.presentation.vocab.VocabScreen
 
 object Routes {
     const val HOME = "home"
+    const val LESSONS = "lessons"
     const val VOCAB = "vocab/{lesson}"
     const val SRS = "srs"
     const val LOGIN = "login"
@@ -37,12 +39,18 @@ fun NihongoApp() {
     NavHost(navController = navController, startDestination = Routes.HOME) {
         composable(Routes.HOME) {
             HomeScreen(
-                onVocab = { lesson -> navController.navigate(Routes.vocab(lesson)) },
+                onVocab = { navController.navigate(Routes.LESSONS) },
                 onSrs = { navController.navigate(Routes.SRS) },
                 onLogin = { navController.navigate(Routes.LOGIN) },
                 onCamera = { navController.navigate(Routes.CAMERA) },
                 onLive = { navController.navigate(Routes.LIVE) },
                 onSentencePractice = { navController.navigate(Routes.SENTENCE_PRACTICE) },
+            )
+        }
+        composable(Routes.LESSONS) {
+            LessonListScreen(
+                onBack = { navController.popBackStack() },
+                onOpenLesson = { lesson -> navController.navigate(Routes.vocab(lesson)) },
             )
         }
         composable(

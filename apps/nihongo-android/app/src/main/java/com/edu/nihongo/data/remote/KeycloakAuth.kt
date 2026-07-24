@@ -4,10 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.edu.nihongo.BuildConfig
+import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.ResponseTypeValues
+import net.openid.appauth.connectivity.ConnectionBuilder
+import java.net.HttpURLConnection
+import java.net.URL
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -27,21 +32,45 @@ data class KeycloakTokens(
     val idToken: String?,
 )
 
+/**
+ * AppAuth mặc định chỉ cho HTTPS — local Keycloak (http://10.0.2.2:8080) cần builder này.
+ */
+private object HttpConnectionBuilder : ConnectionBuilder {
+    private val CONNECTION_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(15).toInt()
+    private val READ_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(20).toInt()
+
+    override fun openConnection(uri: Uri): HttpURLConnection {
+        val connection = URL(uri.toString()).openConnection() as HttpURLConnection
+        connection.connectTimeout = CONNECTION_TIMEOUT_MS
+        connection.readTimeout = READ_TIMEOUT_MS
+        connection.instanceFollowRedirects = false
+        return connection
+    }
+}
+
 class KeycloakAuth(context: Context) {
-    private val authService = AuthorizationService(context.applicationContext)
+    private val authService = AuthorizationService(
+        context.applicationContext,
+        AppAuthConfiguration.Builder()
+            .setConnectionBuilder(HttpConnectionBuilder)
+            .build(),
+    )
 
     fun dispose() = authService.dispose()
 
-    suspend fun fetchServiceConfig(): AuthorizationServiceConfiguration =
-        suspendCoroutine { cont ->
-            AuthorizationServiceConfiguration.fetchFromUrl(KeycloakConfig.discoveryUri) { config, ex ->
-                when {
-                    config != null -> cont.resume(config)
-                    ex != null -> cont.resumeWithException(ex)
-                    else -> cont.resumeWithException(IllegalStateException("Không tải được OIDC discovery"))
-                }
-            }
-        }
+    suspend fun fetchServiceConfig(): AuthorizationServiceConfiguration {
+        // Không dùng discovery JSON từ Keycloak: issuer/endpoints trả về auth.localhost
+        // (emulator không resolve được). Dùng KEYCLOAK_URL (10.0.2.2) trực tiếp.
+        val base =
+            "${BuildConfig.KEYCLOAK_URL.trimEnd('/')}/realms/${BuildConfig.KEYCLOAK_REALM}" +
+                "/protocol/openid-connect"
+        return AuthorizationServiceConfiguration(
+            Uri.parse("$base/auth"),
+            Uri.parse("$base/token"),
+            Uri.parse("$base/userinfo"),
+            Uri.parse("$base/logout"),
+        )
+    }
 
     fun createAuthIntent(config: AuthorizationServiceConfiguration): Intent {
         val request = AuthorizationRequest.Builder(

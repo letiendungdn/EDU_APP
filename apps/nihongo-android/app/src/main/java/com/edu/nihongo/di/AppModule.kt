@@ -9,6 +9,7 @@ import com.edu.nihongo.data.local.dao.SyncQueueDao
 import com.edu.nihongo.data.local.dao.VocabularyDao
 import com.edu.nihongo.data.remote.AuthApi
 import com.edu.nihongo.data.remote.AuthInterceptor
+import com.edu.nihongo.data.remote.LessonsApi
 import com.edu.nihongo.data.remote.LiveApi
 import com.edu.nihongo.data.remote.TranslateApi
 import com.edu.nihongo.data.remote.VocabularyApi
@@ -80,6 +81,9 @@ object AppModule {
 
     @Provides fun provideVocabApi(retrofit: Retrofit): VocabularyApi =
         retrofit.create(VocabularyApi::class.java)
+
+    @Provides fun provideLessonsApi(retrofit: Retrofit): LessonsApi =
+        retrofit.create(LessonsApi::class.java)
 
     @Provides fun provideAuthApi(retrofit: Retrofit): AuthApi =
         retrofit.create(AuthApi::class.java)

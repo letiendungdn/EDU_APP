@@ -21,12 +21,26 @@ App Android native Kotlin cho EDU APP — offline-first + dịch camera trực t
 
 ## API mặc định
 
-Emulator: `http://10.0.2.2:8080/api/` (nginx Docker trên máy host).
+Trên **emulator Android**, `localhost` = chính máy ảo (không phải PC).
 
-Máy thật — sửa trong `app/build.gradle.kts`:
+Dùng `10.0.2.2` để gọi API trên máy host:
+
+```kotlin
+API_BASE_URL = "http://10.0.2.2:8080/api/"   // nginx → api-gateway
+KEYCLOAK_URL = "http://10.0.2.2:8080"
+```
+
+Máy thật — sửa trong `app/build.gradle.kts` thành IP LAN:
 
 ```kotlin
 buildConfigField("String", "API_BASE_URL", "\"http://192.168.x.x:8080/api/\"")
+```
+
+Tuỳ chọn (backup): forward cổng host vào emulator:
+
+```bash
+adb reverse tcp:8080 tcp:8080
+adb reverse tcp:3000 tcp:3000
 ```
 
 ## Chạy

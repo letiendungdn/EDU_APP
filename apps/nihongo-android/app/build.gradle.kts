@@ -17,10 +17,12 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
+        // Emulator → máy host: 10.0.2.2 (KHÔNG dùng localhost — đó là chính emulator).
+        // API qua nginx :8080 → api-gateway (cùng cổng với Keycloak).
         buildConfigField(
             "String",
             "API_BASE_URL",
-            "\"http://10.0.2.2:3000/api/\"",
+            "\"http://10.0.2.2:8080/api/\"",
         )
         buildConfigField(
             "String",
@@ -35,6 +37,9 @@ android {
             "\"com.edu.nihongo:/oauth2redirect\"",
         )
         buildConfigField("String", "GEMINI_API_KEY", "\"\"") // set via local.properties or CI
+
+        // Required by net.openid:appauth (RedirectUriReceiverActivity scheme)
+        manifestPlaceholders["appAuthRedirectScheme"] = "com.edu.nihongo"
     }
 
     buildTypes {
