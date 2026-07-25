@@ -190,3 +190,43 @@ export async function translateJapanese(text: string): Promise<string> {
   translateCache.set(trimmed, translated);
   return translated;
 }
+
+export async function syncReviewBank(
+  items: Array<{
+    kana: string;
+    kanji?: string | null;
+    meaning: string;
+    lessonNumber: number;
+    wrongCount: number;
+    reviewStreak: number;
+    mastered: boolean;
+    lastReviewedAt: string;
+  }>,
+): Promise<void> {
+  if (items.length === 0) return;
+  await api.post('/progress/review', { items });
+}
+
+export async function askAiTutor(params: {
+  question: string;
+  history: Array<{ role: string; content: string }>;
+  context?: string;
+}): Promise<string> {
+  const res = await api.post<{ answer?: string }>('/ai/chat', {
+    question: params.question,
+    history: params.history,
+    ...(params.context ? { context: params.context } : {}),
+  });
+  return res.data.answer?.trim() || '';
+}
+
+export async function registerPushToken(
+  token: string,
+  platform: 'ios' | 'android',
+): Promise<void> {
+  await api.post('/push/register', { token, platform });
+}
+
+export async function unregisterPushToken(token: string): Promise<void> {
+  await api.delete('/push/unregister', { data: { token } });
+}

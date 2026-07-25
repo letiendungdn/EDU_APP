@@ -8,7 +8,13 @@ final class SRSViewModel {
     var sessionCorrect: Int = 0
     var showAnswer: Bool = false
 
-    func rate(_ quality: Int, card: SRSCard, modelContext: ModelContext) {
+    func rate(
+        _ quality: Int,
+        card: SRSCard,
+        modelContext: ModelContext,
+        network: NetworkMonitor,
+        auth: AuthState
+    ) {
         sessionTotal += 1
         if quality >= 3 { sessionCorrect += 1 }
 
@@ -26,7 +32,16 @@ final class SRSViewModel {
         card.mastered     = result.mastered
         card.updatedAt    = .now
 
-        try? modelContext.save()
+        SyncService.enqueueSrsUpdate(card: card, modelContext: modelContext)
+
+        Task {
+            await SyncService.flushPending(
+                modelContext: modelContext,
+                isOnline: network.isOnline,
+                isLoggedIn: auth.isLoggedIn
+            )
+        }
+
         showAnswer = false
     }
 

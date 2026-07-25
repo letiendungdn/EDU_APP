@@ -61,6 +61,61 @@ interface VocabularyApi {
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 100,
     ): ApiEnvelope<VocabPageDto>
+
+    @POST("progress/review")
+    suspend fun syncReviewBank(@Body body: ReviewSyncRequest)
+}
+
+data class ReviewSyncItem(
+    val kana: String,
+    val kanji: String?,
+    val meaning: String,
+    val lessonNumber: Int,
+    val wrongCount: Int,
+    val reviewStreak: Int,
+    val mastered: Boolean,
+    val lastReviewedAt: String,
+)
+
+data class ReviewSyncRequest(
+    val items: List<ReviewSyncItem>,
+)
+
+data class AiChatRequest(
+    val question: String,
+    val history: List<AiChatMessage> = emptyList(),
+    val context: String? = null,
+)
+
+data class AiChatMessage(
+    val role: String,
+    val content: String,
+)
+
+data class AiChatResponse(
+    val answer: String? = null,
+)
+
+interface AiTutorApi {
+    @POST("ai/chat")
+    suspend fun chat(@Body body: AiChatRequest): AiChatResponse
+}
+
+data class PushRegisterRequest(
+    val token: String,
+    val platform: String = "android",
+)
+
+data class PushUnregisterRequest(
+    val token: String,
+)
+
+interface PushApi {
+    @POST("push/register")
+    suspend fun register(@Body body: PushRegisterRequest)
+
+    @retrofit2.http.HTTP(method = "DELETE", path = "push/unregister", hasBody = true)
+    suspend fun unregister(@Body body: PushUnregisterRequest)
 }
 
 /** Paginated list nested under envelope.data */

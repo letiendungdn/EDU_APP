@@ -7,6 +7,12 @@
         <key>NSAllowsLocalNetworking</key>
         <true/>
     </dict>
+    <key>NSCameraUsageDescription</key>
+    <string>Cần camera để dịch chữ tiếng Nhật trực tiếp và phát livestream.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Cần micro để luyện phát âm và phát livestream buổi học.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>Cần nhận dạng giọng nói để chấm điểm luyện phát âm tiếng Nhật.</string>
     <key>CFBundleURLTypes</key>
     <array>
         <dict>

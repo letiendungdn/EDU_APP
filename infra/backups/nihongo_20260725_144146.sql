@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict XFrCUrWZFAuENcQGJrXz0HLl0VEeNK1pKuW1DE205Ke3mAWd1udFgQyxQJGTlDb
+\restrict XdTDRead5TXt4IzmCaCz8y2kdrthc0SvdGxrcoUf3tDC7DuQj6JHoNvf6dGmsRV
 
 -- Dumped from database version 16.14
 -- Dumped by pg_dump version 16.14
@@ -232,6 +232,148 @@ ALTER TYPE public."WebhookEventStatus" OWNER TO nihongo;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: BookAudioDriveFolder; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."BookAudioDriveFolder" (
+    id integer NOT NULL,
+    "driveId" text NOT NULL,
+    title text,
+    "localPath" text,
+    "fileCount" integer DEFAULT 0 NOT NULL,
+    "downloadedAt" timestamp(3) without time zone,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."BookAudioDriveFolder" OWNER TO nihongo;
+
+--
+-- Name: BookAudioDriveFolder_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."BookAudioDriveFolder_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."BookAudioDriveFolder_id_seq" OWNER TO nihongo;
+
+--
+-- Name: BookAudioDriveFolder_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."BookAudioDriveFolder_id_seq" OWNED BY public."BookAudioDriveFolder".id;
+
+
+--
+-- Name: BookAudioFile; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."BookAudioFile" (
+    id integer NOT NULL,
+    "folderId" integer,
+    "itemId" integer,
+    "driveFileId" text,
+    "fileName" text NOT NULL,
+    "localPath" text NOT NULL,
+    "mimeType" text,
+    "sizeBytes" integer,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."BookAudioFile" OWNER TO nihongo;
+
+--
+-- Name: BookAudioFile_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."BookAudioFile_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."BookAudioFile_id_seq" OWNER TO nihongo;
+
+--
+-- Name: BookAudioFile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."BookAudioFile_id_seq" OWNED BY public."BookAudioFile".id;
+
+
+--
+-- Name: BookAudioItem; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."BookAudioItem" (
+    id integer NOT NULL,
+    "externalKey" text NOT NULL,
+    level text NOT NULL,
+    title text NOT NULL,
+    url text NOT NULL,
+    note text,
+    "listNo" integer,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "driveId" text,
+    "driveKind" text,
+    "folderId" integer
+);
+
+
+ALTER TABLE public."BookAudioItem" OWNER TO nihongo;
+
+--
+-- Name: BookAudioItem_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."BookAudioItem_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."BookAudioItem_id_seq" OWNER TO nihongo;
+
+--
+-- Name: BookAudioItem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."BookAudioItem_id_seq" OWNED BY public."BookAudioItem".id;
+
+
+--
+-- Name: BookAudioMeta; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."BookAudioMeta" (
+    id integer DEFAULT 1 NOT NULL,
+    "sourceUrl" text NOT NULL,
+    publisher text NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."BookAudioMeta" OWNER TO nihongo;
 
 --
 -- Name: ChatMessage; Type: TABLE; Schema: public; Owner: nihongo
@@ -674,6 +816,335 @@ ALTER SEQUENCE public."DictationAttempt_id_seq" OWNER TO nihongo;
 --
 
 ALTER SEQUENCE public."DictationAttempt_id_seq" OWNED BY public."DictationAttempt".id;
+
+
+--
+-- Name: EmailBroadcast; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EmailBroadcast" (
+    id text NOT NULL,
+    type text DEFAULT 'template'::text NOT NULL,
+    "templateName" text,
+    subject text NOT NULL,
+    filter jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "totalCount" integer DEFAULT 0 NOT NULL,
+    "sentCount" integer DEFAULT 0 NOT NULL,
+    "failedCount" integer DEFAULT 0 NOT NULL,
+    status text DEFAULT 'pending'::text NOT NULL,
+    "startedAt" timestamp(3) without time zone,
+    "completedAt" timestamp(3) without time zone,
+    "createdById" integer NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public."EmailBroadcast" OWNER TO nihongo;
+
+--
+-- Name: EmailPrefs; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EmailPrefs" (
+    id integer NOT NULL,
+    "userId" integer NOT NULL,
+    "receiveProgress" boolean DEFAULT true NOT NULL,
+    "receiveStreak" boolean DEFAULT true NOT NULL,
+    "lastMilestoneNotified" integer DEFAULT 0 NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."EmailPrefs" OWNER TO nihongo;
+
+--
+-- Name: EmailPrefs_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EmailPrefs_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EmailPrefs_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EmailPrefs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EmailPrefs_id_seq" OWNED BY public."EmailPrefs".id;
+
+
+--
+-- Name: EmailTemplate; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EmailTemplate" (
+    id integer NOT NULL,
+    name text NOT NULL,
+    description text,
+    subject text NOT NULL,
+    "htmlBody" text NOT NULL,
+    "textBody" text NOT NULL,
+    variables text[],
+    attachments jsonb DEFAULT '[]'::jsonb NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    "updatedById" integer,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."EmailTemplate" OWNER TO nihongo;
+
+--
+-- Name: EmailTemplate_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EmailTemplate_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EmailTemplate_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EmailTemplate_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EmailTemplate_id_seq" OWNED BY public."EmailTemplate".id;
+
+
+--
+-- Name: EmailVerificationToken; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EmailVerificationToken" (
+    id text NOT NULL,
+    "tokenHash" text NOT NULL,
+    "userId" integer NOT NULL,
+    "expiresAt" timestamp(3) without time zone NOT NULL,
+    "usedAt" timestamp(3) without time zone,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public."EmailVerificationToken" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaExample; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaExample" (
+    id integer NOT NULL,
+    "sectionId" integer NOT NULL,
+    english text NOT NULL,
+    katakana text NOT NULL,
+    romaji text NOT NULL,
+    "meaningVi" text NOT NULL,
+    note text,
+    "sortOrder" integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaExample" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaExample_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EnglishKatakanaExample_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EnglishKatakanaExample_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaExample_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EnglishKatakanaExample_id_seq" OWNED BY public."EnglishKatakanaExample".id;
+
+
+--
+-- Name: EnglishKatakanaMapping; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaMapping" (
+    id integer NOT NULL,
+    "sectionId" integer NOT NULL,
+    english text NOT NULL,
+    katakana text NOT NULL,
+    romaji text NOT NULL,
+    note text,
+    "sortOrder" integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaMapping" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaMapping_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EnglishKatakanaMapping_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EnglishKatakanaMapping_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaMapping_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EnglishKatakanaMapping_id_seq" OWNED BY public."EnglishKatakanaMapping".id;
+
+
+--
+-- Name: EnglishKatakanaMeta; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaMeta" (
+    id integer DEFAULT 1 NOT NULL,
+    intro text NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaMeta" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaPoint; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaPoint" (
+    id integer NOT NULL,
+    "sectionId" integer NOT NULL,
+    explanation text NOT NULL,
+    english text,
+    katakana text,
+    romaji text,
+    "sortOrder" integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaPoint" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaPoint_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EnglishKatakanaPoint_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EnglishKatakanaPoint_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaPoint_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EnglishKatakanaPoint_id_seq" OWNED BY public."EnglishKatakanaPoint".id;
+
+
+--
+-- Name: EnglishKatakanaSection; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaSection" (
+    id integer NOT NULL,
+    slug text NOT NULL,
+    title text NOT NULL,
+    summary text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaSection" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaSection_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EnglishKatakanaSection_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EnglishKatakanaSection_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaSection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EnglishKatakanaSection_id_seq" OWNED BY public."EnglishKatakanaSection".id;
+
+
+--
+-- Name: EnglishKatakanaTip; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaTip" (
+    id integer NOT NULL,
+    text text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaTip" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaTip_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EnglishKatakanaTip_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EnglishKatakanaTip_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaTip_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EnglishKatakanaTip_id_seq" OWNED BY public."EnglishKatakanaTip".id;
 
 
 --
@@ -1141,7 +1612,11 @@ CREATE TABLE public."JlptRoadmapLevel" (
     summary text NOT NULL,
     "sortOrder" integer DEFAULT 0 NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "grammarTarget" text DEFAULT ''::text NOT NULL,
+    "vocabIncrement" text DEFAULT ''::text NOT NULL,
+    "kanjiIncrement" text DEFAULT ''::text NOT NULL,
+    "grammarIncrement" text DEFAULT ''::text NOT NULL
 );
 
 
@@ -1338,6 +1813,44 @@ ALTER SEQUENCE public."KanaCell_id_seq" OWNER TO nihongo;
 --
 
 ALTER SEQUENCE public."KanaCell_id_seq" OWNED BY public."KanaCell".id;
+
+
+--
+-- Name: KanaRomaji; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."KanaRomaji" (
+    id integer NOT NULL,
+    kana text NOT NULL,
+    romaji text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."KanaRomaji" OWNER TO nihongo;
+
+--
+-- Name: KanaRomaji_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."KanaRomaji_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."KanaRomaji_id_seq" OWNER TO nihongo;
+
+--
+-- Name: KanaRomaji_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."KanaRomaji_id_seq" OWNED BY public."KanaRomaji".id;
 
 
 --
@@ -1757,6 +2270,45 @@ ALTER SEQUENCE public."ListeningPreset_id_seq" OWNED BY public."ListeningPreset"
 
 
 --
+-- Name: LiveSession; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."LiveSession" (
+    id integer NOT NULL,
+    "roomName" text NOT NULL,
+    "coachId" integer NOT NULL,
+    title text NOT NULL,
+    status text DEFAULT 'LIVE'::text NOT NULL,
+    "startedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "endedAt" timestamp(3) without time zone
+);
+
+
+ALTER TABLE public."LiveSession" OWNER TO nihongo;
+
+--
+-- Name: LiveSession_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."LiveSession_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."LiveSession_id_seq" OWNER TO nihongo;
+
+--
+-- Name: LiveSession_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."LiveSession_id_seq" OWNED BY public."LiveSession".id;
+
+
+--
 -- Name: Notification; Type: TABLE; Schema: public; Owner: nihongo
 --
 
@@ -1795,6 +2347,59 @@ ALTER SEQUENCE public."Notification_id_seq" OWNER TO nihongo;
 
 ALTER SEQUENCE public."Notification_id_seq" OWNED BY public."Notification".id;
 
+
+--
+-- Name: PageBanner; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."PageBanner" (
+    id integer NOT NULL,
+    path text NOT NULL,
+    "imageData" text NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."PageBanner" OWNER TO nihongo;
+
+--
+-- Name: PageBanner_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."PageBanner_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."PageBanner_id_seq" OWNER TO nihongo;
+
+--
+-- Name: PageBanner_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."PageBanner_id_seq" OWNED BY public."PageBanner".id;
+
+
+--
+-- Name: PasswordResetToken; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."PasswordResetToken" (
+    id text NOT NULL,
+    "tokenHash" text NOT NULL,
+    "userId" integer NOT NULL,
+    "expiresAt" timestamp(3) without time zone NOT NULL,
+    "usedAt" timestamp(3) without time zone,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public."PasswordResetToken" OWNER TO nihongo;
 
 --
 -- Name: Payment; Type: TABLE; Schema: public; Owner: nihongo
@@ -2100,6 +2705,22 @@ CREATE TABLE public."PronunciationRulesMeta" (
 
 
 ALTER TABLE public."PronunciationRulesMeta" OWNER TO nihongo;
+
+--
+-- Name: PushDeviceToken; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."PushDeviceToken" (
+    id text NOT NULL,
+    "userId" integer NOT NULL,
+    token text NOT NULL,
+    platform text DEFAULT 'ios'::text NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."PushDeviceToken" OWNER TO nihongo;
 
 --
 -- Name: ReadingAttempt; Type: TABLE; Schema: public; Owner: nihongo
@@ -2612,7 +3233,10 @@ CREATE TABLE public."User" (
     "targetJlptLevel" public."JlptLevel",
     "studyGoalMinutes" integer DEFAULT 30,
     "lastActiveAt" timestamp(3) without time zone,
-    "googleId" text
+    "googleId" text,
+    "keycloakId" text,
+    "emailVerifiedAt" timestamp(3) without time zone,
+    "emailBounced" boolean DEFAULT false NOT NULL
 );
 
 
@@ -2786,6 +3410,27 @@ CREATE TABLE public._prisma_migrations (
 ALTER TABLE public._prisma_migrations OWNER TO nihongo;
 
 --
+-- Name: BookAudioDriveFolder id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioDriveFolder" ALTER COLUMN id SET DEFAULT nextval('public."BookAudioDriveFolder_id_seq"'::regclass);
+
+
+--
+-- Name: BookAudioFile id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioFile" ALTER COLUMN id SET DEFAULT nextval('public."BookAudioFile_id_seq"'::regclass);
+
+
+--
+-- Name: BookAudioItem id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioItem" ALTER COLUMN id SET DEFAULT nextval('public."BookAudioItem_id_seq"'::regclass);
+
+
+--
 -- Name: ChatMessage id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -2860,6 +3505,55 @@ ALTER TABLE ONLY public."DailyNote" ALTER COLUMN id SET DEFAULT nextval('public.
 --
 
 ALTER TABLE ONLY public."DictationAttempt" ALTER COLUMN id SET DEFAULT nextval('public."DictationAttempt_id_seq"'::regclass);
+
+
+--
+-- Name: EmailPrefs id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailPrefs" ALTER COLUMN id SET DEFAULT nextval('public."EmailPrefs_id_seq"'::regclass);
+
+
+--
+-- Name: EmailTemplate id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailTemplate" ALTER COLUMN id SET DEFAULT nextval('public."EmailTemplate_id_seq"'::regclass);
+
+
+--
+-- Name: EnglishKatakanaExample id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaExample" ALTER COLUMN id SET DEFAULT nextval('public."EnglishKatakanaExample_id_seq"'::regclass);
+
+
+--
+-- Name: EnglishKatakanaMapping id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaMapping" ALTER COLUMN id SET DEFAULT nextval('public."EnglishKatakanaMapping_id_seq"'::regclass);
+
+
+--
+-- Name: EnglishKatakanaPoint id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaPoint" ALTER COLUMN id SET DEFAULT nextval('public."EnglishKatakanaPoint_id_seq"'::regclass);
+
+
+--
+-- Name: EnglishKatakanaSection id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaSection" ALTER COLUMN id SET DEFAULT nextval('public."EnglishKatakanaSection_id_seq"'::regclass);
+
+
+--
+-- Name: EnglishKatakanaTip id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaTip" ALTER COLUMN id SET DEFAULT nextval('public."EnglishKatakanaTip_id_seq"'::regclass);
 
 
 --
@@ -2968,6 +3662,13 @@ ALTER TABLE ONLY public."KanaCell" ALTER COLUMN id SET DEFAULT nextval('public."
 
 
 --
+-- Name: KanaRomaji id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."KanaRomaji" ALTER COLUMN id SET DEFAULT nextval('public."KanaRomaji_id_seq"'::regclass);
+
+
+--
 -- Name: KanaSection id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -3038,10 +3739,24 @@ ALTER TABLE ONLY public."ListeningPreset" ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- Name: LiveSession id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."LiveSession" ALTER COLUMN id SET DEFAULT nextval('public."LiveSession_id_seq"'::regclass);
+
+
+--
 -- Name: Notification id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
 ALTER TABLE ONLY public."Notification" ALTER COLUMN id SET DEFAULT nextval('public."Notification_id_seq"'::regclass);
+
+
+--
+-- Name: PageBanner id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PageBanner" ALTER COLUMN id SET DEFAULT nextval('public."PageBanner_id_seq"'::regclass);
 
 
 --
@@ -3203,6 +3918,171 @@ ALTER TABLE ONLY public."VocabularyKanjiLink" ALTER COLUMN id SET DEFAULT nextva
 --
 
 ALTER TABLE ONLY public."WebhookEvent" ALTER COLUMN id SET DEFAULT nextval('public."WebhookEvent_id_seq"'::regclass);
+
+
+--
+-- Data for Name: BookAudioDriveFolder; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."BookAudioDriveFolder" (id, "driveId", title, "localPath", "fileCount", "downloadedAt", "createdAt", "updatedAt") FROM stdin;
+246	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	\N	/media/book-audio/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	0	\N	2026-07-07 09:25:12.392	2026-07-07 09:25:12.392
+247	1h6O6t6XpR16NVMs9ALjz9CBVCJwEtemj	\N	/media/book-audio/folders/1h6O6t6XpR16NVMs9ALjz9CBVCJwEtemj	0	\N	2026-07-07 09:25:12.409	2026-07-07 09:25:12.409
+248	19UM_S4kIFmURG0HblswMbmMfXEdgC1cE	\N	/media/book-audio/folders/19UM_S4kIFmURG0HblswMbmMfXEdgC1cE	0	\N	2026-07-07 09:25:12.415	2026-07-07 09:25:12.415
+249	18U-nMB0Cw1iwUYjnbTVZzn-f34bmo4sF	\N	/media/book-audio/folders/18U-nMB0Cw1iwUYjnbTVZzn-f34bmo4sF	0	\N	2026-07-07 09:25:12.422	2026-07-07 09:25:12.422
+250	1JVj9s4gxkRhExvmYN63dsxsxxMfMxM48	\N	/media/book-audio/folders/1JVj9s4gxkRhExvmYN63dsxsxxMfMxM48	0	\N	2026-07-07 09:25:12.43	2026-07-07 09:25:12.43
+251	1274VygE4N1VPwwvZaUlIMuyqYFFeRfvS	\N	/media/book-audio/folders/1274VygE4N1VPwwvZaUlIMuyqYFFeRfvS	0	\N	2026-07-07 09:25:12.437	2026-07-07 09:25:12.437
+252	1DAsTsy7gtVy6nob6TDmDZiyGhTZT7adR	\N	/media/book-audio/folders/1DAsTsy7gtVy6nob6TDmDZiyGhTZT7adR	0	\N	2026-07-07 09:25:12.444	2026-07-07 09:25:12.444
+253	1pZOChX8Cd36AeNIW7BMXieKQkp3D01jy	\N	/media/book-audio/folders/1pZOChX8Cd36AeNIW7BMXieKQkp3D01jy	0	\N	2026-07-07 09:25:12.448	2026-07-07 09:25:12.448
+254	1H9Gptry_lkvf8CmsCQuoV6zZKfCjfyr8	\N	/media/book-audio/folders/1H9Gptry_lkvf8CmsCQuoV6zZKfCjfyr8	0	\N	2026-07-07 09:25:12.457	2026-07-07 09:25:12.457
+255	1fAnXltF_iATO8ciSmN1zRiWX5EBb0JOe	\N	/media/book-audio/folders/1fAnXltF_iATO8ciSmN1zRiWX5EBb0JOe	0	\N	2026-07-07 09:25:12.463	2026-07-07 09:25:12.463
+256	12CMY7VjZZLAqX5Qqh7K6P4VuKI_CnRr9	\N	/media/book-audio/folders/12CMY7VjZZLAqX5Qqh7K6P4VuKI_CnRr9	0	\N	2026-07-07 09:25:12.469	2026-07-07 09:25:12.469
+257	1y0KT-_nJCtn1C2XlWC9eyQ2aHIN0M72k	\N	/media/book-audio/folders/1y0KT-_nJCtn1C2XlWC9eyQ2aHIN0M72k	0	\N	2026-07-07 09:25:12.477	2026-07-07 09:25:12.477
+258	1zEpMbMynfjXvQTpFjMUwrco1quqtpwnA	\N	/media/book-audio/folders/1zEpMbMynfjXvQTpFjMUwrco1quqtpwnA	0	\N	2026-07-07 09:25:12.482	2026-07-07 09:25:12.482
+259	1yXF3Pe8W6G9jINYhX7VAPfIeSSlFxhZo	\N	/media/book-audio/folders/1yXF3Pe8W6G9jINYhX7VAPfIeSSlFxhZo	0	\N	2026-07-07 09:25:12.486	2026-07-07 09:25:12.486
+260	1NWjbkPhiYNw2WSMfOIHOxrr2n3_DbGCj	\N	/media/book-audio/folders/1NWjbkPhiYNw2WSMfOIHOxrr2n3_DbGCj	0	\N	2026-07-07 09:25:12.491	2026-07-07 09:25:12.491
+261	1NP6SH2alDdhs9WiDHq2anTocBHeFvU6u	\N	/media/book-audio/folders/1NP6SH2alDdhs9WiDHq2anTocBHeFvU6u	0	\N	2026-07-07 09:25:12.496	2026-07-07 09:25:12.496
+262	1LbxmAZNUdOL3sFPGIbQcCnWE-Kmv-TJD	\N	/media/book-audio/folders/1LbxmAZNUdOL3sFPGIbQcCnWE-Kmv-TJD	0	\N	2026-07-07 09:25:12.5	2026-07-07 09:25:12.5
+263	1vXLwdaGTe8tB0hQ1gKZLOXy4_fV8BYLe	\N	/media/book-audio/folders/1vXLwdaGTe8tB0hQ1gKZLOXy4_fV8BYLe	0	\N	2026-07-07 09:25:12.505	2026-07-07 09:25:12.505
+264	156_17cRK84IkZ-T9IUE59vm06oTanatC	\N	/media/book-audio/folders/156_17cRK84IkZ-T9IUE59vm06oTanatC	0	\N	2026-07-07 09:25:12.511	2026-07-07 09:25:12.511
+265	1LFqC9py_9pI38s-PFDfPe4L_5Gr-dksV	\N	/media/book-audio/folders/1LFqC9py_9pI38s-PFDfPe4L_5Gr-dksV	0	\N	2026-07-07 09:25:12.515	2026-07-07 09:25:12.515
+266	1zW7D4ropB3GbqctHIi69OxDF9vcKUoiG	\N	/media/book-audio/folders/1zW7D4ropB3GbqctHIi69OxDF9vcKUoiG	0	\N	2026-07-07 09:25:12.52	2026-07-07 09:25:12.52
+267	1X87mH3tQRxmULVF3xr6X14-K6tHg6e7S	\N	/media/book-audio/folders/1X87mH3tQRxmULVF3xr6X14-K6tHg6e7S	0	\N	2026-07-07 09:25:12.525	2026-07-07 09:25:12.525
+268	1sM4NAauinxIpXZotU3Ej1fxW2eiYRMFW	\N	/media/book-audio/folders/1sM4NAauinxIpXZotU3Ej1fxW2eiYRMFW	0	\N	2026-07-07 09:25:12.53	2026-07-07 09:25:12.53
+269	1vN-8eDnCeMH1UiURyr8kMJ2Bye1zW9xB	\N	/media/book-audio/folders/1vN-8eDnCeMH1UiURyr8kMJ2Bye1zW9xB	0	\N	2026-07-07 09:25:12.535	2026-07-07 09:25:12.535
+270	1JJdBr0Xi22EToq8X7jl362-fYdpGahZK	\N	/media/book-audio/folders/1JJdBr0Xi22EToq8X7jl362-fYdpGahZK	0	\N	2026-07-07 09:25:12.54	2026-07-07 09:25:12.54
+271	1QJRzASsFhwZstVLGBCoLECaxnZxj-PdG	\N	/media/book-audio/folders/1QJRzASsFhwZstVLGBCoLECaxnZxj-PdG	0	\N	2026-07-07 09:25:12.545	2026-07-07 09:25:12.545
+272	1k4LbpK5ekQ-mPOUdAIsQpkxNcl4BnISB	\N	/media/book-audio/folders/1k4LbpK5ekQ-mPOUdAIsQpkxNcl4BnISB	0	\N	2026-07-07 09:25:12.55	2026-07-07 09:25:12.55
+273	13fgfn0bL3s9ikhzRuLeInOYFElYcY2xE	\N	/media/book-audio/folders/13fgfn0bL3s9ikhzRuLeInOYFElYcY2xE	0	\N	2026-07-07 09:25:12.556	2026-07-07 09:25:12.556
+274	1XROMK7EyU3QjsCfLasOvxhDRFVy7JLGl	\N	/media/book-audio/folders/1XROMK7EyU3QjsCfLasOvxhDRFVy7JLGl	0	\N	2026-07-07 09:25:12.561	2026-07-07 09:25:12.561
+275	1e2_r3_TJ63jpPVqImgIToJH3ZiVUVjvw	\N	/media/book-audio/folders/1e2_r3_TJ63jpPVqImgIToJH3ZiVUVjvw	0	\N	2026-07-07 09:25:12.566	2026-07-07 09:25:12.566
+276	1OvhceYbaV0uMQcAlCEXerbOtV0J8F5eg	\N	/media/book-audio/folders/1OvhceYbaV0uMQcAlCEXerbOtV0J8F5eg	0	\N	2026-07-07 09:25:12.571	2026-07-07 09:25:12.571
+277	10idrwfbC4SYV0WnJnb2uJPDQu7lYaFIS	\N	/media/book-audio/folders/10idrwfbC4SYV0WnJnb2uJPDQu7lYaFIS	0	\N	2026-07-07 09:25:12.577	2026-07-07 09:25:12.577
+278	12bEm7GAHInLYKGD4BtFKyKbC8jLono2g	\N	/media/book-audio/folders/12bEm7GAHInLYKGD4BtFKyKbC8jLono2g	0	\N	2026-07-07 09:25:12.582	2026-07-07 09:25:12.582
+279	1jTESAEG0mJ8sWZdddnsGHmYGN1Cmt9Hm	\N	/media/book-audio/folders/1jTESAEG0mJ8sWZdddnsGHmYGN1Cmt9Hm	0	\N	2026-07-07 09:25:12.587	2026-07-07 09:25:12.587
+280	1_nT_PoOwjlmP2JoWn3ErOUZKMwYLlWxC	\N	/media/book-audio/folders/1_nT_PoOwjlmP2JoWn3ErOUZKMwYLlWxC	0	\N	2026-07-07 09:25:12.593	2026-07-07 09:25:12.593
+281	1OCPgDeX80EIlug2ySnOzDNwsFNf3AOCA	\N	/media/book-audio/folders/1OCPgDeX80EIlug2ySnOzDNwsFNf3AOCA	0	\N	2026-07-07 09:25:12.599	2026-07-07 09:25:12.599
+282	1CzqE58LjLMMnQi4kDDJplWqgUEE7HJ3K	\N	/media/book-audio/folders/1CzqE58LjLMMnQi4kDDJplWqgUEE7HJ3K	0	\N	2026-07-07 09:25:12.604	2026-07-07 09:25:12.604
+283	1syQfST4t0bs-0yCt_pP4xAmK-pkyKP3u	\N	/media/book-audio/folders/1syQfST4t0bs-0yCt_pP4xAmK-pkyKP3u	0	\N	2026-07-07 09:25:12.61	2026-07-07 09:25:12.61
+284	1GyGWjYPucF10LsuGhjyEEavt0jy8X_YR	\N	/media/book-audio/folders/1GyGWjYPucF10LsuGhjyEEavt0jy8X_YR	0	\N	2026-07-07 09:25:12.614	2026-07-07 09:25:12.614
+285	1CF8AYzYrUDmuQCsumxcgz7nmb5TYgcnA	\N	/media/book-audio/folders/1CF8AYzYrUDmuQCsumxcgz7nmb5TYgcnA	0	\N	2026-07-07 09:25:12.619	2026-07-07 09:25:12.619
+286	1rdc78l6ax8G0dTPgGaZ0r85QfA4GmSYC	\N	/media/book-audio/folders/1rdc78l6ax8G0dTPgGaZ0r85QfA4GmSYC	0	\N	2026-07-07 09:25:12.624	2026-07-07 09:25:12.624
+287	1ifBqkBFufaXI-wKQsJZcIp3GXGvH4i_-	\N	/media/book-audio/folders/1ifBqkBFufaXI-wKQsJZcIp3GXGvH4i_-	0	\N	2026-07-07 09:25:12.628	2026-07-07 09:25:12.628
+288	1hrGdfl-XFlGh3pSQVKBMG-LoKnoFzMlP	\N	/media/book-audio/folders/1hrGdfl-XFlGh3pSQVKBMG-LoKnoFzMlP	0	\N	2026-07-07 09:25:12.634	2026-07-07 09:25:12.634
+289	1lZJTEQB5EfcmC1dIa9DCEkEmpqn_XUxG	\N	/media/book-audio/folders/1lZJTEQB5EfcmC1dIa9DCEkEmpqn_XUxG	0	\N	2026-07-07 09:25:12.639	2026-07-07 09:25:12.639
+290	16d0JAu-XNs7z9XkXB-ndK9_uQGA_fyCV	\N	/media/book-audio/folders/16d0JAu-XNs7z9XkXB-ndK9_uQGA_fyCV	0	\N	2026-07-07 09:25:12.644	2026-07-07 09:25:12.644
+291	11Y-6AfMw2jKNhwekmh_CL1rnsUrUeYmS	\N	/media/book-audio/folders/11Y-6AfMw2jKNhwekmh_CL1rnsUrUeYmS	0	\N	2026-07-07 09:25:12.648	2026-07-07 09:25:12.648
+292	1HkRnUHaeliHEA3i9z6IkWdW0B_rpsoHH	\N	/media/book-audio/folders/1HkRnUHaeliHEA3i9z6IkWdW0B_rpsoHH	0	\N	2026-07-07 09:25:12.652	2026-07-07 09:25:12.652
+293	1Svg34rgw8CNAad2A2ige2twnZF00LyNr	\N	/media/book-audio/folders/1Svg34rgw8CNAad2A2ige2twnZF00LyNr	0	\N	2026-07-07 09:25:12.658	2026-07-07 09:25:12.658
+294	1zHqNs8u6Gj3SERWPODiRk4tFzarw-EbC	\N	/media/book-audio/folders/1zHqNs8u6Gj3SERWPODiRk4tFzarw-EbC	0	\N	2026-07-07 09:25:12.662	2026-07-07 09:25:12.662
+\.
+
+
+--
+-- Data for Name: BookAudioFile; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."BookAudioFile" (id, "folderId", "itemId", "driveFileId", "fileName", "localPath", "mimeType", "sizeBytes", "sortOrder", "createdAt", "updatedAt") FROM stdin;
+\.
+
+
+--
+-- Data for Name: BookAudioItem; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."BookAudioItem" (id, "externalKey", level, title, url, note, "listNo", "sortOrder", "createdAt", "updatedAt", "driveId", "driveKind", "folderId") FROM stdin;
+232	other-shadowing-trung-thuong-cap-o-65	OTHER	Shadowing trung thã░ß╗úng cß║Ñp - ─æß╗Å	https://drive.google.com/drive/folders/1lZJTEQB5EfcmC1dIa9DCEkEmpqn_XUxG?usp=sharing	\N	4	65	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1lZJTEQB5EfcmC1dIa9DCEkEmpqn_XUxG	FOLDER	289
+233	other-shadowing-phong-van-tuyen-dung-66	OTHER	Shadowing phß╗Ång vß║Ñn tuyß╗ân dß╗Ñng	https://drive.google.com/drive/folders/16d0JAu-XNs7z9XkXB-ndK9_uQGA_fyCV?usp=sharing	\N	5	66	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	16d0JAu-XNs7z9XkXB-ndK9_uQGA_fyCV	FOLDER	290
+234	other-shadowing-kaigo-67	OTHER	Shadowing Kaigo	https://drive.google.com/drive/folders/11Y-6AfMw2jKNhwekmh_CL1rnsUrUeYmS?usp=sharing	\N	6	67	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	11Y-6AfMw2jKNhwekmh_CL1rnsUrUeYmS	FOLDER	291
+235	other-bjt-oc-hieu-nghe-hieu-vang-68	OTHER	BJT ─Éß╗ìc Hiß╗âu- nghe Hiß╗âu ( V├áng)	https://drive.google.com/drive/folders/1HkRnUHaeliHEA3i9z6IkWdW0B_rpsoHH?usp=sharing	\N	7	68	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1HkRnUHaeliHEA3i9z6IkWdW0B_rpsoHH	FOLDER	292
+236	other-bjt-oc-hieu-nghe-hieu-vang-ban-moi-69	OTHER	BJT ─Éß╗ìc Hiß╗âu- nghe Hiß╗âu ( V├áng bß║ún mß╗øi)	https://drive.google.com/drive/folders/1HkRnUHaeliHEA3i9z6IkWdW0B_rpsoHH?usp=sharing	\N	8	69	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1HkRnUHaeliHEA3i9z6IkWdW0B_rpsoHH	FOLDER	292
+237	other-bjt-nhap-mon-70	OTHER	BJT Nhß║¡p m├┤n	https://drive.google.com/drive/folders/1Svg34rgw8CNAad2A2ige2twnZF00LyNr?usp=sharing	\N	9	70	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1Svg34rgw8CNAad2A2ige2twnZF00LyNr	FOLDER	293
+238	other-bjt-e-thi-wakaburu-xanh-71	OTHER	BJT ─Éß╗ü thi wakaburu xanh	https://drive.google.com/drive/folders/1HkRnUHaeliHEA3i9z6IkWdW0B_rpsoHH?usp=sharing	\N	10	71	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1HkRnUHaeliHEA3i9z6IkWdW0B_rpsoHH	FOLDER	292
+239	other-bjt-e-thi-o-72	OTHER	BJT ─Éß╗ü thi ( ─Éß╗Å)	https://drive.google.com/drive/folders/1zHqNs8u6Gj3SERWPODiRk4tFzarw-EbC?usp=drive_link	\N	11	72	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1zHqNs8u6Gj3SERWPODiRk4tFzarw-EbC	FOLDER	294
+240	answers-giao-trinh-minnano-so-cap-1-cuon-day-73	ANSWERS	Gi├ío tr├¼nh minnano sãí cß║Ñp 1 ( cuß╗æn d├áy)	https://drive.google.com/file/d/1D2_ayzw1U9cP3pQOQkzCb56sAULs0hdB/view?usp=sharing	\N	1	73	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1D2_ayzw1U9cP3pQOQkzCb56sAULs0hdB	FILE	\N
+241	answers-25-bai-nghe-so-cap-1-74	ANSWERS	25 b├ái nghe sãí cß║Ñp 1	https://drive.google.com/file/d/14oBaCCHPX4_7SHMFNKYiq_hLt8telhrI/view?usp=sharing	\N	2	74	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	14oBaCCHPX4_7SHMFNKYiq_hLt8telhrI	FILE	\N
+242	answers-25-bai-oc-so-cap-1-75	ANSWERS	25 b├ái ─æß╗ìc sãí cß║Ñp 1	https://drive.google.com/file/d/1iDaKkjZAfsI0RFFb0SOWAMSB3Lv4fDhT/view?usp=sharing	\N	3	75	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1iDaKkjZAfsI0RFFb0SOWAMSB3Lv4fDhT	FILE	\N
+243	answers-luyen-mau-cau-so-cap-1-76	ANSWERS	Luyß╗çn mß║½u c├óu sãí cß║Ñp 1	https://drive.google.com/file/d/1hQzthIcjQAUjp8nrwm807P7jTk-iFwGM/view?usp=sharing	\N	4	76	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1hQzthIcjQAUjp8nrwm807P7jTk-iFwGM	FILE	\N
+244	answers-sbt-ngu-phap-so-cap-1-sbt-mong-77	ANSWERS	SBT ngß╗» ph├íp sãí cß║Ñp 1 ( SBT mß╗Ång)	https://drive.google.com/file/d/11HHFB7iElHZe0AbrXV5OV5dE6uUscpUt/view?usp=sharing	\N	5	77	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	11HHFB7iElHZe0AbrXV5OV5dE6uUscpUt	FILE	\N
+245	answers-giao-trinh-minnano-so-cap-2-cuon-day-78	ANSWERS	Gi├ío tr├¼nh minnano sãí cß║Ñp 2 ( cuß╗æn d├áy)	https://drive.google.com/file/d/1o5o1f2ErVQiIT1tH_kQyA1oEVnwDmnhh/view?usp=sharing	\N	1	78	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1o5o1f2ErVQiIT1tH_kQyA1oEVnwDmnhh	FILE	\N
+246	answers-25-bai-nghe-so-cap-2-79	ANSWERS	25 b├ái nghe sãí cß║Ñp 2	https://drive.google.com/file/d/1Z3DfUadUUpw_ygzDi-Srgh1FWKx9LUne/view?usp=sharing	\N	2	79	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1Z3DfUadUUpw_ygzDi-Srgh1FWKx9LUne	FILE	\N
+247	answers-25-bai-oc-so-cap-2-80	ANSWERS	25 b├ái ─æß╗ìc sãí cß║Ñp 2	https://drive.google.com/file/d/1EJitFR0t88-MKQFNMekbPJNgjNjtLTeL/view?usp=sharing	\N	3	80	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EJitFR0t88-MKQFNMekbPJNgjNjtLTeL	FILE	\N
+248	answers-luyen-mau-cau-so-cap-2-81	ANSWERS	Luyß╗çn mß║½u c├óu sãí cß║Ñp 2	https://drive.google.com/file/d/1RAesCNfsooGIbDNicO3yTM4Lji_nmEHD/view?usp=sharing	\N	4	81	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1RAesCNfsooGIbDNicO3yTM4Lji_nmEHD	FILE	\N
+249	answers-sbt-ngu-phap-so-cap-2-sbt-mong-82	ANSWERS	SBT ngß╗» ph├íp sãí cß║Ñp 2 ( SBT mß╗Ång)	https://drive.google.com/file/d/18bpTm56Wsu_rLHYCwXHcXKct8Ek9ZQvk/view?usp=sharing	\N	5	82	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	18bpTm56Wsu_rLHYCwXHcXKct8Ek9ZQvk	FILE	\N
+167	n5-minnano-tu-vung-giai-thich-ngu-phap-n5-ban-moi-n-0	N5	Minnano Tß╗½ vß╗▒ng - giß║úi th├¡ch ngß╗» ph├íp N5 bß║ún mß╗øi nhß║Ñt	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	1	0	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+168	n5-minnano-sach-giao-khoa-n5-ban-moi-nhat-1	N5	Minnano S├ích gi├ío khoa N5 bß║ún mß╗øi nhß║Ñt	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	2	1	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+169	n5-minnano-25-bai-nghe-hieu-n5-ban-moi-nhat-2	N5	Minnano 25 b├ái nghe hiß╗âu N5 bß║ún mß╗øi nhß║Ñt	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	3	2	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+170	n5-minnano-tu-vung-giai-thich-ngu-phap-n5-ban-cu-3	N5	Minnano Tß╗½ vß╗▒ng - giß║úi th├¡ch ngß╗» ph├íp N5 bß║ún c┼®	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	4	3	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+171	n5-minnano-sach-giao-khoa-n5-ban-ban-cu-4	N5	Minnano S├ích gi├ío khoa N5 bß║ún bß║ún c┼®	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	5	4	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+172	n5-minnano-25-bai-nghe-hieu-n5-ban-ban-cu-5	N5	Minnano 25 b├ái nghe hiß╗âu N5 bß║ún bß║ún c┼®	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	6	5	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+173	n5-soumatome-n5-6	N5	Soumatome N5	https://drive.google.com/drive/folders/1h6O6t6XpR16NVMs9ALjz9CBVCJwEtemj?usp=sharing	\N	7	6	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1h6O6t6XpR16NVMs9ALjz9CBVCJwEtemj	FOLDER	247
+174	n5-bo-e-thi-thu-n5-7	N5	Bß╗Ö ─æß╗ü thi thß╗¡ N5	https://drive.google.com/drive/folders/19UM_S4kIFmURG0HblswMbmMfXEdgC1cE?usp=sharing	\N	8	7	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	19UM_S4kIFmURG0HblswMbmMfXEdgC1cE	FOLDER	248
+175	n5-bo-e-thi-chinh-thuc-n4-5-8	N5	Bß╗Ö ─æß╗ü thi ch├¡nh thß╗®c N4,5	https://drive.google.com/drive/folders/18U-nMB0Cw1iwUYjnbTVZzn-f34bmo4sF?usp=sharing	\N	9	8	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	18U-nMB0Cw1iwUYjnbTVZzn-f34bmo4sF	FOLDER	249
+176	n5-gokaku-deriru-n4-5-file-nghe-9	N5	Gokaku Deriru N4,5 File nghe	https://drive.google.com/drive/folders/1JVj9s4gxkRhExvmYN63dsxsxxMfMxM48?usp=sharing	\N	10	9	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1JVj9s4gxkRhExvmYN63dsxsxxMfMxM48	FOLDER	250
+177	n5-gokaku-deriru-n4-5-file-ap-an-10	N5	Gokaku Deriru N4,5 File ─æ├íp ├ín	https://www.slideshare.net/slideshow/goukaku-dekiru-n45-kaitouanswers-script/241719011	\N	11	10	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	\N	\N	\N
+178	n5-supido-n5-nghe-hieu-11	N5	Supido N5 nghe hiß╗âu	https://drive.google.com/drive/folders/1274VygE4N1VPwwvZaUlIMuyqYFFeRfvS?usp=sharing	\N	12	11	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1274VygE4N1VPwwvZaUlIMuyqYFFeRfvS	FOLDER	251
+179	n5-try-n5-12	N5	Try N5	https://drive.google.com/drive/folders/1DAsTsy7gtVy6nob6TDmDZiyGhTZT7adR?usp=sharing	\N	13	12	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1DAsTsy7gtVy6nob6TDmDZiyGhTZT7adR	FOLDER	252
+180	n5-zettai-n5-13	N5	Zettai N5	https://drive.google.com/drive/folders/1pZOChX8Cd36AeNIW7BMXieKQkp3D01jy?usp=sharing	\N	14	13	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1pZOChX8Cd36AeNIW7BMXieKQkp3D01jy	FOLDER	253
+181	n4-minnano-tu-vung-giai-thich-ngu-phap-n4-ban-moi-n-14	N4	Minnano Tß╗½ vß╗▒ng - giß║úi th├¡ch ngß╗» ph├íp N4 bß║ún mß╗øi nhß║Ñt	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	1	14	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+182	n4-minnano-sach-giao-khoa-n4-ban-moi-nhat-15	N4	Minnano S├ích gi├ío khoa N4 bß║ún mß╗øi nhß║Ñt	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	2	15	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+183	n4-minnano-25-bai-nghe-hieu-n4-ban-moi-nhat-16	N4	Minnano 25 b├ái nghe hiß╗âu N4 bß║ún mß╗øi nhß║Ñt	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	3	16	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+184	n4-minnano-tu-vung-giai-thich-ngu-phap-n4-ban-cu-17	N4	Minnano Tß╗½ vß╗▒ng - giß║úi th├¡ch ngß╗» ph├íp N4 bß║ún c┼®	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	4	17	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+185	n4-minnano-sach-giao-khoa-n4-ban-ban-cu-18	N4	Minnano S├ích gi├ío khoa N4 bß║ún bß║ún c┼®	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	5	18	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+186	n4-minnano-25-bai-nghe-hieu-n4-ban-ban-cu-19	N4	Minnano 25 b├ái nghe hiß╗âu N4 bß║ún bß║ún c┼®	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	6	19	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+187	n4-soumatome-n4-nghe-hieu-20	N4	Soumatome N4 nghe hiß╗âu	https://drive.google.com/drive/folders/1H9Gptry_lkvf8CmsCQuoV6zZKfCjfyr8?usp=sharing	\N	7	20	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1H9Gptry_lkvf8CmsCQuoV6zZKfCjfyr8	FOLDER	254
+188	n4-bo-e-thi-thu-n4-21	N4	Bß╗Ö ─æß╗ü thi thß╗¡ N4	https://drive.google.com/drive/folders/1fAnXltF_iATO8ciSmN1zRiWX5EBb0JOe?usp=sharing	\N	8	21	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1fAnXltF_iATO8ciSmN1zRiWX5EBb0JOe	FOLDER	255
+189	n4-bo-e-thi-chinh-thuc-n4-5-22	N4	Bß╗Ö ─æß╗ü thi ch├¡nh thß╗®c N4,5	https://drive.google.com/drive/folders/18U-nMB0Cw1iwUYjnbTVZzn-f34bmo4sF?usp=sharing	\N	9	22	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	18U-nMB0Cw1iwUYjnbTVZzn-f34bmo4sF	FOLDER	249
+190	n4-gokaku-deriru-n4-5-file-nghe-23	N4	Gokaku Deriru N4,5 File nghe	https://drive.google.com/drive/folders/1JVj9s4gxkRhExvmYN63dsxsxxMfMxM48?usp=sharing	\N	10	23	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1JVj9s4gxkRhExvmYN63dsxsxxMfMxM48	FOLDER	250
+191	n4-gokaku-deriru-n4-5-file-ap-an-24	N4	Gokaku Deriru N4,5 File ─æ├íp ├ín	https://www.slideshare.net/slideshow/goukaku-dekiru-n45-kaitouanswers-script/241719011	\N	11	24	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	\N	\N	\N
+192	n4-supido-n4-nghe-hieu-25	N4	Supido N4 nghe hiß╗âu	https://drive.google.com/drive/folders/12CMY7VjZZLAqX5Qqh7K6P4VuKI_CnRr9?usp=sharing	\N	12	25	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	12CMY7VjZZLAqX5Qqh7K6P4VuKI_CnRr9	FOLDER	256
+193	n4-try-n4-26	N4	Try N4	https://drive.google.com/drive/folders/1y0KT-_nJCtn1C2XlWC9eyQ2aHIN0M72k?usp=sharing	\N	13	26	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1y0KT-_nJCtn1C2XlWC9eyQ2aHIN0M72k	FOLDER	257
+194	n4-zettai-n4-27	N4	Zettai N4	https://drive.google.com/drive/folders/1zEpMbMynfjXvQTpFjMUwrco1quqtpwnA?usp=sharing	\N	14	27	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1zEpMbMynfjXvQTpFjMUwrco1quqtpwnA	FOLDER	258
+195	n4-pantan-n4-28	N4	Pantan N4	https://drive.google.com/drive/folders/1yXF3Pe8W6G9jINYhX7VAPfIeSSlFxhZo?usp=sharing	\N	15	28	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1yXF3Pe8W6G9jINYhX7VAPfIeSSlFxhZo	FOLDER	259
+196	n3-minnano-tu-vung-giai-thich-ngu-phap-trung-cap-1-29	N3	Minnano Tß╗½ vß╗▒ng - giß║úi th├¡ch ngß╗» ph├íp trung cß║Ñp 1	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	1	29	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+197	n3-minnano-sach-giao-khoa-trung-cap-1-30	N3	Minnano S├ích gi├ío khoa trung cß║Ñp 1	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	2	30	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+198	n3-bo-e-thi-thu-n3-31	N3	Bß╗Ö ─æß╗ü thi thß╗¡ N3	https://drive.google.com/drive/folders/1NWjbkPhiYNw2WSMfOIHOxrr2n3_DbGCj?usp=sharing	\N	3	31	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1NWjbkPhiYNw2WSMfOIHOxrr2n3_DbGCj	FOLDER	260
+199	n3-bo-e-thi-chinh-thuc-n3-32	N3	Bß╗Ö ─æß╗ü thi ch├¡nh thß╗®c N3	https://bit.ly/TonghopdethiN3	\N	4	32	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	\N	\N	\N
+200	n3-gokaku-deriru-n3-33	N3	Gokaku Deriru N3	https://drive.google.com/drive/folders/1NP6SH2alDdhs9WiDHq2anTocBHeFvU6u?usp=sharing	\N	5	33	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1NP6SH2alDdhs9WiDHq2anTocBHeFvU6u	FOLDER	261
+201	n3-supido-n3-nghe-hieu-34	N3	Supido N3 nghe hiß╗âu	https://drive.google.com/drive/folders/1LbxmAZNUdOL3sFPGIbQcCnWE-Kmv-TJD?usp=sharing	\N	6	34	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1LbxmAZNUdOL3sFPGIbQcCnWE-Kmv-TJD	FOLDER	262
+202	n3-doriru-doriru-n3-nghe-oc-35	N3	Doriru & Doriru N3 Nghe - ─Éß╗ìc	https://drive.google.com/drive/folders/1vXLwdaGTe8tB0hQ1gKZLOXy4_fV8BYLe?usp=sharing	\N	7	35	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1vXLwdaGTe8tB0hQ1gKZLOXy4_fV8BYLe	FOLDER	263
+203	n3-mimikara-oboeru-tu-vung-n3-36	N3	Mimikara Oboeru - Tß╗½ vß╗▒ng N3	https://drive.google.com/drive/folders/156_17cRK84IkZ-T9IUE59vm06oTanatC?usp=sharing	\N	8	36	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	156_17cRK84IkZ-T9IUE59vm06oTanatC	FOLDER	264
+204	n3-mimikara-oboeru-ngu-phap-n3-37	N3	Mimikara Oboeru - Ngß╗» Ph├íp N3	https://drive.google.com/drive/folders/1LFqC9py_9pI38s-PFDfPe4L_5Gr-dksV?usp=sharing	\N	9	37	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1LFqC9py_9pI38s-PFDfPe4L_5Gr-dksV	FOLDER	265
+205	n3-mimikara-oboeru-nghe-hieu-n3-38	N3	Mimikara Oboeru - Nghe hiß╗âu N3	https://drive.google.com/drive/folders/1zW7D4ropB3GbqctHIi69OxDF9vcKUoiG?usp=sharing	\N	10	38	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1zW7D4ropB3GbqctHIi69OxDF9vcKUoiG	FOLDER	266
+206	n3-shinkanzen-n3-nghe-hieu-39	N3	Shinkanzen N3 Nghe hiß╗âu	https://drive.google.com/drive/folders/1X87mH3tQRxmULVF3xr6X14-K6tHg6e7S?usp=sharing	\N	11	39	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1X87mH3tQRxmULVF3xr6X14-K6tHg6e7S	FOLDER	267
+207	n3-soumatome-n3-nghe-hieu-40	N3	Soumatome N3 nghe hiß╗âu	https://drive.google.com/drive/folders/1sM4NAauinxIpXZotU3Ej1fxW2eiYRMFW?usp=sharing	\N	12	40	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1sM4NAauinxIpXZotU3Ej1fxW2eiYRMFW	FOLDER	268
+208	n3-try-n3-41	N3	Try N3	https://drive.google.com/drive/folders/1vN-8eDnCeMH1UiURyr8kMJ2Bye1zW9xB?usp=sharing	\N	13	41	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1vN-8eDnCeMH1UiURyr8kMJ2Bye1zW9xB	FOLDER	269
+209	n3-zettai-n3-42	N3	Zettai N3	https://drive.google.com/drive/folders/1JJdBr0Xi22EToq8X7jl362-fYdpGahZK?usp=sharing	\N	14	42	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1JJdBr0Xi22EToq8X7jl362-fYdpGahZK	FOLDER	270
+210	n3-pantan-n3-43	N3	Pantan N3	https://drive.google.com/drive/folders/1QJRzASsFhwZstVLGBCoLECaxnZxj-PdG?usp=sharing	\N	15	43	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1QJRzASsFhwZstVLGBCoLECaxnZxj-PdG	FOLDER	271
+211	n2-minnano-tu-vung-giai-thich-ngu-phap-trung-cap-2-44	N2	Minnano Tß╗½ vß╗▒ng - giß║úi th├¡ch ngß╗» ph├íp trung cß║Ñp 2	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	1	44	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+212	n2-minnano-sach-giao-khoa-trung-cap-2-45	N2	Minnano S├ích gi├ío khoa trung cß║Ñp 2	https://drive.google.com/drive/folders/1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571?usp=sharing	\N	2	45	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1EqShpOrgVIoO4qCZ-k9tzrBxc0IKG571	FOLDER	246
+213	n2-bo-e-thi-thu-n2-46	N2	Bß╗Ö ─æß╗ü thi thß╗¡ N2	https://drive.google.com/drive/folders/1k4LbpK5ekQ-mPOUdAIsQpkxNcl4BnISB	\N	3	46	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1k4LbpK5ekQ-mPOUdAIsQpkxNcl4BnISB	FOLDER	272
+214	n2-bo-e-thi-chinh-thuc-n2-47	N2	Bß╗Ö ─æß╗ü thi ch├¡nh thß╗®c N2	https://bit.ly/TonghopdethiN2	\N	4	47	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	\N	\N	\N
+215	n2-gokaku-deriru-n2-48	N2	Gokaku Deriru N2	https://drive.google.com/drive/folders/13fgfn0bL3s9ikhzRuLeInOYFElYcY2xE?usp=sharing	\N	5	48	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	13fgfn0bL3s9ikhzRuLeInOYFElYcY2xE	FOLDER	273
+216	n2-mimikara-oboeru-n2-nghe-hieu-49	N2	Mimikara Oboeru N2 - Nghe hiß╗âu	https://drive.google.com/drive/folders/1XROMK7EyU3QjsCfLasOvxhDRFVy7JLGl?usp=sharing	\N	8	49	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1XROMK7EyU3QjsCfLasOvxhDRFVy7JLGl	FOLDER	274
+217	n2-mimikara-oboeru-n2-tu-vung-50	N2	Mimikara Oboeru N2 - Tß╗½ vß╗▒ng	https://drive.google.com/drive/folders/1e2_r3_TJ63jpPVqImgIToJH3ZiVUVjvw?usp=sharing	\N	9	50	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1e2_r3_TJ63jpPVqImgIToJH3ZiVUVjvw	FOLDER	275
+218	n2-mimikara-oboeru-n2-ngu-phap-51	N2	Mimikara Oboeru N2 - Ngß╗» Ph├íp	https://drive.google.com/drive/folders/1OvhceYbaV0uMQcAlCEXerbOtV0J8F5eg?usp=sharing	\N	\N	51	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1OvhceYbaV0uMQcAlCEXerbOtV0J8F5eg	FOLDER	276
+219	n2-shinkanzen-n2-nghe-hieu-52	N2	Shinkanzen N2 Nghe hiß╗âu	https://drive.google.com/drive/folders/10idrwfbC4SYV0WnJnb2uJPDQu7lYaFIS?usp=sharing	\N	10	52	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	10idrwfbC4SYV0WnJnb2uJPDQu7lYaFIS	FOLDER	277
+220	n2-soumatome-n2-nghe-hieu-53	N2	Soumatome N2 nghe hiß╗âu	https://drive.google.com/drive/folders/12bEm7GAHInLYKGD4BtFKyKbC8jLono2g?usp=sharing	\N	11	53	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	12bEm7GAHInLYKGD4BtFKyKbC8jLono2g	FOLDER	278
+221	n2-try-n2-54	N2	Try N2	https://drive.google.com/drive/folders/1jTESAEG0mJ8sWZdddnsGHmYGN1Cmt9Hm?usp=sharing	\N	12	54	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1jTESAEG0mJ8sWZdddnsGHmYGN1Cmt9Hm	FOLDER	279
+222	n2-zettai-n2-55	N2	Zettai N2	https://drive.google.com/drive/folders/1_nT_PoOwjlmP2JoWn3ErOUZKMwYLlWxC?usp=sharing	\N	13	55	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1_nT_PoOwjlmP2JoWn3ErOUZKMwYLlWxC	FOLDER	280
+223	n2-patan-betsu-tettei-doriru-n2-56	N2	Patan Betsu Tettei Doriru N2	https://drive.google.com/drive/folders/1OCPgDeX80EIlug2ySnOzDNwsFNf3AOCA?usp=drive_link	\N	14	56	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1OCPgDeX80EIlug2ySnOzDNwsFNf3AOCA	FOLDER	281
+224	n1-bo-e-thi-thu-n1-57	N1	Bß╗Ö ─æß╗ü thi thß╗¡ N1	https://drive.google.com/drive/folders/1CzqE58LjLMMnQi4kDDJplWqgUEE7HJ3K	\N	1	57	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1CzqE58LjLMMnQi4kDDJplWqgUEE7HJ3K	FOLDER	282
+225	n1-bo-e-thi-chinh-thuc-n1-58	N1	Bß╗Ö ─æß╗ü thi ch├¡nh thß╗®c N1	https://bit.ly/TonghopdethiN1	\N	2	58	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	\N	\N	\N
+226	n1-doriru-doriru-n1-nghe-59	N1	Doriru & Doriru N1 Nghe	https://drive.google.com/drive/folders/1syQfST4t0bs-0yCt_pP4xAmK-pkyKP3u?usp=sharing	\N	3	59	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1syQfST4t0bs-0yCt_pP4xAmK-pkyKP3u	FOLDER	283
+227	n1-soumatome-n1-nghe-hieu-60	N1	Soumatome N1 nghe hiß╗âu	https://drive.google.com/drive/folders/1GyGWjYPucF10LsuGhjyEEavt0jy8X_YR?usp=sharing	\N	4	60	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1GyGWjYPucF10LsuGhjyEEavt0jy8X_YR	FOLDER	284
+228	n1-tettei-toreeningu-n1-nghe-61	N1	Tettei Toreeningu N1 nghe	https://drive.google.com/drive/folders/1CF8AYzYrUDmuQCsumxcgz7nmb5TYgcnA?usp=sharing	\N	5	61	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1CF8AYzYrUDmuQCsumxcgz7nmb5TYgcnA	FOLDER	285
+229	n1-pantan-n1-62	N1	Pantan N1	https://drive.google.com/drive/folders/1rdc78l6ax8G0dTPgGaZ0r85QfA4GmSYC?usp=sharing	\N	6	62	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1rdc78l6ax8G0dTPgGaZ0r85QfA4GmSYC	FOLDER	286
+230	other-namekara-63	OTHER	Namekara	https://drive.google.com/drive/folders/1ifBqkBFufaXI-wKQsJZcIp3GXGvH4i_-?usp=sharing	\N	2	63	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1ifBqkBFufaXI-wKQsJZcIp3GXGvH4i_-	FOLDER	287
+231	other-shadowing-so-trung-cap-tim-64	OTHER	Shadowing sãí trung cß║Ñp - t├¡m	https://drive.google.com/drive/folders/1hrGdfl-XFlGh3pSQVKBMG-LoKnoFzMlP?usp=sharing	\N	3	64	2026-07-07 09:25:12.672	2026-07-07 09:25:12.672	1hrGdfl-XFlGh3pSQVKBMG-LoKnoFzMlP	FOLDER	288
+\.
+
+
+--
+-- Data for Name: BookAudioMeta; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."BookAudioMeta" (id, "sourceUrl", publisher, "updatedAt") FROM stdin;
+1	https://docs.google.com/spreadsheets/d/1Sw5jK0dKAlUzFNKLrLl9L1xEsU_DmbdYj6RmsZxpSKs	Nh├á s├ích Mailee Books	2026-07-07 09:25:12.366
+\.
 
 
 --
@@ -3400,6 +4280,223 @@ COPY public."DailyNote" (id, "userId", date, content, "createdAt", "updatedAt") 
 --
 
 COPY public."DictationAttempt" (id, "userId", "vocabId", "userInput", correct, "createdAt") FROM stdin;
+1	\N	26985	sai	f	2026-07-11 07:25:17.418
+2	\N	26979	ginkoin	t	2026-07-11 07:25:40.665
+\.
+
+
+--
+-- Data for Name: EmailBroadcast; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."EmailBroadcast" (id, type, "templateName", subject, filter, "totalCount", "sentCount", "failedCount", status, "startedAt", "completedAt", "createdById", "createdAt") FROM stdin;
+\.
+
+
+--
+-- Data for Name: EmailPrefs; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."EmailPrefs" (id, "userId", "receiveProgress", "receiveStreak", "lastMilestoneNotified", "updatedAt") FROM stdin;
+\.
+
+
+--
+-- Data for Name: EmailTemplate; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."EmailTemplate" (id, name, description, subject, "htmlBody", "textBody", variables, attachments, active, "updatedById", "createdAt", "updatedAt") FROM stdin;
+\.
+
+
+--
+-- Data for Name: EmailVerificationToken; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."EmailVerificationToken" (id, "tokenHash", "userId", "expiresAt", "usedAt", "createdAt") FROM stdin;
+\.
+
+
+--
+-- Data for Name: EnglishKatakanaExample; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."EnglishKatakanaExample" (id, "sectionId", english, katakana, romaji, "meaningVi", note, "sortOrder") FROM stdin;
+36	9	automation	Òé¬Òâ╝ÒâêÒâíÒâ╝ÒéÀÒâºÒâ│	ootomeeshon	tß╗▒ ─æß╗Öng h├│a	quy luß║¡t 3: -ation	0
+37	9	culture	Òé½Òâ½ÒâüÒâúÒâ╝	karuchaa	v─ân h├│a	quy luß║¡t 3: -ture	1
+38	9	cookie	Òé»ÒââÒé¡Òâ╝	kukkii	b├ính quy	quy luß║¡t 4: -oo- + Òââ	2
+39	9	tomorrow	ÒâêÒéÑÒâóÒâ¡Òâ╝	tumoroo	ng├áy mai	quy luß║¡t 5: ÒâêÒéÑ	3
+40	9	salad	ÒéÁÒâ®ÒâÇ	sarada	salad	ngoß║íi lß╗ç quy luß║¡t 1 ÔÇö kh├┤ng th├¬m u	4
+41	9	picnic	ÒâöÒé»ÒâïÒââÒé»	pikunikku	d├ú ngoß║íi	ngoß║íi lß╗ç quy luß║¡t 4 ÔÇö Òââ chß╗ë ß╗ƒ ├óm tiß║┐t cuß╗æi	5
+42	11	party	ÒâæÒâ╝ÒâåÒéúÒâ╝	paatii	bß╗»a tiß╗çc	ÒâåÒéú = ti	0
+43	11	digital	ÒâçÒé©Òé┐Òâ½	dejitaru	kß╗╣ thuß║¡t sß╗æ	ÒâçÒéú thã░ß╗Øng r├║t gß╗ìn th├ánh Òâç trong tß╗½ c┼®	1
+44	11	tour	ÒâäÒéóÒâ╝ / ÒâêÒéÑÒéóÒâ╝	tsuaa / tuaa	chuyß║┐n du lß╗ïch	cß║ú hai c├ích viß║┐t ─æß╗üu gß║Àp	2
+45	11	duet	ÒâçÒâÑÒé¿ÒââÒâê	dyuetto	song ca	ÒâçÒâÑ = dyu	3
+46	11	check	ÒâüÒéºÒââÒé»	chekku	kiß╗âm tra	ÒâüÒéº = che	4
+47	11	web	ÒéªÒéºÒâû	webu	web	ÒéªÒéº = we	5
+48	13	coffee	Òé│Òâ╝ÒâÆÒâ╝	koohii	c├á ph├¬	\N	0
+49	13	hotel	ÒâøÒâåÒâ½	hoteru	kh├ích sß║ín	\N	1
+50	13	table	ÒâåÒâ╝ÒâûÒâ½	teeburu	b├án	\N	2
+51	13	game	Òé▓Òâ╝Òâá	geemu	tr├▓ chãíi	\N	3
+52	13	music	ÒâƒÒâÑÒâ╝Òé©ÒââÒé»	myuujikku	├óm nhß║íc	\N	4
+53	14	smartphone	Òé╣Òâ×Òâø	sumaho	─æiß╗çn thoß║íi th├┤ng minh	viß║┐t tß║»t phß╗ò biß║┐n	0
+54	14	computer	Òé│Òâ│ÒâöÒâÑÒâ╝Òé┐Òâ╝	konpyuutaa	m├íy t├¡nh	\N	1
+55	14	internet	ÒéñÒâ│Òé┐Òâ╝ÒâìÒââÒâê	intaanetto	mß║íng internet	\N	2
+56	14	restaurant	Òâ¼Òé╣ÒâêÒâ®Òâ│	resutoran	nh├á h├áng	\N	3
+57	14	taxi	Òé┐Òé»ÒéÀÒâ╝	takushii	taxi	\N	4
+58	14	bus	ÒâÉÒé╣	basu	xe bu├¢t	\N	5
+59	14	ticket	ÒâüÒé▒ÒââÒâê	chiketto	v├®	\N	6
+60	14	test	ÒâåÒé╣Òâê	tesuto	b├ái kiß╗âm tra	\N	7
+61	14	part-time job	ÒéóÒâ½ÒâÉÒéñÒâê	arubaito	viß╗çc l├ám th├¬m	tß╗½ ─Éß╗®c Arbeit	8
+62	14	air conditioner	Òé¿ÒéóÒé│Òâ│	eakon	m├íy lß║ính	viß║┐t tß║»t	9
+63	14	pen	ÒâÜÒâ│	pen	b├║t	\N	10
+64	14	milk	ÒâƒÒâ½Òé»	miruku	sß╗»a	\N	11
+65	14	bread	ÒâæÒâ│	pan	b├ính m├¼	tß╗½ Ph├íp pain	12
+66	14	chocolate	ÒâüÒâºÒé│Òâ¼Òâ╝Òâê	chokoreeto	s├┤-c├┤-la	\N	13
+67	14	camera	Òé½ÒâíÒâ®	kamera	m├íy ß║únh	\N	14
+68	14	email	ÒâíÒâ╝Òâ½	meeru	email	\N	15
+69	15	iron	ÒéóÒéñÒâ¡Òâ│	airon	b├án ß╗ºi	kh├┤ng phß║úi "sß║»t"	0
+70	15	mansion	Òâ×Òâ│ÒéÀÒâºÒâ│	manshon	chung cã░ cao tß║ºng	kh├┤ng phß║úi biß╗çt thß╗▒	1
+71	15	smart	Òé╣Òâ×Òâ╝Òâê	sumaato	gß║ºy, thon	kh├┤ng chß╗ë "th├┤ng minh"	2
+72	15	service	ÒéÁÒâ╝ÒâôÒé╣	saabisu	─æß╗ô miß╗àn ph├¡ / phß╗Ñc vß╗Ñ	Òé│Òâ│ÒâôÒâï service = ─æß╗ô tß║Àng k├¿m	3
+73	15	juice	Òé©ÒâÑÒâ╝Òé╣	juusu	nã░ß╗øc ├®p / soda	thã░ß╗Øng gß╗ôm cß║ú nã░ß╗øc ngß╗ìt	4
+74	15	handle	ÒâÅÒâ│ÒâëÒâ½	handoru	v├┤-l─âng xe	kh├┤ng phß║úi tay cß║ºm cß╗¡a	5
+75	15	claim	Òé»Òâ¼Òâ╝Òâá	kureemu	khiß║┐u nß║íi	\N	6
+76	15	talent	Òé┐Òâ¼Òâ│Òâê	tarento	nghß╗ç s─® TV	\N	7
+\.
+
+
+--
+-- Data for Name: EnglishKatakanaMapping; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."EnglishKatakanaMapping" (id, "sectionId", english, katakana, romaji, note, "sortOrder") FROM stdin;
+53	9	1. Th├¬m nguy├¬n ├óm	t,dÔåÆÒé¬ / c,b,f,g,k,l,m,p,sÔåÆÒéª	ÔÇö	hintÔåÆÒâÆÒâ│Òâê, maskÔåÆÒâ×Òé╣Òé»	0
+54	9	2. Thay ├óm kh├┤ng c├│	L/RÔåÆÒâ®Þíî, VÔåÆÒâ┤/ÒâÉ, THÔåÆÒé╣/Òâå	ÔÇö	loveÔåÆÒâ®Òâû, violinÔåÆÒâ┤ÒéíÒéñÒé¬Òâ¬Òâ│	1
+55	9	3. Trã░ß╗Øng ├óm Òâ╝	-ar/-erÔåÆÒéóÒâ╝/Òé┐Òâ╝, -ee/-ooÔåÆÒéñÒâ╝/ÒéªÒâ╝	ÔÇö	carÔåÆÒé½Òâ╝, gameÔåÆÒé▓Òâ╝Òâá	2
+56	9	4. ├ém ngß║»t Òââ	sau nguy├¬n ├óm ngß║»n + p,t,kÔÇª	ÔÇö	matchÔåÆÒâ×ÒââÒâü, bookÔåÆÒâûÒââÒé»	3
+57	9	5. Kana gh├®p nhß╗Å	ÒâåÒéú, ÒâòÒéí, ÒâêÒéÑ, ÒâçÒâÑ, Òâ┤	ÔÇö	partyÔåÆÒâæÒâ╝ÒâåÒéúÒâ╝, fanÔåÆÒâòÒéíÒâ│	4
+58	9	6. T├ích cß╗Ñm phß╗Ñ ├óm	ch├¿n Òéª (hoß║Àc Òé¬)	ÔÇö	stressÔåÆÒé╣ÒâêÒâ¼Òé╣, truckÔåÆÒâêÒâ®ÒââÒé»	5
+59	10	a	Òéó	a	cat, apple	0
+60	10	i	Òéñ	i	it, big	1
+61	10	u	Òéª	u	put (m├┤i tr├▓n)	2
+62	10	e	Òé¿	e	bed, pen	3
+63	10	o	Òé¬	o	hot, dog	4
+64	10	ka	Òé½	ka	\N	5
+65	10	ki	Òé¡	ki	\N	6
+66	10	ku	Òé»	ku	\N	7
+67	10	ke	Òé▒	ke	\N	8
+68	10	ko	Òé│	ko	\N	9
+69	10	sa	ÒéÁ	sa	\N	10
+70	10	shi	ÒéÀ	shi	she, ship	11
+71	10	su	Òé╣	su	\N	12
+72	10	ta	Òé┐	ta	\N	13
+73	10	chi	Òâü	chi	cheese	14
+74	10	tsu	Òâä	tsu	cats,itsu	15
+75	10	na	Òâè	na	\N	16
+76	10	ni	Òâï	ni	\N	17
+77	10	no	ÒâÄ	no	\N	18
+78	10	ha	ÒâÅ	ha	\N	19
+79	10	fu	Òâò	fu	food, phone	20
+80	10	ma	Òâ×	ma	\N	21
+81	10	mi	Òâƒ	mi	\N	22
+82	10	mo	Òâó	mo	\N	23
+83	10	ya	Òâñ	ya	\N	24
+84	10	yu	Òâª	yu	\N	25
+85	10	yo	Òâ¿	yo	\N	26
+86	10	ra	Òâ®	ra	\N	27
+87	10	ri	Òâ¬	ri	\N	28
+88	10	ru	Òâ½	ru	\N	29
+89	10	re	Òâ¼	re	\N	30
+90	10	ro	Òâ¡	ro	\N	31
+91	10	wa	Òâ»	wa	\N	32
+92	10	n	Òâ│	n	cuß╗æi ├óm tiß║┐t	33
+93	11	kya / kyu / kyo	Òé¡Òâú / Òé¡ÒâÑ / Òé¡Òâº	kya / kyu / kyo	character, kyushu	0
+94	11	sha / shu / sho	ÒéÀÒâú / ÒéÀÒâÑ / ÒéÀÒâº	sha / shu / sho	fashion, shoot	1
+95	11	cha / chu / cho	ÒâüÒâú / ÒâüÒâÑ / ÒâüÒâº	cha / chu / cho	chance, chocolate	2
+96	11	ja / ju / jo	Òé©Òâú / Òé©ÒâÑ / Òé©Òâº	ja / ju / jo	jazz, juice	3
+97	11	fa / fi / fe / fo	ÒâòÒéí / ÒâòÒéú / ÒâòÒéº / ÒâòÒé®	fa / fi / fe / fo	fan, filter, cafe, phone	4
+98	11	va / vi / ve / vo	Òâ┤Òéí / Òâ┤Òéú / Òâ┤Òéº / Òâ┤Òé®	va / vi / ve / vo	violin, event	5
+99	11	ti / di	ÒâåÒéú / ÒâçÒéú	ti / di	party, digital	6
+100	11	tu / du	ÒâêÒéÑ / ÒâëÒéÑ	tu / du	tour, duet	7
+101	11	che / she / je	ÒâüÒéº / ÒéÀÒéº / Òé©Òéº	che / she / je	check, shell, gel	8
+102	11	wi / we / wo	ÒéªÒéú / ÒéªÒéº / ÒéªÒé®	wi / we / wo	window, web, walk	9
+103	12	L / R	Òâ®Òâ╗Òâ¬Òâ╗Òâ½Òâ╗Òâ¼Òâ╗Òâ¡	ra ri ru re ro	love, red, radio	0
+104	12	V	Òâ┤ / ÒâÉ	vu / ba	violin ÔåÆ Òâ┤ÒéíÒéñÒé¬Òâ¬Òâ│	1
+105	12	F	Òâò / ÒâòÒéí	fu / fa	fan ÔåÆ ÒâòÒéíÒâ│	2
+106	12	TH	Òé╣ / Òâå / ÒéÀ	su / te / shi	think, three, this	3
+107	12	W	Òâ» / Òéª	wa / u	water ÔåÆ ÒéªÒé®Òâ╝Òé┐Òâ╝	4
+108	12	X	Òé»Òé╣ / Òé¡Òé╣	kusu / kisu	box ÔåÆ Òâ£ÒââÒé»Òé╣	5
+109	12	ti / di	ÒâåÒéú / ÒâçÒéú	ti / di	party, radio	6
+110	12	tu / du	ÒâêÒéÑ / ÒâëÒéÑ	tu / du	tour, due	7
+111	12	sh / ch	ÒéÀÒâÑ / ÒâüÒâÑ	shu / chu	shoes, cheese	8
+112	12	j	Òé© / Òé©Òéº	ji / je	jazz, juice	9
+113	12	-er	ÒéóÒâ╝ / Òâ╝	aa / long	computer, driver	10
+114	12	-le	Òâ½	ru	table, apple	11
+\.
+
+
+--
+-- Data for Name: EnglishKatakanaMeta; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."EnglishKatakanaMeta" (id, intro, "createdAt", "updatedAt") FROM stdin;
+1	Tiß║┐ng Nhß║¡t kh├┤ng c├│ ─æß╗º ├óm ─æß╗â bß║»t chã░ß╗øc tiß║┐ng Anh nguy├¬n bß║ún. Khi mã░ß╗ún tß╗½ nã░ß╗øc ngo├ái (gairaigo ÕñûµØÑÞ¬×), ngã░ß╗Øi Nhß║¡t ghi bß║▒ng katakana theo c├ích nghe gß║ºn nhß║Ñt vß╗øi hß╗ç ├óm tiß║┐ng Nhß║¡t ÔÇö thã░ß╗Øng ngß║»n hãín, kh├┤ng c├│ phß╗Ñ ├óm cuß╗æi phß╗®c tß║íp, v├á d├╣ng ÚòÀÚƒ│ (Òâ╝) cho nguy├¬n ├óm d├ái.	2026-07-05 07:23:31.761	2026-07-07 09:25:17.921
+\.
+
+
+--
+-- Data for Name: EnglishKatakanaPoint; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."EnglishKatakanaPoint" (id, "sectionId", explanation, english, katakana, romaji, "sortOrder") FROM stdin;
+14	8	Gairaigo (ÕñûµØÑÞ¬×) l├á tß╗½ mã░ß╗ún tß╗½ tiß║┐ng Anh, Ph├íp, ─Éß╗®cÔÇª Katakana b├ío hiß╗çu "─æ├óy kh├┤ng phß║úi tß╗½ gß╗æc Nhß║¡t".	\N	\N	\N	0
+15	8	C├ích viß║┐t theo ├óm nghe ─æã░ß╗úc (Úƒ│ÕåÖ onsha), kh├┤ng theo ch├¡nh tß║ú tiß║┐ng Anh ÔÇö computer v├á kompyuutaa c├╣ng mß╗Öt d├▓ng ├óm.	computer	Òé│Òâ│ÒâöÒâÑÒâ╝Òé┐Òâ╝	konpyuutaa	1
+16	8	Nhiß╗üu tß╗½ h├áng ng├áy ß╗ƒ Nhß║¡t l├á gairaigo: ÒâøÒâåÒâ½, Òâ¼Òé╣ÒâêÒâ®Òâ│, Òé╣Òâ×Òâø ÔÇö ngã░ß╗Øi Viß╗çt hß╗ìc N5 n├¬n quen sß╗øm.	\N	\N	\N	2
+17	9	Quy luß║¡t 1 ÔÇö Th├¬m nguy├¬n ├óm sau phß╗Ñ ├óm ─æß╗®ng mß╗Öt m├¼nh: tiß║┐ng Nhß║¡t gß║ºn nhã░ chß╗ë c├│ ├óm tiß║┐t CV (phß╗Ñ ├óm + nguy├¬n ├óm). Phß╗Ñ ├óm cuß╗æi tß╗½ phß║úi ─æã░ß╗úc "v├í" bß║▒ng nguy├¬n ├óm.	\N	\N	\N	0
+18	9	Kß║┐t th├║c bß║▒ng t hoß║Àc d ÔåÆ th├¬m o. Kß║┐t th├║c bß║▒ng c, b, f, g, k, l, m, p, s ÔåÆ th├¬m u. Ngoß║íi lß╗ç: salad ÔåÆ ÒéÁÒâ®ÒâÇ (kh├┤ng th├¬m u sau d).	hint / mask / post	ÒâÆÒâ│Òâê / Òâ×Òé╣Òé» / ÒâØÒé╣Òâê	hinto / masuku / posuto	1
+19	9	Quy luß║¡t 2 ÔÇö Thay ├óm tiß║┐ng Anh kh├┤ng c├│ trong tiß║┐ng Nhß║¡t bß║▒ng ├óm gß║ºn nhß║Ñt. ─É├óy l├á l├¢ do loveÔåÆÒâ®Òâû, thinkÔåÆÒéÀÒâ│Òé», fanÔåÆÒâòÒéíÒâ│.	\N	\N	\N	2
+20	9	Quy luß║¡t 3 ÔÇö Trã░ß╗Øng ├óm Òâ╝ cho nguy├¬n ├óm d├ái: -ar/-er/-or ÔåÆ Òé½Òâ╝/Òé┐Òâ╝, -ee/-ea/-oo ÔåÆ Òé╣ÒâöÒâ╝Òâë/ÒâüÒâ╝Òé║/Òâ½Òâ╝Òâá, -w/-y cuß╗æi ÔåÆ ÒéÀÒâºÒâ╝/Òé│ÒâöÒâ╝.	car / speed / show	Òé½Òâ╝ / Òé╣ÒâöÒâ╝Òâë / ÒéÀÒâºÒâ╝	kaa / supiido / shoo	3
+21	9	Quy luß║¡t 4 ÔÇö ├ém ngß║»t Òââ (sokuon) khi c├│ phß╗Ñ ├óm "dß╗½ng" sau nguy├¬n ├óm ngß║»n: -ck/-x/-tch, -ss/-pp/-tt, hoß║Àc -at/-ap/-et/-ip/-op...	block / staff / ship	ÒâûÒâ¡ÒââÒé» / Òé╣Òé┐ÒââÒâò / ÒéÀÒââÒâù	burokku / sutaffu / shippu	4
+22	9	Quy luß║¡t 5 ÔÇö Katakana gh├®p (ÒâúÒâÑÒâºÒéúÒéºÒé®Òâ┤): d├╣ng k├¢ tß╗▒ nhß╗Å ─æß╗â bß║»t ├óm ti, di, fa, tu, du, vÔÇª m├á bß║úng 50 ├óm kh├┤ng c├│. Cat ng├áy nay l├á Òé¡ÒâúÒââÒâê, kh├┤ng phß║úi Òé½ÒââÒâê.	cat / gap / duet	Òé¡ÒâúÒââÒâê / Òé«ÒâúÒââÒâù / ÒâçÒâÑÒé¿ÒââÒâê	kyatto / gyappu / dyuetto	5
+23	9	Quy luß║¡t 6 ÔÇö T├ích cß╗Ñm phß╗Ñ ├óm bß║▒ng nguy├¬n ├óm (thã░ß╗Øng u): tiß║┐ng Anh c├│ st, tr, dr, sprÔÇª tiß║┐ng Nhß║¡t ch├¿n u ─æß╗â mß╗ùi mora vß║½n l├á CV.	street / spring / drive	Òé╣ÒâêÒâ¬Òâ╝Òâê / Òé╣ÒâùÒâ¬Òâ│Òé░ / ÒâëÒâ®ÒéñÒâû	sutoriito / supuringu / doraibu	6
+24	11	├ém gh├®p d├╣ng k├¢ tß╗▒ nhß╗Å (ÒâúÒâÑÒâºÒéíÒéúÒéÑÒéºÒé®) ─æß╗â tß║ío ├óm gß║ºn tiß║┐ng Anh hãín. ─Éß╗ìc liß╗ün mß╗Öt nhß╗ïp, kh├┤ng t├ích tß╗½ng kana.	\N	\N	\N	0
+25	11	Khi gß║Àp ÒâåÒéú / ÒâçÒéú / ÒâêÒéÑ / ÒâëÒéÑ, ã░u ti├¬n ─æß╗ìc theo cß╗Ñm (ti, di, tu, du), kh├┤ng ─æß╗ìc kiß╗âu te-i, de-i.	\N	\N	\N	1
+26	13	Dß║Ñu Òâ╝ k├®o d├ái nguy├¬n ├óm trã░ß╗øc ─æ├│ mß╗Öt mora. Kh├┤ng ph├ít ├óm nhã░ chß╗» "i" ri├¬ng ÔÇö Òé│Òâ╝ÒâÆÒâ╝ l├á 4 mora: Òé│ + Òâ╝ + ÒâÆ + Òâ╝.	coffee	Òé│Òâ╝ÒâÆÒâ╝	koohii	0
+27	13	├ém "oo" trong English thã░ß╗Øng ÔåÆ Òéª + Òâ╝ hoß║Àc Òé¬ + Òâ╝: room ÔåÆ Òâ½Òâ╝Òâá, door ÔåÆ ÒâëÒéó.	\N	\N	\N	1
+28	13	├ém "ee" thã░ß╗Øng ÔåÆ Òéñ + Òâ╝ hoß║Àc Òé¿ + Òâ╝: cheese ÔåÆ ÒâüÒâ╝Òé║, meet ÔåÆ ÒâƒÒâ╝Òâê.	\N	\N	\N	2
+\.
+
+
+--
+-- Data for Name: EnglishKatakanaSection; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."EnglishKatakanaSection" (id, slug, title, summary, "sortOrder", "createdAt", "updatedAt") FROM stdin;
+8	gairaigo	Gairaigo ÔÇö tß╗½ mã░ß╗ún tiß║┐ng Anh	V├¼ sao coffee viß║┐t Òé│Òâ╝ÒâÆÒâ╝ chß╗® kh├┤ng phß║úi hiragana.	0	2026-07-07 09:25:17.933	2026-07-07 09:25:17.933
+9	six-core-rules	6 quy luß║¡t chuyß╗ân ├óm (gi├ío tr├¼nh hay bß╗Å s├│t)	Nß║»m 6 quy tß║»c n├áy l├á c├│ thß╗â tß╗▒ chuyß╗ân hß║ºu hß║┐t tß╗½ tiß║┐ng Anh sang katakana ÔÇö phß║ºn lß╗øn s├ích N5 chß╗ë cho v├¡ dß╗Ñ m├á kh├┤ng giß║úi th├¡ch hß╗ç thß╗æng.	1	2026-07-07 09:25:17.943	2026-07-07 09:25:17.943
+10	basic-cv	Bß║úng ├óm cãí bß║ún (consonant + vowel)	Mß╗ùi ├óm tiß║┐ng Anh thã░ß╗Øng map sang mß╗Öt hoß║Àc v├ái kana.	2	2026-07-07 09:25:17.955	2026-07-07 09:25:17.955
+11	combo-reading	Nh├│m ├óm gh├®p ÔÇö c├ích ─æß╗ìc nhanh	Bß║úng tra c├íc cß╗Ñm katakana gh├®p nhß╗Å thã░ß╗Øng gß║Àp trong tß╗½ mã░ß╗ún.	3	2026-07-07 09:25:17.961	2026-07-07 09:25:17.961
+12	english-sounds	├ém ─æß║Àc trã░ng tiß║┐ng Anh ÔåÆ katakana	L/R, V, F, TH, W v├á c├íc tß╗ò hß╗úp kh├│.	4	2026-07-07 09:25:17.969	2026-07-07 09:25:17.969
+13	long-vowel	Trã░ß╗Øng ├óm Òâ╝ (ch┼ìon)	Nguy├¬n ├óm d├ái tiß║┐ng Anh thã░ß╗Øng ─æã░ß╗úc k├®o trong katakana.	5	2026-07-07 09:25:17.974	2026-07-07 09:25:17.974
+14	common-words	Tß╗½ tiß║┐ng Anh thã░ß╗Øng gß║Àp	Bß║úng tra nhanh ÔÇö nghe mß║½u ─æß╗â quen tai.	6	2026-07-07 09:25:17.979	2026-07-07 09:25:17.979
+15	tricky	Dß╗à nhß║ºm ÔÇö ─æß╗ìc kh├┤ng nhã░ chß╗» Anh	Mß╗Öt sß╗æ tß╗½ nghe kh├íc hß║│n so vß╗øi orthography tiß║┐ng Anh.	7	2026-07-07 09:25:17.985	2026-07-07 09:25:17.985
+\.
+
+
+--
+-- Data for Name: EnglishKatakanaTip; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."EnglishKatakanaTip" (id, text, "sortOrder", "createdAt", "updatedAt") FROM stdin;
+9	─Éß╗½ng ─æß╗ìc katakana nhã░ ─æß╗ìc chß╗» Latin ÔÇö h├úy ngh─® "├óm Nhß║¡t h├│a" cß╗ºa tß╗½ tiß║┐ng Anh.	0	2026-07-07 09:25:17.926	2026-07-07 09:25:17.926
+10	├ém L v├á R trong tiß║┐ng Anh thã░ß╗Øng gß╗Öp th├ánh Òâ®Þíî (ra, ri, ru, re, ro) ÔÇö v├¡ dß╗Ñ love ÔåÆ Òâ®Òâû.	1	2026-07-07 09:25:17.926	2026-07-07 09:25:17.926
+11	├ém V kh├┤ng c├│ trong tiß║┐ng Nhß║¡t cß╗ò ÔÇö thã░ß╗Øng d├╣ng ÒâÉÞíî hoß║Àc Òâ┤ + nguy├¬n ├óm (violet ÔåÆ Òâ┤ÒéíÒéñÒé¬Òâ¼ÒââÒâê).	2	2026-07-07 09:25:17.926	2026-07-07 09:25:17.926
+12	├ém TH thã░ß╗Øng th├ánh Òé╣ hoß║Àc Òâå (think ÔåÆ ÒéÀÒâ│Òé», three ÔåÆ Òé╣Òâ¬Òâ╝).	3	2026-07-07 09:25:17.926	2026-07-07 09:25:17.926
+13	Nguy├¬n ├óm d├ái trong tiß║┐ng Anh hay ─æã░ß╗úc k├®o bß║▒ng Òâ╝: coffee ÔåÆ Òé│Òâ╝ÒâÆÒâ╝, table ÔåÆ ÒâåÒâ╝ÒâûÒâ½.	4	2026-07-07 09:25:17.926	2026-07-07 09:25:17.926
+14	Phß╗Ñ ├óm cuß╗æi bß╗ï cß║»t hoß║Àc th├¬m nguy├¬n ├óm: bus ÔåÆ ÒâÉÒé╣, bed ÔåÆ ÒâÖÒââÒâë.	5	2026-07-07 09:25:17.926	2026-07-07 09:25:17.926
+15	Khi nghe podcast hay anime, nhß║¡n diß╗çn gairaigo gi├║p ─æo├ín ngh─®a nhanh hãín tß╗½ kanji.	6	2026-07-07 09:25:17.926	2026-07-07 09:25:17.926
+16	Gi├ío tr├¼nh Minna thã░ß╗Øng chß╗ë liß╗çt k├¬ tß╗½ ÔÇö 6 quy luß║¡t chuyß╗ân ├óm b├¬n dã░ß╗øi mß╗øi gi├║p anh tß╗▒ ─æo├ín c├ích viß║┐t katakana.	7	2026-07-07 09:25:17.926	2026-07-07 09:25:17.926
 \.
 
 
@@ -3916,6 +5013,8 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 14536	ÒüùÒü¥ÒüÖ ´╝ì´╝× ÒüùÒüª ( Òü╣ÒéôÒüìÒéçÒüåÒüùÒü¥ÒüÖ -&gt; Òü╣ÒéôÒüìÒéçÒüåÒüùÒüª: hß╗ìc)		\N	\N	5353	\N	0
 14537	ÒüìÒü¥ÒüÖ ´╝ì´╝× ÒüìÒüª : ─æß║┐n		\N	\N	5353	\N	0
 14538	1.		\N	\N	5470	\N	0
+11747	ÒéÅÒüƒÒüùÒü» Ha NoiÕñºÕ¡ª ÒüáÒüäÒüîÒüÅÒü«Õ¡ªþöƒÒüºÒüÖÒÇé		\N	T├┤i l├á sinh vi├¬n cß╗ºa trã░ß╗Øng ─Éß║íi hß╗ìc Ha Noi.	3676	\N	0
+11763	3) ÒâƒÒâ®Òâ╝ÒüòÒéôÒü» IMCÒü«ÒüùÒéâÒüäÒéôÒüºÒüÖÒüïÒÇé		\N	Mira l├á nh├ón vi├¬n c├┤ng ty IMC phß║úi kh├┤ng? ÔÇª Òü»ÒüäÒÇüIMCÒü«ÒüùÒéâÒüäÒéôÒüºÒüÖÒÇé (Kh├┤ng d├╣ng : IMCÒü«ÒüºÒüÖ) ÔÇª V├óng, (anh ß║Ñy) l├á nh├ón vi├¬n c├┤ng ty IMC.	3682	\N	0
 11733	ÒéÅÒüƒÒüùÒü» ÒüƒÒü¬ÒüïÒüºÒüÖÒÇé		\N	T├┤i l├á Tanaka.	3672	\N	0
 11734	ÒéÅÒüƒÒüùÒü» Õ¡ªþöƒ ÒüîÒüÅÒüøÒüäÒüºÒüÖÒÇé		\N	T├┤i l├á sinh vi├¬n.	3672	\N	0
 11735	Òâ®Òé¬ÒüòÒéôÒü» Òé¿Òâ│Òé©ÒâïÒéóÒüºÒü»´╝êÒüÿÒéâ´╝ëÒüéÒéèÒü¥ÒüøÒéôÒÇé		\N	Anh Rao kh├┤ng phß║úi l├á kß╗╣ sã░.	3673	\N	0
@@ -3930,7 +5029,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 11744	ÔÇª(ÒüéÒü«õ║║Òü») Õ▒▒þö░ÒüòÒéôÒüºÒüÖÒÇé ÔÇª(ÒüéÒü«õ║║Òü») ÒéäÒü¥ÒüáÒüòÒéôÒüºÒüÖÒÇéÔÇª(Ngã░ß╗Øi kia)		\N	L├á anh Yamada.	3674	\N	0
 11745	ÒéÅÒüƒÒüùÒü» ÒâÖÒâêÒâèÒâáõ║║ÒüºÒüÖÒÇé ÒéÅÒüƒÒüùÒü» ÒâÖÒâêÒâèÒâáÒüÿ ÒéôÒüºÒüÖÒÇé		\N	T├┤i l├á ngã░ß╗Øi Viß╗çt Nam.	3675	\N	0
 11746	Òé┐Òâ│ÒüòÒéôÒéé ÒâÖÒâêÒâèÒâáõ║║ÒüºÒüÖÒÇé Òé┐Òâ│ÒüòÒéôÒéé ÒâÖÒâêÒâèÒâáÒüÿ ÒéôÒüºÒüÖÒÇé		\N	Anh T├ón c┼®ng l├á ngã░ß╗Øi Viß╗çt Nam.	3675	\N	0
-11747	ÒéÅÒüƒÒüùÒü»		\N	Ha NoiÕñºÕ¡ª ÒüáÒüäÒüîÒüÅÒü«Õ¡ªþöƒÒüºÒüÖÒÇé T├┤i l├á sinh vi├¬n cß╗ºa trã░ß╗Øng ─Éß║íi hß╗ìc Ha Noi.	3676	\N	0
 11748	ÒéÅÒüƒÒüùÒü» ÒüƒÒü¬ÒüïÒüºÒüÖÒÇé		\N	T├┤i l├á Tanaka.	3677	\N	0
 11749	ÒüéÒü«ÒüïÒüƒÒü» ÒüìÒéÇÒéëÒüòÒéôÒüºÒüÖÒÇé		\N	Vß╗ï kia l├á Kimura.	3677	\N	0
 11750	ÒéÅÒüƒÒüùÒü» 20ÒüòÒüäÒüºÒüÖÒÇé		\N	T├┤i 20 tuß╗òi.	3678	\N	0
@@ -3946,7 +5044,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 11760	ÒüôÒéîÒü» ÒéÅÒüƒÒüùÒü« Òü╗ÒéôÒüºÒüÖÒÇé		\N	─É├óy l├á quyß╗ân s├ích cß╗ºa t├┤i.	3682	\N	0
 11761	1) ÒüéÒéîÒü» ÒüáÒéîÒü«ÒüïÒü░ÒéôÒüºÒüÖÒüïÒÇé		\N	Kia l├á c├íi cß║Àp cß╗ºa ai? ÔÇª ÒéÅÒüƒÒüùÒü«ÒüºÒüÖÒÇé ÔÇª L├á cß╗ºa t├┤i.	3682	\N	0
 11762	2) ÒüØÒü«ÒüñÒüÅÒüêÒü» Òâ®Òé¬ÒüòÒéôÒü«ÒüºÒüÖÒüïÒÇé		\N	C├íi b├án ─æ├│ l├á cß╗ºa Rao phß║úi kh├┤ng? ÔÇª ÒüäÒüäÒüêÒÇüÒâ®Òé¬ÒüòÒéôÒü«ÒüºÒü»ÒüéÒéèÒü¥ÒüøÒéôÒÇé ÔÇª Kh├┤ng, kh├┤ng phß║úi cß╗ºa Rao.	3682	\N	0
-11763	3) ÒâƒÒâ®Òâ╝ÒüòÒéôÒü»		\N	IMCÒü«ÒüùÒéâÒüäÒéôÒüºÒüÖÒüïÒÇé Mira l├á nh├ón vi├¬n c├┤ng ty IMC phß║úi kh├┤ng? ÔÇª Òü»ÒüäÒÇüIMCÒü«ÒüùÒéâÒüäÒéôÒüºÒüÖÒÇé (Kh├┤ng d├╣ng : IMCÒü«ÒüºÒüÖ) ÔÇª V├óng, (anh ß║Ñy) l├á nh├ón vi├¬n c├┤ng ty IMC.	3682	\N	0
 11764	A: ÒüôÒü«ÒüïÒüòÒü» ÒüéÒü¬ÒüƒÒü«ÒüºÒüÖÒüïÒÇé		\N	C├íi ├┤ n├áy l├á cß╗ºa bß║ín ├á? B: ÒüäÒüäÒüêÒÇüÒé┐Òâ│ÒüòÒéôÒü«ÒüºÒüÖÒÇé ÔÇªKh├┤ng, cß╗ºa anh T├ón. A: ÒüØÒüåÒüºÒüÖÒüïÒÇé ├Ç, ra vß║¡y.	3683	\N	0
 \.
 
@@ -8242,10 +9339,10 @@ COPY public."JlptRoadmapExamSection" (id, "levelId", name, points, "time", "sort
 -- Data for Name: JlptRoadmapLevel; Type: TABLE DATA; Schema: public; Owner: nihongo
 --
 
-COPY public."JlptRoadmapLevel" (id, "externalKey", label, badge, color, duration, "vocabTarget", "kanjiTarget", "passScore", summary, "sortOrder", "createdAt", "updatedAt") FROM stdin;
-1	n5	JLPT N5	Sãí cß║Ñp	#22c55e	4ÔÇô6 th├íng	~800 tß╗½	~100 chß╗»	80/180 ─æiß╗âm	N5 l├á cß║Ñp ─æß╗Ö ─æß║ºu ti├¬n ÔÇö ─æß╗º ─æß╗â giao tiß║┐p cãí bß║ún, giß╗øi thiß╗çu bß║ún th├ón, mua sß║»m, hß╗Åi ─æã░ß╗Øng ─æãín giß║ún.	0	2026-06-25 10:52:31.299	2026-06-25 10:52:31.299
-2	n4	JLPT N4	Sãí cß║Ñp cao	#3b82f6	4ÔÇô6 th├íng (sau N5)	~1.500 tß╗½	~300 chß╗»	90/180 ─æiß╗âm	N4 mß╗ƒ rß╗Öng giao tiß║┐p h├áng ng├áy ÔÇö n├│i vß╗ü kinh nghiß╗çm, lß╗ïch tr├¼nh, ├¢ kiß║┐n ─æãín giß║ún, ─æß╗ìc tin ngß║»n.	1	2026-06-25 10:52:31.379	2026-06-25 10:52:31.379
-3	n3	JLPT N3	Trung cß║Ñp	#a855f7	6ÔÇô9 th├íng (sau N4)	~3.750 tß╗½	~650 chß╗»	95/180 ─æiß╗âm	N3 l├á cß║ºu nß╗æi trung cß║Ñp ÔÇö hiß╗âu tin tß╗®c, hß╗Öi thoß║íi c├┤ng viß╗çc, v─ân viß║┐t kh├┤ng qu├í trang trß╗ìng.	2	2026-06-25 10:52:31.426	2026-06-25 10:52:31.426
+COPY public."JlptRoadmapLevel" (id, "externalKey", label, badge, color, duration, "vocabTarget", "kanjiTarget", "passScore", summary, "sortOrder", "createdAt", "updatedAt", "grammarTarget", "vocabIncrement", "kanjiIncrement", "grammarIncrement") FROM stdin;
+1	n5	JLPT N5	Sãí cß║Ñp	#22c55e	4ÔÇô6 th├íng	~800 tß╗½	~100 chß╗»	80/180 ─æiß╗âm	N5 l├á cß║Ñp ─æß╗Ö ─æß║ºu ti├¬n ÔÇö ─æß╗º ─æß╗â giao tiß║┐p cãí bß║ún, giß╗øi thiß╗çu bß║ún th├ón, mua sß║»m, hß╗Åi ─æã░ß╗Øng ─æãín giß║ún.	0	2026-06-25 10:52:31.299	2026-06-25 10:52:31.299	~80 mß║½u			
+2	n4	JLPT N4	Sãí cß║Ñp cao	#3b82f6	4ÔÇô6 th├íng (sau N5)	~1.500 tß╗½ (gß╗ôm N5)	~300 chß╗» (gß╗ôm N5)	90/180 ─æiß╗âm	N4 mß╗ƒ rß╗Öng giao tiß║┐p h├áng ng├áy ÔÇö n├│i vß╗ü kinh nghiß╗çm, lß╗ïch tr├¼nh, ├¢ kiß║┐n ─æãín giß║ún, ─æß╗ìc tin ngß║»n.	1	2026-06-25 10:52:31.379	2026-06-25 10:52:31.379	~170 mß║½u (gß╗ôm N5)	+700 tß╗½ mß╗øi	+200 chß╗» mß╗øi	+90 mß║½u mß╗øi
+3	n3	JLPT N3	Trung cß║Ñp	#a855f7	6ÔÇô9 th├íng (sau N4)	~3.750 tß╗½ (gß╗ôm N5ÔÇôN4)	~650 chß╗» (gß╗ôm N5ÔÇôN4)	95/180 ─æiß╗âm	N3 l├á cß║ºu nß╗æi trung cß║Ñp ÔÇö hiß╗âu tin tß╗®c, hß╗Öi thoß║íi c├┤ng viß╗çc, v─ân viß║┐t kh├┤ng qu├í trang trß╗ìng.	2	2026-06-25 10:52:31.426	2026-06-25 10:52:31.426	~350 mß║½u (gß╗ôm N5ÔÇôN4)	+2.250 tß╗½ mß╗øi	+350 chß╗» mß╗øi	+180 mß║½u mß╗øi
 \.
 
 
@@ -8571,6 +9668,225 @@ COPY public."KanaCell" (id, "sectionId", "rowIndex", "colIndex", kana, romaji) F
 224	8	10	0	ÒâöÒâú	pya
 225	8	10	1	ÒâöÒâÑ	pyu
 226	8	10	2	ÒâöÒâº	pyo
+\.
+
+
+--
+-- Data for Name: KanaRomaji; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."KanaRomaji" (id, kana, romaji, "sortOrder", "createdAt", "updatedAt") FROM stdin;
+212	ÒüìÒéâ	kya	0	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+213	ÒüìÒéà	kyu	1	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+214	ÒüìÒéç	kyo	2	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+215	ÒüùÒéâ	sha	3	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+216	ÒüùÒéà	shu	4	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+217	ÒüùÒéç	sho	5	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+218	ÒüíÒéâ	cha	6	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+219	ÒüíÒéà	chu	7	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+220	ÒüíÒéç	cho	8	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+221	Òü½Òéâ	nya	9	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+222	Òü½Òéà	nyu	10	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+223	Òü½Òéç	nyo	11	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+224	Òü▓Òéâ	hya	12	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+225	Òü▓Òéà	hyu	13	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+226	Òü▓Òéç	hyo	14	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+227	Òü┐Òéâ	mya	15	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+228	Òü┐Òéà	myu	16	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+229	Òü┐Òéç	myo	17	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+230	ÒéèÒéâ	rya	18	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+231	ÒéèÒéà	ryu	19	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+232	ÒéèÒéç	ryo	20	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+233	ÒüÄÒéâ	gya	21	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+234	ÒüÄÒéà	gyu	22	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+235	ÒüÄÒéç	gyo	23	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+236	ÒüÿÒéâ	ja	24	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+237	ÒüÿÒéà	ju	25	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+238	ÒüÿÒéç	jo	26	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+239	Òü│Òéâ	bya	27	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+240	Òü│Òéà	byu	28	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+241	Òü│Òéç	byo	29	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+242	Òü┤Òéâ	pya	30	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+243	Òü┤Òéà	pyu	31	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+244	Òü┤Òéç	pyo	32	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+245	Òé¡Òâú	kya	33	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+246	Òé¡ÒâÑ	kyu	34	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+247	Òé¡Òâº	kyo	35	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+248	ÒéÀÒâú	sha	36	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+249	ÒéÀÒâÑ	shu	37	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+250	ÒéÀÒâº	sho	38	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+251	ÒâüÒâú	cha	39	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+252	ÒâüÒâÑ	chu	40	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+253	ÒâüÒâº	cho	41	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+254	ÒâïÒâú	nya	42	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+255	ÒâïÒâÑ	nyu	43	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+256	ÒâïÒâº	nyo	44	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+257	ÒâÆÒâú	hya	45	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+258	ÒâÆÒâÑ	hyu	46	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+259	ÒâÆÒâº	hyo	47	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+260	ÒâƒÒâú	mya	48	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+261	ÒâƒÒâÑ	myu	49	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+262	ÒâƒÒâº	myo	50	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+263	Òâ¬Òâú	rya	51	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+264	Òâ¬ÒâÑ	ryu	52	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+265	Òâ¬Òâº	ryo	53	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+266	Òé«Òâú	gya	54	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+267	Òé«ÒâÑ	gyu	55	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+268	Òé«Òâº	gyo	56	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+269	Òé©Òâú	ja	57	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+270	Òé©ÒâÑ	ju	58	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+271	Òé©Òâº	jo	59	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+272	ÒâôÒâú	bya	60	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+273	ÒâôÒâÑ	byu	61	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+274	ÒâôÒâº	byo	62	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+275	ÒâöÒâú	pya	63	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+276	ÒâöÒâÑ	pyu	64	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+277	ÒâöÒâº	pyo	65	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+278	Òüé	a	66	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+279	Òüä	i	67	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+280	Òüå	u	68	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+281	Òüê	e	69	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+282	Òüè	o	70	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+283	Òüï	ka	71	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+284	Òüì	ki	72	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+285	ÒüÅ	ku	73	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+286	Òüæ	ke	74	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+287	Òüô	ko	75	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+288	Òüò	sa	76	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+289	Òüù	shi	77	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+290	ÒüÖ	su	78	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+291	Òüø	se	79	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+292	ÒüØ	so	80	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+293	Òüƒ	ta	81	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+294	Òüí	chi	82	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+295	Òüñ	tsu	83	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+296	Òüª	te	84	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+297	Òü¿	to	85	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+298	Òü¬	na	86	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+299	Òü½	ni	87	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+300	Òü¼	nu	88	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+301	Òü¡	ne	89	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+302	Òü«	no	90	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+303	Òü»	ha	91	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+304	Òü▓	hi	92	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+305	ÒüÁ	fu	93	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+306	Òü©	he	94	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+307	Òü╗	ho	95	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+308	Òü¥	ma	96	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+309	Òü┐	mi	97	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+310	ÒéÇ	mu	98	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+311	Òéü	me	99	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+312	Òéé	mo	100	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+313	Òéä	ya	101	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+314	Òéå	yu	102	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+315	Òéê	yo	103	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+316	Òéë	ra	104	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+317	Òéè	ri	105	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+318	Òéï	ru	106	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+319	Òéî	re	107	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+320	Òéì	ro	108	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+321	ÒéÅ	wa	109	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+322	ÒéÆ	wo	110	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+323	Òéô	n	111	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+324	Òüú	tt	112	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+325	Òüî	ga	113	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+326	ÒüÄ	gi	114	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+327	ÒüÉ	gu	115	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+328	ÒüÆ	ge	116	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+329	Òüö	go	117	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+330	Òüû	za	118	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+331	Òüÿ	ji	119	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+332	ÒüÜ	zu	120	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+333	Òü£	ze	121	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+334	Òü×	zo	122	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+335	Òüá	da	123	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+336	Òüó	di	124	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+337	ÒüÑ	du	125	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+338	Òüº	de	126	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+339	Òü®	do	127	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+340	Òü░	ba	128	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+341	Òü│	bi	129	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+342	ÒüÂ	bu	130	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+343	Òü╣	be	131	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+344	Òü╝	bo	132	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+345	Òü▒	pa	133	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+346	Òü┤	pi	134	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+347	ÒüÀ	pu	135	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+348	Òü║	pe	136	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+349	Òü¢	po	137	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+350	Òéó	a	138	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+351	Òéñ	i	139	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+352	Òéª	u	140	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+353	Òé¿	e	141	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+354	Òé¬	o	142	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+355	Òé½	ka	143	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+356	Òé¡	ki	144	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+357	Òé»	ku	145	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+358	Òé▒	ke	146	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+359	Òé│	ko	147	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+360	ÒéÁ	sa	148	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+361	ÒéÀ	shi	149	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+362	Òé╣	su	150	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+363	Òé╗	se	151	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+364	Òé¢	so	152	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+365	Òé┐	ta	153	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+366	Òâü	chi	154	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+367	Òâä	tsu	155	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+368	Òâå	te	156	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+369	Òâê	to	157	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+370	Òâè	na	158	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+371	Òâï	ni	159	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+372	Òâî	nu	160	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+373	Òâì	ne	161	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+374	ÒâÄ	no	162	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+375	ÒâÅ	ha	163	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+376	ÒâÆ	hi	164	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+377	Òâò	fu	165	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+378	Òâÿ	he	166	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+379	Òâø	ho	167	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+380	Òâ×	ma	168	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+381	Òâƒ	mi	169	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+382	Òâá	mu	170	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+383	Òâí	me	171	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+384	Òâó	mo	172	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+385	Òâñ	ya	173	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+386	Òâª	yu	174	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+387	Òâ¿	yo	175	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+388	Òâ®	ra	176	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+389	Òâ¬	ri	177	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+390	Òâ½	ru	178	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+391	Òâ¼	re	179	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+392	Òâ¡	ro	180	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+393	Òâ»	wa	181	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+394	Òâ▓	wo	182	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+395	Òâ│	n	183	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+396	Òââ	tt	184	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+397	Òâ╝	-	185	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+398	Òé¼	ga	186	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+399	Òé«	gi	187	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+400	Òé░	gu	188	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+401	Òé▓	ge	189	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+402	Òé┤	go	190	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+403	ÒéÂ	za	191	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+404	Òé©	ji	192	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+405	Òé║	zu	193	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+406	Òé╝	ze	194	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+407	Òé¥	zo	195	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+408	ÒâÇ	da	196	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+409	Òâé	di	197	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+410	Òâà	du	198	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+411	Òâç	de	199	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+412	Òâë	do	200	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+413	ÒâÉ	ba	201	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+414	Òâô	bi	202	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+415	Òâû	bu	203	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+416	ÒâÖ	be	204	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+417	Òâ£	bo	205	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+418	Òâæ	pa	206	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+419	Òâö	pi	207	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+420	Òâù	pu	208	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+421	ÒâÜ	pe	209	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
+422	ÒâØ	po	210	2026-07-07 09:25:15.293	2026-07-07 09:25:15.293
 \.
 
 
@@ -11895,10 +13211,36 @@ COPY public."ListeningPreset" (id, "externalKey", label, "lessonFrom", "lessonTo
 
 
 --
+-- Data for Name: LiveSession; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."LiveSession" (id, "roomName", "coachId", title, status, "startedAt", "endedAt") FROM stdin;
+\.
+
+
+--
 -- Data for Name: Notification; Type: TABLE DATA; Schema: public; Owner: nihongo
 --
 
 COPY public."Notification" (id, "userId", type, title, body, metadata, "readAt", "createdAt") FROM stdin;
+\.
+
+
+--
+-- Data for Name: PageBanner; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."PageBanner" (id, path, "imageData", "createdAt", "updatedAt") FROM stdin;
+2	/	data:image/jpeg;base64,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	2026-07-11 15:41:06.349	2026-07-11 15:41:06.349
+3	__global__	data:image/jpeg;base64,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	2026-07-11 15:41:22.213	2026-07-11 15:41:22.213
+\.
+
+
+--
+-- Data for Name: PasswordResetToken; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."PasswordResetToken" (id, "tokenHash", "userId", "expiresAt", "usedAt", "createdAt") FROM stdin;
 \.
 
 
@@ -12029,6 +13371,14 @@ COPY public."PronunciationRuleTip" (id, text, "sortOrder", "createdAt", "updated
 
 COPY public."PronunciationRulesMeta" (id, intro, "createdAt", "updatedAt") FROM stdin;
 1	Tiß║┐ng Nhß║¡t c├│ khoß║úng 46 ├óm cãí bß║ún (mora). Mß╗ùi chß╗» hiragana/katakana thã░ß╗Øng tã░ãíng ß╗®ng mß╗Öt mora ÔÇö ph├ít ├óm ─æß╗üu, kh├┤ng nhß║Ñn ├óm tiß║┐t nhã░ tiß║┐ng Viß╗çt.	2026-06-28 09:04:53.515	2026-06-28 09:04:53.515
+\.
+
+
+--
+-- Data for Name: PushDeviceToken; Type: TABLE DATA; Schema: public; Owner: nihongo
+--
+
+COPY public."PushDeviceToken" (id, "userId", token, platform, "createdAt", "updatedAt") FROM stdin;
 \.
 
 
@@ -12305,6 +13655,26 @@ cmqx4956u0005ffr8fnen1qvv	$2b$12$l.FTclMukf6VvVdUKEK8tONlDl3KrVYbVOBPMeZgkfrPDam
 cmqx49csw0007ffr865imtyxs	$2b$12$GbYPza5GrD.eHPd5IhX25uO9w0FjYbTMxRMN22JklB5z2XGqIM0R.	1	2026-07-05 01:34:49.615	t	2026-06-28 01:34:49.616
 cmqx4ca3b0009ffr8lt9gpw96	$2b$12$Jqv3AQFlL2egC3i1ZAk68.SAoN2juRm4RfXze9CALIkabdIwsAMaG	2	2026-07-05 01:37:06.07	f	2026-06-28 01:37:06.072
 cmqx4cu3t000bffr8vk1k4jck	$2b$12$wlbl/cRKaQmxJOhNAS/otOZigULdwvW8KXBl.GnmXggpKGYbo8iea	1	2026-07-05 01:37:32.008	f	2026-06-28 01:37:32.009
+cmrg11xtz0001pe0104hbq4tm	$2b$12$9AlNYA3CbXs1VID.odP8eOWkpnUfR2Dwb.J.ck63XY5.uszhuWtzi	1	2026-07-18 07:12:42.115	f	2026-07-11 07:12:42.118
+cmrgidfpx0001le0159pajt6b	$2b$12$KDOFVdJThMJZ4pbxYW8Uiu7hM.brN6x9PagXfEFOyu7UabAo.aKgO	1	2026-07-18 15:17:31.988	f	2026-07-11 15:17:31.989
+cmrgieupy0003le01sprq5v3b	$2b$12$VLp5tKrIrrP0uDCxvDi7Xewl0cj/Hv5RwYFsDqbVGaZI0Wh3Ul6li	1	2026-07-18 15:18:38.085	f	2026-07-11 15:18:38.086
+cmrgieybb0005le0163h3psha	$2b$12$YSwUyLMMlwJXWGPEkWwEg.fJK7Lrfdw2NEM0epvCTwI.PwOEXbIlW	1	2026-07-18 15:18:42.743	f	2026-07-11 15:18:42.744
+cmrgj46820001ny013fh5r4wj	$2b$12$2eUwlEYNRhhtaH87e8Sj2O3ONO3Nk4Swv5c/QyPFCHBO3kHx1HGa2	1	2026-07-18 15:38:19.393	f	2026-07-11 15:38:19.394
+cmrgj4f600003ny01ijmxvnmt	$2b$12$sYeuBDEHeCEexb.lbgGfMuQetSCQBNqpQMzmfgPKHazXifYLYtpHy	1	2026-07-18 15:38:30.983	f	2026-07-11 15:38:30.985
+cmrgj79zd0005ny0152puui05	$2b$12$8LlMlDBO2sklLW9hHZP7wOClo2psauRrYF7jEDYRwqevb9ZEHwl4.	1	2026-07-18 15:40:44.232	f	2026-07-11 15:40:44.233
+cmrpzpe690001mu01jcf9mdtt	$2b$12$EJ.eh8MzQzbNtu94mlgR2OOG0jqHbYnNo9hctoGcwqf1oQFYx38z.	1	2026-07-25 06:32:38.911	f	2026-07-18 06:32:38.913
+cmrpzx2xs0001r001xrwyilr4	$2b$12$h1s1L8HqL2HjAGvtEGvqp.T8mBrqkG1b2rnxBgwD6SrW9gz8RZotS	11	2026-07-25 06:38:37.599	f	2026-07-18 06:38:37.601
+cmrpzx3qi0003r001sr5j6f5s	$2b$12$10ctOTkhD3wrX1k.HOJPU.eHlzHjnD6Fd2I46h4CUXkyp.OK1yFie	1	2026-07-25 06:38:38.632	f	2026-07-18 06:38:38.634
+cmrpzxcqg0005r001jz4hk4qi	$2b$12$a0G8/a5T2qr.5tEv3t4XouAlZkuUYr1P/Y.OkUQcd2T1VFfPc9B7q	11	2026-07-25 06:38:50.295	f	2026-07-18 06:38:50.296
+cmrq7hukb0001ns01tfo70wrk	$2b$12$YAD5reT3E8kKsYFmraq8NOw5oLOXfZIAWNDOUcqYr7YPx0wFwoxzG	1	2026-07-25 10:10:43.834	t	2026-07-18 10:10:43.835
+cmrqf243g0001ns01qi8jewra	$2b$12$QXsfuXh1Vo5d39i37HTrPuM4AJVpsO.aeFwdpbfNvjMGNZexPanLu	1	2026-07-25 13:42:26.619	t	2026-07-18 13:42:26.62
+cmrqg7rie0001pf018urcxnqm	$2b$12$8pq/A1gBwD9mZ84T92ULJ.LEMvWR2uEP9PwBq6dOSe3PgSPEnz1/6	1	2026-07-25 14:14:49.862	t	2026-07-18 14:14:49.863
+cmrqgrx6m0003pf01vsupkwdr	$2b$12$TDml5DdDP.jHXtwki5iT.e23t.rIwxId.PuAohfbr/viRUyVyI.z2	1	2026-07-25 14:30:30.333	t	2026-07-18 14:30:30.334
+cmrqhlf8k0005pf01j1dfyjqn	$2b$12$SwbAEnO0.ThkJEjMpC/wNOaAH2Vl1apnZammzU7izJbgfPxilL16C	1	2026-07-25 14:53:26.755	t	2026-07-18 14:53:26.756
+cmrz497a80001pf016kuck8qw	$2b$12$9ZcovB7iPQ.MNPWX9lVqZ.StVaRRGIxuccbS7KSaIULQVusywXiMi	1	2026-07-31 15:49:57.147	f	2026-07-24 15:49:57.151
+cmrz4jnn70003pf01rsrg5nou	$2b$12$6sfCOHuro4Oj7qE1nrbxfOf7g1Y83fb5Bd3TFFeH3GKo0gUJS8yYC	1	2026-07-31 15:58:04.913	f	2026-07-24 15:58:04.915
+cmrvvg8cx0001pf013er41prk	$2b$12$oxGkdk9TtLZVjIEoyg62Wufa5ZULSOiW485uObX56DCmIgg6lluTC	1	2026-07-29 09:20:10.064	t	2026-07-22 09:20:10.065
+cmrz5d4hq0005pf01h5fjxrmq	$2b$12$cgWTE6ioKy/.oux1iE19neMcxQkVB14zw00DKNh.iLbO2JR8sll/2	1	2026-07-31 16:20:59.771	f	2026-07-24 16:20:59.772
 \.
 
 
@@ -12390,17 +13760,18 @@ COPY public."SupportThread" (id, "userId", "lastMessageAt", "createdAt", "update
 -- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: nihongo
 --
 
-COPY public."User" (id, email, "passwordHash", role, name, "createdAt", "updatedAt", "avatarUrl", "nativeLanguage", "targetJlptLevel", "studyGoalMinutes", "lastActiveAt", "googleId") FROM stdin;
-3	test-1782290228456@nihongo.test	$2b$12$ffYZv6BLNKs3QQzviN.2P.cSZWAXDS6BxgEGb8.DwtcHFgMLnIxKu	USER	\N	2026-06-24 08:37:09.065	2026-06-24 08:37:09.065	\N	vi	\N	30	\N	\N
-4	test-1782290278247@nihongo.test	$2b$12$4V3SQ6.CMdzJUhedX8H8r.TuIVVf7JJryUGs1Xw447TIDDaH8wCCS	USER	\N	2026-06-24 08:37:58.952	2026-06-24 08:37:58.952	\N	vi	\N	30	\N	\N
-5	test-1782290316967@nihongo.test	$2b$12$70f1H/m203EdGAqSb4KXXe2GGcjxEuHrp5P/YuTqiHX4Mq2tpp3G2	USER	\N	2026-06-24 08:38:37.593	2026-06-24 08:38:37.593	\N	vi	\N	30	\N	\N
-6	test-1782290337111@nihongo.test	$2b$12$0Yis/RecNge5ZBPBduXLIuo9qEaDZ68YaRDRlM4vZtFoYz8x6osM.	USER	\N	2026-06-24 08:38:57.706	2026-06-24 08:38:57.706	\N	vi	\N	30	\N	\N
-7	test-1782290398808@nihongo.test	$2b$12$GSdqUI3uwMu/JRUiLZ0g5.Fbi815jXA70Tmx8hxcNKz7J93XKkf2u	USER	\N	2026-06-24 08:39:59.444	2026-06-24 08:39:59.444	\N	vi	\N	30	\N	\N
-8	test-1782290422785@nihongo.test	$2b$12$ShpNfN6YD/kG04QeViWAF.XDTv5KEDerD8HbX9bgXDu6XbZZsQKm2	USER	\N	2026-06-24 08:40:23.41	2026-06-24 08:40:23.41	\N	vi	\N	30	\N	\N
-9	test-1782290564181@nihongo.test	$2b$12$yGDpe2jTxhK2fD/IVvGYwO2YsagspwDLR0.Of0MPDSzC38U.a4Q56	USER	\N	2026-06-24 08:42:44.777	2026-06-24 08:42:44.777	\N	vi	\N	30	\N	\N
-10	test-1782290585904@nihongo.test	$2b$12$7WUOFdJuajFpPJuQoS1UheQ4lwGmUvFWSn50R9UGXQansKiGfTXdG	USER	\N	2026-06-24 08:43:06.539	2026-06-24 08:43:06.539	\N	vi	\N	30	\N	\N
-1	admin@nihongo.local	$2b$10$xAfATdjckIL07P00FR5t/OLlZmGwJGUmzJneViqnMAtfoxgeGC9gO	ADMIN	Administrator	2026-06-24 07:34:49.518	2026-06-27 08:38:06.95	\N	vi	N2	30	\N	\N
-2	letiendungdt@gmail.com	$2b$12$eHZrXmigbNg09Hm8WMGF4.MNkpcqZgr1CuhuA9lTaewNwmejhWtSK	USER	Tiß║┐n D┼®ng L├¬	2026-06-24 08:30:35.151	2026-06-28 01:37:05.771	https://lh3.googleusercontent.com/a/ACg8ocJIYvwR2dG_YkmufeNRd4R8x4x4tWfoXgXlxHLU8gGhaA3LoYep=s96-c	vi	N2	30	\N	115294476264893247829
+COPY public."User" (id, email, "passwordHash", role, name, "createdAt", "updatedAt", "avatarUrl", "nativeLanguage", "targetJlptLevel", "studyGoalMinutes", "lastActiveAt", "googleId", "keycloakId", "emailVerifiedAt", "emailBounced") FROM stdin;
+3	test-1782290228456@nihongo.test	$2b$12$ffYZv6BLNKs3QQzviN.2P.cSZWAXDS6BxgEGb8.DwtcHFgMLnIxKu	USER	\N	2026-06-24 08:37:09.065	2026-06-24 08:37:09.065	\N	vi	\N	30	\N	\N	\N	\N	f
+4	test-1782290278247@nihongo.test	$2b$12$4V3SQ6.CMdzJUhedX8H8r.TuIVVf7JJryUGs1Xw447TIDDaH8wCCS	USER	\N	2026-06-24 08:37:58.952	2026-06-24 08:37:58.952	\N	vi	\N	30	\N	\N	\N	\N	f
+5	test-1782290316967@nihongo.test	$2b$12$70f1H/m203EdGAqSb4KXXe2GGcjxEuHrp5P/YuTqiHX4Mq2tpp3G2	USER	\N	2026-06-24 08:38:37.593	2026-06-24 08:38:37.593	\N	vi	\N	30	\N	\N	\N	\N	f
+6	test-1782290337111@nihongo.test	$2b$12$0Yis/RecNge5ZBPBduXLIuo9qEaDZ68YaRDRlM4vZtFoYz8x6osM.	USER	\N	2026-06-24 08:38:57.706	2026-06-24 08:38:57.706	\N	vi	\N	30	\N	\N	\N	\N	f
+7	test-1782290398808@nihongo.test	$2b$12$GSdqUI3uwMu/JRUiLZ0g5.Fbi815jXA70Tmx8hxcNKz7J93XKkf2u	USER	\N	2026-06-24 08:39:59.444	2026-06-24 08:39:59.444	\N	vi	\N	30	\N	\N	\N	\N	f
+8	test-1782290422785@nihongo.test	$2b$12$ShpNfN6YD/kG04QeViWAF.XDTv5KEDerD8HbX9bgXDu6XbZZsQKm2	USER	\N	2026-06-24 08:40:23.41	2026-06-24 08:40:23.41	\N	vi	\N	30	\N	\N	\N	\N	f
+9	test-1782290564181@nihongo.test	$2b$12$yGDpe2jTxhK2fD/IVvGYwO2YsagspwDLR0.Of0MPDSzC38U.a4Q56	USER	\N	2026-06-24 08:42:44.777	2026-06-24 08:42:44.777	\N	vi	\N	30	\N	\N	\N	\N	f
+10	test-1782290585904@nihongo.test	$2b$12$7WUOFdJuajFpPJuQoS1UheQ4lwGmUvFWSn50R9UGXQansKiGfTXdG	USER	\N	2026-06-24 08:43:06.539	2026-06-24 08:43:06.539	\N	vi	\N	30	\N	\N	\N	\N	f
+2	letiendungdt@gmail.com	$2b$12$eHZrXmigbNg09Hm8WMGF4.MNkpcqZgr1CuhuA9lTaewNwmejhWtSK	USER	Tiß║┐n D┼®ng L├¬	2026-06-24 08:30:35.151	2026-06-28 01:37:05.771	https://lh3.googleusercontent.com/a/ACg8ocJIYvwR2dG_YkmufeNRd4R8x4x4tWfoXgXlxHLU8gGhaA3LoYep=s96-c	vi	N2	30	\N	115294476264893247829	\N	\N	f
+1	admin@nihongo.local	$2b$12$ecMB/hzelIdZxmHUt2beU.x5ZRf8O10M9C4x7DECHSTZqyqE7BTYK	ADMIN	Administrator	2026-06-24 07:34:49.518	2026-07-11 15:18:30.72	\N	vi	N2	30	\N	\N	\N	\N	f
+11	demo@nihongo.local	\N	USER	Demo User	2026-07-18 06:38:37.114	2026-07-18 06:38:49.831	\N	vi	\N	30	\N	\N	9f5cd20e-0e49-476c-9d21-510dddc088e3	\N	f
 \.
 
 
@@ -12416,14 +13787,10 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27064	Þç¬ÕïòÞ╗è	ÒüÿÒü®ÒüåÒüùÒéâ	jidosha	xe hãíi	2	2026-06-25 10:52:56.349	2026-06-27 02:18:02.694	\N	\N	\N	\N	\N	\N	/media/openmoji/1F697.svg	0
 27034	Õéÿ	ÒüïÒüò	kasa	c├íi d├╣	2	2026-06-25 10:52:56.277	2026-06-27 02:22:16.196	\N	\N	\N	\N	\N	\N	/media/openmoji/2602.svg	0
 27171	\N	ÒâïÒâÑÒâ╝Òâ¿Òâ╝Òé»	nyuyoku	New York	4	2026-06-25 10:52:56.832	2026-06-27 02:25:26.616	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8.svg	0
-27030	\N	Òâ£Òâ╝Òâ½ÒâÜÒâ│	borupen	ballpoint pen	2	2026-06-25 10:52:56.27	2026-06-27 02:22:16.25	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A.svg	0
 27031	\N	ÒéÀÒâúÒâ╝ÒâùÒâÜÒâ│ÒéÀÒâ½	shapupenshiru	b├║t ch├¼ bß║Ñm	2	2026-06-25 10:52:56.272	2026-06-27 02:22:16.252	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A.svg	0
 27033	µÖéÞ¿ê	Òü¿ÒüæÒüä	tokei	─æß╗ông hß╗ô	2	2026-06-25 10:52:56.276	2026-06-27 02:22:16.257	\N	\N	\N	\N	\N	\N	/media/openmoji/23F0.svg	0
-27037	\N	ÒâåÒâ¼Òâô	terebi	TV	2	2026-06-25 10:52:56.287	2026-06-27 02:22:16.261	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4FA.svg	0
 27040	\N	Òé│Òâ│ÒâöÒâÑÒâ╝Òé┐Òâ╝	konpyuta	m├íy vi t├¡nh	2	2026-06-25 10:52:56.292	2026-06-27 02:22:16.264	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BB.svg	0
-27043	µñàÕ¡É	ÒüäÒüÖ	isu	chair	2	2026-06-25 10:52:56.3	2026-06-27 02:22:16.266	\N	\N	\N	\N	\N	\N	/media/openmoji/1FA91.svg	0
 27044	\N	ÒâüÒâºÒé│Òâ¼Òâ╝Òâê	chokoreto	kß║╣o s├┤c├┤la	2	2026-06-25 10:52:56.304	2026-06-27 02:22:16.269	\N	\N	\N	\N	\N	\N	/media/openmoji/1F36B.svg	0
-27046	´╝╗Òüè´╝¢Õ£ƒþöú	´╝╗Òüè´╝¢Òü┐ÒéäÒüÆ	[o] miyage	souvenir, present	2	2026-06-25 10:52:56.307	2026-06-27 02:22:16.271	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381.svg	0
 27048	µùÑµ£¼Þ¬×	Òü½Òü╗ÒéôÒüö	nihongo	tiß║┐ng Nhß║¡t	2	2026-06-25 10:52:56.31	2026-06-27 02:22:16.278	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4AC.svg	0
 27035	Ú×ä	ÒüïÒü░Òéô	kaban	c├íi cß║Àp	2	2026-06-25 10:52:56.279	2026-06-27 02:22:16.285	\N	\N	\N	\N	\N	\N	/media/openmoji/1F392.svg	0
 27063	\N	ÒâåÒâ╝ÒâùÒâ¼Òé│Òâ╝ÒâÇÒâ╝	tepurekoda	m├íy casset	2	2026-06-25 10:52:56.344	2026-06-27 02:25:26.628	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4FC.svg	0
@@ -12444,16 +13811,20 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29074	õ║îµ¼íõ╝Ü	Òü½ÒüÿÒüïÒüä	nijikai	bß╗»a tiß╗çc thß╗® hai, t─âng hai	40	2026-06-25 10:53:04.737	2026-06-27 02:25:26.674	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
 29160	µëïÞóï	ÒüªÒüÂÒüÅÒéì	tebukuro	g─âng tay	41	2026-06-25 10:53:05.03	2026-06-27 02:25:26.677	\N	\N	\N	\N	\N	\N	/media/openmoji/270B.svg	0
 29276	\N	Òé½ÒââÒâùÒâ®Òâ╝ÒâíÒâ│	kappuramen	m├¼ ─ân liß╗ün ─æß╗▒ng trong cß╗æc	42	2026-06-25 10:53:05.4	2026-06-27 02:25:26.681	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35C.svg	0
+27037	\N	ÒâåÒâ¼Òâô	terebi	tivi	2	2026-06-25 10:52:56.287	2026-07-09 16:23:46.899	TV	\N	\N	\N	\N	\N	/media/openmoji/1F4FA.svg	0
+27043	µñàÕ¡É	ÒüäÒüÖ	isu	ghß║┐	2	2026-06-25 10:52:56.3	2026-07-09 16:23:46.902	chair	\N	\N	\N	\N	\N	/media/openmoji/1FA91.svg	0
 29083	\N	Òé║Òâ£Òâ│	zubon	c├íi quß║ºn	40	2026-06-25 10:53:04.759	2026-06-27 02:26:21.894	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455.svg	0
+27046	´╝╗Òüè´╝¢Õ£ƒþöú	´╝╗Òüè´╝¢Òü┐ÒéäÒüÆ	[o] miyage	qu├á, qu├á lã░u niß╗çm	2	2026-06-25 10:52:56.307	2026-07-09 16:23:46.904	souvenir, present	\N	\N	\N	\N	\N	/media/openmoji/1F381.svg	0
+27053	\N	ÒüêÒüú	e'	ß╗Æ? G├¼! (d├╣ng khi nghe ─æiß╗üu bß║Ñt ngß╗Ø)	2	2026-06-25 10:52:56.321	2026-07-09 16:23:46.916	Oh? What! (used when hearing something unexpected)	\N	\N	\N	\N	\N	/media/openmoji/1F3A8.svg	0
 27016	ÕàÂÒéî	ÒüØÒéî	sore	c├íi ─æ├│, ─æ├│( vß║¡t ß╗ƒ gß║ºn ngã░ß╗Øi nghe)	2	2026-06-25 10:52:56.236	2026-06-27 02:18:02.677	\N	\N	\N	\N	\N	\N	\N	0
 29035	\N	Òé┐Òé¬Òâ½	taoru	kh─ân lau, kh─ân tß║»m	39	2026-06-25 10:53:04.588	2026-06-27 02:26:21.898	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9FB.svg	0
-27053	\N	ÒüêÒüú	e'	Oh? What! (used when hearing something unexpected)	2	2026-06-25 10:52:56.321	2026-06-27 02:25:26.624	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3A8.svg	0
 27112	\N	Òé©ÒâúÒé½Òâ½Òé┐	jakaruta	Jakarta	3	2026-06-25 10:52:56.596	2026-06-27 02:25:26.702	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1E9.svg	0
 27114	\N	ÒâÖÒâ½Òâ¬Òâ│	berurin	Berlin	3	2026-06-25 10:52:56.601	2026-06-27 02:25:26.706	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E9-1F1EA.svg	0
+27140	µÖ®	Òü░Òéô	ban	tß╗æi	4	2026-06-25 10:52:56.764	2026-07-11 16:44:32.928	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
 27050	õ¢ò	Òü¬Òéô	nan	c├íi g├¼	2	2026-06-25 10:52:56.312	2026-06-27 02:18:02.692	\N	\N	\N	\N	\N	\N	\N	0
 27138	µ£Ø	ÒüéÒüò	asa	s├íng	4	2026-06-25 10:52:56.76	2026-06-27 02:25:26.713	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305.svg	0
 27118	\N	MT´╝ÅÒâ¿Òâ╝ÒâìÒâ│´╝ÅÒéóÒé¡ÒââÒé»Òé╣	MT/yonen/akikkusu	c├┤ng ty giß║ú ─æß╗ïnh (trong s├ích)	3	2026-06-25 10:52:56.608	2026-06-27 02:18:02.699	\N	\N	\N	\N	\N	\N	\N	0
-27140	µÖ®´╝êÕñ£´╝ë	Òü░Òéô´╝êÒéêÒéï´╝ë	ban (yoru)	tß╗æi	4	2026-06-25 10:52:56.764	2026-06-27 02:25:26.717	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
+27030	\N	Òâ£Òâ╝Òâ½ÒâÜÒâ│	borupen	b├║t bi	2	2026-06-25 10:52:56.27	2026-07-09 16:23:46.885	ballpoint pen	\N	\N	\N	\N	\N	/media/openmoji/1F58A.svg	0
 27143	\N	ÒüìÒéçÒüå	kyo	h├┤m nay	4	2026-06-25 10:52:56.771	2026-06-27 02:25:26.721	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
 27146	\N	ÒüæÒüò	kesa	s├íng nay	4	2026-06-25 10:52:56.776	2026-06-27 02:25:26.725	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305.svg	0
 27149	µÿ╝õ╝æÒü┐	Òü▓ÒéïÒéäÒüÖÒü┐	hiruyasumi	nghß╗ë trã░a	4	2026-06-25 10:52:56.785	2026-06-27 02:25:26.73	\N	\N	\N	\N	\N	\N	/media/openmoji/2600.svg	0
@@ -12464,15 +13835,15 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 26968	þºü	ÒéÅÒüƒÒüù	watashi	t├┤i	1	2026-06-25 10:52:55.955	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	0
 27045	\N	Òé│Òâ╝ÒâÆÒâ╝	kohii	c├á ph├¬	2	2026-06-25 10:52:56.305	2026-06-27 02:18:02.718	\N	\N	\N	\N	\N	\N	/media/openmoji/2615.svg	0
 27024	µû░Þü×	ÒüùÒéôÒüÂÒéô	shinbun	b├ío	2	2026-06-25 10:52:56.257	2026-06-27 02:22:16.233	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
-27036	\N	CD	CD	CD, compact disc	2	2026-06-25 10:52:56.282	2026-06-27 02:25:26.621	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BF.svg	0
-27041	Þ╗è	ÒüÅÒéïÒü¥	kuruma	car, vehicle	2	2026-06-25 10:52:56.294	2026-06-27 02:18:02.716	\N	\N	\N	\N	\N	\N	/media/openmoji/1F697.svg	0
+27029	Úëøþ¡å	ÒüêÒéôÒü┤Òüñ	enpitsu	b├║t ch├¼	2	2026-06-25 10:52:56.268	2026-07-09 16:23:46.896	pencil	\N	\N	\N	\N	\N	/media/openmoji/1F58A.svg	0
+27036	\N	CD	CD	─æ─®a CD	2	2026-06-25 10:52:56.282	2026-07-09 16:23:46.907	CD, compact disc	\N	\N	\N	\N	\N	/media/openmoji/1F4BF.svg	0
 27022	Þ¥×µø©	ÒüÿÒüùÒéç	jisho	tß╗½ ─æiß╗ân	2	2026-06-25 10:52:56.252	2026-06-27 02:22:16.227	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA.svg	0
 27023	ÚøæÞ¬î	ÒüûÒüúÒüù	zasshi	tß║íp ch├¡	2	2026-06-25 10:52:56.255	2026-06-27 02:22:16.23	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D1.svg	0
 27025	\N	ÒâÄÒâ╝Òâê	noto	tß║¡p	2	2026-06-25 10:52:56.258	2026-06-27 02:22:16.236	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D3.svg	0
 27026	µëïÕ©│	ÒüªÒüíÒéçÒüå	techo	sß╗ò tay	2	2026-06-25 10:52:56.26	2026-06-27 02:22:16.238	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D3.svg	0
 27027	ÕÉìÕê║	ÒéüÒüäÒüù	meishi	danh thiß║┐p	2	2026-06-25 10:52:56.262	2026-06-27 02:22:16.242	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4BC.svg	0
 27028	\N	Òé½Òâ╝Òâë	kado	thß║╗ (card)	2	2026-06-25 10:52:56.264	2026-06-27 02:22:16.245	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4B3.svg	0
-27029	Úëøþ¡å	ÒüêÒéôÒü┤Òüñ	enpitsu	pencil	2	2026-06-25 10:52:56.268	2026-06-27 02:22:16.247	\N	\N	\N	\N	\N	\N	/media/openmoji/1F58A.svg	0
+27041	Þ╗è	ÒüÅÒéïÒü¥	kuruma	├┤ t├┤, xe hãíi	2	2026-06-25 10:52:56.294	2026-07-09 16:23:46.909	car, vehicle	\N	\N	\N	\N	\N	/media/openmoji/1F697.svg	0
 27018	\N	ÒüôÒü« ´¢×	kono ~	~ n├áy( gß║ºn ngã░ß╗Øi n├│i)	2	2026-06-25 10:52:56.241	2026-06-25 10:52:56.241	\N	\N	\N	\N	\N	\N	\N	0
 27019	\N	ÒüØÒü« ´¢×	sono ~	~ ─æ├│( gß║ºn ngã░ß╗Øi nghe)	2	2026-06-25 10:52:56.243	2026-06-25 10:52:56.243	\N	\N	\N	\N	\N	\N	\N	0
 27020	\N	ÒüéÒü« ´¢×	ano ~	~ kia( xa cß║ú ngã░ß╗Øi n├│i v├á ngã░ß╗Øi nghe)	2	2026-06-25 10:52:56.244	2026-06-25 10:52:56.244	\N	\N	\N	\N	\N	\N	\N	0
@@ -12498,15 +13869,15 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27052	\N	ÒüéÒü«Òüå	anou	├áÔÇª..ß╗Ø ( ngß║¡p ngß╗½ng khi ─æß╗ü nghß╗ï hoß║Àc suy ngh─® 1 vß║Ñn ─æß╗ü)	2	2026-06-25 10:52:56.319	2026-06-25 10:52:56.319	\N	\N	\N	\N	\N	\N	\N	0
 27343	Òüèµ»ìÒüòÒéô	ÒüèÒüïÒüéÒüòÒéô	okasan	mß║╣ cß╗ºa ngã░ß╗Øi kh├íc	7	2026-06-25 10:52:57.604	2026-06-27 02:25:26.874	\N	\N	\N	\N	\N	\N	/media/openmoji/1F469.svg	0
 27054	\N	Òü®ÒüåÒü×ÒÇé	dozo.	xin mß╗Øi	2	2026-06-25 10:52:56.323	2026-06-25 10:52:56.323	\N	\N	\N	\N	\N	\N	\N	0
-27055	\N	´╝╗Òü®ÒüåÒéé´╝¢ÒüéÒéèÒüîÒü¿Òüå´╝╗ÒüöÒüûÒüäÒü¥ÒüÖ´╝¢ÒÇé	[domo] arigato [gozaimasu].	Thank you [very much].	2	2026-06-25 10:52:56.325	2026-06-25 10:52:56.325	\N	\N	\N	\N	\N	\N	\N	0
 27056	\N	ÒüØÒüåÒüºÒüÖÒüïÒÇé	sodesuka.	thß║┐ ├á?	2	2026-06-25 10:52:56.326	2026-06-25 10:52:56.326	\N	\N	\N	\N	\N	\N	\N	0
 27057	ÚüòÒüäÒü¥ÒüÖÒÇé	ÒüíÒüîÒüäÒü¥ÒüÖÒÇé	chigaimasu.	kh├┤ng phß║úi, sai rß╗ôi	2	2026-06-25 10:52:56.328	2026-06-25 10:52:56.328	\N	\N	\N	\N	\N	\N	\N	0
-27058	\N	Òüé	a	Oh! (used when becoming aware of something)	2	2026-06-25 10:52:56.333	2026-06-25 10:52:56.333	\N	\N	\N	\N	\N	\N	\N	0
 27059	ÒüôÒéîÒüïÒéë Òüèõ©ûÞ®▒Òü½ Òü¬ÒéèÒü¥ÒüÖÒÇé	ÒüôÒéîÒüïÒéë ÒüèÒüøÒéÅÒü½ Òü¬ÒéèÒü¥ÒüÖÒÇé	korekara osewani narimasu.	Tß╗½ nay mong ─æã░ß╗úc gi├║p ─æß╗í	2	2026-06-25 10:52:56.336	2026-06-25 10:52:56.336	\N	\N	\N	\N	\N	\N	\N	0
 27060	ÒüôÒüíÒéëÒüôÒüØ´╝╗Òü®ÒüåÒü×´╝¢ÒéêÒéìÒüùÒüÅ´╝╗ÒüèÚíÿÒüäÒüùÒü¥ÒüÖ´╝¢ÒÇé	ÒüôÒüíÒéëÒüôÒüØ´╝╗Òü®ÒüåÒü×´╝¢ÒéêÒéìÒüùÒüÅ´╝╗ÒüèÒü¡ÒüîÒüäÒüùÒü¥ÒüÖ´╝¢ÒÇé	kochirakoso [dozo] yoroshiku [onegaishimasu].	Ch├¡nh t├┤i mß╗øi l├á ngã░ß╗Øi mong ─æã░ß╗úc gi├║p ─æß╗í.	2	2026-06-25 10:52:56.338	2026-06-25 10:52:56.338	\N	\N	\N	\N	\N	\N	\N	0
 27355	\N	ÒâòÒéíÒé»Òé╣	fuakusu	fax, m├íy fax	7	2026-06-25 10:52:57.625	2026-06-27 02:25:26.883	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4E0.svg	0
-27062	\N	´╝╗Òé½Òé╗ÒââÒâê´╝¢ÒâåÒâ╝Òâù	[kasetto] tepu	[cassette] tape	2	2026-06-25 10:52:56.342	2026-06-25 10:52:56.342	\N	\N	\N	\N	\N	\N	\N	0
+27062	\N	´╝╗Òé½Òé╗ÒââÒâê´╝¢ÒâåÒâ╝Òâù	[kasetto] tepu	b─âng [cassette]	2	2026-06-25 10:52:56.342	2026-07-09 16:23:46.921	[cassette] tape	\N	\N	\N	\N	\N	\N	0
 27015	µ¡ñÒéî	ÒüôÒéî	kore	c├íi n├áy, ─æ├óy( vß║¡t ß╗ƒ gß║ºn ngã░ß╗Øi n├│i)	2	2026-06-25 10:52:56.233	2026-06-27 02:18:02.708	\N	\N	\N	\N	\N	\N	\N	0
+27055	\N	´╝╗Òü®ÒüåÒéé´╝¢ÒüéÒéèÒüîÒü¿Òüå´╝╗ÒüöÒüûÒüäÒü¥ÒüÖ´╝¢ÒÇé	[domo] arigato [gozaimasu].	C├ím ãín [rß║Ñt nhiß╗üu].	2	2026-06-25 10:52:56.325	2026-07-09 16:23:46.914	Thank you [very much].	\N	\N	\N	\N	\N	\N	0
+27058	\N	Òüé	a	ß╗Æ! (d├╣ng khi nhß║¡n ra ─æiß╗üu g├¼ ─æ├│)	2	2026-06-25 10:52:56.333	2026-07-09 16:23:46.918	Oh! (used when becoming aware of something)	\N	\N	\N	\N	\N	\N	0
 27017	Õ¢╝Òéî	ÒüéÒéî	are	c├íi kia, kia( vß║¡t ß╗ƒ xa cß║ú ngã░ß╗Øi n├│i v├á ngã░ß╗Øi nghe)	2	2026-06-25 10:52:56.239	2026-06-27 02:18:02.71	\N	\N	\N	\N	\N	\N	\N	0
 27009	þºüÒüƒÒüí	ÒéÅÒüƒÒüùÒüƒÒüí	watashitachi	ch├║ng t├┤i	1	2026-06-25 10:52:56.082	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	1
 27192	Úºà	ÒüêÒüì	eki	ga, nh├á ga	5	2026-06-25 10:52:56.961	2026-06-27 02:18:02.722	\N	\N	\N	\N	\N	\N	/media/openmoji/1F686.svg	0
@@ -12554,7 +13925,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28293	Þ©èÒéèÒü¥ÒüÖ	ÒüèÒü®ÒéèÒü¥ÒüÖ	odorimasu	nhß║úy	28	2026-06-25 10:53:01.922	2026-06-27 02:25:27.141	\N	\N	\N	\N	\N	\N	/media/openmoji/1F483.svg	0
 28316	\N	Òé▓Òâ╝Òâá	gemu	(computer) game	28	2026-06-25 10:53:01.963	2026-06-27 02:25:27.149	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AE.svg	0
 28390	þÂ▓µúÜ	ÒüéÒü┐ÒüáÒü¬	amidana	gi├í ─æß╗â h├ánh l├¢	29	2026-06-25 10:53:02.203	2026-06-27 02:25:27.161	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9F3.svg	0
-27894	Õàêþöƒ	ÒüøÒéôÒüøÒüä	sensei	b├íc s─®(c├ích gß╗ìi b├íc s─®)	17	2026-06-25 10:53:00.01	2026-06-27 02:22:16.324	\N	\N	\N	\N	\N	\N	/media/openmoji/2695.svg	0
 27818	µ¡»	Òü»	ha	r─âng	16	2026-06-25 10:52:59.772	2026-06-27 02:25:26.661	\N	\N	\N	\N	\N	\N	/media/openmoji/1F9B7.svg	0
 27625	Úø¿	ÒüéÒéü	ame	mã░a	12	2026-06-25 10:52:58.822	2026-06-27 02:18:02.849	\N	\N	\N	\N	\N	\N	/media/openmoji/1F327.svg	0
 27543	´╝æÒüñ	Òü▓Òü¿Òüñ	hitotsu	1 c├íi (─æß╗ô vß║¡t)	11	2026-06-25 10:52:58.511	2026-06-27 02:18:02.819	\N	\N	\N	\N	\N	\N	\N	0
@@ -12569,6 +13939,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27511	õ╣ùÒéèÕá┤	Òü«ÒéèÒü░	noriba	bß║┐n xe, ─æiß╗âm l├¬n xuß╗æng xe	10	2026-06-25 10:52:58.327	2026-06-27 02:26:21.884	\N	\N	\N	\N	\N	\N	/media/openmoji/1F689.svg	0
 27816	Ú╝╗	Òü»Òü¬	hana	nose	16	2026-06-25 10:52:59.768	2026-06-27 02:18:02.907	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A.svg	0
 27532	µ£¼Õ▒ï	Òü╗ÒéôÒéä	hon'ya	hiß╗çu s├ích	10	2026-06-25 10:52:58.395	2026-06-27 02:22:16.305	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6.svg	0
+27894	Õàêþöƒ	ÒüøÒéôÒüøÒüä	sensei	thß║ºy gi├ío, c├┤ gi├ío	17	2026-06-25 10:53:00.01	2026-07-06 14:08:05.146	\N	\N	\N	\N	\N	\N	/media/openmoji/2695.svg	0
 27682	õ¢òÒüï	Òü¬Òü½Òüï	nanika	c├íi g├¼ ─æ├│	13	2026-06-25 10:52:59.07	2026-06-27 02:18:02.878	\N	\N	\N	\N	\N	\N	\N	0
 27720	ÞªïÒüøÒü¥ÒüÖ	Òü┐ÒüøÒü¥ÒüÖ	misemasu	cho xem	14	2026-06-25 10:52:59.341	2026-06-27 02:18:02.891	\N	\N	\N	\N	\N	\N	\N	0
 27738	Þ¬¡Òü┐µû╣	ÒéêÒü┐ÒüïÒüƒ	yomikata	c├ích ─æß╗ìc	14	2026-06-25 10:52:59.386	2026-06-27 02:18:02.894	\N	\N	\N	\N	\N	\N	\N	0
@@ -12699,16 +14070,12 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28773	Õñ£ÞíîÒâÉÒé╣	ÒéäÒüôÒüåÒâÉÒé╣	yakobasu	(chuyß║┐n) xe bu├¢t chß║íy ─æ├¬m	35	2026-06-25 10:53:03.624	2026-06-27 02:25:26.671	\N	\N	\N	\N	\N	\N	/media/openmoji/1F68C.svg	0
 29159	ÚØ┤õ©ï	ÒüÅÒüñÒüùÒüƒ	kutsushita	vß╗ø	41	2026-06-25 10:53:05.028	2026-06-27 02:26:22.301	\N	\N	\N	\N	\N	\N	/media/openmoji/1F45F.svg	0
 28844	Õñ¬ÒéèÒü¥ÒüÖ	ÒüÁÒü¿ÒéèÒü¥ÒüÖ	futorimasu	b├®o l├¬n, t─âng c├ón	36	2026-06-25 10:53:03.87	2026-06-27 02:18:03.087	\N	\N	\N	\N	\N	\N	\N	0
-26982	ÕñºÕ¡ª	ÒüáÒüäÒüîÒüÅ	daigaku	trã░ß╗Øng ─æß║íi hß╗ìc	1	2026-06-25 10:52:56	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB.svg	15
-26983	þùàÚÖó	Òü│ÒéçÒüåÒüäÒéô	byoin	bß╗çnh viß╗çn	1	2026-06-25 10:52:56.002	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E5.svg	16
-27004	\N	ÒâûÒâ®Òé©Òâ½	burajiru	Brazil	1	2026-06-25 10:52:56.066	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E7-1F1F7.svg	37
 28954	Õ░ÅÕ¡ªµáí	ÒüùÒéçÒüåÒüîÒüúÒüôÒüå	shogakko	trã░ß╗Øng tiß╗âu hß╗ìc	38	2026-06-25 10:53:04.292	2026-06-27 02:18:03.098	\N	\N	\N	\N	\N	\N	\N	0
 27076	ÚúƒÕáé	ÒüùÒéçÒüÅÒü®Òüå	shokudo	nh├á ─ân	3	2026-06-25 10:52:56.529	2026-06-27 02:22:16.385	\N	\N	\N	\N	\N	\N	/media/openmoji/1F37D.svg	0
 28985	µÇºµá╝	ÒüøÒüäÒüïÒüÅ	seikaku	t├¡nh c├ích	38	2026-06-25 10:53:04.365	2026-06-27 02:18:03.102	\N	\N	\N	\N	\N	\N	\N	0
 27077	õ║ïÕïÖµëÇ	ÒüÿÒéÇÒüùÒéç	jimusho	v─ân ph├▓ng	3	2026-06-25 10:52:56.532	2026-06-27 02:22:16.387	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	0
 29041	\N	ÒâêÒâ®ÒââÒé»	torakku	xe tß║úi	39	2026-06-25 10:53:04.6	2026-06-27 02:18:03.107	\N	\N	\N	\N	\N	\N	\N	0
 27081	Úâ¿Õ▒ï	Òü©Òéä	heya	c─ân ph├▓ng	3	2026-06-25 10:52:56.539	2026-06-27 02:22:16.389	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6CF.svg	0
-27082	ÒâêÒéñÒâ¼´╝êÒüèµëïµ┤ùÒüä´╝ë	ÒâêÒéñÒâ¼´╝êÒüèÒüªÒüéÒéëÒüä´╝ë	toire (otearai)	nh├á vß╗ç sinh, ph├▓ng vß╗ç sinh, toa-l├®t	3	2026-06-25 10:52:56.541	2026-06-27 02:22:16.392	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6BD.svg	0
 29110	\N	Òé¬Òâ╝ÒâêÒâÉÒéñ	otobai	xe m├íy	40	2026-06-25 10:53:04.83	2026-06-27 02:18:03.119	\N	\N	\N	\N	\N	\N	\N	0
 29113	ÚüïÞ╗óµëï	ÒüåÒéôÒüªÒéôÒüùÒéà	untenshu	l├íi xe	40	2026-06-25 10:53:04.834	2026-06-27 02:18:03.123	\N	\N	\N	\N	\N	\N	\N	0
 29114	ÚøóÒéîÒüƒ	Òü»Òü¬ÒéîÒüƒ	hanareta	xa c├ích, xa	40	2026-06-25 10:53:04.836	2026-06-27 02:18:03.125	\N	\N	\N	\N	\N	\N	\N	0
@@ -12733,12 +14100,16 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27129	þ¥ÄÞíôÚñ¿	Òü│ÒüÿÒéàÒüñÒüïÒéô	bijutsukan	viß╗çn bß║úo t├áng	4	2026-06-25 10:52:56.742	2026-06-27 02:22:16.472	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3DB.svg	0
 27152	µÿáþö╗	ÒüêÒüäÒüî	eiga	film, movie	4	2026-06-25 10:52:56.79	2026-06-27 02:22:16.478	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3AC.svg	0
 27113	\N	ÒâÉÒâ│Òé│Òé»	bankoku	Bangkok	3	2026-06-25 10:52:56.599	2026-06-27 02:25:26.704	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F9-1F1ED.svg	0
+27082	ÒâêÒéñÒâ¼	ÒâêÒéñÒâ¼	toire	nh├á vß╗ç sinh, ph├▓ng vß╗ç sinh, toa-l├®t	3	2026-06-25 10:52:56.541	2026-07-11 16:44:32.916	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6BD.svg	0
+26982	ÕñºÕ¡ª	ÒüáÒüäÒüîÒüÅ	daigaku	trã░ß╗Øng ─æß║íi hß╗ìc	1	2026-06-25 10:52:56	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB.svg	17
 27136	ÕìêÕëì	ÒüöÒü£Òéô	gozen	buß╗òi s├íng	4	2026-06-25 10:52:56.757	2026-06-27 02:25:26.708	\N	\N	\N	\N	\N	\N	/media/openmoji/1F305.svg	0
 27137	ÕìêÕ¥î	ÒüöÒüö	gogo	buß╗òi chiß╗üu	4	2026-06-25 10:52:56.758	2026-06-27 02:25:26.71	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
 27142	\N	ÒüìÒü«Òüå	kino	ng├áy h├┤m qua	4	2026-06-25 10:52:56.77	2026-06-27 02:25:26.719	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
 27144	\N	ÒüéÒüùÒüƒ	ashita	ng├áy mai	4	2026-06-25 10:52:56.773	2026-06-27 02:25:26.723	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C5.svg	0
 27147	õ╗èµÖ®	ÒüôÒéôÒü░Òéô	konban	tß╗æi nay	4	2026-06-25 10:52:56.778	2026-06-27 02:25:26.727	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
 27151	õ╝ÜÞ¡░	ÒüïÒüäÒüÄ	kaigi	meeting, conference (´¢×ÒéÆ ÒüùÒü¥ÒüÖ : hold a meeting)	4	2026-06-25 10:52:56.788	2026-06-27 02:25:26.733	\N	\N	\N	\N	\N	\N	/media/openmoji/1F465.svg	0
+26983	þùàÚÖó	Òü│ÒéçÒüåÒüäÒéô	byoin	bß╗çnh viß╗çn	1	2026-06-25 10:52:56.002	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E5.svg	18
+27004	\N	ÒâûÒâ®Òé©Òâ½	burajiru	Brazil	1	2026-06-25 10:52:56.066	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E7-1F1F7.svg	41
 29288	õ©èÒüîÒéèÒü¥ÒüÖ´╝╗ÕÇñµ«ÁÒüî´¢×´╝¢	ÒüéÒüîÒéèÒü¥ÒüÖ´╝╗Òü¡ÒüáÒéôÒüî´¢×´╝¢	agarimasu [nedanga~]	t─âng, t─âng l├¬n [gi├í ~]	43	2026-06-25 10:53:05.532	2026-06-27 02:18:03.169	\N	\N	\N	\N	\N	\N	\N	0
 29293	\N	Òü¬ÒüÅÒü¬ÒéèÒü¥ÒüÖ´╝╗Òé¼Òé¢Òâ¬Òâ│Òüî´¢×´╝¢	nakunarimasu [gasoringa~]	mß║Ñt, hß║┐t (x─âng)	43	2026-06-25 10:53:05.544	2026-06-27 02:18:03.171	\N	\N	\N	\N	\N	\N	\N	0
 29554	ÕÅ¼Òüùõ©èÒüîÒéèÒü¥ÒüÖ	ÒéüÒüùÒüéÒüîÒéèÒü¥ÒüÖ	meshiagarimasu	─ân, uß╗æng (t├┤n k├¡nh ngß╗» cß╗ºa ÒüƒÒü╣Òü¥ÒüÖ v├á Òü«Òü┐Òü¥ÒüÖ)	49	2026-06-25 10:53:06.948	2026-06-27 02:25:26.689	\N	\N	\N	\N	\N	\N	/media/openmoji/1F453.svg	0
@@ -12789,10 +14160,10 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29551	µÄøÒüæÒü¥ÒüÖ´╝╗ÒüäÒüÖÒü½´¢×´╝¢	ÒüïÒüæÒü¥ÒüÖ´╝╗ÒüäÒüÖÒü½´¢×´╝¢	kakemasu [isuni~]	ngß╗ôi xuß╗æng [ ghß║┐]	49	2026-06-25 10:53:06.939	2026-06-27 02:18:03.585	\N	\N	\N	\N	\N	\N	\N	0
 27190	Õ¡ªµáí	ÒüîÒüúÒüôÒüå	gakko	trã░ß╗Øng hß╗ìc	5	2026-06-25 10:52:56.956	2026-06-27 02:18:02.72	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3EB.svg	0
 27501	µúÜ	ÒüƒÒü¬	tana	gi├í s├ích	10	2026-06-25 10:52:58.295	2026-06-27 02:22:16.381	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6.svg	0
+27274	þëøõ╣│	ÒüÄÒéàÒüåÒü½ÒéàÒüå	gyunyu	sß╗»a b├▓	6	2026-06-25 10:52:57.32	2026-07-11 16:44:32.941	\N	\N	\N	\N	\N	\N	/media/openmoji/1F95B.svg	0
 29228	Þ½ûµûç	ÒéìÒéôÒüÂÒéô	ronbun	luß║¡n v─ân, b├ái b├ío hß╗ìc thuß║¡t	42	2026-06-25 10:53:05.261	2026-06-27 02:22:16.383	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4F0.svg	0
 27272	ÒüèÞîÂ	ÒüèÒüíÒéâ	ocha	tr├á (n├│i chung)	6	2026-06-25 10:52:57.313	2026-06-27 02:22:16.493	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375.svg	0
 27273	þ┤àÞîÂ	ÒüôÒüåÒüíÒéâ	kocha	tr├á ─æen	6	2026-06-25 10:52:57.317	2026-06-27 02:22:16.495	\N	\N	\N	\N	\N	\N	/media/openmoji/1F375.svg	0
-27274	þëøõ╣│´╝êÒâƒÒâ½Òé»´╝ë	ÒüÄÒéàÒüåÒü½ÒéàÒüå´╝êÒâƒÒâ½Òé»´╝ë	gyunyu (miruku)	sß╗»a b├▓	6	2026-06-25 10:52:57.32	2026-06-27 02:22:16.497	\N	\N	\N	\N	\N	\N	/media/openmoji/1F95B.svg	0
 27278	þàÖÞìë	ÒüƒÒü░Òüô	tabako	tobacco, cigarette	6	2026-06-25 10:52:57.329	2026-06-27 02:22:16.501	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6AC.svg	0
 27316	þ┐ÆÒüäÒü¥ÒüÖ	Òü¬ÒéëÒüäÒü¥ÒüÖ	naraimasu	hß╗ìc, hß╗ìc tß║¡p	7	2026-06-25 10:52:57.538	2026-06-27 02:22:16.505	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DA.svg	0
 27255	Þ¬¡Òü┐Òü¥ÒüÖ	ÒéêÒü┐Òü¥ÒüÖ	yomimasu	─æß╗ìc	6	2026-06-25 10:52:57.266	2026-06-27 02:25:26.787	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4D6.svg	0
@@ -13008,24 +14379,8 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29116	ÕïòÒüïÒüùÒü¥ÒüÖ	ÒüåÒüöÒüïÒüùÒü¥ÒüÖ	ugokashimasu	khß╗ƒi ─æß╗Öng, chß║íy	40	2026-06-25 10:53:04.839	2026-06-27 02:25:27.295	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3C3.svg	0
 29152	þî┐	ÒüòÒéï	saru	con khß╗ë	41	2026-06-25 10:53:05.014	2026-06-27 02:25:27.302	\N	\N	\N	\N	\N	\N	/media/openmoji/1F412.svg	0
 26969	\N	ÒüéÒü¬Òüƒ	anata	anh/chß╗ï, bß║ín	1	2026-06-25 10:52:55.96	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	2
-26970	ÒüéÒü« õ║║´╝êÒüéÒü« µû╣´╝ë	ÒüéÒü« Òü▓Òü¿´╝êÒüéÒü« ÒüïÒüƒ´╝ë	ano hito (ano kata)	ngã░ß╗Øi kia	1	2026-06-25 10:52:55.963	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	3
-26971	\N	´¢×ÒüòÒéô	~san	anh ´¢×, chß╗ï ´¢×	1	2026-06-25 10:52:55.966	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	4
-26972	\N	´¢×ÒüíÒéâÒéô	~chan	b├® ( d├╣ng cho nß╗») hoß║Àc gß╗ìi th├ón mß║¡t cho trß║╗ con ( cß║ú nam lß║½n nß╗»)	1	2026-06-25 10:52:55.97	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	5
-26984	Þ¬░´╝êÒü®Òü¬Òüƒ´╝ë	ÒüáÒéî´╝êÒü®Òü¬Òüƒ´╝ë	dare (donata)	ai (hß╗Åi ngã░ß╗Øi n├áo ─æ├│)	1	2026-06-25 10:52:56.004	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	17
-26985	´╝ìµ¡│	´╝ìÒüòÒüä	-sai	tuß╗òi (hß║¡u tß╗æ ─æß╗®ng sau sß╗æ)	1	2026-06-25 10:52:56.006	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	18
-26986	õ¢òµ¡│	Òü¬ÒéôÒüòÒüä´╝êÒüèÒüäÒüÅÒüñ´╝ë	nansai (oikutsu)	mß║Ñy tuß╗òi, bao nhi├¬u tuß╗òi.	1	2026-06-25 10:52:56.008	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	19
-26987	\N	Òü»Òüä	hai	v├óng	1	2026-06-25 10:52:56.01	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	20
-26988	\N	ÒüäÒüäÒüê	iie	kh├┤ng	1	2026-06-25 10:52:56.012	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	21
-26989	ÕêØÒéüÒü¥ÒüùÒüªÒÇé	Òü»ÒüÿÒéüÒü¥ÒüùÒüªÒÇé	hajimemashite.	ch├áo lß║ºn ─æß║ºu gß║Àp nhau	1	2026-06-25 10:52:56.016	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	22
-26990	´¢×ÒüïÒéë µØÑÒü¥ÒüùÒüƒÒÇé	´¢×ÒüïÒéë ÒüìÒü¥ÒüùÒüƒÒÇé	~kara kimashita.	─æß║┐n tß╗½ ´¢×	1	2026-06-25 10:52:56.019	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	23
-26991	´╝╗Òü®ÒüåÒü×´╝¢ÒéêÒéìÒüùÒüÅ´╝╗ÒüèÚíÿÒüäÒüùÒü¥ÒüÖ´╝¢ÒÇé	´╝╗Òü®ÒüåÒü×´╝¢ÒéêÒéìÒüùÒüÅ´╝╗ÒüèÒü¡ÒüîÒüäÒüùÒü¥ÒüÖ´╝¢ÒÇé	[dozo] yoroshiku [onegaishimasu].	rß║Ñt h├ón hß║ính ─æã░ß╗úc l├ám quen	1	2026-06-25 10:52:56.022	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	24
-26992	Õñ▒þñ╝ÒüºÒüÖÒüî	ÒüùÒüñÒéîÒüäÒüºÒüÖÒüî	shitsureidesuga	xin lß╗ùi ( khi muß╗æn nhß╗Ø ai viß╗çc g├¼ ─æ├│)	1	2026-06-25 10:52:56.025	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	25
-26993	ÒüèÕÉìÕëìÒü»´╝ƒ	ÒüèÒü¬Òü¥ÒüêÒü»´╝ƒ	onamaewa´╝ƒ	bß║ín t├¬n g├¼?	1	2026-06-25 10:52:56.027	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	26
-26994	\N	ÒüôÒüíÒéëÒü» ´¢×ÒüòÒéôÒüºÒüÖÒÇé	kochirawa ~sandesu.	─æ├óy l├á ng├ái ´¢×	1	2026-06-25 10:52:56.031	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	27
 29156	þÁÁÒü»ÒüîÒüì	ÒüêÒü»ÒüîÒüì	ehagaki	bã░u ß║únh	41	2026-06-25 10:53:05.02	2026-06-27 02:25:27.304	\N	\N	\N	\N	\N	\N	/media/openmoji/1F5BC.svg	0
-27010	þÜåÒüòÒéô	Òü┐Òü¬ÒüòÒéô	minasan	c├íc bß║ín, c├íc anh, c├íc chß╗ï, mß╗ìi ngã░ß╗Øi	1	2026-06-25 10:52:56.086	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	42
 29224	µ│òÕ¥ï	Òü╗ÒüåÒéèÒüñ	horitsu	ph├íp luß║¡t	42	2026-06-25 10:53:05.251	2026-06-27 02:22:16.749	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7.svg	0
-26973	´¢×õ║║	´¢×ÒüÿÒéô	~jin	ngã░ß╗Øi nã░ß╗øc ´¢×	1	2026-06-25 10:52:55.973	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	6
 29231	\N	ÒéäÒüïÒéô	yakan	ß║Ñm ─æun nã░ß╗øc	42	2026-06-25 10:53:05.266	2026-06-27 02:22:16.752	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4A7.svg	0
 29194	þ£ƒÒüúþÖ¢´╝╗Òü¬´╝¢	Òü¥ÒüúÒüùÒéì´╝╗Òü¬´╝¢	masshiro [na]	trß║»ng to├ít, trß║»ng ngß║ºn	41	2026-06-25 10:53:05.105	2026-06-27 02:25:27.313	\N	\N	\N	\N	\N	\N	/media/openmoji/26AA.svg	0
 29207	´╝╗Òüè´╝¢ÕƒÄ	´╝╗Òüè´╝¢ÒüùÒéì	[o] shiro	l├óu ─æ├ái; th├ánh	41	2026-06-25 10:53:05.134	2026-06-27 02:25:27.317	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3F0.svg	0
@@ -13035,31 +14390,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29263	ÕÄÜÒüä	ÒüéÒüñÒüä	atsui	d├áy	42	2026-06-25 10:53:05.353	2026-06-27 02:25:27.326	\N	\N	\N	\N	\N	\N	/media/openmoji/1F321.svg	0
 29297	\N	ÒüåÒü¥Òüä	umai	ngon	43	2026-06-25 10:53:05.551	2026-06-27 02:25:27.33	\N	\N	\N	\N	\N	\N	/media/openmoji/1F372.svg	0
 29277	\N	ÒéñÒâ│Òé╣Òé┐Òâ│ÒâêÒâ®Òâ╝ÒâíÒâ│	insutantoramen	m├¼ ─ân liß╗ün	42	2026-06-25 10:53:05.404	2026-06-27 02:25:27.333	\N	\N	\N	\N	\N	\N	/media/openmoji/1F35C.svg	0
-27011	´¢×ÕÉø	´¢×ÒüÅÒéô	~kun	b├® (d├╣ng cho nam) hoß║Àc gß╗ìi th├ón mß║¡t	1	2026-06-25 10:52:56.089	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	43
-27006	\N	AKC	AKC	hß╗ìc viß╗çn giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.072	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	39
-27007	þÑ×µê©þùàÚÖó	ÒüôÒüåÒü╣Òü│ÒéçÒüåÒüäÒéô	kobebyoin	bß╗çnh viß╗çn giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.076	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	40
-27008	ÒüòÒüÅÒéëÕñºÕ¡ª´╝ÅÕ»îÕú½ÕñºÕ¡ª	ÒüòÒüÅÒéëÒüáÒüäÒüîÒüÅ´╝ÅÒüÁÒüÿÒüáÒüäÒüîÒüÅ	sakuradaigaku/fujidaigaku	trã░ß╗Øng ─æß║íi hß╗ìc giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.079	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	41
-27005	IMC´╝ÅÒâæÒâ»Òâ╝Úø╗µ░ù´╝ÅÒâûÒâ®Òé©Òâ½Òé¿ÒéóÒâ╝	IMC´╝ÅÒâæÒâ»Òâ╝ÒüºÒéôÒüì´╝ÅÒâûÒâ®Òé©Òâ½Òé¿ÒéóÒâ╝	IMC/pawadenki/burajiruea	c├┤ng ty giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.069	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	38
-26974	Õàêþöƒ	ÒüøÒéôÒüøÒüä	sensei	gi├ío vi├¬n (Kh├┤ng n├│i khi giß╗øi thiß╗çu nghß╗ü nghiß╗çp cß╗ºa ch├¡nh m├¼nh)	1	2026-06-25 10:52:55.975	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	7
-26975	µòÖÕ©½	ÒüìÒéçÒüåÒüù	kyoshi	gi├ío vi├¬n ( d├╣ng ─æß╗â n├│i ─æß║┐n nghß╗ü nghiß╗çp)	1	2026-06-25 10:52:55.977	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	8
-26976	Õ¡ªþöƒ	ÒüîÒüÅÒüøÒüä	gakusei	hß╗ìc sinh, sinh vi├¬n	1	2026-06-25 10:52:55.979	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393.svg	9
-26977	õ╝Üþñ¥Õôí	ÒüïÒüäÒüùÒéâÒüäÒéô	kaishain	nh├ón vi├¬n c├┤ng ty	1	2026-06-25 10:52:55.983	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	10
-26978	þñ¥Õôí	ÒüùÒéâÒüäÒéô	shain	nh├ón vi├¬n c├┤ng ty ´¢×	1	2026-06-25 10:52:55.988	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	11
-26979	ÚèÇÞíîÕôí	ÒüÄÒéôÒüôÒüåÒüäÒéô	ginkoin	nh├ón vi├¬n ng├ón h├áng	1	2026-06-25 10:52:55.992	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E6.svg	12
-26980	Õî╗ÞÇà	ÒüäÒüùÒéâ	isha	b├íc s─®	1	2026-06-25 10:52:55.994	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/2695.svg	13
-26981	þáöþ®ÂÞÇà	ÒüæÒéôÒüìÒéàÒüåÒüùÒéâ	kenkyusha	nghi├¬n cß╗®u sinh	1	2026-06-25 10:52:55.996	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F52C.svg	14
-26995	\N	ÒéóÒâíÒâ¬Òé½	amerika	Mß╗╣	1	2026-06-25 10:52:56.035	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8.svg	28
-26996	\N	ÒéñÒé«Òâ¬Òé╣	igirisu	Anh	1	2026-06-25 10:52:56.038	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EC-1F1E7.svg	29
-26997	\N	ÒéñÒâ│Òâë	indo	ß║ñn ─Éß╗Ö	1	2026-06-25 10:52:56.042	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1F3.svg	30
-26998	\N	ÒéñÒâ│ÒâëÒâìÒéÀÒéó	indoneshia	Indonesia	1	2026-06-25 10:52:56.046	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1E9.svg	31
-26999	ÚƒôÕø¢	ÒüïÒéôÒüôÒüÅ	kankoku	H├án quß╗æc	1	2026-06-25 10:52:56.049	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F0-1F1F7.svg	32
-27000	\N	Òé┐Òéñ	tai	Th├íi Lan	1	2026-06-25 10:52:56.053	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F9-1F1ED.svg	33
-27001	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	chugoku	Trung Quß╗æc	1	2026-06-25 10:52:56.056	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E8-1F1F3.svg	34
-27002	\N	ÒâëÒéñÒâä	doitsu	─Éß╗®c	1	2026-06-25 10:52:56.06	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E9-1F1EA.svg	35
-27003	µùÑµ£¼	Òü½Òü╗Òéô	nihon	Nhß║¡t Bß║ún	1	2026-06-25 10:52:56.062	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EF-1F1F5.svg	36
-27012	\N	Òé¿Òâ│Òé©ÒâïÒéó	enjinia	kß╗╣ sã░	1	2026-06-25 10:52:56.091	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F477.svg	44
-27013	Úø╗µ░ù	ÒüºÒéôÒüì	denki	─æiß╗çn	1	2026-06-25 10:52:56.093	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1.svg	45
-27014	\N	ÒâòÒâ®Òâ│Òé╣	furansu	Ph├íp	1	2026-06-25 10:52:56.096	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7.svg	46
+26987	\N	Òü»Òüä	hai	v├óng	1	2026-06-25 10:52:56.01	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	24
 29313	ÕåÀµê┐	ÒéîÒüäÒü╝Òüå	reibo	thiß║┐t bß╗ï l├ám m├ít, m├íy ─æiß╗üu h├▓a	43	2026-06-25 10:53:05.601	2026-06-27 02:26:22.318	\N	\N	\N	\N	\N	\N	/media/openmoji/2744.svg	0
 29340	µ┤ïÚúƒ	ÒéêÒüåÒüùÒéçÒüÅ	yoshoku	m├│n ─ân ├éu Mß╗╣	44	2026-06-25 10:53:05.83	2026-06-27 02:22:16.762	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8.svg	0
 29334	ÕÄÜÒüä	ÒüéÒüñÒüä	atsui	thick	44	2026-06-25 10:53:05.813	2026-06-27 02:25:27.336	\N	\N	\N	\N	\N	\N	/media/openmoji/1F321.svg	0
@@ -13068,6 +14399,26 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29375	õ┐ØÞ¿╝µø©	Òü╗ÒüùÒéçÒüåÒüùÒéç	hoshosho	giß║Ñy bß║úo h├ánh	45	2026-06-25 10:53:06.099	2026-06-27 02:25:27.343	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4C4.svg	0
 29382	´╝æ´╝æ´╝Öþò¬	´╝æ´╝æ´╝ÖÒü░Òéô	119ban	the emergency fire service telephone number	45	2026-06-25 10:53:06.118	2026-06-27 02:25:27.348	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	0
 29370	þ«¬þ¼Ñ	ÒüƒÒéôÒüÖ	tansu	tu╠ë quß║ºn ├ío	44	2026-06-25 10:53:05.938	2026-06-27 02:26:22.325	\N	\N	\N	\N	\N	\N	/media/openmoji/1F455.svg	0
+26974	Õàêþöƒ	ÒüøÒéôÒüøÒüä	sensei	thß║ºy gi├ío, c├┤ gi├ío	1	2026-06-25 10:52:55.975	2026-07-06 14:08:05.146	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	9
+26975	µòÖÕ©½	ÒüìÒéçÒüåÒüù	kyoshi	gi├ío vi├¬n ( d├╣ng ─æß╗â n├│i ─æß║┐n nghß╗ü nghiß╗çp)	1	2026-06-25 10:52:55.977	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F468.svg	10
+26976	Õ¡ªþöƒ	ÒüîÒüÅÒüøÒüä	gakusei	hß╗ìc sinh, sinh vi├¬n	1	2026-06-25 10:52:55.979	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F393.svg	11
+26977	õ╝Üþñ¥Õôí	ÒüïÒüäÒüùÒéâÒüäÒéô	kaishain	nh├ón vi├¬n c├┤ng ty	1	2026-06-25 10:52:55.983	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	12
+26978	þñ¥Õôí	ÒüùÒéâÒüäÒéô	shain	nh├ón vi├¬n c├┤ng ty ´¢×	1	2026-06-25 10:52:55.988	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	13
+26979	ÚèÇÞíîÕôí	ÒüÄÒéôÒüôÒüåÒüäÒéô	ginkoin	nh├ón vi├¬n ng├ón h├áng	1	2026-06-25 10:52:55.992	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E6.svg	14
+26980	Õî╗ÞÇà	ÒüäÒüùÒéâ	isha	b├íc s─®	1	2026-06-25 10:52:55.994	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/2695.svg	15
+26981	þáöþ®ÂÞÇà	ÒüæÒéôÒüìÒéàÒüåÒüùÒéâ	kenkyusha	nghi├¬n cß╗®u sinh	1	2026-06-25 10:52:55.996	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F52C.svg	16
+26995	\N	ÒéóÒâíÒâ¬Òé½	amerika	Mß╗╣	1	2026-06-25 10:52:56.035	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1FA-1F1F8.svg	32
+26996	\N	ÒéñÒé«Òâ¬Òé╣	igirisu	Anh	1	2026-06-25 10:52:56.038	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EC-1F1E7.svg	33
+26997	\N	ÒéñÒâ│Òâë	indo	ß║ñn ─Éß╗Ö	1	2026-06-25 10:52:56.042	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1F3.svg	34
+26998	\N	ÒéñÒâ│ÒâëÒâìÒéÀÒéó	indoneshia	Indonesia	1	2026-06-25 10:52:56.046	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EE-1F1E9.svg	35
+26999	ÚƒôÕø¢	ÒüïÒéôÒüôÒüÅ	kankoku	H├án quß╗æc	1	2026-06-25 10:52:56.049	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F0-1F1F7.svg	36
+27000	\N	Òé┐Òéñ	tai	Th├íi Lan	1	2026-06-25 10:52:56.053	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1F9-1F1ED.svg	37
+27001	õ©¡Õø¢	ÒüíÒéàÒüåÒüöÒüÅ	chugoku	Trung Quß╗æc	1	2026-06-25 10:52:56.056	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E8-1F1F3.svg	38
+27002	\N	ÒâëÒéñÒâä	doitsu	─Éß╗®c	1	2026-06-25 10:52:56.06	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E9-1F1EA.svg	39
+27003	µùÑµ£¼	Òü½Òü╗Òéô	nihon	Nhß║¡t Bß║ún	1	2026-06-25 10:52:56.062	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EF-1F1F5.svg	40
+27005	IMC´╝ÅÒâæÒâ»Òâ╝Úø╗µ░ù´╝ÅÒâûÒâ®Òé©Òâ½Òé¿ÒéóÒâ╝	IMC´╝ÅÒâæÒâ»Òâ╝ÒüºÒéôÒüì´╝ÅÒâûÒâ®Òé©Òâ½Òé¿ÒéóÒâ╝	IMC/pawadenki/burajiruea	c├┤ng ty giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.069	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	42
+27006	\N	AKC	AKC	hß╗ìc viß╗çn giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.072	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	43
+27007	þÑ×µê©þùàÚÖó	ÒüôÒüåÒü╣Òü│ÒéçÒüåÒüäÒéô	kobebyoin	bß╗çnh viß╗çn giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.076	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	44
 29404	Þ┤êÒéèþë®	ÒüèÒüÅÒéèÒééÒü«	okurimono	qu├á tß║Àng (tß║Àng qu├á)	45	2026-06-25 10:53:06.203	2026-06-27 02:22:16.766	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381.svg	0
 29405	ÚûôÚüòÒüäÚø╗Þ®▒	Òü¥ÒüíÒüîÒüäÒüºÒéôÒéÅ	machigaidenwa	─æiß╗çn thoß║íi nhß║ºm	45	2026-06-25 10:53:06.207	2026-06-27 02:22:16.768	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE.svg	0
 29410	þ£áÒéèÒü¥ÒüÖ	Òü¡ÒéÇÒéèÒü¥ÒüÖ	nemurimasu	ngß╗º	45	2026-06-25 10:53:06.224	2026-06-27 02:22:16.773	\N	\N	\N	\N	\N	\N	/media/openmoji/1F634.svg	0
@@ -13088,6 +14439,43 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29602	õ¢£µø▓	ÒüòÒüúÒüìÒéçÒüÅ	sakkyoku	viß║┐t( s├íng t├íc) nhß║íc, b├ái h├ít	49	2026-06-25 10:53:07.085	2026-06-27 02:25:27.382	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3B5.svg	0
 29621	\N	ÒâíÒâ╝Òâ½ÒéóÒâëÒâ¼Òé╣	meruadoresu	e-mail address	50	2026-06-25 10:53:07.19	2026-06-27 02:25:27.385	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4E7.svg	0
 29586	þü░þÜ┐	Òü»ÒüäÒüûÒéë	haizara	gß║ít t├án thuß╗æc	49	2026-06-25 10:53:07.033	2026-06-27 02:26:22.341	\N	\N	\N	\N	\N	\N	/media/openmoji/1F48A.svg	0
+26988	\N	ÒüäÒüäÒüê	iie	kh├┤ng	1	2026-06-25 10:52:56.012	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	25
+26971	\N	´¢×ÒüòÒéô	~san	anh ´¢×, chß╗ï ´¢×	1	2026-06-25 10:52:55.966	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	6
+26972	\N	´¢×ÒüíÒéâÒéô	~chan	b├® ( d├╣ng cho nß╗») hoß║Àc gß╗ìi th├ón mß║¡t cho trß║╗ con ( cß║ú nam lß║½n nß╗»)	1	2026-06-25 10:52:55.97	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	7
+26973	´¢×õ║║	´¢×ÒüÿÒéô	~jin	ngã░ß╗Øi nã░ß╗øc ´¢×	1	2026-06-25 10:52:55.973	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	8
+26984	Þ¬░	ÒüáÒéî	dare	ai (hß╗Åi ngã░ß╗Øi n├áo ─æ├│)	1	2026-06-25 10:52:56.004	2026-07-11 16:44:32.908	\N	\N	\N	\N	\N	\N	\N	19
+26985	´╝ìµ¡│	´╝ìÒüòÒüä	-sai	tuß╗òi (hß║¡u tß╗æ ─æß╗®ng sau sß╗æ)	1	2026-06-25 10:52:56.006	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	21
+26986	õ¢òµ¡│	Òü¬ÒéôÒüòÒüä	nansai	mß║Ñy tuß╗òi, bao nhi├¬u tuß╗òi.	1	2026-06-25 10:52:56.008	2026-07-11 16:44:32.881	\N	\N	\N	\N	\N	\N	\N	22
+26989	ÕêØÒéüÒü¥ÒüùÒüªÒÇé	Òü»ÒüÿÒéüÒü¥ÒüùÒüªÒÇé	hajimemashite.	ch├áo lß║ºn ─æß║ºu gß║Àp nhau	1	2026-06-25 10:52:56.016	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	26
+26990	´¢×ÒüïÒéë µØÑÒü¥ÒüùÒüƒÒÇé	´¢×ÒüïÒéë ÒüìÒü¥ÒüùÒüƒÒÇé	~kara kimashita.	─æß║┐n tß╗½ ´¢×	1	2026-06-25 10:52:56.019	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	27
+26991	´╝╗Òü®ÒüåÒü×´╝¢ÒéêÒéìÒüùÒüÅ´╝╗ÒüèÚíÿÒüäÒüùÒü¥ÒüÖ´╝¢ÒÇé	´╝╗Òü®ÒüåÒü×´╝¢ÒéêÒéìÒüùÒüÅ´╝╗ÒüèÒü¡ÒüîÒüäÒüùÒü¥ÒüÖ´╝¢ÒÇé	[dozo] yoroshiku [onegaishimasu].	rß║Ñt h├ón hß║ính ─æã░ß╗úc l├ám quen	1	2026-06-25 10:52:56.022	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	28
+29660	ÒüéÒü« µû╣	ÒüéÒü« ÒüïÒüƒ	ano kata	ngã░ß╗Øi kia (k├¡nh ngß╗»)	1	2026-07-11 16:39:39.57	2026-07-11 16:39:39.57	\N	\N	\N	\N	\N	\N	\N	5
+26992	Õñ▒þñ╝ÒüºÒüÖÒüî	ÒüùÒüñÒéîÒüäÒüºÒüÖÒüî	shitsureidesuga	xin lß╗ùi ( khi muß╗æn nhß╗Ø ai viß╗çc g├¼ ─æ├│)	1	2026-06-25 10:52:56.025	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	29
+26993	ÒüèÕÉìÕëìÒü»´╝ƒ	ÒüèÒü¬Òü¥ÒüêÒü»´╝ƒ	onamaewa´╝ƒ	bß║ín t├¬n g├¼?	1	2026-06-25 10:52:56.027	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	30
+26994	\N	ÒüôÒüíÒéëÒü» ´¢×ÒüòÒéôÒüºÒüÖÒÇé	kochirawa ~sandesu.	─æ├óy l├á ng├ái ´¢×	1	2026-06-25 10:52:56.031	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	31
+27010	þÜåÒüòÒéô	Òü┐Òü¬ÒüòÒéô	minasan	c├íc bß║ín, c├íc anh, c├íc chß╗ï, mß╗ìi ngã░ß╗Øi	1	2026-06-25 10:52:56.086	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	46
+27011	´¢×ÕÉø	´¢×ÒüÅÒéô	~kun	b├® (d├╣ng cho nam) hoß║Àc gß╗ìi th├ón mß║¡t	1	2026-06-25 10:52:56.089	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	47
+27012	\N	Òé¿Òâ│Òé©ÒâïÒéó	enjinia	kß╗╣ sã░	1	2026-06-25 10:52:56.091	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F477.svg	48
+27013	Úø╗µ░ù	ÒüºÒéôÒüì	denki	─æiß╗çn	1	2026-06-25 10:52:56.093	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/26A1.svg	49
+27014	\N	ÒâòÒâ®Òâ│Òé╣	furansu	Ph├íp	1	2026-06-25 10:52:56.096	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1EB-1F1F7.svg	50
+26970	ÒüéÒü« õ║║	ÒüéÒü« Òü▓Òü¿	ano hito	ngã░ß╗Øi kia	1	2026-06-25 10:52:55.963	2026-07-18 06:06:15.557	\N	\N	\N	\N	\N	\N	\N	3
+29663	Òüèµëïµ┤ùÒüä	ÒüèÒüªÒüéÒéëÒüä	otearai	nh├á vß╗ç sinh, ph├▓ng vß╗ç sinh, toa-l├®t (k├¡nh ngß╗»)	3	2026-07-11 16:44:32.918	2026-07-11 16:44:32.918	\N	\N	\N	\N	\N	\N	/media/openmoji/1F6BD.svg	2
+29664	\N	´╝ìÒüîÒüä	-gai	tß║ºng thß╗® ÔÇô (biß║┐n ├óm: -gai)	3	2026-07-11 16:44:32.923	2026-07-11 16:44:32.923	\N	\N	\N	\N	\N	\N	\N	1
+29665	Õñ£	ÒéêÒéï	yoru	tß╗æi (c├ích ─æß╗ìc kh├íc: yoru)	4	2026-07-11 16:44:32.93	2026-07-11 16:44:32.93	\N	\N	\N	\N	\N	\N	/media/openmoji/1F319.svg	2
+29666	\N	´╝ìÒüÀÒéô	-pun	´╝ì minute (biß║┐n ├óm: -pun)	4	2026-07-11 16:44:32.936	2026-07-11 16:44:32.936	\N	\N	\N	\N	\N	\N	\N	1
+29667	ÒâƒÒâ½Òé»	ÒâƒÒâ½Òé»	miruku	sß╗»a b├▓ (c├ích ─æß╗ìc kh├íc: miruku)	6	2026-07-11 16:44:32.945	2026-07-11 16:44:32.945	\N	\N	\N	\N	\N	\N	/media/openmoji/1F95B.svg	1
+29668	\N	ÒéêÒüä	yoi	tß╗æt (c├ích ─æß╗ìc kh├íc: yoi)	8	2026-07-11 16:44:32.952	2026-07-11 16:44:32.952	\N	\N	\N	\N	\N	\N	\N	1
+29669	Òé¿ÒéóÒâíÒâ╝Òâ½	Òé¿ÒéóÒâíÒâ╝Òâ½	eameru	(gß╗¡i bß║▒ng) ─æã░ß╗Øng h├áng kh├┤ng (c├ích ─æß╗ìc kh├íc: eameru)	11	2026-07-11 16:44:32.959	2026-07-11 16:44:32.959	\N	\N	\N	\N	\N	\N	\N	1
+29670	´╝æ´╝Å´╝ö	´╝æ´╝Å´╝ö	1/4	one fourth (c├ích ─æß╗ìc kh├íc: 1/4)	34	2026-07-11 16:44:32.968	2026-07-11 16:44:32.968	\N	\N	\N	\N	\N	\N	\N	1
+29671	\N	Òü¥ÒüäÒü¡Òéô	mainen	h├áng n─âm (c├ích ─æß╗ìc kh├íc: mainen)	36	2026-07-11 16:44:32.977	2026-07-11 16:44:32.977	\N	\N	\N	\N	\N	\N	\N	1
+29672	\N	´╝ìÒü¢Òéô	-pon	(counter for long objects) (biß║┐n ├óm: -pon)	40	2026-07-11 16:44:32.983	2026-07-11 16:44:32.983	\N	\N	\N	\N	\N	\N	\N	3
+29673	\N	´╝ìÒü╝Òéô	-bon	(counter for long objects) (biß║┐n ├óm: -bon)	40	2026-07-11 16:44:32.985	2026-07-11 16:44:32.985	\N	\N	\N	\N	\N	\N	\N	4
+29674	\N	´╝ìÒü▒Òüä	-pai	´╝ì glass or cup of (counter for full cups, glasses, etc.) (biß║┐n ├óm: -pai)	40	2026-07-11 16:44:32.99	2026-07-11 16:44:32.99	\N	\N	\N	\N	\N	\N	\N	1
+29675	\N	´╝ìÒü░Òüä	-bai	´╝ì glass or cup of (counter for full cups, glasses, etc.) (biß║┐n ├óm: -bai)	40	2026-07-11 16:44:32.992	2026-07-11 16:44:32.992	\N	\N	\N	\N	\N	\N	\N	2
+29662	Òü®Òü¬Òüƒ	Òü®Òü¬Òüƒ	donata	ai (hß╗Åi ngã░ß╗Øi n├áo ─æ├│) (k├¡nh ngß╗»)	1	2026-07-11 16:44:32.911	2026-07-11 16:44:32.911	\N	\N	\N	\N	\N	\N	\N	20
+29661	\N	ÒüèÒüäÒüÅÒüñ	oikutsu	mß║Ñy tuß╗òi, bao nhi├¬u tuß╗òi (k├¡nh ngß╗»)	1	2026-07-11 16:44:32.888	2026-07-11 16:44:32.888	\N	\N	\N	\N	\N	\N	\N	23
+27008	ÒüòÒüÅÒéëÕñºÕ¡ª´╝ÅÕ»îÕú½ÕñºÕ¡ª	ÒüòÒüÅÒéëÒüáÒüäÒüîÒüÅ´╝ÅÒüÁÒüÿÒüáÒüäÒüîÒüÅ	sakuradaigaku/fujidaigaku	trã░ß╗Øng ─æß║íi hß╗ìc giß║ú ─æß╗ïnh (trong s├ích)	1	2026-06-25 10:52:56.079	2026-06-27 16:04:49.932	\N	\N	\N	\N	\N	\N	\N	45
+29676	ÒüéÒü« µû╣	ÒüéÒü« ÒüïÒüƒ	ano kata	ngã░ß╗Øi kia (k├¡nh ngß╗»)	1	2026-07-18 06:06:15.557	2026-07-18 06:06:15.557	\N	\N	\N	\N	\N	\N	\N	4
 27172	\N	ÒâÜÒé¡Òâ│	pekin	Beijing (Õîùõ║¼)	4	2026-06-25 10:52:56.834	2026-06-27 02:25:26.696	\N	\N	\N	\N	\N	\N	/media/openmoji/1F1E8-1F1F3.svg	0
 27391	ÞÁñÒüä	ÒüéÒüïÒüä	akai	─æß╗Å	8	2026-06-25 10:52:57.777	2026-06-27 02:25:26.699	\N	\N	\N	\N	\N	\N	/media/openmoji/1F534.svg	0
 27079	ÕÅùõ╗ÿ	ÒüåÒüæÒüñÒüæ	uketsuke	phong tiß║┐p t├ón	3	2026-06-25 10:52:56.536	2026-06-27 02:22:16.41	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4CB.svg	0
@@ -13114,7 +14502,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27073	Õ¢╝µû╣	ÒüéÒüíÒéë	achira	ph├¡a kia, ─æß║▒ng kia, chß╗ù kia, kia	3	2026-06-25 10:52:56.524	2026-06-25 10:52:56.524	\N	\N	\N	\N	\N	\N	\N	0
 27074	õ¢òµû╣	Òü®ÒüíÒéë	dochira	ph├¡a n├áo, ─æß║▒ng n├áo, chß╗ù n├áo, ─æ├óu	3	2026-06-25 10:52:56.526	2026-06-25 10:52:56.526	\N	\N	\N	\N	\N	\N	\N	0
 27095	Õ£░õ©ï	ÒüíÒüï	chika	tß║ºng hß║ºm, dã░ß╗øi mß║Àt ─æß║Ñt	3	2026-06-25 10:52:56.566	2026-06-25 10:52:56.566	\N	\N	\N	\N	\N	\N	\N	0
-27096	´╝ìÚÜÄ	´╝ìÒüïÒüä´╝ê´╝ìÒüîÒüä´╝ë	-kai (-gai)	tß║ºng thß╗® ÔÇô	3	2026-06-25 10:52:56.568	2026-06-25 10:52:56.568	\N	\N	\N	\N	\N	\N	\N	0
 27097	õ¢òÚÜÄ	Òü¬ÒéôÒüîÒüä	nangai	tß║ºng mß║Ñy	3	2026-06-25 10:52:56.57	2026-06-25 10:52:56.57	\N	\N	\N	\N	\N	\N	\N	0
 27098	´╝ìÕåå	´╝ìÒüêÒéô	-en	´╝ì yen	3	2026-06-25 10:52:56.572	2026-06-25 10:52:56.572	\N	\N	\N	\N	\N	\N	\N	0
 27139	µÿ╝	Òü▓Òéï	hiru	trã░a	4	2026-06-25 10:52:56.761	2026-06-27 02:25:26.715	\N	\N	\N	\N	\N	\N	/media/openmoji/2600.svg	0
@@ -13127,12 +14514,13 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27106	´╝╗´¢×ÒéÆ´╝¢ÞªïÒüøÒüª ÒüÅÒüáÒüòÒüäÒÇé	´╝╗´¢×ÒéÆ´╝¢Òü┐ÒüøÒüª ÒüÅÒüáÒüòÒüäÒÇé	[~wo] misete kudasai.	Please show me [´¢×].	3	2026-06-25 10:52:56.586	2026-06-25 10:52:56.586	\N	\N	\N	\N	\N	\N	\N	0
 27107	\N	ÒüÿÒéâ	ja	well, then, in that case	3	2026-06-25 10:52:56.588	2026-06-25 10:52:56.588	\N	\N	\N	\N	\N	\N	\N	0
 27108	\N	´╝╗´¢×ÒéÆ´╝¢ÒüÅÒüáÒüòÒüäÒÇé	[~wo] kudasai.	Give me [´¢×], please.	3	2026-06-25 10:52:56.589	2026-06-25 10:52:56.589	\N	\N	\N	\N	\N	\N	\N	0
+27096	´╝ìÚÜÄ	´╝ìÒüïÒüä	-kai	tß║ºng thß╗® ÔÇô	3	2026-06-25 10:52:56.568	2026-07-11 16:44:32.921	\N	\N	\N	\N	\N	\N	\N	0
+27132	´╝ìÕêå	´╝ìÒüÁÒéô	-fun	´╝ì minute	4	2026-06-25 10:52:56.75	2026-07-11 16:44:32.934	\N	\N	\N	\N	\N	\N	\N	0
 27115	µû░ÕñºÚÿ¬	ÒüùÒéôÒüèÒüèÒüòÒüï	shin'osaka	name of a station in Osaka	3	2026-06-25 10:52:56.603	2026-06-25 10:52:56.603	\N	\N	\N	\N	\N	\N	\N	0
 27117	\N	´¢×Òüº ÒüöÒüûÒüäÒü¥ÒüÖÒÇé	~de gozaimasu.	(polite equivalent of ÒüºÒüÖ)	3	2026-06-25 10:52:56.606	2026-06-25 10:52:56.606	\N	\N	\N	\N	\N	\N	\N	0
 27124	þÁéÒéÅÒéèÒü¥ÒüÖ	ÒüèÒéÅÒéèÒü¥ÒüÖ	owarimasu	kß║┐t th├║c	4	2026-06-25 10:52:56.73	2026-06-25 10:52:56.73	\N	\N	\N	\N	\N	\N	\N	0
 27130	õ╗è	ÒüäÒü¥	ima	b├óy giß╗Ø	4	2026-06-25 10:52:56.744	2026-06-25 10:52:56.744	\N	\N	\N	\N	\N	\N	\N	0
 27131	´╝ìµÖé	´╝ìÒüÿ	-ji	´╝ì o'clock	4	2026-06-25 10:52:56.746	2026-06-25 10:52:56.746	\N	\N	\N	\N	\N	\N	\N	0
-27132	´╝ìÕêå	´╝ìÒüÁÒéô´╝ê´╝ìÒüÀÒéô´╝ë	-fun (-pun)	´╝ì minute	4	2026-06-25 10:52:56.75	2026-06-25 10:52:56.75	\N	\N	\N	\N	\N	\N	\N	0
 27133	Õìè	Òü»Òéô	han	ph├ón nß╗¡a, mß╗Öt nß╗¡a	4	2026-06-25 10:52:56.752	2026-06-25 10:52:56.752	\N	\N	\N	\N	\N	\N	\N	0
 27134	õ¢òµÖé	Òü¬ÒéôÒüÿ	nanji	mß║Ñy giß╗Ø	4	2026-06-25 10:52:56.754	2026-06-25 10:52:56.754	\N	\N	\N	\N	\N	\N	\N	0
 27135	õ¢òÕêå	Òü¬ÒéôÒüÀÒéô	nanpun	mß║Ñy ph├║t	4	2026-06-25 10:52:56.755	2026-06-25 10:52:56.755	\N	\N	\N	\N	\N	\N	\N	0
@@ -13238,6 +14626,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27289	õ¢ò	Òü¬Òü½	nani	c├íi g├¼, g├¼	6	2026-06-25 10:52:57.355	2026-06-27 02:18:03.306	\N	\N	\N	\N	\N	\N	\N	0
 27333	Þè▒	Òü»Òü¬	hana	hoa	7	2026-06-25 10:52:57.581	2026-06-27 02:18:03.316	\N	\N	\N	\N	\N	\N	/media/openmoji/1F33A.svg	0
 27335	\N	ÒâùÒâ¼Òé╝Òâ│Òâê	purezento	qu├á tß║Àng	7	2026-06-25 10:52:57.588	2026-06-27 02:22:16.515	\N	\N	\N	\N	\N	\N	/media/openmoji/1F381.svg	0
+27375	\N	ÒüäÒüä	ii	tß╗æt	8	2026-06-25 10:52:57.741	2026-07-11 16:44:32.948	\N	\N	\N	\N	\N	\N	\N	0
 27327	Õ╣┤Þ│ÇþèÂ	Òü¡ÒéôÒüîÒüÿÒéçÒüå	nengajo	New Year's greeting card	7	2026-06-25 10:52:57.568	2026-06-25 10:52:57.568	\N	\N	\N	\N	\N	\N	\N	0
 27344	\N	ÒééÒüå	mo	─æ├ú, rß╗ôi	7	2026-06-25 10:52:57.605	2026-06-25 10:52:57.605	\N	\N	\N	\N	\N	\N	\N	0
 27345	\N	Òü¥Òüá	mada	chã░a	7	2026-06-25 10:52:57.606	2026-06-25 10:52:57.606	\N	\N	\N	\N	\N	\N	\N	0
@@ -13262,7 +14651,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27372	Õ░ÅÒüòÒüä	ÒüíÒüäÒüòÒüä	chiisai	nhß╗Å, b├®	8	2026-06-25 10:52:57.736	2026-06-25 10:52:57.736	\N	\N	\N	\N	\N	\N	\N	0
 27373	µû░ÒüùÒüä	ÒüéÒüƒÒéëÒüùÒüä	atarashii	mß╗øi	8	2026-06-25 10:52:57.737	2026-06-25 10:52:57.737	\N	\N	\N	\N	\N	\N	\N	0
 27374	ÕÅñÒüä	ÒüÁÒéïÒüä	furui	c┼®	8	2026-06-25 10:52:57.739	2026-06-25 10:52:57.739	\N	\N	\N	\N	\N	\N	\N	0
-27375	\N	ÒüäÒüä´╝êÒéêÒüä´╝ë	ii (yoi)	tß╗æt	8	2026-06-25 10:52:57.741	2026-06-25 10:52:57.741	\N	\N	\N	\N	\N	\N	\N	0
 27376	µé¬Òüä	ÒéÅÒéïÒüä	warui	xß║Ñu	8	2026-06-25 10:52:57.742	2026-06-25 10:52:57.742	\N	\N	\N	\N	\N	\N	\N	0
 27382	Ú½ÿÒüä	ÒüƒÒüïÒüä	takai	─æß║»t, cao	8	2026-06-25 10:52:57.758	2026-06-25 10:52:57.758	\N	\N	\N	\N	\N	\N	\N	0
 27383	Õ«ëÒüä	ÒéäÒüÖÒüä	yasui	rß║╗	8	2026-06-25 10:52:57.761	2026-06-25 10:52:57.761	\N	\N	\N	\N	\N	\N	\N	0
@@ -13359,6 +14747,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27540	ÒüäÒü¥ÒüÖ´╝╗µùÑµ£¼Òü½´¢×´╝¢	ÒüäÒü¥ÒüÖ´╝╗Òü½Òü╗ÒéôÒü½´¢×´╝¢	imasu [nihonni~]	c├│ (─æß╗Öng vß║¡t)	11	2026-06-25 10:52:58.506	2026-06-25 10:52:58.506	\N	\N	\N	\N	\N	\N	\N	0
 27564	\N	ÒéóÒéñÒé╣Òé»Òâ¬Òâ╝Òâá	aisukuriimu	kem	11	2026-06-25 10:52:58.555	2026-06-27 02:25:27.018	\N	\N	\N	\N	\N	\N	/media/openmoji/1F366.svg	0
 27542	õ╝æÒü┐Òü¥ÒüÖ´╝╗õ╝Üþñ¥ÒéÆ´¢×´╝¢	ÒéäÒüÖÒü┐Òü¥ÒüÖ´╝╗ÒüïÒüäÒüùÒéâÒéÆ´¢×´╝¢	yasumimasu [kaishawo~]	nghß╗ë ngãíi, nghß╗ë	11	2026-06-25 10:52:58.51	2026-06-25 10:52:58.51	\N	\N	\N	\N	\N	\N	\N	0
+27597	Þê¬þ®║õ¥┐	ÒüôÒüåÒüÅÒüåÒü│Òéô	kokubin	(gß╗¡i bß║▒ng) ─æã░ß╗Øng h├áng kh├┤ng	11	2026-06-25 10:52:58.63	2026-07-11 16:44:32.956	\N	\N	\N	\N	\N	\N	\N	0
 27554	´╝æõ║║	Òü▓Òü¿Òéè	hitori	1 ngã░ß╗Øi	11	2026-06-25 10:52:58.535	2026-06-25 10:52:58.535	\N	\N	\N	\N	\N	\N	\N	0
 27555	´╝Æõ║║	ÒüÁÒüƒÒéè	futari	2 ngã░ß╗Øi	11	2026-06-25 10:52:58.537	2026-06-25 10:52:58.537	\N	\N	\N	\N	\N	\N	\N	0
 27556	´╝ìõ║║	´╝ìÒü½Òéô	-nin	´╝ì people	11	2026-06-25 10:52:58.538	2026-06-25 10:52:58.538	\N	\N	\N	\N	\N	\N	\N	0
@@ -13393,7 +14782,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 27594	ÞíîÒüúÒüªÒéëÒüúÒüùÒéâÒüäÒÇé	ÒüäÒüúÒüªÒéëÒüúÒüùÒéâÒüäÒÇé	itterasshai.	See you later./So long. (lit. Go and come back.)	11	2026-06-25 10:52:58.621	2026-06-25 10:52:58.621	\N	\N	\N	\N	\N	\N	\N	0
 27595	ÞíîÒüúÒüª ÒüìÒü¥ÒüÖÒÇé	ÒüäÒüúÒüª ÒüìÒü¥ÒüÖÒÇé	itte kimasu.	(t├┤i) ─æi ─æ├óy	11	2026-06-25 10:52:58.624	2026-06-25 10:52:58.624	\N	\N	\N	\N	\N	\N	\N	0
 27596	Þê╣õ¥┐	ÒüÁÒü¬Òü│Òéô	funabin	gß╗¡i bß║▒ng ─æã░ß╗Øng t├áu	11	2026-06-25 10:52:58.627	2026-06-25 10:52:58.627	\N	\N	\N	\N	\N	\N	\N	0
-27597	Þê¬þ®║õ¥┐´╝êÒé¿ÒéóÒâíÒâ╝Òâ½´╝ë	ÒüôÒüåÒüÅÒüåÒü│Òéô´╝êÒé¿ÒéóÒâíÒâ╝Òâ½´╝ë	kokubin (eameru)	(gß╗¡i bß║▒ng) ─æã░ß╗Øng h├áng kh├┤ng	11	2026-06-25 10:52:58.63	2026-06-25 10:52:58.63	\N	\N	\N	\N	\N	\N	\N	0
 27598	ÒüèÚíÿÒüäÒüùÒü¥ÒüÖÒÇé	ÒüèÒü¡ÒüîÒüäÒüùÒü¥ÒüÖÒÇé	onegaishimasu.	Please. (lit. ask for a favour)	11	2026-06-25 10:52:58.633	2026-06-25 10:52:58.633	\N	\N	\N	\N	\N	\N	\N	0
 27600	ÚÇƒÚüö	ÒüØÒüÅÒüƒÒüñ	sokutatsu	chuyß╗ân ph├ít nhanh	11	2026-06-25 10:52:58.639	2026-06-25 10:52:58.639	\N	\N	\N	\N	\N	\N	\N	0
 27601	µø©þòÖ	ÒüïÒüìÒü¿Òéü	kakitome	gß╗¡i bß║úo ─æß║úm	11	2026-06-25 10:52:58.642	2026-06-25 10:52:58.642	\N	\N	\N	\N	\N	\N	\N	0
@@ -14138,6 +15526,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28504	µ£êÒü½	ÒüñÒüìÒü½	tsukini	mß╗Öt th├íng	31	2026-06-25 10:53:02.593	2026-06-25 10:53:02.593	\N	\N	\N	\N	\N	\N	\N	0
 28505	µØæ	ÒéÇÒéë	mura	l├áng	31	2026-06-25 10:53:02.596	2026-06-25 10:53:02.596	\N	\N	\N	\N	\N	\N	\N	0
 28506	ÕìÆµÑ¡ÒüùÒü¥ÒüÖ	ÒüØÒüñÒüÄÒéçÒüåÒüùÒü¥ÒüÖ	sotsugyoshimasu	graduate	31	2026-06-25 10:53:02.597	2026-06-25 10:53:02.597	\N	\N	\N	\N	\N	\N	\N	0
+28546	Õàêþöƒ	ÒüøÒéôÒüøÒüä	sensei	thß║ºy gi├ío, c├┤ gi├ío	32	2026-06-25 10:53:02.746	2026-07-06 14:08:05.146	\N	\N	\N	\N	\N	\N	\N	0
 28508	Õ½î´╝╗Òü¬´╝¢	ÒüäÒéä´╝╗Òü¬´╝¢	iya [na]	hateful, disagreeable	31	2026-06-25 10:53:02.601	2026-06-25 10:53:02.601	\N	\N	\N	\N	\N	\N	\N	0
 28509	þ®║	ÒüØÒéë	sora	bß║ºu trß╗Øi	31	2026-06-25 10:53:02.603	2026-06-25 10:53:02.603	\N	\N	\N	\N	\N	\N	\N	0
 28510	ÚûëÒüÿÒü¥ÒüÖ	Òü¿ÒüÿÒü¥ÒüÖ	tojimasu	nhß║»m	31	2026-06-25 10:53:02.604	2026-06-25 10:53:02.604	\N	\N	\N	\N	\N	\N	\N	0
@@ -14173,7 +15562,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28543	ÕìüÕêå´╝╗Òü¬´╝¢	ÒüÿÒéàÒüåÒüÂÒéô´╝╗Òü¬´╝¢	jubun [na]	─æß╗º	32	2026-06-25 10:53:02.74	2026-06-25 10:53:02.74	\N	\N	\N	\N	\N	\N	\N	0
 28544	\N	ÒüèÒüïÒüùÒüä	okashii	c├│ vß║Ñn ─æß╗ü, kh├┤ng b├¼nh thã░ß╗Øng	32	2026-06-25 10:53:02.742	2026-06-25 10:53:02.742	\N	\N	\N	\N	\N	\N	\N	0
 28545	\N	ÒüåÒéïÒüòÒüä	urusai	ß╗ôn ├áo	32	2026-06-25 10:53:02.744	2026-06-25 10:53:02.744	\N	\N	\N	\N	\N	\N	\N	0
-28546	Õàêþöƒ	ÒüøÒéôÒüøÒüä	sensei	doctor	32	2026-06-25 10:53:02.746	2026-06-25 10:53:02.746	\N	\N	\N	\N	\N	\N	\N	0
 28547	\N	ÒéäÒüæÒü®	yakedo	bß╗Ång	32	2026-06-25 10:53:02.748	2026-06-25 10:53:02.748	\N	\N	\N	\N	\N	\N	\N	0
 28548	\N	ÒüæÒüî	kega	bß╗ï thã░ãíng	32	2026-06-25 10:53:02.749	2026-06-25 10:53:02.749	\N	\N	\N	\N	\N	\N	\N	0
 28549	\N	ÒüøÒüì	seki	ho	32	2026-06-25 10:53:02.751	2026-06-25 10:53:02.751	\N	\N	\N	\N	\N	\N	\N	0
@@ -14301,7 +15689,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28709	\N	´╝ìÒé░Òâ®Òâá	-guramu	´╝ì gramme	34	2026-06-25 10:53:03.309	2026-06-25 10:53:03.309	\N	\N	\N	\N	\N	\N	\N	0
 28710	Òâ╝ÕÇï	Òâ╝Òüô	-ko	(counter for small objects)	34	2026-06-25 10:53:03.312	2026-06-25 10:53:03.312	\N	\N	\N	\N	\N	\N	\N	0
 28711	\N	ÒüƒÒü¥Òü¡ÒüÄ	tamanegi	h├ánh cß╗º	34	2026-06-25 10:53:03.315	2026-06-25 10:53:03.315	\N	\N	\N	\N	\N	\N	\N	0
-28712	´╝öÕêåÒü«´╝æ´╝ê´╝æ´╝Å´╝ö´╝ë	ÒéêÒéôÒüÂÒéôÒü«ÒüäÒüí´╝ê´╝æ´╝Å´╝ö´╝ë	yonbunnoichi (1/4)	one fourth	34	2026-06-25 10:53:03.318	2026-06-25 10:53:03.318	\N	\N	\N	\N	\N	\N	\N	0
 28713	Þ¬┐Õæ│µûÖ	ÒüíÒéçÒüåÒü┐ÒéèÒéçÒüå	chomiryo	gia vß╗ï	34	2026-06-25 10:53:03.321	2026-06-25 10:53:03.321	\N	\N	\N	\N	\N	\N	\N	0
 28714	Úü®Õ¢ôÒü¬ ÕñºÒüìÒüòÒü½	ÒüªÒüìÒü¿ÒüåÒü¬ ÒüèÒüèÒüìÒüòÒü½	tekitona okisani	in right size	34	2026-06-25 10:53:03.324	2026-06-25 10:53:03.324	\N	\N	\N	\N	\N	\N	\N	0
 28715	\N	Òü¬Òü╣	nabe	nß║Ñp	34	2026-06-25 10:53:03.329	2026-06-25 10:53:03.329	\N	\N	\N	\N	\N	\N	\N	0
@@ -14315,6 +15702,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28724	Õñ¬Òüä	ÒüÁÒü¿Òüä	futoi	b├®o, to	34	2026-06-25 10:53:03.363	2026-06-25 10:53:03.363	\N	\N	\N	\N	\N	\N	\N	0
 28725	þøåÞ©èÒéè	Òü╝ÒéôÒüèÒü®Òéè	bon'odori	m├║a trong hß╗Öi bon	34	2026-06-25 10:53:03.366	2026-06-25 10:53:03.366	\N	\N	\N	\N	\N	\N	\N	0
 28726	Õ«ÂÕàÀ	ÒüïÒüÉ	kagu	gia cß╗Ñ , ─æß╗ô d├╣ng nß╗Öi thß║Ñt	34	2026-06-25 10:53:03.368	2026-06-25 10:53:03.368	\N	\N	\N	\N	\N	\N	\N	0
+28712	´╝öÕêåÒü«´╝æ	ÒéêÒéôÒüÂÒéôÒü«ÒüäÒüí	yonbunnoichi	one fourth	34	2026-06-25 10:53:03.318	2026-07-11 16:44:32.964	\N	\N	\N	\N	\N	\N	\N	0
 28728	\N	ÒéÀÒâ╝ÒâêÒâÖÒâ½Òâê	shiitoberuto	seat belt	34	2026-06-25 10:53:03.375	2026-06-25 10:53:03.375	\N	\N	\N	\N	\N	\N	\N	0
 28731	ÕñëÒéÅÒéèÒü¥ÒüÖ´╝╗Þë▓Òüî´¢×´╝¢	ÒüïÒéÅÒéèÒü¥ÒüÖ´╝╗ÒüäÒéìÒüî´¢×´╝¢	kawarimasu [iroga~]	thay ─æß╗òi, ─æß╗òi	35	2026-06-25 10:53:03.527	2026-06-25 10:53:03.527	\N	\N	\N	\N	\N	\N	\N	0
 28732	Õø░ÒéèÒü¥ÒüÖ	ÒüôÒü¥ÒéèÒü¥ÒüÖ	komarimasu	rß║»c rß╗æi, kh├│ xß╗¡, c├│ vß║Ñn ─æß╗ü	35	2026-06-25 10:53:03.529	2026-06-25 10:53:03.529	\N	\N	\N	\N	\N	\N	\N	0
@@ -14353,6 +15741,7 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28775	µùàÞíîþñ¥	ÒéèÒéçÒüôÒüåÒüùÒéâ	ryokosha	c├┤ng ty du lß╗ïch	35	2026-06-25 10:53:03.629	2026-06-27 02:22:16.685	\N	\N	\N	\N	\N	\N	/media/openmoji/1F3E2.svg	0
 28774	\N	ÒüòÒüé	sa	Well, let me see. (used when unsure of something)	35	2026-06-25 10:53:03.627	2026-06-25 10:53:03.627	\N	\N	\N	\N	\N	\N	\N	0
 28776	Þ®│ÒüùÒüä	ÒüÅÒéÅÒüùÒüä	kuwashii	cß╗Ñ thß╗â, chi tiß║┐t	35	2026-06-25 10:53:03.631	2026-06-25 10:53:03.631	\N	\N	\N	\N	\N	\N	\N	0
+28813	µ»ÄÕ╣┤	Òü¥ÒüäÒü¿Òüù	maitoshi	h├áng n─âm	36	2026-06-25 10:53:03.803	2026-07-11 16:44:32.975	\N	\N	\N	\N	\N	\N	\N	0
 28778	Þìëµ┤Ñ	ÒüÅÒüòÒüñ	kusatsu	resort in Gunma prefecture	35	2026-06-25 10:53:03.634	2026-06-25 10:53:03.634	\N	\N	\N	\N	\N	\N	\N	0
 28779	Õ┐ùÞ│ÇÚ½ÿÕÄƒ	ÒüùÒüîÒüôÒüåÒüÆÒéô	shigakogen	national park in Nagano prefecture	35	2026-06-25 10:53:03.636	2026-06-25 10:53:03.636	\N	\N	\N	\N	\N	\N	\N	0
 28781	õ║ñÒéÅÒéèÒü¥ÒüÖ	Òü¥ÒüÿÒéÅÒéèÒü¥ÒüÖ	majiwarimasu	giao lã░u, quan hß╗ç vß╗øi	35	2026-06-25 10:53:03.639	2026-06-25 10:53:03.639	\N	\N	\N	\N	\N	\N	\N	0
@@ -14380,7 +15769,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 28810	µø▓	ÒüìÒéçÒüÅ	kyoku	a piece of music	36	2026-06-25 10:53:03.798	2026-06-25 10:53:03.798	\N	\N	\N	\N	\N	\N	\N	0
 28811	µ»ÄÚÇ▒	Òü¥ÒüäÒüùÒéàÒüå	maishu	h├áng tuß║ºn	36	2026-06-25 10:53:03.8	2026-06-25 10:53:03.8	\N	\N	\N	\N	\N	\N	\N	0
 28812	µ»Äµ£ê	Òü¥ÒüäÒüñÒüì	maitsuki	h├áng th├íng	36	2026-06-25 10:53:03.801	2026-06-25 10:53:03.801	\N	\N	\N	\N	\N	\N	\N	0
-28813	µ»ÄÕ╣┤	Òü¥ÒüäÒü¿Òüù´╝êÒü¥ÒüäÒü¡Òéô´╝ë	maitoshi (mainen)	h├áng n─âm	36	2026-06-25 10:53:03.803	2026-06-25 10:53:03.803	\N	\N	\N	\N	\N	\N	\N	0
 28814	\N	ÒüôÒü«ÒüöÒéì	konogoro	gß║ºn ─æ├óy, dß║ío n├áy	36	2026-06-25 10:53:03.804	2026-06-25 10:53:03.804	\N	\N	\N	\N	\N	\N	\N	0
 28815	\N	ÒéäÒüúÒü¿	yatto	cuß╗æi c├╣ng th├¼	36	2026-06-25 10:53:03.806	2026-06-25 10:53:03.806	\N	\N	\N	\N	\N	\N	\N	0
 28816	\N	ÒüïÒü¬Òéè	kanari	kh├í, tã░ãíng ─æß╗æi	36	2026-06-25 10:53:03.809	2026-06-25 10:53:03.809	\N	\N	\N	\N	\N	\N	\N	0
@@ -14585,10 +15973,12 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29057	Úø╗Þ®▒õ╗ú	ÒüºÒéôÒéÅÒüáÒüä	denwadai	tiß╗ün ─æiß╗çn thoß║íi, ph├¡ ─æiß╗çn thoß║íi	39	2026-06-25 10:53:04.631	2026-06-27 02:22:16.731	\N	\N	\N	\N	\N	\N	/media/openmoji/1F4DE.svg	0
 29039	õ╝║ÒüäÒü¥ÒüÖÒÇé	ÒüåÒüïÒüîÒüäÒü¥ÒüÖÒÇé	ukagaimasu.	t├┤i ─æß║┐n th─âm	39	2026-06-25 10:53:04.597	2026-06-25 10:53:04.597	\N	\N	\N	\N	\N	\N	\N	0
 29040	ÚÇöõ©¡Òüº	Òü¿ÒüíÒéàÒüåÒüº	tochude	giß╗»a ─æã░ß╗Øng, giß╗»a chß╗½ng, dß╗ìc ─æã░ß╗Øng	39	2026-06-25 10:53:04.599	2026-06-25 10:53:04.599	\N	\N	\N	\N	\N	\N	\N	0
+29091	´╝ìµ£¼	´╝ìÒü╗Òéô	-hon	(counter for long objects)	40	2026-06-25 10:53:04.792	2026-07-11 16:44:32.981	\N	\N	\N	\N	\N	\N	\N	0
 29042	\N	ÒüÂÒüñÒüïÒéèÒü¥ÒüÖ	butsukarimasu	─æ├óm , va chß║ím	39	2026-06-25 10:53:04.602	2026-06-25 10:53:04.602	\N	\N	\N	\N	\N	\N	\N	0
 29043	Õñºõ║║	ÒüèÒü¿Òü¬	otona	ngã░ß╗Øi lß╗øn	39	2026-06-25 10:53:04.603	2026-06-25 10:53:04.603	\N	\N	\N	\N	\N	\N	\N	0
 29044	\N	ÒüùÒüïÒüù	shikashi	however, but	39	2026-06-25 10:53:04.605	2026-06-25 10:53:04.605	\N	\N	\N	\N	\N	\N	\N	0
 29045	\N	Òü¥Òüƒ	mata	and	39	2026-06-25 10:53:04.607	2026-06-25 10:53:04.607	\N	\N	\N	\N	\N	\N	\N	0
+29092	´╝ìµØ»	´╝ìÒü»Òüä	-hai	´╝ì glass or cup of (counter for full cups, glasses, etc.)	40	2026-06-25 10:53:04.794	2026-07-11 16:44:32.988	\N	\N	\N	\N	\N	\N	\N	0
 29047	ÞÑ┐µ┤ïÕîûÒüùÒü¥ÒüÖ	ÒüøÒüäÒéêÒüåÒüïÒüùÒü¥ÒüÖ	seiyokashimasu	t├óy ├óu h├│a	39	2026-06-25 10:53:04.612	2026-06-25 10:53:04.612	\N	\N	\N	\N	\N	\N	\N	0
 29048	ÕÉêÒüäÒü¥ÒüÖ	ÒüéÒüäÒü¥ÒüÖ	aimasu	vß╗½a, hß╗úp	39	2026-06-25 10:53:04.614	2026-06-25 10:53:04.614	\N	\N	\N	\N	\N	\N	\N	0
 29049	õ╗èÒüºÒü»	ÒüäÒü¥ÒüºÒü»	imadewa	b├óy giß╗Ø(th├¼)	39	2026-06-25 10:53:04.615	2026-06-25 10:53:04.615	\N	\N	\N	\N	\N	\N	\N	0
@@ -14629,8 +16019,6 @@ COPY public."Vocabulary" (id, kanji, kana, romaji, meaning, "lessonId", "created
 29088	ÕñºÒüìÒüò	ÒüèÒüèÒüìÒüò	okisa	cß╗í , k├¡ch thã░ß╗øc	40	2026-06-25 10:53:04.781	2026-06-25 10:53:04.781	\N	\N	\N	\N	\N	\N	\N	0
 29089	´╝╗´╝ì´╝¢õ¥┐	´╝╗´╝ì´╝¢Òü│Òéô	[-] bin	flight, flight number	40	2026-06-25 10:53:04.786	2026-06-25 10:53:04.786	\N	\N	\N	\N	\N	\N	\N	0
 29090	´╝ìÕÇï	´╝ìÒüô	-ko	(counter for small objects)	40	2026-06-25 10:53:04.788	2026-06-25 10:53:04.788	\N	\N	\N	\N	\N	\N	\N	0
-29091	´╝ìµ£¼	´╝ìÒü╗Òéô´╝ê´╝ìÒü¢ÒéôÒÇü´╝ìÒü╝Òéô´╝ë	-hon (-pon, -bon)	(counter for long objects)	40	2026-06-25 10:53:04.792	2026-06-25 10:53:04.792	\N	\N	\N	\N	\N	\N	\N	0
-29092	´╝ìµØ»	´╝ìÒü»Òüä´╝ê´╝ìÒü▒ÒüäÒÇü´╝ìÒü░Òüä´╝ë	-hai (-pai, -bai)	´╝ì glass or cup of (counter for full cups, glasses, etc.)	40	2026-06-25 10:53:04.794	2026-06-25 10:53:04.794	\N	\N	\N	\N	\N	\N	\N	0
 29093	\N	´╝ìÒé╗Òâ│Òâü	-senchi	´╝ì centimetres	40	2026-06-25 10:53:04.795	2026-06-25 10:53:04.795	\N	\N	\N	\N	\N	\N	\N	0
 29094	\N	´╝ìÒâƒÒâ¬	-miri	´╝ì millimetres	40	2026-06-25 10:53:04.797	2026-06-25 10:53:04.797	\N	\N	\N	\N	\N	\N	\N	0
 29095	\N	´╝ìÒé░Òâ®Òâá	-guramu	´╝ì grams	40	2026-06-25 10:53:04.799	2026-06-25 10:53:04.799	\N	\N	\N	\N	\N	\N	\N	0
@@ -18010,7 +19398,48 @@ f270c615-a84c-4ed3-80a3-786b33f0bef5	manual_reading_dictation	2026-06-25 16:45:3
 f77d43e6-a554-4d90-95c6-cc93b46031ad	4c34abd9dfa2524e268951a6fa643758ded3e7474a5e67f0cd2ee73724e0be1d	2026-06-25 17:11:54.976679+00	20260626002000_add_daily_goals	\N	\N	2026-06-25 17:11:54.950418+00	1
 d7ac91fb-1020-4569-9696-3b3f3423a4e8	bf4583114c1482784e0e334ad6df56df0e48f83a6133f712a659d0dd140a1f00	2026-06-27 02:36:26.749873+00	20260627120000_vocab_image_url	\N	\N	2026-06-27 02:36:26.740215+00	1
 06d5f2fe-f172-4a70-a2dd-179557d56cda	579b951cdbe3ff180708dce5037b7fae5bd2e8e2feb1529ceb2214165c9ecbd8	2026-06-27 10:42:45.561792+00	20260627120000_add_chat_notification	\N	\N	2026-06-27 10:42:45.378867+00	1
+43a6da3c-78cd-4acb-8980-9becd8d02741	63a0cef12bae43015e57de982a1e172711b6f49e1e487fde5830613fa49a4bbb	\N	20260627210000_add_support_chat	A migration failed to apply. New migrations cannot be applied before the error is recovered from. Read more about how to resolve migration issues in a production database: https://pris.ly/d/migrate-resolve\n\nMigration name: 20260627210000_add_support_chat\n\nDatabase error code: 42P07\n\nDatabase error:\nERROR: relation "SupportThread" already exists\n\nDbError { severity: "ERROR", parsed_severity: Some(Error), code: SqlState(E42P07), message: "relation \\"SupportThread\\" already exists", detail: None, hint: None, position: None, where_: None, schema: None, table: None, column: None, datatype: None, constraint: None, file: Some("heap.c"), line: Some(1164), routine: Some("heap_create_with_catalog") }\n\n   0: sql_schema_connector::apply_migration::apply_script\n           with migration_name="20260627210000_add_support_chat"\n             at schema-engine\\connectors\\sql-schema-connector\\src\\apply_migration.rs:106\n   1: schema_core::commands::apply_migrations::Applying migration\n           with migration_name="20260627210000_add_support_chat"\n             at schema-engine\\core\\src\\commands\\apply_migrations.rs:91\n   2: schema_core::state::ApplyMigrations\n             at schema-engine\\core\\src\\state.rs:226	2026-07-05 07:22:32.97382+00	2026-07-04 06:42:46.137708+00	0
+662ab8a2-f914-464e-80c6-141027d7f55f	63a0cef12bae43015e57de982a1e172711b6f49e1e487fde5830613fa49a4bbb	2026-07-05 07:22:32.988633+00	20260627210000_add_support_chat		\N	2026-07-05 07:22:32.988633+00	0
+7130c1e2-d3ba-4a5c-978e-e07023f1c65c	6afa197935076dcd4f557f280a3d4950976d4e5ae36bac794cdbd59e86ac5cec	\N	20260704140000_kana_romaji	A migration failed to apply. New migrations cannot be applied before the error is recovered from. Read more about how to resolve migration issues in a production database: https://pris.ly/d/migrate-resolve\n\nMigration name: 20260704140000_kana_romaji\n\nDatabase error code: 42P07\n\nDatabase error:\nERROR: relation "KanaRomaji" already exists\n\nDbError { severity: "ERROR", parsed_severity: Some(Error), code: SqlState(E42P07), message: "relation \\"KanaRomaji\\" already exists", detail: None, hint: None, position: None, where_: None, schema: None, table: None, column: None, datatype: None, constraint: None, file: Some("heap.c"), line: Some(1164), routine: Some("heap_create_with_catalog") }\n\n   0: sql_schema_connector::apply_migration::apply_script\n           with migration_name="20260704140000_kana_romaji"\n             at schema-engine\\connectors\\sql-schema-connector\\src\\apply_migration.rs:106\n   1: schema_core::commands::apply_migrations::Applying migration\n           with migration_name="20260704140000_kana_romaji"\n             at schema-engine\\core\\src\\commands\\apply_migrations.rs:91\n   2: schema_core::state::ApplyMigrations\n             at schema-engine\\core\\src\\state.rs:226	2026-07-05 07:23:15.01326+00	2026-07-05 07:23:09.1591+00	0
+f85abf90-d5de-4307-99a4-102830c35dbc	e21a2509eb7318af879eed4db14a3bdcdef8cf3c29c1d41830ee1ce11d32a6c2	\N	20260627220000_add_learner_group_chat	A migration failed to apply. New migrations cannot be applied before the error is recovered from. Read more about how to resolve migration issues in a production database: https://pris.ly/d/migrate-resolve\n\nMigration name: 20260627220000_add_learner_group_chat\n\nDatabase error code: 42710\n\nDatabase error:\nERROR: type "LearnerChatRoomType" already exists\n\nDbError { severity: "ERROR", parsed_severity: Some(Error), code: SqlState(E42710), message: "type \\"LearnerChatRoomType\\" already exists", detail: None, hint: None, position: None, where_: None, schema: None, table: None, column: None, datatype: None, constraint: None, file: Some("typecmds.c"), line: Some(1167), routine: Some("DefineEnum") }\n\n   0: sql_schema_connector::apply_migration::apply_script\n           with migration_name="20260627220000_add_learner_group_chat"\n             at schema-engine\\connectors\\sql-schema-connector\\src\\apply_migration.rs:106\n   1: schema_core::commands::apply_migrations::Applying migration\n           with migration_name="20260627220000_add_learner_group_chat"\n             at schema-engine\\core\\src\\commands\\apply_migrations.rs:91\n   2: schema_core::state::ApplyMigrations\n             at schema-engine\\core\\src\\state.rs:226	2026-07-05 07:23:03.974075+00	2026-07-05 07:22:34.279032+00	0
+d4b1b7fc-2860-4322-ba12-fac6be10d990	e21a2509eb7318af879eed4db14a3bdcdef8cf3c29c1d41830ee1ce11d32a6c2	2026-07-05 07:23:03.98101+00	20260627220000_add_learner_group_chat		\N	2026-07-05 07:23:03.98101+00	0
+a32b3926-c737-4e57-b7c5-a1521ae0b86f	cf081587a3aba2aaeaeb8395f12e6d498d52aa9215cae727918956759d0cb8a0	2026-07-05 07:23:05.256183+00	20260628140000_pronunciation_rules		\N	2026-07-05 07:23:05.256183+00	0
+55f3c1d0-9320-4af1-8168-a5fb47b90053	b9ccdd4778b741921038d757ad99a44acad9bdb8e2ed7dc037f91d2717833641	2026-07-05 07:23:06.546996+00	20260628150000_jlpt_roadmap_grammar_target		\N	2026-07-05 07:23:06.546996+00	0
+adc63348-44b1-4b72-bbd8-727089b4abb4	cffdd00e0c044365f089eae89934f64622205970023c40524c94031239bf515d	2026-07-05 07:23:07.845741+00	20260629120000_jlpt_roadmap_increments		\N	2026-07-05 07:23:07.845741+00	0
+634dbcdc-a806-4980-abb0-a1ecae04790d	6afa197935076dcd4f557f280a3d4950976d4e5ae36bac794cdbd59e86ac5cec	2026-07-05 07:23:15.019653+00	20260704140000_kana_romaji		\N	2026-07-05 07:23:15.019653+00	0
+6eeb6ea1-985c-43c4-b052-0829e4f2b265	71a6dee373962c3b08ea31141aa44e83424f52f00d91a11104c29858f18828c2	2026-07-05 07:23:09.155424+00	20260704120000_live_session	\N	\N	2026-07-05 07:23:09.077099+00	1
+4ec85ecb-93b3-4e89-9d43-cdcbaa05df1b	5db877eb869a279eb3ea8ca160a47c09c97c8c6e4bcd75e814d15036e3e65379	\N	20260704150000_book_audio	A migration failed to apply. New migrations cannot be applied before the error is recovered from. Read more about how to resolve migration issues in a production database: https://pris.ly/d/migrate-resolve\n\nMigration name: 20260704150000_book_audio\n\nDatabase error code: 42P07\n\nDatabase error:\nERROR: relation "BookAudioMeta" already exists\n\nDbError { severity: "ERROR", parsed_severity: Some(Error), code: SqlState(E42P07), message: "relation \\"BookAudioMeta\\" already exists", detail: None, hint: None, position: None, where_: None, schema: None, table: None, column: None, datatype: None, constraint: None, file: Some("heap.c"), line: Some(1164), routine: Some("heap_create_with_catalog") }\n\n   0: sql_schema_connector::apply_migration::apply_script\n           with migration_name="20260704150000_book_audio"\n             at schema-engine\\connectors\\sql-schema-connector\\src\\apply_migration.rs:106\n   1: schema_core::commands::apply_migrations::Applying migration\n           with migration_name="20260704150000_book_audio"\n             at schema-engine\\core\\src\\commands\\apply_migrations.rs:91\n   2: schema_core::state::ApplyMigrations\n             at schema-engine\\core\\src\\state.rs:226	2026-07-05 07:23:21.354651+00	2026-07-05 07:23:16.287284+00	0
+0b4f86e4-b9a4-4007-bacf-89da3d76d132	5db877eb869a279eb3ea8ca160a47c09c97c8c6e4bcd75e814d15036e3e65379	2026-07-05 07:23:21.368828+00	20260704150000_book_audio		\N	2026-07-05 07:23:21.368828+00	0
+756c3080-bdb8-4206-bab0-dc26f1d90725	bdeb421b59859135d85c4804689e5ff85d683e4162a2bf1ff16dd4530b7e2a0a	2026-07-05 07:23:22.641187+00	20260704160000_book_audio_files		\N	2026-07-05 07:23:22.641187+00	0
+bcbc526e-8f75-445b-bd13-da212117911b	6c7a249710700f5afa2c0a7350855d76f2b4f9ab15279108d51b3452eb806a1b	2026-07-05 07:23:24.243567+00	20260705140000_english_katakana	\N	\N	2026-07-05 07:23:24.093861+00	1
+8ee14392-b745-4ec2-9559-ad20e9926b69	1cc9e614521a112ab505ec3de1334eaf73a05fd13b74dc0a3d3e211a9f45c644	2026-07-11 15:24:33.906722+00	20260711221500_page_banner	\N	\N	2026-07-11 15:24:33.846458+00	1
+58bd0a55-adb0-4f38-8767-8bedee4d53b4	75bde9f25ae1b8b93684389009f8489e51ea86cfd36055e132977964b2acc557	2026-07-18 06:06:15.336413+00	20260711233000_split_ano_hito_kata	\N	\N	2026-07-18 06:06:15.231808+00	1
+34b00228-5759-4da0-bce3-c1bbf78b4daa	bbc72ede4daf39bbd0425ec212f2d32f7e2f5a5411c837f457c0de79223dde92	2026-07-18 06:06:15.366929+00	20260711234500_split_paren_vocab	\N	\N	2026-07-18 06:06:15.344483+00	1
+7e12afee-916a-41cf-83c9-d50414d15f51	ef8015973fa869bf0962be06c2e8edbaa4f08399fcee86a45891e056a2485819	2026-07-18 06:06:15.484842+00	20260718130000_user_keycloak_id	\N	\N	2026-07-18 06:06:15.37412+00	1
+436b9277-b1d7-4f9c-93f5-497f59449d4f	a212850194c692dedd522fa7581b1ae2ba19d8c461ea5204fedffaf91f2df9a3	2026-07-18 07:49:04.025468+00	20260718150000_password_reset_token	\N	\N	2026-07-18 07:49:03.896535+00	1
+0bf8022a25942009e37a74015f6bb946	manual-apply	2026-07-18 09:39:06.084249+00	20260718160000_email_prefs_templates_push	\N	\N	2026-07-18 09:39:06.084249+00	1
 \.
+
+
+--
+-- Name: BookAudioDriveFolder_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."BookAudioDriveFolder_id_seq"', 294, true);
+
+
+--
+-- Name: BookAudioFile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."BookAudioFile_id_seq"', 877, true);
+
+
+--
+-- Name: BookAudioItem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."BookAudioItem_id_seq"', 249, true);
 
 
 --
@@ -18087,7 +19516,56 @@ SELECT pg_catalog.setval('public."DailyNote_id_seq"', 1, true);
 -- Name: DictationAttempt_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
 --
 
-SELECT pg_catalog.setval('public."DictationAttempt_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."DictationAttempt_id_seq"', 2, true);
+
+
+--
+-- Name: EmailPrefs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."EmailPrefs_id_seq"', 1, false);
+
+
+--
+-- Name: EmailTemplate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."EmailTemplate_id_seq"', 1, false);
+
+
+--
+-- Name: EnglishKatakanaExample_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."EnglishKatakanaExample_id_seq"', 76, true);
+
+
+--
+-- Name: EnglishKatakanaMapping_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."EnglishKatakanaMapping_id_seq"', 114, true);
+
+
+--
+-- Name: EnglishKatakanaPoint_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."EnglishKatakanaPoint_id_seq"', 28, true);
+
+
+--
+-- Name: EnglishKatakanaSection_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."EnglishKatakanaSection_id_seq"', 15, true);
+
+
+--
+-- Name: EnglishKatakanaTip_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."EnglishKatakanaTip_id_seq"', 16, true);
 
 
 --
@@ -18196,6 +19674,13 @@ SELECT pg_catalog.setval('public."KanaCell_id_seq"', 226, true);
 
 
 --
+-- Name: KanaRomaji_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."KanaRomaji_id_seq"', 422, true);
+
+
+--
 -- Name: KanaSection_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
 --
 
@@ -18266,10 +19751,24 @@ SELECT pg_catalog.setval('public."ListeningPreset_id_seq"', 3, true);
 
 
 --
+-- Name: LiveSession_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."LiveSession_id_seq"', 1, false);
+
+
+--
 -- Name: Notification_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
 --
 
 SELECT pg_catalog.setval('public."Notification_id_seq"', 1, false);
+
+
+--
+-- Name: PageBanner_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
+--
+
+SELECT pg_catalog.setval('public."PageBanner_id_seq"', 3, true);
 
 
 --
@@ -18409,7 +19908,7 @@ SELECT pg_catalog.setval('public."SupportThread_id_seq"', 1, true);
 -- Name: User_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
 --
 
-SELECT pg_catalog.setval('public."User_id_seq"', 10, true);
+SELECT pg_catalog.setval('public."User_id_seq"', 11, true);
 
 
 --
@@ -18423,7 +19922,7 @@ SELECT pg_catalog.setval('public."VocabularyKanjiLink_id_seq"', 2534, true);
 -- Name: Vocabulary_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
 --
 
-SELECT pg_catalog.setval('public."Vocabulary_id_seq"', 29659, true);
+SELECT pg_catalog.setval('public."Vocabulary_id_seq"', 29676, true);
 
 
 --
@@ -18431,6 +19930,38 @@ SELECT pg_catalog.setval('public."Vocabulary_id_seq"', 29659, true);
 --
 
 SELECT pg_catalog.setval('public."WebhookEvent_id_seq"', 340, true);
+
+
+--
+-- Name: BookAudioDriveFolder BookAudioDriveFolder_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioDriveFolder"
+    ADD CONSTRAINT "BookAudioDriveFolder_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: BookAudioFile BookAudioFile_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioFile"
+    ADD CONSTRAINT "BookAudioFile_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: BookAudioItem BookAudioItem_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioItem"
+    ADD CONSTRAINT "BookAudioItem_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: BookAudioMeta BookAudioMeta_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioMeta"
+    ADD CONSTRAINT "BookAudioMeta_pkey" PRIMARY KEY (id);
 
 
 --
@@ -18519,6 +20050,86 @@ ALTER TABLE ONLY public."DailyNote"
 
 ALTER TABLE ONLY public."DictationAttempt"
     ADD CONSTRAINT "DictationAttempt_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EmailBroadcast EmailBroadcast_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailBroadcast"
+    ADD CONSTRAINT "EmailBroadcast_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EmailPrefs EmailPrefs_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailPrefs"
+    ADD CONSTRAINT "EmailPrefs_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EmailTemplate EmailTemplate_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailTemplate"
+    ADD CONSTRAINT "EmailTemplate_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EmailVerificationToken EmailVerificationToken_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailVerificationToken"
+    ADD CONSTRAINT "EmailVerificationToken_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaExample EnglishKatakanaExample_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaExample"
+    ADD CONSTRAINT "EnglishKatakanaExample_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaMapping EnglishKatakanaMapping_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaMapping"
+    ADD CONSTRAINT "EnglishKatakanaMapping_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaMeta EnglishKatakanaMeta_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaMeta"
+    ADD CONSTRAINT "EnglishKatakanaMeta_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaPoint EnglishKatakanaPoint_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaPoint"
+    ADD CONSTRAINT "EnglishKatakanaPoint_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaSection EnglishKatakanaSection_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaSection"
+    ADD CONSTRAINT "EnglishKatakanaSection_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaTip EnglishKatakanaTip_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaTip"
+    ADD CONSTRAINT "EnglishKatakanaTip_pkey" PRIMARY KEY (id);
 
 
 --
@@ -18674,6 +20285,14 @@ ALTER TABLE ONLY public."KanaCell"
 
 
 --
+-- Name: KanaRomaji KanaRomaji_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."KanaRomaji"
+    ADD CONSTRAINT "KanaRomaji_pkey" PRIMARY KEY (id);
+
+
+--
 -- Name: KanaSection KanaSection_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -18770,11 +20389,35 @@ ALTER TABLE ONLY public."ListeningPreset"
 
 
 --
+-- Name: LiveSession LiveSession_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."LiveSession"
+    ADD CONSTRAINT "LiveSession_pkey" PRIMARY KEY (id);
+
+
+--
 -- Name: Notification Notification_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
 ALTER TABLE ONLY public."Notification"
     ADD CONSTRAINT "Notification_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PageBanner PageBanner_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PageBanner"
+    ADD CONSTRAINT "PageBanner_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PasswordResetToken PasswordResetToken_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PasswordResetToken"
+    ADD CONSTRAINT "PasswordResetToken_pkey" PRIMARY KEY (id);
 
 
 --
@@ -18839,6 +20482,14 @@ ALTER TABLE ONLY public."PronunciationRuleTip"
 
 ALTER TABLE ONLY public."PronunciationRulesMeta"
     ADD CONSTRAINT "PronunciationRulesMeta_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PushDeviceToken PushDeviceToken_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PushDeviceToken"
+    ADD CONSTRAINT "PushDeviceToken_pkey" PRIMARY KEY (id);
 
 
 --
@@ -18986,6 +20637,55 @@ ALTER TABLE ONLY public._prisma_migrations
 
 
 --
+-- Name: BookAudioDriveFolder_driveId_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "BookAudioDriveFolder_driveId_key" ON public."BookAudioDriveFolder" USING btree ("driveId");
+
+
+--
+-- Name: BookAudioFile_folderId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "BookAudioFile_folderId_sortOrder_idx" ON public."BookAudioFile" USING btree ("folderId", "sortOrder");
+
+
+--
+-- Name: BookAudioFile_itemId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "BookAudioFile_itemId_sortOrder_idx" ON public."BookAudioFile" USING btree ("itemId", "sortOrder");
+
+
+--
+-- Name: BookAudioItem_driveId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "BookAudioItem_driveId_idx" ON public."BookAudioItem" USING btree ("driveId");
+
+
+--
+-- Name: BookAudioItem_externalKey_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "BookAudioItem_externalKey_key" ON public."BookAudioItem" USING btree ("externalKey");
+
+
+--
+-- Name: BookAudioItem_folderId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "BookAudioItem_folderId_idx" ON public."BookAudioItem" USING btree ("folderId");
+
+
+--
+-- Name: BookAudioItem_level_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "BookAudioItem_level_sortOrder_idx" ON public."BookAudioItem" USING btree (level, "sortOrder");
+
+
+--
 -- Name: ChatMessage_sessionId_createdAt_idx; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -19126,6 +20826,97 @@ CREATE INDEX "DictationAttempt_vocabId_idx" ON public."DictationAttempt" USING b
 
 
 --
+-- Name: EmailBroadcast_createdById_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EmailBroadcast_createdById_idx" ON public."EmailBroadcast" USING btree ("createdById");
+
+
+--
+-- Name: EmailBroadcast_status_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EmailBroadcast_status_idx" ON public."EmailBroadcast" USING btree (status);
+
+
+--
+-- Name: EmailPrefs_userId_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "EmailPrefs_userId_key" ON public."EmailPrefs" USING btree ("userId");
+
+
+--
+-- Name: EmailTemplate_name_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "EmailTemplate_name_key" ON public."EmailTemplate" USING btree (name);
+
+
+--
+-- Name: EmailVerificationToken_expiresAt_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EmailVerificationToken_expiresAt_idx" ON public."EmailVerificationToken" USING btree ("expiresAt");
+
+
+--
+-- Name: EmailVerificationToken_tokenHash_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "EmailVerificationToken_tokenHash_key" ON public."EmailVerificationToken" USING btree ("tokenHash");
+
+
+--
+-- Name: EmailVerificationToken_userId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EmailVerificationToken_userId_idx" ON public."EmailVerificationToken" USING btree ("userId");
+
+
+--
+-- Name: EnglishKatakanaExample_sectionId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EnglishKatakanaExample_sectionId_sortOrder_idx" ON public."EnglishKatakanaExample" USING btree ("sectionId", "sortOrder");
+
+
+--
+-- Name: EnglishKatakanaMapping_sectionId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EnglishKatakanaMapping_sectionId_sortOrder_idx" ON public."EnglishKatakanaMapping" USING btree ("sectionId", "sortOrder");
+
+
+--
+-- Name: EnglishKatakanaPoint_sectionId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EnglishKatakanaPoint_sectionId_sortOrder_idx" ON public."EnglishKatakanaPoint" USING btree ("sectionId", "sortOrder");
+
+
+--
+-- Name: EnglishKatakanaSection_slug_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "EnglishKatakanaSection_slug_key" ON public."EnglishKatakanaSection" USING btree (slug);
+
+
+--
+-- Name: EnglishKatakanaSection_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EnglishKatakanaSection_sortOrder_idx" ON public."EnglishKatakanaSection" USING btree ("sortOrder");
+
+
+--
+-- Name: EnglishKatakanaTip_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EnglishKatakanaTip_sortOrder_idx" ON public."EnglishKatakanaTip" USING btree ("sortOrder");
+
+
+--
 -- Name: ExamResult_level_idx; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -19242,6 +21033,13 @@ CREATE INDEX "KanaCell_sectionId_idx" ON public."KanaCell" USING btree ("section
 --
 
 CREATE UNIQUE INDEX "KanaCell_sectionId_rowIndex_colIndex_key" ON public."KanaCell" USING btree ("sectionId", "rowIndex", "colIndex");
+
+
+--
+-- Name: KanaRomaji_kana_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "KanaRomaji_kana_key" ON public."KanaRomaji" USING btree (kana);
 
 
 --
@@ -19371,10 +21169,59 @@ CREATE UNIQUE INDEX "ListeningPreset_externalKey_key" ON public."ListeningPreset
 
 
 --
+-- Name: LiveSession_coachId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "LiveSession_coachId_idx" ON public."LiveSession" USING btree ("coachId");
+
+
+--
+-- Name: LiveSession_roomName_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "LiveSession_roomName_key" ON public."LiveSession" USING btree ("roomName");
+
+
+--
+-- Name: LiveSession_status_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "LiveSession_status_idx" ON public."LiveSession" USING btree (status);
+
+
+--
 -- Name: Notification_userId_readAt_createdAt_idx; Type: INDEX; Schema: public; Owner: nihongo
 --
 
 CREATE INDEX "Notification_userId_readAt_createdAt_idx" ON public."Notification" USING btree ("userId", "readAt", "createdAt");
+
+
+--
+-- Name: PageBanner_path_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "PageBanner_path_key" ON public."PageBanner" USING btree (path);
+
+
+--
+-- Name: PasswordResetToken_expiresAt_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "PasswordResetToken_expiresAt_idx" ON public."PasswordResetToken" USING btree ("expiresAt");
+
+
+--
+-- Name: PasswordResetToken_tokenHash_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "PasswordResetToken_tokenHash_key" ON public."PasswordResetToken" USING btree ("tokenHash");
+
+
+--
+-- Name: PasswordResetToken_userId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "PasswordResetToken_userId_idx" ON public."PasswordResetToken" USING btree ("userId");
 
 
 --
@@ -19466,6 +21313,20 @@ CREATE INDEX "PronunciationRuleSection_sortOrder_idx" ON public."PronunciationRu
 --
 
 CREATE INDEX "PronunciationRuleTip_sortOrder_idx" ON public."PronunciationRuleTip" USING btree ("sortOrder");
+
+
+--
+-- Name: PushDeviceToken_token_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "PushDeviceToken_token_key" ON public."PushDeviceToken" USING btree (token);
+
+
+--
+-- Name: PushDeviceToken_userId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "PushDeviceToken_userId_idx" ON public."PushDeviceToken" USING btree ("userId");
 
 
 --
@@ -19630,6 +21491,13 @@ CREATE UNIQUE INDEX "User_googleId_key" ON public."User" USING btree ("googleId"
 
 
 --
+-- Name: User_keycloakId_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "User_keycloakId_key" ON public."User" USING btree ("keycloakId");
+
+
+--
 -- Name: User_role_idx; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -19683,6 +21551,30 @@ CREATE INDEX "WebhookEvent_eventType_status_idx" ON public."WebhookEvent" USING 
 --
 
 CREATE INDEX "WebhookEvent_provider_status_createdAt_idx" ON public."WebhookEvent" USING btree (provider, status, "createdAt");
+
+
+--
+-- Name: BookAudioFile BookAudioFile_folderId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioFile"
+    ADD CONSTRAINT "BookAudioFile_folderId_fkey" FOREIGN KEY ("folderId") REFERENCES public."BookAudioDriveFolder"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: BookAudioFile BookAudioFile_itemId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioFile"
+    ADD CONSTRAINT "BookAudioFile_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES public."BookAudioItem"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: BookAudioItem BookAudioItem_folderId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioItem"
+    ADD CONSTRAINT "BookAudioItem_folderId_fkey" FOREIGN KEY ("folderId") REFERENCES public."BookAudioDriveFolder"(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --
@@ -19795,6 +21687,46 @@ ALTER TABLE ONLY public."DailyNote"
 
 ALTER TABLE ONLY public."DictationAttempt"
     ADD CONSTRAINT "DictationAttempt_vocabId_fkey" FOREIGN KEY ("vocabId") REFERENCES public."Vocabulary"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: EmailPrefs EmailPrefs_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailPrefs"
+    ADD CONSTRAINT "EmailPrefs_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: EmailVerificationToken EmailVerificationToken_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailVerificationToken"
+    ADD CONSTRAINT "EmailVerificationToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: EnglishKatakanaExample EnglishKatakanaExample_sectionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaExample"
+    ADD CONSTRAINT "EnglishKatakanaExample_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES public."EnglishKatakanaSection"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: EnglishKatakanaMapping EnglishKatakanaMapping_sectionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaMapping"
+    ADD CONSTRAINT "EnglishKatakanaMapping_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES public."EnglishKatakanaSection"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: EnglishKatakanaPoint EnglishKatakanaPoint_sectionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaPoint"
+    ADD CONSTRAINT "EnglishKatakanaPoint_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES public."EnglishKatakanaSection"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -19958,11 +21890,27 @@ ALTER TABLE ONLY public."ListeningLog"
 
 
 --
+-- Name: LiveSession LiveSession_coachId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."LiveSession"
+    ADD CONSTRAINT "LiveSession_coachId_fkey" FOREIGN KEY ("coachId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
 -- Name: Notification Notification_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
 --
 
 ALTER TABLE ONLY public."Notification"
     ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: PasswordResetToken PasswordResetToken_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PasswordResetToken"
+    ADD CONSTRAINT "PasswordResetToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -20011,6 +21959,14 @@ ALTER TABLE ONLY public."PronunciationRuleExample"
 
 ALTER TABLE ONLY public."PronunciationRulePoint"
     ADD CONSTRAINT "PronunciationRulePoint_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES public."PronunciationRuleSection"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: PushDeviceToken PushDeviceToken_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PushDeviceToken"
+    ADD CONSTRAINT "PushDeviceToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -20129,5 +22085,5 @@ ALTER TABLE ONLY public."Vocabulary"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict XFrCUrWZFAuENcQGJrXz0HLl0VEeNK1pKuW1DE205Ke3mAWd1udFgQyxQJGTlDb
+\unrestrict XdTDRead5TXt4IzmCaCz8y2kdrthc0SvdGxrcoUf3tDC7DuQj6JHoNvf6dGmsRV
 

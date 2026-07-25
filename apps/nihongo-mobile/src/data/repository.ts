@@ -1,7 +1,7 @@
 import NetInfo from '@react-native-community/netinfo';
 
 import type { ReviewCard, SrsCard, SyncStatus, Vocabulary } from '../domain/entities';
-import { fetchAllVocabForLesson, isLoggedIn } from './api';
+import { fetchAllVocabForLesson, isLoggedIn, syncReviewBank } from './api';
 import { getDatabase } from './database';
 
 type VocabRow = {
@@ -110,14 +110,69 @@ async function ensureSrsCard(vocabId: number) {
 
 async function flushSyncQueue() {
   const db = await getDatabase();
-  const pending = await db.getAllAsync<{ id: number; entity_id: number }>(
-    `SELECT id, entity_id FROM sync_queue ORDER BY created_at ASC`,
-  );
+  const pending = await db.getAllAsync<{
+    id: number;
+    entity_id: number;
+    operation: string;
+    payload: string;
+  }>(`SELECT id, entity_id, operation, payload FROM sync_queue ORDER BY created_at ASC`);
+
+  const reviewItems: Array<{
+    kana: string;
+    kanji: string | null;
+    meaning: string;
+    lessonNumber: number;
+    wrongCount: number;
+    reviewStreak: number;
+    mastered: boolean;
+    lastReviewedAt: string;
+  }> = [];
+  const syncedQueueIds: number[] = [];
+  const syncedCardIds: number[] = [];
+
   for (const item of pending) {
-    await db.runAsync(`UPDATE srs_card SET sync_status = 'synced' WHERE id = ?`, [
-      item.entity_id,
-    ]);
-    await db.runAsync(`DELETE FROM sync_queue WHERE id = ?`, [item.id]);
+    if (item.operation !== 'UPDATE_SRS') continue;
+    try {
+      const card = JSON.parse(item.payload) as SrsCard;
+      const vocab = await db.getFirstAsync<{
+        kana: string;
+        kanji: string | null;
+        meaning: string;
+        lesson_number: number;
+      }>(
+        `SELECT kana, kanji, meaning, lesson_number FROM vocabulary WHERE id = ?`,
+        [card.vocabularyId],
+      );
+      if (!vocab) {
+        syncedQueueIds.push(item.id);
+        continue;
+      }
+      reviewItems.push({
+        kana: vocab.kana,
+        kanji: vocab.kanji,
+        meaning: vocab.meaning,
+        lessonNumber: vocab.lesson_number,
+        wrongCount: card.repetitions === 0 ? 1 : 0,
+        reviewStreak: card.repetitions,
+        mastered: card.mastered,
+        lastReviewedAt: new Date(card.updatedAt || Date.now()).toISOString(),
+      });
+      syncedQueueIds.push(item.id);
+      syncedCardIds.push(card.id);
+    } catch {
+      // leave in queue for next flush
+    }
+  }
+
+  if (reviewItems.length > 0) {
+    await syncReviewBank(reviewItems);
+  }
+
+  for (const cardId of syncedCardIds) {
+    await db.runAsync(`UPDATE srs_card SET sync_status = 'synced' WHERE id = ?`, [cardId]);
+  }
+  for (const queueId of syncedQueueIds) {
+    await db.runAsync(`DELETE FROM sync_queue WHERE id = ?`, [queueId]);
   }
 }
 

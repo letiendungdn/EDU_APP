@@ -16,6 +16,13 @@
         {
           "cameraPermission": "Cần quyền camera để dịch trực tiếp chữ tiếng Nhật."
         }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Cần micro để luyện phát âm tiếng Nhật.",
+          "speechRecognitionPermission": "Cần nhận dạng giọng nói để chấm điểm phát âm."
+        }
       ]
     ],
     "ios": {
@@ -30,7 +37,7 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "permissions": ["CAMERA", "INTERNET"],
+      "permissions": ["CAMERA", "INTERNET", "RECORD_AUDIO"],
       "usesCleartextTraffic": true
     },
     "web": {

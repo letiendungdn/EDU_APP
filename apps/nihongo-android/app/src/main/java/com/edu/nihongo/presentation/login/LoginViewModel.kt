@@ -19,6 +19,7 @@ data class LoginUiState(
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val authRepo: AuthRepository,
+    private val pushService: com.edu.nihongo.data.remote.PushService,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -36,6 +37,7 @@ class LoginViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, error = null) }
             authRepo.login(email, password)
                 .onSuccess {
+                    pushService.registerAfterLogin()
                     _uiState.update { it.copy(isLoading = false) }
                     onSuccess()
                 }
@@ -52,6 +54,7 @@ class LoginViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, error = null) }
             authRepo.loginWithOidc(accessToken, idToken)
                 .onSuccess {
+                    pushService.registerAfterLogin()
                     _uiState.update { it.copy(isLoading = false) }
                     onSuccess()
                 }

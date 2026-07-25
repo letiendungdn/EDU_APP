@@ -23,4 +23,9 @@ class VocabularyRemoteDataSource @Inject constructor(
 
         return all
     }
+
+    suspend fun syncReviewBank(items: List<ReviewSyncItem>) {
+        if (items.isEmpty()) return
+        api.syncReviewBank(ReviewSyncRequest(items))
+    }
 }

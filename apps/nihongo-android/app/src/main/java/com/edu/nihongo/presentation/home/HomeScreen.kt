@@ -17,9 +17,12 @@ import androidx.compose.material.icons.filled.CloudDone
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.AutoAwesome
+import androidx.compose.material.icons.rounded.Brush
 import androidx.compose.material.icons.rounded.CameraAlt
 import androidx.compose.material.icons.rounded.LibraryBooks
+import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material.icons.rounded.Replay
+import androidx.compose.material.icons.rounded.SmartToy
 import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -50,6 +53,9 @@ fun HomeScreen(
     onCamera: () -> Unit,
     onLive: () -> Unit,
     onSentencePractice: () -> Unit,
+    onAiTutor: () -> Unit,
+    onPronunciation: () -> Unit,
+    onKanjiDraw: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val isOnline by viewModel.isOnline.collectAsStateWithLifecycle(initialValue = true)
@@ -137,9 +143,33 @@ fun HomeScreen(
                     onClick = onCamera,
                 )
             }
+            item {
+                NavCard(
+                    title = "Luyện phát âm",
+                    subtitle = "Speech-to-text tiếng Nhật + điểm",
+                    icon = Icons.Rounded.Mic,
+                    onClick = onPronunciation,
+                )
+            }
+            item {
+                NavCard(
+                    title = "Vẽ Kanji",
+                    subtitle = "Luyện viết tay trên màn hình",
+                    icon = Icons.Rounded.Brush,
+                    onClick = onKanjiDraw,
+                )
+            }
 
             item { SectionLabel("AI & LIVESTREAM") }
 
+            item {
+                NavCard(
+                    title = "AI Tutor",
+                    subtitle = "Hỏi ngữ pháp / từ vựng",
+                    icon = Icons.Rounded.SmartToy,
+                    onClick = onAiTutor,
+                )
+            }
             item {
                 NavCard(
                     title = "Livestream",

@@ -1,5 +1,6 @@
 package com.edu.nihongo.presentation.vocab
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,9 +24,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.edu.nihongo.utils.TtsHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,6 +38,7 @@ fun VocabScreen(
     viewModel: VocabViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -84,7 +88,14 @@ fun VocabScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(uiState.items, key = { it.id }) { vocab ->
-                        Card(modifier = Modifier.fillMaxWidth()) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    TtsHelper.init(context)
+                                    TtsHelper.speak(vocab.kana)
+                                },
+                        ) {
                             Column(modifier = Modifier.padding(12.dp)) {
                                 Text(vocab.kana, style = MaterialTheme.typography.titleMedium)
                                 vocab.kanji?.let {
@@ -93,6 +104,12 @@ fun VocabScreen(
                                 Text(
                                     vocab.meaning,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                                Text(
+                                    "🔊 Chạm để nghe",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(top = 4.dp),
                                 )
                             }
                         }

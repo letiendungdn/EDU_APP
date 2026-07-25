@@ -6,6 +6,11 @@ options:
   createIntermediateGroups: true
   defaultConfig: Debug
 
+packages:
+  LiveKitClient:
+    url: https://github.com/livekit/client-sdk-swift
+    from: 2.0.19
+
 targets:
   NihongoEDU:
     type: application
@@ -13,6 +18,9 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: NihongoEDU
+    dependencies:
+      - package: LiveKitClient
+        product: LiveKit
     settings:
       base:
         SWIFT_VERSION: "5.9"
@@ -30,14 +38,29 @@ targets:
           DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
           SWIFT_OPTIMIZATION_LEVEL: "-O"
 
+  NihongoEDUTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: NihongoEDUTests
+    dependencies:
+      - target: NihongoEDU
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.edu.nihongo.ios.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/NihongoEDU.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NihongoEDU"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+
 schemes:
   NihongoEDU:
     build:
       targets:
         NihongoEDU: all
+        NihongoEDUTests: [test]
     run:
       config: Debug
-      # Set via Edit Scheme → Run → Environment Variables
       environmentVariables:
         API_BASE_URL:
           value: ""
@@ -56,6 +79,8 @@ schemes:
           isEnabled: false
     test:
       config: Debug
+      targets:
+        - NihongoEDUTests
     profile:
       config: Release
     analyze:

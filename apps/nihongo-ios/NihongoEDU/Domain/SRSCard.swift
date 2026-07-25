@@ -9,6 +9,8 @@ final class SRSCard {
     var nextReviewAt: Date
     var mastered: Bool
     var updatedAt: Date
+    /// synced | pending | conflict — parity với Android/Expo/Flutter
+    var syncStatus: String
 
     var vocabulary: Vocabulary?
 
@@ -19,5 +21,6 @@ final class SRSCard {
         nextReviewAt = .now
         mastered = false
         updatedAt = .now
+        syncStatus = "synced"
     }
 }

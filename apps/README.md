@@ -22,3 +22,14 @@ npm run dev:english-web   # :3001
 ## Shared packages
 
 - `@edu/vocab-images` — OpenMoji picture dictionary (dùng chung cả 2 app)
+
+## App mobile
+
+| App | Folder | Stack |
+|-----|--------|-------|
+| **nihongo-mobile** | `nihongo-mobile/` | Expo / React Native |
+| **nihongo-android** | `nihongo-android/` | Kotlin + Compose |
+| **nihongo_flutter** | `nihongo_flutter/` | Flutter + Drift |
+| **nihongo-ios** | `nihongo-ios/` | SwiftUI *(macOS)* |
+
+Cách chạy từng app: [docs/run-mobile.md](../docs/run-mobile.md)

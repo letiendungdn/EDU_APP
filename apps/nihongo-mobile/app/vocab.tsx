@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -9,6 +10,7 @@ import {
 
 import { getVocabByLesson, syncLesson } from '../src/data/repository';
 import type { Vocabulary } from '../src/domain/entities';
+import { speakJapanese } from '../src/utils/tts';
 
 export default function VocabScreen() {
   const lessonNumber = 1;
@@ -59,11 +61,12 @@ export default function VocabScreen() {
       keyExtractor={(item) => String(item.id)}
       contentContainerStyle={styles.list}
       renderItem={({ item }) => (
-        <View style={styles.card}>
+        <Pressable style={styles.card} onPress={() => speakJapanese(item.kana)}>
           <Text style={styles.kana}>{item.kana}</Text>
           {item.kanji ? <Text style={styles.kanji}>{item.kanji}</Text> : null}
           <Text style={styles.meaning}>{item.meaning}</Text>
-        </View>
+          <Text style={styles.ttsHint}>🔊 Chạm để nghe</Text>
+        </Pressable>
       )}
     />
   );
@@ -84,4 +87,5 @@ const styles = StyleSheet.create({
   kana: { fontSize: 18, fontWeight: '600' },
   kanji: { fontSize: 16, marginTop: 2 },
   meaning: { color: '#6b7280', marginTop: 4 },
+  ttsHint: { marginTop: 6, fontSize: 12, color: '#1d4ed8' },
 });

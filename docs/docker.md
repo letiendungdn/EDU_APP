@@ -171,7 +171,7 @@ flowchart TB
 | --------------- | ----------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **nihongo-web** | `edu-nihongo-web` | (qua nginx)                   | App học tiếng Nhật. Gọi API qua rewrite → `api-gateway`.                                                                                          |
 | **english-web** | `edu-english-web` | (qua nginx)                   | App học tiếng Anh. Profile `english` — khi tắt, nút 🇬🇧 trên Nihongo web cũng ẩn (probe runtime).                                                |
-| **nginx**       | `edu-nginx`       | **8080** → 80 trong container | Reverse proxy: `/` → nihongo/english, `/api/`* → gateway. **Không bind cổng 80** host (tránh conflict). Đổi port: `NGINX_HTTP_PORT` trong `.env`. |
+| **nginx**       | `edu-nginx`       | **8080** → 80 trong container | Reverse proxy: `/` → nihongo/english, `/api/`* → gateway. **Không bind cổng 80** host (tránh conflict). Đổi port: `NGINX_HTTP_PORT` trong `.env`. Chi tiết vai trò: [nginx.md](./nginx.md). |
 
 
 ### Monitoring (có thể bỏ)
@@ -325,7 +325,7 @@ docker volume create nihongo-app_postgres_data   # nihongo — giữ data cũ n�
 npm run docker:up:nihongo
 
 # Restore DB (đợi postgres healthy ~10s)
-Get-Content infra\backups\nihongo_20260628_164425.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content infra\backups\nihongo_20260725_144146.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 ```
 
 **Media (KanjiVG, OpenMoji)** đã nằm trong image `nihongo-web` nếu build từ repo đã `media:sync`. Clone repo thiếu `apps/nihongo-web/public/media` thì trước khi build:

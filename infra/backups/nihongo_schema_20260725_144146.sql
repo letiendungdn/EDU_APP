@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict s4u27eKEOrrylJczefQx85wq71DT5IzmVEUdHAYdJ5yfiPllScAn65znAX2d7pz
+\restrict jGg4sZDvgD48qVSbPTobTnGSqvLvmy2db7B94Hv093tm1OgxifpYtZYjlhXY6kI
 
 -- Dumped from database version 16.14
 -- Dumped by pg_dump version 16.14
@@ -232,6 +232,148 @@ ALTER TYPE public."WebhookEventStatus" OWNER TO nihongo;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: BookAudioDriveFolder; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."BookAudioDriveFolder" (
+    id integer NOT NULL,
+    "driveId" text NOT NULL,
+    title text,
+    "localPath" text,
+    "fileCount" integer DEFAULT 0 NOT NULL,
+    "downloadedAt" timestamp(3) without time zone,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."BookAudioDriveFolder" OWNER TO nihongo;
+
+--
+-- Name: BookAudioDriveFolder_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."BookAudioDriveFolder_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."BookAudioDriveFolder_id_seq" OWNER TO nihongo;
+
+--
+-- Name: BookAudioDriveFolder_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."BookAudioDriveFolder_id_seq" OWNED BY public."BookAudioDriveFolder".id;
+
+
+--
+-- Name: BookAudioFile; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."BookAudioFile" (
+    id integer NOT NULL,
+    "folderId" integer,
+    "itemId" integer,
+    "driveFileId" text,
+    "fileName" text NOT NULL,
+    "localPath" text NOT NULL,
+    "mimeType" text,
+    "sizeBytes" integer,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."BookAudioFile" OWNER TO nihongo;
+
+--
+-- Name: BookAudioFile_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."BookAudioFile_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."BookAudioFile_id_seq" OWNER TO nihongo;
+
+--
+-- Name: BookAudioFile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."BookAudioFile_id_seq" OWNED BY public."BookAudioFile".id;
+
+
+--
+-- Name: BookAudioItem; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."BookAudioItem" (
+    id integer NOT NULL,
+    "externalKey" text NOT NULL,
+    level text NOT NULL,
+    title text NOT NULL,
+    url text NOT NULL,
+    note text,
+    "listNo" integer,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "driveId" text,
+    "driveKind" text,
+    "folderId" integer
+);
+
+
+ALTER TABLE public."BookAudioItem" OWNER TO nihongo;
+
+--
+-- Name: BookAudioItem_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."BookAudioItem_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."BookAudioItem_id_seq" OWNER TO nihongo;
+
+--
+-- Name: BookAudioItem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."BookAudioItem_id_seq" OWNED BY public."BookAudioItem".id;
+
+
+--
+-- Name: BookAudioMeta; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."BookAudioMeta" (
+    id integer DEFAULT 1 NOT NULL,
+    "sourceUrl" text NOT NULL,
+    publisher text NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."BookAudioMeta" OWNER TO nihongo;
 
 --
 -- Name: ChatMessage; Type: TABLE; Schema: public; Owner: nihongo
@@ -674,6 +816,335 @@ ALTER SEQUENCE public."DictationAttempt_id_seq" OWNER TO nihongo;
 --
 
 ALTER SEQUENCE public."DictationAttempt_id_seq" OWNED BY public."DictationAttempt".id;
+
+
+--
+-- Name: EmailBroadcast; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EmailBroadcast" (
+    id text NOT NULL,
+    type text DEFAULT 'template'::text NOT NULL,
+    "templateName" text,
+    subject text NOT NULL,
+    filter jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "totalCount" integer DEFAULT 0 NOT NULL,
+    "sentCount" integer DEFAULT 0 NOT NULL,
+    "failedCount" integer DEFAULT 0 NOT NULL,
+    status text DEFAULT 'pending'::text NOT NULL,
+    "startedAt" timestamp(3) without time zone,
+    "completedAt" timestamp(3) without time zone,
+    "createdById" integer NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public."EmailBroadcast" OWNER TO nihongo;
+
+--
+-- Name: EmailPrefs; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EmailPrefs" (
+    id integer NOT NULL,
+    "userId" integer NOT NULL,
+    "receiveProgress" boolean DEFAULT true NOT NULL,
+    "receiveStreak" boolean DEFAULT true NOT NULL,
+    "lastMilestoneNotified" integer DEFAULT 0 NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."EmailPrefs" OWNER TO nihongo;
+
+--
+-- Name: EmailPrefs_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EmailPrefs_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EmailPrefs_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EmailPrefs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EmailPrefs_id_seq" OWNED BY public."EmailPrefs".id;
+
+
+--
+-- Name: EmailTemplate; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EmailTemplate" (
+    id integer NOT NULL,
+    name text NOT NULL,
+    description text,
+    subject text NOT NULL,
+    "htmlBody" text NOT NULL,
+    "textBody" text NOT NULL,
+    variables text[],
+    attachments jsonb DEFAULT '[]'::jsonb NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    "updatedById" integer,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."EmailTemplate" OWNER TO nihongo;
+
+--
+-- Name: EmailTemplate_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EmailTemplate_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EmailTemplate_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EmailTemplate_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EmailTemplate_id_seq" OWNED BY public."EmailTemplate".id;
+
+
+--
+-- Name: EmailVerificationToken; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EmailVerificationToken" (
+    id text NOT NULL,
+    "tokenHash" text NOT NULL,
+    "userId" integer NOT NULL,
+    "expiresAt" timestamp(3) without time zone NOT NULL,
+    "usedAt" timestamp(3) without time zone,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public."EmailVerificationToken" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaExample; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaExample" (
+    id integer NOT NULL,
+    "sectionId" integer NOT NULL,
+    english text NOT NULL,
+    katakana text NOT NULL,
+    romaji text NOT NULL,
+    "meaningVi" text NOT NULL,
+    note text,
+    "sortOrder" integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaExample" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaExample_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EnglishKatakanaExample_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EnglishKatakanaExample_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaExample_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EnglishKatakanaExample_id_seq" OWNED BY public."EnglishKatakanaExample".id;
+
+
+--
+-- Name: EnglishKatakanaMapping; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaMapping" (
+    id integer NOT NULL,
+    "sectionId" integer NOT NULL,
+    english text NOT NULL,
+    katakana text NOT NULL,
+    romaji text NOT NULL,
+    note text,
+    "sortOrder" integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaMapping" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaMapping_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EnglishKatakanaMapping_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EnglishKatakanaMapping_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaMapping_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EnglishKatakanaMapping_id_seq" OWNED BY public."EnglishKatakanaMapping".id;
+
+
+--
+-- Name: EnglishKatakanaMeta; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaMeta" (
+    id integer DEFAULT 1 NOT NULL,
+    intro text NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaMeta" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaPoint; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaPoint" (
+    id integer NOT NULL,
+    "sectionId" integer NOT NULL,
+    explanation text NOT NULL,
+    english text,
+    katakana text,
+    romaji text,
+    "sortOrder" integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaPoint" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaPoint_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EnglishKatakanaPoint_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EnglishKatakanaPoint_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaPoint_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EnglishKatakanaPoint_id_seq" OWNED BY public."EnglishKatakanaPoint".id;
+
+
+--
+-- Name: EnglishKatakanaSection; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaSection" (
+    id integer NOT NULL,
+    slug text NOT NULL,
+    title text NOT NULL,
+    summary text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaSection" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaSection_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EnglishKatakanaSection_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EnglishKatakanaSection_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaSection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EnglishKatakanaSection_id_seq" OWNED BY public."EnglishKatakanaSection".id;
+
+
+--
+-- Name: EnglishKatakanaTip; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."EnglishKatakanaTip" (
+    id integer NOT NULL,
+    text text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."EnglishKatakanaTip" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaTip_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."EnglishKatakanaTip_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."EnglishKatakanaTip_id_seq" OWNER TO nihongo;
+
+--
+-- Name: EnglishKatakanaTip_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."EnglishKatakanaTip_id_seq" OWNED BY public."EnglishKatakanaTip".id;
 
 
 --
@@ -1141,7 +1612,11 @@ CREATE TABLE public."JlptRoadmapLevel" (
     summary text NOT NULL,
     "sortOrder" integer DEFAULT 0 NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "grammarTarget" text DEFAULT ''::text NOT NULL,
+    "vocabIncrement" text DEFAULT ''::text NOT NULL,
+    "kanjiIncrement" text DEFAULT ''::text NOT NULL,
+    "grammarIncrement" text DEFAULT ''::text NOT NULL
 );
 
 
@@ -1338,6 +1813,44 @@ ALTER SEQUENCE public."KanaCell_id_seq" OWNER TO nihongo;
 --
 
 ALTER SEQUENCE public."KanaCell_id_seq" OWNED BY public."KanaCell".id;
+
+
+--
+-- Name: KanaRomaji; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."KanaRomaji" (
+    id integer NOT NULL,
+    kana text NOT NULL,
+    romaji text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."KanaRomaji" OWNER TO nihongo;
+
+--
+-- Name: KanaRomaji_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."KanaRomaji_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."KanaRomaji_id_seq" OWNER TO nihongo;
+
+--
+-- Name: KanaRomaji_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."KanaRomaji_id_seq" OWNED BY public."KanaRomaji".id;
 
 
 --
@@ -1757,6 +2270,45 @@ ALTER SEQUENCE public."ListeningPreset_id_seq" OWNED BY public."ListeningPreset"
 
 
 --
+-- Name: LiveSession; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."LiveSession" (
+    id integer NOT NULL,
+    "roomName" text NOT NULL,
+    "coachId" integer NOT NULL,
+    title text NOT NULL,
+    status text DEFAULT 'LIVE'::text NOT NULL,
+    "startedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "endedAt" timestamp(3) without time zone
+);
+
+
+ALTER TABLE public."LiveSession" OWNER TO nihongo;
+
+--
+-- Name: LiveSession_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."LiveSession_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."LiveSession_id_seq" OWNER TO nihongo;
+
+--
+-- Name: LiveSession_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."LiveSession_id_seq" OWNED BY public."LiveSession".id;
+
+
+--
 -- Name: Notification; Type: TABLE; Schema: public; Owner: nihongo
 --
 
@@ -1795,6 +2347,59 @@ ALTER SEQUENCE public."Notification_id_seq" OWNER TO nihongo;
 
 ALTER SEQUENCE public."Notification_id_seq" OWNED BY public."Notification".id;
 
+
+--
+-- Name: PageBanner; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."PageBanner" (
+    id integer NOT NULL,
+    path text NOT NULL,
+    "imageData" text NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."PageBanner" OWNER TO nihongo;
+
+--
+-- Name: PageBanner_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."PageBanner_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."PageBanner_id_seq" OWNER TO nihongo;
+
+--
+-- Name: PageBanner_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."PageBanner_id_seq" OWNED BY public."PageBanner".id;
+
+
+--
+-- Name: PasswordResetToken; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."PasswordResetToken" (
+    id text NOT NULL,
+    "tokenHash" text NOT NULL,
+    "userId" integer NOT NULL,
+    "expiresAt" timestamp(3) without time zone NOT NULL,
+    "usedAt" timestamp(3) without time zone,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public."PasswordResetToken" OWNER TO nihongo;
 
 --
 -- Name: Payment; Type: TABLE; Schema: public; Owner: nihongo
@@ -2100,6 +2705,22 @@ CREATE TABLE public."PronunciationRulesMeta" (
 
 
 ALTER TABLE public."PronunciationRulesMeta" OWNER TO nihongo;
+
+--
+-- Name: PushDeviceToken; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."PushDeviceToken" (
+    id text NOT NULL,
+    "userId" integer NOT NULL,
+    token text NOT NULL,
+    platform text DEFAULT 'ios'::text NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."PushDeviceToken" OWNER TO nihongo;
 
 --
 -- Name: ReadingAttempt; Type: TABLE; Schema: public; Owner: nihongo
@@ -2612,7 +3233,10 @@ CREATE TABLE public."User" (
     "targetJlptLevel" public."JlptLevel",
     "studyGoalMinutes" integer DEFAULT 30,
     "lastActiveAt" timestamp(3) without time zone,
-    "googleId" text
+    "googleId" text,
+    "keycloakId" text,
+    "emailVerifiedAt" timestamp(3) without time zone,
+    "emailBounced" boolean DEFAULT false NOT NULL
 );
 
 
@@ -2786,6 +3410,27 @@ CREATE TABLE public._prisma_migrations (
 ALTER TABLE public._prisma_migrations OWNER TO nihongo;
 
 --
+-- Name: BookAudioDriveFolder id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioDriveFolder" ALTER COLUMN id SET DEFAULT nextval('public."BookAudioDriveFolder_id_seq"'::regclass);
+
+
+--
+-- Name: BookAudioFile id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioFile" ALTER COLUMN id SET DEFAULT nextval('public."BookAudioFile_id_seq"'::regclass);
+
+
+--
+-- Name: BookAudioItem id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioItem" ALTER COLUMN id SET DEFAULT nextval('public."BookAudioItem_id_seq"'::regclass);
+
+
+--
 -- Name: ChatMessage id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -2860,6 +3505,55 @@ ALTER TABLE ONLY public."DailyNote" ALTER COLUMN id SET DEFAULT nextval('public.
 --
 
 ALTER TABLE ONLY public."DictationAttempt" ALTER COLUMN id SET DEFAULT nextval('public."DictationAttempt_id_seq"'::regclass);
+
+
+--
+-- Name: EmailPrefs id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailPrefs" ALTER COLUMN id SET DEFAULT nextval('public."EmailPrefs_id_seq"'::regclass);
+
+
+--
+-- Name: EmailTemplate id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailTemplate" ALTER COLUMN id SET DEFAULT nextval('public."EmailTemplate_id_seq"'::regclass);
+
+
+--
+-- Name: EnglishKatakanaExample id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaExample" ALTER COLUMN id SET DEFAULT nextval('public."EnglishKatakanaExample_id_seq"'::regclass);
+
+
+--
+-- Name: EnglishKatakanaMapping id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaMapping" ALTER COLUMN id SET DEFAULT nextval('public."EnglishKatakanaMapping_id_seq"'::regclass);
+
+
+--
+-- Name: EnglishKatakanaPoint id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaPoint" ALTER COLUMN id SET DEFAULT nextval('public."EnglishKatakanaPoint_id_seq"'::regclass);
+
+
+--
+-- Name: EnglishKatakanaSection id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaSection" ALTER COLUMN id SET DEFAULT nextval('public."EnglishKatakanaSection_id_seq"'::regclass);
+
+
+--
+-- Name: EnglishKatakanaTip id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaTip" ALTER COLUMN id SET DEFAULT nextval('public."EnglishKatakanaTip_id_seq"'::regclass);
 
 
 --
@@ -2968,6 +3662,13 @@ ALTER TABLE ONLY public."KanaCell" ALTER COLUMN id SET DEFAULT nextval('public."
 
 
 --
+-- Name: KanaRomaji id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."KanaRomaji" ALTER COLUMN id SET DEFAULT nextval('public."KanaRomaji_id_seq"'::regclass);
+
+
+--
 -- Name: KanaSection id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -3038,10 +3739,24 @@ ALTER TABLE ONLY public."ListeningPreset" ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- Name: LiveSession id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."LiveSession" ALTER COLUMN id SET DEFAULT nextval('public."LiveSession_id_seq"'::regclass);
+
+
+--
 -- Name: Notification id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
 ALTER TABLE ONLY public."Notification" ALTER COLUMN id SET DEFAULT nextval('public."Notification_id_seq"'::regclass);
+
+
+--
+-- Name: PageBanner id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PageBanner" ALTER COLUMN id SET DEFAULT nextval('public."PageBanner_id_seq"'::regclass);
 
 
 --
@@ -3206,6 +3921,38 @@ ALTER TABLE ONLY public."WebhookEvent" ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
+-- Name: BookAudioDriveFolder BookAudioDriveFolder_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioDriveFolder"
+    ADD CONSTRAINT "BookAudioDriveFolder_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: BookAudioFile BookAudioFile_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioFile"
+    ADD CONSTRAINT "BookAudioFile_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: BookAudioItem BookAudioItem_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioItem"
+    ADD CONSTRAINT "BookAudioItem_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: BookAudioMeta BookAudioMeta_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioMeta"
+    ADD CONSTRAINT "BookAudioMeta_pkey" PRIMARY KEY (id);
+
+
+--
 -- Name: ChatMessage ChatMessage_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -3291,6 +4038,86 @@ ALTER TABLE ONLY public."DailyNote"
 
 ALTER TABLE ONLY public."DictationAttempt"
     ADD CONSTRAINT "DictationAttempt_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EmailBroadcast EmailBroadcast_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailBroadcast"
+    ADD CONSTRAINT "EmailBroadcast_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EmailPrefs EmailPrefs_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailPrefs"
+    ADD CONSTRAINT "EmailPrefs_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EmailTemplate EmailTemplate_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailTemplate"
+    ADD CONSTRAINT "EmailTemplate_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EmailVerificationToken EmailVerificationToken_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailVerificationToken"
+    ADD CONSTRAINT "EmailVerificationToken_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaExample EnglishKatakanaExample_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaExample"
+    ADD CONSTRAINT "EnglishKatakanaExample_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaMapping EnglishKatakanaMapping_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaMapping"
+    ADD CONSTRAINT "EnglishKatakanaMapping_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaMeta EnglishKatakanaMeta_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaMeta"
+    ADD CONSTRAINT "EnglishKatakanaMeta_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaPoint EnglishKatakanaPoint_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaPoint"
+    ADD CONSTRAINT "EnglishKatakanaPoint_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaSection EnglishKatakanaSection_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaSection"
+    ADD CONSTRAINT "EnglishKatakanaSection_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: EnglishKatakanaTip EnglishKatakanaTip_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaTip"
+    ADD CONSTRAINT "EnglishKatakanaTip_pkey" PRIMARY KEY (id);
 
 
 --
@@ -3446,6 +4273,14 @@ ALTER TABLE ONLY public."KanaCell"
 
 
 --
+-- Name: KanaRomaji KanaRomaji_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."KanaRomaji"
+    ADD CONSTRAINT "KanaRomaji_pkey" PRIMARY KEY (id);
+
+
+--
 -- Name: KanaSection KanaSection_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -3542,11 +4377,35 @@ ALTER TABLE ONLY public."ListeningPreset"
 
 
 --
+-- Name: LiveSession LiveSession_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."LiveSession"
+    ADD CONSTRAINT "LiveSession_pkey" PRIMARY KEY (id);
+
+
+--
 -- Name: Notification Notification_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
 ALTER TABLE ONLY public."Notification"
     ADD CONSTRAINT "Notification_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PageBanner PageBanner_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PageBanner"
+    ADD CONSTRAINT "PageBanner_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PasswordResetToken PasswordResetToken_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PasswordResetToken"
+    ADD CONSTRAINT "PasswordResetToken_pkey" PRIMARY KEY (id);
 
 
 --
@@ -3611,6 +4470,14 @@ ALTER TABLE ONLY public."PronunciationRuleTip"
 
 ALTER TABLE ONLY public."PronunciationRulesMeta"
     ADD CONSTRAINT "PronunciationRulesMeta_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PushDeviceToken PushDeviceToken_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PushDeviceToken"
+    ADD CONSTRAINT "PushDeviceToken_pkey" PRIMARY KEY (id);
 
 
 --
@@ -3758,6 +4625,55 @@ ALTER TABLE ONLY public._prisma_migrations
 
 
 --
+-- Name: BookAudioDriveFolder_driveId_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "BookAudioDriveFolder_driveId_key" ON public."BookAudioDriveFolder" USING btree ("driveId");
+
+
+--
+-- Name: BookAudioFile_folderId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "BookAudioFile_folderId_sortOrder_idx" ON public."BookAudioFile" USING btree ("folderId", "sortOrder");
+
+
+--
+-- Name: BookAudioFile_itemId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "BookAudioFile_itemId_sortOrder_idx" ON public."BookAudioFile" USING btree ("itemId", "sortOrder");
+
+
+--
+-- Name: BookAudioItem_driveId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "BookAudioItem_driveId_idx" ON public."BookAudioItem" USING btree ("driveId");
+
+
+--
+-- Name: BookAudioItem_externalKey_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "BookAudioItem_externalKey_key" ON public."BookAudioItem" USING btree ("externalKey");
+
+
+--
+-- Name: BookAudioItem_folderId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "BookAudioItem_folderId_idx" ON public."BookAudioItem" USING btree ("folderId");
+
+
+--
+-- Name: BookAudioItem_level_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "BookAudioItem_level_sortOrder_idx" ON public."BookAudioItem" USING btree (level, "sortOrder");
+
+
+--
 -- Name: ChatMessage_sessionId_createdAt_idx; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -3898,6 +4814,97 @@ CREATE INDEX "DictationAttempt_vocabId_idx" ON public."DictationAttempt" USING b
 
 
 --
+-- Name: EmailBroadcast_createdById_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EmailBroadcast_createdById_idx" ON public."EmailBroadcast" USING btree ("createdById");
+
+
+--
+-- Name: EmailBroadcast_status_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EmailBroadcast_status_idx" ON public."EmailBroadcast" USING btree (status);
+
+
+--
+-- Name: EmailPrefs_userId_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "EmailPrefs_userId_key" ON public."EmailPrefs" USING btree ("userId");
+
+
+--
+-- Name: EmailTemplate_name_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "EmailTemplate_name_key" ON public."EmailTemplate" USING btree (name);
+
+
+--
+-- Name: EmailVerificationToken_expiresAt_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EmailVerificationToken_expiresAt_idx" ON public."EmailVerificationToken" USING btree ("expiresAt");
+
+
+--
+-- Name: EmailVerificationToken_tokenHash_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "EmailVerificationToken_tokenHash_key" ON public."EmailVerificationToken" USING btree ("tokenHash");
+
+
+--
+-- Name: EmailVerificationToken_userId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EmailVerificationToken_userId_idx" ON public."EmailVerificationToken" USING btree ("userId");
+
+
+--
+-- Name: EnglishKatakanaExample_sectionId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EnglishKatakanaExample_sectionId_sortOrder_idx" ON public."EnglishKatakanaExample" USING btree ("sectionId", "sortOrder");
+
+
+--
+-- Name: EnglishKatakanaMapping_sectionId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EnglishKatakanaMapping_sectionId_sortOrder_idx" ON public."EnglishKatakanaMapping" USING btree ("sectionId", "sortOrder");
+
+
+--
+-- Name: EnglishKatakanaPoint_sectionId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EnglishKatakanaPoint_sectionId_sortOrder_idx" ON public."EnglishKatakanaPoint" USING btree ("sectionId", "sortOrder");
+
+
+--
+-- Name: EnglishKatakanaSection_slug_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "EnglishKatakanaSection_slug_key" ON public."EnglishKatakanaSection" USING btree (slug);
+
+
+--
+-- Name: EnglishKatakanaSection_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EnglishKatakanaSection_sortOrder_idx" ON public."EnglishKatakanaSection" USING btree ("sortOrder");
+
+
+--
+-- Name: EnglishKatakanaTip_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "EnglishKatakanaTip_sortOrder_idx" ON public."EnglishKatakanaTip" USING btree ("sortOrder");
+
+
+--
 -- Name: ExamResult_level_idx; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -4014,6 +5021,13 @@ CREATE INDEX "KanaCell_sectionId_idx" ON public."KanaCell" USING btree ("section
 --
 
 CREATE UNIQUE INDEX "KanaCell_sectionId_rowIndex_colIndex_key" ON public."KanaCell" USING btree ("sectionId", "rowIndex", "colIndex");
+
+
+--
+-- Name: KanaRomaji_kana_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "KanaRomaji_kana_key" ON public."KanaRomaji" USING btree (kana);
 
 
 --
@@ -4143,10 +5157,59 @@ CREATE UNIQUE INDEX "ListeningPreset_externalKey_key" ON public."ListeningPreset
 
 
 --
+-- Name: LiveSession_coachId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "LiveSession_coachId_idx" ON public."LiveSession" USING btree ("coachId");
+
+
+--
+-- Name: LiveSession_roomName_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "LiveSession_roomName_key" ON public."LiveSession" USING btree ("roomName");
+
+
+--
+-- Name: LiveSession_status_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "LiveSession_status_idx" ON public."LiveSession" USING btree (status);
+
+
+--
 -- Name: Notification_userId_readAt_createdAt_idx; Type: INDEX; Schema: public; Owner: nihongo
 --
 
 CREATE INDEX "Notification_userId_readAt_createdAt_idx" ON public."Notification" USING btree ("userId", "readAt", "createdAt");
+
+
+--
+-- Name: PageBanner_path_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "PageBanner_path_key" ON public."PageBanner" USING btree (path);
+
+
+--
+-- Name: PasswordResetToken_expiresAt_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "PasswordResetToken_expiresAt_idx" ON public."PasswordResetToken" USING btree ("expiresAt");
+
+
+--
+-- Name: PasswordResetToken_tokenHash_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "PasswordResetToken_tokenHash_key" ON public."PasswordResetToken" USING btree ("tokenHash");
+
+
+--
+-- Name: PasswordResetToken_userId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "PasswordResetToken_userId_idx" ON public."PasswordResetToken" USING btree ("userId");
 
 
 --
@@ -4238,6 +5301,20 @@ CREATE INDEX "PronunciationRuleSection_sortOrder_idx" ON public."PronunciationRu
 --
 
 CREATE INDEX "PronunciationRuleTip_sortOrder_idx" ON public."PronunciationRuleTip" USING btree ("sortOrder");
+
+
+--
+-- Name: PushDeviceToken_token_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "PushDeviceToken_token_key" ON public."PushDeviceToken" USING btree (token);
+
+
+--
+-- Name: PushDeviceToken_userId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "PushDeviceToken_userId_idx" ON public."PushDeviceToken" USING btree ("userId");
 
 
 --
@@ -4402,6 +5479,13 @@ CREATE UNIQUE INDEX "User_googleId_key" ON public."User" USING btree ("googleId"
 
 
 --
+-- Name: User_keycloakId_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "User_keycloakId_key" ON public."User" USING btree ("keycloakId");
+
+
+--
 -- Name: User_role_idx; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -4455,6 +5539,30 @@ CREATE INDEX "WebhookEvent_eventType_status_idx" ON public."WebhookEvent" USING 
 --
 
 CREATE INDEX "WebhookEvent_provider_status_createdAt_idx" ON public."WebhookEvent" USING btree (provider, status, "createdAt");
+
+
+--
+-- Name: BookAudioFile BookAudioFile_folderId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioFile"
+    ADD CONSTRAINT "BookAudioFile_folderId_fkey" FOREIGN KEY ("folderId") REFERENCES public."BookAudioDriveFolder"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: BookAudioFile BookAudioFile_itemId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioFile"
+    ADD CONSTRAINT "BookAudioFile_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES public."BookAudioItem"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: BookAudioItem BookAudioItem_folderId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."BookAudioItem"
+    ADD CONSTRAINT "BookAudioItem_folderId_fkey" FOREIGN KEY ("folderId") REFERENCES public."BookAudioDriveFolder"(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --
@@ -4567,6 +5675,46 @@ ALTER TABLE ONLY public."DailyNote"
 
 ALTER TABLE ONLY public."DictationAttempt"
     ADD CONSTRAINT "DictationAttempt_vocabId_fkey" FOREIGN KEY ("vocabId") REFERENCES public."Vocabulary"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: EmailPrefs EmailPrefs_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailPrefs"
+    ADD CONSTRAINT "EmailPrefs_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: EmailVerificationToken EmailVerificationToken_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EmailVerificationToken"
+    ADD CONSTRAINT "EmailVerificationToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: EnglishKatakanaExample EnglishKatakanaExample_sectionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaExample"
+    ADD CONSTRAINT "EnglishKatakanaExample_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES public."EnglishKatakanaSection"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: EnglishKatakanaMapping EnglishKatakanaMapping_sectionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaMapping"
+    ADD CONSTRAINT "EnglishKatakanaMapping_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES public."EnglishKatakanaSection"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: EnglishKatakanaPoint EnglishKatakanaPoint_sectionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."EnglishKatakanaPoint"
+    ADD CONSTRAINT "EnglishKatakanaPoint_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES public."EnglishKatakanaSection"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -4730,11 +5878,27 @@ ALTER TABLE ONLY public."ListeningLog"
 
 
 --
+-- Name: LiveSession LiveSession_coachId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."LiveSession"
+    ADD CONSTRAINT "LiveSession_coachId_fkey" FOREIGN KEY ("coachId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
 -- Name: Notification Notification_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
 --
 
 ALTER TABLE ONLY public."Notification"
     ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: PasswordResetToken PasswordResetToken_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PasswordResetToken"
+    ADD CONSTRAINT "PasswordResetToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -4783,6 +5947,14 @@ ALTER TABLE ONLY public."PronunciationRuleExample"
 
 ALTER TABLE ONLY public."PronunciationRulePoint"
     ADD CONSTRAINT "PronunciationRulePoint_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES public."PronunciationRuleSection"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: PushDeviceToken PushDeviceToken_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."PushDeviceToken"
+    ADD CONSTRAINT "PushDeviceToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -4901,5 +6073,5 @@ ALTER TABLE ONLY public."Vocabulary"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict s4u27eKEOrrylJczefQx85wq71DT5IzmVEUdHAYdJ5yfiPllScAn65znAX2d7pz
+\unrestrict jGg4sZDvgD48qVSbPTobTnGSqvLvmy2db7B94Hv093tm1OgxifpYtZYjlhXY6kI
 

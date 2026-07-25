@@ -26,6 +26,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _afterLoginOk() async {
+    await ref.read(pushServiceProvider).registerAfterLogin();
     ref.invalidate(isLoggedInProvider);
     if (!mounted) return;
     context.pop();

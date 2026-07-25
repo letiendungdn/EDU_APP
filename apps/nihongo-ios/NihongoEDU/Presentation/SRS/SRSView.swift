@@ -58,6 +58,8 @@ private struct SRSContent: View {
 // MARK: - Review
 
 private struct ReviewView: View {
+    @Environment(AuthState.self) private var authState
+    @Environment(NetworkMonitor.self) private var network
     let card: SRSCard
     let viewModel: SRSViewModel
     let progress: Double
@@ -87,7 +89,13 @@ private struct ReviewView: View {
                     .controlSize(.large)
                     .padding(.horizontal)
             } else {
-                RatingButtons(card: card, viewModel: viewModel, modelContext: modelContext)
+                RatingButtons(
+                    card: card,
+                    viewModel: viewModel,
+                    modelContext: modelContext,
+                    network: network,
+                    auth: authState
+                )
                     .padding(.horizontal)
             }
 
@@ -140,6 +148,8 @@ private struct RatingButtons: View {
     let card: SRSCard
     let viewModel: SRSViewModel
     let modelContext: ModelContext
+    let network: NetworkMonitor
+    let auth: AuthState
 
     private struct Btn { let label: String; let emoji: String; let q: Int; let color: Color }
     private let buttons: [Btn] = [
@@ -152,7 +162,15 @@ private struct RatingButtons: View {
     var body: some View {
         HStack(spacing: 10) {
             ForEach(buttons, id: \.q) { btn in
-                Button { viewModel.rate(btn.q, card: card, modelContext: modelContext) } label: {
+                Button {
+                    viewModel.rate(
+                        btn.q,
+                        card: card,
+                        modelContext: modelContext,
+                        network: network,
+                        auth: auth
+                    )
+                } label: {
                     VStack(spacing: 4) {
                         Text(btn.emoji).font(.system(size: 28))
                         Text(btn.label)

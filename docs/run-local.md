@@ -61,7 +61,7 @@ Kiểm tra: `docker ps --filter "name=edu-"`
 Đã có snapshot full trong `infra/backups/` (user, vocab, payment, …):
 
 ```powershell
-Get-Content "infra\backups\nihongo_20260628_164425.sql" | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content "infra\backups\nihongo_20260725_144146.sql" | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 ```
 
 **Cách B — DB trống: migrate + seed nội dung**
@@ -253,6 +253,7 @@ Chi tiết: [infra/backups/README.md](../infra/backups/README.md)
 | File | Nội dung |
 |------|----------|
 | [README.md](../README.md) | Kiến trúc tổng quan |
+| [run-mobile.md](./run-mobile.md) | Chạy 4 app mobile (Expo / Android / Flutter / iOS) |
 | [infra/postgres/README.md](../infra/postgres/README.md) | Content seed SQL |
 | [google-oauth-setup.md](./google-oauth-setup.md) | Google Sign-In |
 | [system-design.md](./system-design.md) | Request flows |

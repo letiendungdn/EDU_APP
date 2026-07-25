@@ -154,13 +154,45 @@ class VocabularyRepositoryImpl @Inject constructor(
 
     private suspend fun flushSyncQueue() {
         val pending = syncQueueDao.getPending()
+        val reviewItems = mutableListOf<com.edu.nihongo.data.remote.ReviewSyncItem>()
+        val syncedQueueIds = mutableListOf<Long>()
+        val syncedCardIds = mutableListOf<Long>()
+        val isoFormat = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.US).apply {
+            timeZone = java.util.TimeZone.getTimeZone("UTC")
+        }
+
         for (item in pending) {
-            when (item.operation) {
-                "UPDATE_SRS" -> {
-                    srsDao.markSynced(listOf(item.entityId))
-                    syncQueueDao.delete(item.id)
+            if (item.operation != "UPDATE_SRS") continue
+            try {
+                val card = gson.fromJson(item.payload, SrsCard::class.java)
+                val vocab = vocabDao.getById(card.vocabularyId)
+                if (vocab == null) {
+                    syncedQueueIds += item.id
+                    continue
                 }
+                reviewItems += com.edu.nihongo.data.remote.ReviewSyncItem(
+                    kana = vocab.kana,
+                    kanji = vocab.kanji,
+                    meaning = vocab.meaning,
+                    lessonNumber = vocab.lessonNumber,
+                    wrongCount = if (card.repetitions == 0) 1 else 0,
+                    reviewStreak = card.repetitions,
+                    mastered = card.mastered,
+                    lastReviewedAt = isoFormat.format(java.util.Date(card.updatedAt)),
+                )
+                syncedQueueIds += item.id
+                syncedCardIds += card.id
+            } catch (_: Exception) {
+                // keep in queue for next flush
             }
         }
+
+        if (reviewItems.isNotEmpty()) {
+            remote.syncReviewBank(reviewItems)
+        }
+        if (syncedCardIds.isNotEmpty()) {
+            srsDao.markSynced(syncedCardIds)
+        }
+        syncedQueueIds.forEach { syncQueueDao.delete(it) }
     }
 }

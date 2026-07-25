@@ -121,7 +121,7 @@ docker compose up -d postgres redis mongodb kafka zookeeper
 npm run prisma:generate
 
 # Restore DB có sẵn trong repo (khuyên dùng)
-Get-Content infra\backups\nihongo_20260628_164425.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content infra\backups\nihongo_20260725_144146.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 
 # Hoặc DB trống: migrate + seed — xem docs/run-local.md
 ```
@@ -172,7 +172,7 @@ Swagger UI: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
 **Restore từ backup** (nhanh nhất — file trong `infra/backups/`):
 
 ```powershell
-Get-Content infra\backups\nihongo_20260628_164425.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content infra\backups\nihongo_20260725_144146.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 ```
 
 **Hoặc DB trống** — migrate + seed:
@@ -238,6 +238,7 @@ npm test -- --coverage -w @edu/nihongo-services
 | [docs/system-design.md](docs/system-design.md) | Kiến trúc, request flows, auth |
 | [docs/db-design.md](docs/db-design.md) | ER diagrams, schema reference, backup |
 | [docs/run-local.md](docs/run-local.md) | Hướng dẫn chạy local từng bước |
+| [docs/learn-edu-app.md](docs/learn-edu-app.md) | Lộ trình 10 tuần học và làm chủ codebase |
 | [docs/google-oauth-setup.md](docs/google-oauth-setup.md) | Cấu hình Google Sign-In |
 | [docs/cursor-everfit-prep.md](docs/cursor-everfit-prep.md) | Cursor: Payment + Marketplace |
 | [docs/cursor-chat.md](docs/cursor-chat.md) | Cursor: REST chat + notification |

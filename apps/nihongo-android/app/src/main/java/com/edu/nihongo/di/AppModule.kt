@@ -9,8 +9,10 @@ import com.edu.nihongo.data.local.dao.SyncQueueDao
 import com.edu.nihongo.data.local.dao.VocabularyDao
 import com.edu.nihongo.data.remote.AuthApi
 import com.edu.nihongo.data.remote.AuthInterceptor
+import com.edu.nihongo.data.remote.AiTutorApi
 import com.edu.nihongo.data.remote.LessonsApi
 import com.edu.nihongo.data.remote.LiveApi
+import com.edu.nihongo.data.remote.PushApi
 import com.edu.nihongo.data.remote.TranslateApi
 import com.edu.nihongo.data.remote.VocabularyApi
 import com.edu.nihongo.data.repository.AuthRepositoryImpl
@@ -93,6 +95,12 @@ object AppModule {
 
     @Provides fun provideLiveApi(retrofit: Retrofit): LiveApi =
         retrofit.create(LiveApi::class.java)
+
+    @Provides fun provideAiTutorApi(retrofit: Retrofit): AiTutorApi =
+        retrofit.create(AiTutorApi::class.java)
+
+    @Provides fun providePushApi(retrofit: Retrofit): PushApi =
+        retrofit.create(PushApi::class.java)
 }
 
 @Module

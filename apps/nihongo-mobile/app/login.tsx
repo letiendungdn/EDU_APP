@@ -11,6 +11,7 @@ import {
 
 import { login, loginWithOidc } from '../src/data/api';
 import { loginWithKeycloak } from '../src/data/keycloakAuth';
+import { setupPushNotifications } from '../src/utils/push';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -26,6 +27,7 @@ export default function LoginScreen() {
     setError(null);
     try {
       await login(email.trim(), password);
+      await setupPushNotifications(() => router.push('/srs'));
       router.back();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Đăng nhập thất bại');
@@ -40,6 +42,7 @@ export default function LoginScreen() {
     try {
       const tokens = await loginWithKeycloak();
       await loginWithOidc(tokens.accessToken, tokens.idToken);
+      await setupPushNotifications(() => router.push('/srs'));
       router.back();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Keycloak thất bại');

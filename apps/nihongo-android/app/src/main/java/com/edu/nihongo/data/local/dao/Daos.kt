@@ -38,6 +38,9 @@ interface VocabularyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(items: List<VocabularyEntity>)
+
+    @Query("SELECT * FROM vocabulary WHERE id = :id LIMIT 1")
+    suspend fun getById(id: Long): VocabularyEntity?
 }
 
 @Dao

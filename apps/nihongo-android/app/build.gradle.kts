@@ -120,4 +120,6 @@ dependencies {
     val liveKitComponentsVersion = "2.4.0"
     implementation("io.livekit:livekit-android:$liveKitVersion")
     implementation("io.livekit:livekit-android-compose-components:$liveKitComponentsVersion")
+
+    testImplementation("junit:junit:4.13.2")
 }
