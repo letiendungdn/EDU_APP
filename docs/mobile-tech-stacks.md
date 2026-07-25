@@ -382,4 +382,6 @@ Thuật toán SM-2 port song song: `srs.ts` · `SrsAlgorithm.kt` · `srs_algorit
 | [roadmap-android.md](./roadmap-android.md) | Roadmap Android |
 | [roadmap-flutter.md](./roadmap-flutter.md) | Roadmap Flutter |
 | [roadmap-swift.md](./roadmap-swift.md) | Roadmap Swift |
+| [roadmap-angular.md](./roadmap-angular.md) | Roadmap Angular (web `nihongo-angular`) |
+| [roadmap-reactjs.md](./roadmap-reactjs.md) | Roadmap ReactJS (web `nihongo-web` / `english-web`) |
 | [nginx.md](./nginx.md) | Vì sao Android hay dùng `:8080` |

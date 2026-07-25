@@ -2,62 +2,45 @@
 
 ## 1. Kiến trúc tổng thể
 
-Hai frontend (nihongo-web, english-web) đều là **thin client**. Không có Route Handler gọi DB trực tiếp — mọi API đi qua `api-gateway`.
+Frontend là **thin client** (Next.js, Angular, mobile). Không Route Handler gọi DB trực tiếp — mọi API đi qua `api-gateway`. Edge Docker: **nginx :8080** (web + Keycloak + `/api`).
 
 ```
-                              Internet
+                              Internet / Emulator (10.0.2.2)
                                   │
                     ┌─────────────▼──────────────┐
-                    │           Nginx             │
-                    │   Reverse Proxy / SSL       │
-                    └──────┬──────────┬───────────┘
-                           │          │
-              ┌────────────▼──┐   ┌───▼────────────────┐
-              │  nihongo-web  │   │    english-web       │
-              │  Next.js:5173 │   │    Next.js :3001     │
-              └───────┬───────┘   └──────────┬───────────┘
-                      │ rewrite /api/*        │ rewrite /api/* → /api/english/*
-                      └──────────┬────────────┘
-                                 ▼
+                    │     Nginx :8080 (Docker)    │
+                    │  host/path → web|auth|api   │
+                    └──────┬───────┬──────┬───────┘
+                           │       │      │
+              ┌────────────▼──┐ ┌──▼───┐ ┌▼──────────────┐
+              │  nihongo-web  │ │angular│ │ english-web   │
+              │  Next.js      │ │ :5174 │ │ Next (profile)│
+              └───────┬───────┘ └──┬───┘ └──────┬────────┘
+                      │            │             │
+                      └────────────┼─────────────┘
+                                   ▼
                     ┌────────────────────────────┐
-                    │        api-gateway           │
-                    │        NestJS :3000          │
-                    │  REST (chat, notifications)  │
-                    │  Swagger /api/docs           │
-                    └──┬─────────────────────┬───┘
-                       │ gRPC                │ in-process modules
-           ┌───────────▼────────┐    ┌───────▼────────────────────────────┐
-           │  content-service    │    │  english-service (/api/english/*)   │
-           │  gRPC :50051        │    │  payment-service (Stripe/marketplace)│
-           │  exam-service       │    │  realtime-module (chat services)    │
-           │  gRPC :50052        │    └─────────────────────────────────────┘
-           └────────────────────┘
+                    │        api-gateway :3000     │
+                    │  REST + Swagger /api/docs    │
+                    │  JWT + Keycloak OIDC verify  │
+                    └──┬──────────┬──────────┬───┘
+                       │ gRPC     │          │
+           ┌───────────▼──┐  ┌────▼────┐ ┌───▼──────────┐
+           │ content :50051│  │exam:50052│ │ in-process:  │
+           │ exam :50052   │  │          │ │ payment, EN, │
+           └───────────────┘  └──────────┘ │ chat REST    │
+                                           └──────────────┘
 
-   ┌─────────────────────────────────────────────────────────┐
-   │                      Data Layer                         │
-   │                                                         │
-   │  PostgreSQL :5433          MongoDB :27017               │
-   │  ├── nihongo                 └── nihongo_audit           │
-   │  └── english_learning            audit_logs (TTL 90d)   │
-   │                                                         │
-   │  Redis :6379                                            │
-   │  ├── cache (vocab, coach search)                        │
-   │  └── sliding-window rate limit                          │
-   └─────────────────────────────────────────────────────────┘
+   Auth: Keycloak (realm edu-app) ←→ postgres-keycloak
+   Live: LiveKit :7880 (livestream) │ Signaling :3002 (1-1 WebRTC, tùy chọn)
 
-   ┌─────────────────────────────────────────────────────────┐
-   │                    Async Layer (Kafka)                  │
-   │  edu.exam.submitted      edu.payment.succeeded          │
-   │  edu.session.completed   edu.vocab.reviewed             │
-   └─────────────────────────────────────────────────────────┘
-
-   ┌─────────────────────────────────────────────────────────┐
-   │                  External Services                      │
-   │  Stripe Payments │ Stripe Connect │ AWS S3              │
-   └─────────────────────────────────────────────────────────┘
+   Data: PostgreSQL nihongo :5433 │ english_learning :5434
+         MongoDB audit :27017 │ Redis :6379 │ Kafka
+   External: Stripe │ Brevo │ AWS S3 │ Google OAuth
 ```
 
-> Chat & notification: REST + React Query polling (5–8s). Chi tiết: [`cursor-chat.md`](./cursor-chat.md).
+> Chat & notification: REST + React Query polling (5–8s). Chi tiết: [`cursor-chat.md`](./cursor-chat.md) *(archival prompt — API đã ship)*.  
+> Nginx routing: [nginx.md](./nginx.md). Docker services: [docker.md](./docker.md).
 
 ---
 
@@ -65,38 +48,40 @@ Hai frontend (nihongo-web, english-web) đều là **thin client**. Không có R
 
 ### api-gateway (NestJS :3000)
 
-Entry point HTTP duy nhất. Không còn WebSocket.
+Entry point HTTP. Chat hỗ trợ/community là REST (không Socket.io gateway cho chat).
 
 | Trách nhiệm | Chi tiết |
 |-------------|----------|
-| Auth (nihongo) | JWT Bearer + refresh token rotation + Google OAuth |
+| Auth (nihongo) | JWT Bearer + refresh + Google OAuth + **Keycloak OIDC** |
 | Auth (english) | JWT `aud: english` + HttpOnly cookie `token` |
-| gRPC dispatch | Nihongo → content-service, exam-service |
+| gRPC dispatch | → content-service, exam-service |
 | English API | `english-service` in-process → `english_learning` |
-| Payment | `payment-service` — Stripe, marketplace, webhook |
+| Payment | Stripe, marketplace, webhook |
+| Live | LiveKit token / session (`/api/live/*`) |
 | Upload | S3 pre-signed URL |
 | Audit | `AuditInterceptor` → MongoDB |
-| Rate limit | Redis sliding window trên auth endpoints |
-| Chat | `realtime-module` — support, community, notifications (REST) |
+| Rate limit | Redis sliding window trên auth |
+| Chat | support, community, notifications (REST) |
 
 #### Route map — Nihongo (`/api/*`)
 
 | Route group | Mô tả |
 |-------------|-------|
-| `POST /api/auth/*` | Login, register, refresh, Google OAuth |
+| `POST /api/auth/*` | Login, register, refresh, Google, OIDC |
 | `GET /api/vocabularies/*` | content-service (gRPC) |
 | `GET /api/grammars/*` | content-service (gRPC) |
 | `GET /api/lessons/*` | content-service (gRPC) |
 | `POST /api/mock-exams/*` | exam-service (gRPC) |
-| `GET /api/progress/*` | exam-service (gRPC) |
-| `GET/POST /api/subscriptions/*` | payment-service — Stripe subscription |
-| `GET/POST /api/marketplace/*` | payment-service — booking, coach search |
-| `GET/PATCH /api/notifications/*` | Notification history (DB poll) |
+| `GET /api/progress/*` | Progress / SRS sync |
+| `GET/POST /api/live/*` | LiveKit livestream sessions |
+| `GET/POST /api/subscriptions/*` | Stripe subscription |
+| `GET/POST /api/marketplace/*` | Booking, coach search |
+| `GET/PATCH /api/notifications/*` | Notification history |
 | `GET/POST /api/support/*` | Support chat user ↔ admin |
 | `GET/POST /api/community/*` | Learner group / direct chat |
-| `GET/POST /api/admin/support/*` | Admin inbox support |
+| `POST /api/push/*` | Đăng ký APNs/FCM device token |
 | `POST /api/upload/presigned-url` | AWS S3 |
-| `POST /api/webhooks/stripe` | payment-service — idempotent webhook |
+| `POST /api/webhooks/stripe` | Idempotent webhook |
 
 #### Route map — English (`/api/english/*`)
 
@@ -120,21 +105,36 @@ Mock exam JLPT, SRS, progress, study streak.
 
 ### english-service (in-process)
 
-Logic học tiếng Anh, kết nối `english_learning` qua `EnglishPrismaService`.
+Logic học tiếng Anh → `english_learning` qua `EnglishPrismaService`.
 
 ### payment-service (in-process)
 
-Stripe subscription lifecycle, coaching marketplace, webhook idempotent, coach payout qua Stripe Connect.
+Stripe subscription, marketplace booking, webhook idempotent, Stripe Connect payout.
 
-### realtime-module (in-process trong api-gateway)
+### realtime-module (in-process)
 
-Services lưu/đọc PostgreSQL — **không có Socket.io gateway**:
+Support / community / notifications — **REST + poll**, không Socket.io chat gateway.
 
-1. **SupportChatService** — `SupportThread`, `SupportMessage` → `/api/support`, `/api/admin/support`
-2. **GroupChatService** — `LearnerChatRoom`, member, message → `/api/community`
-3. **NotificationService** — persist `Notification` (webhook payment, tin nhắn mới)
+### keycloak
 
-Frontend poll `refetchInterval` 5–8s qua React Query.
+OIDC IdP (`realm edu-app`). Public URL: `http://auth.localhost:8080`. Clients: `nihongo-web`, `nihongo-mobile`, `nihongo-angular`, …
+
+### livekit
+
+SFU livestream (`edu-livekit :7880`). Gateway cấp token; mobile/web join room.
+
+### signaling-service (:3002)
+
+WebSocket WebRTC **1-1 call** (tùy chọn) — khác livestream LiveKit.
+
+### Clients
+
+| App | Stack | Ghi chú |
+|-----|-------|---------|
+| `nihongo-web` | Next.js | App chính |
+| `nihongo-angular` | Angular 19 | Feature gần parity web |
+| `english-web` | Next.js | Profile `english` |
+| 4 mobile | Expo / Android / Flutter / iOS | [mobile-tech-stacks.md](./mobile-tech-stacks.md) |
 
 ---
 
@@ -215,14 +215,15 @@ POST /api/auth/refresh → rotate refresh token
 
 ## 4. Authentication Design
 
-| | nihongo-web | english-web |
+| | nihongo-web / Angular / mobile | english-web |
 |---|---|---|
 | Token | Bearer access_token | HttpOnly cookie `token` |
-| JWT `aud` | (không có) | `"english"` |
+| JWT `aud` | (không có) / OIDC từ Keycloak | `"english"` |
 | Refresh | Rotation (DB) | Re-login (30d JWT) |
-| Guard | JwtAuthGuard | EnglishAuthGuard |
+| Guard | JwtAuthGuard (+ OIDC verify) | EnglishAuthGuard |
 | User DB | `nihongo.User` | `english_learning.User` |
 | Google OAuth | Có | Không |
+| Keycloak OIDC | Có (`oidc-client-ts` trên Angular/web) | Không |
 
 ---
 
@@ -271,7 +272,7 @@ POST /api/auth/register  → 3 req / 3600s
 
 ## 9. Infrastructure
 
-Docker Compose: `postgres`, `redis`, `mongodb`, `kafka`, `zookeeper`, `api-gateway`, `content-service`, `exam-service`, `nihongo-web`, `english-web`, `nginx`
+Docker Compose (Nihongo full ≈14 container): `postgres-nihongo`, `postgres-keycloak`, `keycloak`, `redis`, `mongodb`, `kafka`, `zookeeper`, `livekit`, `api-gateway`, `content-service`, `exam-service`, `nihongo-web`, `nihongo-angular`, `nginx`. Profile `english`: thêm `postgres-english` + `english-web`. Chi tiết: [docker.md](./docker.md).
 
 Kubernetes: `infra/k8s/`, `infra/helm/edu-app/`
 
@@ -283,14 +284,15 @@ CI/CD: `.github/workflows/`
 
 | | Nhận xét |
 |---|---|
-| ✅ Unified gateway | Cả hai app qua 1 entry point |
+| ✅ Unified gateway | Web + Angular + mobile qua 1 entry (nginx/API) |
 | ✅ DB tách biệt | nihongo vs english_learning, user độc lập |
-| ✅ gRPC + in-process | Microservices cho nihongo, modules cho english/payment |
-| ✅ Stripe subscription + Connect | Full payment lifecycle + coach payout |
-| ✅ REST chat | Support + community, polling nhẹ (không socket) |
-| ✅ Google OAuth | Đăng nhập Gmail (nihongo-web) |
+| ✅ gRPC + in-process | Microservices nihongo; English/payment in-process |
+| ✅ Stripe + Connect | Subscription + coach payout |
+| ✅ LiveKit + Keycloak | Livestream SFU + OIDC IdP |
+| ✅ REST chat | Support + community, polling nhẹ |
+| ✅ Google OAuth + OIDC | Gmail + Keycloak |
 | ✅ Audit + rate limit | MongoDB audit, Redis sliding window |
 | ⚠️ Chat text only | Chưa hỗ trợ file/image |
-| ⚠️ Không realtime tức thì | Poll 5–8s thay vì push |
+| ⚠️ Không realtime tức thì | Poll 5–8s thay vì push (chat) |
 | ⚠️ Coaching session chat | Bảng `ChatMessage` có, chưa có UI/API |
-| ⚠️ Hai user DB riêng | Không SSO giữa 2 app |
+| ⚠️ Hai user DB riêng | Không SSO giữa nihongo ↔ english app |

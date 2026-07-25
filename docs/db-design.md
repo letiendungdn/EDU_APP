@@ -574,12 +574,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File infra/backups/backup.ps1
 bash infra/backups/backup.sh
 ```
 
-Script dump 3 file vào [`infra/backups/`](../infra/backups/) (chỉ `*.sql` gitignored):
+Script dump vào [`infra/backups/`](../infra/backups/). Snapshot `nihongo_*.sql` / `nihongo_schema_*.sql` **được commit** trong repo (restore nhanh). `english_learning_*.sql` chỉ tạo khi container English đang chạy — hiện có thể chưa có file trong repo.
 
 | File | Nội dung |
 |------|----------|
 | `nihongo_YYYYMMDD_HHMMSS.sql` | Full data + schema |
-| `english_learning_YYYYMMDD_HHMMSS.sql` | Full data + schema |
+| `english_learning_YYYYMMDD_HHMMSS.sql` | Full data + schema *(tùy chọn)* |
 | `nihongo_schema_YYYYMMDD_HHMMSS.sql` | Schema only |
 
 Chi tiết: [`infra/backups/README.md`](../infra/backups/README.md)
@@ -588,7 +588,7 @@ Chi tiết: [`infra/backups/README.md`](../infra/backups/README.md)
 
 ```bash
 # Nihongo DB
-docker compose up -d postgres
+docker compose up -d postgres-nihongo
 npm run migrate:deploy -w @edu/prisma-nihongo
 npm run generate -w @edu/prisma-nihongo
 

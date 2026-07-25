@@ -1,5 +1,7 @@
 # Cursor Prompt — Video Call Service (WebRTC + Socket.io)
 
+> **Archival prompt (P2P 1-1).** Signaling `:3002` vẫn dùng cho call 1-1. Livestream production = LiveKit — xem [cursor-video-call-livekit.md](./cursor-video-call-livekit.md) + container `livekit`.
+
 ## Mục tiêu
 
 Thêm tính năng **video call 1-on-1** giữa learner và coach trong coaching session. Gồm 2 phần:

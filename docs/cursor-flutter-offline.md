@@ -1,5 +1,7 @@
 # Cursor Prompt — Flutter App (Offline-First, Senior Architecture)
 
+> **Archival prompt.** App `apps/nihongo_flutter` đã cover offline/sync phần lớn — status: [mobile-tech-stacks.md](./mobile-tech-stacks.md). Lộ trình: [roadmap-flutter.md](./roadmap-flutter.md).
+
 ## Bối cảnh
 
 Tạo Flutter app cho EDU APP (học tiếng Nhật) với:

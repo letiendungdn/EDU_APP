@@ -50,7 +50,7 @@ docker exec -it edu-redis redis-cli
 | Stripe (test mode) | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | `whsec_...` lấy từ `npm run stripe:listen` |
 | Google OAuth | `GOOGLE_CLIENT_ID` | Xem [google-oauth-setup.md](./google-oauth-setup.md) |
 | Brevo (email) | `BREVO_API_KEY` | Xem [brevo-mail.md](./brevo-mail.md) |
-| LiveKit (video call, dev) | `LIVEKIT_API_KEY=devkey` / `LIVEKIT_API_SECRET=devsecret` | Mặc định trong `docker-compose.yml` |
+| LiveKit (livestream SFU, dev) | `LIVEKIT_API_KEY=devkey` / `LIVEKIT_API_SECRET=devsecret` | Mặc định trong `docker-compose.yml`. Call 1-1 ≈ `signaling-service` |
 
 ## Đổi mật khẩu ở đâu?
 

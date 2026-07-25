@@ -1,5 +1,7 @@
 # Cursor Prompt — Android App (Offline-First, Senior Architecture)
 
+> **Archival prompt.** Dùng để hiểu yêu cầu / kiến trúc mục tiêu. App `apps/nihongo-android` đã implement phần lớn offline + sync — status thật: [mobile-tech-stacks.md](./mobile-tech-stacks.md). Lộ trình học: [roadmap-android.md](./roadmap-android.md).
+
 ## Bối cảnh
 
 Tạo Android app cho EDU APP (học tiếng Nhật) với:

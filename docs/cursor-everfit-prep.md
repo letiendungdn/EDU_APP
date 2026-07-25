@@ -1,5 +1,7 @@
 # Cursor Prompt — Nâng cấp edu_app để apply Everfit Tech Lead
 
+> **Archival prep prompt.** Nhiều mục đã làm một phần; đối chiếu [senior-roadmap.md](./senior-roadmap.md) + codebase trước khi “implement toàn bộ”.
+
 ## Đọc trước khi làm
 
 Đọc các file sau để hiểu project:

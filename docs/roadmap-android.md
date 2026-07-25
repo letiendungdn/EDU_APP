@@ -1,5 +1,7 @@
 # Lộ trình Android — Kotlin + Jetpack
 
+> **Lộ trình học**, không phải bảng status feature. Inventory app: [mobile-tech-stacks.md](./mobile-tech-stacks.md). Chạy: [run-mobile.md](./run-mobile.md).
+
 ---
 
 ## GIAI ĐOẠN 1 — NỀN TẢNG (tháng 1–2)

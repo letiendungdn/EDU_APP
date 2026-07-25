@@ -21,10 +21,10 @@ Yêu cầu: `edu-postgres-nihongo` đang chạy. English chỉ dump nếu `edu-p
 | File | Nội dung |
 |------|----------|
 | `nihongo_YYYYMMDD_HHMMSS.sql` | Full dump DB nihongo |
-| `english_learning_YYYYMMDD_HHMMSS.sql` | Full dump DB english |
+| `english_learning_YYYYMMDD_HHMMSS.sql` | Full dump DB english *(chỉ khi `edu-postgres-english` up — có thể chưa có trong repo)* |
 | `nihongo_schema_YYYYMMDD_HHMMSS.sql` | Schema only |
 
-File `*.sql` được commit trong repo (snapshot restore). Chạy `npm run db:backup` để tạo bản mới; có thể thay file timestamp mới nhất khi cần.
+Snapshot **nihongo** `*.sql` được commit trong repo (restore nhanh). Chạy `npm run db:backup` để tạo bản mới; thay file timestamp mới nhất khi cần.
 
 ## Restore
 

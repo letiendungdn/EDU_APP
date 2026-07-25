@@ -1,5 +1,9 @@
 # Lộ trình Senior Mobile — Từ Project Này
 
+> **Phạm vi:** checklist skill tier mobile (push, sync, OCR…).  
+> Khác [learn-senior-roadmap.md](./learn-senior-roadmap.md) (11 tuần) và [senior-roadmap.md](./senior-roadmap.md) (backend).  
+> Status: [mobile-tech-stacks.md](./mobile-tech-stacks.md).
+
 ## Hiện trạng đã có
 
 ```

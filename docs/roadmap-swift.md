@@ -1,5 +1,7 @@
 # Lộ trình Swift / iOS
 
+> **Lộ trình học**, không phải bảng status feature. Inventory: [mobile-tech-stacks.md](./mobile-tech-stacks.md). Chạy: [run-mobile.md](./run-mobile.md).
+
 ---
 
 ## GIAI ĐOẠN 1 — SWIFT LANGUAGE (tháng 1–2)

@@ -1,5 +1,7 @@
 # Review Mobile App + Tính năng Livestream
 
+> **Archival / planning.** LiveKit + `/api/live` + UI mobile đã có MVP — đừng đọc như “chưa có livestream”. Inventory: [mobile-tech-stacks.md](./mobile-tech-stacks.md), [docker.md](./docker.md).
+
 ---
 
 ## Phần 1 — Review code hiện tại

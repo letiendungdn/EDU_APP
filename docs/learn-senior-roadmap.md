@@ -1,5 +1,9 @@
 # Lộ trình Senior Mobile — 11 tuần thực hành
 
+> **Phạm vi:** lịch thực hành mobile 11 tuần.  
+> Khác [learn-mobile-senior.md](./learn-mobile-senior.md) (tier skill) và [senior-roadmap.md](./senior-roadmap.md) (backend / Everfit).  
+> Status thật: [mobile-tech-stacks.md](./mobile-tech-stacks.md).
+
 Từ project Nihongo hiện tại, code thật, không lý thuyết suông.
 
 ---

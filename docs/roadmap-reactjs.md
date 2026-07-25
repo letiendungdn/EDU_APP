@@ -1,0 +1,243 @@
+# Lộ trình ReactJS — `apps/nihongo-web` + `apps/english-web`
+
+> **Lộ trình học** (React 19 + Next.js + TanStack Query), không phải bảng status feature.  
+> App thật: `nihongo-web` (Next 15, port **5173**) và `english-web` (Next 16, port **3001**).  
+> Chạy: [run-local.md](./run-local.md) · Docker: [docker.md](./docker.md) · Angular tương đương: [roadmap-angular.md](./roadmap-angular.md) · Mobile RN: [roadmap-react-native.md](./roadmap-react-native.md).
+
+---
+
+## Mục tiêu sau lộ trình
+
+Đọc / sửa được 2 app Next trong monorepo: component + hooks, React Query data layer, auth context (JWT + Google + Keycloak OIDC), Stripe Elements checkout, chat REST poll, test Vitest + Testing Library, Storybook.
+
+| Công cụ trong repo | App | Ghi chú |
+|--------------------|-----|---------|
+| React **19** + Next.js 15/16 | cả hai | App Router |
+| `@tanstack/react-query` v5 | cả hai | Data fetching + poll chat 5–8s |
+| `@tanstack/react-virtual` | nihongo-web | List dài (vocab) |
+| `@react-oauth/google` + `oidc-client-ts` | nihongo-web | Google + Keycloak |
+| `@stripe/react-stripe-js` | nihongo-web | Elements checkout |
+| `zustand` | english-web | State nhẹ |
+| Tailwind 4 | english-web | nihongo-web dùng CSS file thường |
+| `socket.io-client` | nihongo-web | Video call 1-1 (signaling :3002) |
+| `recharts`, `fabric`, `hanzi-writer`, `mapbox-gl` | nihongo-web | Chart / whiteboard / stroke order / bản đồ |
+| Vitest + Testing Library + Storybook | nihongo-web | `npm run test` / `npm run storybook` |
+
+---
+
+## GIAI ĐOẠN 1 — JavaScript/TypeScript + React core (tuần 1–3)
+
+```tsx
+// 1. Function component + props — pattern duy nhất trong repo (không class)
+interface VocabCardProps {
+  vocab: Vocabulary;
+  onReview?: (id: number) => void;
+}
+
+export function VocabCard({ vocab, onReview }: VocabCardProps) {
+  // 2. useState — state cục bộ
+  const [flipped, setFlipped] = useState(false);
+
+  // 3. useEffect — side effect, cleanup
+  useEffect(() => {
+    const timer = setTimeout(() => setFlipped(false), 5000);
+    return () => clearTimeout(timer);
+  }, [flipped]);
+
+  // 4. Event + conditional render
+  return (
+    <div onClick={() => setFlipped((f) => !f)}>
+      {flipped ? vocab.meaning : vocab.kana}
+    </div>
+  );
+}
+
+// 5. useMemo / useCallback — chỉ khi đo được re-render tốn kém
+const sorted = useMemo(() => [...vocabs].sort(byLesson), [vocabs]);
+```
+
+Đọc trong repo: `src/components/VocabCard.tsx`, `src/hooks/useAutoHideHeader.ts`.
+
+**Tài liệu:** [react.dev](https://react.dev/learn) — đọc hết phần Learn.
+
+**Checkpoint:** giải thích được vì sao `useEffect` cần dependency array và cleanup; phân biệt controlled vs uncontrolled input.
+
+---
+
+## GIAI ĐOẠN 2 — Next.js App Router (tuần 4–6)
+
+```
+apps/nihongo-web/
+  app/               # routes (App Router) — page.tsx, layout.tsx
+  src/
+    views/           # màn hình lớn (SrsView, KanjiView, MockExam…)
+    components/      # UI tái sử dụng (VocabCard, AppLayout, AdminShell)
+    hooks/           # useAuth, useSpeechRecognition, useVideoCall…
+    api/             # api client + hooks React Query (use-vocab, use-grammar)
+    contexts/        # AuthContext
+    lib/             # keycloak, theme, call-session
+    utils/           # thuần logic — dễ test nhất
+```
+
+| Khái niệm | Chỗ xem |
+|-----------|---------|
+| `page.tsx` / `layout.tsx` | `app/` |
+| Client component (`'use client'`) | hầu hết views — app là thin client |
+| Rewrite `/api/*` → gateway :3000 | `next.config` — **không** Route Handler gọi DB |
+| PWA | `@ducanh2912/next-pwa` |
+
+**Lưu ý kiến trúc:** frontend là thin client — mọi data qua `api-gateway` ([system-design.md](./system-design.md)). Đừng học Server Actions / RSC data fetching như pattern chính ở đây.
+
+**Checkpoint:** thêm một route mới trong `app/` render một view đơn giản, dùng `AppLayout`.
+
+---
+
+## GIAI ĐOẠN 3 — Data layer: React Query (tuần 7–9)
+
+```tsx
+// src/api/hooks/use-vocab.ts — pattern trong repo
+export function useVocab(lessonNumber: number) {
+  return useQuery({
+    queryKey: ['vocab', lessonNumber],
+    queryFn: () => apiFetch<Vocabulary[]>(`/vocabularies?lessonNumber=${lessonNumber}`),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+// Mutation + invalidate
+const queryClient = useQueryClient();
+const review = useMutation({
+  mutationFn: (body: ReviewBody) => apiFetch('/progress/review', { method: 'POST', body }),
+  onSuccess: () => queryClient.invalidateQueries({ queryKey: ['srs'] }),
+});
+
+// Chat / notifications — poll thay socket (xem cursor-chat.md)
+useQuery({ queryKey: ['support'], queryFn: fetchThread, refetchInterval: 5000 });
+```
+
+Cần nắm: `queryKey` design, `staleTime` vs `refetchInterval`, invalidation sau mutation, `enabled` cho query phụ thuộc auth.
+
+Đọc: `src/api/index.ts`, `src/api/hooks/`, `src/hooks/__tests__/useVocab.test.tsx`.
+
+**Checkpoint:** vẽ được flow một mutation review SRS → invalidate → UI cập nhật, và giải thích vì sao chat dùng poll 5–8s.
+
+---
+
+## GIAI ĐOẠN 4 — Auth + payment (tuần 10–12)
+
+| Flow | Chỗ xem |
+|------|---------|
+| JWT login + refresh | `src/contexts/AuthContext.tsx`, `src/hooks/useAuth.ts` |
+| Google Sign-In | `src/components/GoogleSignInButton.tsx` (`@react-oauth/google`) |
+| Keycloak OIDC | `src/lib/keycloak.ts` (`oidc-client-ts`) — [keycloak-setup.md](./keycloak-setup.md) |
+| Stripe checkout | `src/components/SubscriptionCheckoutPanel.tsx`, `src/views/CheckoutView.tsx` |
+| Webhook phía server | gateway — [system-design.md](./system-design.md) §3.2 |
+
+```tsx
+// Context pattern — một provider ở layout, hook để đọc
+const { user, login, logout } = useAuth();
+```
+
+**Checkpoint:** login 3 cách chạy được local; theo dõi Network thấy Bearer token + refresh; test Stripe với `npm run stripe:listen` ([run-local.md](./run-local.md)).
+
+---
+
+## GIAI ĐOẠN 5 — Feature map + state nâng cao (tuần 13–16)
+
+Học bằng cách đọc feature thật:
+
+| Feature | View / component | Điểm hay |
+|---------|------------------|----------|
+| SRS review | `views/SrsView.tsx` | Mutation + queue |
+| Mock exam | `views/MockExam*` | State machine làm bài |
+| Kanji practice | `views/KanjiPracticeView.tsx` + `hanzi-writer` | Canvas stroke |
+| Whiteboard | `views/WhiteboardView.tsx` + `fabric` | Canvas library |
+| Video call 1-1 | `hooks/useVideoCall.ts` + `components/VideoCallUI/` | WebRTC + socket.io |
+| Support chat | `components/SupportChatPanel.tsx` | REST poll |
+| Speech | `hooks/useSpeechRecognition.ts`, `useAudioRecorder.ts` | Web APIs |
+| Admin | `views/admin/`, `components/AdminShell.tsx` | RBAC UI |
+| Analytics | `recharts` views | Chart |
+
+**State:** repo dùng Context + React Query (nihongo-web) và Zustand (english-web) — **không Redux**. So sánh được 2 cách là đủ; chỉ học Redux Toolkit nếu job yêu cầu.
+
+**Bài tập (chọn 2):**
+
+1. Thêm filter lesson vào một list view (reuse pattern `useVocab`).
+2. Thêm một store Zustand nhỏ trong english-web (vd. UI preference).
+3. Virtual hóa một list dài bằng `@tanstack/react-virtual` (xem chỗ đã dùng).
+
+---
+
+## GIAI ĐOẠN 6 — Testing + Storybook + build (tuần 17–20)
+
+```powershell
+# Test (Vitest + Testing Library, jsdom)
+npm run test:run -w @edu/nihongo-web
+
+# Storybook — component isolation
+npm run storybook -w @edu/nihongo-web   # :6006
+
+# Build production
+npm run build -w @edu/nihongo-web
+
+# Full Docker
+npm run docker:up:nihongo   # → http://localhost:8080
+```
+
+| Loại test | Ví dụ trong repo |
+|-----------|-------------------|
+| Hook + React Query | `src/hooks/__tests__/useVocab.test.tsx` |
+| Util thuần | `src/utils/__tests__/dailyGoals.test.ts` |
+| Story | `VocabCard.stories.tsx`, `ListeningPlayer.stories.tsx` |
+
+**Checkpoint senior nhẹ:** viết một test hook mới có mock `apiFetch`, chạy xanh; giải thích rewrite `/api` hoạt động khác nhau giữa `next dev` và Docker/nginx.
+
+---
+
+## Lịch gợi ý (tóm tắt)
+
+| Giai đoạn | Thời gian | Kết quả |
+|-----------|-----------|---------|
+| 1 TS + React core | 3 tuần | Đọc hiểu component/hook bất kỳ |
+| 2 Next App Router | 3 tuần | Thêm route mới |
+| 3 React Query | 3 tuần | Query/mutation/invalidate |
+| 4 Auth + Stripe | 3 tuần | 3 login flow + checkout |
+| 5 Features + state | 4 tuần | Sửa 1–2 feature thật |
+| 6 Test + Storybook | 3–4 tuần | Test + story + build Docker |
+
+---
+
+## Thứ tự đọc file trong repo
+
+1. `apps/nihongo-web/package.json` — dependency thật
+2. `src/api/index.ts` + `src/api/hooks/use-vocab.ts`
+3. `src/contexts/AuthContext.tsx` + `src/hooks/useAuth.ts`
+4. `src/components/AppLayout.tsx` + một view: `views/SrsView.tsx`
+5. `src/hooks/__tests__/useVocab.test.tsx`
+6. `apps/english-web` — so sánh Zustand + Tailwind
+7. [system-design.md](./system-design.md) — thin client + gateway
+
+---
+
+## Câu hỏi tự kiểm tra
+
+1. Vì sao đổi `queryKey` là cách "refetch" đúng hơn gọi lại thủ công?
+2. `staleTime` khác `cacheTime`/`gcTime` thế nào?
+3. Access token lưu đâu, refresh token lưu đâu? Trade-off?
+4. Khi nào cần `useCallback`? Khi nào là premature optimization?
+5. Vì sao app không có Route Handler đọc DB dù là Next.js?
+
+---
+
+## Tài liệu liên quan
+
+| File | Nội dung |
+|------|----------|
+| [run-local.md](./run-local.md) | `dev:nihongo-web` :5173, `dev:english-web` :3001 |
+| [roadmap-angular.md](./roadmap-angular.md) | App Angular song song (:5174) |
+| [roadmap-react-native.md](./roadmap-react-native.md) | React Native (Expo mobile) |
+| [system-design.md](./system-design.md) | Thin client, gateway, auth |
+| [cursor-chat.md](./cursor-chat.md) | Chat REST + poll |
+| [keycloak-setup.md](./keycloak-setup.md) | OIDC client web |
+| [learn-edu-app.md](./learn-edu-app.md) | Lộ trình monorepo tổng |
+| [React docs](https://react.dev/) · [Next.js docs](https://nextjs.org/docs) · [TanStack Query](https://tanstack.com/query/latest) | Official |

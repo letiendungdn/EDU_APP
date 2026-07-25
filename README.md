@@ -238,6 +238,9 @@ npm test -- --coverage -w @edu/nihongo-services
 | [docs/system-design.md](docs/system-design.md) | Kiến trúc, request flows, auth |
 | [docs/db-design.md](docs/db-design.md) | ER diagrams, schema reference, backup |
 | [docs/run-local.md](docs/run-local.md) | Hướng dẫn chạy local từng bước |
+| [docs/docker.md](docs/docker.md) | Full stack Docker (~14 container) |
+| [docs/roadmap-angular.md](docs/roadmap-angular.md) | Lộ trình học Angular |
+| [docs/roadmap-reactjs.md](docs/roadmap-reactjs.md) | Lộ trình học ReactJS/Next |
 | [docs/learn-edu-app.md](docs/learn-edu-app.md) | Lộ trình 10 tuần học và làm chủ codebase |
 | [docs/google-oauth-setup.md](docs/google-oauth-setup.md) | Cấu hình Google Sign-In |
 | [docs/cursor-everfit-prep.md](docs/cursor-everfit-prep.md) | Cursor: Payment + Marketplace |

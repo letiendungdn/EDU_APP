@@ -1,5 +1,9 @@
 # Lộ trình lên Senior — dựa trên edu_app
 
+> **Phạm vi:** backend / system design / Everfit Tech Lead (NestJS, Prisma, Stripe, Kafka…).  
+> **Không nhầm với:** [learn-mobile-senior.md](./learn-mobile-senior.md) (tier skill mobile) · [learn-senior-roadmap.md](./learn-senior-roadmap.md) (11 tuần thực hành mobile).  
+> Status feature mobile/web: [mobile-tech-stacks.md](./mobile-tech-stacks.md), [system-design.md](./system-design.md).
+
 > Dựa trên codebase thực tế + yêu cầu Everfit Tech Lead JD.
 > Mỗi câu hỏi có đáp án ngắn gọn để tự kiểm tra.
 
@@ -1109,32 +1113,34 @@ ISSUES:
 **Q33: PM muốn "coach livestream" trong 2 tuần — estimate thế nào?**
 
 ```
-A: Estimate bằng cách break down thành tasks:
+A: Estimate bằng cách break down thành tasks (ví dụ phỏng vấn).
 
-  Backend:
-  - LivestreamSession model (migration) = 0.5 ngày
-  - WebRTC signaling server hoặc integrate Agora/Twilio = 3-5 ngày
-  - API: create/join/end stream = 1 ngày
-  - Recording + S3 storage = 1 ngày
-  - Payment integration (per-minute billing) = 2 ngày
-  Total backend: ~10 ngày
+  Thực tế trong edu_app (đã có MVP):
+  - LiveKit SFU container + LIVEKIT_* env
+  - Gateway /api/live/* (token / session)
+  - UI web + mobile join room
+  → Đừng nói "không có trong codebase" nếu interview về project này.
+
+  Estimate khi PHẢI build từ zero (hoặc mở rộng MVP):
+
+  Backend (mới / mở rộng):
+  - Session model + API create/join/end = 1–2 ngày (đã có thì giảm)
+  - LiveKit (hoặc Agora) integrate + auth token = 2–4 ngày
+  - Recording + S3 = 1–2 ngày
+  - Per-minute billing / webhook = 2 ngày
+  Total backend mở rộng: ~3–10 ngày tùy baseline
 
   Frontend:
-  - Video UI component = 2 ngày
-  - WebRTC / SDK integration = 3 ngày
+  - Video UI + SDK = 2–4 ngày
   - Chat trong stream = 1 ngày
-  Total frontend: ~6 ngày
+  Total frontend: ~3–5 ngày
 
-  QA + DevOps (deploy, scale): 3 ngày
-  Buffer (unknown unknowns): 20% = 4 ngày
-
-  Tổng thực tế: ~23 ngày = 4-5 tuần (không phải 2 tuần).
+  QA + DevOps: 2–3 ngày | Buffer 20%
 
   Communication với PM:
-  "Livestream đòi hỏi WebRTC infrastructure mới, không có trong codebase hiện tại.
-   Minimum viable version (basic video call, no recording) cần 3 tuần.
-   Full feature (recording, replay, per-minute billing) cần 5-6 tuần.
-   Trade-off nào bạn muốn? Tôi có thể scope lại nếu cần deliver sớm hơn."
+  "MVP livestream (LiveKit join room) đã có trong repo — ship coach UX trên nền đó
+   có thể ~1–2 tuần. Full (recording, replay, per-minute billing, scale)
+   thêm 3–4 tuần. Scope lại theo trade-off nào bạn ưu tiên?"
 ```
 
 ---

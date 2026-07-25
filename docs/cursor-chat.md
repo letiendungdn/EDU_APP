@@ -1,5 +1,7 @@
 # Chat & Notification — REST API (không Socket.io)
 
+> **Spec đã ship** trong gateway + web (REST + poll). File này vẫn là nguồn schema/API; không phải prompt “viết từ đầu”.
+
 > Cập nhật: 2026-06-27. App **không còn WebSocket** — chat và thông báo dùng **HTTP REST** + React Query polling.
 
 Schema SQL đầy đủ: [`sql/chat-schema.sql`](./sql/chat-schema.sql)  

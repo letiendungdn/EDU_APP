@@ -1,5 +1,7 @@
 # Lộ trình React Native
 
+> **Lộ trình học**, không phải bảng status feature. Inventory Expo: [mobile-tech-stacks.md](./mobile-tech-stacks.md). Chạy: [run-mobile.md](./run-mobile.md). React web: [roadmap-reactjs.md](./roadmap-reactjs.md).
+
 ---
 
 ## GIAI ĐOẠN 1 — JAVASCRIPT/TYPESCRIPT NỀN TẢNG (tháng 1)

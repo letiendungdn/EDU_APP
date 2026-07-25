@@ -1,8 +1,9 @@
 # Hướng dẫn chạy EDU APP (local)
 
-Monorepo `edu_app` — **Windows / PowerShell**. Chạy frontend Next.js + backend NestJS qua Docker (PostgreSQL, Redis, MongoDB, Kafka).
+Monorepo `edu_app` — **Windows / PowerShell**. Chạy frontend (Next / Angular) + backend NestJS; hạ tầng qua Docker (PostgreSQL, Redis, MongoDB, Kafka).
 
-> **Chạy full stack trong Docker / chuyển sang máy khác:** xem [docker.md](./docker.md).
+> **Chạy full stack trong Docker / chuyển máy:** [docker.md](./docker.md) (~14 container Nihongo, gồm Keycloak + LiveKit).  
+> **Mobile:** [run-mobile.md](./run-mobile.md). **Tài khoản:** [accounts.md](./accounts.md).
 
 ---
 
@@ -34,23 +35,44 @@ copy services\.env.example services\.env
 copy services\signaling-service\.env.example services\signaling-service\.env
 copy apps\nihongo-web\.env.example apps\nihongo-web\.env
 copy apps\english-web\.env.example apps\english-web\.env
+copy .env.docker.example .env   # nếu chạy Docker full / Keycloak public URL
 ```
 
 Chỉnh `services/.env` nếu cần: `JWT_SECRET`, Stripe, Google OAuth (xem [google-oauth-setup.md](./google-oauth-setup.md)). Copy cùng `JWT_SECRET` sang `services/signaling-service/.env`. Thêm `NEXT_PUBLIC_SIGNALING_URL=http://localhost:3002` vào `apps/nihongo-web/.env`.
 
 ### 3. Khởi động infrastructure
 
+**Tối thiểu (DB/cache/Kafka):**
+
 ```powershell
-docker compose up -d postgres-nihongo postgres-english redis mongodb kafka zookeeper
+npm run docker:up:infra
+# = postgres-nihongo redis mongodb zookeeper kafka
+```
+
+**Hybrid đầy đủ hơn** (OIDC + livestream + English DB):
+
+```powershell
+docker compose up -d postgres-nihongo postgres-english redis mongodb zookeeper kafka `
+  postgres-keycloak keycloak livekit
 ```
 
 | Container | Port host |
 |-----------|-----------|
 | PostgreSQL Nihongo (`edu-postgres-nihongo`) | **5433** |
-| PostgreSQL English (`edu-postgres-english`) | **5434** |
+| PostgreSQL English (`edu-postgres-english`) | **5434** *(tùy chọn)* |
 | Redis | 6379 |
 | MongoDB | 27017 |
 | Kafka | 9092 |
+| Keycloak | qua nginx `:8080` hoặc nội bộ — [keycloak-setup.md](./keycloak-setup.md) |
+| LiveKit | **7880** |
+
+Lần đầu cần volume: `docker volume create nihongo-app_postgres_data`.
+
+Hosts (Keycloak / Angular):
+
+```
+127.0.0.1 nihongo.localhost auth.localhost nihongo-angular.localhost english.localhost
+```
 
 Kiểm tra: `docker ps --filter "name=edu-"`
 
@@ -58,19 +80,17 @@ Kiểm tra: `docker ps --filter "name=edu-"`
 
 **Cách A — Restore backup có sẵn trong repo (khuyên dùng)**
 
-Đã có snapshot full trong `infra/backups/` (user, vocab, payment, …):
-
 ```powershell
 Get-Content "infra\backups\nihongo_20260725_144146.sql" | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 ```
 
-**Cách B — DB trống: migrate + seed nội dung**
+**Cách B — DB trống: migrate + seed**
 
 ```powershell
 npm run prisma:generate
 npm run migrate:deploy -w @edu/prisma-nihongo
 npm run db:push -w @edu/prisma-english
-npm run seed -w @edu/prisma-nihongo          # import infra/postgres/nihongo-content-seed.sql + plans
+npm run seed -w @edu/prisma-nihongo
 npm run seed -w @edu/prisma-english
 ```
 
@@ -80,9 +100,7 @@ npm run seed -w @edu/prisma-english
 npm run prisma:generate
 ```
 
-### 6. Media stroke order & ảnh từ vựng (tùy chọn, lần đầu)
-
-Cần Docker + DB đã có dữ liệu. Tải KanjiVG/OpenMoji/ảnh kanji về local rồi sync vào `public/media/`.
+### 6. Media (tùy chọn)
 
 ```powershell
 npm run media:setup
@@ -90,40 +108,46 @@ npm run media:setup
 
 ---
 
-## Chạy hàng ngày (dev)
+## Chạy hàng ngày (dev hybrid)
 
-> **Chạy full app trong Docker (chỉ Nihongo):** `npm run docker:up:nihongo` → mở http://localhost:8080. Danh sách 11 container cần chạy: xem [docker.md — Checklist Nihongo](./docker.md#checklist--chỉ-học-nihongo-docker-full).
+> **Docker full Nihongo (không cần `npm run dev:*`):**  
+> `npm run docker:up:nihongo` → http://localhost:8080  
+> Danh sách **~14 container** (có Keycloak + LiveKit qua `depends_on`): [docker.md](./docker.md).
 
 Mỗi lệnh **một terminal**, thư mục gốc `edu_app`:
 
-### Bước 1 — Docker
+### Bước 1 — Docker infra
 
 ```powershell
-docker compose up -d postgres-nihongo postgres-english redis mongodb kafka zookeeper
+npm run docker:up:infra
+# OIDC / live: thêm postgres-keycloak keycloak livekit như mục 3
 ```
 
 ### Bước 2 — Backend (3–4 terminal)
 
 | Terminal | Lệnh | URL / port |
 |----------|------|------------|
-| 1 | `npm run dev:gateway` | http://localhost:3000 — Swagger: `/api/docs` |
+| 1 | `npm run dev:gateway` | http://localhost:3000 — Swagger `/api/docs` |
 | 2 | `npm run dev:content` | gRPC **50051** |
 | 3 | `npm run dev:exam` | gRPC **50052** |
-| 4 *(video call)* | `npm run dev:signaling` | WebSocket **3002** — namespace `/signal` |
+| 4 *(video call 1-1)* | `npm run dev:signaling` | WebSocket **3002** — `/signal` |
 
-### Bước 3 — Frontend (1–2 terminal)
+### Bước 3 — Frontend (1–3 terminal)
 
 | Terminal | Lệnh | URL |
 |----------|------|-----|
 | 5 | `npm run dev:nihongo-web` | http://localhost:5173 |
-| 6 | `npm run dev:english-web` | http://localhost:3001 *(nếu cần)* |
+| 6 | `npm run dev:nihongo-angular` | http://localhost:5174 |
+| 7 | `npm run dev:english-web` | http://localhost:3001 *(nếu cần)* |
 
-Frontend gọi API qua rewrite `/api/*` → gateway `:3000`.
+Frontend gọi API qua rewrite/proxy `/api/*` → gateway `:3000`.
 
 ### Mở trình duyệt
 
 ```powershell
 start http://localhost:5173
+# Angular: start http://localhost:5174
+# Keycloak (nếu đã up): start http://auth.localhost:8080
 ```
 
 ---
@@ -131,17 +155,18 @@ start http://localhost:5173
 ## Sơ đồ terminal
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│  Docker: postgres + redis + mongodb + kafka + zookeeper     │
-├──────────────────────────────────────────────────────────────┤
-│  T1: npm run dev:gateway      → http://localhost:3000        │
-│  T2: npm run dev:content      → gRPC :50051                  │
-│  T3: npm run dev:exam         → gRPC :50052                  │
-│  T4: npm run dev:signaling    → WebSocket :3002 (video call) │
-│  T5: npm run dev:nihongo-web  → http://localhost:5173        │
-│  T6: npm run dev:english-web  → http://localhost:3001        │
-│  T7: npm run stripe:listen    → (chỉ khi test Stripe)        │
-└──────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│  Docker: postgres-nihongo + redis + mongodb + kafka + zookeeper │
+│  (+ keycloak / livekit / postgres-english khi cần)              │
+├──────────────────────────────────────────────────────────────────┤
+│  T1: npm run dev:gateway         → :3000                        │
+│  T2: npm run dev:content         → gRPC :50051                  │
+│  T3: npm run dev:exam            → gRPC :50052                  │
+│  T4: npm run dev:signaling       → WS :3002 (1-1 call, tùy chọn)│
+│  T5: npm run dev:nihongo-web     → :5173                        │
+│  T6: npm run dev:nihongo-angular → :5174                        │
+│  T7: npm run stripe:listen       → (chỉ khi test Stripe)        │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -150,7 +175,9 @@ start http://localhost:5173
 
 | Mục | URL / tài khoản |
 |-----|-----------------|
-| Login học viên | http://localhost:5173/login |
+| Login học viên (Next) | http://localhost:5173/login |
+| Login (Angular) | http://localhost:5174/login |
+| Keycloak OIDC | Nút Keycloak — demo users [accounts.md](./accounts.md) |
 | Google Sign-In | Nút Google (cần `GOOGLE_CLIENT_ID`) |
 | Admin | http://localhost:5173/admin/login |
 | Admin dev mặc định | `admin@nihongo.local` / `admin123` |
@@ -159,14 +186,12 @@ start http://localhost:5173
 
 ## Stripe webhook (khi test thanh toán)
 
-Terminal riêng — giữ chạy:
-
 ```powershell
 npm run stripe:login    # một lần
-npm run stripe:listen   # forward → localhost:3000/api/webhooks/stripe
+npm run stripe:listen   # → localhost:3000/api/webhooks/stripe
 ```
 
-Copy `whsec_...` từ output → `STRIPE_WEBHOOK_SECRET` trong `services/.env` → **restart gateway**.
+Copy `whsec_...` → `STRIPE_WEBHOOK_SECRET` trong `services/.env` → **restart gateway**.
 
 ---
 
@@ -177,15 +202,17 @@ Copy `whsec_...` từ output → `STRIPE_WEBHOOK_SECRET` trong `services/.env` �
 | `npm run dev:gateway` | API gateway :3000 |
 | `npm run dev:content` | Content service gRPC |
 | `npm run dev:exam` | Exam service gRPC |
-| `npm run dev:signaling` | WebRTC signaling :3002 |
-| `npm run dev:nihongo-web` | Frontend tiếng Nhật :5173 |
-| `npm run dev:english-web` | Frontend tiếng Anh :3001 |
-| `npm run docker:up` | `docker compose up -d` (tất cả service) |
+| `npm run dev:signaling` | WebRTC signaling :3002 (1-1) |
+| `npm run dev:nihongo-web` | Next.js tiếng Nhật :5173 |
+| `npm run dev:nihongo-angular` | Angular :5174 |
+| `npm run dev:english-web` | Next.js tiếng Anh :3001 |
+| `npm run docker:up:infra` | Chỉ infra Nihongo (DB/cache/Kafka) |
+| `npm run docker:up:nihongo` | Full Docker Nihongo (~14 container) |
+| `npm run docker:up` | `docker compose --profile english up -d` |
 | `npm run docker:down` | Dừng containers |
 | `npm run prisma:generate` | Generate Prisma client |
-| `npm run db:backup` | Dump DB → `infra/backups/` |
-| `npm run db:export-content` | Export nội dung học → `nihongo-content-seed.sql` |
-| `npm run media:setup` | Tải + sync media + cập nhật URL ảnh trong DB |
+| `npm run db:backup` | Dump DB → `infra/backups/` (snapshot được commit) |
+| `npm run media:setup` | Tải + sync media |
 
 ---
 
@@ -194,14 +221,14 @@ Copy `whsec_...` từ output → `STRIPE_WEBHOOK_SECRET` trong `services/.env` �
 ```powershell
 cd C:\Users\dungle\Desktop\edu_app
 
-$ports = 3000, 3001, 3002, 50051, 50052, 5173
+$ports = 3000, 3001, 3002, 50051, 50052, 5173, 5174
 foreach ($p in $ports) {
   Get-NetTCPConnection -LocalPort $p -ErrorAction SilentlyContinue |
     ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }
 }
 
-docker compose up -d postgres-nihongo postgres-english redis mongodb kafka zookeeper
-# Chạy lại dev:gateway, dev:content, dev:exam, dev:nihongo-web
+npm run docker:up:infra
+# Chạy lại gateway / content / exam / nihongo-web / nihongo-angular
 ```
 
 ---
@@ -212,12 +239,13 @@ docker compose up -d postgres-nihongo postgres-english redis mongodb kafka zooke
 |-------------|------------|
 | `Cannot find module '@prisma/client'` | `npm run prisma:generate` |
 | Gateway `[ioredis] Unhandled error` | `docker compose up -d redis` → restart gateway |
-| Content `EADDRINUSE :50051` | Kill process cũ trên 50051 hoặc dùng script restart ở trên |
-| Vocab/kanji không có stroke order | `npm run media:setup` hoặc refresh trang |
-| API 401 / không load bài học | Kiểm tra postgres :5433, restore backup hoặc seed lại |
-| Next.js lỗi `.next` cache | Xóa `apps/nihongo-web/.next` → chạy lại `dev:nihongo-web` |
-| Stripe `Invalid signature` | `whsec` phải khớp terminal `stripe:listen` đang chạy |
-| Google login lỗi | Thêm `http://localhost:5173` vào Authorized origins |
+| Content `EADDRINUSE :50051` | Kill process trên 50051 |
+| API 401 / không load bài | Postgres :5433, restore backup hoặc seed |
+| Keycloak / OIDC lỗi | Up `keycloak` + hosts `auth.localhost` — [keycloak-setup.md](./keycloak-setup.md) |
+| LiveKit / livestream lỗi | `docker compose up -d livekit` — port 7880 |
+| Next.js lỗi `.next` | Xóa `apps/nihongo-web/.next` → `dev:nihongo-web` |
+| Stripe `Invalid signature` | `whsec` khớp `stripe:listen` đang chạy |
+| Google login lỗi | Thêm `http://localhost:5173` (và `:5174`) vào Authorized origins |
 
 ---
 
@@ -225,9 +253,8 @@ docker compose up -d postgres-nihongo postgres-english redis mongodb kafka zooke
 
 ```powershell
 # Ctrl+C từng terminal dev
-
 docker compose down          # giữ data volume
-docker compose down -v       # xóa volume — mất DB
+docker compose down -v       # xóa volume non-external — mất DB
 ```
 
 ---
@@ -236,12 +263,8 @@ docker compose down -v       # xóa volume — mất DB
 
 ```powershell
 npm run db:backup
-```
-
-Restore:
-
-```powershell
-Get-Content "infra\backups\nihongo_YYYYMMDD_HHMMSS.sql" | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content "infra\backups\nihongo_YYYYMMDD_HHMMSS.sql" |
+  docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 ```
 
 Chi tiết: [infra/backups/README.md](../infra/backups/README.md)
@@ -252,8 +275,11 @@ Chi tiết: [infra/backups/README.md](../infra/backups/README.md)
 
 | File | Nội dung |
 |------|----------|
-| [README.md](../README.md) | Kiến trúc tổng quan |
-| [run-mobile.md](./run-mobile.md) | Chạy 4 app mobile (Expo / Android / Flutter / iOS) |
-| [infra/postgres/README.md](../infra/postgres/README.md) | Content seed SQL |
+| [docker.md](./docker.md) | Full stack Docker, Keycloak, LiveKit, Angular |
+| [run-mobile.md](./run-mobile.md) | 4 app mobile |
+| [nginx.md](./nginx.md) | Routing `:8080` |
+| [accounts.md](./accounts.md) | User/password |
+| [roadmap-angular.md](./roadmap-angular.md) | Lộ trình học Angular |
+| [roadmap-reactjs.md](./roadmap-reactjs.md) | Lộ trình học ReactJS/Next |
 | [google-oauth-setup.md](./google-oauth-setup.md) | Google Sign-In |
-| [system-design.md](./system-design.md) | Request flows |
+| [system-design.md](./system-design.md) | Kiến trúc / flows |

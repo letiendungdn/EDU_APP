@@ -263,7 +263,7 @@ Chọn **một màn hình** (Vocab hoặc SRS):
 | Muốn cross-platform typed | **Flutter + Riverpod** | `apps/nihongo_flutter` |
 | Có macOS, theo iOS | **SwiftUI** | `apps/nihongo-ios` |
 
-Chạy app: [run-mobile.md](./run-mobile.md). Backend phải lên (`docker compose up -d` hoặc `npm run docker:up:nihongo`).
+Chạy app: [run-mobile.md](./run-mobile.md). Backend phải lên (`npm run docker:up:nihongo` hoặc hybrid theo [run-local.md](./run-local.md)).
 
 ### API base URL — nhớ thuộc
 
@@ -556,6 +556,8 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 | Android | [roadmap-android.md](./roadmap-android.md) |
 | Flutter | [roadmap-flutter.md](./roadmap-flutter.md) |
 | Swift | [roadmap-swift.md](./roadmap-swift.md) |
+| Angular (web) | [roadmap-angular.md](./roadmap-angular.md) |
+| ReactJS (web) | [roadmap-reactjs.md](./roadmap-reactjs.md) |
 | Senior mobile | [learn-mobile-senior.md](./learn-mobile-senior.md) |
 
 ---
@@ -588,7 +590,7 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 4. [db-design.md](./db-design.md)
 5. [keycloak-setup.md](./keycloak-setup.md)
 6. [run-mobile.md](./run-mobile.md) ← chạy 4 app mobile + unit test
-7. Roadmap stack đã chọn: [roadmap-react-native.md](./roadmap-react-native.md) / [roadmap-android.md](./roadmap-android.md) / [roadmap-flutter.md](./roadmap-flutter.md) / [roadmap-swift.md](./roadmap-swift.md)
+7. Roadmap stack đã chọn: [roadmap-react-native.md](./roadmap-react-native.md) / [roadmap-android.md](./roadmap-android.md) / [roadmap-flutter.md](./roadmap-flutter.md) / [roadmap-swift.md](./roadmap-swift.md) / [roadmap-angular.md](./roadmap-angular.md) / [roadmap-reactjs.md](./roadmap-reactjs.md)
 8. [learn-testing.md](./learn-testing.md)
 9. [learn-kafka.md](./learn-kafka.md)
 10. [interview-questions.md](./interview-questions.md) + [interview-mobile.md](./interview-mobile.md)

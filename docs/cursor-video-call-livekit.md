@@ -1,5 +1,7 @@
 # Cursor Prompt — Video Call Production (Livekit SFU + coturn)
 
+> **Archival / design prompt.** LiveKit đã chạy trong Compose (`edu-livekit :7880`); coturn có thể chưa đủ như spec đầy đủ. So sánh với [docker.md](./docker.md) trước khi implement thêm.
+
 ## Bối cảnh
 
 Project EDU APP — NestJS 11 monorepo. Đã có `services/signaling-service/` theo approach P2P cơ bản

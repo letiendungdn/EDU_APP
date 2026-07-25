@@ -1,5 +1,7 @@
 # Lộ trình Flutter — Từ cơ bản đến Senior
 
+> **Lộ trình học**, không phải bảng status feature. Inventory: [mobile-tech-stacks.md](./mobile-tech-stacks.md). Chạy: [run-mobile.md](./run-mobile.md).
+
 Dùng project Nihongo (`apps/nihongo_flutter/`) làm ví dụ xuyên suốt.
 
 ---
