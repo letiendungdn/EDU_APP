@@ -1,11 +1,38 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 
 const nihongoAppUrl = process.env.NEXT_PUBLIC_NIHONGO_APP_URL ?? 'http://localhost:5173';
+
+function SsoHandler() {
+  const params = useSearchParams();
+  const router = useRouter();
+  useEffect(() => {
+    const ssoToken = params.get('sso_token');
+    if (!ssoToken) return;
+    void (async () => {
+      try {
+        await fetch('/api/english/auth/set-cookie', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: ssoToken }),
+          credentials: 'include',
+        });
+      } catch {
+        // ignore — user can log in manually
+      } finally {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('sso_token');
+        router.replace(url.pathname + url.search);
+      }
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
+}
 
 const nav = [
   { href: '/', label: '🏠 Home', end: true },
@@ -35,6 +62,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={qc}>
+      <SsoHandler />
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <header style={{ borderBottom: '1px solid var(--border)', padding: '0.75rem 0', background: 'var(--bg)', position: 'sticky', top: 0, zIndex: 100 }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>

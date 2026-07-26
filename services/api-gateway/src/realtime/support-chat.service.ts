@@ -2,6 +2,7 @@ import { ForbiddenException, Injectable } from "@nestjs/common";
 import { NotificationType, Role } from "@prisma/client";
 import { PrismaService } from "@app/prisma";
 import { NotificationService } from "./notification.service";
+import { ChatEventsService } from "./chat-events.service";
 
 const senderSelect = {
   id: true,
@@ -16,6 +17,7 @@ export class SupportChatService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationService,
+    private readonly chatEvents: ChatEventsService,
   ) {}
 
   threadRoom(threadId: number) {
@@ -46,9 +48,15 @@ export class SupportChatService {
     throw new ForbiddenException("Không có quyền truy cập hội thoại này");
   }
 
-  async saveMessage(threadId: number, senderId: number, content: string) {
+  async saveMessage(
+    threadId: number,
+    senderId: number,
+    content: string,
+    fileUrl?: string,
+    fileType?: string,
+  ) {
     const message = await this.prisma.supportMessage.create({
-      data: { threadId, senderId, content },
+      data: { threadId, senderId, content, fileUrl, fileType },
       include: { sender: { select: senderSelect } },
     });
 
@@ -74,6 +82,8 @@ export class SupportChatService {
         metadata: { threadId, messageId: message.id },
       });
     }
+
+    this.chatEvents.emit({ type: "support", roomId: threadId, message });
 
     return { message, thread, isFromUser };
   }

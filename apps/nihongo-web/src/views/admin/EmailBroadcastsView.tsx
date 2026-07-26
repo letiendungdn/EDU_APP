@@ -31,6 +31,7 @@ function fmt(iso: string) {
 export default function EmailBroadcastsView() {
   const { token } = useAuth();
   const [broadcasts, setBroadcasts] = useState<Broadcast[]>([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -38,8 +39,9 @@ export default function EmailBroadcastsView() {
     if (!token) return;
     setLoading(true);
     try {
-      const data = await apiRequest<Broadcast[]>('/admin/email/broadcasts', { token });
-      setBroadcasts(data);
+      const data = await apiRequest<{ items: Broadcast[]; total: number }>('/admin/email/broadcasts', { token });
+      setBroadcasts(data.items ?? []);
+      setTotal(data.total ?? 0);
     } catch (e) {
       setError(String(e));
     } finally {
@@ -55,7 +57,7 @@ export default function EmailBroadcastsView() {
         <div>
           <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: 'var(--text-primary)' }}>Lịch sử Email</h1>
           <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-secondary)' }}>
-            Broadcast và compose đã gửi
+            Broadcast và compose đã gửi{total > 0 ? ` · ${total} bản ghi` : ''}
           </p>
         </div>
         <button onClick={load} style={{

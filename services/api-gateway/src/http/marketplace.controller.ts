@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -17,6 +18,7 @@ import {
 } from "@app/common";
 import { BookingService } from "../../../payment-service/src/booking/booking.service";
 import { MarketplaceService } from "../../../payment-service/src/marketplace/marketplace.service";
+import { SessionChatService } from "../../../payment-service/src/booking/session-chat.service";
 import {
   BookSessionDto,
   CancelSessionDto,
@@ -30,6 +32,7 @@ export class MarketplaceController {
   constructor(
     private readonly marketplaceService: MarketplaceService,
     private readonly bookingService: BookingService,
+    private readonly sessionChat: SessionChatService,
   ) {}
 
   @Public()
@@ -99,5 +102,46 @@ export class MarketplaceController {
       dto.rating,
       dto.comment,
     );
+  }
+
+  @Get("sessions/:id/messages")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Lịch sử chat coaching session" })
+  getSessionMessages(
+    @CurrentUser() user: AuthUserPayload,
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    return this.sessionChat.getMessages(id, user.id);
+  }
+
+  @Post("sessions/:id/messages")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Gửi tin nhắn trong coaching session" })
+  sendSessionMessage(
+    @CurrentUser() user: AuthUserPayload,
+    @Param("id", ParseIntPipe) id: number,
+    @Body() body: { content: string; fileUrl?: string; fileType?: string },
+  ) {
+    return this.sessionChat.sendMessage(
+      id,
+      user.id,
+      body.content.trim(),
+      body.fileUrl,
+      body.fileType,
+    );
+  }
+
+  @Patch("sessions/:id/messages/read")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Đánh dấu đã đọc chat session" })
+  async markSessionRead(
+    @CurrentUser() user: AuthUserPayload,
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    await this.sessionChat.markRead(id, user.id);
+    return { ok: true };
   }
 }

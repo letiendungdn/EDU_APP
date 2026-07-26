@@ -1286,6 +1286,8 @@ model ChatMessage {
   senderId  Int
   sender    User            @relation("SentMessages", fields: [senderId], references: [id])
   content   String
+  fileUrl   String?
+  fileType  String?
   readAt    DateTime?
   createdAt DateTime        @default(now())
 
@@ -1325,6 +1327,8 @@ model SupportMessage {
   senderId  Int
   sender    User          @relation("SupportMessages", fields: [senderId], references: [id])
   content   String
+  fileUrl   String?
+  fileType  String?
   readAt    DateTime?
   createdAt DateTime      @default(now())
 
@@ -1367,6 +1371,8 @@ model LearnerChatMessage {
   senderId  Int
   sender    User            @relation("LearnerChatMessages", fields: [senderId], references: [id])
   content   String
+  fileUrl   String?
+  fileType  String?
   readAt    DateTime?
   createdAt DateTime        @default(now())
 

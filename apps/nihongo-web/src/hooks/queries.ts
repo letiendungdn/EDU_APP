@@ -284,7 +284,7 @@ export function useSupportThreadQuery(enabled = true) {
     queryFn: () => fetchSupportThread(token!),
     enabled: enabled && !!token,
     staleTime: 10_000,
-    refetchInterval: 8_000,
+    refetchInterval: 30_000, // SSE handles realtime; this is just a reconnect fallback
   });
 }
 
@@ -295,7 +295,7 @@ export function useAdminSupportThreadsQuery(enabled = true) {
     queryFn: () => fetchAdminSupportThreads(token!),
     enabled: enabled && !!token,
     staleTime: 10_000,
-    refetchInterval: 8_000,
+    refetchInterval: 15_000,
   });
 }
 
@@ -306,7 +306,7 @@ export function useAdminSupportThreadQuery(threadId: number | null, enabled = tr
     queryFn: () => fetchAdminSupportThread(token!, threadId!),
     enabled: enabled && !!token && threadId != null,
     staleTime: 5_000,
-    refetchInterval: 5_000,
+    refetchInterval: 30_000, // SSE handles realtime
   });
 }
 
@@ -317,7 +317,7 @@ export function useCommunityRoomsQuery(enabled = true) {
     queryFn: () => fetchCommunityRooms(token!),
     enabled: enabled && !!token,
     staleTime: 10_000,
-    refetchInterval: 8_000,
+    refetchInterval: 30_000,
   });
 }
 
@@ -328,7 +328,7 @@ export function useCommunityRoomQuery(roomId: number | null, enabled = true) {
     queryFn: () => fetchCommunityRoom(token!, roomId!),
     enabled: enabled && !!token && roomId != null,
     staleTime: 5_000,
-    refetchInterval: 5_000,
+    refetchInterval: 30_000, // SSE handles realtime
   });
 }
 

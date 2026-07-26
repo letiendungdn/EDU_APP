@@ -121,12 +121,14 @@ export class AdminController {
   async sendSupportMessage(
     @CurrentUser() user: AuthUserPayload,
     @Param("id", ParseIntPipe) id: number,
-    @Body() body: { content: string },
+    @Body() body: { content: string; fileUrl?: string; fileType?: string },
   ) {
     const { message } = await this.supportChat.saveMessage(
       id,
       user.id,
       body.content.trim(),
+      body.fileUrl,
+      body.fileType,
     );
     return { message };
   }

@@ -4,9 +4,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import VideoCallUI from '@/components/VideoCallUI/VideoCallUI';
+import SessionChatPanel from '@/components/SessionChatPanel';
 
 export default function CallPageClient({ sessionId }: { sessionId: number }) {
-  const { token, isAuthenticated, authReady } = useAuth();
+  const { token, isAuthenticated, authReady, user } = useAuth();
   const router = useRouter();
   const returnPath = `/session/${sessionId}/call`;
 
@@ -35,7 +36,12 @@ export default function CallPageClient({ sessionId }: { sessionId: number }) {
     );
   }
 
-  if (!token) return null;
+  if (!token || !user) return null;
 
-  return <VideoCallUI sessionId={sessionId} token={token} />;
+  return (
+    <>
+      <VideoCallUI sessionId={sessionId} token={token} />
+      <SessionChatPanel sessionId={sessionId} currentUserId={user.id} />
+    </>
+  );
 }

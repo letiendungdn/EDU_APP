@@ -12,6 +12,7 @@ import {
 } from "@prisma/client";
 import { PrismaService } from "@app/prisma";
 import { NotificationService } from "./notification.service";
+import { ChatEventsService } from "./chat-events.service";
 
 const senderSelect = {
   id: true,
@@ -30,6 +31,7 @@ export class GroupChatService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationService,
+    private readonly chatEvents: ChatEventsService,
   ) {}
 
   roomSocket(roomId: number) {
@@ -282,11 +284,17 @@ export class GroupChatService {
     });
   }
 
-  async saveMessage(roomId: number, senderId: number, content: string) {
+  async saveMessage(
+    roomId: number,
+    senderId: number,
+    content: string,
+    fileUrl?: string,
+    fileType?: string,
+  ) {
     await this.assertMember(roomId, senderId);
 
     const message = await this.prisma.learnerChatMessage.create({
-      data: { roomId, senderId, content },
+      data: { roomId, senderId, content, fileUrl, fileType },
       include: { sender: { select: senderSelect } },
     });
 
@@ -314,6 +322,8 @@ export class GroupChatService {
         }),
       ),
     );
+
+    this.chatEvents.emit({ type: "community", roomId, message });
 
     return message;
   }

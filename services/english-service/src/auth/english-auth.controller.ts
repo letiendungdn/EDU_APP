@@ -42,4 +42,39 @@ export class EnglishAuthController {
     });
     return result;
   }
+
+  @Post("token-exchange")
+  async tokenExchange(
+    @Body() body: { token: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.nihongoTokenExchange(body.token);
+    res.cookie("token", result.token, {
+      httpOnly: true,
+      maxAge: TOKEN_COOKIE_MAX_AGE_MS,
+      path: "/",
+    });
+    return result;
+  }
+
+  // Called from english-web frontend to set cookie on the correct domain
+  @Post("set-cookie")
+  async setCookie(
+    @Body() body: { token: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    // Verify it's a valid English token before setting
+    const verified = await this.authService.verifyRequest({
+      headers: { authorization: `Bearer ${body.token}` },
+      cookies: {},
+    } as unknown as import("express").Request);
+    if (!verified) throw new Error("Invalid token");
+
+    res.cookie("token", body.token, {
+      httpOnly: true,
+      maxAge: TOKEN_COOKIE_MAX_AGE_MS,
+      path: "/",
+    });
+    return { ok: true };
+  }
 }

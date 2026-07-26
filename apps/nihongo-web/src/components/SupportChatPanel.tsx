@@ -6,9 +6,11 @@ import {
   markSupportRead,
   sendAdminSupportMessage,
   sendSupportMessage,
+  getPresignedUploadUrl,
 } from '@/api';
 import { getStoredToken } from '@/lib/api-client';
 import type { SupportMessage } from '@/types/chat';
+import { useSupportSSE } from '@/hooks/useChatSSE';
 import './SupportChat.css';
 
 type SupportChatPanelProps = {
@@ -29,6 +31,33 @@ function formatTime(iso: string) {
   });
 }
 
+function MessageBubble({ msg, isMine }: { msg: SupportMessage; isMine: boolean }) {
+  return (
+    <div className={`support-chat-bubble${isMine ? ' support-chat-bubble--mine' : ''}`}>
+      <div className="support-chat-bubble-meta">
+        <strong>{msg.sender.name ?? msg.sender.email}</strong>
+        <span>{formatTime(msg.createdAt)}</span>
+      </div>
+      {msg.content && <p>{msg.content}</p>}
+      {msg.fileUrl && (
+        <div style={{ marginTop: 4 }}>
+          {msg.fileType?.startsWith('image/') ? (
+            <img
+              src={msg.fileUrl}
+              alt="attachment"
+              style={{ maxWidth: 240, maxHeight: 240, borderRadius: 8, display: 'block' }}
+            />
+          ) : (
+            <a href={msg.fileUrl} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'var(--primary-color)' }}>
+              📎 Tải file đính kèm
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function SupportChatPanel({
   threadId,
   initialMessages = [],
@@ -40,7 +69,12 @@ export default function SupportChatPanel({
   const [messages, setMessages] = useState<SupportMessage[]>(initialMessages);
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // SSE realtime (user side only — admin uses polling for now)
+  useSupportSSE(!isAdmin ? threadId : null, !isAdmin);
 
   useEffect(() => {
     setMessages(initialMessages);
@@ -60,25 +94,47 @@ export default function SupportChatPanel({
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    const text = draft.trim();
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
     const token = getStoredToken();
-    if (!text || sending || !token) return;
+    if (!token) return;
+
+    setUploading(true);
+    try {
+      const { url, publicUrl } = await getPresignedUploadUrl(token, file.type, 'chat');
+      await fetch(url, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } });
+      await handleSend('', publicUrl, file.type);
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }
+
+  async function handleSend(text: string, fileUrl?: string, fileType?: string) {
+    const token = getStoredToken();
+    if ((!text && !fileUrl) || sending || !token) return;
     setSending(true);
-    setDraft('');
     try {
       if (isAdmin && threadId) {
-        const res = await sendAdminSupportMessage(token, threadId, text);
+        const res = await sendAdminSupportMessage(token, threadId, text, fileUrl, fileType);
         setMessages((prev) => [...prev, res.message]);
       } else {
-        const res = await sendSupportMessage(token, text);
+        const res = await sendSupportMessage(token, text, fileUrl, fileType);
         setMessages((prev) => [...prev, res.message]);
       }
       onSent?.();
     } finally {
       setSending(false);
     }
+  }
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    const text = draft.trim();
+    if (!text) return;
+    setDraft('');
+    await handleSend(text);
   }
 
   return (
@@ -100,18 +156,7 @@ export default function SupportChatPanel({
           const isMine = isAdmin
             ? msg.sender.role === 'ADMIN'
             : msg.sender.role !== 'ADMIN';
-          return (
-            <div
-              key={msg.id}
-              className={`support-chat-bubble${isMine ? ' support-chat-bubble--mine' : ''}`}
-            >
-              <div className="support-chat-bubble-meta">
-                <strong>{msg.sender.name ?? msg.sender.email}</strong>
-                <span>{formatTime(msg.createdAt)}</span>
-              </div>
-              <p>{msg.content}</p>
-            </div>
-          );
+          return <MessageBubble key={msg.id} msg={msg} isMine={isMine} />;
         })}
         <div ref={bottomRef} />
       </div>
@@ -122,8 +167,27 @@ export default function SupportChatPanel({
           placeholder="Nhập tin nhắn..."
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          disabled={sending || (isAdmin && !threadId)}
+          disabled={sending || uploading || (isAdmin && !threadId)}
         />
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*,application/pdf"
+          style={{ display: 'none' }}
+          onChange={(e) => void handleFileChange(e)}
+        />
+        <button
+          type="button"
+          title="Đính kèm file"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading || sending || (isAdmin && !threadId)}
+          style={{
+            padding: '0 10px', borderRadius: 6, border: '1px solid var(--border-color)',
+            background: 'transparent', cursor: 'pointer', fontSize: 16,
+          }}
+        >
+          {uploading ? '…' : '📎'}
+        </button>
         <button
           type="submit"
           className="btn btn-primary"

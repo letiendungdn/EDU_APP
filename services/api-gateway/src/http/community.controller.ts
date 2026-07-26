@@ -7,9 +7,13 @@ import {
   Patch,
   Post,
   Query,
+  Res,
+  Sse,
   UseGuards,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import type { Response } from "express";
+import { Observable } from "rxjs";
 import {
   CurrentUser,
   JwtAuthGuard,
@@ -17,6 +21,7 @@ import {
 } from "@app/common";
 import { GroupChatService } from "../realtime/group-chat.service";
 import { VideoPresenceService } from "../realtime/video-presence.service";
+import { ChatEventsService } from "../realtime/chat-events.service";
 
 class CreateGroupDto {
   name!: string;
@@ -39,6 +44,7 @@ export class CommunityController {
   constructor(
     private readonly groupChat: GroupChatService,
     private readonly presence: VideoPresenceService,
+    private readonly chatEvents: ChatEventsService,
   ) {}
 
   @Get("rooms")
@@ -111,12 +117,14 @@ export class CommunityController {
   async sendMessage(
     @CurrentUser() user: AuthUserPayload,
     @Param("id", ParseIntPipe) id: number,
-    @Body() body: { content: string },
+    @Body() body: { content: string; fileUrl?: string; fileType?: string },
   ) {
     const message = await this.groupChat.saveMessage(
       id,
       user.id,
       body.content.trim(),
+      body.fileUrl,
+      body.fileType,
     );
     return { message };
   }
@@ -129,5 +137,18 @@ export class CommunityController {
   ) {
     await this.groupChat.markRead(id, user.id);
     return { ok: true };
+  }
+
+  @Sse("rooms/:id/stream")
+  @ApiOperation({ summary: "SSE stream — tin nhắn mới trong phòng" })
+  async streamRoom(
+    @CurrentUser() user: AuthUserPayload,
+    @Param("id", ParseIntPipe) id: number,
+    @Res() res: Response,
+  ): Promise<Observable<MessageEvent>> {
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("X-Accel-Buffering", "no");
+    await this.groupChat.assertMember(id, user.id);
+    return this.chatEvents.observe("community", id);
   }
 }

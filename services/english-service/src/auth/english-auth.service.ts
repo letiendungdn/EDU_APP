@@ -5,6 +5,7 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcryptjs";
+import * as crypto from "node:crypto";
 import type { Request } from "express";
 import { Role } from "@edu/prisma-english/client";
 import { EnglishPrismaService } from "@app/prisma-english";
@@ -98,6 +99,38 @@ export class EnglishAuthService {
     } catch {
       return null;
     }
+  }
+
+  async nihongoTokenExchange(nihongoToken: string) {
+    let payload: { sub?: number; email?: string; aud?: string };
+    try {
+      payload = this.jwtService.verify<{ sub: number; email: string; aud?: string }>(nihongoToken);
+    } catch {
+      throw new UnauthorizedException("Token nihongo không hợp lệ");
+    }
+
+    if (payload.aud === "english") {
+      throw new UnauthorizedException("Đây đã là English token");
+    }
+
+    const email = payload.email;
+    if (!email) throw new UnauthorizedException("Token không có email");
+
+    let user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      const randomPwd = await bcrypt.hash(crypto.randomBytes(32).toString("hex"), 10);
+      user = await this.prisma.user.create({
+        data: { email, passwordHash: randomPwd },
+      });
+    }
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { lastActiveAt: new Date() },
+    });
+
+    const token = this.signToken(user);
+    return { user: { id: user.id, email: user.email, name: user.name, role: user.role }, token };
   }
 
   private extractToken(req: Request): string | undefined {

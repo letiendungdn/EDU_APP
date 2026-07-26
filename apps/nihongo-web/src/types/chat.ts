@@ -11,6 +11,8 @@ export interface SupportMessage {
   threadId: number;
   senderId: number;
   content: string;
+  fileUrl?: string | null;
+  fileType?: string | null;
   readAt: string | null;
   createdAt: string;
   sender: ChatUser;
@@ -30,6 +32,20 @@ export interface GroupChatMessage {
   roomId: number;
   senderId: number;
   content: string;
+  fileUrl?: string | null;
+  fileType?: string | null;
+  readAt: string | null;
+  createdAt: string;
+  sender: ChatUser;
+}
+
+export interface SessionChatMessage {
+  id: number;
+  sessionId: number;
+  senderId: number;
+  content: string;
+  fileUrl?: string | null;
+  fileType?: string | null;
   readAt: string | null;
   createdAt: string;
   sender: ChatUser;

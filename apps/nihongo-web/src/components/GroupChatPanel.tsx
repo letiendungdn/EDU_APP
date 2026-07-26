@@ -1,9 +1,10 @@
 'use client';
 
 import { FormEvent, useEffect, useRef, useState, type ReactNode } from 'react';
-import { markCommunityRead, sendCommunityMessage } from '@/api';
+import { markCommunityRead, sendCommunityMessage, getPresignedUploadUrl } from '@/api';
 import { getStoredToken } from '@/lib/api-client';
 import type { GroupChatMessage } from '@/types/chat';
+import { useCommunityRoomSSE } from '@/hooks/useChatSSE';
 import './SupportChat.css';
 
 type GroupChatPanelProps = {
@@ -25,6 +26,33 @@ function formatTime(iso: string) {
   });
 }
 
+function MessageBubble({ msg, isMine }: { msg: GroupChatMessage; isMine: boolean }) {
+  return (
+    <div className={`support-chat-bubble${isMine ? ' support-chat-bubble--mine' : ''}`}>
+      <div className="support-chat-bubble-meta">
+        <strong>{msg.sender.name ?? msg.sender.email}</strong>
+        <span>{formatTime(msg.createdAt)}</span>
+      </div>
+      {msg.content && <p>{msg.content}</p>}
+      {msg.fileUrl && (
+        <div style={{ marginTop: 4 }}>
+          {msg.fileType?.startsWith('image/') ? (
+            <img
+              src={msg.fileUrl}
+              alt="attachment"
+              style={{ maxWidth: 240, maxHeight: 240, borderRadius: 8, display: 'block' }}
+            />
+          ) : (
+            <a href={msg.fileUrl} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'var(--primary-color)' }}>
+              📎 Tải file đính kèm
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function GroupChatPanel({
   roomId,
   currentUserId,
@@ -37,7 +65,12 @@ export default function GroupChatPanel({
   const [messages, setMessages] = useState<GroupChatMessage[]>(initialMessages);
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // SSE realtime
+  useCommunityRoomSSE(roomId, !!roomId);
 
   useEffect(() => {
     setMessages(initialMessages);
@@ -53,20 +86,42 @@ export default function GroupChatPanel({
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    const text = draft.trim();
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !roomId) return;
     const token = getStoredToken();
-    if (!text || sending || !roomId || !token) return;
-    setSending(true);
-    setDraft('');
+    if (!token) return;
+
+    setUploading(true);
     try {
-      const res = await sendCommunityMessage(token, roomId, text);
+      const { url, publicUrl } = await getPresignedUploadUrl(token, file.type, 'chat');
+      await fetch(url, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } });
+      await handleSend('', publicUrl, file.type);
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }
+
+  async function handleSend(text: string, fileUrl?: string, fileType?: string) {
+    const token = getStoredToken();
+    if ((!text && !fileUrl) || sending || !roomId || !token) return;
+    setSending(true);
+    try {
+      const res = await sendCommunityMessage(token, roomId, text, fileUrl, fileType);
       setMessages((prev) => [...prev, res.message]);
       onSent?.();
     } finally {
       setSending(false);
     }
+  }
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    const text = draft.trim();
+    if (!text) return;
+    setDraft('');
+    await handleSend(text);
   }
 
   if (!roomId) {
@@ -95,21 +150,9 @@ export default function GroupChatPanel({
         {messages.length === 0 && (
           <p className="support-chat-empty">Chưa có tin nhắn — hãy chào mọi người!</p>
         )}
-        {messages.map((msg) => {
-          const isMine = msg.senderId === currentUserId;
-          return (
-            <div
-              key={msg.id}
-              className={`support-chat-bubble${isMine ? ' support-chat-bubble--mine' : ''}`}
-            >
-              <div className="support-chat-bubble-meta">
-                <strong>{msg.sender.name ?? msg.sender.email}</strong>
-                <span>{formatTime(msg.createdAt)}</span>
-              </div>
-              <p>{msg.content}</p>
-            </div>
-          );
-        })}
+        {messages.map((msg) => (
+          <MessageBubble key={msg.id} msg={msg} isMine={msg.senderId === currentUserId} />
+        ))}
         <div ref={bottomRef} />
       </div>
 
@@ -119,8 +162,27 @@ export default function GroupChatPanel({
           placeholder="Nhập tin nhắn..."
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          disabled={sending}
+          disabled={sending || uploading}
         />
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*,application/pdf"
+          style={{ display: 'none' }}
+          onChange={(e) => void handleFileChange(e)}
+        />
+        <button
+          type="button"
+          title="Đính kèm file"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading || sending}
+          style={{
+            padding: '0 10px', borderRadius: 6, border: '1px solid var(--border-color)',
+            background: 'transparent', cursor: 'pointer', fontSize: 16,
+          }}
+        >
+          {uploading ? '…' : '📎'}
+        </button>
         <button type="submit" className="btn btn-primary" disabled={sending || !draft.trim()}>
           Gửi
         </button>

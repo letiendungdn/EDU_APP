@@ -329,10 +329,15 @@ export function fetchSupportThread(token: string) {
   return apiRequest<SupportThreadResponse>('/support', { token });
 }
 
-export function sendSupportMessage(token: string, content: string) {
+export function sendSupportMessage(
+  token: string,
+  content: string,
+  fileUrl?: string,
+  fileType?: string,
+) {
   return apiRequest<{ threadId: number; message: import('../types/chat').SupportMessage }>(
     '/support/messages',
-    { method: 'POST', token, body: JSON.stringify({ content }) },
+    { method: 'POST', token, body: JSON.stringify({ content, fileUrl, fileType }) },
   );
 }
 
@@ -350,10 +355,16 @@ export function fetchAdminSupportThread(token: string, threadId: number) {
   });
 }
 
-export function sendAdminSupportMessage(token: string, threadId: number, content: string) {
+export function sendAdminSupportMessage(
+  token: string,
+  threadId: number,
+  content: string,
+  fileUrl?: string,
+  fileType?: string,
+) {
   return apiRequest<{ message: import('../types/chat').SupportMessage }>(
     `/admin/support/threads/${threadId}/messages`,
-    { method: 'POST', token, body: JSON.stringify({ content }) },
+    { method: 'POST', token, body: JSON.stringify({ content, fileUrl, fileType }) },
   );
 }
 
@@ -377,10 +388,43 @@ export function fetchCommunityRoom(token: string, roomId: number) {
   );
 }
 
-export function sendCommunityMessage(token: string, roomId: number, content: string) {
+export function sendCommunityMessage(
+  token: string,
+  roomId: number,
+  content: string,
+  fileUrl?: string,
+  fileType?: string,
+) {
   return apiRequest<{ message: import('../types/chat').GroupChatMessage }>(
     `/community/rooms/${roomId}/messages`,
-    { method: 'POST', token, body: JSON.stringify({ content }) },
+    { method: 'POST', token, body: JSON.stringify({ content, fileUrl, fileType }) },
+  );
+}
+
+export function getPresignedUploadUrl(token: string, contentType: string, folder = 'chat') {
+  return apiRequest<{ url: string; key: string; publicUrl: string }>(
+    '/upload/presigned-url',
+    { method: 'POST', token, body: JSON.stringify({ contentType, folder }) },
+  );
+}
+
+export function fetchSessionMessages(token: string, sessionId: number) {
+  return apiRequest<import('../types/chat').SessionChatMessage[]>(
+    `/marketplace/sessions/${sessionId}/messages`,
+    { token },
+  );
+}
+
+export function sendSessionMessage(
+  token: string,
+  sessionId: number,
+  content: string,
+  fileUrl?: string,
+  fileType?: string,
+) {
+  return apiRequest<import('../types/chat').SessionChatMessage>(
+    `/marketplace/sessions/${sessionId}/messages`,
+    { method: 'POST', token, body: JSON.stringify({ content, fileUrl, fileType }) },
   );
 }
 
