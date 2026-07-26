@@ -38,7 +38,14 @@ copy apps\english-web\.env.example apps\english-web\.env
 copy .env.docker.example .env   # nếu chạy Docker full / Keycloak public URL
 ```
 
-Chỉnh `services/.env` nếu cần: `JWT_SECRET`, Stripe, Google OAuth (xem [google-oauth-setup.md](./google-oauth-setup.md)). Copy cùng `JWT_SECRET` sang `services/signaling-service/.env`. Thêm `NEXT_PUBLIC_SIGNALING_URL=http://localhost:3002` vào `apps/nihongo-web/.env`.
+Chỉnh `services/.env` nếu cần: `JWT_SECRET`, Stripe, Google OAuth (xem [google-oauth-setup.md](./google-oauth-setup.md)). Copy cùng `JWT_SECRET` sang `services/signaling-service/.env`. Thêm các biến sau vào `apps/nihongo-web/.env`:
+
+```
+NEXT_PUBLIC_SIGNALING_URL=http://localhost:3002
+NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1...   # tùy chọn — cần để dùng tính năng Bản đồ Nhật Bản
+```
+
+`NEXT_PUBLIC_MAPBOX_TOKEN`: lấy token tại [mapbox.com](https://account.mapbox.com) (free tier). Nếu bỏ trống, trang `/japan-map` hiện thông báo hướng dẫn, các tính năng khác không ảnh hưởng.
 
 ### 3. Khởi động infrastructure
 

@@ -591,9 +591,10 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 5. [keycloak-setup.md](./keycloak-setup.md)
 6. [run-mobile.md](./run-mobile.md) ← chạy 4 app mobile + unit test
 7. Roadmap stack đã chọn: [roadmap-react-native.md](./roadmap-react-native.md) / [roadmap-android.md](./roadmap-android.md) / [roadmap-flutter.md](./roadmap-flutter.md) / [roadmap-swift.md](./roadmap-swift.md) / [roadmap-angular.md](./roadmap-angular.md) / [roadmap-reactjs.md](./roadmap-reactjs.md)
-8. [learn-testing.md](./learn-testing.md)
-9. [learn-kafka.md](./learn-kafka.md)
-10. [interview-questions.md](./interview-questions.md) + [interview-mobile.md](./interview-mobile.md)
+8. [canvas-tools.md](./canvas-tools.md) ← Canvas Tools + Japan Map (tùy chọn, sau Tuần 6)
+9. [learn-testing.md](./learn-testing.md)
+10. [learn-kafka.md](./learn-kafka.md)
+11. [interview-questions.md](./interview-questions.md) + [interview-mobile.md](./interview-mobile.md)
 
 # Sau 10 tuần phải làm được
 

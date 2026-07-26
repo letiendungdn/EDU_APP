@@ -124,6 +124,193 @@ class _FlipCardState extends State<FlipCard> {
 
 ---
 
+## Chọn Widget nào, khi nào, tại sao?
+
+> Đây là phần bắt buộc trước Clean Architecture. Flutter là cây widget; chọn sai thường gây overflow, scroll lồng nhau, rebuild thừa hoặc leak controller.
+
+### 1. Chọn loại component/state
+
+| Nhu cầu | Dùng | Vì sao / ví dụ repo |
+|---------|------|----------------------|
+| Chỉ render từ constructor props | `StatelessWidget` | Nhẹ, dễ test. `_NavCard`, `_SectionLabel` trong `home_screen.dart` |
+| State UI cục bộ + lifecycle/controller | `StatefulWidget` | Có `initState`, `dispose`, `setState`. Flip card, animation |
+| Đọc Riverpod, không local state | `ConsumerWidget` | Có `WidgetRef`; `HomeScreen` đọc `isOnlineProvider` |
+| Riverpod + local state/lifecycle | `ConsumerStatefulWidget` | `ref` + `setState` + lifecycle. `VocabScreen`, `SrsScreen`, camera |
+| Logic dùng lại, không có UI | Dart class/service/provider | `TtsService`, repository, use case; đừng tạo widget |
+
+**Quy tắc:**
+- Server/DB state → Riverpod (`ref.watch`), không copy sang `setState`.
+- State tạm chỉ thuộc màn hình (flipped, submitting, controller) → local state.
+- State nhiều màn cùng dùng → Provider/Notifier, không truyền props xuyên 5 tầng.
+
+### 2. Layout: Row, Column, Wrap, Stack
+
+| Muốn gì? | Widget | Khi nào không dùng |
+|----------|--------|--------------------|
+| Xếp dọc, số con ít, **không cần scroll** | `Column` | Danh sách dài hoặc có thể vượt màn hình |
+| Xếp ngang | `Row` | Nhiều chip/button có thể tràn ngang → dùng `Wrap` |
+| Tự xuống dòng | `Wrap` | List hàng nghìn item → dùng lazy list/grid |
+| Chồng lớp | `Stack` + `Positioned` | Layout bình thường; đừng dùng tọa độ tuyệt đối thay `Row/Column` |
+| Một child chiếm phần còn lại | `Expanded` | Trong `ListView`/unbounded axis sẽ lỗi constraint |
+| Child co linh hoạt nhưng không bắt buộc fill | `Flexible` | Khi muốn fill hết thì `Expanded` rõ hơn |
+| Khoảng cách cố định | `SizedBox` | Decoration/padding/background → `Container`/`DecoratedBox` |
+| Padding duy nhất | `Padding` | Đừng dùng `Container` chỉ để padding |
+| Căn vị trí | `Align` / `Center` | Đừng bọc nhiều `Row/Column` chỉ để center |
+
+**Ví dụ repo:** `VocabScreen` dùng `Column` cho picker + nội dung, rồi `Expanded(ListView...)` để list nhận chiều cao còn lại. `HomeScreen` dùng `Row → Expanded(Column)` trong card để text không đẩy icon tràn.
+
+### 3. Scroll và danh sách
+
+| Dữ liệu/UI | Dùng | Tại sao |
+|------------|------|---------|
+| Ít section tĩnh, toàn trang cần scroll | `ListView(children: [...])` | Đơn giản; `HomeScreen` |
+| List động/dài | `ListView.builder` / `.separated` | Lazy build; vocab list |
+| Grid ảnh/card dài | `GridView.builder` | Lazy 2D |
+| Header + list/grid phức tạp, sticky/collapse | `CustomScrollView` + `SliverAppBar`/`SliverList`/`SliverGrid` | Một scroll pipeline, tránh nested scroll |
+| Nội dung ngắn trong form | `SingleChildScrollView` + `Column` | Không lazy; tránh cho list dài |
+| Chuyển trang ngang/onboarding/cards | `PageView` | Có page semantics/controller |
+| Giữ state các tab | `IndexedStack` | Mọi tab vẫn được build/giữ memory; ít tab thôi |
+
+**Sai hay gặp:**
+```dart
+// BAD: ListView trong Column không có giới hạn chiều cao
+Column(children: [header, ListView.builder(...)]);
+
+// GOOD
+Column(children: [header, Expanded(child: ListView.builder(...))]);
+```
+
+Không bật `shrinkWrap: true` như thuốc chữa mọi lỗi: nó đo toàn bộ children, mất lợi ích lazy với list lớn.
+
+### 4. Box constraints và responsive
+
+Flutter đi theo quy tắc: **constraints đi xuống → size đi lên → parent đặt position**.
+
+| Tình huống | Dùng |
+|------------|------|
+| Quyết định UI theo chiều rộng phần cha | `LayoutBuilder` |
+| Lấy kích thước/inset toàn màn hình | `MediaQuery` |
+| Tránh notch/status/home indicator | `SafeArea` |
+| Giới hạn tablet không kéo card quá rộng | `ConstrainedBox(maxWidth: ...)` + `Center` |
+| Giữ tỉ lệ camera/video/card | `AspectRatio` |
+| Fit ảnh/video vào box | `FittedBox` / `BoxFit` |
+
+```dart
+LayoutBuilder(
+  builder: (context, constraints) {
+    final columns = constraints.maxWidth >= 700 ? 3 : 1;
+    return GridView.count(crossAxisCount: columns);
+  },
+);
+```
+
+**Checkpoint:** giải thích được lỗi `RenderFlex overflowed` và `Vertical viewport was given unbounded height`.
+
+### 5. Async/loading/error
+
+| Nguồn dữ liệu | Dùng | Trong repo |
+|---------------|------|-----------|
+| Riverpod `AsyncValue<T>` | `async.when(data:, loading:, error:)` | Home online status, vocab, SRS |
+| Một `Future` đơn, không có provider | `FutureBuilder` | Chỉ khi Future ổn định, không tạo Future mới trong `build` |
+| Stream trực tiếp | `StreamBuilder` | Khi không đưa stream vào `StreamProvider` |
+| DB reactive dùng nhiều nơi | `StreamProvider` + `ConsumerWidget` | Drift due cards/vocab |
+
+Ưu tiên state rõ ràng:
+- Loading → `CircularProgressIndicator`/skeleton.
+- Empty → empty-state có CTA.
+- Error → message + retry.
+- Data → list/content.
+
+`VocabScreen` đã làm đủ loading/error/empty/data qua `vocabAsync.when`.
+
+### 6. Interaction: Button, InkWell, GestureDetector
+
+| Nhu cầu | Dùng | Vì sao |
+|---------|------|--------|
+| Action chính | `FilledButton` | Material semantics, disabled/loading rõ |
+| Action phụ | `OutlinedButton` / `TextButton` |
+| Icon action | `IconButton` | Có tooltip + hit target |
+| Card có ripple Material | `InkWell` bên trong `Card`/`Material` | `_NavCard` trong Home |
+| Gesture custom (drag/swipe/pinch/raw tap) | `GestureDetector` | SRS flashcard, swipe card |
+| Chọn on/off | `Switch` / `Checkbox` |
+| Chọn một trong ít lựa chọn | `SegmentedButton` / `Radio` |
+| Menu nhiều lựa chọn | `DropdownButton` / menu anchor | Lesson picker hiện tại |
+
+Đừng dùng `GestureDetector` cho mọi nút: nó không tự có ripple, focus, disabled style và accessibility như Material buttons.
+
+### 7. Card, ListTile, Container, DecoratedBox
+
+| Widget | Dùng khi |
+|--------|----------|
+| `Card` | Nhóm nội dung Material có surface/shape/theme |
+| `ListTile` | Row chuẩn leading/title/subtitle/trailing |
+| `Container` | Cần phối hợp padding + decoration + constraints |
+| `DecoratedBox` | Chỉ cần decoration (nhẹ/rõ hơn Container) |
+| `ColoredBox` | Chỉ cần màu nền |
+| `Chip` | Status/filter/tag ngắn; online/offline |
+
+Repo: Home dùng `Card + InkWell + Padding + Row`; online status dùng `Chip`; vocab picker dùng `Container` vì cần margin + padding + border.
+
+### 8. Animation và chuyển trạng thái
+
+| Nhu cầu | Dùng |
+|---------|------|
+| Thay widget fade/scale đơn giản | `AnimatedSwitcher` — SRS đổi Show Answer ↔ Rating |
+| Animate property đơn giản | `AnimatedContainer`, `AnimatedOpacity` |
+| Animation có controller/timeline | `AnimationController` + `TickerProvider`, phải `dispose` |
+| Shared element giữa routes | `Hero` |
+| Swipe/drag card | `GestureDetector` + controller/transform |
+
+Implicit animation trước; chỉ dùng `AnimationController` khi cần điều khiển play/reverse/progress.
+
+### 9. Lifecycle và resource
+
+Chọn `StatefulWidget`/`ConsumerStatefulWidget` khi sở hữu:
+- `TextEditingController`, `AnimationController`, `ScrollController`
+- camera/microphone/stream/subscription
+- `WidgetsBindingObserver`
+
+Phải cleanup trong `dispose`. `CameraTranslateScreen` là mẫu tốt: add observer/init camera trong `initState`, stop stream + dispose controller + close recognizer trong `dispose`, handle background/resume bằng `didChangeAppLifecycleState`.
+
+Sau `await`, kiểm tra `mounted` trước `setState`/dùng `context`:
+```dart
+await repository.sync();
+if (!mounted) return;
+setState(() => loading = false);
+```
+
+### 10. Decision tree 30 giây
+
+```text
+Có UI?
+├─ Không → service/repository/use case/provider
+└─ Có
+   ├─ Cần Riverpod?
+   │  ├─ Không + không local state → StatelessWidget
+   │  ├─ Không + có lifecycle/state → StatefulWidget
+   │  ├─ Có + không local state → ConsumerWidget
+   │  └─ Có + lifecycle/state → ConsumerStatefulWidget
+   └─ Layout
+      ├─ List dài → ListView.builder / GridView.builder
+      ├─ Section tĩnh cần scroll → ListView(children)
+      ├─ Header + list phức tạp → CustomScrollView + Slivers
+      ├─ Ngang có thể tràn → Wrap
+      ├─ Chồng lớp/camera overlay → Stack
+      └─ Responsive → LayoutBuilder + constraints
+```
+
+### Bài tập widget (bám repo)
+
+1. Giải thích từng widget trong `_NavCard`: tại sao `Card → InkWell → Padding → Row → Expanded(Column)`.
+2. Trong `VocabScreen`, bỏ `Expanded` quanh list và quan sát lỗi constraint; ghi lại lý do.
+3. Camera OCR overlay: giải thích vì sao bắt buộc `Stack` thay vì `Column`.
+4. Refactor một nhóm chip dài từ `Row` sang `Wrap`.
+5. Viết responsive home: 1 cột mobile, 2 cột tablet bằng `LayoutBuilder`.
+
+**Checkpoint widget:** nhìn một mockup và chọn được layout/scroll/state widget, đồng thời giải thích được *vì sao không dùng widget còn lại*.
+
+---
+
 ## GIAI ĐOẠN 2 — CLEAN ARCHITECTURE (tháng 3–4)
 
 ### Cấu trúc project Nihongo
@@ -746,11 +933,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-      - uses: expo/expo-github-action@v8
-        with: { eas-version: latest, token: ${{ secrets.EXPO_TOKEN }} }
       - working-directory: apps/nihongo_flutter
-        run: eas build --platform android --profile preview --non-interactive
+        run: |
+          flutter pub get
+          flutter build apk --release
 ```
+
+> EAS Build là tool của Expo/React Native, không phải pipeline mặc định cho Flutter. Flutter dùng `flutter build apk|appbundle|ipa`; ký release cần keystore / Apple signing riêng.
 
 ---
 
@@ -759,10 +948,16 @@ jobs:
 ```
 Giai đoạn 1 — Dart + Flutter cơ bản:
   □ Dart null safety, sealed class (Dart 3), extension
-  □ StatelessWidget, StatefulWidget, build(), setState
-  □ ListView.builder, Column, Row, Expanded, Flexible
-  □ Theme, MediaQuery, context
+  □ Chọn đúng Stateless / Stateful / Consumer / ConsumerStateful
+  □ Column/Row/Wrap/Stack — giải thích vì sao
+  □ ListView.builder vs ListView children vs Grid/Sliver
+  □ Expanded/Flexible + hiểu bounded/unbounded constraints
+  □ LayoutBuilder vs MediaQuery; SafeArea/AspectRatio
+  □ AsyncValue loading/error/empty/data
+  □ InkWell vs GestureDetector vs Material buttons
+  □ Theme, context, const widget/key
   □ dispose() pattern: AnimationController, TextEditingController
+  □ Camera/controller/stream lifecycle + mounted sau await
 
 Giai đoạn 2 — Clean Architecture:
   □ Domain layer: Entity, Repository interface, UseCase
@@ -783,7 +978,7 @@ Giai đoạn 4 — Senior:
   □ Platform Channel (MethodChannel)
   □ flutter_tts + speech_to_text
   □ Widget test + Riverpod override
-  □ EAS Build + GitHub Actions CI
+  □ flutter build apk/appbundle + GitHub Actions CI
   □ flutter_lints, analyze clean
 ```
 

@@ -51,6 +51,7 @@ docker exec -it edu-redis redis-cli
 | Google OAuth | `GOOGLE_CLIENT_ID` | Xem [google-oauth-setup.md](./google-oauth-setup.md) |
 | Brevo (email) | `BREVO_API_KEY` | Xem [brevo-mail.md](./brevo-mail.md) |
 | LiveKit (livestream SFU, dev) | `LIVEKIT_API_KEY=devkey` / `LIVEKIT_API_SECRET=devsecret` | Mặc định trong `docker-compose.yml`. Call 1-1 ≈ `signaling-service` |
+| Mapbox (bản đồ Nhật Bản) | `NEXT_PUBLIC_MAPBOX_TOKEN` (nihongo-web `.env`) | [account.mapbox.com](https://account.mapbox.com), free tier. Bỏ trống → trang `/japan-map` hiện hướng dẫn. |
 
 ## Đổi mật khẩu ở đâu?
 

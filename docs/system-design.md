@@ -131,7 +131,7 @@ WebSocket WebRTC **1-1 call** (tùy chọn) — khác livestream LiveKit.
 
 | App | Stack | Ghi chú |
 |-----|-------|---------|
-| `nihongo-web` | Next.js | App chính |
+| `nihongo-web` | Next.js | App chính. Canvas Tools (`/tools`, `/kanji-practice`, `/whiteboard`, `/worksheet`, `/japan-map`); Admin (`/admin/*`). |
 | `nihongo-angular` | Angular 19 | Feature gần parity web |
 | `english-web` | Next.js | Profile `english` |
 | 4 mobile | Expo / Android / Flutter / iOS | [mobile-tech-stacks.md](./mobile-tech-stacks.md) |
@@ -292,7 +292,7 @@ CI/CD: `.github/workflows/`
 | ✅ REST chat | Support + community, polling nhẹ |
 | ✅ Google OAuth + OIDC | Gmail + Keycloak |
 | ✅ Audit + rate limit | MongoDB audit, Redis sliding window |
-| ⚠️ Chat text only | Chưa hỗ trợ file/image |
-| ⚠️ Không realtime tức thì | Poll 5–8s thay vì push (chat) |
-| ⚠️ Coaching session chat | Bảng `ChatMessage` có, chưa có UI/API |
-| ⚠️ Hai user DB riêng | Không SSO giữa nihongo ↔ english app |
+| ✅ Chat hỗ trợ file/image | Presign S3 upload → `fileUrl`/`fileType` trong `SupportMessage`, `LearnerChatMessage`, `ChatMessage` |
+| ✅ Realtime chat | SSE (`/api/support/stream`, `/api/community/rooms/:id/stream`) — poll fallback 30s |
+| ✅ Coaching session chat | `GET/POST /api/marketplace/sessions/:id/messages` + `SessionChatPanel` floating button |
+| ✅ SSO nihongo ↔ english | `POST /api/english/auth/token-exchange` — trao đổi nihongo JWT lấy English JWT theo email |

@@ -58,9 +58,71 @@ const sorted = useMemo(() => [...vocabs].sort(byLesson), [vocabs]);
 
 Đọc trong repo: `src/components/VocabCard.tsx`, `src/hooks/useAutoHideHeader.ts`.
 
-**Tài liệu:** [react.dev](https://react.dev/learn) — đọc hết phần Learn.
+**Tài liệu:** [react.dev](https://react.dev/learn) — đọc hết phần Learn · [Hooks API](https://react.dev/reference/react/hooks).
 
-**Checkpoint:** giải thích được vì sao `useEffect` cần dependency array và cleanup; phân biệt controlled vs uncontrolled input.
+**Checkpoint giai đoạn 1:** giải thích được dependency array + cleanup của `useEffect`; controlled vs uncontrolled input.
+
+---
+
+## Hooks cần học (bắt buộc — đừng bỏ qua)
+
+Giai đoạn 1 ở trên **không đủ** nếu chỉ nhớ 4 hook. Phỏng vấn + đọc `nihongo-web` cần bảng dưới.
+
+### A. Built-in hooks (React)
+
+| Hook | Khi nào dùng | Chỗ xem trong repo |
+|------|--------------|-------------------|
+| `useState` | State UI cục bộ (flip card, tab, form field) | Hầu hết `views/*` |
+| `useEffect` | Subscribe / timer / sync DOM / gọi API *một lần* (ưu tiên React Query cho data) | `useAutoHideHeader`, `useSpeechRecognition`, `usePresence` |
+| `useRef` | Giữ mutable value **không** trigger re-render; DOM node (audio, canvas, video) | `useAudioRecorder`, `useVideoCall`, `FabricCanvas`, `ListeningPlayer` |
+| `useContext` | Đọc Auth / Theme từ Provider | `useAuth` → `AuthContext`; `useTheme` → `lib/theme.tsx` |
+| `useMemo` | Tính toán đắt / giữ reference ổn định cho list lớn | Sort/filter vocab; props xuống memo child |
+| `useCallback` | Ổn định hàm truyền xuống child/`useEffect` deps | Handler trong list ảo / player |
+| `useReducer` | State máy (nhiều action) — interview hay hỏi; repo ít dùng (mock exam gần pattern này bằng nhiều `useState`) | Học theory + so với `MockExamTakePage` |
+| `useLayoutEffect` | Đo layout *trước* paint (hiếm) | Biết khác `useEffect`; đừng dùng mặc định |
+| `useId` | id ổn định cho a11y / SSR | Form label nếu hydrate |
+
+**Rules of Hooks (thuộc lòng):**
+1. Chỉ gọi hook ở top-level component/custom hook (không trong `if` / loop).
+2. Custom hook = hàm tên `useXxx`, được gọi hooks bên trong.
+3. Dependency array thiếu/thừa = bug im lặng (stale closure).
+
+**React 19 (biết tên, không bắt buộc sâu trên repo này):** `use`, `useOptimistic`, `useActionState` — hay gặp với Server Actions; `nihongo-web` là thin client nên **ưu tiên hooks bảng trên + React Query**.
+
+### B. Custom hooks trong `nihongo-web` (học bằng cách đọc)
+
+| Hook | File | Học được gì |
+|------|------|-------------|
+| `useAuth` | `src/hooks/useAuth.ts` | Thin wrapper quanh Context |
+| `useVocab` / `useGrammar` / `useLessons` | `src/api/hooks/` | React Query `useQuery` pattern |
+| `useVocabReview` | `src/api/hooks/use-vocab-review.ts` | Query + mutation batch |
+| `useSupportThreadQuery` / community hooks | `src/hooks/queries.ts` | `refetchInterval` poll 5–8s |
+| `useAutoHideHeader` | `src/hooks/useAutoHideHeader.ts` | scroll listener + cleanup |
+| `useSpeechRecognition` | `src/hooks/useSpeechRecognition.ts` | Web API + `useEffect` lifecycle |
+| `useAudioRecorder` | `src/hooks/useAudioRecorder.ts` | `useRef` MediaRecorder + state |
+| `usePlayAll` | `src/hooks/usePlayAll.ts` | queue phát audio tuần tự |
+| `useDailyListeningSession` / `usePodcastTimer` / `useMinnaListeningPlayer` | `src/hooks/useDailyListeningSession.ts` | timer + player state phức tạp |
+| `useVideoCall` | `src/hooks/useVideoCall.ts` | socket.io + WebRTC + nhiều `useEffect`/`useRef` |
+| `usePresence` | `src/hooks/usePresence.ts` | heartbeat / online status |
+| `usePageBanner` | `src/hooks/usePageBanner.ts` | UI preference hook |
+| `useTheme` | `src/lib/theme.tsx` | Context + localStorage |
+
+### C. Library hooks (coi như “phải biết”)
+
+| Hook | Package | Dùng để |
+|------|---------|---------|
+| `useQuery` / `useMutation` / `useQueryClient` | `@tanstack/react-query` | Data layer chính — giai đoạn 3 |
+| `useVirtualizer` | `@tanstack/react-virtual` | List dài (vocab) |
+| `useStripe` / Elements hooks | `@stripe/react-stripe-js` | Checkout |
+| Zustand selectors | `zustand` (english-web) | State ngoài Context |
+
+### D. Bài tập hooks (làm đủ 3)
+
+1. Viết `useToggle(initial)` bằng `useState` + `useCallback`.
+2. Viết `useInterval(fn, ms)` với cleanup đúng (xem pattern timer trong `useDailyListeningSession`).
+3. Đọc `useVideoCall` hoặc `useAudioRecorder` — vẽ sơ đồ: cái nào `useState`, cái nào `useRef`, effect nào cleanup.
+
+**Checkpoint hooks:** giải thích được *khi nào `useRef` thay `useState`*; *vì sao data fetching không nhét `useEffect` + `fetch` nếu đã có React Query*; kể tên ≥ 5 custom hook trong repo và việc của chúng.
 
 ---
 
@@ -198,7 +260,7 @@ npm run docker:up:nihongo   # → http://localhost:8080
 
 | Giai đoạn | Thời gian | Kết quả |
 |-----------|-----------|---------|
-| 1 TS + React core | 3 tuần | Đọc hiểu component/hook bất kỳ |
+| 1 TS + React core + **hooks** | 3–4 tuần | Built-in + đọc custom hooks repo |
 | 2 Next App Router | 3 tuần | Thêm route mới |
 | 3 React Query | 3 tuần | Query/mutation/invalidate |
 | 4 Auth + Stripe | 3 tuần | 3 login flow + checkout |
@@ -210,12 +272,14 @@ npm run docker:up:nihongo   # → http://localhost:8080
 ## Thứ tự đọc file trong repo
 
 1. `apps/nihongo-web/package.json` — dependency thật
-2. `src/api/index.ts` + `src/api/hooks/use-vocab.ts`
-3. `src/contexts/AuthContext.tsx` + `src/hooks/useAuth.ts`
-4. `src/components/AppLayout.tsx` + một view: `views/SrsView.tsx`
-5. `src/hooks/__tests__/useVocab.test.tsx`
-6. `apps/english-web` — so sánh Zustand + Tailwind
-7. [system-design.md](./system-design.md) — thin client + gateway
+2. Section **Hooks cần học** ở trên + `src/hooks/useAutoHideHeader.ts` + `useAudioRecorder.ts`
+3. `src/api/index.ts` + `src/api/hooks/use-vocab.ts`
+4. `src/contexts/AuthContext.tsx` + `src/hooks/useAuth.ts`
+5. `src/components/AppLayout.tsx` + một view: `views/SrsView.tsx`
+6. `src/hooks/useVideoCall.ts` (hooks nâng cao) hoặc `useDailyListeningSession.ts`
+7. `src/hooks/__tests__/useVocab.test.tsx`
+8. `apps/english-web` — so sánh Zustand + Tailwind
+9. [system-design.md](./system-design.md) — thin client + gateway
 
 ---
 
@@ -226,6 +290,9 @@ npm run docker:up:nihongo   # → http://localhost:8080
 3. Access token lưu đâu, refresh token lưu đâu? Trade-off?
 4. Khi nào cần `useCallback`? Khi nào là premature optimization?
 5. Vì sao app không có Route Handler đọc DB dù là Next.js?
+6. `useRef` vs `useState` — ví dụ từ `useAudioRecorder` hoặc `useVideoCall`?
+7. Vì sao không `useEffect(() => fetch(...))` cho vocab list nếu đã có `useQuery`?
+8. Rules of Hooks: gọi hook trong `if` được không? Vì sao?
 
 ---
 

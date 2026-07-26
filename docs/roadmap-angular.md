@@ -69,6 +69,80 @@ of(1).pipe(
 
 ---
 
+## Angular primitives cần học (bắt buộc — đừng bỏ qua)
+
+Giai đoạn 2 ở dưới **không đủ** nếu chỉ nhớ `@Component` + route. App `nihongo-angular` (Angular 19) lấy **signals + `inject()` + service root** làm xương sống — tương đương section Hooks trong [roadmap-reactjs.md](./roadmap-reactjs.md).
+
+### A. Built-in / framework (Angular 19)
+
+| API | Khi nào dùng | Chỗ xem trong repo |
+|-----|--------------|-------------------|
+| `inject()` | Lấy DI trong field / guard / factory (thay constructor dài) | Mọi page; `auth.guard.ts` |
+| `signal` / `set` / `update` | State UI reactive (lesson, index, loading, error) | `vocab-page`, `srs-page`, `dictation-page`, hầu hết features |
+| `computed` | Derive từ signal (current card, filtered list, progress %) | `vocab-page` (`current`, `filteredVocab`, `progressWidth`); `AuthService.isAuthenticated` |
+| `effect` | Side effect khi signal đổi (reload khi `lesson` đổi) | `vocab-page`, `dictation-page` — **cleanup / tránh loop** |
+| `asReadonly()` | Expose signal ra ngoài mà không cho set | `AuthService.token` / `user` / `authReady` |
+| `@if` / `@for` / `@switch` | Control flow mới (ưu tiên hơn `*ngIf` / `*ngFor`) | Templates feature pages |
+| `FormsModule` + `[(ngModel)]` | Form đơn giản / two-way | Login, vocab search, community, notes |
+| Reactive forms (`FormBuilder`) | Form phức tạp / validate nhiều field — interview hay hỏi; repo nghiêng template-driven | Học theory; so với login/admin import |
+| `DestroyRef` + `takeUntilDestroyed` | Hủy subscription / `clearInterval` khi destroy component | `community-page` (poll chat) |
+| Functional guards `CanActivateFn` | `authGuard` / `adminGuard` | `core/guards/auth.guard.ts` |
+| `loadComponent` lazy | Code-split từng page | `app.routes.ts` |
+| `providedIn: 'root'` | Singleton service | `AuthService`, `ApiService`, `ThemeService`, `PageBannerService` |
+
+**Zone.js:** app vẫn `provideZoneChangeDetection` trong `app.config.ts`. Biết zone kích hoạt CD; **không** cần OnPush sâu trừ khi optimize. Signals giảm phụ thuộc zone cho UI state.
+
+**Input/Output hiện đại (biết tên):** `input()`, `output()`, `model()`, `viewChild()` — phỏng vấn Angular 17+ hay hỏi. Shared components trong repo có thể vẫn props cổ điển — đọc `lesson-selector`, `stroke-order`.
+
+**NgRx:** **không dùng** trong app này. State = service + signals. Chỉ học NgRx nếu JD bắt.
+
+### B. “Custom layer” trong repo (học bằng cách đọc — như custom hooks React)
+
+| Tầng | File | Học được gì |
+|------|------|-------------|
+| `apiFetch` + refresh single-flight | `core/http/api-client.ts` | Fetch wrapper, envelope, 401→refresh→retry (`refreshInFlight`) |
+| `ApiService` | `core/services/api.service.ts` | Injectable facade: mọi endpoint typed `Promise<T>` |
+| `AuthService` | `core/services/auth.service.ts` | Signals auth + `computed` role (`isAdmin` / `isTeacher`) |
+| `ThemeService` | `core/services/theme.service.ts` | Theme preference |
+| `PageBannerService` | `core/services/page-banner.service.ts` | Banner UI state |
+| `authGuard` / `adminGuard` | `core/guards/auth.guard.ts` | Redirect + `createUrlTree` + query `redirect` |
+| Keycloak util | `core/utils/keycloak.util.ts` | OIDC (`oidc-client-ts`) ngoài Angular DI |
+| Speech / stroke / japanese utils | `core/utils/*.ts` | Logic thuần — dễ unit test nhất |
+| Shared UI | `shared/lesson-selector`, `stroke-order`, `payment-methods`, `sidebar-auth`, `google-sign-in-button` | Component composition |
+
+### C. Map nhanh Angular ↔ React (đừng học nhầm chỗ)
+
+| React (`nihongo-web`) | Angular (`nihongo-angular`) |
+|-----------------------|----------------------------|
+| `useState` | `signal` |
+| `useMemo` | `computed` |
+| `useEffect` | `effect` (+ cẩn thận dependency/loop) |
+| `useRef` | field thường / `ElementRef` / `viewChild` |
+| `useContext` + `useAuth` | `inject(AuthService)` + readonly signals |
+| `useQuery` / React Query | `ApiService` + `async` trong `effect` / method (app **không** có TanStack Query) |
+| Custom hook `useXxx` | Service injectable hoặc helper function |
+
+### D. RxJS — học đủ, đừng overkill trên app này
+
+App **gọi API bằng `fetch`/`async`**, không phải `HttpClient` Observable là chính.
+
+Vẫn cần:
+- `subscribe` / unsubscribe hoặc `async` pipe (nếu đụng Observable)
+- Operators: `map`, `switchMap`, `catchError`, `tap`
+- Router events / form `valueChanges` (khi đụng)
+
+Không cần thuộc hết marble diagram trước khi sửa được vocab/SRS.
+
+### E. Bài tập primitives (làm đủ 3)
+
+1. Trên một page: đổi `lesson` bằng `signal` → `effect` load vocab → `computed` ra `current` card (bám `vocab-page`).
+2. Viết guard nhỏ: chưa login → `/login?redirect=…` (copy pattern `authGuard`).
+3. Poll giả (setInterval) + `DestroyRef.onDestroy` clear — so với `community-page`.
+
+**Checkpoint primitives:** giải thích `signal` vs `computed` vs `effect`; vì sao `AuthService` expose `asReadonly()`; vì sao app không dùng `HttpClient` + React Query mà dùng `ApiService` + `apiFetch`.
+
+---
+
 ## GIAI ĐOẠN 2 — Angular fundamentals (tuần 4–6)
 
 ### Standalone + DI
@@ -107,11 +181,14 @@ export class HomePageComponent {
 | Auth / admin guard | `core/guards/auth.guard.ts` |
 | Nav groups | `core/config/nav-groups.ts` |
 
-### Template & signals (làm quen)
+### Template & signals
 
-- `*ngIf` / `@if`, `*ngFor` / `@for` (Angular 17+)
-- Two-way / forms: `@angular/forms`
-- Services: `ThemeService`, `PageBannerService`
+> Chi tiết bắt buộc: section **Angular primitives cần học** ở trên.
+
+- `@if` / `@for` (ưu tiên); biết `*ngIf` / `*ngFor` legacy
+- `signal` / `computed` / `effect` — pattern chính trong features
+- Two-way: `FormsModule` + `[(ngModel)]`
+- Services root: `AuthService`, `ApiService`, `ThemeService`, `PageBannerService`
 
 **Checkpoint:** thêm một route lazy `coming-soon` (đã có pattern) và gắn vào `nav-groups` — chạy `npm run dev:nihongo-angular`.
 
@@ -223,6 +300,7 @@ npm run docker:up:nihongo
 | Giai đoạn | Thời gian | Kết quả |
 |-----------|-----------|---------|
 | 1 TS + RxJS | 2–3 tuần | Đọc được `api-client` |
+| 1b **Signals + inject + services** | song song tuần 3–5 | Section primitives + đọc `AuthService` / `vocab-page` |
 | 2 Angular core | 3 tuần | Thêm route + guard |
 | 3 Auth/OIDC | 3 tuần | Login 3 cách ổn định |
 | 4 Features | 4–5 tuần | Sửa được 1–2 feature thật |
@@ -234,12 +312,14 @@ npm run docker:up:nihongo
 ## Thứ tự đọc file trong repo
 
 1. `apps/nihongo-angular/package.json` — dependency thật  
-2. `src/app/app.config.ts` + `app.routes.ts`  
-3. `src/app/core/http/api-client.ts`  
-4. `src/app/core/guards/auth.guard.ts` + `core/utils/keycloak.util.ts`  
-5. Một feature: `features/vocab/` rồi `features/srs/`  
-6. `proxy.conf.json` + [run-local.md](./run-local.md)  
-7. [system-design.md](./system-design.md) (gateway / Keycloak)  
+2. Section **Angular primitives** ở trên  
+3. `src/app/app.config.ts` + `app.routes.ts`  
+4. `src/app/core/http/api-client.ts` + `core/services/api.service.ts`  
+5. `src/app/core/services/auth.service.ts` + `core/guards/auth.guard.ts` + `core/utils/keycloak.util.ts`  
+6. Feature mẫu signals: `features/vocab/vocab-page.component.ts` rồi `features/srs/`  
+7. Poll + DestroyRef: `features/community/community-page.component.ts`  
+8. `proxy.conf.json` + [run-local.md](./run-local.md)  
+9. [system-design.md](./system-design.md) (gateway / Keycloak) · so sánh [roadmap-reactjs.md](./roadmap-reactjs.md) 
 
 ---
 
@@ -250,6 +330,11 @@ npm run docker:up:nihongo
 3. Guard chạy trước hay sau `resolve`?  
 4. Vì sao Angular Docker host khác `localhost:5174`?  
 5. Envelope API fail — `ApiError` được throw ở đâu?  
+6. `signal` vs `computed` vs `effect` — ví dụ từ `vocab-page`?  
+7. Vì sao `AuthService` dùng `asReadonly()` thay vì expose `signal` writable?  
+8. App này data fetching gần với React Query hay `useEffect+fetch` hơn? Trade-off?  
+9. `DestroyRef` giải quyết vấn đề gì so với quên `unsubscribe`?  
+10. Khi nào học NgRx — và vì sao repo **không** dùng? 
 
 ---
 
