@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { apiRequest } from '@/lib/api-client';
 import { playAudio, stopAudio } from '@/utils/speech';
 import { getStrokeText } from '@/utils/japanese';
@@ -95,6 +96,7 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
   const [showEx, setShowEx]     = useState(false);
   const [speaking, setSpeaking] = useState<string | null>(null);
   const [pos, setPos]           = useState({ x: anchorX, y: anchorY });
+  const [strokeFocus, setStrokeFocus] = useState<string | null>(null);
   const cardRef                 = useRef<HTMLDivElement>(null);
 
   // Fetch on mount
@@ -167,7 +169,70 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
     window.setTimeout(() => setSpeaking((cur) => (cur === lang ? null : cur)), 3000);
   }, []);
 
+  const openStrokeModal = useCallback((char: string) => {
+    setStrokeFocus(char);
+  }, []);
+
+  const closeStrokeModal = useCallback(() => {
+    setStrokeFocus(null);
+  }, []);
+
+  useEffect(() => {
+    if (!strokeFocus) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== 'Escape') return;
+      e.stopPropagation();
+      setStrokeFocus(null);
+    }
+    document.addEventListener('keydown', onKeyDown, true);
+    return () => document.removeEventListener('keydown', onKeyDown, true);
+  }, [strokeFocus]);
+
+  const strokeModal =
+    strokeFocus && typeof document !== 'undefined'
+      ? createPortal(
+          <div
+            className="tc-stroke-modal-backdrop"
+            role="presentation"
+            onMouseDown={(e) => {
+              e.stopPropagation();
+              if (e.target === e.currentTarget) closeStrokeModal();
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className="tc-stroke-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Cách vẽ chữ ${strokeFocus}`}
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                className="tc-stroke-modal-close"
+                onClick={closeStrokeModal}
+                aria-label="Đóng"
+              >
+                ×
+              </button>
+              <p className="tc-stroke-modal-char japanese-text">{strokeFocus}</p>
+              <p className="tc-stroke-modal-label">Cách vẽ · nhấn chữ để xem lại</p>
+              <div className="tc-stroke-modal-canvas">
+                <StrokeOrder text={strokeFocus} width={240} height={240} />
+              </div>
+              {result?.ja.text && result.ja.text !== strokeFocus && (
+                <p className="tc-stroke-modal-word japanese-text">
+                  Trong từ: {result.ja.text}
+                </p>
+              )}
+            </div>
+          </div>,
+          document.body,
+        )
+      : null;
+
   return (
+    <>
     <div
       ref={cardRef}
       className="tc-card translation-card"
@@ -246,8 +311,14 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
 
           {jaStrokeText && (
             <div className="tc-stroke">
-              <p className="tc-stroke-label">Cách vẽ · nhấn chữ để xem lại</p>
-              <StrokeOrder text={result.ja.text} width={strokeSize} height={strokeSize} compact />
+              <p className="tc-stroke-label">Cách vẽ · nhấn chữ để phóng to</p>
+              <StrokeOrder
+                text={result.ja.text}
+                width={strokeSize}
+                height={strokeSize}
+                compact
+                onCharClick={(char) => openStrokeModal(char)}
+              />
             </div>
           )}
 
@@ -287,6 +358,8 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
         </>
       )}
     </div>
+    {strokeModal}
+    </>
   );
 }
 

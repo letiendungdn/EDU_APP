@@ -19,7 +19,7 @@ export default function SelectionTranslate() {
 
   useEffect(() => {
     function onMouseUp(e: MouseEvent) {
-      if ((e.target as Element)?.closest?.('.translation-card')) return;
+      if ((e.target as Element)?.closest?.('.translation-card, .tc-stroke-modal-backdrop')) return;
 
       setTimeout(() => {
         const active = document.activeElement;
@@ -44,13 +44,15 @@ export default function SelectionTranslate() {
     }
 
     function onMouseDown(e: MouseEvent) {
-      if (!(e.target as Element)?.closest?.('.translation-card')) {
+      if (!(e.target as Element)?.closest?.('.translation-card, .tc-stroke-modal-backdrop')) {
         setSel(null);
       }
     }
 
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') setSel(null);
+      if (e.key !== 'Escape') return;
+      if (document.querySelector('.tc-stroke-modal-backdrop')) return;
+      setSel(null);
     }
 
     document.addEventListener('mouseup', onMouseUp);

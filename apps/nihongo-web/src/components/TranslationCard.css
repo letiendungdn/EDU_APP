@@ -263,3 +263,78 @@
   flex-wrap: wrap;
   gap: 6px;
 }
+
+/* ── Fullscreen stroke modal ── */
+.tc-stroke-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: tc-in 0.16s ease-out both;
+}
+
+.tc-stroke-modal {
+  position: relative;
+  width: min(420px, calc(100vw - 2rem));
+  max-height: min(88vh, 640px);
+  overflow: auto;
+  padding: 1.35rem 1.25rem 1.25rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255 255 255 / 0.12);
+  background: rgba(15, 23, 42, 0.98);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  text-align: center;
+}
+
+.tc-stroke-modal-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.7rem;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.tc-stroke-modal-close:hover {
+  color: var(--text-primary);
+  background: rgba(255 255 255 / 0.08);
+}
+
+.tc-stroke-modal-char {
+  margin: 0.2rem 0 0.35rem;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #fbbf24;
+  line-height: 1.1;
+}
+
+.tc-stroke-modal-label {
+  margin: 0 0 0.85rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.tc-stroke-modal-canvas {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 14px;
+  background: rgba(255 255 255 / 0.04);
+}
+
+.tc-stroke-modal-word {
+  margin: 0.9rem 0 0;
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+}
