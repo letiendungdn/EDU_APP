@@ -1122,8 +1122,80 @@
 }
 
 .kanji-vocab-list h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.kanji-vocab-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.kanji-vocab-admin-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.kanji-vocab-admin-toggle,
+.kanji-vocab-admin-add {
+  border: 1px solid var(--border-color);
+  background: var(--surface-elevated, transparent);
+  color: var(--text-primary);
+  border-radius: 0.45rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.kanji-vocab-admin-toggle:hover,
+.kanji-vocab-admin-add:hover {
+  border-color: var(--accent-color, #60a5fa);
+}
+
+.kanji-vocab-admin-toggle--on {
+  background: color-mix(in srgb, var(--accent-color, #60a5fa) 22%, transparent);
+  border-color: var(--accent-color, #60a5fa);
+}
+
+.kanji-vocab-admin-error {
   margin: 0 0 0.75rem;
+  color: #f87171;
+  font-size: 0.9rem;
+}
+
+.kanji-vocab-admin-empty,
+.kanji-vocab-admin-hint {
+  margin: 0.75rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.kanji-vocab-admin-form {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+}
+
+.kanji-vocab-admin-form input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--border-color);
+  background: var(--surface-elevated, transparent);
+  color: var(--text-primary);
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.55rem;
   font-size: 1rem;
+}
+
+.kanji-vocab-admin-form--inline {
+  flex: 1;
+  margin: 0;
+  min-width: 0;
 }
 
 .kanji-vocab-list ul {
@@ -1132,34 +1204,91 @@
   margin: 0;
 }
 
-.kanji-vocab-list li {
+.kanji-vocab-list li,
+.kanji-vocab-item {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.4rem 0;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.55rem 0;
   border-bottom: 1px solid var(--border-color);
-  font-size: 0.95rem;
+  font-size: 1.15rem;
+  line-height: 1.45;
 }
 
-.kanji-vocab-list li:last-child {
+.kanji-vocab-item--admin {
+  cursor: grab;
+}
+
+.kanji-vocab-item--dragging {
+  opacity: 0.55;
+}
+
+.kanji-vocab-drag {
+  color: var(--text-secondary);
+  cursor: grab;
+  user-select: none;
+  font-size: 1rem;
+  line-height: 1;
+  padding-right: 0.1rem;
+}
+
+.kanji-vocab-list li:last-child,
+.kanji-vocab-item:last-child {
   border-bottom: none;
+}
+
+.kanji-vocab-list .japanese-text {
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 .kanji-vocab-audio {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.15rem;
   padding: 0;
+  align-self: center;
 }
 
 .kanji-vocab-reading {
   color: var(--text-secondary);
+  font-size: 1.05rem;
 }
 
 .kanji-vocab-meaning {
   color: var(--text-primary);
+  font-size: 1.05rem;
+}
+
+.kanji-vocab-admin-actions {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-left: auto;
+  align-items: center;
+}
+
+.kanji-vocab-admin-actions button {
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 0.35rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.kanji-vocab-admin-actions .btn {
+  width: auto;
+  height: auto;
+  padding: 0.3rem 0.65rem;
+}
+
+.kanji-vocab-admin-delete {
+  color: #f87171 !important;
 }
 
 .kanji-search-form {

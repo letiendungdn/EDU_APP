@@ -1,8 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { apiRequest } from '@/lib/api-client';
 import { playAudio, stopAudio } from '@/utils/speech';
+import { getStrokeText } from '@/utils/japanese';
+import StrokeOrder from './StrokeOrder';
 import './TranslationCard.css';
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -104,19 +106,58 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
     return () => { cancelled = true; };
   }, [text]);
 
-  // Reposition after render so card stays within viewport
-  useEffect(() => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const vw   = window.innerWidth;
+  const jaStrokeText = useMemo(
+    () => (result ? getStrokeText(result.ja.text) : ''),
+    [result],
+  );
+  const strokeSize = useMemo(() => {
+    const n = [...jaStrokeText].length;
+    if (n <= 1) return 88;
+    if (n === 2) return 72;
+    if (n === 3) return 60;
+    return 52;
+  }, [jaStrokeText]);
 
-    let x = anchorX;
-    let y = anchorY;
-    if (x + rect.width + 12 > vw)              x = Math.max(8, vw - rect.width - 12);
-    if (y + rect.height + 12 > window.innerHeight + window.scrollY)
-                                                y = anchorY - rect.height - 14;
-    setPos({ x, y });
-  }, [result, error, anchorX, anchorY]);
+  // Reposition after render / resize so card stays within the visible viewport
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+
+    const place = () => {
+      const rect = el.getBoundingClientRect();
+      const margin = 10;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const scrollX = window.scrollX;
+      const scrollY = window.scrollY;
+      const width = rect.width;
+      const height = rect.height;
+
+      let x = anchorX;
+      let y = anchorY;
+
+      // Prefer below the selection; flip above if it would overflow the bottom
+      if (y + height + margin > scrollY + vh) {
+        y = anchorY - height - 14;
+      }
+
+      // Final clamp into the visible viewport
+      x = Math.min(Math.max(scrollX + margin, x), Math.max(scrollX + margin, scrollX + vw - width - margin));
+      y = Math.min(Math.max(scrollY + margin, y), Math.max(scrollY + margin, scrollY + vh - height - margin));
+
+      setPos((prev) => (prev.x === x && prev.y === y ? prev : { x, y }));
+    };
+
+    place();
+    // Stroke SVG finishes loading a bit later — re-place when card size changes
+    const ro = new ResizeObserver(() => place());
+    ro.observe(el);
+    window.addEventListener('resize', place);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', place);
+    };
+  }, [result, error, showEx, jaStrokeText, anchorX, anchorY]);
 
   const speak = useCallback((word: string, lang: string) => {
     stopAudio();
@@ -202,6 +243,13 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
               );
             })}
           </div>
+
+          {jaStrokeText && (
+            <div className="tc-stroke">
+              <p className="tc-stroke-label">Cách vẽ · nhấn chữ để xem lại</p>
+              <StrokeOrder text={result.ja.text} width={strokeSize} height={strokeSize} compact />
+            </div>
+          )}
 
           {/* Examples toggle — chỉ hiện khi có data */}
           {result.examples.length > 0 && (

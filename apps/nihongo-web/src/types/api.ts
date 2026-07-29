@@ -67,7 +67,29 @@ export interface KanjiEntry {
   imageUrl?: string | null;
   sortOrder?: number;
   lesson?: { lessonNumber: number; title: string | null; jlptLevel: string | null };
-  vocabularies?: Array<{ id: number; word: string; reading: string; meaningVi: string }>;
+  vocabularies?: Array<{
+    id: number;
+    word: string;
+    reading: string;
+    meaningVi: string;
+    sortOrder?: number;
+  }>;
+}
+
+export type KanjiVocabItem = NonNullable<KanjiEntry['vocabularies']>[number];
+
+export interface CreateKanjiVocabInput {
+  word: string;
+  reading: string;
+  meaningVi: string;
+  sortOrder?: number;
+}
+
+export interface UpdateKanjiVocabInput {
+  word?: string;
+  reading?: string;
+  meaningVi?: string;
+  sortOrder?: number;
 }
 
 export interface ListeningPlaylistItem {

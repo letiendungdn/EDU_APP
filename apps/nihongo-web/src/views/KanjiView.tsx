@@ -11,6 +11,7 @@ import {
   useKanjiSearchQuery,
 } from '../hooks/queries';
 import StrokeOrder from '../components/StrokeOrder';
+import KanjiVocabSidepanel from '../components/KanjiVocabSidepanel';
 import { toLocalImageUrl } from '@edu/vocab-images';
 import type { KanjiEntry, KanjiLesson } from '../types/api';
 import './VocabView.css';
@@ -300,27 +301,12 @@ export default function KanjiView() {
             </div>
           </div>
 
-          {currentKanji.vocabularies && currentKanji.vocabularies.length > 0 && (
-            <aside className="kanji-vocab-sidepanel glass-panel kanji-vocab-list">
-              <h3>Từ vựng liên quan</h3>
-              <ul>
-                {currentKanji.vocabularies.map((v) => (
-                  <li key={`${v.word}-${v.reading}`}>
-                    <button
-                      className="kanji-vocab-audio"
-                      onClick={(e) => handlePronounce(e, v.reading)}
-                      title="Nghe"
-                    >
-                      🔊
-                    </button>
-                    <span className="japanese-text">{v.word}</span>
-                    <span className="kanji-vocab-reading">（{v.reading}）</span>
-                    <span className="kanji-vocab-meaning">— {v.meaningVi}</span>
-                  </li>
-                ))}
-              </ul>
-            </aside>
-          )}
+          <KanjiVocabSidepanel
+            kanjiEntryId={currentKanji.id}
+            lessonNumber={currentLesson}
+            vocabularies={currentKanji.vocabularies ?? []}
+            onPronounce={handlePronounce}
+          />
         </div>
       ) : (
         <div className="empty-state">

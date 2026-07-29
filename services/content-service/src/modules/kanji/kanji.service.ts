@@ -1,6 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { JlptLevel, type Prisma } from "@prisma/client";
 import { PrismaService } from "@app/prisma";
+import type {
+  CreateKanjiVocabDto,
+  UpdateKanjiVocabDto,
+} from "@app/contracts";
 
 function parseJlptLevel(value?: string): JlptLevel | undefined {
   if (!value) return undefined;
@@ -18,7 +22,7 @@ const entryInclude = {
     },
   },
   vocabularies: {
-    orderBy: { id: "asc" as const },
+    orderBy: { sortOrder: "asc" as const },
   },
 } satisfies Prisma.KanjiEntryInclude;
 
@@ -84,8 +88,93 @@ export class KanjiService {
       where: { id },
       include: {
         lesson: true,
-        vocabularies: true,
+        vocabularies: { orderBy: { sortOrder: "asc" } },
       },
+    });
+  }
+
+  async createVocab(kanjiEntryId: number, dto: CreateKanjiVocabDto) {
+    const entry = await this.prisma.kanjiEntry.findUnique({
+      where: { id: kanjiEntryId },
+      select: { id: true },
+    });
+    if (!entry) throw new NotFoundException(`Kanji entry ${kanjiEntryId} not found`);
+
+    let sortOrder = dto.sortOrder;
+    if (sortOrder == null) {
+      const agg = await this.prisma.kanjiVocab.aggregate({
+        where: { kanjiEntryId },
+        _max: { sortOrder: true },
+      });
+      sortOrder = (agg._max.sortOrder ?? -1) + 1;
+    }
+
+    return this.prisma.kanjiVocab.create({
+      data: {
+        word: dto.word.trim(),
+        reading: dto.reading.trim(),
+        meaningVi: dto.meaningVi.trim(),
+        sortOrder,
+        kanjiEntryId,
+      },
+    });
+  }
+
+  async updateVocab(id: number, dto: UpdateKanjiVocabDto) {
+    const existing = await this.prisma.kanjiVocab.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException(`Kanji vocab ${id} not found`);
+
+    return this.prisma.kanjiVocab.update({
+      where: { id },
+      data: {
+        ...(dto.word != null ? { word: dto.word.trim() } : {}),
+        ...(dto.reading != null ? { reading: dto.reading.trim() } : {}),
+        ...(dto.meaningVi != null ? { meaningVi: dto.meaningVi.trim() } : {}),
+        ...(dto.sortOrder != null ? { sortOrder: dto.sortOrder } : {}),
+      },
+    });
+  }
+
+  async removeVocab(id: number) {
+    const existing = await this.prisma.kanjiVocab.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException(`Kanji vocab ${id} not found`);
+    await this.prisma.kanjiVocab.delete({ where: { id } });
+    return { ok: true, id };
+  }
+
+  async reorderVocab(kanjiEntryId: number, orderedIds: number[]) {
+    const entry = await this.prisma.kanjiEntry.findUnique({
+      where: { id: kanjiEntryId },
+      select: { id: true },
+    });
+    if (!entry) throw new NotFoundException(`Kanji entry ${kanjiEntryId} not found`);
+
+    const existing = await this.prisma.kanjiVocab.findMany({
+      where: { kanjiEntryId },
+      select: { id: true },
+    });
+    const existingIds = new Set(existing.map((v) => v.id));
+    if (
+      orderedIds.length !== existingIds.size ||
+      orderedIds.some((id) => !existingIds.has(id))
+    ) {
+      throw new NotFoundException(
+        "orderedIds must include every vocabulary for this kanji entry",
+      );
+    }
+
+    await this.prisma.$transaction(
+      orderedIds.map((id, index) =>
+        this.prisma.kanjiVocab.update({
+          where: { id },
+          data: { sortOrder: index },
+        }),
+      ),
+    );
+
+    return this.prisma.kanjiVocab.findMany({
+      where: { kanjiEntryId },
+      orderBy: { sortOrder: "asc" },
     });
   }
 }

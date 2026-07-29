@@ -3,6 +3,12 @@
   z-index: 9000;
   width: 360px;
   max-width: calc(100vw - 24px);
+  max-height: min(78vh, calc(100vh - 24px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255 255 255 / 0.25) transparent;
 
   background: rgba(15, 23, 42, 0.97);
   border: 1px solid var(--border-color);
@@ -14,7 +20,6 @@
   font-family: var(--font-sans);
   font-size: 14px;
   color: var(--text-primary);
-  overflow: hidden;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 
@@ -234,3 +239,27 @@
 }
 
 .tc-ex-text--jp { font-family: var(--font-jp); }
+
+/* ── Stroke order ── */
+.tc-stroke {
+  padding: 8px 13px 12px;
+  border-top: 1px solid rgba(255 255 255 / 0.06);
+}
+
+.tc-stroke-label {
+  margin: 0 0 8px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  opacity: 0.85;
+}
+
+.tc-stroke .stroke-order-wrapper,
+.tc-stroke .stroke-order-container {
+  width: 100%;
+}
+
+.tc-stroke .stroke-order-container > div {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 6px;
+}

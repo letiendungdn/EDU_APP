@@ -4,10 +4,12 @@ import {
   CONTENT_PATTERNS,
   CreateExerciseDto,
   CreateGrammarDto,
+  CreateKanjiVocabDto,
   CreateLessonDto,
   CreateVocabularyDto,
   UpdateExerciseDto,
   UpdateGrammarDto,
+  UpdateKanjiVocabDto,
   UpdateLessonDto,
   UpdateVocabularyDto,
 } from "@app/contracts";
@@ -90,6 +92,20 @@ export class ContentMsController implements OnModuleInit {
         ),
       [CONTENT_PATTERNS.GET_KANJI_ENTRY]: (data) =>
         this.getKanjiEntry(data as { id: number }),
+      [CONTENT_PATTERNS.CREATE_KANJI_VOCAB]: (data) =>
+        this.createKanjiVocab(
+          data as { kanjiEntryId: number; dto: CreateKanjiVocabDto },
+        ),
+      [CONTENT_PATTERNS.UPDATE_KANJI_VOCAB]: (data) =>
+        this.updateKanjiVocab(
+          data as { id: number; dto: UpdateKanjiVocabDto },
+        ),
+      [CONTENT_PATTERNS.DELETE_KANJI_VOCAB]: (data) =>
+        this.deleteKanjiVocab(data as { id: number }),
+      [CONTENT_PATTERNS.REORDER_KANJI_VOCAB]: (data) =>
+        this.reorderKanjiVocab(
+          data as { kanjiEntryId: number; orderedIds: number[] },
+        ),
       [CONTENT_PATTERNS.GET_LISTENING_PLAYLIST]: (data) =>
         this.getListeningPlaylist(
           data as { lessonFrom: number; lessonTo: number; limit: number },
@@ -229,6 +245,28 @@ export class ContentMsController implements OnModuleInit {
 
   getKanjiEntry(data: { id: number }) {
     return this.kanjiService.findOne(data.id);
+  }
+
+  createKanjiVocab(data: {
+    kanjiEntryId: number;
+    dto: CreateKanjiVocabDto;
+  }) {
+    return this.kanjiService.createVocab(data.kanjiEntryId, data.dto);
+  }
+
+  updateKanjiVocab(data: { id: number; dto: UpdateKanjiVocabDto }) {
+    return this.kanjiService.updateVocab(data.id, data.dto);
+  }
+
+  deleteKanjiVocab(data: { id: number }) {
+    return this.kanjiService.removeVocab(data.id);
+  }
+
+  reorderKanjiVocab(data: {
+    kanjiEntryId: number;
+    orderedIds: number[];
+  }) {
+    return this.kanjiService.reorderVocab(data.kanjiEntryId, data.orderedIds);
   }
 
   getListeningPlaylist(data: {

@@ -148,6 +148,47 @@ export function fetchKanjiByJlpt(jlptLevel: string) {
   return apiRequest<KanjiEntry[]>(`/kanji?jlptLevel=${encodeURIComponent(jlptLevel)}`);
 }
 
+export function createKanjiVocab(
+  entryId: number,
+  data: import('../types/api').CreateKanjiVocabInput,
+  token: string,
+) {
+  return apiRequest<import('../types/api').KanjiVocabItem>(
+    `/kanji/${entryId}/vocabularies`,
+    { method: 'POST', token, body: JSON.stringify(data) },
+  );
+}
+
+export function updateKanjiVocab(
+  id: number,
+  data: import('../types/api').UpdateKanjiVocabInput,
+  token: string,
+) {
+  return apiRequest<import('../types/api').KanjiVocabItem>(`/kanji-vocab/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteKanjiVocab(id: number, token: string) {
+  return apiRequest<{ ok: boolean; id: number }>(`/kanji-vocab/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
+export function reorderKanjiVocab(
+  entryId: number,
+  orderedIds: number[],
+  token: string,
+) {
+  return apiRequest<import('../types/api').KanjiVocabItem[]>(
+    `/kanji/${entryId}/vocabularies/reorder`,
+    { method: 'PUT', token, body: JSON.stringify({ orderedIds }) },
+  );
+}
+
 export function fetchListeningPlaylist(lessonFrom = 1, lessonTo = 25, limit = 120) {
   return apiRequest<ListeningPlaylist>(
     `/listening/playlist?lessonFrom=${lessonFrom}&lessonTo=${lessonTo}&limit=${limit}`,
