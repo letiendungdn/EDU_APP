@@ -35,7 +35,7 @@ export const JAPANESE_PRONUNCIATION_RULES: JapanesePronunciationRulesPayload = {
     "Âm ら hàng r không lắc lưỡi — lưỡi chạm vòm miệng nhẹ rồi buông.",
     'Âm ふ/フ gần "hu" thổi nhẹ, không phải "ph" hay "f" cứng như tiếng Anh.',
     'Âm つ nhỏ, sát răng — không phát âm như "ts" tách rời hai âm.',
-    "Âm ん là mũi — cuối từ, không thêm nguyên âm sau.",
+    "Âm ん thay đổi khẩu hình theo âm sau: trước M/P/B → [m]; T/D/N/R/Z → [n]; K/G → [ŋ]; cuối từ / trước nguyên âm → mũi [ɴ].",
     "Kéo dài nguyên âm (おばあさん) khác hẳn nguyên âm ngắn (おばさん) — sai độ dài là sai nghĩa.",
   ],
   sections: [
@@ -207,13 +207,125 @@ export const JAPANESE_PRONUNCIATION_RULES: JapanesePronunciationRulesPayload = {
         {
           japanese: "ん",
           romaji: "n",
-          explanation: "Âm mũi cuối âm tiết; trước b/p/m là mũi môi.",
+          explanation:
+            "Âm mũi — khẩu hình đổi theo âm sau (xem mục «Âm ん — biến thể phát âm»). Cuối từ không thêm nguyên âm.",
         },
       ],
       examples: [
         { japanese: "ふろ", romaji: "furo", meaning: "bồn tắm" },
         { japanese: "つき", romaji: "tsuki", meaning: "mặt trăng" },
         { japanese: "せんせい", romaji: "sensei", meaning: "thầy/cô" },
+      ],
+    },
+    {
+      id: "n-assimilation",
+      title: "Âm ん — biến thể phát âm",
+      summary:
+        "ん không phát âm một kiểu cố định: khẩu hình và vị trí lưỡi đổi theo âm ngay sau nó.",
+      points: [
+        {
+          label: "[m] — mím môi",
+          japanese: "ん → [m]",
+          explanation:
+            "Khi ん đứng trước hàng M / P / B (ま・ぱ・ば…). Vì các âm này cần mím môi, ん tự chuyển thành /m/.",
+        },
+        {
+          label: "[n] — đầu lưỡi chạm vòm lợi",
+          japanese: "ん → [n]",
+          explanation:
+            "Khi ん đứng trước hàng T / D / N / R / Z (た・だ・な・ら・ざ…). Lưỡi chạm vòm lợi trên như âm n tiếng Việt.",
+        },
+        {
+          label: "[ŋ] — như «ng» tiếng Việt",
+          japanese: "ん → [ŋ]",
+          explanation:
+            "Khi ん đứng trước hàng K / G (か・き・く… / が・ぎ…). Phát âm gần «ng» trong «ngân», «mang».",
+        },
+        {
+          label: "[ɴ] — mũi / thoát hơi",
+          japanese: "ん → [ɴ]",
+          explanation:
+            "Khi ん ở cuối từ, hoặc đứng trước nguyên âm (あいうえお), hàng Y/W (や・ゆ・よ・わ), và hàng gió S/H (さ・は…). Mở khẩu hình, hơi thoát qua mũi — không chạm hẳn lưỡi lên vòm miệng.",
+        },
+        {
+          label: "Mẹo nhớ",
+          explanation:
+            "Chuẩn bị khẩu hình cho âm tiếp theo: trước P/B/M → M; trước K/G → NG; trước T/D/N → N. Không cần thuộc ký hiệu IPA.",
+        },
+      ],
+      examples: [
+        {
+          japanese: "あんぱん",
+          romaji: "am-pan",
+          meaning: "bánh nhân đậu đỏ",
+          note: "[m] trước P",
+        },
+        {
+          japanese: "日本橋",
+          romaji: "ni-hom-ba-shi",
+          meaning: "Nihonbashi",
+          note: "[m] trước B",
+        },
+        {
+          japanese: "さんま",
+          romaji: "sam-ma",
+          meaning: "cá thu đao",
+          note: "[m] trước M",
+        },
+        {
+          japanese: "乾杯",
+          romaji: "kam-pai",
+          meaning: "cạn ly",
+          note: "[m] trước P (không phải [n])",
+        },
+        {
+          japanese: "反対",
+          romaji: "han-tai",
+          meaning: "phản đối",
+          note: "[n] trước T",
+        },
+        {
+          japanese: "案内",
+          romaji: "an-nai",
+          meaning: "hướng dẫn",
+          note: "[n] trước N",
+        },
+        {
+          japanese: "連絡",
+          romaji: "ren-ra-ku",
+          meaning: "liên lạc",
+          note: "[n] trước R",
+        },
+        {
+          japanese: "天気",
+          romaji: "teng-ki",
+          meaning: "thời tiết",
+          note: "[ŋ] trước K",
+        },
+        {
+          japanese: "漫画",
+          romaji: "mang-ga",
+          meaning: "truyện tranh",
+          note: "[ŋ] trước G",
+        },
+        {
+          japanese: "銀行",
+          romaji: "ging-kou",
+          meaning: "ngân hàng",
+          note: "[ŋ] trước K",
+        },
+        {
+          japanese: "本",
+          romaji: "hon",
+          meaning: "sách",
+          note: "[ɴ] cuối từ",
+        },
+        {
+          japanese: "恋愛",
+          romaji: "ren-ai",
+          meaning: "tình yêu",
+          note: "[ɴ] trước nguyên âm あ",
+        },
       ],
     },
     {
@@ -255,7 +367,7 @@ export const JAPANESE_PRONUNCIATION_RULES: JapanesePronunciationRulesPayload = {
         },
         {
           explanation:
-            "Lật thẻ xem gợi ý romaji/nghĩa. Lặp lại âm khó (ら, つ, っ, trường âm) mỗi ngày.",
+            "Lật thẻ xem gợi ý romaji/nghĩa. Lặp lại âm khó (ら, つ, っ, ん biến thể, trường âm) mỗi ngày.",
         },
       ],
     },
