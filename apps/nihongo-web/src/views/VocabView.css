@@ -12,6 +12,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+}
+
+.vocab-body-layout .vocab-header {
+  flex-shrink: 0;
 }
 
 .lesson-selector {
@@ -95,6 +100,121 @@
   color: var(--text-secondary);
 }
 
+.vocab-word-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.vocab-word-list-head .vocab-word-list-title {
+  margin: 0;
+}
+
+.vocab-admin-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.vocab-admin-toggle,
+.vocab-admin-add {
+  border: 1px solid var(--border-color);
+  background: var(--surface-elevated, transparent);
+  color: var(--text-primary);
+  border-radius: 0.45rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.vocab-admin-toggle:hover,
+.vocab-admin-add:hover {
+  border-color: var(--accent-color, #60a5fa);
+}
+
+.vocab-admin-toggle--on {
+  background: color-mix(in srgb, var(--accent-color, #60a5fa) 22%, transparent);
+  border-color: var(--accent-color, #60a5fa);
+}
+
+.vocab-admin-error {
+  margin: 0 0 0.75rem;
+  color: #f87171;
+  font-size: 0.85rem;
+}
+
+.vocab-admin-hint {
+  margin: 0.75rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.vocab-admin-form {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.vocab-admin-form input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
+  color: var(--text-primary);
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.vocab-admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.vocab-word-list-row-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.vocab-word-list-row-wrap .vocab-word-list-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.vocab-word-list-edit-row {
+  padding: 0.35rem 0;
+}
+
+.vocab-admin-row-actions {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2rem;
+  flex-shrink: 0;
+}
+
+.vocab-admin-row-actions button {
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 0.35rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.vocab-admin-delete {
+  color: #f87171 !important;
+}
+
 .vocab-word-list-search {
   width: 100%;
   margin-bottom: 0.75rem;
@@ -147,6 +267,9 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .vocab-word-list-virtual {

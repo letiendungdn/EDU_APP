@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { useState, useEffect } from 'react';
 import { playAudio } from '../utils/speech';
 import LessonSelector from '../components/LessonSelector';
 import PlayAllButton from '../components/PlayAllButton';
+import VocabWordList from '../components/VocabWordList';
 import { usePlayAll } from '../hooks/usePlayAll';
+import { useAuth } from '../hooks/useAuth';
 import { useLessonsQuery, useVocabulariesQuery } from '../hooks/queries';
 import StrokeOrder from '../components/StrokeOrder';
 import VocabPicture from '../components/VocabPicture';
@@ -19,17 +20,6 @@ import {
 } from '../utils/japanese';
 import FlashcardJapaneseText from '../components/FlashcardJapaneseText';
 import './VocabView.css';
-
-function matchesVocabSearch(
-  vocab: { kanji: string | null; kana: string; romaji: string; meaning: string },
-  query: string,
-): boolean {
-  const haystack = [vocab.kanji, vocab.kana, vocab.romaji, vocab.meaning]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase();
-  return haystack.includes(query);
-}
 
 function strokeBoxSize(charCount: number, dense = false): number {
   if (dense) {
@@ -253,44 +243,30 @@ export default function VocabView() {
   const [currentLesson, setCurrentLesson] = useState(1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const { isAdmin } = useAuth();
   const { data: lessons = [] } = useLessonsQuery();
   const { data: lessonVocab = [], isLoading: loading } = useVocabulariesQuery(currentLesson);
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
-  const listScrollRef = useRef<HTMLDivElement>(null);
 
-  const expectedCount =
-    lessons.find((l) => l.lessonNumber === currentLesson)?._count?.vocabularies ?? null;
-  const isListIncomplete =
-    expectedCount != null && lessonVocab.length > 0 && lessonVocab.length < expectedCount;
-
-  const filteredVocab = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    return lessonVocab
-      .map((vocab, index) => ({ vocab, index }))
-      .filter(({ vocab }) => !q || matchesVocabSearch(vocab, q));
-  }, [lessonVocab, searchQuery]);
-
-  const rowVirtualizer = useVirtualizer({
-    count: filteredVocab.length,
-    getScrollElement: () => listScrollRef.current,
-    estimateSize: () => 72,
-    overscan: 5,
-  });
+  const currentLessonMeta = lessons.find((l) => l.lessonNumber === currentLesson);
+  const lessonId = currentLessonMeta?.id ?? null;
+  const expectedCount = currentLessonMeta?._count?.vocabularies ?? null;
 
   useEffect(() => {
     stopPlayAll();
     setCurrentIndex(0);
     setIsFlipped(false);
-    setSearchQuery('');
   }, [currentLesson, stopPlayAll]);
 
   useEffect(() => {
-    const filteredIndex = filteredVocab.findIndex(({ index }) => index === currentIndex);
-    if (filteredIndex >= 0) {
-      rowVirtualizer.scrollToIndex(filteredIndex, { align: 'auto' });
+    if (lessonVocab.length === 0) {
+      setCurrentIndex(0);
+      return;
     }
-  }, [currentIndex, currentLesson, searchQuery, filteredVocab, rowVirtualizer]);
+    if (currentIndex >= lessonVocab.length) {
+      setCurrentIndex(lessonVocab.length - 1);
+    }
+  }, [lessonVocab.length, currentIndex]);
 
   const currentVocab = lessonVocab[currentIndex];
   const hasMultipleReadings =
@@ -307,7 +283,7 @@ export default function VocabView() {
       hasOptionalBracketParts(currentVocab.kana) ||
       hasOptionalBracketParts(currentVocab.romaji));
   const frontTextTierClass = [
-    frontTextTier === 'sm' ? '' : `flashcard-text-dual--tier-${frontTextTier}`,
+    frontTextTier === 'sm' ? '' : ` flashcard-text-dual--tier-${frontTextTier}`,
     hasOptionalBrackets ? ' flashcard-text-dual--optional-brackets' : '',
   ].join('');
 
@@ -361,100 +337,57 @@ export default function VocabView() {
     setCurrentIndex(index);
   };
 
+  const vocabHeader = (
+    <div className="vocab-header">
+      <h2 className="view-title">Minna no Nihongo Vocabulary</h2>
+
+      <LessonSelector
+        id="lesson-select"
+        value={currentLesson}
+        onChange={setCurrentLesson}
+      />
+
+      {lessonVocab.length > 0 && (
+        <div className="vocab-progress">
+          <div className="vocab-progress__track">
+            <div
+              className="vocab-progress__fill"
+              style={{ width: `${((currentIndex + 1) / lessonVocab.length) * 100}%` }}
+            />
+          </div>
+          <span className="vocab-progress__text">
+            {currentIndex + 1} / {lessonVocab.length}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+
+  const showBody = Boolean(currentVocab) || isAdmin;
+
   return (
     <div className="container vocab-view">
-      <div className="vocab-header">
-        <h2 className="view-title">Minna no Nihongo Vocabulary</h2>
-
-        <LessonSelector
-          id="lesson-select"
-          value={currentLesson}
-          onChange={setCurrentLesson}
-        />
-
-        {lessonVocab.length > 0 && (
-          <div className="vocab-progress">
-            <div className="vocab-progress__track">
-              <div
-                className="vocab-progress__fill"
-                style={{ width: `${((currentIndex + 1) / lessonVocab.length) * 100}%` }}
-              />
-            </div>
-            <span className="vocab-progress__text">
-              {currentIndex + 1} / {lessonVocab.length}
-            </span>
-          </div>
-        )}
-      </div>
-
       {loading ? (
-        <div className="empty-state">
-          <p>Đang tải dữ liệu...</p>
-        </div>
-      ) : lessonVocab.length > 0 && currentVocab ? (
+        <>
+          {vocabHeader}
+          <div className="empty-state">
+            <p>Đang tải dữ liệu...</p>
+          </div>
+        </>
+      ) : showBody ? (
         <div className="vocab-body-layout">
-          <aside className="vocab-word-list glass-panel">
-            <h3 className="vocab-word-list-title">
-              Danh sách từ
-              {searchQuery.trim()
-                ? ` (${filteredVocab.length}/${lessonVocab.length})`
-                : ` (${lessonVocab.length})`}
-            </h3>
-            <input
-              type="search"
-              className="vocab-word-list-search"
-              placeholder="Tìm kiếm từ..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              aria-label="Tìm từ vựng"
-            />
-            {isListIncomplete && (
-              <p className="vocab-word-list-warning" role="status">
-                Đang hiển thị {lessonVocab.length}/{expectedCount} từ — hãy refresh trang.
-              </p>
-            )}
-            <div ref={listScrollRef} className="vocab-word-list-items">
-              {filteredVocab.length === 0 ? (
-                <p className="vocab-word-list-empty">Không tìm thấy từ phù hợp.</p>
-              ) : (
-                <div
-                  className="vocab-word-list-virtual"
-                  style={{ height: `${rowVirtualizer.getTotalSize()}px` }}
-                >
-                  {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                    const { vocab, index } = filteredVocab[virtualRow.index];
-                    return (
-                      <div
-                        key={vocab.id}
-                        className="vocab-word-list-row"
-                        style={{
-                          height: `${virtualRow.size}px`,
-                          transform: `translateY(${virtualRow.start}px)`,
-                        }}
-                      >
-                        <button
-                          type="button"
-                          className={`vocab-word-list-item ${
-                            index === currentIndex ? 'active' : ''
-                          }`}
-                          onClick={() => handleSelectWord(index)}
-                          aria-current={index === currentIndex ? 'true' : undefined}
-                        >
-                          <span className="vocab-word-list-num">{index + 1}</span>
-                          <span className="vocab-word-list-jp japanese-text">
-                            {vocab.kanji || vocab.kana}
-                          </span>
-                          <span className="vocab-word-list-meaning">{vocab.meaning}</span>
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </aside>
+          <VocabWordList
+            lessonNumber={currentLesson}
+            lessonId={lessonId}
+            vocabularies={lessonVocab}
+            currentIndex={currentIndex}
+            expectedCount={expectedCount}
+            onSelectWord={handleSelectWord}
+          />
 
           <div className="vocab-main-layout">
+          {vocabHeader}
+          {currentVocab ? (
           <div className="flashcard-container">
             <div
               className={`flashcard ${isFlipped ? 'flipped' : ''}${
@@ -553,15 +486,23 @@ export default function VocabView() {
               </button>
             </div>
           </div>
+          ) : (
+            <div className="empty-state">
+              <p>Chưa có từ trong bài này. Bấm Sửa → + Thêm để tạo từ mới.</p>
+            </div>
+          )}
           </div>
         </div>
       ) : (
-        <div className="empty-state">
-          <p>
-            Dữ liệu từ vựng cho Bài {currentLesson} chưa có sẵn. Hãy chọn bài khác
-            nhé!
-          </p>
-        </div>
+        <>
+          {vocabHeader}
+          <div className="empty-state">
+            <p>
+              Dữ liệu từ vựng cho Bài {currentLesson} chưa có sẵn. Hãy chọn bài khác
+              nhé!
+            </p>
+          </div>
+        </>
       )}
     </div>
   );

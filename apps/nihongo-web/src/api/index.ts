@@ -76,6 +76,45 @@ export function fetchVocabularies(lessonNumber: number) {
   );
 }
 
+export type CreateVocabularyInput = {
+  kanji?: string | null;
+  kana: string;
+  romaji: string;
+  meaning: string;
+  lessonId: number;
+};
+
+export type UpdateVocabularyInput = Partial<
+  Omit<CreateVocabularyInput, 'lessonId'>
+> & { lessonId?: number };
+
+export function createVocabulary(data: CreateVocabularyInput, token: string) {
+  return apiRequest<Vocabulary>('/vocabularies', {
+    method: 'POST',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateVocabulary(
+  id: number,
+  data: UpdateVocabularyInput,
+  token: string,
+) {
+  return apiRequest<Vocabulary>(`/vocabularies/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteVocabulary(id: number, token: string) {
+  return apiRequest<Vocabulary>(`/vocabularies/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
 export type VocabularyWithLesson = Vocabulary & { lessonNumber: number };
 
 export async function fetchVocabulariesRange(

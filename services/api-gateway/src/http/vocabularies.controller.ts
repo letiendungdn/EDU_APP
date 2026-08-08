@@ -8,9 +8,11 @@ import {
   Delete,
   Query,
   Inject,
+  UseGuards,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Role } from "@prisma/client";
 import { firstValueFrom } from "rxjs";
 import {
   CONTENT_PATTERNS,
@@ -18,7 +20,7 @@ import {
   LessonPaginationDto,
   UpdateVocabularyDto,
 } from "@app/contracts";
-import { Public } from "@app/common";
+import { JwtAuthGuard, Public, Roles, RolesGuard } from "@app/common";
 
 @ApiTags("vocabularies")
 @Controller("api/vocabularies")
@@ -28,7 +30,10 @@ export class VocabulariesController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: "Create vocabulary entry" })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Create vocabulary entry (admin)" })
   create(@Body() dto: CreateVocabularyDto) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.CREATE_VOCABULARY, dto),
@@ -58,7 +63,10 @@ export class VocabulariesController {
   }
 
   @Patch(":id")
-  @ApiOperation({ summary: "Update vocabulary entry" })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Update vocabulary entry (admin)" })
   update(@Param("id") id: string, @Body() dto: UpdateVocabularyDto) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.UPDATE_VOCABULARY, {
@@ -69,7 +77,10 @@ export class VocabulariesController {
   }
 
   @Delete(":id")
-  @ApiOperation({ summary: "Delete vocabulary" })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Delete vocabulary (admin)" })
   remove(@Param("id") id: string) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.DELETE_VOCABULARY, { id: +id }),
