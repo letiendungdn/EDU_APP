@@ -32,6 +32,7 @@ import type {
   DailyListeningPayload,
   BookAudioPayload,
   JapaneseCountersPayload,
+  JapaneseCountryNamesPayload,
   JapanesePronunciationRulesPayload,
   EnglishKatakanaPayload,
   JlptDaNangSchedulePayload,
@@ -256,6 +257,10 @@ export function fetchKanaCharts() {
 
 export function fetchJapaneseCounters() {
   return fetchReference<JapaneseCountersPayload>('japanese-counters');
+}
+
+export function fetchJapaneseCountryNames() {
+  return fetchReference<JapaneseCountryNamesPayload>('japanese-country-names');
 }
 
 export function fetchJapanesePronunciationRules() {

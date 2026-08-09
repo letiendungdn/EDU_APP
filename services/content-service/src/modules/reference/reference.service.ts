@@ -5,6 +5,7 @@ import { PrismaService } from "@app/prisma";
 const SLUGS = [
   "kana-charts",
   "japanese-counters",
+  "japanese-country-names",
   "japanese-pronunciation-rules",
   "english-katakana",
   "daily-listening",
@@ -43,6 +44,8 @@ export class ReferenceService {
         return this.getKanaCharts();
       case "japanese-counters":
         return this.getJapaneseCounters();
+      case "japanese-country-names":
+        return this.getJapaneseCountryNames();
       case "japanese-pronunciation-rules":
         return this.getJapanesePronunciationRules();
       case "english-katakana":
@@ -64,6 +67,7 @@ export class ReferenceService {
     const titles: Record<ReferenceSlug, string> = {
       "kana-charts": "Bảng kana Hiragana/Katakana",
       "japanese-counters": "Đếm số & thứ tự tiếng Nhật",
+      "japanese-country-names": "Tên quốc gia tiếng Nhật",
       "japanese-pronunciation-rules": "Quy tắc phát âm tiếng Nhật",
       "english-katakana": "Tiếng Anh ↔ Katakana",
       "daily-listening": "Nghe mỗi ngày — podcast & preset",
@@ -138,6 +142,27 @@ export class ReferenceService {
           kana: item.kana,
           romaji: item.romaji,
           vi: item.meaningVi,
+        })),
+      })),
+    };
+  }
+
+  private async getJapaneseCountryNames() {
+    const regions = await this.prisma.countryRegion.findMany({
+      include: { items: { orderBy: { sortOrder: "asc" } } },
+      orderBy: { sortOrder: "asc" },
+    });
+
+    return {
+      regions: regions.map((region) => ({
+        id: region.slug,
+        label: region.label,
+        items: region.items.map((item) => ({
+          nameJa: item.nameJa,
+          kana: item.kana,
+          romaji: item.romaji,
+          meaning: item.meaningVi,
+          code: item.countryCode,
         })),
       })),
     };

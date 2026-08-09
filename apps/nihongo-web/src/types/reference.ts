@@ -42,6 +42,24 @@ export interface JapaneseCountersPayload {
   categories: CounterCategory[];
 }
 
+export interface CountryNameItem {
+  nameJa: string;
+  kana: string;
+  romaji: string;
+  meaning: string;
+  code: string;
+}
+
+export interface CountryNameRegion {
+  id: string;
+  label: string;
+  items: CountryNameItem[];
+}
+
+export interface JapaneseCountryNamesPayload {
+  regions: CountryNameRegion[];
+}
+
 export interface PronunciationRulePoint {
   label?: string;
   japanese?: string;

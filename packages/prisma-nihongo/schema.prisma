@@ -227,6 +227,37 @@ model CounterItem {
 }
 
 // ─────────────────────────────────────────────
+// Japanese country names (reference)
+// ─────────────────────────────────────────────
+
+model CountryRegion {
+  id        Int               @id @default(autoincrement())
+  slug      String            @unique
+  label     String
+  sortOrder Int               @default(0)
+  items     CountryNameItem[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([sortOrder])
+}
+
+model CountryNameItem {
+  id         Int           @id @default(autoincrement())
+  regionId   Int
+  region     CountryRegion @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  nameJa     String
+  kana       String
+  romaji     String
+  meaningVi  String
+  /// ISO 3166-1 alpha-2 (hoặc mã đặc biệt như UN/EU cho vùng)
+  countryCode String
+  sortOrder  Int           @default(0)
+
+  @@index([regionId, sortOrder])
+}
+
+// ─────────────────────────────────────────────
 // Japanese pronunciation rules (reference)
 // ─────────────────────────────────────────────
 

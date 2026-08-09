@@ -9,6 +9,8 @@
     "seed": "ts-node seed.ts",
     "seed:pronunciation-rules": "ts-node seed-pronunciation-rules.ts",
     "seed:english-katakana": "ts-node seed-english-katakana.ts",
+    "seed:long-vowel": "ts-node seed-long-vowel-rules.ts",
+    "seed:country-names": "ts-node seed-country-names.ts",
     "studio": "prisma studio"
   },
   "prisma": {

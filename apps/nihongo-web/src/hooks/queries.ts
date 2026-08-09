@@ -23,6 +23,7 @@ import {
   fetchDailyListeningConfig,
   fetchBookAudioFiles,
   fetchJapaneseCounters,
+  fetchJapaneseCountryNames,
   fetchJapanesePronunciationRules,
   fetchEnglishKatakana,
   fetchJlptRoadmap,
@@ -70,6 +71,7 @@ export const queryKeys = {
   jlptDaNangSchedule: ['jlpt-da-nang-schedule'] as const,
   kanaCharts: ['reference', 'kana-charts'] as const,
   japaneseCounters: ['reference', 'japanese-counters'] as const,
+  japaneseCountryNames: ['reference', 'japanese-country-names'] as const,
   japanesePronunciationRules: ['reference', 'japanese-pronunciation-rules'] as const,
   englishKatakana: ['reference', 'english-katakana'] as const,
   dailyListeningConfig: ['reference', 'daily-listening'] as const,
@@ -184,6 +186,14 @@ export function useJapaneseCountersQuery() {
   return useQuery({
     queryKey: queryKeys.japaneseCounters,
     queryFn: fetchJapaneseCounters,
+    staleTime: STALE_5M,
+  });
+}
+
+export function useJapaneseCountryNamesQuery() {
+  return useQuery({
+    queryKey: queryKeys.japaneseCountryNames,
+    queryFn: fetchJapaneseCountryNames,
     staleTime: STALE_5M,
   });
 }

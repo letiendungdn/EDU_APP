@@ -22,6 +22,7 @@ const NAV_GROUPS = [
       { href: '/kanji',     icon: '漢',  label: 'Kanji' },
       { href: '/strokes',   icon: '筆',  label: 'Tra nét viết' },
       { href: '/counters',  icon: '①',  label: 'Đếm số' },
+      { href: '/countries', icon: '🌐', label: 'Quốc gia' },
     ],
   },
   {

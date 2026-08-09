@@ -16,7 +16,8 @@ dist-ssr
 .next
 out
 # Symlink/junction for Next typed routes (see scripts/ensure-app-link.mjs, Dockerfile)
-app
+# Only ignore repo-root /app — not src/app routes
+/app
 
 # Editor directories and files
 .vscode/*

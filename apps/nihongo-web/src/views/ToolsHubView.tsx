@@ -163,28 +163,52 @@ export default function ToolsHubView() {
         ))}
       </div>
 
-      {/* Japan map bonus */}
-      <div className="glass-panel" style={{
-        marginTop: 24, padding: '18px 22px',
-        display: 'flex', alignItems: 'center', gap: 16,
-        border: '1px solid rgba(16,185,129,0.2)',
-      }}>
-        <span style={{ fontSize: 32 }}>🗾</span>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3 }}>
-            Bản đồ Nhật Bản
-          </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-            Khám phá 47 tỉnh thành, học từ vựng theo vùng và luyện quiz nhận biết địa danh.
-          </div>
-        </div>
-        <Link href="/japan-map" style={{
-          padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600,
-          background: 'rgba(16,185,129,0.12)', color: '#10b981',
-          border: '1px solid rgba(16,185,129,0.25)', textDecoration: 'none', whiteSpace: 'nowrap',
+      <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="glass-panel" style={{
+          padding: '18px 22px',
+          display: 'flex', alignItems: 'center', gap: 16,
+          border: '1px solid rgba(16,185,129,0.2)',
         }}>
-          Khám phá →
-        </Link>
+          <span style={{ fontSize: 32 }}>🗾</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3 }}>
+              Bản đồ Nhật Bản
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+              Khám phá 47 tỉnh thành, học từ vựng theo vùng và luyện quiz nhận biết địa danh.
+            </div>
+          </div>
+          <Link href="/japan-map" style={{
+            padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600,
+            background: 'rgba(16,185,129,0.12)', color: '#10b981',
+            border: '1px solid rgba(16,185,129,0.25)', textDecoration: 'none', whiteSpace: 'nowrap',
+          }}>
+            Khám phá →
+          </Link>
+        </div>
+
+        <div className="glass-panel" style={{
+          padding: '18px 22px',
+          display: 'flex', alignItems: 'center', gap: 16,
+          border: '1px solid rgba(59,130,246,0.2)',
+        }}>
+          <span style={{ fontSize: 32 }}>🌐</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3 }}>
+              Tên quốc gia tiếng Nhật
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+              Học ベトナム・日本・アメリカ… theo châu lục, nghe phát âm và tìm kiếm nhanh.
+            </div>
+          </div>
+          <Link href="/countries" style={{
+            padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600,
+            background: 'rgba(59,130,246,0.12)', color: '#3b82f6',
+            border: '1px solid rgba(59,130,246,0.25)', textDecoration: 'none', whiteSpace: 'nowrap',
+          }}>
+            Học ngay →
+          </Link>
+        </div>
       </div>
     </div>
   );
