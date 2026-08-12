@@ -6,17 +6,21 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
   createVocabulary,
   deleteVocabulary,
+  getPresignedUploadUrl,
   updateVocabulary,
 } from '../api';
 import { queryKeys } from '../api/query-keys';
 import { useAuth } from '../hooks/useAuth';
 import type { Vocabulary } from '../types/api';
+import { readVocabImageFile } from '../utils/vocabImageUpload';
+import ImageLightbox from './ImageLightbox';
 
 type Draft = {
   kanji: string;
   kana: string;
   romaji: string;
   meaning: string;
+  imageUrl: string | null;
 };
 
 const emptyDraft = (): Draft => ({
@@ -24,6 +28,7 @@ const emptyDraft = (): Draft => ({
   kana: '',
   romaji: '',
   meaning: '',
+  imageUrl: null,
 });
 
 function matchesVocabSearch(vocab: Vocabulary, query: string): boolean {
@@ -32,6 +37,26 @@ function matchesVocabSearch(vocab: Vocabulary, query: string): boolean {
     .join(' ')
     .toLowerCase();
   return haystack.includes(query);
+}
+
+async function uploadVocabImage(token: string, file: File): Promise<string> {
+  // Ưu tiên S3 nếu cấu hình; không được thì lưu data URL (giống banner)
+  try {
+    const { url, publicUrl } = await getPresignedUploadUrl(
+      token,
+      file.type || 'image/jpeg',
+      'vocab',
+    );
+    const put = await fetch(url, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': file.type || 'image/jpeg' },
+    });
+    if (put.ok) return publicUrl;
+  } catch {
+    // fall through
+  }
+  return readVocabImageFile(file);
 }
 
 type Props = {
@@ -61,7 +86,9 @@ export default function VocabWordList({
   const [adding, setAdding] = useState(false);
   const [addDraft, setAddDraft] = useState<Draft>(emptyDraft());
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
 
   const canEdit = isAdmin && editMode;
   const isListIncomplete =
@@ -129,8 +156,27 @@ export default function VocabWordList({
       kana: item.kana,
       romaji: item.romaji,
       meaning: item.meaning,
+      imageUrl: item.imageUrl ?? null,
     });
     setError(null);
+  }
+
+  async function onPickImage(
+    file: File | null,
+    onChange: (next: Draft) => void,
+    value: Draft,
+  ) {
+    if (!file || !token) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const imageUrl = await uploadVocabImage(token, file);
+      onChange({ ...value, imageUrl });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Không tải ảnh được');
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function saveEdit() {
@@ -153,6 +199,7 @@ export default function VocabWordList({
           kana,
           romaji,
           meaning,
+          imageUrl: draft.imageUrl,
         },
         token,
       );
@@ -208,6 +255,7 @@ export default function VocabWordList({
           romaji,
           meaning,
           ...(kanji ? { kanji } : {}),
+          ...(addDraft.imageUrl ? { imageUrl: addDraft.imageUrl } : {}),
         },
         token,
       );
@@ -219,6 +267,64 @@ export default function VocabWordList({
     } finally {
       setBusy(false);
     }
+  }
+
+  function renderImageField(
+    value: Draft,
+    onChange: (next: Draft) => void,
+  ) {
+    return (
+      <div className="vocab-admin-image">
+        <div className="vocab-admin-image-preview">
+          {value.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={value.imageUrl}
+              alt="Ảnh minh họa"
+              className="vocab-picture-zoomable"
+              role="button"
+              tabIndex={0}
+              title="Nhấn để phóng to"
+              onClick={() => setLightboxSrc(value.imageUrl)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setLightboxSrc(value.imageUrl);
+                }
+              }}
+            />
+          ) : (
+            <span>Chưa có ảnh</span>
+          )}
+        </div>
+        <div className="vocab-admin-image-actions">
+          <label className="vocab-admin-image-upload">
+            {uploading ? 'Đang tải…' : '📷 Upload ảnh'}
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              disabled={busy || uploading}
+              onChange={(e) => {
+                const file = e.target.files?.[0] ?? null;
+                e.target.value = '';
+                void onPickImage(file, onChange, value);
+              }}
+            />
+          </label>
+          {value.imageUrl && (
+            <button
+              type="button"
+              className="vocab-admin-image-clear"
+              disabled={busy || uploading}
+              onClick={() => onChange({ ...value, imageUrl: null })}
+            >
+              Xóa ảnh
+            </button>
+          )}
+        </div>
+      </div>
+    );
   }
 
   function renderAdminForm(
@@ -254,6 +360,7 @@ export default function VocabWordList({
           disabled={busy}
           onChange={(e) => onChange({ ...value, meaning: e.target.value })}
         />
+        {renderImageField(value, onChange)}
         <div className="vocab-admin-actions">{actions}</div>
       </div>
     );
@@ -270,7 +377,7 @@ export default function VocabWordList({
               <button
                 type="button"
                 className="btn btn-primary"
-                disabled={busy}
+                disabled={busy || uploading}
                 onClick={() => void saveEdit()}
               >
                 Lưu
@@ -278,7 +385,7 @@ export default function VocabWordList({
               <button
                 type="button"
                 className="btn btn-nav"
-                disabled={busy}
+                disabled={busy || uploading}
                 onClick={() => setEditingId(null)}
               >
                 Hủy
@@ -304,6 +411,11 @@ export default function VocabWordList({
             {vocab.kanji || vocab.kana}
           </span>
           <span className="vocab-word-list-meaning">{vocab.meaning}</span>
+          {canEdit && vocab.imageUrl ? (
+            <span className="vocab-word-list-has-image" title="Có ảnh minh họa">
+              🖼
+            </span>
+          ) : null}
         </button>
         {canEdit && (
           <div className="vocab-admin-row-actions">
@@ -391,7 +503,7 @@ export default function VocabWordList({
           <button
             type="button"
             className="btn btn-primary"
-            disabled={busy}
+            disabled={busy || uploading}
             onClick={() => void handleAdd()}
           >
             Lưu từ mới
@@ -434,8 +546,16 @@ export default function VocabWordList({
       </div>
 
       {canEdit && (
-        <p className="vocab-admin-hint">✎ sửa · ✕ xóa · + Thêm từ mới</p>
+        <p className="vocab-admin-hint">✎ sửa · 📷 upload ảnh · ✕ xóa · + Thêm từ mới</p>
       )}
+
+      {lightboxSrc ? (
+        <ImageLightbox
+          src={lightboxSrc}
+          alt="Ảnh minh họa"
+          onClose={() => setLightboxSrc(null)}
+        />
+      ) : null}
     </aside>
   );
 }

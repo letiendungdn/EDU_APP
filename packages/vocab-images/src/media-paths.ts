@@ -45,26 +45,33 @@ export function kanjiMnemonicLocalPath(url: string): string | null {
 export function toLocalImageUrl(url: string | null | undefined): string | null {
   if (!url) return null;
 
-  const openmojiLocal = url.match(/^\/media\/openmoji\/([A-F0-9-]+)(?:\.svg)?$/i);
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+
+  // Admin uploads / banner-style data URLs
+  if (trimmed.startsWith('data:image/')) return trimmed;
+
+  const openmojiLocal = trimmed.match(/^\/media\/openmoji\/([A-F0-9-]+)(?:\.svg)?$/i);
   if (openmojiLocal) return openmojiLocalPath(openmojiLocal[1]!);
 
-  const kanjivgLocal = url.match(/^\/media\/kanjivg\/([0-9a-f]+)(?:\.svg)?$/i);
+  const kanjivgLocal = trimmed.match(/^\/media\/kanjivg\/([0-9a-f]+)(?:\.svg)?$/i);
   if (kanjivgLocal) return kanjivgLocalPath(kanjivgLocal[1]!);
 
-  if (url.startsWith('/media/')) return url;
+  if (trimmed.startsWith('/media/')) return trimmed;
 
-  const openmoji = url.match(/openmoji@[\d.]+\/color\/svg\/([A-F0-9-]+)\.svg/i);
+  const openmoji = trimmed.match(/openmoji@[\d.]+\/color\/svg\/([A-F0-9-]+)\.svg/i);
   if (openmoji) return openmojiLocalPath(openmoji[1]!);
 
-  const kanjivg = url.match(/kanjivg\/master\/kanji\/([0-9a-f]+)\.svg/i);
+  const kanjivg = trimmed.match(/kanjivg\/master\/kanji\/([0-9a-f]+)\.svg/i);
   if (kanjivg) return kanjivgLocalPath(kanjivg[1]!);
 
-  const kanjiMnemonic = kanjiMnemonicLocalPath(url);
+  const kanjiMnemonic = kanjiMnemonicLocalPath(trimmed);
   if (kanjiMnemonic) return kanjiMnemonic;
 
-  if (url.includes('upload.wikimedia.org')) return null;
+  // Block known broken/hotlink sources; keep S3 and other absolute URLs
+  if (trimmed.includes('upload.wikimedia.org')) return null;
 
-  if (/^https?:\/\//i.test(url)) return null;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
 
-  return url;
+  return trimmed;
 }

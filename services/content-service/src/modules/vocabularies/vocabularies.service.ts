@@ -20,6 +20,7 @@ export class VocabulariesService {
         romaji: dto.romaji,
         meaning: dto.meaning,
         lessonId: dto.lessonId,
+        ...(dto.imageUrl !== undefined ? { imageUrl: dto.imageUrl } : {}),
       },
     });
     await this.invalidateLessonCaches(dto.lessonId);

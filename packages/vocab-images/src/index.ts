@@ -769,10 +769,11 @@ export function resolveVocabImage(input: {
   kanji?: string | null;
   imageUrl?: string | null;
 }): string | null {
-  if (!isPictureEligible(input)) return null;
-
+  // Ảnh admin upload luôn ưu tiên, kể cả từ grammar-like
   const stored = normalizeStoredImageUrl(input.imageUrl);
   if (stored) return stored;
+
+  if (!isPictureEligible(input)) return null;
 
   const word = input.word?.trim().toLowerCase();
   if (word && EN_WORD_MAP[word]) return PICTURE_IMAGES[EN_WORD_MAP[word]];

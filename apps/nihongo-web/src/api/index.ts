@@ -83,6 +83,7 @@ export type CreateVocabularyInput = {
   romaji: string;
   meaning: string;
   lessonId: number;
+  imageUrl?: string | null;
 };
 
 export type UpdateVocabularyInput = Partial<

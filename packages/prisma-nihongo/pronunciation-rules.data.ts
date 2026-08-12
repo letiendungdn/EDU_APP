@@ -36,7 +36,7 @@ export const JAPANESE_PRONUNCIATION_RULES: JapanesePronunciationRulesPayload = {
     'Âm ふ/フ gần "hu" thổi nhẹ, không phải "ph" hay "f" cứng như tiếng Anh.',
     'Âm つ nhỏ, sát răng — không phát âm như "ts" tách rời hai âm.',
     "Âm ん thay đổi khẩu hình theo âm sau: trước M/P/B → [m]; T/D/N/R/Z → [n]; K/G → [ŋ]; cuối từ / trước nguyên âm → mũi [ɴ].",
-    "Kéo dài nguyên âm (おばあさん) khác hẳn nguyên âm ngắn (おばさん) — sai độ dài là sai nghĩa.",
+    "Kéo dài nguyên âm (おばあさん) khác hẳn nguyên âm ngắn (おばさん). Hiragana: あ→あ, い→い, う→う, え→い, お→う (có ngoại lệ ええ / おお).",
   ],
   sections: [
     {
@@ -140,23 +140,118 @@ export const JAPANESE_PRONUNCIATION_RULES: JapanesePronunciationRulesPayload = {
       ],
     },
     {
-      id: "long-vowel",
-      title: "Trường âm (chouon)",
-      summary: "Kéo dài nguyên âm — đổi nghĩa nếu đọc sai độ dài.",
+      id: 'long-vowel',
+      title: 'Trường âm (chōon / 長音)',
+      summary:
+        'Kéo dài nguyên âm gấp đôi — đổi nghĩa nếu đọc sai. Hiragana có quy luật viết theo hàng; katakana dùng dấu ー.',
       points: [
         {
           explanation:
-            "おばさん (cô) vs おばあさん (bà) — mora あ kéo dài gấp đôi. きょう vs きよう cũng khác mora.",
+            'Trường âm = 1 mora kéo dài thêm 1 mora. おばさん (cô) vs おばあさん (bà); ゆき (tuyết) vs ゆうき (dũng khí).',
+        },
+        {
+          label: 'Hiragana — hàng あ',
+          japanese: 'あ段 + あ',
+          romaji: 'aa',
+          explanation: 'Thêm あ sau mora hàng あ. VD: おかあさん, おばあさん.',
+        },
+        {
+          label: 'Hiragana — hàng い',
+          japanese: 'い段 + い',
+          romaji: 'ii',
+          explanation: 'Thêm い sau mora hàng い. VD: おにいさん, おじいさん.',
+        },
+        {
+          label: 'Hiragana — hàng う',
+          japanese: 'う段 + う',
+          romaji: 'uu',
+          explanation: 'Thêm う sau mora hàng う. VD: ゆうき, ゆうめい, ぎゅうにゅう.',
+        },
+        {
+          label: 'Hiragana — hàng え',
+          japanese: 'え段 + い (mặc định)',
+          romaji: 'ei ≈ ē',
+          explanation:
+            'Phần lớn viết え段 + い và đọc kéo dài ē: せんせい, とけい, えいが. Ngoại lệ nhỏ viết + え: おねえさん, ええ (vâng).',
+        },
+        {
+          label: 'Hiragana — hàng お',
+          japanese: 'お段 + う (mặc định)',
+          romaji: 'ou ≈ ō',
+          explanation:
+            'Phần lớn viết お段 + う và đọc kéo dài ō: ありがとう, おとうさん, こうこう. Ngoại lệ viết + お: おおきい, おおい, とおい, こおり, とおる…',
+        },
+        {
+          label: 'Katakana',
+          japanese: 'ー',
+          romaji: 'chōonpu',
+          explanation:
+            'Katakana (và hầu hết gairaigo) dùng dấu ー sau nguyên âm/âm ghép: コーヒー, ビール, タクシー. Không dùng ー trong hiragana thường.',
         },
         {
           explanation:
-            "Katakana dùng ー để kéo dài: コーヒー (koohii). Hiragana thường lặp nguyên âm.",
+            'Âm ghép cũng kéo dài: きょう (kyō), しょうがっこう (shōgakkō). Đừng tách thành き + よう.',
         },
       ],
       examples: [
-        { japanese: "おばさん", romaji: "obasan", meaning: "cô, dì" },
-        { japanese: "おばあさん", romaji: "obaasan", meaning: "bà" },
-        { japanese: "ビール", romaji: "biiru", meaning: "bia" },
+        {
+          japanese: 'おかあさん',
+          romaji: 'okaasan',
+          meaning: 'mẹ',
+          note: 'あ段 + あ',
+        },
+        {
+          japanese: 'おにいさん',
+          romaji: 'oniisan',
+          meaning: 'anh trai',
+          note: 'い段 + い',
+        },
+        {
+          japanese: 'ゆうき',
+          romaji: 'yuuki',
+          meaning: 'dũng khí',
+          note: 'う段 + う',
+        },
+        {
+          japanese: 'せんせい',
+          romaji: 'sensei',
+          meaning: 'thầy/cô',
+          note: 'え段 + い',
+        },
+        {
+          japanese: 'おねえさん',
+          romaji: 'oneesan',
+          meaning: 'chị gái',
+          note: 'え段 + え (ngoại lệ)',
+        },
+        {
+          japanese: 'ありがとう',
+          romaji: 'arigatou',
+          meaning: 'cảm ơn',
+          note: 'お段 + う',
+        },
+        {
+          japanese: 'おおきい',
+          romaji: 'ookii',
+          meaning: 'to, lớn',
+          note: 'お段 + お (ngoại lệ)',
+        },
+        {
+          japanese: 'コーヒー',
+          romaji: 'koohii',
+          meaning: 'cà phê',
+          note: 'katakana ー',
+        },
+        {
+          japanese: 'おばさん',
+          romaji: 'obasan',
+          meaning: 'cô, dì (ngắn)',
+        },
+        {
+          japanese: 'おばあさん',
+          romaji: 'obaasan',
+          meaning: 'bà (dài)',
+        },
       ],
     },
     {

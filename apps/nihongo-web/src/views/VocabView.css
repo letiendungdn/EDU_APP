@@ -170,6 +170,80 @@
   font-family: inherit;
 }
 
+.vocab-admin-image {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.45rem;
+  border-radius: 10px;
+  border: 1px dashed rgba(148, 163, 184, 0.45);
+  background: rgba(148, 163, 184, 0.06);
+}
+
+.vocab-admin-image-preview {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 0.25rem;
+}
+
+.vocab-admin-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vocab-admin-image-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.vocab-admin-image-upload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.vocab-admin-image-upload:hover {
+  background: rgba(16, 185, 129, 0.18);
+}
+
+.vocab-admin-image-clear {
+  border: none;
+  background: transparent;
+  color: #dc2626;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+}
+
+.vocab-word-list-has-image {
+  margin-left: auto;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
 .vocab-admin-actions {
   display: flex;
   flex-wrap: wrap;
@@ -1553,6 +1627,10 @@
 .vocab-picture {
   object-fit: contain;
   flex-shrink: 0;
+}
+
+.vocab-picture-zoomable {
+  cursor: zoom-in;
 }
 
 .vocab-picture-xs {
