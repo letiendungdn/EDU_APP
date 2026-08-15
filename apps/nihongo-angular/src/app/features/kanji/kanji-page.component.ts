@@ -1,7 +1,8 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
-import { playJapanese } from '../../core/utils/speech.util';
+import { playJapanese, playSpeechSequence } from '../../core/utils/speech.util';
+import { getKanjiReadingGroups, getKanjiSpeakItems } from '../../core/utils/kanji-speak';
 import { StrokeOrderComponent } from '../../shared/stroke-order/stroke-order.component';
 import type { KanjiEntry, KanjiLesson } from '../../core/models/api.models';
 
@@ -39,10 +40,9 @@ export class KanjiPageComponent {
 
   readonly isSearchActive = computed(() => this.searchQuery().trim().length > 0);
 
-  readonly readings = computed(() => {
+  readonly readingGroups = computed(() => {
     const k = this.current();
-    if (!k) return '';
-    return [k.onyomi, k.kunyomi].filter(Boolean).join(' · ');
+    return k ? getKanjiReadingGroups(k) : [];
   });
 
   constructor() {
@@ -135,15 +135,14 @@ export class KanjiPageComponent {
     this.index.update((i) => (i - 1 + len) % len);
   }
 
-  getKanjiReading(kanji: KanjiEntry): string {
-    const raw = kanji.onyomi || kanji.kunyomi || kanji.character || '';
-    return raw.split(/[,、]/)[0].replace(/-.*/, '').trim();
-  }
-
   speak(text?: string, event?: Event): void {
     event?.stopPropagation();
     const k = this.current();
     if (!k) return;
-    playJapanese(text || this.getKanjiReading(k));
+    if (text) {
+      playJapanese(text);
+      return;
+    }
+    void playSpeechSequence(getKanjiSpeakItems(k), 'ja-JP', { pauseMs: 550 });
   }
 }

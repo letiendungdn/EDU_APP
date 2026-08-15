@@ -96,7 +96,7 @@
         >
           <div class="flashcard-inner">
             <div class="face front glass-panel">
-              <button type="button" class="btn-audio" (click)="speak(undefined, $event)">🔊</button>
+              <button type="button" class="btn-audio" (click)="speak(undefined, $event)" title="Nghe tất cả cách đọc và từ vựng">🔊</button>
               @if (!current()!.imageUrl) {
                 <span class="kanji-char japanese-text">{{ current()!.character }}</span>
               } @else {
@@ -113,9 +113,25 @@
               </div>
             </div>
             <div class="face back glass-panel">
-              <button type="button" class="btn-audio" (click)="speak(undefined, $event)">🔊</button>
-              @if (readings()) {
-                <span class="readings japanese-text">{{ readings() }}</span>
+              <button type="button" class="btn-audio" (click)="speak(undefined, $event)" title="Nghe tất cả cách đọc và từ vựng">🔊</button>
+              @if (readingGroups().length) {
+                <div class="readings japanese-text kanji-readings">
+                  @for (group of readingGroups(); track $index) {
+                    @if ($index > 0) {
+                      <span class="kanji-reading-sep">·</span>
+                    }
+                    @for (token of group; track token.display + token.speak; let tokenLast = $last) {
+                      <button
+                        type="button"
+                        class="kanji-reading-chip"
+                        [title]="'Phát âm ' + token.speak"
+                        (click)="speak(token.speak, $event)"
+                      >
+                        {{ token.display }}{{ tokenLast ? '' : ',' }}
+                      </button>
+                    }
+                  }
+                </div>
               }
               <span class="meaning">{{ current()!.meaningVi }}</span>
               @if (current()!.mnemonicJp) {

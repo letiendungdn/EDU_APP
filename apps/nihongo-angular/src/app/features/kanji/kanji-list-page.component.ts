@@ -2,6 +2,7 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
+import { getKanjiSpeakItems } from '../../core/utils/kanji-speak';
 import type { JlptLevel, KanjiEntry, KanjiLesson } from '../../core/models/api.models';
 import { JLPT_LEVELS } from '../../core/models/api.models';
 
@@ -112,9 +113,7 @@ export class KanjiListPageComponent {
   }
 
   speak(entry: KanjiEntry): void {
-    const raw = entry.onyomi || entry.kunyomi || entry.character;
-    const reading = raw.split(/[,、]/)[0].replace(/-.*/, '').trim();
-    playJapanese(reading);
+    playJapanese(getKanjiSpeakItems(entry)[0] ?? entry.character);
   }
 
   private async loadLevel(level: JlptLevel): Promise<void> {

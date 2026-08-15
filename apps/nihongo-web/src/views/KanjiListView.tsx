@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { playAudio } from '../utils/speech';
+import { getKanjiSpeakItems } from '../utils/kanjiSpeak';
 import { useKanjiByJlptQuery, useKanjiLessonsQuery } from '../hooks/queries';
 import type { KanjiEntry, KanjiLesson } from '../types/api';
 import './KanjiListView.css';
@@ -74,8 +75,7 @@ function matchesSearch(entry: KanjiEntry, query: string): boolean {
 }
 
 function getPrimaryReading(entry: KanjiEntry): string {
-  const raw = entry.onyomi || entry.kunyomi || entry.character;
-  return raw.split(/[,、]/)[0].replace(/-.*/, '').trim();
+  return getKanjiSpeakItems(entry)[0] ?? entry.character;
 }
 
 export default function KanjiListView() {

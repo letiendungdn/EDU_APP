@@ -416,6 +416,39 @@
   text-align: center;
 }
 
+.kanji-readings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem 0.15rem;
+  font-size: 1.75rem;
+  color: var(--primary-color);
+}
+
+.kanji-reading-sep {
+  margin: 0 0.35rem;
+  opacity: 0.45;
+}
+
+.kanji-reading-chip {
+  border: none;
+  background: transparent;
+  padding: 0.05rem 0.2rem;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  line-height: 1.2;
+}
+
+.kanji-reading-chip:hover,
+.kanji-reading-chip:focus-visible {
+  background: rgba(239, 68, 68, 0.12);
+  outline: none;
+}
+
 .flashcard--kanji .flashcard-front {
   position: relative;
 }

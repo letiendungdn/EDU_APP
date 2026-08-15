@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { playAudio } from '../utils/speech';
+import { playAudio, playAudioSequence } from '../utils/speech';
 import PlayAllButton from '../components/PlayAllButton';
 import { usePlayAll } from '../hooks/usePlayAll';
 import {
@@ -13,6 +13,7 @@ import {
 import StrokeOrder from '../components/StrokeOrder';
 import KanjiVocabSidepanel from '../components/KanjiVocabSidepanel';
 import { toLocalImageUrl } from '@edu/vocab-images';
+import { getKanjiReadingGroups, getKanjiSpeakItems } from '../utils/kanjiSpeak';
 import type { KanjiEntry, KanjiLesson } from '../types/api';
 import './VocabView.css';
 
@@ -54,11 +55,7 @@ export default function KanjiView() {
   const currentKanji = lessonKanji[currentIndex];
   const currentLessonMeta = lessons.find((l) => l.lessonNumber === currentLesson);
   const isSearchActive = searchQuery.trim().length > 0;
-
-  const getKanjiReading = (kanji: KanjiEntry): string => {
-    const raw = kanji?.onyomi || kanji?.kunyomi || kanji?.character || '';
-    return raw.split(/[,、]/)[0].replace(/-.*/, '').trim();
-  };
+  const readingGroups = currentKanji ? getKanjiReadingGroups(currentKanji) : [];
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,20 +94,31 @@ export default function KanjiView() {
   const handlePronounce = (e: React.MouseEvent, text?: string) => {
     e.stopPropagation();
     if (!currentKanji) return;
-    const reading = text || getKanjiReading(currentKanji);
-    playAudio(reading);
+    stopPlayAll();
+    if (text) {
+      playAudio(text);
+      return;
+    }
+    void playAudioSequence(getKanjiSpeakItems(currentKanji), { pauseMs: 550 });
   };
 
   const handlePlayAll = () => {
-    startPlayAll(lessonKanji.map(getKanjiReading), {
-      onItemIndex: (index) => {
-        setIsFlipped(false);
-        setCurrentIndex(index);
+    const playlist = lessonKanji.flatMap((kanji, kanjiIndex) =>
+      getKanjiSpeakItems(kanji).map((text) => ({ text, kanjiIndex })),
+    );
+    startPlayAll(
+      playlist.map((item) => item.text),
+      {
+        pauseMs: 550,
+        onItemIndex: (index) => {
+          const item = playlist[index];
+          if (!item) return;
+          setIsFlipped(true);
+          setCurrentIndex(item.kanjiIndex);
+        },
       },
-    });
+    );
   };
-
-  const readings = [currentKanji?.onyomi, currentKanji?.kunyomi].filter(Boolean).join(' · ');
 
   return (
     <div className="container vocab-view">
@@ -221,7 +229,7 @@ export default function KanjiView() {
                 <button
                   className="btn-audio"
                   onClick={(e) => handlePronounce(e)}
-                  title="Nghe phát âm"
+                  title="Nghe tất cả cách đọc và từ vựng"
                 >
                   🔊
                 </button>
@@ -259,12 +267,32 @@ export default function KanjiView() {
                 <button
                   className="btn-audio"
                   onClick={(e) => handlePronounce(e)}
-                  title="Nghe phát âm"
+                  title="Nghe tất cả cách đọc và từ vựng"
                 >
                   🔊
                 </button>
                 <div className="kanji-flashcard-back-body">
-                  {readings && <span className="vocab-kana japanese-text">{readings}</span>}
+                  {readingGroups.length > 0 && (
+                    <div className="vocab-kana japanese-text kanji-readings">
+                      {readingGroups.map((group, groupIndex) => (
+                        <span key={`group-${groupIndex}`} className="kanji-reading-group">
+                          {groupIndex > 0 && <span className="kanji-reading-sep">·</span>}
+                          {group.map((token, tokenIndex) => (
+                            <button
+                              key={`${token.display}-${tokenIndex}`}
+                              type="button"
+                              className="kanji-reading-chip"
+                              title={`Phát âm ${token.speak}`}
+                              onClick={(e) => handlePronounce(e, token.speak)}
+                            >
+                              {token.display}
+                              {tokenIndex < group.length - 1 ? ',' : ''}
+                            </button>
+                          ))}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   <div className="divider"></div>
                   <span className="vocab-meaning">{currentKanji.meaningVi}</span>
                   {currentKanji.mnemonicJp && (
