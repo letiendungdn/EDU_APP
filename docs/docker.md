@@ -2,6 +2,7 @@
 
 Hướng dẫn dùng `docker compose` cho monorepo `edu_app`: mỗi container làm gì, chạy từng phần, và deploy sang máy mới.
 
+> **Học Docker từ đầu (khái niệm + lệnh + stack này):** [learn-docker.md](./learn-docker.md).  
 > Dev hàng ngày (nhẹ hơn Docker full app): [run-local.md](./run-local.md) — chỉ Docker infra + `npm run dev:*`.  
 > Mobile emulator gọi API qua nginx `:8080`: [run-mobile.md](./run-mobile.md), [nginx.md](./nginx.md).  
 > Tài khoản mặc định: [accounts.md](./accounts.md).

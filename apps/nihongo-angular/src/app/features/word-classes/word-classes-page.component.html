@@ -1,0 +1,193 @@
+<section class="container word-class-view">
+  @if (loading()) {
+    <p class="word-class-empty">Đang tải từ vựng Minna bài 1–50...</p>
+  } @else {
+    <header class="word-class-header">
+      <h2 class="view-title word-class-view-title">Loại từ</h2>
+      <p class="word-class-subtitle">
+        Phân loại từ vựng <strong>Minna no Nihongo bài 1–50</strong> thành danh từ, tính từ い / な
+        và động từ. Hậu tố 接尾語 học riêng tại
+        <a routerLink="/suffixes">trang Hậu tố</a>.
+      </p>
+
+      <div class="word-class-tabs">
+        @for (tab of tabs; track tab.id) {
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="activeId() === tab.id"
+            (click)="setTab(tab.id)"
+          >
+            {{ tab.label }}
+            <span class="word-class-tab-count">{{ counts()[tab.id] }}</span>
+          </button>
+        }
+      </div>
+
+      <label class="word-class-search">
+        <input
+          type="search"
+          placeholder="Tìm: たべます, 新しい, học sinh…"
+          autocomplete="off"
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+        />
+      </label>
+    </header>
+
+    <div class="word-class-panel">
+      <div class="word-class-hint-box">
+        <p class="word-class-hint-text">{{ hint() }}</p>
+      </div>
+
+      <div class="word-class-toolbar">
+        <p class="word-class-count">{{ items().length }} từ · {{ classLabel() }}</p>
+        @if (auth.isAdmin()) {
+          <div class="word-class-admin-toolbar">
+            <button
+              type="button"
+              class="word-class-admin-toggle"
+              [class.on]="editMode()"
+              [disabled]="busy()"
+              (click)="toggleEditMode()"
+            >
+              {{ editMode() ? 'Xong' : 'Sửa' }}
+            </button>
+            @if (canEdit()) {
+              <button
+                type="button"
+                class="word-class-admin-add"
+                [disabled]="busy() || lessonOptions().length === 0"
+                (click)="startAdd()"
+              >
+                {{ adding() ? 'Hủy thêm' : '+ Thêm' }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      @if (error()) {
+        <p class="word-class-admin-error">{{ error() }}</p>
+      }
+
+      @if (canEdit() && adding()) {
+        <div class="word-class-admin-form">
+          <ng-container *ngTemplateOutlet="formTpl" />
+          <div class="word-class-admin-form-actions">
+            <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="handleAdd()">
+              Lưu từ mới
+            </button>
+            <button type="button" [disabled]="busy()" (click)="cancelForm()">Hủy</button>
+          </div>
+        </div>
+      }
+
+      @if (items().length === 0 && !(canEdit() && adding())) {
+        <p class="word-class-empty">Không tìm thấy từ phù hợp.</p>
+      } @else {
+        <div class="word-class-grid">
+          @for (item of items(); track item.id) {
+            @if (canEdit() && editingId() === item.id) {
+              <div class="word-class-card word-class-card--editing">
+                <div class="word-class-admin-form">
+                  <ng-container *ngTemplateOutlet="formTpl" />
+                  <div class="word-class-admin-form-actions">
+                    <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="saveEdit()">
+                      Lưu
+                    </button>
+                    <button type="button" [disabled]="busy()" (click)="cancelForm()">Hủy</button>
+                  </div>
+                </div>
+              </div>
+            } @else if (canEdit()) {
+              <div class="word-class-card word-class-card--admin">
+                <span class="word-class-badge">Bài {{ item.lessonNumber }}</span>
+                @if (item.kanji) {
+                  <span class="word-class-kanji japanese-text">{{ item.kanji }}</span>
+                }
+                <span class="word-class-kana japanese-text">{{ item.kana }}</span>
+                <span class="word-class-romaji">{{ item.romaji }}</span>
+                <span class="word-class-vi">{{ item.meaning }}</span>
+                <div class="word-class-admin-row-actions">
+                  <button type="button" [disabled]="busy()" (click)="startEdit(item)">Sửa</button>
+                  <button
+                    type="button"
+                    class="word-class-admin-delete"
+                    [disabled]="busy()"
+                    (click)="handleDelete(item.id)"
+                  >
+                    Xóa
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <button type="button" class="word-class-card" (click)="speak(item.kana)">
+                <span class="word-class-badge">Bài {{ item.lessonNumber }}</span>
+                @if (item.kanji) {
+                  <span class="word-class-kanji japanese-text">{{ item.kanji }}</span>
+                }
+                <span class="word-class-kana japanese-text">{{ item.kana }}</span>
+                <span class="word-class-romaji">{{ item.romaji }}</span>
+                <span class="word-class-vi">{{ item.meaning }}</span>
+              </button>
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+</section>
+
+<ng-template #formTpl>
+  <input
+    class="japanese-text"
+    placeholder="Kanji (tuỳ chọn)"
+    [value]="draft().kanji"
+    [disabled]="busy()"
+    (input)="patchDraft({ kanji: $any($event.target).value })"
+  />
+  <input
+    class="japanese-text"
+    placeholder="Kana *"
+    [value]="draft().kana"
+    [disabled]="busy()"
+    (input)="patchDraft({ kana: $any($event.target).value })"
+  />
+  <input
+    placeholder="Romaji *"
+    [value]="draft().romaji"
+    [disabled]="busy()"
+    (input)="patchDraft({ romaji: $any($event.target).value })"
+  />
+  <input
+    placeholder="Nghĩa *"
+    [value]="draft().meaning"
+    [disabled]="busy()"
+    (input)="patchDraft({ meaning: $any($event.target).value })"
+  />
+  <label class="word-class-admin-field">
+    <span>Loại từ</span>
+    <select
+      [value]="draft().partOfSpeech"
+      [disabled]="busy()"
+      (change)="patchDraft({ partOfSpeech: $any($event.target).value })"
+    >
+      @for (tab of tabs; track tab.id) {
+        <option [value]="tab.id">{{ tab.label }}</option>
+      }
+    </select>
+  </label>
+  <label class="word-class-admin-field">
+    <span>Bài Minna</span>
+    <select
+      [value]="draft().lessonId"
+      [disabled]="busy()"
+      (change)="patchDraft({ lessonId: +$any($event.target).value })"
+    >
+      @for (lesson of lessonOptions(); track lesson.id) {
+        <option [value]="lesson.id">Bài {{ lesson.lessonNumber }}</option>
+      }
+    </select>
+  </label>
+</ng-template>

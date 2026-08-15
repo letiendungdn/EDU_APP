@@ -354,3 +354,76 @@
   background: linear-gradient(135deg, #93c5fd, #60a5fa);
   box-shadow: 0 2px 10px rgba(59, 130, 246, 0.28);
 }
+
+.grammar-admin-toolbar {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.grammar-admin-toggle,
+.grammar-admin-add,
+.grammar-admin-row-actions button,
+.grammar-admin-form-actions button,
+.grammar-admin-example-row button,
+.grammar-admin-examples > button {
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 0.45rem;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.grammar-admin-toggle.on {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: #3b82f6;
+}
+
+.grammar-admin-error {
+  margin: 0;
+  color: #dc2626;
+}
+
+.grammar-admin-form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.grammar-admin-form input,
+.grammar-admin-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  font: inherit;
+}
+
+.grammar-admin-examples {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.grammar-admin-example-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr auto;
+  gap: 0.35rem;
+}
+
+.grammar-admin-form-actions,
+.grammar-admin-row-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+}
+
+.grammar-admin-delete {
+  color: #b91c1c;
+}
+
+@media (max-width: 720px) {
+  .grammar-admin-example-row {
+    grid-template-columns: 1fr;
+  }
+}

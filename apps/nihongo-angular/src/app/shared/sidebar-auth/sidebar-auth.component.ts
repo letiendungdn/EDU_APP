@@ -10,7 +10,7 @@ import { AuthService } from '../../core/services/auth.service';
     @if (!auth.isAuthenticated() || !auth.user()) {
       @if (!hideOnLogin) {
         <div class="auth-header auth-header--guest">
-          <a routerLink="/login" class="btn btn-primary btn-sm auth-header-cta">
+          <a routerLink="/login" class="btn btn-primary btn-sm auth-header-cta" title="Đăng nhập / Đăng ký">
             Đăng nhập / Đăng ký
           </a>
         </div>

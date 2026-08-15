@@ -63,6 +63,10 @@ export class ContentMsController implements OnModuleInit {
         this.updateVocabulary(data as { id: number; dto: UpdateVocabularyDto }),
       [CONTENT_PATTERNS.DELETE_VOCABULARY]: (data) =>
         this.deleteVocabulary(data as { id: number }),
+      [CONTENT_PATTERNS.REORDER_VOCABULARY]: (data) =>
+        this.reorderVocabulary(
+          data as { lessonId: number; orderedIds: number[] },
+        ),
       [CONTENT_PATTERNS.GET_GRAMMARS]: (data) =>
         this.getGrammars(
           data as { lessonNumber?: number; page?: number; limit?: number },
@@ -181,6 +185,10 @@ export class ContentMsController implements OnModuleInit {
 
   deleteVocabulary(data: { id: number }) {
     return this.vocabulariesService.remove(data.id);
+  }
+
+  reorderVocabulary(data: { lessonId: number; orderedIds: number[] }) {
+    return this.vocabulariesService.reorder(data.lessonId, data.orderedIds);
   }
 
   getGrammars(data: { lessonNumber?: number; page?: number; limit?: number }) {

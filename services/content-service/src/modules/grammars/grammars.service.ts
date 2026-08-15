@@ -3,7 +3,7 @@ import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import type { Cache } from "cache-manager";
 import { PrismaService } from "@app/prisma";
 import { CacheKeys, CacheTTL } from "@app/common";
-import { CreateGrammarDto, UpdateGrammarDto } from "@app/contracts";
+import { CreateExampleDto, CreateGrammarDto, UpdateGrammarDto } from "@app/contracts";
 
 @Injectable()
 export class GrammarsService {
@@ -13,13 +13,16 @@ export class GrammarsService {
   ) {}
 
   async create(dto: CreateGrammarDto) {
+    const examples = this.exampleRows(dto.examples);
     const grammar = await this.prisma.grammar.create({
       data: {
         pattern: dto.pattern,
         meaning: dto.meaning,
         explanation: dto.explanation ?? null,
         lessonId: dto.lessonId,
+        ...(examples.length ? { examples: { create: examples } } : {}),
       },
+      include: { examples: true },
     });
     await this.invalidateLessonCaches(dto.lessonId);
     return grammar;
@@ -78,9 +81,30 @@ export class GrammarsService {
   }
 
   async update(id: number, dto: UpdateGrammarDto) {
-    const { examples: _examples, ...data } = dto;
-    const grammar = await this.prisma.grammar.update({ where: { id }, data });
-    await this.invalidateLessonCaches(grammar.lessonId);
+    const prev = await this.prisma.grammar.findUnique({
+      where: { id },
+      select: { lessonId: true },
+    });
+    const { examples, ...fields } = dto;
+    await this.prisma.grammar.update({ where: { id }, data: fields });
+
+    if (examples !== undefined) {
+      await this.prisma.example.deleteMany({ where: { grammarId: id } });
+      const rows = this.exampleRows(examples);
+      if (rows.length) {
+        await this.prisma.example.createMany({
+          data: rows.map((row) => ({ ...row, grammarId: id })),
+        });
+      }
+    }
+
+    const grammar = await this.findOne(id);
+    if (grammar) {
+      await this.invalidateLessonCaches(grammar.lessonId);
+      if (prev && prev.lessonId !== grammar.lessonId) {
+        await this.invalidateLessonCaches(prev.lessonId);
+      }
+    }
     return grammar;
   }
 
@@ -88,6 +112,18 @@ export class GrammarsService {
     const grammar = await this.prisma.grammar.delete({ where: { id } });
     await this.invalidateLessonCaches(grammar.lessonId);
     return grammar;
+  }
+
+  private exampleRows(examples?: CreateExampleDto[]) {
+    return (examples ?? [])
+      .map((example, index) => ({
+        jp: example.jp.trim(),
+        romaji: (example.romaji ?? "").trim(),
+        en: example.en?.trim() || null,
+        vi: example.vi?.trim() || null,
+        sortOrder: index,
+      }))
+      .filter((example) => example.jp);
   }
 
   private async invalidateLessonCaches(lessonId: number) {

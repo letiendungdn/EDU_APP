@@ -15,6 +15,10 @@ describe("GrammarsService", () => {
       update: jest.Mock;
       delete: jest.Mock;
     };
+    example: {
+      deleteMany: jest.Mock;
+      createMany: jest.Mock;
+    };
     $transaction: jest.Mock;
   };
   const mockCache = {
@@ -33,6 +37,10 @@ describe("GrammarsService", () => {
         create: jest.fn(),
         update: jest.fn(),
         delete: jest.fn(),
+      },
+      example: {
+        deleteMany: jest.fn(),
+        createMany: jest.fn(),
       },
       $transaction: jest.fn(),
     };

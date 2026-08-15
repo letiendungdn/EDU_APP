@@ -1,0 +1,230 @@
+.word-class-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+}
+
+.word-class-view-title {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.word-class-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  text-align: center;
+}
+
+.word-class-subtitle {
+  margin: 0;
+  color: var(--text-secondary);
+  max-width: 720px;
+  line-height: 1.6;
+}
+
+.word-class-subtitle a {
+  color: #0f766e;
+  font-weight: 700;
+}
+
+.word-class-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.word-class-tabs .tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.word-class-tabs .tab-btn.active {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: #fff;
+  border-color: transparent;
+}
+
+.word-class-tab-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0.85;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  padding: 0.05rem 0.4rem;
+}
+
+.word-class-search input {
+  width: min(100vw - 2rem, 420px);
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  font: inherit;
+}
+
+.word-class-hint-box {
+  padding: 0.9rem 1.1rem;
+  border-radius: 14px;
+  background: rgba(20, 184, 166, 0.08);
+  border: 1px solid rgba(13, 148, 136, 0.2);
+}
+
+.word-class-hint-text {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.word-class-count {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.word-class-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.word-class-admin-toolbar {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.word-class-admin-toggle,
+.word-class-admin-add {
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 0.45rem;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.word-class-admin-toggle.on {
+  background: rgba(13, 148, 136, 0.18);
+  border-color: #0d9488;
+}
+
+.word-class-admin-error {
+  color: #dc2626;
+  font-size: 0.88rem;
+}
+
+.word-class-admin-form {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.word-class-admin-form input,
+.word-class-admin-form select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  font: inherit;
+}
+
+.word-class-admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.word-class-admin-form-actions,
+.word-class-admin-row-actions {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.word-class-admin-row-actions {
+  margin-top: 0.45rem;
+}
+
+.word-class-admin-delete {
+  color: #b91c1c;
+}
+
+.word-class-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.word-class-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.word-class-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18rem;
+  padding: 1rem 0.75rem;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+}
+
+.word-class-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #0f766e;
+  background: rgba(20, 184, 166, 0.12);
+  border-radius: 999px;
+  padding: 0.12rem 0.45rem;
+}
+
+.word-class-kanji {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.word-class-kana {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.word-class-romaji {
+  font-size: 0.78rem;
+  font-style: italic;
+  color: #94a3b8;
+}
+
+.word-class-vi {
+  margin-top: 0.3rem;
+  font-weight: 600;
+  color: #0f766e;
+}

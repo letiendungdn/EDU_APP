@@ -1,0 +1,63 @@
+<section class="container suffixes-view">
+  @if (loading() || !category()) {
+    <p class="suffixes-empty">Đang tải hậu tố từ vựng...</p>
+  } @else {
+    <header class="suffixes-header">
+      <h2 class="view-title suffixes-view-title">Hậu tố từ vựng</h2>
+      <p class="suffixes-subtitle">
+        Học <strong>接尾語（せつびご）</strong> — mảnh gắn sau từ để đổi nghĩa:
+        さん・的・中・たち・やすい… Bấm thẻ để nghe. Từ vựng Minna theo danh / tính / động từ
+        xem tại <a routerLink="/word-classes">Loại từ</a>.
+      </p>
+
+      <div class="suffixes-tabs">
+        @for (cat of groups(); track cat.id) {
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="category()!.id === cat.id"
+            (click)="setCategory(cat.id)"
+          >
+            {{ cat.label }}
+          </button>
+        }
+      </div>
+
+      <label class="suffixes-search">
+        <input
+          type="search"
+          placeholder="Tìm: さん, teki, quá, người…"
+          autocomplete="off"
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+        />
+      </label>
+    </header>
+
+    <div class="suffixes-panel">
+      <div class="suffixes-hint-box">
+        <p class="suffixes-hint-text">{{ category()!.hint }}</p>
+      </div>
+
+      <p class="suffixes-count">{{ items().length }} mục</p>
+
+      @if (items().length === 0) {
+        <p class="suffixes-empty">Không tìm thấy hậu tố phù hợp.</p>
+      } @else {
+        <div class="suffixes-grid">
+          @for (item of items(); track item.suffix + item.kana) {
+            <button type="button" class="suffix-card" (click)="speak(item.kana)">
+              <span class="suffix-ja japanese-text">{{ item.suffix }}</span>
+              <span class="suffix-kana">{{ item.kana }}</span>
+              <span class="suffix-romaji">{{ item.romaji }}</span>
+              <span class="suffix-vi">{{ item.meaning }}</span>
+              <span class="suffix-attach">Gắn: {{ item.attachesTo }}</span>
+              <span class="suffix-ex japanese-text">{{ item.exampleJa }}</span>
+              <span class="suffix-ex-vi">{{ item.exampleVi }}</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+</section>

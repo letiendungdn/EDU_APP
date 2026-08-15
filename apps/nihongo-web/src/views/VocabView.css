@@ -257,6 +257,31 @@
   width: 100%;
 }
 
+.vocab-word-list-row-wrap--sortable {
+  cursor: default;
+}
+
+.vocab-word-list-row-wrap--dragging {
+  opacity: 0.55;
+}
+
+.vocab-word-list-drag {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  color: var(--text-secondary);
+  cursor: grab;
+  user-select: none;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.vocab-word-list-drag:active {
+  cursor: grabbing;
+}
+
 .vocab-word-list-row-wrap .vocab-word-list-item {
   flex: 1;
   min-width: 0;

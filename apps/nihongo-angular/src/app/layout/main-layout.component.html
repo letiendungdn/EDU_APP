@@ -3,7 +3,7 @@
     <main><router-outlet /></main>
   </div>
 } @else {
-  <div class="app-container">
+  <div class="app-container" [class.sidebar-collapsed]="sidebarCollapsed()">
     <button
       type="button"
       class="sidebar-toggle"
@@ -32,14 +32,43 @@
       aria-hidden="true"
     ></div>
 
-    <aside class="app-sidebar" [class.open]="sidebarOpen()">
-      <a routerLink="/" class="app-sidebar__logo" (click)="closeSidebar()">
-        <div class="app-sidebar__logo-icon">🇯🇵</div>
-        <div>
-          <div class="app-sidebar__logo-text">Nihongo</div>
-          <div class="app-sidebar__logo-sub">Learn Japanese</div>
-        </div>
-      </a>
+    <aside
+      class="app-sidebar"
+      [class.open]="sidebarOpen()"
+      [class.collapsed]="sidebarCollapsed()"
+    >
+      <div class="app-sidebar__header">
+        <a
+          routerLink="/"
+          class="app-sidebar__logo"
+          (click)="closeSidebar()"
+          [attr.title]="sidebarCollapsed() ? 'Nihongo' : null"
+        >
+          <div class="app-sidebar__logo-icon">🇯🇵</div>
+          <div class="app-sidebar__brand">
+            <div class="app-sidebar__logo-text">Nihongo</div>
+            <div class="app-sidebar__logo-sub">Learn Japanese</div>
+          </div>
+        </a>
+        <button
+          type="button"
+          class="sidebar-collapse-btn"
+          (click)="toggleCollapsed()"
+          [attr.aria-label]="sidebarCollapsed() ? 'Mở rộng menu' : 'Thu gọn menu'"
+          [attr.aria-pressed]="sidebarCollapsed()"
+          [attr.title]="sidebarCollapsed() ? 'Mở rộng menu' : 'Thu gọn menu'"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <path d="M9 3v18" />
+            @if (sidebarCollapsed()) {
+              <polyline points="14 8 18 12 14 16" />
+            } @else {
+              <polyline points="16 8 12 12 16 16" />
+            }
+          </svg>
+        </button>
+      </div>
 
       <nav class="app-sidebar__nav" aria-label="Main navigation">
         <a
@@ -48,32 +77,44 @@
           [routerLinkActiveOptions]="{ exact: true }"
           class="nav-item"
           (click)="closeSidebar()"
+          [attr.title]="sidebarCollapsed() ? 'Trang chủ' : null"
         >
           <span class="nav-item__icon">🏠</span>
-          Trang chủ
+          <span class="nav-item__label">Trang chủ</span>
         </a>
 
         @for (group of navGroups; track group.label) {
-          <div class="nav-group">
-            <div class="nav-group__label">{{ group.label }}</div>
-            @for (item of group.items; track item.path) {
-              <a
-                [routerLink]="item.path"
-                routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
-                class="nav-item"
-                (click)="closeSidebar()"
-              >
-                <span class="nav-item__icon">{{ item.icon }}</span>
-                {{ item.label }}
-              </a>
+          <div class="nav-group" [class.is-collapsed]="isGroupCollapsed(group.label)">
+            <button
+              type="button"
+              class="nav-group__toggle"
+              (click)="toggleGroup(group.label)"
+              [attr.aria-expanded]="!isGroupCollapsed(group.label)"
+            >
+              {{ group.label }}
+              <span class="nav-group__chevron" aria-hidden="true">▾</span>
+            </button>
+            @if (!isGroupCollapsed(group.label)) {
+              @for (item of group.items; track item.path) {
+                <a
+                  [routerLink]="item.path"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+                  class="nav-item"
+                  (click)="closeSidebar()"
+                  [attr.title]="sidebarCollapsed() ? item.label : null"
+                >
+                  <span class="nav-item__icon">{{ item.icon }}</span>
+                  <span class="nav-item__label">{{ item.label }}</span>
+                </a>
+              }
             }
           </div>
         }
       </nav>
 
       <div class="app-sidebar__bottom">
-        <button type="button" class="theme-toggle" (click)="theme.toggle()" aria-label="Đổi chủ đề">
+        <button type="button" class="theme-toggle" (click)="theme.toggle()" aria-label="Đổi chủ đề" title="Đổi chủ đề">
           @if (isDark()) {
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="4" />
@@ -91,7 +132,7 @@
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           }
-          <span>{{ isDark() ? 'Chế độ sáng' : 'Chế độ tối' }}</span>
+          <span class="theme-toggle__label">{{ isDark() ? 'Chế độ sáng' : 'Chế độ tối' }}</span>
         </button>
         <app-english-app-switcher />
         <app-sidebar-auth />

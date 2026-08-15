@@ -37,5 +37,8 @@ export function getStrokeThemeColors(): StrokeThemeColors {
 }
 
 export function strokeWidthForSize(size: number): number {
-  return Math.max(3, Math.round(size / 28));
+  // KanjiVG paths live in a 109×109 viewBox, so stroke-width is in those units
+  // and already scales with the rendered size. Keep it near the source value (3);
+  // size/28 used to make enlarged glyphs look like blobs.
+  return size >= 180 ? 2.25 : 2.8;
 }

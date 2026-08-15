@@ -60,6 +60,27 @@ export interface JapaneseCountryNamesPayload {
   regions: CountryNameRegion[];
 }
 
+export interface VocabSuffixItem {
+  suffix: string;
+  kana: string;
+  romaji: string;
+  meaning: string;
+  attachesTo: string;
+  exampleJa: string;
+  exampleVi: string;
+}
+
+export interface VocabSuffixGroup {
+  id: string;
+  label: string;
+  hint: string;
+  items: VocabSuffixItem[];
+}
+
+export interface JapaneseVocabSuffixesPayload {
+  groups: VocabSuffixGroup[];
+}
+
 export interface PronunciationRulePoint {
   label?: string;
   japanese?: string;

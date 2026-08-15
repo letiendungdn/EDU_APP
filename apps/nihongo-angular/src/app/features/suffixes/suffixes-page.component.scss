@@ -1,0 +1,147 @@
+.suffixes-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+}
+
+.suffixes-view-title {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.suffixes-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  text-align: center;
+}
+
+.suffixes-subtitle {
+  margin: 0;
+  color: var(--text-secondary);
+  max-width: 720px;
+  line-height: 1.6;
+}
+
+.suffixes-subtitle a {
+  color: #7c3aed;
+  font-weight: 700;
+}
+
+.suffixes-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.suffixes-tabs .tab-btn {
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.suffixes-tabs .tab-btn.active {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: #fff;
+  border-color: transparent;
+}
+
+.suffixes-search input {
+  width: min(100vw - 2rem, 420px);
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  font: inherit;
+}
+
+.suffixes-hint-box {
+  padding: 0.9rem 1.1rem;
+  border-radius: 14px;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.suffixes-hint-text {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.suffixes-count {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.suffixes-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.suffixes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.suffix-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18rem;
+  padding: 1rem 0.75rem;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+}
+
+.suffix-ja {
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.suffix-kana {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.suffix-romaji {
+  font-size: 0.78rem;
+  font-style: italic;
+  color: #94a3b8;
+}
+
+.suffix-vi {
+  margin-top: 0.3rem;
+  font-weight: 600;
+  color: #7c3aed;
+}
+
+.suffix-attach,
+.suffix-ex-vi {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.suffix-ex {
+  margin-top: 0.35rem;
+  font-weight: 600;
+}

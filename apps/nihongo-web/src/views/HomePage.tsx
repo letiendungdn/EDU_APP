@@ -20,6 +20,8 @@ const SECTIONS = [
       { href: '/grammar', icon: '文', title: 'Ngữ pháp',     desc: 'Cấu trúc câu & mẫu câu' },
       { href: '/kanji',   icon: '漢', title: 'Kanji',        desc: '512 kanji có hình minh họa' },
       { href: '/strokes', icon: '筆', title: 'Tra nét viết', desc: 'Gõ từ tiếng Nhật → xem cách vẽ' },
+      { href: '/suffixes', icon: '語', title: 'Hậu tố', desc: 'さん・的・中・たち… gắn sau từ' },
+      { href: '/word-classes', icon: '品', title: 'Loại từ', desc: 'Danh từ, tính từ, động từ Minna 1–50' },
     ],
   },
   {

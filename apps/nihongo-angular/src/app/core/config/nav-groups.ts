@@ -20,6 +20,8 @@ export const NAV_GROUPS: NavGroupConfig[] = [
       { path: '/kanji', icon: '漢', label: 'Kanji' },
       { path: '/strokes', icon: '筆', label: 'Tra nét viết' },
       { path: '/counters', icon: '①', label: 'Đếm số' },
+      { path: '/suffixes', icon: '語', label: 'Hậu tố' },
+      { path: '/word-classes', icon: '品', label: 'Loại từ' },
     ],
   },
   {

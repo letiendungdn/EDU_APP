@@ -33,6 +33,7 @@ import type {
   BookAudioPayload,
   JapaneseCountersPayload,
   JapaneseCountryNamesPayload,
+  JapaneseVocabSuffixesPayload,
   JapanesePronunciationRulesPayload,
   EnglishKatakanaPayload,
   JlptDaNangSchedulePayload,
@@ -83,6 +84,7 @@ export type CreateVocabularyInput = {
   romaji: string;
   meaning: string;
   lessonId: number;
+  partOfSpeech?: string | null;
   imageUrl?: string | null;
 };
 
@@ -117,6 +119,18 @@ export function deleteVocabulary(id: number, token: string) {
   });
 }
 
+export function reorderVocabularies(
+  lessonId: number,
+  orderedIds: number[],
+  token: string,
+) {
+  return apiRequest<Vocabulary[]>('/vocabularies/reorder', {
+    method: 'PUT',
+    token,
+    body: JSON.stringify({ lessonId, orderedIds }),
+  });
+}
+
 export type VocabularyWithLesson = Vocabulary & { lessonNumber: number };
 
 export async function fetchVocabulariesRange(
@@ -137,6 +151,48 @@ export function fetchGrammars(lessonNumber: number) {
   return fetchPaginatedAll<Grammar>((page, limit) =>
     `/grammars?lessonNumber=${lessonNumber}&page=${page}&limit=${limit}`,
   );
+}
+
+export type GrammarExampleInput = {
+  jp: string;
+  romaji: string;
+  en?: string | null;
+  vi?: string | null;
+};
+
+export type CreateGrammarInput = {
+  pattern: string;
+  meaning: string;
+  explanation?: string | null;
+  lessonId: number;
+  examples?: GrammarExampleInput[];
+};
+
+export type UpdateGrammarInput = Partial<Omit<CreateGrammarInput, 'lessonId'>> & {
+  lessonId?: number;
+};
+
+export function createGrammar(data: CreateGrammarInput, token: string) {
+  return apiRequest<Grammar>('/grammars', {
+    method: 'POST',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateGrammar(id: number, data: UpdateGrammarInput, token: string) {
+  return apiRequest<Grammar>(`/grammars/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteGrammar(id: number, token: string) {
+  return apiRequest<Grammar>(`/grammars/${id}`, {
+    method: 'DELETE',
+    token,
+  });
 }
 
 export function fetchExercises(lessonNumber: number) {
@@ -262,6 +318,10 @@ export function fetchJapaneseCounters() {
 
 export function fetchJapaneseCountryNames() {
   return fetchReference<JapaneseCountryNamesPayload>('japanese-country-names');
+}
+
+export function fetchJapaneseVocabSuffixes() {
+  return fetchReference<JapaneseVocabSuffixesPayload>('japanese-vocab-suffixes');
 }
 
 export function fetchJapanesePronunciationRules() {

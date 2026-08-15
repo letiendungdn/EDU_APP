@@ -40,6 +40,89 @@
   user-select: none;
 }
 
+.grammar-admin-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.grammar-admin-toggle,
+.grammar-admin-add,
+.grammar-admin-row-actions button,
+.grammar-admin-example-add,
+.grammar-admin-example-remove {
+  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.4));
+  background: var(--surface-elevated, transparent);
+  color: var(--text-primary);
+  border-radius: 0.45rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.grammar-admin-toggle--on {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: #3b82f6;
+}
+
+.grammar-admin-error {
+  margin: 0;
+  color: #dc2626;
+  font-size: 0.88rem;
+}
+
+.grammar-admin-form {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.grammar-admin-form input,
+.grammar-admin-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
+  border-radius: 0.45rem;
+  padding: 0.5rem 0.65rem;
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.grammar-admin-examples {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.grammar-admin-example-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr auto;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.grammar-admin-form-actions,
+.grammar-admin-row-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.grammar-admin-delete {
+  color: #b91c1c;
+}
+
+.grammar-card--editing {
+  padding: 1.1rem;
+}
+
+@media (max-width: 720px) {
+  .grammar-admin-example-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .grammar-auto-read input {
   width: 1rem;
   height: 1rem;

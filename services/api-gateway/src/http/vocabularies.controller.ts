@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Put,
   Body,
   Param,
   Delete,
@@ -18,6 +19,7 @@ import {
   CONTENT_PATTERNS,
   CreateVocabularyDto,
   LessonPaginationDto,
+  ReorderVocabularyDto,
   UpdateVocabularyDto,
 } from "@app/contracts";
 import { JwtAuthGuard, Public, Roles, RolesGuard } from "@app/common";
@@ -49,6 +51,20 @@ export class VocabulariesController {
         lessonNumber: query.lessonNumber,
         page: query.page ?? 1,
         limit: query.limit ?? 50,
+      }),
+    );
+  }
+
+  @Put("reorder")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Reorder vocabularies in a lesson (admin)" })
+  reorder(@Body() dto: ReorderVocabularyDto) {
+    return firstValueFrom(
+      this.contentClient.send(CONTENT_PATTERNS.REORDER_VOCABULARY, {
+        lessonId: dto.lessonId,
+        orderedIds: dto.orderedIds,
       }),
     );
   }

@@ -6,6 +6,7 @@ const SLUGS = [
   "kana-charts",
   "japanese-counters",
   "japanese-country-names",
+  "japanese-vocab-suffixes",
   "japanese-pronunciation-rules",
   "english-katakana",
   "daily-listening",
@@ -46,6 +47,8 @@ export class ReferenceService {
         return this.getJapaneseCounters();
       case "japanese-country-names":
         return this.getJapaneseCountryNames();
+      case "japanese-vocab-suffixes":
+        return this.getJapaneseVocabSuffixes();
       case "japanese-pronunciation-rules":
         return this.getJapanesePronunciationRules();
       case "english-katakana":
@@ -68,6 +71,7 @@ export class ReferenceService {
       "kana-charts": "Bảng kana Hiragana/Katakana",
       "japanese-counters": "Đếm số & thứ tự tiếng Nhật",
       "japanese-country-names": "Tên quốc gia tiếng Nhật",
+      "japanese-vocab-suffixes": "Hậu tố từ vựng tiếng Nhật",
       "japanese-pronunciation-rules": "Quy tắc phát âm tiếng Nhật",
       "english-katakana": "Tiếng Anh ↔ Katakana",
       "daily-listening": "Nghe mỗi ngày — podcast & preset",
@@ -163,6 +167,30 @@ export class ReferenceService {
           romaji: item.romaji,
           meaning: item.meaningVi,
           code: item.countryCode,
+        })),
+      })),
+    };
+  }
+
+  private async getJapaneseVocabSuffixes() {
+    const groups = await this.prisma.vocabSuffixGroup.findMany({
+      include: { items: { orderBy: { sortOrder: "asc" } } },
+      orderBy: { sortOrder: "asc" },
+    });
+
+    return {
+      groups: groups.map((group) => ({
+        id: group.slug,
+        label: group.label,
+        hint: group.hint,
+        items: group.items.map((item) => ({
+          suffix: item.suffix,
+          kana: item.kana,
+          romaji: item.romaji,
+          meaning: item.meaningVi,
+          attachesTo: item.attachesTo,
+          exampleJa: item.exampleJa,
+          exampleVi: item.exampleVi,
         })),
       })),
     };

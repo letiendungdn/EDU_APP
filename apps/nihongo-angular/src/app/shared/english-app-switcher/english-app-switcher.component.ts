@@ -9,7 +9,7 @@ interface AppFeaturesResponse {
   standalone: true,
   template: `
     @if (englishUrl()) {
-      <a [href]="englishUrl()!" class="nav-link app-switcher">🇬🇧 English</a>
+      <a [href]="englishUrl()!" class="nav-link app-switcher" title="English">🇬🇧 <span class="app-switcher__label">English</span></a>
     }
   `,
 })

@@ -9,6 +9,7 @@ export const CONTENT_PATTERNS = {
   CREATE_VOCABULARY: 'content.vocabularies.create',
   UPDATE_VOCABULARY: 'content.vocabularies.update',
   DELETE_VOCABULARY: 'content.vocabularies.delete',
+  REORDER_VOCABULARY: 'content.vocabularies.reorder',
   GET_GRAMMARS: 'content.grammars.findAll',
   GET_GRAMMAR: 'content.grammars.findOne',
   CREATE_GRAMMAR: 'content.grammars.create',

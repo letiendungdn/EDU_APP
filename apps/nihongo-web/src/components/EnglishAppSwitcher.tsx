@@ -50,9 +50,10 @@ export default function EnglishAppSwitcher() {
     <button
       onClick={() => void handleSwitch()}
       className="nav-link app-switcher"
+      title="English"
       style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
     >
-      🇬🇧 English
+      🇬🇧 <span className="app-switcher__label">English</span>
     </button>
   );
 }

@@ -6,6 +6,7 @@ import { seedKanaRomaji } from './seed-kana-romaji';
 import { seedBookAudio } from './seed-book-audio';
 import { seedSubscriptionPlans } from './seed-plans';
 import { seedCountryNames } from './seed-country-names';
+import { seedVocabSuffixes } from './seed-vocab-suffixes';
 
 const prisma = new PrismaClient();
 
@@ -17,6 +18,7 @@ async function main() {
   await seedBookAudio(prisma);
   await seedSubscriptionPlans(prisma);
   await seedCountryNames(prisma);
+  await seedVocabSuffixes(prisma);
   console.log('\nSeeding finished.');
 }
 

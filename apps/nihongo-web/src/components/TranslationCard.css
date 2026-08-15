@@ -281,8 +281,8 @@
 
 .tc-stroke-modal {
   position: relative;
-  width: min(420px, calc(100vw - 2rem));
-  max-height: min(88vh, 640px);
+  width: min(460px, calc(100vw - 2rem));
+  max-height: min(92vh, 720px);
   overflow: auto;
   padding: 1.35rem 1.25rem 1.25rem;
   border-radius: 18px;
@@ -328,9 +328,20 @@
 .tc-stroke-modal-canvas {
   display: flex;
   justify-content: center;
-  padding: 0.5rem;
+  padding: 0.65rem;
   border-radius: 14px;
   background: rgba(255 255 255 / 0.04);
+}
+
+.tc-stroke-modal-canvas .stroke-order-wrapper,
+.tc-stroke-modal-canvas .stroke-order-container {
+  width: 100%;
+}
+
+.tc-stroke-modal-canvas .stroke-order-container > div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .tc-stroke-modal-word {

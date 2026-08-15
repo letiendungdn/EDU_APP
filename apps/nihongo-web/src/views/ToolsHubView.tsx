@@ -209,6 +209,29 @@ export default function ToolsHubView() {
             Học ngay →
           </Link>
         </div>
+
+        <div className="glass-panel" style={{
+          padding: '18px 22px',
+          display: 'flex', alignItems: 'center', gap: 16,
+          border: '1px solid rgba(139,92,246,0.2)',
+        }}>
+          <span style={{ fontSize: 32 }}>語</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3 }}>
+              Hậu tố từ vựng (接尾語)
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+              Học さん・的・中・たち・やすい… cách gắn sau từ và ví dụ.
+            </div>
+          </div>
+          <Link href="/suffixes" style={{
+            padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600,
+            background: 'rgba(139,92,246,0.12)', color: '#7c3aed',
+            border: '1px solid rgba(139,92,246,0.25)', textDecoration: 'none', whiteSpace: 'nowrap',
+          }}>
+            Học ngay →
+          </Link>
+        </div>
       </div>
     </div>
   );

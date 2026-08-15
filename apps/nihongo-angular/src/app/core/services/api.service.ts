@@ -51,6 +51,7 @@ import type {
   DailyListeningPayload,
   EnglishKatakanaPayload,
   JapaneseCountersPayload,
+  JapaneseVocabSuffixesPayload,
   JapanesePronunciationRulesPayload,
   JlptDaNangSchedulePayload,
   JlptRoadmapPayload,
@@ -80,10 +81,90 @@ export class ApiService {
     );
   }
 
+  createVocabulary(
+    token: string,
+    data: {
+      kanji?: string | null;
+      kana: string;
+      romaji: string;
+      meaning: string;
+      lessonId: number;
+      partOfSpeech?: string | null;
+    },
+  ): Promise<Vocabulary> {
+    return apiFetch<Vocabulary>('/vocabularies', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(data),
+    });
+  }
+
+  updateVocabulary(
+    token: string,
+    id: number,
+    data: {
+      kanji?: string | null;
+      kana?: string;
+      romaji?: string;
+      meaning?: string;
+      lessonId?: number;
+      partOfSpeech?: string | null;
+    },
+  ): Promise<Vocabulary> {
+    return apiFetch<Vocabulary>(`/vocabularies/${id}`, {
+      method: 'PATCH',
+      token,
+      body: JSON.stringify(data),
+    });
+  }
+
+  deleteVocabulary(token: string, id: number): Promise<Vocabulary> {
+    return apiFetch<Vocabulary>(`/vocabularies/${id}`, { method: 'DELETE', token });
+  }
+
   getGrammars(lessonNumber: number): Promise<Grammar[]> {
     return this.fetchPaginatedAll<Grammar>(
       (page, limit) => `/grammars?lessonNumber=${lessonNumber}&page=${page}&limit=${limit}`,
     );
+  }
+
+  createGrammar(
+    token: string,
+    data: {
+      pattern: string;
+      meaning: string;
+      explanation?: string | null;
+      lessonId: number;
+      examples?: Array<{ jp: string; romaji: string; vi?: string | null }>;
+    },
+  ): Promise<Grammar> {
+    return apiFetch<Grammar>('/grammars', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(data),
+    });
+  }
+
+  updateGrammar(
+    token: string,
+    id: number,
+    data: {
+      pattern?: string;
+      meaning?: string;
+      explanation?: string | null;
+      lessonId?: number;
+      examples?: Array<{ jp: string; romaji: string; vi?: string | null }>;
+    },
+  ): Promise<Grammar> {
+    return apiFetch<Grammar>(`/grammars/${id}`, {
+      method: 'PATCH',
+      token,
+      body: JSON.stringify(data),
+    });
+  }
+
+  deleteGrammar(token: string, id: number): Promise<Grammar> {
+    return apiFetch<Grammar>(`/grammars/${id}`, { method: 'DELETE', token });
   }
 
   getExercises(lessonNumber: number): Promise<Exercise[]> {
@@ -141,6 +222,10 @@ export class ApiService {
 
   getJapaneseCounters(): Promise<JapaneseCountersPayload> {
     return this.getReference<JapaneseCountersPayload>('japanese-counters');
+  }
+
+  getJapaneseVocabSuffixes(): Promise<JapaneseVocabSuffixesPayload> {
+    return this.getReference<JapaneseVocabSuffixesPayload>('japanese-vocab-suffixes');
   }
 
   getJapanesePronunciationRules(): Promise<JapanesePronunciationRulesPayload> {

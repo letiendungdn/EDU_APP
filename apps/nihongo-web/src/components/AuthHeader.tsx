@@ -23,7 +23,7 @@ export default function AuthHeader() {
 
     return (
       <div className="auth-header auth-header--guest">
-        <Link href="/login" className="btn btn-primary btn-sm auth-header-cta">
+        <Link href="/login" className="btn btn-primary btn-sm auth-header-cta" title="Đăng nhập / Đăng ký">
           Đăng nhập / Đăng ký
         </Link>
       </div>

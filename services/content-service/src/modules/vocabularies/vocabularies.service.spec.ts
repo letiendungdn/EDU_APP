@@ -14,6 +14,7 @@ describe("VocabulariesService", () => {
       create: jest.Mock;
       update: jest.Mock;
       delete: jest.Mock;
+      aggregate: jest.Mock;
     };
     $transaction: jest.Mock;
   };
@@ -33,6 +34,7 @@ describe("VocabulariesService", () => {
         create: jest.fn(),
         update: jest.fn(),
         delete: jest.fn(),
+        aggregate: jest.fn().mockResolvedValue({ _max: { sortOrder: -1 } }),
       },
       $transaction: jest.fn(),
     };
@@ -79,9 +81,30 @@ describe("VocabulariesService", () => {
       romaji: "u",
       meaning: "test",
       lessonId: 1,
+      partOfSpeech: "noun" as const,
     };
-    prisma.vocabulary.create.mockResolvedValue({ id: 1, ...dto });
+    prisma.vocabulary.aggregate.mockResolvedValue({ _max: { sortOrder: 2 } });
+    prisma.vocabulary.create.mockResolvedValue({ id: 1, ...dto, sortOrder: 3 });
     await service.create(dto);
-    expect(prisma.vocabulary.create).toHaveBeenCalled();
+    expect(prisma.vocabulary.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        kana: "う",
+        lessonId: 1,
+        partOfSpeech: "noun",
+        sortOrder: 3,
+      }),
+    });
+  });
+
+  it("reorder writes sortOrder for every id", async () => {
+    prisma.vocabulary.findMany
+      .mockResolvedValueOnce([{ id: 1 }, { id: 2 }])
+      .mockResolvedValueOnce([{ id: 2 }, { id: 1 }]);
+    prisma.$transaction.mockResolvedValue([]);
+    prisma.vocabulary.update.mockResolvedValue({});
+
+    await service.reorder(9, [2, 1]);
+
+    expect(prisma.$transaction).toHaveBeenCalled();
   });
 });

@@ -239,6 +239,7 @@ npm test -- --coverage -w @edu/nihongo-services
 | [docs/db-design.md](docs/db-design.md) | ER diagrams, schema reference, backup |
 | [docs/run-local.md](docs/run-local.md) | Hướng dẫn chạy local từng bước |
 | [docs/docker.md](docs/docker.md) | Full stack Docker (~14 container) |
+| [docs/learn-docker.md](docs/learn-docker.md) | Học Docker trên stack EDU APP |
 | [docs/roadmap-angular.md](docs/roadmap-angular.md) | Lộ trình học Angular |
 | [docs/roadmap-reactjs.md](docs/roadmap-reactjs.md) | Lộ trình học ReactJS/Next |
 | [docs/learn-edu-app.md](docs/learn-edu-app.md) | Lộ trình 10 tuần học và làm chủ codebase |

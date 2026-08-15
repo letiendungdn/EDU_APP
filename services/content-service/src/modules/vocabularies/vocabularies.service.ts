@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import type { Cache } from "cache-manager";
 import { PrismaService } from "@app/prisma";
@@ -13,6 +13,10 @@ export class VocabulariesService {
   ) {}
 
   async create(dto: CreateVocabularyDto) {
+    const maxOrder = await this.prisma.vocabulary.aggregate({
+      where: { lessonId: dto.lessonId },
+      _max: { sortOrder: true },
+    });
     const vocab = await this.prisma.vocabulary.create({
       data: {
         kanji: dto.kanji ?? null,
@@ -20,6 +24,8 @@ export class VocabulariesService {
         romaji: dto.romaji,
         meaning: dto.meaning,
         lessonId: dto.lessonId,
+        sortOrder: (maxOrder._max.sortOrder ?? -1) + 1,
+        ...(dto.partOfSpeech !== undefined ? { partOfSpeech: dto.partOfSpeech } : {}),
         ...(dto.imageUrl !== undefined ? { imageUrl: dto.imageUrl } : {}),
       },
     });
@@ -76,11 +82,18 @@ export class VocabulariesService {
   }
 
   async update(id: number, dto: UpdateVocabularyDto) {
+    const prev = await this.prisma.vocabulary.findUnique({
+      where: { id },
+      select: { lessonId: true },
+    });
     const vocab = await this.prisma.vocabulary.update({
       where: { id },
       data: dto,
     });
     await this.invalidateLessonCaches(vocab.lessonId);
+    if (prev && prev.lessonId !== vocab.lessonId) {
+      await this.invalidateLessonCaches(prev.lessonId);
+    }
     return vocab;
   }
 
@@ -88,6 +101,37 @@ export class VocabulariesService {
     const vocab = await this.prisma.vocabulary.delete({ where: { id } });
     await this.invalidateLessonCaches(vocab.lessonId);
     return vocab;
+  }
+
+  async reorder(lessonId: number, orderedIds: number[]) {
+    const existing = await this.prisma.vocabulary.findMany({
+      where: { lessonId },
+      select: { id: true },
+    });
+    const existingIds = new Set(existing.map((item) => item.id));
+    if (
+      orderedIds.length !== existingIds.size ||
+      orderedIds.some((id) => !existingIds.has(id))
+    ) {
+      throw new NotFoundException(
+        "orderedIds must include every vocabulary for this lesson",
+      );
+    }
+
+    await this.prisma.$transaction(
+      orderedIds.map((id, index) =>
+        this.prisma.vocabulary.update({
+          where: { id },
+          data: { sortOrder: index },
+        }),
+      ),
+    );
+
+    await this.invalidateLessonCaches(lessonId);
+    return this.prisma.vocabulary.findMany({
+      where: { lessonId },
+      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+    });
   }
 
   private async invalidateLessonCaches(lessonId: number) {

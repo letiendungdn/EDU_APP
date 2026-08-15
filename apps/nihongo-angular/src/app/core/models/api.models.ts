@@ -19,6 +19,7 @@ export interface Vocabulary {
   romaji: string;
   meaning: string;
   lessonId?: number;
+  partOfSpeech?: string | null;
   imageUrl?: string | null;
 }
 

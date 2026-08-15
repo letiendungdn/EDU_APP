@@ -1,0 +1,492 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useQueryClient } from '@tanstack/react-query';
+import PlayAllButton from '../components/PlayAllButton';
+import { usePlayAll } from '../hooks/usePlayAll';
+import { useAuth } from '../hooks/useAuth';
+import { useLessonsQuery, useVocabRangeQuery } from '../hooks/queries';
+import { queryKeys } from '../api/query-keys';
+import {
+  createVocabulary,
+  deleteVocabulary,
+  updateVocabulary,
+  type VocabularyWithLesson,
+} from '../api';
+import { playAudio } from '../utils/speech';
+import {
+  WORD_CLASS_TABS,
+  classifyMinnaWord,
+  wordClassLabel,
+  type MinnaWordClass,
+  type WordClassTabId,
+} from '../utils/minnaWordClass';
+import './WordClassView.css';
+
+type ClassifiedWord = VocabularyWithLesson & {
+  wordClass: MinnaWordClass;
+};
+
+type Draft = {
+  kanji: string;
+  kana: string;
+  romaji: string;
+  meaning: string;
+  lessonId: number;
+  partOfSpeech: MinnaWordClass;
+};
+
+function emptyDraft(partOfSpeech: MinnaWordClass, lessonId: number): Draft {
+  return {
+    kanji: '',
+    kana: '',
+    romaji: '',
+    meaning: '',
+    lessonId,
+    partOfSpeech,
+  };
+}
+
+function matchesWord(item: ClassifiedWord, query: string): boolean {
+  const haystack = [item.kanji, item.kana, item.romaji, item.meaning, `bài ${item.lessonNumber}`]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+  return haystack.includes(query);
+}
+
+const HINTS: Record<WordClassTabId, string> = {
+  noun: 'Danh từ (名詞) — người, đồ vật, chỗ, thời gian. Nhiều từ Minna hết い vẫn là danh từ: 学生・世界・先生.',
+  'i-adj': 'Tính từ い (い形容詞) — chia trực tiếp: 高い → 高くない / 高かった. Bấm thẻ để nghe.',
+  'na-adj': 'Tính từ な (な形容詞) — trong sách ghi ［な］: 静かな町, きれいな花. Trước です không thêm な.',
+  verb: 'Động từ Minna học ở dạng ます (丁寧形). 食べます・行きます・結婚します đều vào nhóm này.',
+  other: 'Câu chào, phó từ, hậu tố đếm (～回・－歳), mẫu ～さん… — không xếp vào danh / tính / động từ.',
+};
+
+export default function WordClassView() {
+  const { isAdmin, token } = useAuth();
+  const queryClient = useQueryClient();
+  const { data = [], isLoading } = useVocabRangeQuery(1, 50);
+  const { data: lessons = [] } = useLessonsQuery();
+  const [activeId, setActiveId] = useState<WordClassTabId>('noun');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [editMode, setEditMode] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [draft, setDraft] = useState<Draft>(emptyDraft('noun', 0));
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
+
+  const canEdit = isAdmin && editMode;
+  const lessonOptions = useMemo(
+    () => lessons.filter((lesson) => lesson.lessonNumber >= 1 && lesson.lessonNumber <= 50),
+    [lessons],
+  );
+
+  const classified = useMemo<ClassifiedWord[]>(
+    () =>
+      data.map((entry) => ({
+        ...entry,
+        wordClass: classifyMinnaWord(entry),
+      })),
+    [data],
+  );
+
+  const counts = useMemo(() => {
+    const next: Record<MinnaWordClass, number> = {
+      noun: 0,
+      'i-adj': 0,
+      'na-adj': 0,
+      verb: 0,
+      other: 0,
+    };
+    for (const item of classified) next[item.wordClass] += 1;
+    return next;
+  }, [classified]);
+
+  const items = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return classified.filter((item) => {
+      if (item.wordClass !== activeId) return false;
+      if (!q) return true;
+      return matchesWord(item, q);
+    });
+  }, [classified, activeId, searchQuery]);
+
+  const defaultLessonId = lessonOptions[0]?.id ?? 0;
+
+  async function invalidateVocab() {
+    await queryClient.invalidateQueries({ queryKey: queryKeys.vocab.all });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.lessons.all });
+  }
+
+  function toggleEditMode() {
+    stopPlayAll();
+    setEditMode((on) => {
+      if (on) {
+        setAdding(false);
+        setEditingId(null);
+        setError(null);
+      }
+      return !on;
+    });
+  }
+
+  function startAdd() {
+    setEditingId(null);
+    setAdding((on) => {
+      if (on) return false;
+      setDraft(emptyDraft(activeId, defaultLessonId));
+      setError(null);
+      return true;
+    });
+  }
+
+  function startEdit(item: ClassifiedWord) {
+    setAdding(false);
+    setEditingId(item.id);
+    setDraft({
+      kanji: item.kanji ?? '',
+      kana: item.kana,
+      romaji: item.romaji,
+      meaning: item.meaning,
+      lessonId: item.lessonId,
+      partOfSpeech: item.wordClass,
+    });
+    setError(null);
+  }
+
+  function validateDraft(): Draft | null {
+    const kana = draft.kana.trim();
+    const romaji = draft.romaji.trim();
+    const meaning = draft.meaning.trim();
+    const kanji = draft.kanji.trim();
+    if (!kana || !romaji || !meaning) {
+      setError('Điền đủ kana, romaji và nghĩa');
+      return null;
+    }
+    if (!draft.lessonId) {
+      setError('Chọn bài học');
+      return null;
+    }
+    return { ...draft, kana, romaji, meaning, kanji };
+  }
+
+  async function saveEdit() {
+    if (!token || editingId == null) return;
+    const next = validateDraft();
+    if (!next) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await updateVocabulary(
+        editingId,
+        {
+          kanji: next.kanji || null,
+          kana: next.kana,
+          romaji: next.romaji,
+          meaning: next.meaning,
+          lessonId: next.lessonId,
+          partOfSpeech: next.partOfSpeech,
+        },
+        token,
+      );
+      setEditingId(null);
+      if (next.partOfSpeech !== activeId) setActiveId(next.partOfSpeech);
+      await invalidateVocab();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Không lưu được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleAdd() {
+    if (!token) return;
+    const next = validateDraft();
+    if (!next) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await createVocabulary(
+        {
+          lessonId: next.lessonId,
+          kana: next.kana,
+          romaji: next.romaji,
+          meaning: next.meaning,
+          partOfSpeech: next.partOfSpeech,
+          ...(next.kanji ? { kanji: next.kanji } : {}),
+        },
+        token,
+      );
+      setAdding(false);
+      if (next.partOfSpeech !== activeId) setActiveId(next.partOfSpeech);
+      await invalidateVocab();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Không thêm được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleDelete(id: number) {
+    if (!token) return;
+    if (!window.confirm('Xóa từ này? Từ cũng mất ở trang Từ vựng / flashcard.')) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await deleteVocabulary(id, token);
+      if (editingId === id) setEditingId(null);
+      await invalidateVocab();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Không xóa được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const handlePlayAll = () => {
+    startPlayAll(items.map((item) => item.kana));
+  };
+
+  function renderForm(onSave: () => void, onCancel: () => void, saveLabel: string) {
+    return (
+      <div className="word-class-admin-form">
+        <input
+          className="japanese-text"
+          placeholder="Kanji (tuỳ chọn)"
+          value={draft.kanji}
+          disabled={busy}
+          onChange={(e) => setDraft({ ...draft, kanji: e.target.value })}
+        />
+        <input
+          className="japanese-text"
+          placeholder="Kana *"
+          value={draft.kana}
+          disabled={busy}
+          onChange={(e) => setDraft({ ...draft, kana: e.target.value })}
+        />
+        <input
+          placeholder="Romaji *"
+          value={draft.romaji}
+          disabled={busy}
+          onChange={(e) => setDraft({ ...draft, romaji: e.target.value })}
+        />
+        <input
+          placeholder="Nghĩa *"
+          value={draft.meaning}
+          disabled={busy}
+          onChange={(e) => setDraft({ ...draft, meaning: e.target.value })}
+        />
+        <label className="word-class-admin-field">
+          <span>Loại từ</span>
+          <select
+            value={draft.partOfSpeech}
+            disabled={busy}
+            onChange={(e) =>
+              setDraft({ ...draft, partOfSpeech: e.target.value as MinnaWordClass })
+            }
+          >
+            {WORD_CLASS_TABS.map((tab) => (
+              <option key={tab.id} value={tab.id}>
+                {tab.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="word-class-admin-field">
+          <span>Bài Minna</span>
+          <select
+            value={draft.lessonId}
+            disabled={busy}
+            onChange={(e) => setDraft({ ...draft, lessonId: Number(e.target.value) })}
+          >
+            {lessonOptions.map((lesson) => (
+              <option key={lesson.id} value={lesson.id}>
+                Bài {lesson.lessonNumber}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="word-class-admin-form-actions">
+          <button type="button" className="btn btn-primary" disabled={busy} onClick={onSave}>
+            {saveLabel}
+          </button>
+          <button type="button" className="btn btn-nav" disabled={busy} onClick={onCancel}>
+            Hủy
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="container word-class-view">
+        <p className="word-class-empty">Đang tải từ vựng Minna bài 1–50...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container word-class-view">
+      <div className="word-class-header">
+        <h2 className="view-title word-class-view-title">Loại từ</h2>
+        <p className="word-class-subtitle">
+          Phân loại từ vựng <strong>Minna no Nihongo bài 1–50</strong> thành danh từ, tính từ い / な
+          và động từ. Hậu tố 接尾語 học riêng tại{' '}
+          <Link href="/suffixes">trang Hậu tố</Link>.
+        </p>
+
+        <div className="word-class-tabs">
+          {WORD_CLASS_TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              className={`tab-btn ${activeId === tab.id ? 'active' : ''}`}
+              onClick={() => {
+                stopPlayAll();
+                setActiveId(tab.id);
+                setAdding(false);
+                setEditingId(null);
+              }}
+            >
+              {tab.label}
+              <span className="word-class-tab-count">{counts[tab.id]}</span>
+            </button>
+          ))}
+        </div>
+
+        <label className="word-class-search">
+          <span className="sr-only">Tìm từ</span>
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Tìm: たべます, 新しい, học sinh…"
+            autoComplete="off"
+          />
+        </label>
+      </div>
+
+      <div className="word-class-panel">
+        <div className="word-class-hint-box">
+          <p className="word-class-hint-text">{HINTS[activeId]}</p>
+        </div>
+
+        <div className="word-class-toolbar">
+          <span className="word-class-count">
+            {items.length} từ · {wordClassLabel(activeId)}
+          </span>
+          <div className="word-class-toolbar-actions">
+            {isAdmin && (
+              <div className="word-class-admin-toolbar">
+                <button
+                  type="button"
+                  className={`word-class-admin-toggle${editMode ? ' word-class-admin-toggle--on' : ''}`}
+                  disabled={busy}
+                  onClick={toggleEditMode}
+                >
+                  {editMode ? 'Xong' : 'Sửa'}
+                </button>
+                {canEdit && (
+                  <button
+                    type="button"
+                    className="word-class-admin-add"
+                    disabled={busy || lessonOptions.length === 0}
+                    onClick={startAdd}
+                  >
+                    {adding ? 'Hủy thêm' : '+ Thêm'}
+                  </button>
+                )}
+              </div>
+            )}
+            <PlayAllButton
+              isPlaying={isPlayingAll}
+              onPlay={handlePlayAll}
+              onStop={stopPlayAll}
+              label="Phát tất cả"
+              disabled={items.length === 0}
+            />
+          </div>
+        </div>
+
+        {error ? <p className="word-class-admin-error">{error}</p> : null}
+
+        {canEdit && adding
+          ? renderForm(
+              () => void handleAdd(),
+              () => setAdding(false),
+              'Lưu từ mới',
+            )
+          : null}
+
+        {items.length === 0 && !(canEdit && adding) ? (
+          <p className="word-class-empty">Không tìm thấy từ phù hợp.</p>
+        ) : (
+          <div className="word-class-grid">
+            {items.map((item) => {
+              if (canEdit && editingId === item.id) {
+                return (
+                  <div key={item.id} className="word-class-card word-class-card--editing">
+                    {renderForm(
+                      () => void saveEdit(),
+                      () => setEditingId(null),
+                      'Lưu',
+                    )}
+                  </div>
+                );
+              }
+
+              if (canEdit) {
+                return (
+                  <div key={item.id} className="word-class-card word-class-card--admin">
+                    <span className="word-class-badge">Bài {item.lessonNumber}</span>
+                    {item.kanji ? (
+                      <span className="word-class-kanji japanese-text">{item.kanji}</span>
+                    ) : null}
+                    <span className="word-class-kana japanese-text">{item.kana}</span>
+                    <span className="word-class-romaji">{item.romaji}</span>
+                    <span className="word-class-vi">{item.meaning}</span>
+                    <div className="word-class-admin-row-actions">
+                      <button type="button" disabled={busy} onClick={() => startEdit(item)}>
+                        Sửa
+                      </button>
+                      <button
+                        type="button"
+                        className="word-class-admin-delete"
+                        disabled={busy}
+                        onClick={() => void handleDelete(item.id)}
+                      >
+                        Xóa
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <button
+                  key={`${item.wordClass}-${item.id}`}
+                  type="button"
+                  className={`word-class-card word-class-card--${item.wordClass}`}
+                  onClick={() => playAudio(item.kana)}
+                >
+                  <span className="word-class-badge">Bài {item.lessonNumber}</span>
+                  {item.kanji ? (
+                    <span className="word-class-kanji japanese-text">{item.kanji}</span>
+                  ) : null}
+                  <span className="word-class-kana japanese-text">{item.kana}</span>
+                  <span className="word-class-romaji">{item.romaji}</span>
+                  <span className="word-class-vi">{item.meaning}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

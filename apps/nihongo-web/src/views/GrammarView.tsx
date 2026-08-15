@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   grammarExampleRomaji,
   grammarExampleSpeechText,
@@ -17,7 +18,10 @@ import type { Grammar } from '../types/api';
 import LessonSelector from '../components/LessonSelector';
 import PlayAllButton from '../components/PlayAllButton';
 import { usePlayAll } from '../hooks/usePlayAll';
-import { useGrammarsQuery } from '../hooks/queries';
+import { useAuth } from '../hooks/useAuth';
+import { useGrammarsQuery, useLessonsQuery } from '../hooks/queries';
+import { queryKeys } from '../api/query-keys';
+import { createGrammar, deleteGrammar, updateGrammar } from '../api';
 import {
   grammarQuickAnalysis,
   grammarUsageBullets,
@@ -26,6 +30,42 @@ import {
 import './GrammarView.css';
 
 const AUTO_READ_KEY = 'nihongo-grammar-auto-read';
+
+type ExampleDraft = {
+  jp: string;
+  romaji: string;
+  vi: string;
+};
+
+type GrammarDraft = {
+  pattern: string;
+  meaning: string;
+  explanation: string;
+  examples: ExampleDraft[];
+};
+
+const emptyExample = (): ExampleDraft => ({ jp: '', romaji: '', vi: '' });
+
+const emptyGrammarDraft = (): GrammarDraft => ({
+  pattern: '',
+  meaning: '',
+  explanation: '',
+  examples: [emptyExample()],
+});
+
+function draftFromGrammar(grammar: Grammar): GrammarDraft {
+  const examples = (grammar.examples ?? []).map((example) => ({
+    jp: example.jp,
+    romaji: example.romaji ?? '',
+    vi: example.vi ?? example.en ?? '',
+  }));
+  return {
+    pattern: grammar.pattern,
+    meaning: grammar.meaning,
+    explanation: grammar.explanation ?? '',
+    examples: examples.length ? examples : [emptyExample()],
+  };
+}
 
 type SpeechFocus = {
   grammarIndex: number;
@@ -53,8 +93,20 @@ export default function GrammarView() {
   const [speechFocus, setSpeechFocus] = useState<SpeechFocus | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const exampleRefs = useRef<Record<string, HTMLLIElement | null>>({});
+  const { isAdmin, token } = useAuth();
+  const queryClient = useQueryClient();
+  const { data: lessons = [] } = useLessonsQuery();
   const { data: lessonGrammar = [], isLoading: loading } = useGrammarsQuery(currentLesson);
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
+  const [editMode, setEditMode] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [draft, setDraft] = useState<GrammarDraft>(emptyGrammarDraft());
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const canEdit = isAdmin && editMode;
+  const lessonId = lessons.find((lesson) => lesson.lessonNumber === currentLesson)?.id ?? null;
 
   useEffect(() => {
     setAutoRead(readAutoReadPreference());
@@ -64,6 +116,9 @@ export default function GrammarView() {
   useEffect(() => {
     stopPlayAll();
     setSpeechFocus(null);
+    setAdding(false);
+    setEditingId(null);
+    setError(null);
   }, [currentLesson, stopPlayAll]);
 
   useEffect(() => {
@@ -198,6 +253,213 @@ export default function GrammarView() {
     });
   };
 
+  async function invalidateGrammar() {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: queryKeys.grammar.byLesson(currentLesson) }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.lessons.all }),
+    ]);
+  }
+
+  function toggleEditMode() {
+    stopPlayAll();
+    setEditMode((on) => {
+      if (on) {
+        setAdding(false);
+        setEditingId(null);
+        setError(null);
+      }
+      return !on;
+    });
+  }
+
+  function startAdd() {
+    setEditingId(null);
+    setAdding((on) => {
+      if (on) return false;
+      setDraft(emptyGrammarDraft());
+      setError(null);
+      return true;
+    });
+  }
+
+  function startEdit(grammar: Grammar) {
+    setAdding(false);
+    setEditingId(grammar.id);
+    setDraft(draftFromGrammar(grammar));
+    setError(null);
+  }
+
+  function patchExample(index: number, partial: Partial<ExampleDraft>) {
+    setDraft((current) => ({
+      ...current,
+      examples: current.examples.map((example, i) =>
+        i === index ? { ...example, ...partial } : example,
+      ),
+    }));
+  }
+
+  function addExampleRow() {
+    setDraft((current) => ({ ...current, examples: [...current.examples, emptyExample()] }));
+  }
+
+  function removeExampleRow(index: number) {
+    setDraft((current) => ({
+      ...current,
+      examples: current.examples.length <= 1
+        ? [emptyExample()]
+        : current.examples.filter((_, i) => i !== index),
+    }));
+  }
+
+  function payloadFromDraft() {
+    const pattern = draft.pattern.trim();
+    const meaning = draft.meaning.trim();
+    const explanation = draft.explanation.trim();
+    if (!pattern || !meaning) {
+      setError('Điền đủ mẫu ngữ pháp và ý nghĩa');
+      return null;
+    }
+    if (lessonId == null) {
+      setError('Không xác định được bài học');
+      return null;
+    }
+    return {
+      lessonId,
+      pattern,
+      meaning,
+      explanation: explanation || null,
+      examples: draft.examples
+        .map((example) => ({
+          jp: example.jp.trim(),
+          romaji: example.romaji.trim(),
+          vi: example.vi.trim() || null,
+        }))
+        .filter((example) => example.jp),
+    };
+  }
+
+  async function saveEdit() {
+    if (!token || editingId == null) return;
+    const payload = payloadFromDraft();
+    if (!payload) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await updateGrammar(editingId, payload, token);
+      setEditingId(null);
+      await invalidateGrammar();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Không lưu được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleAdd() {
+    if (!token) return;
+    const payload = payloadFromDraft();
+    if (!payload) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await createGrammar(payload, token);
+      setAdding(false);
+      await invalidateGrammar();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Không thêm được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleDelete(id: number) {
+    if (!token) return;
+    if (!window.confirm('Xóa mục ngữ pháp này?')) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await deleteGrammar(id, token);
+      if (editingId === id) setEditingId(null);
+      await invalidateGrammar();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Không xóa được');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function renderAdminForm(onSave: () => void, onCancel: () => void, saveLabel: string) {
+    return (
+      <div className="grammar-admin-form">
+        <input
+          className="japanese-text"
+          placeholder="Mẫu ngữ pháp *  例: ～は～です"
+          value={draft.pattern}
+          disabled={busy}
+          onChange={(e) => setDraft({ ...draft, pattern: e.target.value })}
+        />
+        <input
+          placeholder="Ý nghĩa *"
+          value={draft.meaning}
+          disabled={busy}
+          onChange={(e) => setDraft({ ...draft, meaning: e.target.value })}
+        />
+        <textarea
+          placeholder="Giải thích / cách dùng (tuỳ chọn). Có thể thêm dòng: Chú ý: ..."
+          rows={4}
+          value={draft.explanation}
+          disabled={busy}
+          onChange={(e) => setDraft({ ...draft, explanation: e.target.value })}
+        />
+        <div className="grammar-admin-examples">
+          <strong>Ví dụ</strong>
+          {draft.examples.map((example, index) => (
+            <div key={index} className="grammar-admin-example-row">
+              <input
+                className="japanese-text"
+                placeholder="Câu tiếng Nhật"
+                value={example.jp}
+                disabled={busy}
+                onChange={(e) => patchExample(index, { jp: e.target.value })}
+              />
+              <input
+                placeholder="Romaji"
+                value={example.romaji}
+                disabled={busy}
+                onChange={(e) => patchExample(index, { romaji: e.target.value })}
+              />
+              <input
+                placeholder="Nghĩa tiếng Việt"
+                value={example.vi}
+                disabled={busy}
+                onChange={(e) => patchExample(index, { vi: e.target.value })}
+              />
+              <button
+                type="button"
+                className="grammar-admin-example-remove"
+                disabled={busy}
+                onClick={() => removeExampleRow(index)}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          <button type="button" className="grammar-admin-example-add" disabled={busy} onClick={addExampleRow}>
+            + Thêm ví dụ
+          </button>
+        </div>
+        <div className="grammar-admin-form-actions">
+          <button type="button" className="btn btn-primary" disabled={busy} onClick={onSave}>
+            {saveLabel}
+          </button>
+          <button type="button" className="btn btn-nav" disabled={busy} onClick={onCancel}>
+            Hủy
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container grammar-view">
       <div className="grammar-header">
@@ -208,6 +470,7 @@ export default function GrammarView() {
           value={currentLesson}
           onChange={setCurrentLesson}
           countKind="grammar"
+          filterWithContent={!canEdit}
         />
 
         {!loading && lessonGrammar.length > 0 && (
@@ -234,7 +497,31 @@ export default function GrammarView() {
               label="Đọc cả bài (giải thích)"
             />
           )}
+
+          {isAdmin && (
+            <div className="grammar-admin-toolbar">
+              <button
+                type="button"
+                className={`grammar-admin-toggle${editMode ? ' grammar-admin-toggle--on' : ''}`}
+                disabled={busy}
+                onClick={toggleEditMode}
+              >
+                {editMode ? 'Xong' : 'Sửa'}
+              </button>
+              {canEdit && (
+                <button
+                  type="button"
+                  className="grammar-admin-add"
+                  disabled={busy || lessonId == null}
+                  onClick={startAdd}
+                >
+                  {adding ? 'Hủy thêm' : '+ Thêm'}
+                </button>
+              )}
+            </div>
+          )}
         </div>
+        {error ? <p className="grammar-admin-error">{error}</p> : null}
       </div>
 
       <div className="grammar-content">
@@ -242,12 +529,40 @@ export default function GrammarView() {
           <div className="empty-state glass-panel" style={{ textAlign: 'center', padding: '3rem' }}>
             <p>Đang tải dữ liệu...</p>
           </div>
-        ) : lessonGrammar.length > 0 ? (
-          lessonGrammar.map((grammar, index) => {
+        ) : (
+          <>
+            {canEdit && adding
+              ? (
+                <div className="grammar-card glass-panel grammar-card--editing">
+                  {renderAdminForm(
+                    () => void handleAdd(),
+                    () => setAdding(false),
+                    'Lưu mục mới',
+                  )}
+                </div>
+              )
+              : null}
+            {lessonGrammar.length > 0 ? (
+              lessonGrammar.map((grammar, index) => {
             const isCardActive = speechFocus?.grammarIndex === index;
             const activeExampleIndex = isCardActive ? speechFocus?.exampleIndex : null;
             const parsedExplanation = parseGrammarExplanation(grammar.explanation);
             const usageBullets = grammarUsageBullets(parsedExplanation.usage);
+
+            if (canEdit && editingId === grammar.id) {
+              return (
+                <div
+                  key={grammarCardId(grammar, index)}
+                  className="grammar-card glass-panel grammar-card--editing"
+                >
+                  {renderAdminForm(
+                    () => void saveEdit(),
+                    () => setEditingId(null),
+                    'Lưu',
+                  )}
+                </div>
+              );
+            }
 
             return (
               <div
@@ -281,6 +596,21 @@ export default function GrammarView() {
                   >
                     Đọc mục này
                   </button>
+                  {canEdit && (
+                    <div className="grammar-admin-row-actions">
+                      <button type="button" disabled={busy} onClick={() => startEdit(grammar)}>
+                        Sửa
+                      </button>
+                      <button
+                        type="button"
+                        className="grammar-admin-delete"
+                        disabled={busy}
+                        onClick={() => void handleDelete(grammar.id)}
+                      >
+                        Xóa
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grammar-meaning">
@@ -358,13 +688,15 @@ export default function GrammarView() {
               </div>
             );
           })
-        ) : (
+            ) : canEdit && adding ? null : (
           <div className="empty-state glass-panel" style={{ textAlign: 'center', padding: '3rem' }}>
             <p>
               Dữ liệu ngữ pháp cho Bài {currentLesson} chưa có sẵn. Hãy chọn bài khác
               nhé!
             </p>
           </div>
+            )}
+          </>
         )}
       </div>
     </div>

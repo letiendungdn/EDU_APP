@@ -22,7 +22,9 @@ const NAV_GROUPS = [
       { href: '/kanji',     icon: '漢',  label: 'Kanji' },
       { href: '/strokes',   icon: '筆',  label: 'Tra nét viết' },
       { href: '/counters',  icon: '①',  label: 'Đếm số' },
-      { href: '/countries', icon: '🌐', label: 'Quốc gia' },
+      { href: '/suffixes',     icon: '語',  label: 'Hậu tố' },
+      { href: '/word-classes', icon: '品',  label: 'Loại từ' },
+      { href: '/countries',    icon: '🌐', label: 'Quốc gia' },
     ],
   },
   {
@@ -80,17 +82,22 @@ const NAV_GROUPS = [
 
 // ── Nav item ───────────────────────────────────────────────────────────────
 
+const SIDEBAR_COLLAPSED_KEY = 'nihongo-sidebar-collapsed';
+const NAV_GROUPS_COLLAPSED_KEY = 'nihongo-nav-groups-collapsed';
+
 function NavItem({
   href,
   icon,
   label,
   exact,
+  compact,
   onClick,
 }: {
   href: string;
   icon: string;
   label: string;
   exact?: boolean;
+  compact?: boolean;
   onClick?: () => void;
 }) {
   const pathname = usePathname() ?? '';
@@ -103,9 +110,10 @@ function NavItem({
       href={href}
       className={`nav-item${isActive ? ' active' : ''}`}
       onClick={onClick}
+      title={compact ? label : undefined}
     >
       <span className="nav-item__icon">{icon}</span>
-      {label}
+      <span className="nav-item__label">{label}</span>
     </Link>
   );
 }
@@ -117,7 +125,7 @@ function ThemeToggle() {
   const isDark = theme === 'dark';
 
   return (
-    <button className="theme-toggle" onClick={toggle} aria-label="Đổi chủ đề">
+    <button className="theme-toggle" onClick={toggle} aria-label="Đổi chủ đề" title="Đổi chủ đề">
       {isDark ? (
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -137,7 +145,7 @@ function ThemeToggle() {
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
       )}
-      <span>{isDark ? 'Chế độ sáng' : 'Chế độ tối'}</span>
+      <span className="theme-toggle__label">{isDark ? 'Chế độ sáng' : 'Chế độ tối'}</span>
     </button>
   );
 }
@@ -166,15 +174,63 @@ function HamburgerIcon({ open }: { open: boolean }) {
 
 // ── Layout ─────────────────────────────────────────────────────────────────
 
+function CollapseIcon({ collapsed }: { collapsed: boolean }) {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+         aria-hidden>
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <path d="M9 3v18" />
+      {collapsed
+        ? <polyline points="14 8 18 12 14 16" />
+        : <polyline points="16 8 12 12 16 16" />}
+    </svg>
+  );
+}
+
 export default function MainLayout({ children }: { children: ReactNode }) {
   const pathname  = usePathname() ?? '';
   const isAuth    = pathname === '/login' || pathname === '/profile';
   const [open, setOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => new Set());
   const sidebarRef = useRef<HTMLElement>(null);
   const { theme } = useTheme();
   const { bannerUrl } = usePageBanner();
 
   const close = useCallback(() => setOpen(false), []);
+
+  useEffect(() => {
+    setCollapsed(localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1');
+    try {
+      const raw = localStorage.getItem(NAV_GROUPS_COLLAPSED_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as unknown;
+      if (Array.isArray(parsed) && parsed.every((x) => typeof x === 'string')) {
+        setCollapsedGroups(new Set(parsed));
+      }
+    } catch {
+      /* ignore invalid storage */
+    }
+  }, []);
+
+  const toggleCollapsed = useCallback(() => {
+    setCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? '1' : '0');
+      return next;
+    });
+  }, []);
+
+  const toggleGroup = useCallback((label: string) => {
+    setCollapsedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(label)) next.delete(label);
+      else next.add(label);
+      localStorage.setItem(NAV_GROUPS_COLLAPSED_KEY, JSON.stringify([...next]));
+      return next;
+    });
+  }, []);
 
   // Close on route change
   useEffect(() => { close(); }, [pathname, close]);
@@ -195,7 +251,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="app-container">
+    <div className={`app-container${collapsed ? ' sidebar-collapsed' : ''}`}>
       {/* Mobile hamburger */}
       <button
         className="sidebar-toggle"
@@ -214,35 +270,61 @@ export default function MainLayout({ children }: { children: ReactNode }) {
       />
 
       {/* Sidebar */}
-      <aside ref={sidebarRef} className={`app-sidebar${open ? ' open' : ''}`}>
-        {/* Logo */}
-        <Link href="/" className="app-sidebar__logo">
-          <div className="app-sidebar__logo-icon">🇯🇵</div>
-          <div>
-            <div className="app-sidebar__logo-text">Nihongo</div>
-            <div className="app-sidebar__logo-sub">Learn Japanese</div>
-          </div>
-        </Link>
+      <aside
+        ref={sidebarRef}
+        className={`app-sidebar${open ? ' open' : ''}${collapsed ? ' collapsed' : ''}`}
+      >
+        <div className="app-sidebar__header">
+          <Link href="/" className="app-sidebar__logo" title={collapsed ? 'Nihongo' : undefined}>
+            <div className="app-sidebar__logo-icon">🇯🇵</div>
+            <div className="app-sidebar__brand">
+              <div className="app-sidebar__logo-text">Nihongo</div>
+              <div className="app-sidebar__logo-sub">Learn Japanese</div>
+            </div>
+          </Link>
+          <button
+            type="button"
+            className="sidebar-collapse-btn"
+            onClick={toggleCollapsed}
+            aria-label={collapsed ? 'Mở rộng menu' : 'Thu gọn menu'}
+            aria-pressed={collapsed}
+            title={collapsed ? 'Mở rộng menu' : 'Thu gọn menu'}
+          >
+            <CollapseIcon collapsed={collapsed} />
+          </button>
+        </div>
 
         {/* Nav */}
         <nav className="app-sidebar__nav" aria-label="Main navigation">
           {/* Home */}
-          <NavItem href="/" icon="🏠" label="Trang chủ" exact onClick={close} />
+          <NavItem href="/" icon="🏠" label="Trang chủ" exact compact={collapsed} onClick={close} />
 
-          {NAV_GROUPS.map((group) => (
-            <div key={group.label} className="nav-group">
-              <div className="nav-group__label">{group.label}</div>
-              {group.items.map((item) => (
-                <NavItem
-                  key={item.href}
-                  href={item.href}
-                  icon={item.icon}
-                  label={item.label}
-                  onClick={close}
-                />
-              ))}
-            </div>
-          ))}
+          {NAV_GROUPS.map((group) => {
+            const groupClosed = !collapsed && collapsedGroups.has(group.label);
+            return (
+              <div key={group.label} className={`nav-group${groupClosed ? ' is-collapsed' : ''}`}>
+                <button
+                  type="button"
+                  className="nav-group__toggle"
+                  onClick={() => toggleGroup(group.label)}
+                  aria-expanded={!groupClosed}
+                >
+                  {group.label}
+                  <span className="nav-group__chevron" aria-hidden>▾</span>
+                </button>
+                {!groupClosed && group.items.map((item) => (
+                  <NavItem
+                    key={item.href}
+                    href={item.href}
+                    icon={item.icon}
+                    label={item.label}
+                    compact={collapsed}
+                    onClick={close}
+                  />
+                ))}
+              </div>
+            );
+          })}
         </nav>
 
         {/* Bottom: theme toggle + app switcher + auth */}

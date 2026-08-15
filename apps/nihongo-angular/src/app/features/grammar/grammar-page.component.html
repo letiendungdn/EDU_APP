@@ -13,85 +13,203 @@
         Bài {{ lesson() }} gồm {{ grammars().length }} mục ngữ pháp
       </p>
     }
+
+    @if (auth.isAdmin()) {
+      <div class="grammar-admin-toolbar">
+        <button
+          type="button"
+          class="grammar-admin-toggle"
+          [class.on]="editMode()"
+          [disabled]="busy()"
+          (click)="toggleEditMode()"
+        >
+          {{ editMode() ? 'Xong' : 'Sửa' }}
+        </button>
+        @if (canEdit()) {
+          <button
+            type="button"
+            class="grammar-admin-add"
+            [disabled]="busy() || lessonId() == null"
+            (click)="startAdd()"
+          >
+            {{ adding() ? 'Hủy thêm' : '+ Thêm' }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (error()) {
+      <p class="grammar-admin-error">{{ error() }}</p>
+    }
   </div>
 
-  @if (!hasData()) {
+  @if (canEdit() && adding()) {
+    <div class="grammar-card glass-panel grammar-card--editing">
+      <ng-container *ngTemplateOutlet="formTpl" />
+      <div class="grammar-admin-form-actions">
+        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="handleAdd()">
+          Lưu mục mới
+        </button>
+        <button type="button" [disabled]="busy()" (click)="cancelForm()">Hủy</button>
+      </div>
+    </div>
+  }
+
+  @if (!hasData() && !(canEdit() && adding())) {
     <div class="empty-state glass-panel">
       <p>Chưa có ngữ pháp cho Bài {{ lesson() }}.</p>
     </div>
   } @else {
     <div class="grammar-content">
       @for (grammar of grammars(); track grammar.id; let i = $index) {
-        <article class="grammar-card glass-panel">
-          <div class="grammar-pattern-header">
-            <span class="grammar-index">{{ i + 1 }}</span>
-            <h3 class="grammar-pattern japanese-text">{{ grammar.pattern }}</h3>
-          </div>
-
-          <div class="grammar-meaning">
-            <strong>Ý nghĩa:</strong> {{ grammar.meaning }}
-          </div>
-
-          @let parsed = parseExplanation(grammar.explanation);
-          @let bullets = usageBullets(parsed.usage);
-
-          @if (bullets.length > 0) {
-            <div class="grammar-explanation">
-              <strong>Giải thích:</strong>
-              <ul class="grammar-bullet-list">
-                @for (line of bullets; track line) {
-                  <li>{{ line }}</li>
-                }
-              </ul>
+        @if (canEdit() && editingId() === grammar.id) {
+          <article class="grammar-card glass-panel grammar-card--editing">
+            <ng-container *ngTemplateOutlet="formTpl" />
+            <div class="grammar-admin-form-actions">
+              <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="saveEdit()">
+                Lưu
+              </button>
+              <button type="button" [disabled]="busy()" (click)="cancelForm()">Hủy</button>
             </div>
-          }
-
-          @if (parsed.note) {
-            <div class="grammar-note">
-              <strong>Chú ý:</strong> {{ parsed.note }}
+          </article>
+        } @else {
+          <article class="grammar-card glass-panel">
+            <div class="grammar-pattern-header">
+              <span class="grammar-index">{{ i + 1 }}</span>
+              <h3 class="grammar-pattern japanese-text">{{ grammar.pattern }}</h3>
+              @if (canEdit()) {
+                <div class="grammar-admin-row-actions">
+                  <button type="button" [disabled]="busy()" (click)="startEdit(grammar)">Sửa</button>
+                  <button
+                    type="button"
+                    class="grammar-admin-delete"
+                    [disabled]="busy()"
+                    (click)="handleDelete(grammar.id)"
+                  >
+                    Xóa
+                  </button>
+                </div>
+              }
             </div>
-          }
 
-          @if (!bullets.length && !parsed.note && grammar.explanation) {
-            <div class="grammar-explanation">
-              <strong>Giải thích:</strong> {{ grammar.explanation }}
+            <div class="grammar-meaning">
+              <strong>Ý nghĩa:</strong> {{ grammar.meaning }}
             </div>
-          }
 
-          @if (grammar.examples?.length) {
-            <div class="grammar-examples">
-              <h4>Ví dụ:</h4>
-              <ul class="example-list">
-                @for (ex of grammar.examples; track ex.id) {
-                  <li class="example-item">
-                    <div class="example-jp">
-                      <span class="japanese-text">{{ ex.jp }}</span>
-                      @if (exampleRomaji(ex.romaji)) {
-                        <span class="example-romaji-inline">{{ exampleRomaji(ex.romaji) }}</span>
+            @let parsed = parseExplanation(grammar.explanation);
+            @let bullets = usageBullets(parsed.usage);
+
+            @if (bullets.length > 0) {
+              <div class="grammar-explanation">
+                <strong>Giải thích:</strong>
+                <ul class="grammar-bullet-list">
+                  @for (line of bullets; track line) {
+                    <li>{{ line }}</li>
+                  }
+                </ul>
+              </div>
+            }
+
+            @if (parsed.note) {
+              <div class="grammar-note">
+                <strong>Chú ý:</strong> {{ parsed.note }}
+              </div>
+            }
+
+            @if (!bullets.length && !parsed.note && grammar.explanation) {
+              <div class="grammar-explanation">
+                <strong>Giải thích:</strong> {{ grammar.explanation }}
+              </div>
+            }
+
+            @if (grammar.examples?.length) {
+              <div class="grammar-examples">
+                <h4>Ví dụ:</h4>
+                <ul class="example-list">
+                  @for (ex of grammar.examples; track ex.id) {
+                    <li class="example-item">
+                      <div class="example-jp">
+                        <span class="japanese-text">{{ ex.jp }}</span>
+                        @if (exampleRomaji(ex.romaji)) {
+                          <span class="example-romaji-inline">{{ exampleRomaji(ex.romaji) }}</span>
+                        }
+                        <button
+                          type="button"
+                          class="btn-audio-small"
+                          title="Nghe phát âm"
+                          (click)="speak(ex.jp, $event)"
+                        >
+                          🔊
+                        </button>
+                      </div>
+                      @if (ex.vi || ex.en) {
+                        <div class="example-vi">{{ ex.vi || ex.en }}</div>
                       }
-                      <button
-                        type="button"
-                        class="btn-audio-small"
-                        title="Nghe phát âm"
-                        (click)="speak(ex.jp, $event)"
-                      >
-                        🔊
-                      </button>
-                    </div>
-                    @if (ex.vi || ex.en) {
-                      <div class="example-vi">{{ ex.vi || ex.en }}</div>
-                    }
-                    @let analysis = quickAnalysis(grammar.pattern, ex.jp);
-                    @if (analysis) {
-                      <div class="example-analysis">{{ analysis }}</div>
-                    }
-                  </li>
-                }
-              </ul>
-            </div>
-          }
-        </article>
+                      @let analysis = quickAnalysis(grammar.pattern, ex.jp);
+                      @if (analysis) {
+                        <div class="example-analysis">{{ analysis }}</div>
+                      }
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+          </article>
+        }
       }
     </div>
   }
 </section>
+
+<ng-template #formTpl>
+  <div class="grammar-admin-form">
+    <input
+      class="japanese-text"
+      placeholder="Mẫu ngữ pháp *  例: ～は～です"
+      [value]="draft().pattern"
+      [disabled]="busy()"
+      (input)="patchDraft({ pattern: $any($event.target).value })"
+    />
+    <input
+      placeholder="Ý nghĩa *"
+      [value]="draft().meaning"
+      [disabled]="busy()"
+      (input)="patchDraft({ meaning: $any($event.target).value })"
+    />
+    <textarea
+      rows="4"
+      placeholder="Giải thích / cách dùng (tuỳ chọn). Có thể thêm dòng: Chú ý: ..."
+      [value]="draft().explanation"
+      [disabled]="busy()"
+      (input)="patchDraft({ explanation: $any($event.target).value })"
+    ></textarea>
+    <div class="grammar-admin-examples">
+      <strong>Ví dụ</strong>
+      @for (example of draft().examples; track $index; let i = $index) {
+        <div class="grammar-admin-example-row">
+          <input
+            class="japanese-text"
+            placeholder="Câu tiếng Nhật"
+            [value]="example.jp"
+            [disabled]="busy()"
+            (input)="patchExample(i, { jp: $any($event.target).value })"
+          />
+          <input
+            placeholder="Romaji"
+            [value]="example.romaji"
+            [disabled]="busy()"
+            (input)="patchExample(i, { romaji: $any($event.target).value })"
+          />
+          <input
+            placeholder="Nghĩa tiếng Việt"
+            [value]="example.vi"
+            [disabled]="busy()"
+            (input)="patchExample(i, { vi: $any($event.target).value })"
+          />
+          <button type="button" [disabled]="busy()" (click)="removeExampleRow(i)">✕</button>
+        </div>
+      }
+      <button type="button" [disabled]="busy()" (click)="addExampleRow()">+ Thêm ví dụ</button>
+    </div>
+  </div>
+</ng-template>

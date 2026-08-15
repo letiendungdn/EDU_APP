@@ -8,9 +8,11 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Role } from "@prisma/client";
 import { firstValueFrom } from "rxjs";
 import {
   CONTENT_PATTERNS,
@@ -18,7 +20,7 @@ import {
   LessonPaginationDto,
   UpdateGrammarDto,
 } from "@app/contracts";
-import { Public } from "@app/common";
+import { JwtAuthGuard, Public, Roles, RolesGuard } from "@app/common";
 import { KanaRomajiService } from "./kana-romaji.service";
 
 type GrammarExampleRow = {
@@ -54,7 +56,10 @@ export class GrammarsController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: "Create grammar entry" })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Create grammar entry (admin)" })
   create(@Body() dto: CreateGrammarDto) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.CREATE_GRAMMAR, dto),
@@ -89,7 +94,10 @@ export class GrammarsController {
   }
 
   @Patch(":id")
-  @ApiOperation({ summary: "Update grammar entry" })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Update grammar entry (admin)" })
   update(@Param("id") id: string, @Body() dto: UpdateGrammarDto) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.UPDATE_GRAMMAR, {
@@ -100,7 +108,10 @@ export class GrammarsController {
   }
 
   @Delete(":id")
-  @ApiOperation({ summary: "Delete grammar" })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Delete grammar (admin)" })
   remove(@Param("id") id: string) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.DELETE_GRAMMAR, { id: +id }),

@@ -117,6 +117,18 @@ export const routes: Routes = [
           import('./features/counters/counters-page.component').then((m) => m.CountersPageComponent),
       },
       {
+        path: 'suffixes',
+        loadComponent: () =>
+          import('./features/suffixes/suffixes-page.component').then((m) => m.SuffixesPageComponent),
+      },
+      {
+        path: 'word-classes',
+        loadComponent: () =>
+          import('./features/word-classes/word-classes-page.component').then(
+            (m) => m.WordClassesPageComponent,
+          ),
+      },
+      {
         path: 'jlpt',
         loadComponent: () =>
           import('./features/jlpt/jlpt-page.component').then((m) => m.JlptPageComponent),

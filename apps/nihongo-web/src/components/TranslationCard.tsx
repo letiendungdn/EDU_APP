@@ -114,10 +114,10 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
   );
   const strokeSize = useMemo(() => {
     const n = [...jaStrokeText].length;
-    if (n <= 1) return 88;
-    if (n === 2) return 72;
-    if (n === 3) return 60;
-    return 52;
+    if (n <= 1) return 96;
+    if (n === 2) return 80;
+    if (n === 3) return 68;
+    return 56;
   }, [jaStrokeText]);
 
   // Reposition after render / resize so card stays within the visible viewport
@@ -218,7 +218,7 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
               <p className="tc-stroke-modal-char japanese-text">{strokeFocus}</p>
               <p className="tc-stroke-modal-label">Cách vẽ · nhấn chữ để xem lại</p>
               <div className="tc-stroke-modal-canvas">
-                <StrokeOrder text={strokeFocus} width={240} height={240} />
+                <StrokeOrder text={strokeFocus} width={304} height={304} />
               </div>
               {result?.ja.text && result.ja.text !== strokeFocus && (
                 <p className="tc-stroke-modal-word japanese-text">

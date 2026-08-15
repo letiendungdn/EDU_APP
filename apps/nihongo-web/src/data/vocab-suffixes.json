@@ -1,0 +1,300 @@
+{
+  "groups": [
+    {
+      "id": "honorifics",
+      "label": "Hậu tố xưng hô",
+      "labelJa": "呼びかけ",
+      "hint": "Gắn sau tên người hoặc nghề. さん lịch sự mặc định; ちゃん thân mật; さま/様 kính trọng.",
+      "items": [
+        {
+          "suffix": "さん",
+          "forms": ["さん"],
+          "kana": "さん",
+          "romaji": "san",
+          "meaning": "anh/chị (lịch sự, dùng rộng)",
+          "attachesTo": "tên người, nghề",
+          "pos": ["noun"],
+          "exampleJa": "田中さん",
+          "exampleVi": "anh/chị Tanaka"
+        },
+        {
+          "suffix": "ちゃん",
+          "forms": ["ちゃん"],
+          "kana": "ちゃん",
+          "romaji": "chan",
+          "meaning": "bé / thân mật",
+          "attachesTo": "tên (trẻ em, bạn thân)",
+          "pos": ["noun"],
+          "exampleJa": "さくらちゃん",
+          "exampleVi": "bé Sakura"
+        },
+        {
+          "suffix": "くん",
+          "forms": ["くん", "君"],
+          "kana": "くん",
+          "romaji": "kun",
+          "meaning": "cậu (thân, thường nam)",
+          "attachesTo": "tên nam / cấp dưới",
+          "pos": ["noun"],
+          "exampleJa": "たけしくん",
+          "exampleVi": "cậu Takeshi"
+        },
+        {
+          "suffix": "さま",
+          "forms": ["さま", "様"],
+          "kana": "さま",
+          "romaji": "sama",
+          "meaning": "ngài / quý khách (kính)",
+          "attachesTo": "tên, khách hàng",
+          "pos": ["noun"],
+          "exampleJa": "お客様",
+          "exampleVi": "quý khách"
+        },
+        {
+          "suffix": "先生",
+          "forms": ["先生"],
+          "kana": "せんせい",
+          "romaji": "sensei",
+          "meaning": "thầy/cô, bác sĩ, luật sư",
+          "attachesTo": "họ + nghề giáo/y",
+          "pos": ["noun"],
+          "exampleJa": "山田先生",
+          "exampleVi": "thầy/cô Yamada"
+        },
+        {
+          "suffix": "先輩",
+          "forms": ["先輩"],
+          "kana": "せんぱい",
+          "romaji": "senpai",
+          "meaning": "đàn anh/chị",
+          "attachesTo": "tên hoặc đứng riêng",
+          "pos": ["noun"],
+          "exampleJa": "佐藤先輩",
+          "exampleVi": "đàn anh/chị Sato"
+        },
+        {
+          "suffix": "氏",
+          "forms": ["氏"],
+          "kana": "し",
+          "romaji": "shi",
+          "meaning": "ông/bà (báo chí, trang trọng)",
+          "attachesTo": "họ",
+          "pos": ["noun"],
+          "exampleJa": "鈴木氏",
+          "exampleVi": "ông/bà Suzuki"
+        }
+      ]
+    },
+    {
+      "id": "quality",
+      "label": "Hậu tố tính chất / trạng thái",
+      "labelJa": "性質・状態",
+      "hint": "Biến danh từ thành tính chất. 的 ≈ “-ical”; 化 ≈ “-hóa”; っぽい ≈ “hơi…”.",
+      "items": [
+        {
+          "suffix": "的",
+          "forms": ["的"],
+          "kana": "てき",
+          "romaji": "teki",
+          "meaning": "mang tính… / thuộc về…",
+          "attachesTo": "danh từ",
+          "pos": ["noun"],
+          "exampleJa": "科学的",
+          "exampleVi": "mang tính khoa học"
+        },
+        {
+          "suffix": "性",
+          "forms": ["性"],
+          "kana": "せい",
+          "romaji": "sei",
+          "meaning": "tính chất / -ness",
+          "attachesTo": "danh từ",
+          "pos": ["noun"],
+          "exampleJa": "可能性",
+          "exampleVi": "khả năng"
+        },
+        {
+          "suffix": "化",
+          "forms": ["化"],
+          "kana": "か",
+          "romaji": "ka",
+          "meaning": "hóa / biến thành…",
+          "attachesTo": "danh từ",
+          "pos": ["noun"],
+          "exampleJa": "国際化",
+          "exampleVi": "quốc tế hóa"
+        },
+        {
+          "suffix": "っぽい",
+          "forms": ["っぽい"],
+          "kana": "っぽい",
+          "romaji": "ppoi",
+          "meaning": "hơi… / ra dáng…",
+          "attachesTo": "danh từ, tính từ",
+          "pos": ["noun", "na-adj"],
+          "exampleJa": "子供っぽい",
+          "exampleVi": "hơi trẻ con"
+        },
+        {
+          "suffix": "らしい",
+          "forms": ["らしい"],
+          "kana": "らしい",
+          "romaji": "rashii",
+          "meaning": "đúng chất… / có vẻ…",
+          "attachesTo": "danh từ",
+          "pos": ["noun"],
+          "exampleJa": "男らしい",
+          "exampleVi": "đúng chất đàn ông"
+        },
+        {
+          "suffix": "中",
+          "forms": ["中"],
+          "kana": "ちゅう",
+          "romaji": "chū",
+          "meaning": "đang… / trong lúc…",
+          "attachesTo": "danh từ hành động",
+          "pos": ["noun"],
+          "exampleJa": "仕事中",
+          "exampleVi": "đang làm việc"
+        },
+        {
+          "suffix": "済み",
+          "forms": ["済み", "済"],
+          "kana": "ずみ",
+          "romaji": "zumi",
+          "meaning": "đã xong",
+          "attachesTo": "danh từ hành động",
+          "pos": ["noun"],
+          "exampleJa": "予約済み",
+          "exampleVi": "đã đặt chỗ"
+        }
+      ]
+    },
+    {
+      "id": "verb-adj",
+      "label": "Hậu tố sau động từ / tính từ",
+      "labelJa": "動詞・形容詞",
+      "hint": "Gắn vào gốc ます (連用形) hoặc gốc tính từ. やすい = dễ; にくい = khó; すぎる = quá.",
+      "items": [
+        {
+          "suffix": "やすい",
+          "forms": ["やすい"],
+          "kana": "やすい",
+          "romaji": "yasui",
+          "meaning": "dễ…",
+          "attachesTo": "gốc ます của động từ",
+          "pos": ["verb"],
+          "exampleJa": "分かりやすい",
+          "exampleVi": "dễ hiểu"
+        },
+        {
+          "suffix": "にくい",
+          "forms": ["にくい"],
+          "kana": "にくい",
+          "romaji": "nikui",
+          "meaning": "khó…",
+          "attachesTo": "gốc ます của động từ",
+          "pos": ["verb"],
+          "exampleJa": "読みにくい",
+          "exampleVi": "khó đọc"
+        },
+        {
+          "suffix": "すぎる",
+          "forms": ["すぎる", "過ぎる"],
+          "kana": "すぎる",
+          "romaji": "sugiru",
+          "meaning": "quá…",
+          "attachesTo": "gốc ます / gốc tính từ",
+          "pos": ["verb", "i-adj", "na-adj"],
+          "exampleJa": "高すぎる",
+          "exampleVi": "đắt quá"
+        },
+        {
+          "suffix": "がたい",
+          "forms": ["がたい", "難い"],
+          "kana": "がたい",
+          "romaji": "gatai",
+          "meaning": "khó… (trang trọng)",
+          "attachesTo": "gốc ます",
+          "pos": ["verb"],
+          "exampleJa": "信じがたい",
+          "exampleVi": "khó tin"
+        },
+        {
+          "suffix": "そう",
+          "forms": ["そう"],
+          "kana": "そう",
+          "romaji": "sō",
+          "meaning": "trông có vẻ…",
+          "attachesTo": "gốc ます / gốc tính từ",
+          "pos": ["verb", "i-adj", "na-adj"],
+          "exampleJa": "美味しそう",
+          "exampleVi": "trông ngon"
+        },
+        {
+          "suffix": "みたい",
+          "forms": ["みたい"],
+          "kana": "みたい",
+          "romaji": "mitai",
+          "meaning": "giống như… (thân mật)",
+          "attachesTo": "danh từ, câu",
+          "pos": ["noun", "verb"],
+          "exampleJa": "子供みたい",
+          "exampleVi": "như trẻ con"
+        }
+      ]
+    },
+    {
+      "id": "person",
+      "label": "Hậu tố chỉ người / nghề",
+      "labelJa": "人・職業",
+      "hint": "Tạo từ chỉ người. 人 đọc jin khi quốc tịch (ベトナム人).",
+      "items": [
+        {
+          "suffix": "人",
+          "forms": ["人"],
+          "kana": "じん",
+          "romaji": "jin",
+          "meaning": "người (quốc tịch)",
+          "attachesTo": "tên nước, vùng",
+          "pos": ["noun"],
+          "exampleJa": "ベトナム人",
+          "exampleVi": "người Việt"
+        },
+        {
+          "suffix": "者",
+          "forms": ["者"],
+          "kana": "しゃ",
+          "romaji": "sha",
+          "meaning": "người làm / kẻ",
+          "attachesTo": "danh từ, kanji nghề",
+          "pos": ["noun"],
+          "exampleJa": "科学者",
+          "exampleVi": "nhà khoa học"
+        },
+        {
+          "suffix": "家",
+          "forms": ["家"],
+          "kana": "か",
+          "romaji": "ka",
+          "meaning": "nhà / chuyên gia",
+          "attachesTo": "lĩnh vực",
+          "pos": ["noun"],
+          "exampleJa": "画家",
+          "exampleVi": "họa sĩ"
+        },
+        {
+          "suffix": "屋",
+          "forms": ["屋"],
+          "kana": "や",
+          "romaji": "ya",
+          "meaning": "cửa hàng / người làm nghề",
+          "attachesTo": "mặt hàng, nghề",
+          "pos": ["noun"],
+          "exampleJa": "本屋",
+          "exampleVi": "hiệu sách"
+        }
+      ]
+    }
+  ]
+}

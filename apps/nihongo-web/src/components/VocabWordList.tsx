@@ -7,6 +7,7 @@ import {
   createVocabulary,
   deleteVocabulary,
   getPresignedUploadUrl,
+  reorderVocabularies,
   updateVocabulary,
 } from '../api';
 import { queryKeys } from '../api/query-keys';
@@ -89,12 +90,28 @@ export default function VocabWordList({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [orderedVocab, setOrderedVocab] = useState<Vocabulary[]>(vocabularies);
+  const [draggingId, setDraggingId] = useState<number | null>(null);
 
   const canEdit = isAdmin && editMode;
+  const searchActive = searchQuery.trim().length > 0;
   const isListIncomplete =
     expectedCount != null &&
     vocabularies.length > 0 &&
     vocabularies.length < expectedCount;
+  const canReorder =
+    canEdit &&
+    !searchActive &&
+    !adding &&
+    editingId == null &&
+    !busy &&
+    !uploading &&
+    lessonId != null &&
+    !isListIncomplete;
+
+  useEffect(() => {
+    setOrderedVocab(vocabularies);
+  }, [vocabularies]);
 
   useEffect(() => {
     setSearchQuery('');
@@ -105,10 +122,10 @@ export default function VocabWordList({
 
   const filteredVocab = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    return vocabularies
+    return orderedVocab
       .map((vocab, index) => ({ vocab, index }))
       .filter(({ vocab }) => !q || matchesVocabSearch(vocab, q));
-  }, [vocabularies, searchQuery]);
+  }, [orderedVocab, searchQuery]);
 
   const useVirtual = !canEdit;
   const rowVirtualizer = useVirtualizer({
@@ -146,6 +163,45 @@ export default function VocabWordList({
       }),
       queryClient.invalidateQueries({ queryKey: queryKeys.lessons.all }),
     ]);
+  }
+
+  async function persistOrder(next: Vocabulary[]) {
+    if (!token || lessonId == null) return;
+    const selectedId = orderedVocab[currentIndex]?.id;
+    setBusy(true);
+    setError(null);
+    try {
+      await reorderVocabularies(
+        lessonId,
+        next.map((item) => item.id),
+        token,
+      );
+      if (selectedId != null) {
+        const nextIndex = next.findIndex((item) => item.id === selectedId);
+        if (nextIndex >= 0 && nextIndex !== currentIndex) {
+          onSelectWord(nextIndex);
+        }
+      }
+      await invalidate();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Không sắp xếp được');
+      setOrderedVocab(vocabularies);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function handleDrop(targetId: number) {
+    if (!canReorder || draggingId == null || draggingId === targetId) return;
+    const from = orderedVocab.findIndex((item) => item.id === draggingId);
+    const to = orderedVocab.findIndex((item) => item.id === targetId);
+    if (from < 0 || to < 0) return;
+    const next = [...orderedVocab];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    setOrderedVocab(next);
+    setDraggingId(null);
+    void persistOrder(next);
   }
 
   function startEdit(item: Vocabulary) {
@@ -397,7 +453,31 @@ export default function VocabWordList({
     }
 
     return (
-      <div key={vocab.id} className="vocab-word-list-row-wrap">
+      <div
+        key={vocab.id}
+        className={`vocab-word-list-row-wrap${
+          draggingId === vocab.id ? ' vocab-word-list-row-wrap--dragging' : ''
+        }${canReorder ? ' vocab-word-list-row-wrap--sortable' : ''}`}
+        onDragOver={(e) => {
+          if (canReorder) e.preventDefault();
+        }}
+        onDrop={() => handleDrop(vocab.id)}
+      >
+        {canReorder ? (
+          <span
+            className="vocab-word-list-drag"
+            title="Kéo thả để sắp xếp"
+            draggable
+            onDragStart={(e) => {
+              e.dataTransfer.effectAllowed = 'move';
+              e.dataTransfer.setData('text/plain', String(vocab.id));
+              setDraggingId(vocab.id);
+            }}
+            onDragEnd={() => setDraggingId(null)}
+          >
+            ⠿
+          </span>
+        ) : null}
         <button
           type="button"
           className={`vocab-word-list-item ${
@@ -405,6 +485,13 @@ export default function VocabWordList({
           }`}
           onClick={() => onSelectWord(index)}
           aria-current={index === currentIndex ? 'true' : undefined}
+          onDragOver={(e) => {
+            if (canReorder) e.preventDefault();
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            handleDrop(vocab.id);
+          }}
         >
           <span className="vocab-word-list-num">{index + 1}</span>
           <span className="vocab-word-list-jp japanese-text">
@@ -546,7 +633,13 @@ export default function VocabWordList({
       </div>
 
       {canEdit && (
-        <p className="vocab-admin-hint">✎ sửa · 📷 upload ảnh · ✕ xóa · + Thêm từ mới</p>
+        <p className="vocab-admin-hint">
+          {canReorder
+            ? '⠿ kéo thả đổi thứ tự · ✎ sửa · 📷 upload ảnh · ✕ xóa · + Thêm từ mới'
+            : searchActive
+              ? 'Xóa ô tìm kiếm để kéo thả sắp xếp · ✎ sửa · ✕ xóa'
+              : '✎ sửa · 📷 upload ảnh · ✕ xóa · + Thêm từ mới'}
+        </p>
       )}
 
       {lightboxSrc ? (

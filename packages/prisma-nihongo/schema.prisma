@@ -258,6 +258,41 @@ model CountryNameItem {
 }
 
 // ─────────────────────────────────────────────
+// Japanese vocab suffixes 接尾語 (reference)
+// ─────────────────────────────────────────────
+
+model VocabSuffixGroup {
+  id        Int               @id @default(autoincrement())
+  slug      String            @unique
+  label     String
+  hint      String
+  sortOrder Int               @default(0)
+  items     VocabSuffixItem[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([sortOrder])
+}
+
+model VocabSuffixItem {
+  id         Int              @id @default(autoincrement())
+  groupId    Int
+  group      VocabSuffixGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  suffix     String
+  kana       String
+  romaji     String
+  meaningVi  String
+  attachesTo String
+  exampleJa  String
+  exampleVi  String
+  sortOrder  Int              @default(0)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@index([groupId, sortOrder])
+}
+
+// ─────────────────────────────────────────────
 // Japanese pronunciation rules (reference)
 // ─────────────────────────────────────────────
 
