@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import Link from 'next/link';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   grammarExampleRomaji,
@@ -27,6 +28,12 @@ import {
   grammarUsageBullets,
   parseGrammarExplanation,
 } from '../utils/grammar';
+import FuriganaText from '../components/FuriganaText';
+import {
+  isGrammarPinned,
+  pinGrammar,
+  unpinGrammar,
+} from '../utils/grammarSrs';
 import './GrammarView.css';
 
 const AUTO_READ_KEY = 'nihongo-grammar-auto-read';
@@ -104,6 +111,8 @@ export default function GrammarView() {
   const [draft, setDraft] = useState<GrammarDraft>(emptyGrammarDraft());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showFuri, setShowFuri] = useState(true);
+  const [pinTick, setPinTick] = useState(0);
 
   const canEdit = isAdmin && editMode;
   const lessonId = lessons.find((lesson) => lesson.lessonNumber === currentLesson)?.id ?? null;
@@ -464,6 +473,9 @@ export default function GrammarView() {
     <div className="container grammar-view">
       <div className="grammar-header">
         <h2 className="view-title grammar-view-title">Ngữ pháp Minna no Nihongo</h2>
+        <p className="grammar-lesson-summary">
+          <Link href="/grammar-srs">Ôn mẫu đã ghim</Link>
+        </p>
 
         <LessonSelector
           id="grammar-lesson-select"
@@ -487,6 +499,14 @@ export default function GrammarView() {
               onChange={toggleAutoRead}
             />
             <span>Tự đọc khi chọn bài</span>
+          </label>
+          <label className="grammar-auto-read">
+            <input
+              type="checkbox"
+              checked={showFuri}
+              onChange={() => setShowFuri((v) => !v)}
+            />
+            <span>Hiện furigana</span>
           </label>
 
           {!loading && allSegments.length > 0 && (
@@ -579,6 +599,24 @@ export default function GrammarView() {
                     {index + 1}
                   </span>
                   <h3 className="grammar-pattern japanese-text">{grammar.pattern}</h3>
+                  {grammar.id != null && (
+                    <button
+                      type="button"
+                      className="btn-grammar-read-card"
+                      onClick={() => {
+                        if (isGrammarPinned(grammar.id)) unpinGrammar(grammar.id);
+                        else pinGrammar({
+                          id: grammar.id,
+                          pattern: grammar.pattern,
+                          meaning: grammar.meaning,
+                          lessonNumber: currentLesson,
+                        });
+                        setPinTick((n) => n + 1);
+                      }}
+                    >
+                      {pinTick >= 0 && isGrammarPinned(grammar.id) ? 'Đã ghim' : 'Ghim ôn'}
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="btn-audio-small"
@@ -657,7 +695,7 @@ export default function GrammarView() {
                             className={`example-item${isExActive ? ' example-item--speaking' : ''}`}
                           >
                             <div className="example-jp">
-                              <span className="japanese-text">{ex.jp}</span>
+                              <FuriganaText className="japanese-text" text={ex.jp} show={showFuri} />
                               {grammarExampleRomaji(ex.romaji) && (
                                 <span className="example-romaji-inline">
                                   {grammarExampleRomaji(ex.romaji)}

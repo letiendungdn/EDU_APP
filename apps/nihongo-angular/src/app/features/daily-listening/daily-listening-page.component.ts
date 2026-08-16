@@ -25,6 +25,8 @@ export class DailyListeningPageComponent implements OnDestroy {
   readonly presets = signal<ListeningPreset[]>([]);
   readonly presetId = signal('');
   readonly showMeaning = signal(true);
+  readonly shadowing = signal(false);
+  readonly revealed = signal(true);
   readonly playlist = signal<ListeningPlaylistItem[]>([]);
   readonly currentIndex = signal(0);
   readonly isRunning = signal(false);
@@ -165,6 +167,7 @@ export class DailyListeningPageComponent implements OnDestroy {
       }
       this.currentIndex.set(index);
       playJapanese(list[index].speakText);
+      this.revealed.set(!this.shadowing());
       this.playTimeoutId = setTimeout(() => playNext(index + 1), 2500);
     };
 

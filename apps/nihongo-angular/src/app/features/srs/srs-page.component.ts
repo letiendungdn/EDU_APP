@@ -8,9 +8,18 @@ import {
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
+import { playJapanese } from '../../core/utils/speech.util';
+import { normalizeTypedJp } from '../../core/utils/conjugate';
 import type { SrsDueCard, SrsReviewResult, SrsStats } from '../../core/models/api.models';
 
 type Phase = 'loading' | 'needs-auth' | 'stats' | 'review' | 'done';
+type SrsMode = 'jp-vi' | 'vi-jp' | 'listen-type';
+
+const SRS_MODES: { id: SrsMode; label: string; hint: string }[] = [
+  { id: 'jp-vi', label: 'JP → VN', hint: 'Xem chữ Nhật, nhớ nghĩa' },
+  { id: 'vi-jp', label: 'VN → JP', hint: 'Xem nghĩa, nhớ chữ / kana' },
+  { id: 'listen-type', label: 'Nghe → gõ', hint: 'Nghe phát âm, gõ kana' },
+];
 
 interface Rating {
   quality: number;
@@ -79,6 +88,10 @@ export class SrsPageComponent implements OnInit {
   readonly addLesson = signal('');
   readonly addingLesson = signal(false);
   readonly addMsg = signal('');
+  readonly mode = signal<SrsMode>('jp-vi');
+  readonly typed = signal('');
+  readonly typedChecked = signal(false);
+  readonly srsModes = SRS_MODES;
 
   ngOnInit(): void {
     if (!this.auth.isAuthenticated()) {
@@ -91,12 +104,15 @@ export class SrsPageComponent implements OnInit {
   @HostListener('window:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent): void {
     if (this.phase() !== 'review') return;
-    if (event.key === ' ' && !this.flipped()) {
+    const tag = (event.target as HTMLElement | null)?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if (event.key === ' ' && !this.flipped() && this.mode() !== 'listen-type') {
       event.preventDefault();
       this.flipped.set(true);
       return;
     }
-    if (!this.flipped() || this.submitting()) return;
+    if (this.mode() === 'listen-type' && !this.typedChecked()) return;
+    if ((!this.flipped() && this.mode() !== 'listen-type') || this.submitting()) return;
     const rating = RATINGS.find((r) => r.key === event.key);
     if (rating) void this.rate(rating.quality);
   }
@@ -154,6 +170,8 @@ export class SrsPageComponent implements OnInit {
       this.index.set(0);
       this.flipped.set(false);
       this.lastResult.set(null);
+      this.typed.set('');
+      this.typedChecked.set(false);
       this.sessionCorrect.set(0);
       this.sessionTotal.set(0);
       this.phase.set('review');
@@ -190,7 +208,34 @@ export class SrsPageComponent implements OnInit {
       this.index.set(nextIndex);
       this.flipped.set(false);
       this.lastResult.set(null);
+      this.typed.set('');
+      this.typedChecked.set(false);
     }
+  }
+
+  checkTyped(): void {
+    const card = this.card();
+    if (!card || this.typedChecked()) return;
+    this.typedChecked.set(true);
+    this.flipped.set(true);
+  }
+
+  typedOk(): boolean {
+    const card = this.card();
+    if (!card) return false;
+    return (
+      normalizeTypedJp(this.typed()) === normalizeTypedJp(card.kana) ||
+      (!!card.kanji && normalizeTypedJp(this.typed()) === normalizeTypedJp(card.kanji))
+    );
+  }
+
+  replayCard(): void {
+    const card = this.card();
+    if (card) playJapanese(card.kana);
+  }
+
+  canRate(): boolean {
+    return this.mode() === 'listen-type' ? this.typedChecked() : this.flipped();
   }
 
   exitSession(): void {

@@ -20,6 +20,7 @@ export interface Vocabulary {
   lessonId: number;
   partOfSpeech?: string | null;
   imageUrl?: string | null;
+  pitchAccent?: string | null;
 }
 
 export interface GrammarExample {

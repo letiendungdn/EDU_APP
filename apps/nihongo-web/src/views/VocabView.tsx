@@ -430,6 +430,9 @@ export default function VocabView() {
                   <div className="flashcard-front-meta">
                     <FlashcardJapaneseText text={currentVocab.romaji} className="vocab-romaji" />
                     <span className="vocab-meaning">{currentVocab.meaning}</span>
+                    {currentVocab.pitchAccent ? (
+                      <span className="vocab-pitch">Cao điệu {currentVocab.pitchAccent}</span>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -467,6 +470,9 @@ export default function VocabView() {
                     <FlashcardJapaneseText text={currentVocab.romaji} className="vocab-romaji" />
                     <div className="divider"></div>
                     <span className="vocab-meaning">{currentVocab.meaning}</span>
+                    {currentVocab.pitchAccent ? (
+                      <span className="vocab-pitch">Cao điệu {currentVocab.pitchAccent}</span>
+                    ) : null}
                   </div>
                 </div>
               </div>

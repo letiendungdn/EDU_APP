@@ -179,6 +179,63 @@ export const routes: Routes = [
           import('./features/dictation/dictation-page.component').then((m) => m.DictationPageComponent),
       },
       {
+        path: 'practice',
+        loadComponent: () =>
+          import('./features/practice/practice-hub-page.component').then((m) => m.PracticeHubPageComponent),
+      },
+      {
+        path: 'conjugation',
+        loadComponent: () =>
+          import('./features/practice/conjugation-page.component').then((m) => m.ConjugationPageComponent),
+      },
+      {
+        path: 'particles',
+        loadComponent: () =>
+          import('./features/practice/particles-page.component').then((m) => m.ParticlesPageComponent),
+      },
+      {
+        path: 'kanji-readings',
+        loadComponent: () =>
+          import('./features/practice/kanji-readings-page.component').then((m) => m.KanjiReadingsPageComponent),
+      },
+      {
+        path: 'homophones',
+        loadComponent: () =>
+          import('./features/practice/practice-extra-page.component').then((m) => m.PracticeExtraPageComponent),
+      },
+      {
+        path: 'keigo',
+        loadComponent: () =>
+          import('./features/practice/practice-extra-page.component').then((m) => m.PracticeExtraPageComponent),
+      },
+      {
+        path: 'radicals',
+        loadComponent: () =>
+          import('./features/practice/practice-extra-page.component').then((m) => m.PracticeExtraPageComponent),
+      },
+      {
+        path: 'grammar-srs',
+        loadComponent: () =>
+          import('./features/practice/practice-extra-page.component').then((m) => m.PracticeExtraPageComponent),
+      },
+      {
+        path: 'listening-types',
+        loadComponent: () =>
+          import('./features/practice/practice-extra-page.component').then((m) => m.PracticeExtraPageComponent),
+      },
+      {
+        path: 'conversation',
+        loadComponent: () =>
+          import('./features/practice/conversation-page.component').then(
+            (m) => m.ConversationPageComponent,
+          ),
+      },
+      {
+        path: 'roleplay',
+        loadComponent: () =>
+          import('./features/practice/practice-extra-page.component').then((m) => m.PracticeExtraPageComponent),
+      },
+      {
         path: 'srs',
         loadComponent: () =>
           import('./features/srs/srs-page.component').then((m) => m.SrsPageComponent),

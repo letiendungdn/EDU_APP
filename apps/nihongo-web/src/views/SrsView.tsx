@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { apiRequest } from '@/lib/api-client';
+import { playAudio } from '@/utils/speech';
+import { normalizeTypedJp } from '@/utils/conjugate';
 import './SrsView.css';
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -59,6 +61,13 @@ function previewInterval(quality: number, ef: number, interval: number, reps: nu
 // ── Component ──────────────────────────────────────────────────────────────
 
 type Phase = 'loading' | 'needs-auth' | 'stats' | 'review' | 'done';
+type SrsMode = 'jp-vi' | 'vi-jp' | 'listen-type';
+
+const SRS_MODES: { id: SrsMode; label: string; hint: string }[] = [
+  { id: 'jp-vi', label: 'JP → VN', hint: 'Xem chữ Nhật, nhớ nghĩa' },
+  { id: 'vi-jp', label: 'VN → JP', hint: 'Xem nghĩa, nhớ chữ / kana' },
+  { id: 'listen-type', label: 'Nghe → gõ', hint: 'Nghe phát âm, gõ kana' },
+];
 
 export default function SrsView() {
   const { isAuthenticated } = useAuth();
@@ -74,6 +83,15 @@ export default function SrsView() {
   const [addLesson, setAddLesson] = useState('');
   const [addingLesson, setAddingLesson] = useState(false);
   const [addMsg, setAddMsg] = useState('');
+  const [mode, setMode] = useState<SrsMode>('jp-vi');
+  const [typed, setTyped] = useState('');
+  const [typedChecked, setTypedChecked] = useState(false);
+
+  useEffect(() => {
+    if (phase !== 'review' || mode !== 'listen-type') return;
+    const current = queue[index];
+    if (current?.kana) playAudio(current.kana);
+  }, [phase, mode, index, queue]);
 
   const loadStats = useCallback(async () => {
     try {
@@ -95,8 +113,15 @@ export default function SrsView() {
   useEffect(() => {
     if (phase !== 'review') return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === ' ' && !flipped) { e.preventDefault(); setFlipped(true); return; }
-      if (!flipped || submitting) return;
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+      if (e.key === ' ' && !flipped && mode !== 'listen-type') {
+        e.preventDefault();
+        setFlipped(true);
+        return;
+      }
+      if ((!flipped && mode !== 'listen-type') || submitting) return;
+      if (mode === 'listen-type' && !typedChecked) return;
       const rating = RATINGS.find((r) => r.key === e.key);
       if (rating) rate(rating.quality);
     };
@@ -113,6 +138,8 @@ export default function SrsView() {
       setIndex(0);
       setFlipped(false);
       setLastResult(null);
+      setTyped('');
+      setTypedChecked(false);
       setSessionCorrect(0);
       setSessionTotal(0);
       setPhase('review');
@@ -146,7 +173,16 @@ export default function SrsView() {
       setIndex((i) => i + 1);
       setFlipped(false);
       setLastResult(null);
+      setTyped('');
+      setTypedChecked(false);
     }
+  };
+
+  const checkTyped = () => {
+    const card = queue[index];
+    if (!card || typedChecked) return;
+    setTypedChecked(true);
+    setFlipped(true);
   };
 
   const handleAddLesson = async () => {
@@ -233,10 +269,15 @@ export default function SrsView() {
 
   if (phase === 'review' && card) {
     const progress = ((index) / queue.length) * 100;
+    const typedOk = typedChecked && (
+      normalizeTypedJp(typed) === normalizeTypedJp(card.kana)
+      || (!!card.kanji && normalizeTypedJp(typed) === normalizeTypedJp(card.kanji))
+    );
+    const showAnswer = flipped || typedChecked;
+    const canRate = mode === 'listen-type' ? typedChecked : flipped;
 
     return (
       <div className="srs-session">
-        {/* Top bar */}
         <div className="srs-session__bar">
           <button className="btn btn-ghost btn-sm" onClick={() => { setPhase('stats'); loadStats(); }}>
             ✕ Thoát
@@ -249,42 +290,76 @@ export default function SrsView() {
           <span className="srs-session__count">{index + 1}/{queue.length}</span>
         </div>
 
-        {/* Card */}
-        <div className={`srs-card${flipped ? ' srs-card--flipped' : ''}`} onClick={() => !flipped && setFlipped(true)}>
+        <p className="srs-mode-label">{SRS_MODES.find((m) => m.id === mode)?.label}</p>
+
+        <div
+          className={`srs-card${showAnswer ? ' srs-card--flipped' : ''}`}
+          onClick={() => {
+            if (mode === 'listen-type') return;
+            if (!flipped) setFlipped(true);
+          }}
+        >
           <div className="srs-card__inner">
-            {/* Front */}
             <div className="srs-card__face srs-card__front">
               <span className="srs-card__lesson">Bài {card.lessonNumber}</span>
-              <div className="srs-card__word japanese-text">
-                {card.kanji || card.kana}
-              </div>
-              {card.kanji && (
-                <div className="srs-card__kana japanese-text">{card.kana}</div>
+              {mode === 'jp-vi' && (
+                <>
+                  <div className="srs-card__word japanese-text">{card.kanji || card.kana}</div>
+                  {card.kanji && <div className="srs-card__kana japanese-text">{card.kana}</div>}
+                  <p className="srs-card__hint">Nhấn để xem nghĩa</p>
+                </>
               )}
-              <p className="srs-card__hint">Nhấn để xem nghĩa</p>
+              {mode === 'vi-jp' && (
+                <>
+                  <div className="srs-card__meaning">{card.meaning}</div>
+                  <p className="srs-card__hint">Nhấn để xem chữ Nhật</p>
+                </>
+              )}
+              {mode === 'listen-type' && (
+                <>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={(e) => { e.stopPropagation(); playAudio(card.kana); }}
+                  >
+                    🔊 Nghe
+                  </button>
+                  <p className="srs-card__hint">Gõ kana (hoặc kanji) rồi kiểm tra</p>
+                </>
+              )}
             </div>
 
-            {/* Back */}
             <div className="srs-card__face srs-card__back">
               <span className="srs-card__lesson">Bài {card.lessonNumber}</span>
-              <div className="srs-card__word japanese-text">
-                {card.kanji || card.kana}
-              </div>
-              {card.kanji && (
-                <div className="srs-card__kana japanese-text">{card.kana}</div>
-              )}
+              <div className="srs-card__word japanese-text">{card.kanji || card.kana}</div>
+              {card.kanji && <div className="srs-card__kana japanese-text">{card.kana}</div>}
               <div className="srs-card__meaning">{card.meaning}</div>
-              {lastResult && (
-                <div className="srs-card__next">
-                  ⏱ Ôn lại: {previewInterval(3, card.easeFactor, card.interval, card.repetitions)}
-                </div>
+              {mode === 'listen-type' && typedChecked && (
+                <p className={typedOk ? 'srs-typed-ok' : 'srs-typed-bad'}>
+                  {typedOk ? 'Đúng' : `Bạn gõ: ${typed || '—'} · đáp án ${card.kana}`}
+                </p>
               )}
             </div>
           </div>
         </div>
 
-        {/* Rating buttons */}
-        {flipped && !lastResult && (
+        {mode === 'listen-type' && !typedChecked && (
+          <form
+            className="srs-type-row"
+            onSubmit={(e) => { e.preventDefault(); checkTyped(); }}
+          >
+            <input
+              className="japanese-text"
+              value={typed}
+              onChange={(e) => setTyped(e.target.value)}
+              placeholder="Gõ kana"
+              autoFocus
+            />
+            <button type="submit" className="btn btn-primary" disabled={!typed.trim()}>Kiểm tra</button>
+          </form>
+        )}
+
+        {canRate && !lastResult && (
           <div className="srs-ratings">
             {RATINGS.map((r) => (
               <button
@@ -302,11 +377,10 @@ export default function SrsView() {
           </div>
         )}
 
-        {/* Keyboard hint */}
-        {!flipped && (
+        {mode !== 'listen-type' && !flipped && (
           <p className="srs-hint">Nhấn <kbd>Space</kbd> để lật thẻ</p>
         )}
-        {flipped && !lastResult && (
+        {canRate && !lastResult && (
           <p className="srs-hint">
             <kbd>1</kbd> Lại &nbsp;·&nbsp; <kbd>2</kbd> Khó &nbsp;·&nbsp;
             <kbd>3</kbd> Ổn &nbsp;·&nbsp; <kbd>4</kbd> Dễ
@@ -329,6 +403,20 @@ export default function SrsView() {
             từ dễ ôn thưa hơn. Học đúng lúc, nhớ lâu hơn.
           </p>
         </div>
+      </div>
+
+      <div className="srs-modes">
+        {SRS_MODES.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className={`srs-mode-btn${mode === item.id ? ' is-active' : ''}`}
+            onClick={() => setMode(item.id)}
+          >
+            <strong>{item.label}</strong>
+            <span>{item.hint}</span>
+          </button>
+        ))}
       </div>
 
       {stats && (

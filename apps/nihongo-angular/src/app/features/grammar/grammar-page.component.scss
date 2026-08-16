@@ -242,6 +242,9 @@
   margin-bottom: 0.35rem;
 }
 
+.example-jp ruby { ruby-position: over; }
+.example-jp rt { font-size: 0.55em; }
+
 .example-jp .japanese-text {
   font-size: 1.05rem;
   font-weight: 600;

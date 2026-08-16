@@ -120,6 +120,9 @@
                     className="vocab-romaji"
                   />
                   <span class="vocab-meaning">{{ current()!.meaning }}</span>
+                  @if (current()!.pitchAccent) {
+                    <span class="vocab-pitch">Cao điệu {{ current()!.pitchAccent }}</span>
+                  }
                 </div>
               </div>
             </div>
@@ -162,6 +165,9 @@
                   />
                   <div class="divider"></div>
                   <span class="vocab-meaning">{{ current()!.meaning }}</span>
+                  @if (current()!.pitchAccent) {
+                    <span class="vocab-pitch">Cao điệu {{ current()!.pitchAccent }}</span>
+                  }
                 </div>
               </div>
             </div>

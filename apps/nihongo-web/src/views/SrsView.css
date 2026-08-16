@@ -1,3 +1,63 @@
+.srs-modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .srs-modes { grid-template-columns: 1fr; }
+}
+
+.srs-mode-btn {
+  text-align: left;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.srs-mode-btn strong { font-size: 0.95rem; }
+.srs-mode-btn span { font-size: 0.8rem; color: var(--text-secondary); }
+.srs-mode-btn.is-active {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.srs-mode-label {
+  text-align: center;
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.srs-type-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 0.5rem 0 1rem;
+}
+
+.srs-type-row input {
+  flex: 1;
+  max-width: 280px;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 1.1rem;
+}
+
+.srs-typed-ok { color: var(--color-success); font-weight: 600; }
+.srs-typed-bad { color: var(--color-error); font-weight: 600; }
+
 /* ── SRS Stats grid ─────────────────────────────────────────── */
 
 .srs-stats-grid {

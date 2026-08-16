@@ -38,6 +38,9 @@ export const NAV_GROUPS: NavGroupConfig[] = [
     label: 'Nội dung',
     items: [
       { path: '/daily-listening', icon: '🎧', label: 'Nghe mỗi ngày' },
+      { path: '/conversation', icon: '話', label: 'Giao tiếp · 自己紹介' },
+      { path: '/listening-types', icon: '耳', label: 'Dạng nghe JLPT' },
+      { path: '/roleplay', icon: '🗣', label: 'Đóng vai' },
       { path: '/book-audio', icon: '📻', label: 'File nghe sách' },
       { path: '/reading', icon: '📰', label: 'Đọc hiểu' },
       { path: '/dictation', icon: '✍️', label: 'Nghe chép' },
@@ -47,6 +50,11 @@ export const NAV_GROUPS: NavGroupConfig[] = [
   {
     label: 'Luyện tập',
     items: [
+      { path: '/practice', icon: '⚔', label: 'Hub luyện tập' },
+      { path: '/conjugation', icon: '変', label: 'Chia động từ' },
+      { path: '/particles', icon: '助', label: 'Điền trợ từ' },
+      { path: '/kanji-readings', icon: '読', label: 'Kanji trong từ' },
+      { path: '/grammar-srs', icon: '文', label: 'SRS ngữ pháp' },
       { path: '/srs', icon: '🧠', label: 'SRS — Thẻ ghi nhớ' },
       { path: '/sentence-practice', icon: '✍️', label: 'Luyện câu AI' },
       { path: '/vocab/picture', icon: '🖼️', label: 'Từ điển tranh' },

@@ -1,0 +1,147 @@
+<div class="container drill-view">
+  <p class="drill-subtitle"><a routerLink="/practice">← Hub luyện tập</a></p>
+
+  @if (tab() === 'homophones') {
+    <header class="drill-header">
+      <h2 class="view-title">同音異義 — Đồng âm</h2>
+    </header>
+    @if (vocabLoading()) {
+      <p>Đang tải...</p>
+    } @else if (!hpGroup() || !hpTarget()) {
+      <p>Chưa gom được cặp đồng âm.</p>
+    } @else {
+      <p class="drill-score">{{ hpIndex() + 1 }}/{{ groups().length }}</p>
+      <div class="drill-card">
+        <p class="drill-meta">Đọc: {{ hpGroup()!.kana }}</p>
+        <p class="drill-prompt">{{ hpTarget()!.meaning }}</p>
+        <button type="button" class="btn btn-outline btn-sm" (click)="speak(hpGroup()!.kana)">Nghe</button>
+        <div class="drill-options" style="margin-top: 1rem">
+          @for (item of hpGroup()!.items; track item.id) {
+            <button type="button" class="drill-option japanese-text" [class.is-correct]="hpPicked() != null && item.id === hpTarget()!.id" [class.is-wrong]="hpPicked() === item.id && item.id !== hpTarget()!.id" [disabled]="hpPicked() != null" (click)="hpGrade(item.id)">
+              {{ item.kanji || '—' }}
+            </button>
+          }
+        </div>
+      </div>
+      <button type="button" class="btn btn-nav" (click)="hpNext()">Câu tiếp</button>
+    }
+  }
+
+  @if (tab() === 'keigo') {
+    <header class="drill-header"><h2 class="view-title">敬語 — Kính ngữ</h2></header>
+    <div class="practice-grid">
+      @for (lv of keigoLevels; track lv.id) {
+        <div class="practice-card">
+          <strong>{{ lv.label }}</strong>
+          <span class="japanese-text">{{ lv.example }}</span>
+          <span>{{ lv.vi }}</span>
+        </div>
+      }
+    </div>
+    <div class="drill-toolbar">
+      <button type="button" class="tab-btn" [class.active]="keigoKind() === 'sonkei'" (click)="keigoKind.set('sonkei'); keigoPicked.set(null)">尊敬語</button>
+      <button type="button" class="tab-btn" [class.active]="keigoKind() === 'kenjō'" (click)="keigoKind.set('kenjō'); keigoPicked.set(null)">謙譲語</button>
+    </div>
+    <div class="drill-card">
+      <p class="drill-meta">{{ keigoItem().vi }}</p>
+      <p class="drill-prompt japanese-text">{{ keigoItem().plain }}</p>
+      <div class="drill-options">
+        @for (opt of keigoOptions(); track opt) {
+          <button type="button" class="drill-option japanese-text" [class.is-correct]="keigoPicked() != null && opt === keigoAnswer()" [class.is-wrong]="keigoPicked() === opt && opt !== keigoAnswer()" [disabled]="keigoPicked() != null" (click)="keigoGrade(opt)">{{ opt }}</button>
+        }
+      </div>
+    </div>
+    <button type="button" class="btn btn-nav" (click)="keigoNext()">Câu tiếp</button>
+  }
+
+  @if (tab() === 'radicals') {
+    <header class="drill-header"><h2 class="view-title">部首 — Bộ thủ</h2></header>
+    <div class="drill-card">
+      <p class="drill-prompt japanese-text">{{ radical().radical }}</p>
+      <p class="drill-meta japanese-text">{{ radical().reading }} · ví dụ {{ radical().examples.join(' ') }}</p>
+      <div class="drill-options">
+        @for (opt of radicalOptions(); track opt) {
+          <button type="button" class="drill-option" [class.is-correct]="radicalPicked() != null && opt === radical().vi" [class.is-wrong]="radicalPicked() === opt && opt !== radical().vi" [disabled]="radicalPicked() != null" (click)="radicalGrade(opt)">{{ opt }}</button>
+        }
+      </div>
+    </div>
+    <button type="button" class="btn btn-nav" (click)="radicalNext()">Câu tiếp</button>
+  }
+
+  @if (tab() === 'grammar-srs') {
+    <header class="drill-header">
+      <h2 class="view-title">SRS ngữ pháp</h2>
+      <p class="drill-subtitle">Ghim mẫu trên trang Ngữ pháp. <a routerLink="/grammar">Mở ngữ pháp</a></p>
+    </header>
+    <p class="drill-score">Đã ghim {{ grammarCards().length }} · đến hạn {{ grammarDue().length }}</p>
+    @if (!grammarCurrent()) {
+      <p>Chưa có thẻ đến hạn. Ghim mẫu ở trang ngữ pháp.</p>
+    } @else {
+      <div class="drill-card" (click)="grammarFlipped.set(true)">
+        <p class="drill-meta">Bài {{ grammarCurrent()!.lessonNumber }}</p>
+        <p class="drill-prompt japanese-text">{{ grammarCurrent()!.pattern }}</p>
+        @if (grammarFlipped()) {
+          <p class="drill-meta">{{ grammarCurrent()!.meaning }}</p>
+          <div class="drill-options">
+            <button type="button" class="drill-option" (click)="rateGrammar(1); $event.stopPropagation()">Lại</button>
+            <button type="button" class="drill-option" (click)="rateGrammar(2); $event.stopPropagation()">Khó</button>
+            <button type="button" class="drill-option" (click)="rateGrammar(3); $event.stopPropagation()">Ổn</button>
+            <button type="button" class="drill-option" (click)="rateGrammar(4); $event.stopPropagation()">Dễ</button>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" style="margin-top: 12px" (click)="unpin(); $event.stopPropagation()">Bỏ ghim</button>
+        } @else {
+          <p class="drill-meta">Nhấn để xem nghĩa</p>
+        }
+      </div>
+    }
+  }
+
+  @if (tab() === 'listening') {
+    <header class="drill-header"><h2 class="view-title">聴解 — Dạng nghe JLPT</h2></header>
+    <div class="drill-toolbar">
+      <button type="button" class="tab-btn" [class.active]="listenKind() === 'all'" (click)="listenKind.set('all'); listenIndex.set(0); listenPicked.set(null)">Tất cả</button>
+      @for (t of listenTypes; track t.id) {
+        <button type="button" class="tab-btn" [class.active]="listenKind() === t.id" (click)="listenKind.set(t.id); listenIndex.set(0); listenPicked.set(null)">{{ t.ja }}</button>
+      }
+    </div>
+    @if (listenCurrent(); as q) {
+      <p class="drill-score">{{ listenIndex() + 1 }}/{{ listenBank().length }} · {{ q.typeLabel }}</p>
+      <div class="drill-card">
+        <p class="drill-meta">{{ q.promptVi }}</p>
+        <button type="button" class="btn btn-primary" (click)="speak(q.promptJa)">🔊 Nghe đề</button>
+        @if (listenPicked()) {
+          <p class="drill-prompt japanese-text" style="font-size: 1.15rem">{{ q.promptJa }}</p>
+        }
+        <div class="drill-options" style="margin-top: 1rem">
+          @for (opt of q.options; track opt) {
+            <button type="button" class="drill-option japanese-text" [class.is-correct]="listenPicked() != null && opt === q.answer" [class.is-wrong]="listenPicked() === opt && opt !== q.answer" [disabled]="listenPicked() != null" (click)="listenGrade(opt)">{{ opt }}</button>
+          }
+        </div>
+      </div>
+      <button type="button" class="btn btn-nav" [disabled]="!listenPicked()" (click)="listenNext()">Câu tiếp</button>
+    }
+  }
+
+  @if (tab() === 'roleplay') {
+    <header class="drill-header"><h2 class="view-title">会話 — Đóng vai</h2></header>
+    <div class="drill-toolbar">
+      @for (s of scenes; track s.id) {
+        <button type="button" class="tab-btn" [class.active]="sceneId() === s.id" (click)="setScene(s.id)">{{ s.title }}</button>
+      }
+    </div>
+    <p class="drill-meta" style="text-align: center">{{ scene().titleJa }} — {{ scene().desc }}</p>
+    <div class="drill-card">
+      <p class="drill-meta">{{ line().role }} · {{ lineIndex() + 1 }}/{{ scene().lines.length }}</p>
+      <p class="drill-prompt japanese-text">{{ hideJa() ? '……' : line().ja }}</p>
+      <p class="drill-meta">{{ line().vi }}</p>
+      <div class="drill-toolbar">
+        <button type="button" class="btn btn-primary" (click)="speak(line().ja)">🔊 Nghe lượt này</button>
+        <button type="button" class="btn btn-outline" (click)="hideJa.set(!hideJa())">{{ hideJa() ? 'Hiện chữ' : 'Che chữ' }}</button>
+      </div>
+    </div>
+    <div class="drill-toolbar">
+      <button type="button" class="btn btn-nav" [disabled]="lineIndex() === 0" (click)="lineIndex.set(lineIndex() - 1); hideJa.set(true)">Lượt trước</button>
+      <button type="button" class="btn btn-nav" [disabled]="lineIndex() >= scene().lines.length - 1" (click)="lineIndex.set(lineIndex() + 1); hideJa.set(true)">Lượt sau</button>
+    </div>
+  }
+</div>

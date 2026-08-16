@@ -21,6 +21,7 @@ export interface Vocabulary {
   lessonId?: number;
   partOfSpeech?: string | null;
   imageUrl?: string | null;
+  pitchAccent?: string | null;
 }
 
 export type VocabularyWithLesson = Vocabulary & { lessonNumber: number };

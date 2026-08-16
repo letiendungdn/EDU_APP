@@ -59,17 +59,27 @@
 
     <div
       class="srs-card"
-      [class.srs-card--flipped]="flipped()"
-      (click)="flipCard()"
+      [class.srs-card--flipped]="flipped() || typedChecked()"
+      (click)="mode() === 'listen-type' ? null : flipCard()"
     >
       <div class="srs-card__inner">
         <div class="srs-card__face srs-card__front">
           <span class="srs-card__lesson">Bài {{ c.lessonNumber }}</span>
-          <div class="srs-card__word japanese-text">{{ c.kanji || c.kana }}</div>
-          @if (c.kanji) {
-            <div class="srs-card__kana japanese-text">{{ c.kana }}</div>
+          @if (mode() === 'jp-vi') {
+            <div class="srs-card__word japanese-text">{{ c.kanji || c.kana }}</div>
+            @if (c.kanji) {
+              <div class="srs-card__kana japanese-text">{{ c.kana }}</div>
+            }
+            <p class="srs-card__hint">Nhấn để xem nghĩa</p>
           }
-          <p class="srs-card__hint">Nhấn để xem nghĩa</p>
+          @if (mode() === 'vi-jp') {
+            <div class="srs-card__meaning">{{ c.meaning }}</div>
+            <p class="srs-card__hint">Nhấn để xem chữ Nhật</p>
+          }
+          @if (mode() === 'listen-type') {
+            <button type="button" class="btn btn-primary" (click)="replayCard(); $event.stopPropagation()">🔊 Nghe</button>
+            <p class="srs-card__hint">Gõ kana (hoặc kanji) rồi kiểm tra</p>
+          }
         </div>
         <div class="srs-card__face srs-card__back">
           <span class="srs-card__lesson">Bài {{ c.lessonNumber }}</span>
@@ -78,16 +88,21 @@
             <div class="srs-card__kana japanese-text">{{ c.kana }}</div>
           }
           <div class="srs-card__meaning">{{ c.meaning }}</div>
-          @if (lastResult()) {
-            <div class="srs-card__next">
-              ⏱ Ôn lại: {{ previewInterval(3, c.easeFactor, c.interval, c.repetitions) }}
-            </div>
+          @if (mode() === 'listen-type' && typedChecked()) {
+            <p>{{ typedOk() ? 'Đúng' : 'Bạn gõ: ' + (typed() || '—') + ' · đáp án ' + c.kana }}</p>
           }
         </div>
       </div>
     </div>
 
-    @if (flipped() && !lastResult()) {
+    @if (mode() === 'listen-type' && !typedChecked()) {
+      <form class="srs-type-row" (submit)="$event.preventDefault(); checkTyped()">
+        <input class="japanese-text" [value]="typed()" (input)="typed.set($any($event.target).value)" placeholder="Gõ kana" />
+        <button type="submit" class="btn btn-primary" [disabled]="!typed().trim()">Kiểm tra</button>
+      </form>
+    }
+
+    @if (canRate() && !lastResult()) {
       <div class="srs-ratings">
         @for (r of ratings; track r.quality) {
           <button
@@ -105,10 +120,10 @@
       </div>
     }
 
-    @if (!flipped()) {
+    @if (mode() !== 'listen-type' && !flipped()) {
       <p class="srs-hint">Nhấn <kbd>Space</kbd> để lật thẻ</p>
     }
-    @if (flipped() && !lastResult()) {
+    @if (canRate() && !lastResult()) {
       <p class="srs-hint">
         <kbd>1</kbd> Lại &nbsp;·&nbsp; <kbd>2</kbd> Khó &nbsp;·&nbsp;
         <kbd>3</kbd> Ổn &nbsp;·&nbsp; <kbd>4</kbd> Dễ
@@ -127,6 +142,15 @@
           từ dễ ôn thưa hơn. Học đúng lúc, nhớ lâu hơn.
         </p>
       </div>
+    </div>
+
+    <div class="srs-modes">
+      @for (item of srsModes; track item.id) {
+        <button type="button" class="srs-mode-btn" [class.is-active]="mode() === item.id" (click)="mode.set(item.id)">
+          <strong>{{ item.label }}</strong>
+          <span>{{ item.hint }}</span>
+        </button>
+      }
     </div>
 
     @if (stats(); as s) {

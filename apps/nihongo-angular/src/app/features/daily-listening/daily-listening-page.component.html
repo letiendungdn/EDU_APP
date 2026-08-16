@@ -47,6 +47,14 @@
         />
         Hiện nghĩa tiếng Việt khi nghe
       </label>
+      <label class="dl-checkbox">
+        <input
+          type="checkbox"
+          [checked]="shadowing()"
+          (change)="shadowing.set($any($event.target).checked); revealed.set(!$any($event.target).checked)"
+        />
+        Shadowing (che chữ, nhắc lại)
+      </label>
     </div>
 
     @if (playlistLoading()) {
@@ -64,7 +72,7 @@
           {{ item.type === 'sentence' ? 'Câu mẫu' : 'Từ vựng' }} · Bài
           {{ item.lessonNumber }}
         </span>
-        <p class="dl-now-jp japanese-text">{{ item.display }}</p>
+        <p class="dl-now-jp japanese-text">{{ shadowing() && !revealed() ? '……' : item.display }}</p>
         @if (showMeaning()) {
           <p class="dl-now-meaning">{{ item.meaning }}</p>
         }
@@ -72,6 +80,11 @@
           Playlist {{ playlist().length }} mục · đang phát #{{ currentIndex() + 1 }}
         </p>
         <button type="button" class="btn btn-outline" (click)="replayCurrent()">🔊 Nghe lại</button>
+        @if (shadowing()) {
+          <button type="button" class="btn btn-outline" (click)="revealed.set(!revealed())">
+            {{ revealed() ? 'Che chữ' : 'Hiện chữ' }}
+          </button>
+        }
       </div>
       }
 

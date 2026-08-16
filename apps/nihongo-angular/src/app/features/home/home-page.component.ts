@@ -37,6 +37,7 @@ export class HomePageComponent {
     {
       title: 'Bắt đầu từ đây',
       items: [
+        { path: '/conversation', icon: '話', title: 'Giao tiếp', desc: '自己紹介 và câu thông dụng N5' },
         { path: '/kana', icon: 'あ', title: 'Kana', desc: 'Hiragana & Katakana từ đầu' },
         { path: '/vocab', icon: '単', title: 'Từ vựng', desc: 'Flashcard Minna no Nihongo' },
         { path: '/grammar', icon: '文', title: 'Ngữ pháp', desc: 'Cấu trúc câu & mẫu câu' },
@@ -58,6 +59,9 @@ export class HomePageComponent {
     {
       title: 'Kiểm tra & thi thử',
       items: [
+        { path: '/practice', icon: '⚔', title: 'Hub luyện tập', desc: '活用・助詞・SRS hai chiều' },
+        { path: '/conjugation', icon: '変', title: 'Chia động từ', desc: 'て・た・ない・辞書形' },
+        { path: '/particles', icon: '助', title: 'Điền trợ từ', desc: 'は/が/を/に/で trong câu' },
         { path: '/quiz', icon: '✏️', title: 'Quiz', desc: 'Trắc nghiệm & điền từ' },
         { path: '/mock-exam', icon: '📋', title: 'Thi thử JLPT', desc: 'Đề thi N5–N4 có giờ đếm ngược' },
         { path: '/vocab-review', icon: '🔄', title: 'Từ sai', desc: 'Ôn lại từ làm sai trong quiz' },

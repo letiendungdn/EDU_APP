@@ -1,0 +1,42 @@
+<div class="container drill-view">
+  <header class="drill-header">
+    <h2 class="view-title">活用 — Chia động từ / tính từ</h2>
+    <p class="drill-subtitle">
+      Từ dạng ます (Minna), chọn đúng て・た・ない・辞書形.
+      <a routerLink="/practice">Tất cả bài luyện</a>
+    </p>
+  </header>
+  @if (loading()) {
+    <p>Đang tải từ vựng...</p>
+  } @else if (!current()) {
+    <p>Chưa đủ động từ/tính từ để luyện.</p>
+  } @else {
+    <div class="drill-toolbar">
+      <button type="button" class="tab-btn" [class.active]="mode() === 'choice'" (click)="mode.set('choice')">Trắc nghiệm</button>
+      <button type="button" class="tab-btn" [class.active]="mode() === 'type'" (click)="mode.set('type')">Gõ chữ</button>
+    </div>
+    <p class="drill-score">{{ index() + 1 }}/{{ deck().length }} · đúng {{ score().ok }}/{{ score().n || 0 }}</p>
+    <div class="drill-card">
+      <p class="drill-meta">{{ current()!.meaning }}</p>
+      <p class="drill-prompt japanese-text">{{ current()!.display }}</p>
+      <p class="drill-meta">Dạng ます: {{ current()!.kana }} → hãy chọn <strong>{{ askedLabel() }}</strong></p>
+      <button type="button" class="btn btn-outline btn-sm" (click)="speak()">Nghe ます</button>
+      @if (mode() === 'choice') {
+        <div class="drill-options" style="margin-top: 1rem">
+          @for (opt of current()!.options; track opt) {
+            <button type="button" class="drill-option japanese-text{{ optionClass(opt) }}" [disabled]="picked() != null" (click)="grade(opt)">{{ opt }}</button>
+          }
+        </div>
+      } @else {
+        <form class="drill-type-row" (submit)="$event.preventDefault(); grade(typed())">
+          <input class="japanese-text" [value]="typed()" (input)="typed.set($any($event.target).value)" [placeholder]="askedLabel() + '形'" [disabled]="picked() != null" />
+          <button type="submit" class="btn btn-primary" [disabled]="picked() != null || !typed().trim()">Kiểm tra</button>
+        </form>
+      }
+      @if (picked() != null) {
+        <p class="drill-feedback">{{ typedOk() ? 'Đúng' : 'Sai — đáp án: ' + current()!.answer }}</p>
+      }
+    </div>
+    <button type="button" class="btn btn-nav" (click)="next()">Câu tiếp</button>
+  }
+</div>

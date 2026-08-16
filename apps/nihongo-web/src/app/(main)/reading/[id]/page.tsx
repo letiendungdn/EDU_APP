@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { fetchReadingPassage, submitReading, type ReadingResult } from '@/api';
+import FuriganaText from '@/components/FuriganaText';
 
 export default function ReadingDetailPage() {
   const params = useParams<{ id: string }>();
@@ -12,6 +13,7 @@ export default function ReadingDetailPage() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<ReadingResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showFuri, setShowFuri] = useState(true);
 
   const { data: passage, isLoading } = useQuery({
     queryKey: ['reading-passage', id],
@@ -56,9 +58,14 @@ export default function ReadingDetailPage() {
 
       <h1 style={{ marginBottom: '1.25rem' }}>{passage.title}</h1>
 
+      <label className="furigana-toggle" style={{ marginBottom: '0.75rem', display: 'inline-flex', gap: 8 }}>
+        <input type="checkbox" checked={showFuri} onChange={() => setShowFuri((v) => !v)} />
+        Hiện furigana
+      </label>
+
       {/* Nội dung bài đọc */}
       <div className="card" style={{ marginBottom: '2rem', lineHeight: 1.9, whiteSpace: 'pre-wrap', fontSize: '1.05rem' }}>
-        {passage.content}
+        <FuriganaText text={passage.content} show={showFuri} />
         {passage.source && (
           <p style={{ marginTop: '1rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
             Nguồn: {passage.source}

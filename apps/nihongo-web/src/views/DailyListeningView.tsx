@@ -9,6 +9,7 @@ import {
 import { useDailyListeningConfigQuery, useListeningPlaylistQuery } from '../hooks/queries';
 import { DEFAULT_GOAL_MINUTES } from '../utils/dailyListeningProgress';
 import type { ListeningPlaylistItem } from '../types/api';
+import { playAudio } from '../utils/speech';
 import './DailyListeningView.css';
 
 export default function DailyListeningView() {
@@ -20,6 +21,8 @@ export default function DailyListeningView() {
   const [tab, setTab] = useState<'minna' | 'podcast'>('minna');
   const [presetId, setPresetId] = useState('');
   const [showMeaning, setShowMeaning] = useState(true);
+  const [shadowing, setShadowing] = useState(false);
+  const [revealed, setRevealed] = useState(false);
   const [stats, setStats] = useState(loadListeningStats);
 
   const resolvedPresetId = presetId || minnaListeningPresets[2]?.id || minnaListeningPresets[0]?.id || '';
@@ -47,6 +50,10 @@ export default function DailyListeningView() {
   const activeElapsed = tab === 'minna' ? minna.elapsed : podcast.elapsed;
   const activeProgress = tab === 'minna' ? minna.progressPct : podcast.progressPct;
   const activeGoalReached = tab === 'minna' ? minna.goalReached : podcast.goalReached;
+
+  useEffect(() => {
+    setRevealed(!shadowing);
+  }, [minna.currentIndex, shadowing]);
 
   if (configLoading) {
     return (
@@ -129,6 +136,17 @@ export default function DailyListeningView() {
               />
               Hiện nghĩa tiếng Việt khi nghe
             </label>
+            <label className="dl-checkbox">
+              <input
+                type="checkbox"
+                checked={shadowing}
+                onChange={(e) => {
+                  setShadowing(e.target.checked);
+                  setRevealed(!e.target.checked);
+                }}
+              />
+              Shadowing (che chữ, nhắc lại)
+            </label>
           </div>
 
           {loading ? (
@@ -146,13 +164,33 @@ export default function DailyListeningView() {
                   {current?.type === 'sentence' ? 'Câu mẫu' : 'Từ vựng'} · Bài{' '}
                   {current?.lessonNumber}
                 </span>
-                <p className="dl-now-jp japanese-text">{current?.display}</p>
+                <p className="dl-now-jp japanese-text">
+                  {shadowing && !revealed ? '……' : current?.display}
+                </p>
                 {showMeaning && (
                   <p className="dl-now-meaning">{current?.meaning}</p>
                 )}
                 <p className="dl-queue-meta">
                   Playlist {playlist.length} mục · đang phát #{minna.currentIndex + 1}
                 </p>
+                {shadowing && current && (
+                  <div className="dl-player-actions" style={{ marginTop: '0.75rem' }}>
+                    <button
+                      type="button"
+                      className="btn btn-outline"
+                      onClick={() => playAudio(current.speakText || current.display)}
+                    >
+                      🔊 Nghe mẫu
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline"
+                      onClick={() => setRevealed((v) => !v)}
+                    >
+                      {revealed ? 'Che chữ' : 'Hiện chữ'}
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="dl-player-actions">

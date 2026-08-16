@@ -1,3 +1,40 @@
+.srs-modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 640px) {
+  .srs-modes { grid-template-columns: 1fr; }
+}
+.srs-mode-btn {
+  text-align: left;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.srs-mode-btn.is-active { border-color: var(--primary-color); }
+.srs-type-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 0.5rem 0 1rem;
+}
+.srs-type-row input {
+  flex: 1;
+  max-width: 280px;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  font: inherit;
+}
+
 /* ── SRS Stats grid ─────────────────────────────────────────── */
 
 .srs-stats-grid {

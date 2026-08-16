@@ -9,6 +9,11 @@
       </p>
 
       <div class="counters-tabs">
+        <button type="button" class="tab-btn" [class.active]="tab() === 'learn'" (click)="tab.set('learn')">Học bảng</button>
+        <button type="button" class="tab-btn" [class.active]="tab() === 'drill'" (click)="tab.set('drill'); picked.set(null); qIndex.set(0)">Đếm trong câu</button>
+      </div>
+
+      <div class="counters-tabs">
         @for (cat of categories(); track cat.id) {
           <button
             type="button"
@@ -22,6 +27,7 @@
       </div>
     </header>
 
+    @if (tab() === 'learn') {
     <div class="counters-panel">
       <div class="counters-hint-box">
         <ul class="counters-hint-list">
@@ -91,5 +97,35 @@
         </button>
       </div>
     </div>
+    } @else {
+      @if (!currentQ()) {
+        <p>Chưa đủ dữ liệu để luyện câu.</p>
+      } @else {
+        <p style="text-align:center">{{ qIndex() + 1 }}/{{ questions().length }} · đúng {{ score().ok }}/{{ score().n || 0 }}</p>
+        <div class="counters-hint-box" style="text-align:center">
+          <p>{{ currentQ()!.vi }}</p>
+          <p class="japanese-text" style="font-size:1.4rem;font-weight:700">{{ currentQ()!.jpPrompt }}</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:1rem">
+            @for (opt of currentQ()!.options; track opt) {
+              <button
+                type="button"
+                class="tab-btn"
+                [class.active]="picked() != null && opt === currentQ()!.answer"
+                [disabled]="picked() != null"
+                (click)="grade(opt)"
+              >{{ opt }}</button>
+            }
+          </div>
+          @if (picked()) {
+            <p class="japanese-text" style="font-size:1.15rem;font-weight:600;margin-top:0.85rem">{{ currentQ()!.filledJa }}</p>
+            <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-top:0.6rem">
+              <button type="button" class="btn btn-play-all" (click)="speak(currentQ()!.speakJa)">🔊 Nghe cả câu</button>
+              <button type="button" class="tab-btn" (click)="speak(currentQ()!.answer)">Nghe số đếm</button>
+            </div>
+          }
+        </div>
+        <button type="button" class="btn btn-play-all" (click)="nextQ()">Câu tiếp</button>
+      }
+    }
   }
 </section>

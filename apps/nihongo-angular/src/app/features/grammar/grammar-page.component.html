@@ -1,6 +1,7 @@
 <section class="container grammar-view">
   <div class="grammar-header">
     <h2 class="view-title grammar-view-title">Ngữ pháp Minna no Nihongo</h2>
+    <p class="grammar-lesson-summary"><a routerLink="/grammar-srs">Ôn mẫu đã ghim</a></p>
 
     <app-lesson-selector
       [lessons]="lessons()"
@@ -13,6 +14,11 @@
         Bài {{ lesson() }} gồm {{ grammars().length }} mục ngữ pháp
       </p>
     }
+
+    <label class="grammar-auto-read" style="display:inline-flex;gap:0.4rem;align-items:center">
+      <input type="checkbox" [checked]="showFuri()" (change)="showFuri.set($any($event.target).checked)" />
+      Hiện furigana
+    </label>
 
     @if (auth.isAdmin()) {
       <div class="grammar-admin-toolbar">
@@ -77,6 +83,9 @@
             <div class="grammar-pattern-header">
               <span class="grammar-index">{{ i + 1 }}</span>
               <h3 class="grammar-pattern japanese-text">{{ grammar.pattern }}</h3>
+              <button type="button" class="grammar-admin-add" (click)="togglePin(grammar)">
+                {{ isPinned(grammar.id) ? 'Đã ghim' : 'Ghim ôn' }}
+              </button>
               @if (canEdit()) {
                 <div class="grammar-admin-row-actions">
                   <button type="button" [disabled]="busy()" (click)="startEdit(grammar)">Sửa</button>
@@ -129,7 +138,7 @@
                   @for (ex of grammar.examples; track ex.id) {
                     <li class="example-item">
                       <div class="example-jp">
-                        <span class="japanese-text">{{ ex.jp }}</span>
+                        <app-furigana-text class="japanese-text" [text]="ex.jp" [show]="showFuri()" />
                         @if (exampleRomaji(ex.romaji)) {
                           <span class="example-romaji-inline">{{ exampleRomaji(ex.romaji) }}</span>
                         }

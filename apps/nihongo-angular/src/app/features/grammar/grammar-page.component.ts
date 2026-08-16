@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import {
@@ -12,7 +13,9 @@ import {
   grammarExampleSpeechText,
 } from '../../core/utils/grammar-example.util';
 import { playSpeech } from '../../core/utils/speech.util';
+import { isGrammarPinned, pinGrammar, unpinGrammar } from '../../core/utils/grammarSrs';
 import { LessonSelectorComponent } from '../../shared/lesson-selector/lesson-selector.component';
+import { FuriganaTextComponent } from '../../shared/furigana-text/furigana-text.component';
 import type { Grammar, Lesson } from '../../core/models/api.models';
 
 type ExampleDraft = { jp: string; romaji: string; vi: string };
@@ -34,7 +37,7 @@ function emptyDraft(): GrammarDraft {
 @Component({
   selector: 'app-grammar-page',
   standalone: true,
-  imports: [LessonSelectorComponent, NgTemplateOutlet],
+  imports: [LessonSelectorComponent, NgTemplateOutlet, FuriganaTextComponent, RouterLink],
   templateUrl: './grammar-page.component.html',
   styleUrl: './grammar-page.component.scss',
 })
@@ -51,6 +54,8 @@ export class GrammarPageComponent {
   readonly draft = signal<GrammarDraft>(emptyDraft());
   readonly busy = signal(false);
   readonly error = signal<string | null>(null);
+  readonly showFuri = signal(true);
+  readonly pinTick = signal(0);
 
   readonly hasData = computed(() => this.grammars().length > 0);
   readonly canEdit = computed(() => this.auth.isAdmin() && this.editMode());
@@ -82,6 +87,23 @@ export class GrammarPageComponent {
   speak(text: string, event: Event): void {
     event.stopPropagation();
     playSpeech(grammarExampleSpeechText(text), 'ja-JP');
+  }
+
+  isPinned(id: number): boolean {
+    return this.pinTick() >= 0 && isGrammarPinned(id);
+  }
+
+  togglePin(grammar: Grammar): void {
+    if (isGrammarPinned(grammar.id)) unpinGrammar(grammar.id);
+    else {
+      pinGrammar({
+        id: grammar.id,
+        pattern: grammar.pattern,
+        meaning: grammar.meaning,
+        lessonNumber: this.lesson(),
+      });
+    }
+    this.pinTick.update((n) => n + 1);
   }
 
   toggleEditMode(): void {
