@@ -14,7 +14,7 @@ import { Role } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 import { OAuth2Client } from "google-auth-library";
 import { createRemoteJWKSet, jwtVerify } from "jose";
-import { createHash, randomBytes, timingSafeEqual } from "crypto";
+import { createHash, randomBytes } from "crypto";
 import { MailService } from "@app/common";
 import { verifyUnsubscribeToken } from "@app/common";
 import { PrismaService } from "@app/prisma";
@@ -219,7 +219,10 @@ export class AuthService implements OnModuleInit {
         ...(receiveStreak !== undefined ? { receiveStreak } : {}),
       },
     });
-    return { receiveProgress: prefs.receiveProgress, receiveStreak: prefs.receiveStreak };
+    return {
+      receiveProgress: prefs.receiveProgress,
+      receiveStreak: prefs.receiveStreak,
+    };
   }
 
   async updateEmailPreferencesByToken(
@@ -286,7 +289,7 @@ export class AuthService implements OnModuleInit {
       await jwtVerify(dto.accessToken, JWKS, { issuer });
       const identityJwt = dto.idToken?.trim() || dto.accessToken;
       const verified = await jwtVerify(identityJwt, JWKS, { issuer });
-      payload = verified.payload as KeycloakIdentityPayload;
+      payload = verified.payload;
 
       // Merge access token so realm_access + app_roles mapper are available
       try {
@@ -364,11 +367,18 @@ export class AuthService implements OnModuleInit {
       this.configService.get<string>("GOOGLE_CLIENT_ID") ??
       process.env.GOOGLE_CLIENT_ID;
     if (!clientId) {
-      throw new BadRequestException("Google OAuth chưa được cấu hình trên server");
+      throw new BadRequestException(
+        "Google OAuth chưa được cấu hình trên server",
+      );
     }
 
     const client = new OAuth2Client(clientId);
-    let payload: { sub?: string; email?: string; name?: string; picture?: string };
+    let payload: {
+      sub?: string;
+      email?: string;
+      name?: string;
+      picture?: string;
+    };
     try {
       const ticket = await client.verifyIdToken({
         idToken: dto.credential,
@@ -566,7 +576,7 @@ export class AuthService implements OnModuleInit {
         toName: user.name,
         resetToken: rawToken,
       });
-    } catch (err) {
+    } catch (err: unknown) {
       this.logger.error(
         { err, userId: user.id },
         "Password reset email failed",
@@ -587,11 +597,7 @@ export class AuthService implements OnModuleInit {
       include: { user: { select: { id: true, email: true, name: true } } },
     });
 
-    if (
-      !record ||
-      record.usedAt ||
-      record.expiresAt.getTime() < Date.now()
-    ) {
+    if (!record || record.usedAt || record.expiresAt.getTime() < Date.now()) {
       throw new BadRequestException(
         "Link đặt lại mật khẩu không hợp lệ hoặc đã hết hạn",
       );

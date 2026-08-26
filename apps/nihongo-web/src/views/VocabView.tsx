@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { playAudio } from '../utils/speech';
 import LessonSelector from '../components/LessonSelector';
 import PlayAllButton from '../components/PlayAllButton';
@@ -19,6 +20,7 @@ import {
   hasOptionalBracketParts,
 } from '../utils/japanese';
 import FlashcardJapaneseText from '../components/FlashcardJapaneseText';
+import { getVocabExamples } from '../utils/vocabPatternExample';
 import './VocabView.css';
 
 function strokeBoxSize(charCount: number, dense = false): number {
@@ -269,6 +271,7 @@ export default function VocabView() {
   }, [lessonVocab.length, currentIndex]);
 
   const currentVocab = lessonVocab[currentIndex];
+  const patternExamples = currentVocab ? getVocabExamples(currentVocab) : [];
   const hasMultipleReadings =
     currentVocab != null &&
     parseReadingVariants(currentVocab.kana, currentVocab.romaji).length > 1;
@@ -314,6 +317,11 @@ export default function VocabView() {
     if (currentVocab) playAudio(currentVocab.kana);
   };
 
+  const handleExamplePronounce = (e: React.MouseEvent, speak: string) => {
+    e.stopPropagation();
+    playAudio(speak);
+  };
+
   const handleStrokeCharClick = () => {
     if (currentVocab) playAudio(currentVocab.kana);
   };
@@ -340,6 +348,17 @@ export default function VocabView() {
   const vocabHeader = (
     <div className="vocab-header">
       <h2 className="view-title">Minna no Nihongo Vocabulary</h2>
+      <div className="vocab-header-links">
+        <Link href="/vocab/quiz" className="btn btn-primary">
+          Trắc nghiệm JP ↔ VI
+        </Link>
+        <Link href="/kanji/quiz?source=minna" className="btn btn-outline">
+          TN Kanji (Minna)
+        </Link>
+        <Link href="/vocab/picture" className="btn btn-outline">
+          Từ điển tranh
+        </Link>
+      </div>
 
       <LessonSelector
         id="lesson-select"
@@ -433,6 +452,27 @@ export default function VocabView() {
                     {currentVocab.pitchAccent ? (
                       <span className="vocab-pitch">Cao điệu {currentVocab.pitchAccent}</span>
                     ) : null}
+                    {patternExamples?.map((example) => (
+                      <div key={`front-${example.ja}`} className="vocab-pattern-example">
+                        <div className="vocab-pattern-example-head">
+                          <span className="vocab-pattern-example-label">Ví dụ</span>
+                          <button
+                            type="button"
+                            className="btn-audio-small"
+                            title="Nghe ví dụ"
+                            aria-label="Nghe ví dụ"
+                            onClick={(e) => handleExamplePronounce(e, example.speak)}
+                          >
+                            🔊
+                          </button>
+                        </div>
+                        <span className="vocab-pattern-example-ja japanese-text">{example.ja}</span>
+                        {example.kana && example.kana !== example.ja ? (
+                          <span className="vocab-pattern-example-kana">{example.kana}</span>
+                        ) : null}
+                        <span className="vocab-pattern-example-vi">{example.vi}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -473,6 +513,27 @@ export default function VocabView() {
                     {currentVocab.pitchAccent ? (
                       <span className="vocab-pitch">Cao điệu {currentVocab.pitchAccent}</span>
                     ) : null}
+                    {patternExamples?.map((example) => (
+                      <div key={`back-${example.ja}`} className="vocab-pattern-example">
+                        <div className="vocab-pattern-example-head">
+                          <span className="vocab-pattern-example-label">Ví dụ</span>
+                          <button
+                            type="button"
+                            className="btn-audio-small"
+                            title="Nghe ví dụ"
+                            aria-label="Nghe ví dụ"
+                            onClick={(e) => handleExamplePronounce(e, example.speak)}
+                          >
+                            🔊
+                          </button>
+                        </div>
+                        <span className="vocab-pattern-example-ja japanese-text">{example.ja}</span>
+                        {example.kana && example.kana !== example.ja ? (
+                          <span className="vocab-pattern-example-kana">{example.kana}</span>
+                        ) : null}
+                        <span className="vocab-pattern-example-vi">{example.vi}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

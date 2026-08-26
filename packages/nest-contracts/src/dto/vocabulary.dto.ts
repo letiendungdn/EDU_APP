@@ -48,6 +48,24 @@ export class CreateVocabularyDto {
   @ValidateIf((_, v) => v !== null && v !== undefined)
   @IsString()
   imageUrl?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null && v !== undefined)
+  @IsString()
+  exampleJa?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null && v !== undefined)
+  @IsString()
+  exampleKana?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null && v !== undefined)
+  @IsString()
+  exampleVi?: string | null;
 }
 
 export class UpdateVocabularyDto extends PartialType(CreateVocabularyDto) {}

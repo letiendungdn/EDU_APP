@@ -52,6 +52,7 @@ import type {
   EnglishKatakanaPayload,
   JapaneseCountersPayload,
   JapaneseVocabSuffixesPayload,
+  HomePagePayload,
   JapanesePronunciationRulesPayload,
   JlptDaNangSchedulePayload,
   JlptRoadmapPayload,
@@ -179,6 +180,19 @@ export class ApiService {
     return apiFetch<KanjiEntry[]>(`/kanji?lessonNumber=${lessonNumber}`);
   }
 
+  async getKanjiEntriesRange(
+    lessonFrom: number,
+    lessonTo: number,
+  ): Promise<Array<KanjiEntry & { lessonNumber: number }>> {
+    const from = Math.min(lessonFrom, lessonTo);
+    const to = Math.max(lessonFrom, lessonTo);
+    const lessonNumbers = Array.from({ length: to - from + 1 }, (_, index) => from + index);
+    const batches = await Promise.all(lessonNumbers.map((n) => this.getKanjiEntries(n)));
+    return batches.flatMap((list, index) =>
+      list.map((entry) => ({ ...entry, lessonNumber: lessonNumbers[index] })),
+    );
+  }
+
   searchKanji(query: string): Promise<KanjiEntry[]> {
     return apiFetch<KanjiEntry[]>(`/kanji?q=${encodeURIComponent(query)}`);
   }
@@ -226,6 +240,10 @@ export class ApiService {
 
   getJapaneseVocabSuffixes(): Promise<JapaneseVocabSuffixesPayload> {
     return this.getReference<JapaneseVocabSuffixesPayload>('japanese-vocab-suffixes');
+  }
+
+  getHomePage(): Promise<HomePagePayload> {
+    return this.getReference<HomePagePayload>('home-page');
   }
 
   getJapanesePronunciationRules(): Promise<JapanesePronunciationRulesPayload> {

@@ -18,6 +18,13 @@ export const routes: Routes = [
           import('./features/kana/kana-page.component').then((m) => m.KanaPageComponent),
       },
       {
+        path: 'kana/quiz',
+        loadComponent: () =>
+          import('./features/kana-quiz/kana-quiz-page.component').then(
+            (m) => m.KanaQuizPageComponent,
+          ),
+      },
+      {
         path: 'pronunciation',
         loadComponent: () =>
           import('./features/pronunciation/pronunciation-page.component').then(
@@ -85,6 +92,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'vocab/quiz',
+        loadComponent: () =>
+          import('./features/vocab-quiz/vocab-quiz-page.component').then(
+            (m) => m.VocabQuizPageComponent,
+          ),
+      },
+      {
         path: 'vocab-review',
         loadComponent: () =>
           import('./features/vocab-review/vocab-review-page.component').then(
@@ -110,6 +124,13 @@ export const routes: Routes = [
         path: 'kanji/list',
         loadComponent: () =>
           import('./features/kanji/kanji-list-page.component').then((m) => m.KanjiListPageComponent),
+      },
+      {
+        path: 'kanji/quiz',
+        loadComponent: () =>
+          import('./features/kanji-quiz/kanji-quiz-page.component').then(
+            (m) => m.KanjiQuizPageComponent,
+          ),
       },
       {
         path: 'counters',

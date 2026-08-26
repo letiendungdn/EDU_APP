@@ -1,6 +1,13 @@
 <section class="container vocab-view">
   <div class="vocab-header">
     <h2 class="view-title">Minna no Nihongo Vocabulary</h2>
+    <div class="vocab-header-links">
+      <a routerLink="/vocab/quiz" class="btn btn-primary">Trắc nghiệm JP ↔ VI</a>
+      <a routerLink="/kanji/quiz" [queryParams]="{ source: 'minna' }" class="btn btn-outline">
+        TN Kanji (Minna)
+      </a>
+      <a routerLink="/vocab/picture" class="btn btn-outline">Từ điển tranh</a>
+    </div>
 
     <app-lesson-selector
       [lessons]="lessons()"
@@ -123,6 +130,29 @@
                   @if (current()!.pitchAccent) {
                     <span class="vocab-pitch">Cao điệu {{ current()!.pitchAccent }}</span>
                   }
+                  @if (patternExamples().length) {
+                    @for (example of patternExamples(); track example.ja) {
+                      <div class="vocab-pattern-example">
+                        <div class="vocab-pattern-example-head">
+                          <span class="vocab-pattern-example-label">Ví dụ</span>
+                          <button
+                            type="button"
+                            class="btn-audio-small"
+                            title="Nghe ví dụ"
+                            aria-label="Nghe ví dụ"
+                            (click)="speakExample(example.speak, $event)"
+                          >
+                            🔊
+                          </button>
+                        </div>
+                        <span class="vocab-pattern-example-ja japanese-text">{{ example.ja }}</span>
+                        @if (example.kana && example.kana !== example.ja) {
+                          <span class="vocab-pattern-example-kana">{{ example.kana }}</span>
+                        }
+                        <span class="vocab-pattern-example-vi">{{ example.vi }}</span>
+                      </div>
+                    }
+                  }
                 </div>
               </div>
             </div>
@@ -167,6 +197,29 @@
                   <span class="vocab-meaning">{{ current()!.meaning }}</span>
                   @if (current()!.pitchAccent) {
                     <span class="vocab-pitch">Cao điệu {{ current()!.pitchAccent }}</span>
+                  }
+                  @if (patternExamples().length) {
+                    @for (example of patternExamples(); track example.ja) {
+                      <div class="vocab-pattern-example">
+                        <div class="vocab-pattern-example-head">
+                          <span class="vocab-pattern-example-label">Ví dụ</span>
+                          <button
+                            type="button"
+                            class="btn-audio-small"
+                            title="Nghe ví dụ"
+                            aria-label="Nghe ví dụ"
+                            (click)="speakExample(example.speak, $event)"
+                          >
+                            🔊
+                          </button>
+                        </div>
+                        <span class="vocab-pattern-example-ja japanese-text">{{ example.ja }}</span>
+                        @if (example.kana && example.kana !== example.ja) {
+                          <span class="vocab-pattern-example-kana">{{ example.kana }}</span>
+                        }
+                        <span class="vocab-pattern-example-vi">{{ example.vi }}</span>
+                      </div>
+                    }
                   }
                 </div>
               </div>

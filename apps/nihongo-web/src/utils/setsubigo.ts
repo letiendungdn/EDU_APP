@@ -1,4 +1,4 @@
-import suffixCatalog from '../data/vocab-suffixes.json';
+import type { JapaneseVocabSuffixesPayload, VocabSuffixGroup as ApiGroup } from '../types/reference';
 
 /** Loại từ gốc khi gắn 接尾語 */
 export type RootPos = 'noun' | 'verb' | 'i-adj' | 'na-adj';
@@ -51,20 +51,66 @@ const POS_LABEL: Record<RootPos, string> = {
   'na-adj': 'tính từ な',
 };
 
-const catalog = suffixCatalog as { groups: SetsubigoGroup[] };
+const ROOT_POS = new Set<RootPos>(['noun', 'verb', 'i-adj', 'na-adj']);
 
-/** Dữ liệu mẫu (JSON) — nhóm chức năng + quy tắc gắn */
-export const SETSUBIGO_GROUPS: SetsubigoGroup[] = catalog.groups;
+let catalog: SetsubigoGroup[] = [];
 
-function allItems(): Array<{ groupId: string; item: SetsubigoItem }> {
-  return SETSUBIGO_GROUPS.flatMap((group) =>
+function asRootPos(values: string[] | undefined): RootPos[] {
+  const list = (values ?? []).filter((p): p is RootPos => ROOT_POS.has(p as RootPos));
+  return list.length ? list : ['noun'];
+}
+
+/** Map payload API → catalog setsubigo */
+export function groupsFromPayload(payload: JapaneseVocabSuffixesPayload): SetsubigoGroup[] {
+  return payload.groups.map((group: ApiGroup) => ({
+    id: group.id,
+    label: group.label,
+    labelJa: group.labelJa ?? '',
+    hint: group.hint,
+    items: group.items.map((item) => ({
+      suffix: item.suffix,
+      forms: item.forms?.length ? item.forms : [item.suffix],
+      kana: item.kana,
+      romaji: item.romaji,
+      meaning: item.meaning,
+      attachesTo: item.attachesTo,
+      pos: asRootPos(item.pos),
+      exampleJa: item.exampleJa,
+      exampleVi: item.exampleVi,
+    })),
+  }));
+}
+
+export function setSetsubigoCatalog(groups: SetsubigoGroup[]) {
+  catalog = groups;
+}
+
+export function getSetsubigoCatalog(): SetsubigoGroup[] {
+  return catalog;
+}
+
+/** @deprecated Dùng getSetsubigoCatalog() sau khi load API */
+export const SETSUBIGO_GROUPS: SetsubigoGroup[] = new Proxy([] as SetsubigoGroup[], {
+  get(_target, prop, receiver) {
+    return Reflect.get(catalog, prop, receiver);
+  },
+  ownKeys() {
+    return Reflect.ownKeys(catalog);
+  },
+  getOwnPropertyDescriptor(_target, prop) {
+    return Object.getOwnPropertyDescriptor(catalog, prop);
+  },
+});
+
+function allItems(groups = catalog): Array<{ groupId: string; item: SetsubigoItem }> {
+  return groups.flatMap((group) =>
     group.items.map((item) => ({ groupId: group.id, item })),
   );
 }
 
 /** Sắp xếp form dài trước để やすい thắng い, らしい thắng しい */
-function formIndex(): Array<{ form: string; groupId: string; item: SetsubigoItem }> {
-  return allItems()
+function formIndex(groups = catalog): Array<{ form: string; groupId: string; item: SetsubigoItem }> {
+  return allItems(groups)
     .flatMap(({ groupId, item }) =>
       item.forms.map((form) => ({ form, groupId, item })),
     )
@@ -72,14 +118,12 @@ function formIndex(): Array<{ form: string; groupId: string; item: SetsubigoItem
 }
 
 /** 1. Phân loại hậu tố theo nhóm chức năng */
-export function classifySetsubigo(): Record<string, SetsubigoItem[]> {
-  return Object.fromEntries(
-    SETSUBIGO_GROUPS.map((group) => [group.id, group.items]),
-  );
+export function classifySetsubigo(groups = catalog): Record<string, SetsubigoItem[]> {
+  return Object.fromEntries(groups.map((group) => [group.id, group.items]));
 }
 
-export function getSetsubigoGroup(id: string): SetsubigoGroup | undefined {
-  return SETSUBIGO_GROUPS.find((group) => group.id === id);
+export function getSetsubigoGroup(id: string, groups = catalog): SetsubigoGroup | undefined {
+  return groups.find((group) => group.id === id);
 }
 
 function stripWord(word: string): string {
@@ -89,18 +133,20 @@ function stripWord(word: string): string {
 /**
  * 2. Kiểm tra từ có hậu tố hợp lệ với loại từ gốc hay không.
  * `rootPos`: loại của phần gốc (stem), không phải cả từ đã gắn hậu tố.
- *
- * Ví dụ:
- * - 田中さん + noun → hợp lệ
- * - 分かりやすい + verb → hợp lệ (分かり = 連用形)
- * - 高すぎる + i-adj → hợp lệ (高 = gốc 高い)
- * - 高すぎる + noun → không hợp lệ
  */
-export function hasValidSuffix(word: string, rootPos: RootPos): boolean {
-  return analyzeSetsubigo(word, rootPos).valid;
+export function hasValidSuffix(
+  word: string,
+  rootPos: RootPos,
+  groups = catalog,
+): boolean {
+  return analyzeSetsubigo(word, rootPos, groups).valid;
 }
 
-export function analyzeSetsubigo(word: string, rootPos: RootPos): SuffixCheck {
+export function analyzeSetsubigo(
+  word: string,
+  rootPos: RootPos,
+  groups = catalog,
+): SuffixCheck {
   const text = stripWord(word);
   if (!text) {
     return { valid: false, reason: 'Chưa nhập từ.' };
@@ -110,7 +156,7 @@ export function analyzeSetsubigo(word: string, rootPos: RootPos): SuffixCheck {
     | { form: string; groupId: string; item: SetsubigoItem; stem: string }
     | undefined;
 
-  for (const entry of formIndex()) {
+  for (const entry of formIndex(groups)) {
     if (text.length <= entry.form.length) continue;
     if (!text.endsWith(entry.form)) continue;
 
@@ -127,7 +173,6 @@ export function analyzeSetsubigo(word: string, rootPos: RootPos): SuffixCheck {
         stem,
       };
     }
-    // Cùng một form có thể thuộc nhiều item; thử form khác trước khi kết luận sai POS
     break;
   }
 
@@ -147,8 +192,8 @@ export function analyzeSetsubigo(word: string, rootPos: RootPos): SuffixCheck {
   return { valid: false, reason: 'Không nhận ra hậu tố 接尾語 trong danh sách.' };
 }
 
-export function listSetsubigoForPos(rootPos: RootPos): SetsubigoItem[] {
-  return allItems()
+export function listSetsubigoForPos(rootPos: RootPos, groups = catalog): SetsubigoItem[] {
+  return allItems(groups)
     .map(({ item }) => item)
     .filter((item) => item.pos.includes(rootPos));
 }

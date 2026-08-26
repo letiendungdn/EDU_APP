@@ -25,12 +25,14 @@ import {
   fetchJapaneseCounters,
   fetchJapaneseCountryNames,
   fetchJapaneseVocabSuffixes,
+  fetchHomePage,
   fetchJapanesePronunciationRules,
   fetchEnglishKatakana,
   fetchJlptRoadmap,
   fetchJlptDaNangScheduleStatic,
   fetchKanaCharts,
   fetchKanjiEntries,
+  fetchKanjiEntriesRange,
   fetchKanjiLessons,
   fetchKanjiSearch,
   fetchKanjiByJlpt,
@@ -65,6 +67,7 @@ export const queryKeys = {
   exercises: (lesson: number) => ['exercises', lesson] as const,
   kanjiLessons: ['kanji-lessons'] as const,
   kanjiEntries: (lesson: number) => ['kanji', lesson] as const,
+  kanjiRange: (from: number, to: number) => ['kanji', 'range', from, to] as const,
   kanjiSearch: (query: string) => ['kanji-search', query] as const,
   kanjiByJlpt: (level: string) => ['kanji-jlpt', level] as const,
   vocabRange: (from: number, to: number) => domainQueryKeys.vocab.byRange(from, to),
@@ -74,6 +77,7 @@ export const queryKeys = {
   japaneseCounters: ['reference', 'japanese-counters'] as const,
   japaneseCountryNames: ['reference', 'japanese-country-names'] as const,
   japaneseVocabSuffixes: ['reference', 'japanese-vocab-suffixes'] as const,
+  homePage: ['reference', 'home-page'] as const,
   japanesePronunciationRules: ['reference', 'japanese-pronunciation-rules'] as const,
   englishKatakana: ['reference', 'english-katakana'] as const,
   dailyListeningConfig: ['reference', 'daily-listening'] as const,
@@ -116,11 +120,27 @@ export function useKanjiLessonsQuery() {
   });
 }
 
-export function useKanjiEntriesQuery(lessonNumber: number) {
+export function useKanjiEntriesQuery(lessonNumber: number, enabled = true) {
   return useQuery({
     queryKey: queryKeys.kanjiEntries(lessonNumber),
     queryFn: () => fetchKanjiEntries(lessonNumber),
-    enabled: lessonNumber > 0,
+    enabled: enabled && lessonNumber > 0,
+    staleTime: STALE_5M,
+  });
+}
+
+export function useKanjiRangeQuery(
+  lessonFrom: number,
+  lessonTo: number,
+  enabled = true,
+) {
+  const from = Math.min(lessonFrom, lessonTo);
+  const to = Math.max(lessonFrom, lessonTo);
+
+  return useQuery({
+    queryKey: queryKeys.kanjiRange(from, to),
+    queryFn: () => fetchKanjiEntriesRange(from, to),
+    enabled: enabled && from > 0 && to >= from,
     staleTime: STALE_5M,
   });
 }
@@ -204,6 +224,14 @@ export function useJapaneseVocabSuffixesQuery() {
   return useQuery({
     queryKey: queryKeys.japaneseVocabSuffixes,
     queryFn: fetchJapaneseVocabSuffixes,
+    staleTime: STALE_5M,
+  });
+}
+
+export function useHomePageQuery() {
+  return useQuery({
+    queryKey: queryKeys.homePage,
+    queryFn: fetchHomePage,
     staleTime: STALE_5M,
   });
 }

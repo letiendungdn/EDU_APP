@@ -1,0 +1,276 @@
+<section class="container quiz-view vocab-quiz-view">
+  <header class="quiz-header">
+    <h2 class="view-title">Trắc nghiệm từ vựng</h2>
+    <p class="vocab-quiz-subtitle">
+      JP → VI hoặc VI → JP · {{ rangeLabel() }} · {{ pool().length }} từ
+    </p>
+    <div class="vocab-quiz-links">
+      <a routerLink="/vocab" class="btn btn-outline">Flashcard</a>
+      <a routerLink="/vocab-review" class="btn btn-outline">Từ sai</a>
+    </div>
+  </header>
+
+  @if (phase() === 'setup') {
+    <div class="vocab-quiz-setup glass-panel">
+      <div class="vocab-quiz-mode-tabs" role="tablist" aria-label="Hướng dịch">
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="mode() === 'jp-to-vi'"
+          [attr.aria-selected]="mode() === 'jp-to-vi'"
+          (click)="setMode('jp-to-vi')"
+        >
+          Nhật → Việt
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="mode() === 'vi-to-jp'"
+          [attr.aria-selected]="mode() === 'vi-to-jp'"
+          (click)="setMode('vi-to-jp')"
+        >
+          Việt → Nhật
+        </button>
+      </div>
+
+      <p class="vocab-quiz-mode-hint">
+        @if (mode() === 'jp-to-vi') {
+          Xem từ tiếng Nhật, chọn nghĩa tiếng Việt đúng.
+        } @else {
+          Xem nghĩa tiếng Việt, chọn từ tiếng Nhật đúng.
+        }
+      </p>
+
+      <div class="vocab-quiz-scope-tabs" role="tablist" aria-label="Phạm vi bài học">
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="scopeMode() === 'single'"
+          [attr.aria-selected]="scopeMode() === 'single'"
+          (click)="setScope('single')"
+        >
+          Một bài
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="scopeMode() === 'range'"
+          [attr.aria-selected]="scopeMode() === 'range'"
+          (click)="setScope('range')"
+        >
+          Nhiều bài
+        </button>
+      </div>
+
+      @if (scopeMode() === 'single') {
+        <app-lesson-selector
+          [lessons]="lessons()"
+          [value]="lesson()"
+          (valueChange)="onLessonChange($event)"
+        />
+      } @else {
+        <div class="vocab-quiz-range">
+          <div class="vocab-quiz-range-fields">
+            <label>
+              Từ bài
+              <select class="select-input" [value]="lessonFrom()" (change)="onFromChange($event)">
+                @for (n of lessonOptions(); track n) {
+                  <option [value]="n">Bài {{ n }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              Đến bài
+              <select class="select-input" [value]="lessonTo()" (change)="onToChange($event)">
+                @for (n of lessonOptions(); track n) {
+                  <option [value]="n">Bài {{ n }}</option>
+                }
+              </select>
+            </label>
+          </div>
+          <div class="vocab-quiz-presets">
+            @for (preset of visiblePresets(); track preset.label) {
+              <button
+                type="button"
+                class="btn btn-outline vocab-quiz-preset-btn"
+                (click)="applyPreset(preset.from, preset.to)"
+              >
+                {{ preset.label }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="quiz-actions">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="startQuiz()"
+          [disabled]="loading() || pool().length < 2"
+        >
+          @if (loading()) {
+            Đang tải từ...
+          } @else {
+            Bắt đầu · {{ pool().length }} câu (random)
+          }
+        </button>
+      </div>
+      @if (!loading() && pool().length < 2) {
+        <p class="vocab-quiz-empty-hint">Cần ít nhất 2 từ để tạo trắc nghiệm.</p>
+      }
+    </div>
+  }
+
+  @if (phase() === 'quiz' && finished()) {
+    <div class="quiz-result glass-panel">
+      <div class="result-icon">{{ scoreCorrect() === questions().length ? '🎉' : '📚' }}</div>
+      <h3>Hoàn thành!</h3>
+      <p class="result-score">
+        Bạn trả lời đúng <strong>{{ scoreCorrect() }}</strong> /
+        <strong>{{ questions().length }}</strong> câu
+      </p>
+      <p class="result-percent">{{ scorePercent() }}%</p>
+      <div class="quiz-actions">
+        <button type="button" class="btn btn-primary" (click)="retry()">Làm lại (random mới)</button>
+        <button type="button" class="btn btn-outline" (click)="backToSetup()">Đổi chế độ</button>
+        @if (scoreCorrect() < questions().length) {
+          <a routerLink="/vocab-review" class="btn btn-outline">Ôn từ sai →</a>
+        }
+      </div>
+    </div>
+  }
+
+  @if (phase() === 'quiz' && !finished() && current(); as q) {
+    <p class="quiz-progress">
+      Câu {{ index() + 1 }} / {{ questions().length }}
+      @if (scoreTotal() > 0) {
+        <span class="quiz-score"> · Đúng {{ scoreCorrect() }}/{{ scoreTotal() }}</span>
+      }
+    </p>
+
+    <div class="quiz-card glass-panel">
+      <span class="quiz-type-badge">
+        {{ mode() === 'jp-to-vi' ? 'Nhật → Việt' : 'Việt → Nhật' }}
+        @if (q.lessonNumber != null) {
+          · Bài {{ q.lessonNumber }}
+        }
+      </span>
+
+      <div class="vocab-quiz-prompt-row">
+        <h3
+          class="quiz-question"
+          [class.japanese-text]="mode() === 'jp-to-vi'"
+          [class.vocab-quiz-prompt-jp]="mode() === 'jp-to-vi'"
+        >
+          {{ q.prompt }}
+        </h3>
+        <button
+          type="button"
+          class="btn-audio vocab-quiz-audio"
+          title="Nghe phát âm từ vựng"
+          aria-label="Nghe phát âm từ vựng"
+          (click)="speakCurrent($event)"
+        >
+          🔊
+        </button>
+      </div>
+      @if (q.promptSub) {
+        <p class="vocab-quiz-prompt-sub">{{ q.promptSub }}</p>
+      }
+
+      <div class="quiz-options">
+        @for (option of q.options; track option.text) {
+          <div class="vocab-quiz-option-wrap">
+            <button
+              type="button"
+              class="quiz-option"
+              [class.japanese-text]="mode() === 'vi-to-jp'"
+              [class.selected]="selectedAnswer() === option.text"
+              [class.correct-answer]="result() !== null && option.text === q.answer"
+              [class.wrong-answer]="result() === 'wrong' && selectedAnswer() === option.text"
+              [disabled]="result() !== null"
+              (click)="selectAnswer(option.text)"
+            >
+              <span class="quiz-option-main">{{ option.text }}</span>
+              @if (result() !== null) {
+                <span
+                  class="quiz-option-reveal"
+                  [class.japanese-text]="mode() === 'jp-to-vi'"
+                >
+                  {{ option.reveal }}
+                </span>
+              }
+            </button>
+            @if ((mode() === 'vi-to-jp' || result() !== null) && option.speak) {
+              <button
+                type="button"
+                class="btn-audio-small vocab-quiz-option-audio"
+                [attr.title]="'Nghe ' + option.speak"
+                [attr.aria-label]="'Nghe ' + option.speak"
+                (click)="speakJapaneseOption($event, option.speak || option.text)"
+              >
+                🔊
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      @if (result(); as r) {
+        <div class="feedback" [class.correct]="r === 'correct'" [class.wrong]="r === 'wrong'">
+          @if (r === 'correct') {
+            Đúng rồi!
+          } @else {
+            Sai rồi. Đáp án: {{ q.answer }}
+          }
+        </div>
+      }
+
+      @if (result() !== null && patternExamples().length) {
+        @for (example of patternExamples(); track example.ja) {
+          <div class="vocab-pattern-example vocab-quiz-pattern-example">
+            <div class="vocab-pattern-example-head">
+              <span class="vocab-pattern-example-label">Ví dụ</span>
+              <button
+                type="button"
+                class="btn-audio-small"
+                title="Nghe ví dụ"
+                aria-label="Nghe ví dụ"
+                (click)="speakExample($event, example.speak)"
+              >
+                🔊
+              </button>
+            </div>
+            <span class="vocab-pattern-example-ja japanese-text">{{ example.ja }}</span>
+            @if (example.kana && example.kana !== example.ja) {
+              <span class="vocab-pattern-example-kana">{{ example.kana }}</span>
+            }
+            <span class="vocab-pattern-example-vi">{{ example.vi }}</span>
+          </div>
+        }
+      }
+
+      <div class="quiz-actions">
+        @if (result() === null) {
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="submit()"
+            [disabled]="!selectedAnswer()"
+          >
+            Kiểm tra
+          </button>
+        } @else {
+          <button type="button" class="btn btn-primary" (click)="next()">
+            {{ index() + 1 >= questions().length ? 'Xem kết quả' : 'Câu tiếp' }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</section>

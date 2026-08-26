@@ -14,11 +14,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { Response } from "express";
 import { Observable } from "rxjs";
-import {
-  CurrentUser,
-  JwtAuthGuard,
-  type AuthUserPayload,
-} from "@app/common";
+import { CurrentUser, JwtAuthGuard, type AuthUserPayload } from "@app/common";
 import { GroupChatService } from "../realtime/group-chat.service";
 import { VideoPresenceService } from "../realtime/video-presence.service";
 import { ChatEventsService } from "../realtime/chat-events.service";
@@ -98,10 +94,7 @@ export class CommunityController {
 
   @Get("users")
   @ApiOperation({ summary: "Tìm học viên để chat" })
-  searchUsers(
-    @CurrentUser() user: AuthUserPayload,
-    @Query("q") q = "",
-  ) {
+  searchUsers(@CurrentUser() user: AuthUserPayload, @Query("q") q = "") {
     return this.groupChat.searchUsers(q, user.id);
   }
 

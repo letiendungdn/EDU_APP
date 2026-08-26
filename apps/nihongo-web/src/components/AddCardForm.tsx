@@ -11,7 +11,7 @@ type AddCardFormProps = {
 };
 
 export default function AddCardForm({
-  clientSecret,
+  clientSecret: _clientSecret,
   onSuccess,
   onCancel,
 }: AddCardFormProps) {

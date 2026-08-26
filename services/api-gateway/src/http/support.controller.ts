@@ -1,13 +1,18 @@
-import { Body, Controller, Get, Headers, Patch, Post, Res, Sse, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Patch,
+  Post,
+  Res,
+  Sse,
+  UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { Role } from "@prisma/client";
 import type { Response } from "express";
 import { Observable } from "rxjs";
-import {
-  CurrentUser,
-  JwtAuthGuard,
-  type AuthUserPayload,
-} from "@app/common";
+import { CurrentUser, JwtAuthGuard, type AuthUserPayload } from "@app/common";
 import { SupportChatService } from "../realtime/support-chat.service";
 import { ChatEventsService } from "../realtime/chat-events.service";
 
@@ -54,7 +59,7 @@ export class SupportController {
   @ApiOperation({ summary: "Đánh dấu đã đọc hội thoại hỗ trợ" })
   async markRead(@CurrentUser() user: AuthUserPayload) {
     const thread = await this.support.getOrCreateThread(user.id);
-    await this.support.markRead(thread.id, user.id, user.role as Role);
+    await this.support.markRead(thread.id, user.id, user.role);
     return { ok: true };
   }
 

@@ -8,7 +8,9 @@ export class RequestRefundDto {
   @MaxLength(500)
   reason?: string;
 
-  @ApiPropertyOptional({ description: "Hoàn một phần (cent). Admin hoặc theo policy." })
+  @ApiPropertyOptional({
+    description: "Hoàn một phần (cent). Admin hoặc theo policy.",
+  })
   @IsOptional()
   @IsInt()
   @Min(1)

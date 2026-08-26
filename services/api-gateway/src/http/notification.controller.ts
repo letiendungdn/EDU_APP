@@ -1,10 +1,6 @@
 import { Body, Controller, Get, Patch, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
-import {
-  CurrentUser,
-  JwtAuthGuard,
-  type AuthUserPayload,
-} from "@app/common";
+import { CurrentUser, JwtAuthGuard, type AuthUserPayload } from "@app/common";
 import { NotificationService } from "../realtime/notification.service";
 
 class MarkNotificationsReadDto {

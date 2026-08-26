@@ -1,10 +1,10 @@
-import { Global, Module, forwardRef } from '@nestjs/common';
-import { BullModule } from '@nestjs/bullmq';
-import { PrismaModule } from '@app/prisma';
-import { MailModule, MAIL_TEMPLATE_STORE } from '@app/common';
-import { EmailTemplateService } from './email-template.service';
-import { EmailBroadcastProcessor } from './email-broadcast.processor';
-import { EMAIL_BROADCAST_QUEUE } from './email-broadcast.types';
+import { Global, Module, forwardRef } from "@nestjs/common";
+import { BullModule } from "@nestjs/bullmq";
+import { PrismaModule } from "@app/prisma";
+import { MailModule, MAIL_TEMPLATE_STORE } from "@app/common";
+import { EmailTemplateService } from "./email-template.service";
+import { EmailBroadcastProcessor } from "./email-broadcast.processor";
+import { EMAIL_BROADCAST_QUEUE } from "./email-broadcast.types";
 
 @Global()
 @Module({

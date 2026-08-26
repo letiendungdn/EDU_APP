@@ -21,7 +21,7 @@ type Item = {
   options: string[];
 };
 
-function pickAsked(forms: Record<ConjFormId, string>): ConjFormId {
+function pickAsked(_forms: Record<ConjFormId, string>): ConjFormId {
   const pool: ConjFormId[] = ['te', 'ta', 'nai', 'dict'];
   return pool[Math.floor(Math.random() * pool.length)];
 }

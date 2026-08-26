@@ -16,10 +16,7 @@ export class PushService implements OnModuleDestroy {
     const keyPath = config.get<string>("APNS_KEY_PATH", "");
     const keyId = config.get<string>("APNS_KEY_ID", "");
     const teamId = config.get<string>("APNS_TEAM_ID", "");
-    this.bundleId = config.get<string>(
-      "APNS_BUNDLE_ID",
-      "com.edu.nihongo.ios",
-    );
+    this.bundleId = config.get<string>("APNS_BUNDLE_ID", "com.edu.nihongo.ios");
 
     if (keyPath && keyId && teamId) {
       this.provider = new apn.Provider({
@@ -90,6 +87,6 @@ export class PushService implements OnModuleDestroy {
   }
 
   onModuleDestroy() {
-    this.provider?.shutdown();
+    void this.provider?.shutdown();
   }
 }

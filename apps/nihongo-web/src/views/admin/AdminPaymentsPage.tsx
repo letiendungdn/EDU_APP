@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useQueryClient } from '@tanstack/react-query';
 import { adminRefundPayment } from '@/api';
 import { useAuth } from '@/hooks/useAuth';
-import { queryKeys, useAdminPaymentsQuery, useAdminUsersQuery } from '@/hooks/queries';
+import { useAdminPaymentsQuery, useAdminUsersQuery } from '@/hooks/queries';
 import type { AdminPaymentRecord, PaymentStatus } from '@/types/api';
 import { ApiError } from '@/types/api';
 import './AdminPages.css';

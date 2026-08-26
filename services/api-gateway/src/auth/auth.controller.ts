@@ -27,10 +27,7 @@ import { RegisterDto } from "./dto/register.dto";
 import { GoogleAuthDto } from "./dto/google-auth.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
 import { OidcAuthDto } from "./dto/oidc-auth.dto";
-import {
-  ForgotPasswordDto,
-  ResetPasswordDto,
-} from "./dto/password-reset.dto";
+import { ForgotPasswordDto, ResetPasswordDto } from "./dto/password-reset.dto";
 import { VerifyEmailDto } from "./dto/verify-email.dto";
 import { EmailPreferencesDto } from "./dto/email-preferences.dto";
 
@@ -234,7 +231,9 @@ export class AuthController {
 
   @Public()
   @Post("email-preferences")
-  @ApiOperation({ summary: "Cập nhật tuỳ chọn nhận email (JWT hoặc uid+token)" })
+  @ApiOperation({
+    summary: "Cập nhật tuỳ chọn nhận email (JWT hoặc uid+token)",
+  })
   updateEmailPreferences(
     @CurrentUser() user: AuthUserPayload | null,
     @Body() dto: EmailPreferencesDto,

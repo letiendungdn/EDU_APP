@@ -91,7 +91,7 @@ export default function SentencePracticeView() {
     }
   };
 
-  const useStarter = (s: string) => {
+  const applyStarter = (s: string) => {
     setSentence(s);
     textareaRef.current?.focus();
   };
@@ -152,7 +152,7 @@ export default function SentencePracticeView() {
               <button
                 key={s}
                 className="sp-starter"
-                onClick={() => useStarter(s)}
+                onClick={() => applyStarter(s)}
               >
                 {s}
               </button>

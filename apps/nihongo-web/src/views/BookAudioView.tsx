@@ -79,7 +79,7 @@ function BookAudioRow({ item }: { item: BookAudioItem }) {
 
 export default function BookAudioView() {
   const { data, isLoading, error } = useBookAudioFilesQuery();
-  const sections = data?.sections ?? [];
+  const sections = useMemo(() => data?.sections ?? [], [data?.sections]);
   const [activeLevel, setActiveLevel] = useState('');
 
   const resolvedLevel = activeLevel || sections[0]?.level || '';

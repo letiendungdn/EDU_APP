@@ -3,11 +3,11 @@ import { fetchVocabularies } from '../index';
 import { queryKeys } from '../query-keys';
 import { STALE_5M } from './constants';
 
-export function useVocab(lessonNumber: number) {
+export function useVocab(lessonNumber: number, enabled = true) {
   return useQuery({
     queryKey: queryKeys.vocab.byLesson(lessonNumber),
     queryFn: () => fetchVocabularies(lessonNumber),
-    enabled: lessonNumber > 0,
+    enabled: enabled && lessonNumber > 0,
     staleTime: STALE_5M,
   });
 }

@@ -120,7 +120,9 @@ export class RefundService {
     }
 
     if (payment.status !== PaymentStatus.SUCCEEDED) {
-      throw new BadRequestException("Chỉ hoàn tiền cho giao dịch đã thanh toán thành công");
+      throw new BadRequestException(
+        "Chỉ hoàn tiền cho giao dịch đã thanh toán thành công",
+      );
     }
 
     if (!payment.stripeChargeId) {
@@ -215,7 +217,8 @@ export class RefundService {
 
     if (!payment || payment.status === PaymentStatus.REFUNDED) return;
 
-    const refundAmount = data.amountCents ?? payment.refundAmountCents ?? payment.amountCents;
+    const refundAmount =
+      data.amountCents ?? payment.refundAmountCents ?? payment.amountCents;
     const isPartial = refundAmount < payment.amountCents;
 
     await this.prisma.payment.update({

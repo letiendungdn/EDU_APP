@@ -7,7 +7,9 @@ export class CreateSubscriptionDto {
   @IsEnum(SubscriptionPlan)
   plan!: SubscriptionPlan;
 
-  @ApiPropertyOptional({ description: "Stripe payment method id (pm_...) đã lưu" })
+  @ApiPropertyOptional({
+    description: "Stripe payment method id (pm_...) đã lưu",
+  })
   @IsOptional()
   @IsString()
   paymentMethodId?: string;

@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { PrismaService } from "@app/prisma";
 
 const senderSelect = {
@@ -16,7 +20,11 @@ export class SessionChatService {
   private async assertParticipant(sessionId: number, userId: number) {
     const session = await this.prisma.coachingSession.findUnique({
       where: { id: sessionId },
-      select: { id: true, learnerId: true, coach: { select: { userId: true } } },
+      select: {
+        id: true,
+        learnerId: true,
+        coach: { select: { userId: true } },
+      },
     });
     if (!session) throw new NotFoundException("Session không tồn tại");
     const coachUserId = session.coach?.userId;

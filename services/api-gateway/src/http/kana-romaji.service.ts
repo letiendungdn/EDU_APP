@@ -137,7 +137,13 @@ export class KanaRomajiService implements OnModuleInit {
     const trimmed = romaji.trim();
     const normalized = normalizeRomaji(trimmed);
     if (!normalized) {
-      return { romaji: trimmed, kana: "", kanji: null, meaning: null, options: [] };
+      return {
+        romaji: trimmed,
+        kana: "",
+        kanji: null,
+        meaning: null,
+        options: [],
+      };
     }
 
     const vocab = await this.prisma.vocabulary.findFirst({
@@ -180,7 +186,13 @@ export class KanaRomajiService implements OnModuleInit {
       return this.buildRomajiResolution(trimmed, kanaFromMap, null, null);
     }
 
-    return { romaji: trimmed, kana: "", kanji: null, meaning: null, options: [] };
+    return {
+      romaji: trimmed,
+      kana: "",
+      kanji: null,
+      meaning: null,
+      options: [],
+    };
   }
 
   private buildRomajiResolution(
@@ -259,8 +271,7 @@ export class KanaRomajiService implements OnModuleInit {
         select: { onyomi: true, kunyomi: true, meaningVi: true },
       });
       if (entry) {
-        const kana =
-          firstReading(entry.onyomi) || firstReading(entry.kunyomi);
+        const kana = firstReading(entry.onyomi) || firstReading(entry.kunyomi);
         if (kana) {
           return {
             kana,
@@ -313,7 +324,7 @@ export class KanaRomajiService implements OnModuleInit {
   }
 
   private stripLookupMarkers(text: string): string {
-    return text.replace(/[\[［\]］]/g, "").trim();
+    return text.replace(/[[［\]］]/g, "").trim();
   }
 
   private findPhraseMeaning(normalizedKana: string) {
@@ -372,7 +383,9 @@ export class KanaRomajiService implements OnModuleInit {
     const hiragana = katakanaToHiragana(trimmed);
     const stripped = this.stripLookupMarkers(trimmed);
     const strippedHira = normalizeKana(stripped);
-    const queries = [...new Set([trimmed, hiragana, stripped, strippedHira].filter(Boolean))];
+    const queries = [
+      ...new Set([trimmed, hiragana, stripped, strippedHira].filter(Boolean)),
+    ];
 
     for (const q of queries) {
       const exact = await this.prisma.vocabulary.findFirst({
@@ -408,7 +421,11 @@ export class KanaRomajiService implements OnModuleInit {
 
       const kanjiVocab = await this.prisma.kanjiVocab.findFirst({
         where: {
-          OR: [{ reading: strippedHira }, { reading: hiragana }, { word: stripped }],
+          OR: [
+            { reading: strippedHira },
+            { reading: hiragana },
+            { word: stripped },
+          ],
         },
         select: { word: true, reading: true, meaningVi: true },
         orderBy: { id: "asc" },
@@ -450,7 +467,9 @@ export class KanaRomajiService implements OnModuleInit {
         }
       }
 
-      const kanjiOnly = [...trimmed].filter((ch) => /[一-龯]/.test(ch)).join("");
+      const kanjiOnly = [...trimmed]
+        .filter((ch) => /[一-龯]/.test(ch))
+        .join("");
       if (kanjiOnly.length >= 1) {
         const prefixMatch = await this.prisma.vocabulary.findFirst({
           where: { kanji: kanjiOnly },

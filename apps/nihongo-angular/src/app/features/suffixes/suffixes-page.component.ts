@@ -54,6 +54,11 @@ export class SuffixesPageComponent {
     playJapanese(kana);
   }
 
+  speakExample(event: Event, exampleJa?: string): void {
+    event.stopPropagation();
+    if (exampleJa) playJapanese(exampleJa);
+  }
+
   private matches(item: VocabSuffixItem, query: string): boolean {
     return [
       item.suffix,

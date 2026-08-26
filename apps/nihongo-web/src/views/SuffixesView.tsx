@@ -1,17 +1,19 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { VocabSuffixItem } from '../types/reference';
 import PlayAllButton from '../components/PlayAllButton';
 import { usePlayAll } from '../hooks/usePlayAll';
 import { useJapaneseVocabSuffixesQuery } from '../hooks/queries';
 import { playAudio } from '../utils/speech';
+import { groupsFromPayload, setSetsubigoCatalog } from '../utils/setsubigo';
 import './SuffixesView.css';
 
 function matchesSuffix(item: VocabSuffixItem, query: string): boolean {
   const haystack = [
     item.suffix,
+    ...(item.forms ?? []),
     item.kana,
     item.romaji,
     item.meaning,
@@ -30,6 +32,10 @@ export default function SuffixesView() {
   const [activeId, setActiveId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
+
+  useEffect(() => {
+    if (data) setSetsubigoCatalog(groupsFromPayload(data));
+  }, [data]);
 
   const resolvedActiveId = activeId || groups[0]?.id || '';
   const category = groups.find((g) => g.id === resolvedActiveId) ?? groups[0];
@@ -123,8 +129,53 @@ export default function SuffixesView() {
                 <span className="suffix-romaji">{item.romaji}</span>
                 <span className="suffix-vi">{item.meaning}</span>
                 <span className="suffix-attach">Gắn: {item.attachesTo}</span>
-                <span className="suffix-ex japanese-text">{item.exampleJa}</span>
-                <span className="suffix-ex-vi">{item.exampleVi}</span>
+                {(item.exampleJa || item.exampleVi) && (
+                  <div
+                    className="suffix-example"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (item.exampleJa) playAudio(item.exampleJa);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (item.exampleJa) playAudio(item.exampleJa);
+                      }
+                    }}
+                    role="group"
+                    aria-label="Ví dụ"
+                  >
+                    <div className="suffix-example-head">
+                      <span className="suffix-example-label">Ví dụ</span>
+                      <span
+                        className="btn-audio-small"
+                        role="button"
+                        tabIndex={0}
+                        aria-label="Nghe ví dụ"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (item.exampleJa) playAudio(item.exampleJa);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (item.exampleJa) playAudio(item.exampleJa);
+                          }
+                        }}
+                      >
+                        🔊
+                      </span>
+                    </div>
+                    {item.exampleJa ? (
+                      <span className="suffix-example-ja japanese-text">{item.exampleJa}</span>
+                    ) : null}
+                    {item.exampleVi ? (
+                      <span className="suffix-example-vi">{item.exampleVi}</span>
+                    ) : null}
+                  </div>
+                )}
               </button>
             ))}
           </div>

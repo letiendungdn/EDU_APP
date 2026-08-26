@@ -15,8 +15,9 @@ ENV NODE_ENV=production
 COPY --from=builder /app/services/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
-RUN mkdir -p node_modules/@prisma \
-    && ln -sf ../../packages/prisma-nihongo/generated/client node_modules/@prisma/client \
-    && ln -sf ../../../../../packages/nest-contracts/proto dist/apps/content-service/packages/nest-contracts/proto
+RUN rm -rf node_modules/@prisma/client \
+    && mkdir -p node_modules/@prisma \
+    && ln -sfn ../../packages/prisma-nihongo/generated/client node_modules/@prisma/client \
+    && ln -sfn ../../../../../packages/nest-contracts/proto dist/apps/content-service/packages/nest-contracts/proto
 USER node
 CMD ["node", "dist/apps/content-service/services/content-service/src/main.js"]

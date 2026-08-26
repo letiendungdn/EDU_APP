@@ -101,9 +101,7 @@ export class ContentMsController implements OnModuleInit {
           data as { kanjiEntryId: number; dto: CreateKanjiVocabDto },
         ),
       [CONTENT_PATTERNS.UPDATE_KANJI_VOCAB]: (data) =>
-        this.updateKanjiVocab(
-          data as { id: number; dto: UpdateKanjiVocabDto },
-        ),
+        this.updateKanjiVocab(data as { id: number; dto: UpdateKanjiVocabDto }),
       [CONTENT_PATTERNS.DELETE_KANJI_VOCAB]: (data) =>
         this.deleteKanjiVocab(data as { id: number }),
       [CONTENT_PATTERNS.REORDER_KANJI_VOCAB]: (data) =>
@@ -255,10 +253,7 @@ export class ContentMsController implements OnModuleInit {
     return this.kanjiService.findOne(data.id);
   }
 
-  createKanjiVocab(data: {
-    kanjiEntryId: number;
-    dto: CreateKanjiVocabDto;
-  }) {
+  createKanjiVocab(data: { kanjiEntryId: number; dto: CreateKanjiVocabDto }) {
     return this.kanjiService.createVocab(data.kanjiEntryId, data.dto);
   }
 
@@ -270,10 +265,7 @@ export class ContentMsController implements OnModuleInit {
     return this.kanjiService.removeVocab(data.id);
   }
 
-  reorderKanjiVocab(data: {
-    kanjiEntryId: number;
-    orderedIds: number[];
-  }) {
+  reorderKanjiVocab(data: { kanjiEntryId: number; orderedIds: number[] }) {
     return this.kanjiService.reorderVocab(data.kanjiEntryId, data.orderedIds);
   }
 

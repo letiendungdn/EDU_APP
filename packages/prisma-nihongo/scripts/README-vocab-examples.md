@@ -1,0 +1,6 @@
+-- Re-apply Vocabulary example sentences (columns exampleJa/Kana/Vi).
+-- Usage:
+--   psql "$DATABASE_URL" -f packages/prisma-nihongo/migrations/20260826120000_vocab_examples/migration.sql
+--   psql "$DATABASE_URL" -f packages/prisma-nihongo/scripts/vocab-examples-backfill.sql
+--
+-- Client apps only read example* from the API (vocabPatternExample.ts is a thin mapper).

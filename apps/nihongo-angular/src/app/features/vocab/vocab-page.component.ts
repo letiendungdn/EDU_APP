@@ -1,9 +1,11 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
 import { resolvePictureVocabImage } from '../../core/utils/vocab-image.util';
 import { flashcardTextTier, hasOptionalBracketParts } from '../../core/utils/japanese.util';
+import { getVocabExamples } from '../../core/utils/vocab-pattern-example';
 import { FlashcardJapaneseTextComponent } from '../../shared/flashcard-japanese-text/flashcard-japanese-text.component';
 import { LessonSelectorComponent } from '../../shared/lesson-selector/lesson-selector.component';
 import { ReadingStrokesComponent } from '../../shared/reading-strokes/reading-strokes.component';
@@ -20,7 +22,13 @@ function matchesVocabSearch(vocab: Vocabulary, query: string): boolean {
 @Component({
   selector: 'app-vocab-page',
   standalone: true,
-  imports: [FormsModule, LessonSelectorComponent, ReadingStrokesComponent, FlashcardJapaneseTextComponent],
+  imports: [
+    FormsModule,
+    RouterLink,
+    LessonSelectorComponent,
+    ReadingStrokesComponent,
+    FlashcardJapaneseTextComponent,
+  ],
   templateUrl: './vocab-page.component.html',
   styleUrl: './vocab-page.component.scss',
 })
@@ -68,6 +76,11 @@ export class VocabPageComponent {
       hasOptionalBracketParts(vocab.kana) ||
       hasOptionalBracketParts(vocab.romaji)
     );
+  });
+
+  readonly patternExamples = computed(() => {
+    const vocab = this.current();
+    return vocab ? getVocabExamples(vocab) : [];
   });
 
   readonly filteredVocab = computed(() => {
@@ -134,6 +147,11 @@ export class VocabPageComponent {
     event?.stopPropagation();
     const v = this.current();
     if (v) playJapanese(text ?? v.kana);
+  }
+
+  speakExample(text: string, event?: Event): void {
+    event?.stopPropagation();
+    playJapanese(text);
   }
 
   onStrokeCharClick(): void {

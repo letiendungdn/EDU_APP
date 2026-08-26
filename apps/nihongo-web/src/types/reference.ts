@@ -62,10 +62,12 @@ export interface JapaneseCountryNamesPayload {
 
 export interface VocabSuffixItem {
   suffix: string;
+  forms?: string[];
   kana: string;
   romaji: string;
   meaning: string;
   attachesTo: string;
+  pos?: string[];
   exampleJa: string;
   exampleVi: string;
 }
@@ -73,12 +75,37 @@ export interface VocabSuffixItem {
 export interface VocabSuffixGroup {
   id: string;
   label: string;
+  labelJa?: string;
   hint: string;
   items: VocabSuffixItem[];
 }
 
 export interface JapaneseVocabSuffixesPayload {
   groups: VocabSuffixGroup[];
+}
+
+export interface HomeStat {
+  value: string;
+  label: string;
+  suffix: string;
+}
+
+export interface HomeFeatureItem {
+  href: string;
+  icon: string;
+  title: string;
+  desc: string;
+}
+
+export interface HomeFeatureSection {
+  id: string;
+  title: string;
+  items: HomeFeatureItem[];
+}
+
+export interface HomePagePayload {
+  stats: HomeStat[];
+  sections: HomeFeatureSection[];
 }
 
 export interface PronunciationRulePoint {

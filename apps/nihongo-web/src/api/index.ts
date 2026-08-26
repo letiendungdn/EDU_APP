@@ -34,6 +34,7 @@ import type {
   JapaneseCountersPayload,
   JapaneseCountryNamesPayload,
   JapaneseVocabSuffixesPayload,
+  HomePagePayload,
   JapanesePronunciationRulesPayload,
   EnglishKatakanaPayload,
   JlptDaNangSchedulePayload,
@@ -207,6 +208,19 @@ export function fetchKanjiEntries(lessonNumber: number) {
   return apiRequest<KanjiEntry[]>(`/kanji?lessonNumber=${lessonNumber}`);
 }
 
+export async function fetchKanjiEntriesRange(
+  lessonFrom: number,
+  lessonTo: number,
+): Promise<Array<KanjiEntry & { lessonNumber: number }>> {
+  const from = Math.min(lessonFrom, lessonTo);
+  const to = Math.max(lessonFrom, lessonTo);
+  const lessonNumbers = Array.from({ length: to - from + 1 }, (_, index) => from + index);
+  const batches = await Promise.all(lessonNumbers.map((n) => fetchKanjiEntries(n)));
+  return batches.flatMap((list, index) =>
+    list.map((entry) => ({ ...entry, lessonNumber: lessonNumbers[index] })),
+  );
+}
+
 export function fetchKanjiSearch(query: string) {
   return apiRequest<KanjiEntry[]>(`/kanji?q=${encodeURIComponent(query)}`);
 }
@@ -322,6 +336,10 @@ export function fetchJapaneseCountryNames() {
 
 export function fetchJapaneseVocabSuffixes() {
   return fetchReference<JapaneseVocabSuffixesPayload>('japanese-vocab-suffixes');
+}
+
+export function fetchHomePage() {
+  return fetchReference<HomePagePayload>('home-page');
 }
 
 export function fetchJapanesePronunciationRules() {

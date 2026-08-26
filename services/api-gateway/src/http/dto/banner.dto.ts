@@ -1,12 +1,21 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsIn, IsOptional, IsString, Matches, MaxLength } from "class-validator";
+import {
+  IsIn,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+} from "class-validator";
 
 export class UpsertBannerDto {
   @ApiProperty({ enum: ["global", "page"], example: "page" })
   @IsIn(["global", "page"])
   scope: "global" | "page";
 
-  @ApiPropertyOptional({ example: "/grammar", description: "Bắt buộc khi scope=page" })
+  @ApiPropertyOptional({
+    example: "/grammar",
+    description: "Bắt buộc khi scope=page",
+  })
   @IsOptional()
   @IsString()
   @MaxLength(200)

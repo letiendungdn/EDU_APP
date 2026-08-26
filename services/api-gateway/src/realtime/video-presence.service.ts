@@ -1,8 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
-import { REDIS_CLIENT } from '@app/common';
+import { Inject, Injectable } from "@nestjs/common";
+import Redis from "ioredis";
+import { REDIS_CLIENT } from "@app/common";
 
-const KEY_PREFIX = 'vc:presence:';
+const KEY_PREFIX = "vc:presence:";
 
 @Injectable()
 export class VideoPresenceService {

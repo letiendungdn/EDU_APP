@@ -179,15 +179,13 @@ export class GroupChatService {
     });
   }
 
-  async createGroup(
-    creatorId: number,
-    name: string,
-    memberUserIds: number[],
-  ) {
+  async createGroup(creatorId: number, name: string, memberUserIds: number[]) {
     const trimmed = name.trim();
     if (!trimmed) throw new BadRequestException("Tên nhóm không được trống");
 
-    const uniqueIds = [...new Set(memberUserIds.filter((id) => id !== creatorId))];
+    const uniqueIds = [
+      ...new Set(memberUserIds.filter((id) => id !== creatorId)),
+    ];
     if (uniqueIds.length === 0) {
       throw new BadRequestException("Cần ít nhất một thành viên khác");
     }
@@ -236,7 +234,9 @@ export class GroupChatService {
       where: { roomId, userId: { in: uniqueIds } },
       select: { userId: true },
     });
-    const existingSet = new Set(existing.map((e: { userId: number }) => e.userId));
+    const existingSet = new Set(
+      existing.map((e: { userId: number }) => e.userId),
+    );
     const toAdd = uniqueIds.filter((id) => !existingSet.has(id));
     if (!toAdd.length) return { added: 0 };
 
@@ -308,8 +308,7 @@ export class GroupChatService {
       select: { userId: true },
     });
 
-    const preview =
-      content.length > 80 ? `${content.slice(0, 80)}…` : content;
+    const preview = content.length > 80 ? `${content.slice(0, 80)}…` : content;
 
     await Promise.all(
       members.map((m: { userId: number }) =>

@@ -25,8 +25,15 @@ export class VocabulariesService {
         meaning: dto.meaning,
         lessonId: dto.lessonId,
         sortOrder: (maxOrder._max.sortOrder ?? -1) + 1,
-        ...(dto.partOfSpeech !== undefined ? { partOfSpeech: dto.partOfSpeech } : {}),
+        ...(dto.partOfSpeech !== undefined
+          ? { partOfSpeech: dto.partOfSpeech }
+          : {}),
         ...(dto.imageUrl !== undefined ? { imageUrl: dto.imageUrl } : {}),
+        ...(dto.exampleJa !== undefined ? { exampleJa: dto.exampleJa } : {}),
+        ...(dto.exampleKana !== undefined
+          ? { exampleKana: dto.exampleKana }
+          : {}),
+        ...(dto.exampleVi !== undefined ? { exampleVi: dto.exampleVi } : {}),
       },
     });
     await this.invalidateLessonCaches(dto.lessonId);

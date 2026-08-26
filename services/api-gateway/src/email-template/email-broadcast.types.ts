@@ -1,6 +1,6 @@
-import type { MailAttachment } from '@app/common';
+import type { MailAttachment } from "@app/common";
 
-export const EMAIL_BROADCAST_QUEUE = 'email-broadcast';
+export const EMAIL_BROADCAST_QUEUE = "email-broadcast";
 
 export type SendTemplateJobData = {
   broadcastId: string;

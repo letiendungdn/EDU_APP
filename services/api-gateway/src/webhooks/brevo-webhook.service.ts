@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '@app/prisma';
-import type { BrevoWebhookEventDto } from './dto/brevo-event.dto';
+import { Injectable, Logger } from "@nestjs/common";
+import { PrismaService } from "@app/prisma";
+import type { BrevoWebhookEventDto } from "./dto/brevo-event.dto";
 
 @Injectable()
 export class BrevoWebhookService {
@@ -13,12 +13,12 @@ export class BrevoWebhookService {
     if (!email) return;
 
     switch (event.event) {
-      case 'hard_bounce':
-      case 'complaint':
+      case "hard_bounce":
+      case "complaint":
         await this.markBounced(email, event.event);
         break;
 
-      case 'unsubscribe':
+      case "unsubscribe":
         await this.handleUnsubscribe(email);
         break;
 
@@ -34,7 +34,7 @@ export class BrevoWebhookService {
       data: { emailBounced: true },
     });
     if (result.count > 0) {
-      this.logger.warn({ email, reason }, 'Marked email as bounced');
+      this.logger.warn({ email, reason }, "Marked email as bounced");
     }
   }
 
@@ -57,6 +57,6 @@ export class BrevoWebhookService {
         receiveStreak: false,
       },
     });
-    this.logger.log({ email }, 'User unsubscribed from all product emails');
+    this.logger.log({ email }, "User unsubscribed from all product emails");
   }
 }

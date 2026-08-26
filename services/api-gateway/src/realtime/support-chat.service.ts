@@ -70,7 +70,6 @@ export class SupportChatService {
       include: { user: { select: senderSelect } },
     });
 
-    const sender = message.sender;
     const isFromUser = thread.userId === senderId;
 
     if (!isFromUser) {

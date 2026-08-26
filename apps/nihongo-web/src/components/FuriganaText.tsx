@@ -1,6 +1,5 @@
 'use client';
 
-import type { ReactNode } from 'react';
 import { renderFuriganaParts } from '@/utils/furiganaDisplay';
 
 export default function FuriganaText({

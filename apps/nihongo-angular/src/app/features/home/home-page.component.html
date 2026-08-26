@@ -17,34 +17,40 @@
     <div class="home-hero__kanji" aria-hidden="true">日本語</div>
   </section>
 
-  <div class="home-stats">
-    @for (stat of stats; track stat.label) {
-      <div class="home-stat">
-        <div class="home-stat__value">
-          {{ stat.value }}<span style="font-size: 1rem; opacity: 0.6">{{ stat.suffix }}</span>
+  @if (loading()) {
+    <p class="home-loading">Đang tải trang chủ...</p>
+  } @else if (error()) {
+    <p class="home-loading">Không tải được nội dung trang chủ.</p>
+  } @else {
+    <div class="home-stats">
+      @for (stat of stats(); track stat.label) {
+        <div class="home-stat">
+          <div class="home-stat__value">
+            {{ stat.value }}<span style="font-size: 1rem; opacity: 0.6">{{ stat.suffix }}</span>
+          </div>
+          <div class="home-stat__label">{{ stat.label }}</div>
         </div>
-        <div class="home-stat__label">{{ stat.label }}</div>
-      </div>
-    }
-  </div>
+      }
+    </div>
 
-  @for (section of sections; track section.title) {
-    <section class="home-section">
-      <div class="home-section__header">
-        <h2 class="home-section__title">{{ section.title }}</h2>
-        <span class="home-section__count">{{ section.items.length }} mục</span>
-      </div>
-      <div class="feature-grid">
-        @for (item of section.items; track item.path) {
-          <a [routerLink]="item.path" class="feature-card">
-            <div class="feature-card__icon">{{ item.icon }}</div>
-            <div class="feature-card__body">
-              <div class="feature-card__title">{{ item.title }}</div>
-              <div class="feature-card__desc">{{ item.desc }}</div>
-            </div>
-          </a>
-        }
-      </div>
-    </section>
+    @for (section of sections(); track section.id) {
+      <section class="home-section">
+        <div class="home-section__header">
+          <h2 class="home-section__title">{{ section.title }}</h2>
+          <span class="home-section__count">{{ section.items.length }} mục</span>
+        </div>
+        <div class="feature-grid">
+          @for (item of section.items; track item.href) {
+            <a [routerLink]="item.href" class="feature-card">
+              <div class="feature-card__icon">{{ item.icon }}</div>
+              <div class="feature-card__body">
+                <div class="feature-card__title">{{ item.title }}</div>
+                <div class="feature-card__desc">{{ item.desc }}</div>
+              </div>
+            </a>
+          }
+        </div>
+      </section>
+    }
   }
 </div>

@@ -1,5 +1,13 @@
+import fs from 'fs';
+import path from 'path';
 import { PrismaClient, type PrismaClient as PrismaClientType } from './generated/client';
-import { VOCAB_SUFFIX_GROUPS } from './vocab-suffixes.data';
+
+const SEED_SQL = path.join(
+  __dirname,
+  'migrations',
+  '20260815120000_vocab_suffixes',
+  'seed.sql',
+);
 
 export async function seedVocabSuffixes(prisma: PrismaClientType) {
   const groupCount = await prisma.vocabSuffixGroup.count();
@@ -7,44 +15,25 @@ export async function seedVocabSuffixes(prisma: PrismaClientType) {
 
   if (groupCount > 0 && !force) {
     console.log(`Hậu tố từ vựng đã có trong DB (${groupCount} nhóm). Bỏ qua seed.`);
-    console.log('  FORCE_VOCAB_SUFFIXES_SEED=1 để ghi đè.');
+    console.log('  FORCE_VOCAB_SUFFIXES_SEED=1 để ghi đè từ seed.sql.');
     return;
   }
 
-  if (groupCount > 0) {
-    await prisma.vocabSuffixItem.deleteMany();
-    await prisma.vocabSuffixGroup.deleteMany();
+  const sql = fs.readFileSync(SEED_SQL, 'utf8');
+  const statements = sql
+    .split(/;\s*\r?\n/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0 && !s.startsWith('--'));
+
+  for (const statement of statements) {
+    await prisma.$executeRawUnsafe(statement);
   }
 
-  let itemTotal = 0;
-  for (let i = 0; i < VOCAB_SUFFIX_GROUPS.length; i++) {
-    const group = VOCAB_SUFFIX_GROUPS[i];
-    await prisma.vocabSuffixGroup.create({
-      data: {
-        slug: group.slug,
-        label: group.label,
-        hint: group.hint,
-        sortOrder: i,
-        items: {
-          create: group.items.map((item, sortOrder) => ({
-            suffix: item.suffix,
-            kana: item.kana,
-            romaji: item.romaji,
-            meaningVi: item.meaningVi,
-            attachesTo: item.attachesTo,
-            exampleJa: item.exampleJa,
-            exampleVi: item.exampleVi,
-            sortOrder,
-          })),
-        },
-      },
-    });
-    itemTotal += group.items.length;
-  }
-
-  console.log(
-    `Hậu tố từ vựng: ${VOCAB_SUFFIX_GROUPS.length} nhóm, ${itemTotal} mục.`,
-  );
+  const [groups, items] = await Promise.all([
+    prisma.vocabSuffixGroup.count(),
+    prisma.vocabSuffixItem.count(),
+  ]);
+  console.log(`Hậu tố từ vựng: ${groups} nhóm, ${items} mục (từ seed.sql).`);
 }
 
 async function main() {

@@ -22,6 +22,9 @@ export interface Vocabulary {
   partOfSpeech?: string | null;
   imageUrl?: string | null;
   pitchAccent?: string | null;
+  exampleJa?: string | null;
+  exampleKana?: string | null;
+  exampleVi?: string | null;
 }
 
 export type VocabularyWithLesson = Vocabulary & { lessonNumber: number };

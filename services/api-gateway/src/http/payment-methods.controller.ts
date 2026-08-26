@@ -7,11 +7,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
-import {
-  CurrentUser,
-  JwtAuthGuard,
-  type AuthUserPayload,
-} from "@app/common";
+import { CurrentUser, JwtAuthGuard, type AuthUserPayload } from "@app/common";
 import { PaymentMethodService } from "../../../payment-service/src/payment-method/payment-method.service";
 
 @ApiTags("Payment methods")

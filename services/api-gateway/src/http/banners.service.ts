@@ -35,11 +35,12 @@ export class BannersService {
     return config;
   }
 
-  async upsert(scope: "global" | "page", path: string | undefined, image: string) {
-    const key =
-      scope === "global"
-        ? GLOBAL_KEY
-        : normalizePath(path ?? "");
+  async upsert(
+    scope: "global" | "page",
+    path: string | undefined,
+    image: string,
+  ) {
+    const key = scope === "global" ? GLOBAL_KEY : normalizePath(path ?? "");
 
     if (scope === "page" && !path) {
       throw new BadRequestException("Thiếu path cho banner theo trang");

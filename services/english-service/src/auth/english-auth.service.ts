@@ -104,7 +104,11 @@ export class EnglishAuthService {
   async nihongoTokenExchange(nihongoToken: string) {
     let payload: { sub?: number; email?: string; aud?: string };
     try {
-      payload = this.jwtService.verify<{ sub: number; email: string; aud?: string }>(nihongoToken);
+      payload = this.jwtService.verify<{
+        sub: number;
+        email: string;
+        aud?: string;
+      }>(nihongoToken);
     } catch {
       throw new UnauthorizedException("Token nihongo không hợp lệ");
     }
@@ -118,7 +122,10 @@ export class EnglishAuthService {
 
     let user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) {
-      const randomPwd = await bcrypt.hash(crypto.randomBytes(32).toString("hex"), 10);
+      const randomPwd = await bcrypt.hash(
+        crypto.randomBytes(32).toString("hex"),
+        10,
+      );
       user = await this.prisma.user.create({
         data: { email, passwordHash: randomPwd },
       });
@@ -130,7 +137,15 @@ export class EnglishAuthService {
     });
 
     const token = this.signToken(user);
-    return { user: { id: user.id, email: user.email, name: user.name, role: user.role }, token };
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+      token,
+    };
   }
 
   private extractToken(req: Request): string | undefined {

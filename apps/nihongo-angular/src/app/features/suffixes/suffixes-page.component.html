@@ -52,8 +52,35 @@
               <span class="suffix-romaji">{{ item.romaji }}</span>
               <span class="suffix-vi">{{ item.meaning }}</span>
               <span class="suffix-attach">Gắn: {{ item.attachesTo }}</span>
-              <span class="suffix-ex japanese-text">{{ item.exampleJa }}</span>
-              <span class="suffix-ex-vi">{{ item.exampleVi }}</span>
+              @if (item.exampleJa || item.exampleVi) {
+                <div
+                  class="suffix-example"
+                  role="group"
+                  aria-label="Ví dụ"
+                  (click)="speakExample($event, item.exampleJa)"
+                >
+                  <div class="suffix-example-head">
+                    <span class="suffix-example-label">Ví dụ</span>
+                    <span
+                      class="btn-audio-small"
+                      role="button"
+                      tabindex="0"
+                      aria-label="Nghe ví dụ"
+                      (click)="speakExample($event, item.exampleJa)"
+                      (keydown.enter)="speakExample($event, item.exampleJa)"
+                      (keydown.space)="speakExample($event, item.exampleJa); $event.preventDefault()"
+                    >
+                      🔊
+                    </span>
+                  </div>
+                  @if (item.exampleJa) {
+                    <span class="suffix-example-ja japanese-text">{{ item.exampleJa }}</span>
+                  }
+                  @if (item.exampleVi) {
+                    <span class="suffix-example-vi">{{ item.exampleVi }}</span>
+                  }
+                </div>
+              }
             </button>
           }
         </div>

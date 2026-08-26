@@ -8,9 +8,9 @@ import {
   IsPositive,
   IsString,
   MaxLength,
-} from 'class-validator';
-import { Type } from 'class-transformer';
-import { TemplateAttachmentDto } from './update-email-template.dto';
+} from "class-validator";
+import { Type } from "class-transformer";
+import { TemplateAttachmentDto } from "./update-email-template.dto";
 
 export class SendToUserDto {
   @IsInt()

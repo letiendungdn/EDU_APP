@@ -140,11 +140,14 @@ export class BookingService {
       session.payment.stripeChargeId &&
       hoursUntilSession > 24
     ) {
-      const result = await this.refundService.refundPayment(session.payment.id, {
-        requestedByUserId: userId,
-        role: Role.USER,
-        reason: reason ?? "Hủy buổi coaching",
-      });
+      const result = await this.refundService.refundPayment(
+        session.payment.id,
+        {
+          requestedByUserId: userId,
+          role: Role.USER,
+          reason: reason ?? "Hủy buổi coaching",
+        },
+      );
       refunded = true;
       refundAmountCents = result.amountCents;
     }

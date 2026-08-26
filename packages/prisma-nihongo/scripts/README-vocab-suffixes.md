@@ -1,0 +1,8 @@
+-- Vocab suffixes seed (from former apps/nihongo-web/src/data/vocab-suffixes.json + extra groups):
+--   packages/prisma-nihongo/migrations/20260815120000_vocab_suffixes/seed.sql
+-- Columns forms/pos/labelJa:
+--   packages/prisma-nihongo/migrations/20260826190000_vocab_suffix_forms_pos/migration.sql
+-- Re-apply:
+--   psql "$DATABASE_URL" -f .../20260826190000_vocab_suffix_forms_pos/migration.sql
+--   psql "$DATABASE_URL" -f .../20260815120000_vocab_suffixes/seed.sql
+-- Or: FORCE_VOCAB_SUFFIXES_SEED=1 npm run seed:vocab-suffixes -w @edu/prisma-nihongo

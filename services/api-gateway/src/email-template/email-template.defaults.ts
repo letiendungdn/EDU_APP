@@ -1,4 +1,4 @@
-import type { MailTemplateId } from '@app/common';
+import type { MailTemplateId } from "@app/common";
 
 export type TemplateDefault = {
   name: MailTemplateId;
@@ -11,18 +11,18 @@ export type TemplateDefault = {
 
 export const EMAIL_TEMPLATE_DEFAULTS: TemplateDefault[] = [
   {
-    name: 'welcome',
-    description: 'Gửi ngay sau khi user đăng ký tài khoản mới',
-    subject: 'Chào mừng đến {{appName}}',
-    variables: ['appName', 'userName', 'loginUrl'],
+    name: "welcome",
+    description: "Gửi ngay sau khi user đăng ký tài khoản mới",
+    subject: "Chào mừng đến {{appName}}",
+    variables: ["appName", "userName", "loginUrl"],
     textBody: [
-      'Xin chào {{userName}},',
-      '',
-      'Tài khoản {{appName}} của bạn đã được tạo.',
-      'Đăng nhập: {{loginUrl}}',
-      '',
-      'Nếu bạn không đăng ký, hãy bỏ qua email này.',
-    ].join('\n'),
+      "Xin chào {{userName}},",
+      "",
+      "Tài khoản {{appName}} của bạn đã được tạo.",
+      "Đăng nhập: {{loginUrl}}",
+      "",
+      "Nếu bạn không đăng ký, hãy bỏ qua email này.",
+    ].join("\n"),
     htmlBody: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;line-height:1.5;color:#111">
 <p>Xin chào <strong>{{userName}}</strong>,</p>
 <p>Tài khoản <strong>{{appName}}</strong> của bạn đã được tạo.</p>
@@ -31,19 +31,19 @@ export const EMAIL_TEMPLATE_DEFAULTS: TemplateDefault[] = [
 </body></html>`,
   },
   {
-    name: 'email_verification',
-    description: 'Link xác thực email sau khi đăng ký (hết hạn sau 24 giờ)',
-    subject: 'Xác thực email tài khoản {{appName}}',
-    variables: ['appName', 'userName', 'verifyUrl', 'expiresMinutes'],
+    name: "email_verification",
+    description: "Link xác thực email sau khi đăng ký (hết hạn sau 24 giờ)",
+    subject: "Xác thực email tài khoản {{appName}}",
+    variables: ["appName", "userName", "verifyUrl", "expiresMinutes"],
     textBody: [
-      'Xin chào {{userName}},',
-      '',
-      'Nhấn link để xác thực email {{appName}}:',
-      '{{verifyUrl}}',
-      '',
-      'Link hết hạn sau {{expiresMinutes}} phút.',
-      'Nếu không phải bạn, hãy bỏ qua email này.',
-    ].join('\n'),
+      "Xin chào {{userName}},",
+      "",
+      "Nhấn link để xác thực email {{appName}}:",
+      "{{verifyUrl}}",
+      "",
+      "Link hết hạn sau {{expiresMinutes}} phút.",
+      "Nếu không phải bạn, hãy bỏ qua email này.",
+    ].join("\n"),
     htmlBody: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;line-height:1.5;color:#111">
 <p>Xin chào <strong>{{userName}}</strong>,</p>
 <p>Nhấn vào link để xác thực email tài khoản <strong>{{appName}}</strong>:</p>
@@ -52,18 +52,18 @@ export const EMAIL_TEMPLATE_DEFAULTS: TemplateDefault[] = [
 </body></html>`,
   },
   {
-    name: 'password_reset',
-    description: 'Link đặt lại mật khẩu (hết hạn sau 30 phút)',
-    subject: 'Đặt lại mật khẩu {{appName}}',
-    variables: ['appName', 'userName', 'resetUrl', 'expiresMinutes'],
+    name: "password_reset",
+    description: "Link đặt lại mật khẩu (hết hạn sau 30 phút)",
+    subject: "Đặt lại mật khẩu {{appName}}",
+    variables: ["appName", "userName", "resetUrl", "expiresMinutes"],
     textBody: [
-      'Xin chào {{userName}},',
-      '',
-      'Bạn (hoặc ai đó) yêu cầu đặt lại mật khẩu {{appName}}.',
-      'Link (hết hạn sau {{expiresMinutes}} phút): {{resetUrl}}',
-      '',
-      'Nếu không phải bạn, hãy bỏ qua email này.',
-    ].join('\n'),
+      "Xin chào {{userName}},",
+      "",
+      "Bạn (hoặc ai đó) yêu cầu đặt lại mật khẩu {{appName}}.",
+      "Link (hết hạn sau {{expiresMinutes}} phút): {{resetUrl}}",
+      "",
+      "Nếu không phải bạn, hãy bỏ qua email này.",
+    ].join("\n"),
     htmlBody: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;line-height:1.5;color:#111">
 <p>Xin chào <strong>{{userName}}</strong>,</p>
 <p>Bạn (hoặc ai đó) yêu cầu đặt lại mật khẩu <strong>{{appName}}</strong>.</p>
@@ -72,16 +72,16 @@ export const EMAIL_TEMPLATE_DEFAULTS: TemplateDefault[] = [
 </body></html>`,
   },
   {
-    name: 'password_changed',
-    description: 'Thông báo mật khẩu vừa được thay đổi thành công',
-    subject: 'Mật khẩu {{appName}} vừa được thay đổi',
-    variables: ['appName', 'userName', 'supportUrl'],
+    name: "password_changed",
+    description: "Thông báo mật khẩu vừa được thay đổi thành công",
+    subject: "Mật khẩu {{appName}} vừa được thay đổi",
+    variables: ["appName", "userName", "supportUrl"],
     textBody: [
-      'Xin chào {{userName}},',
-      '',
-      'Mật khẩu tài khoản {{appName}} của bạn vừa được thay đổi thành công.',
-      'Nếu không phải bạn, hãy liên hệ hỗ trợ ngay: {{supportUrl}}',
-    ].join('\n'),
+      "Xin chào {{userName}},",
+      "",
+      "Mật khẩu tài khoản {{appName}} của bạn vừa được thay đổi thành công.",
+      "Nếu không phải bạn, hãy liên hệ hỗ trợ ngay: {{supportUrl}}",
+    ].join("\n"),
     htmlBody: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;line-height:1.5;color:#111">
 <p>Xin chào <strong>{{userName}}</strong>,</p>
 <p>Mật khẩu tài khoản <strong>{{appName}}</strong> của bạn vừa được thay đổi thành công.</p>
@@ -89,24 +89,34 @@ export const EMAIL_TEMPLATE_DEFAULTS: TemplateDefault[] = [
 </body></html>`,
   },
   {
-    name: 'weekly_progress',
-    description: 'Tóm tắt tiến độ học 7 ngày qua — gửi mỗi Chủ nhật 8h sáng',
-    subject: '📊 Tuần qua của bạn — {{appName}}',
-    variables: ['appName', 'userName', 'cardsReviewed', 'newMastered', 'totalMastered', 'currentStreak', 'streakLabel', 'appUrl', 'unsubscribeUrl'],
+    name: "weekly_progress",
+    description: "Tóm tắt tiến độ học 7 ngày qua — gửi mỗi Chủ nhật 8h sáng",
+    subject: "📊 Tuần qua của bạn — {{appName}}",
+    variables: [
+      "appName",
+      "userName",
+      "cardsReviewed",
+      "newMastered",
+      "totalMastered",
+      "currentStreak",
+      "streakLabel",
+      "appUrl",
+      "unsubscribeUrl",
+    ],
     textBody: [
-      'Xin chào {{userName}},',
-      '',
-      'Tóm tắt 7 ngày qua trên {{appName}}:',
-      '• Thẻ đã ôn: {{cardsReviewed}}',
-      '• Từ mới đã thuộc: {{newMastered}}',
-      '• Tổng đã thuộc: {{totalMastered}}',
-      '• Streak hiện tại: {{streakLabel}}',
-      '',
-      'Tiếp tục học tại: {{appUrl}}',
-      '',
-      '---',
-      'Quản lý email / bỏ đăng ký: {{unsubscribeUrl}}',
-    ].join('\n'),
+      "Xin chào {{userName}},",
+      "",
+      "Tóm tắt 7 ngày qua trên {{appName}}:",
+      "• Thẻ đã ôn: {{cardsReviewed}}",
+      "• Từ mới đã thuộc: {{newMastered}}",
+      "• Tổng đã thuộc: {{totalMastered}}",
+      "• Streak hiện tại: {{streakLabel}}",
+      "",
+      "Tiếp tục học tại: {{appUrl}}",
+      "",
+      "---",
+      "Quản lý email / bỏ đăng ký: {{unsubscribeUrl}}",
+    ].join("\n"),
     htmlBody: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;line-height:1.5;color:#111;max-width:520px;margin:0 auto;padding:16px">
 <h2 style="font-size:20px;margin-bottom:4px">Tuần qua của bạn 📊</h2>
 <p style="color:#666;margin-top:0">Xin chào <strong>{{userName}}</strong>,</p>
@@ -121,21 +131,29 @@ export const EMAIL_TEMPLATE_DEFAULTS: TemplateDefault[] = [
 </body></html>`,
   },
   {
-    name: 'streak_milestone',
-    description: 'Chúc mừng đạt mốc streak 7 / 30 / 100 ngày',
-    subject: '{{emoji}} {{milestone}} ngày streak liên tiếp — {{appName}}!',
-    variables: ['appName', 'userName', 'milestone', 'currentStreak', 'emoji', 'appUrl', 'unsubscribeUrl'],
+    name: "streak_milestone",
+    description: "Chúc mừng đạt mốc streak 7 / 30 / 100 ngày",
+    subject: "{{emoji}} {{milestone}} ngày streak liên tiếp — {{appName}}!",
+    variables: [
+      "appName",
+      "userName",
+      "milestone",
+      "currentStreak",
+      "emoji",
+      "appUrl",
+      "unsubscribeUrl",
+    ],
     textBody: [
-      'Xin chào {{userName}},',
-      '',
-      '{{emoji}} Bạn vừa đạt {{milestone}} ngày học liên tiếp trên {{appName}}!',
-      'Streak hiện tại: {{currentStreak}} ngày.',
-      '',
-      'Tiếp tục học tại: {{appUrl}}',
-      '',
-      '---',
-      'Quản lý email / bỏ đăng ký: {{unsubscribeUrl}}',
-    ].join('\n'),
+      "Xin chào {{userName}},",
+      "",
+      "{{emoji}} Bạn vừa đạt {{milestone}} ngày học liên tiếp trên {{appName}}!",
+      "Streak hiện tại: {{currentStreak}} ngày.",
+      "",
+      "Tiếp tục học tại: {{appUrl}}",
+      "",
+      "---",
+      "Quản lý email / bỏ đăng ký: {{unsubscribeUrl}}",
+    ].join("\n"),
     htmlBody: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;line-height:1.5;color:#111;max-width:520px;margin:0 auto;padding:16px">
 <div style="text-align:center;padding:32px 0">
   <p style="font-size:56px;margin:0">{{emoji}}</p>
@@ -149,10 +167,48 @@ export const EMAIL_TEMPLATE_DEFAULTS: TemplateDefault[] = [
 ];
 
 export const TEMPLATE_SAMPLE_VARS: Record<string, Record<string, unknown>> = {
-  welcome: { appName: 'Nihongo EDU', userName: 'Nguyễn Văn A', loginUrl: 'http://nihongo.localhost:8080/login' },
-  email_verification: { appName: 'Nihongo EDU', userName: 'Nguyễn Văn A', verifyUrl: 'http://nihongo.localhost:8080/verify-email?token=SAMPLE', expiresMinutes: 1440 },
-  password_reset: { appName: 'Nihongo EDU', userName: 'Nguyễn Văn A', resetUrl: 'http://nihongo.localhost:8080/reset-password?token=SAMPLE', expiresMinutes: 30 },
-  password_changed: { appName: 'Nihongo EDU', userName: 'Nguyễn Văn A', supportUrl: 'http://nihongo.localhost:8080/support' },
-  weekly_progress: { appName: 'Nihongo EDU', userName: 'Nguyễn Văn A', cardsReviewed: 42, newMastered: 8, totalMastered: 156, currentStreak: 14, streakLabel: '🔥 14 ngày', appUrl: 'http://nihongo.localhost:8080', unsubscribeUrl: 'http://nihongo.localhost:8080/api/auth/email-preferences?uid=1&token=SAMPLE' },
-  streak_milestone: { appName: 'Nihongo EDU', userName: 'Nguyễn Văn A', milestone: 30, currentStreak: 30, emoji: '⭐', appUrl: 'http://nihongo.localhost:8080', unsubscribeUrl: 'http://nihongo.localhost:8080/api/auth/email-preferences?uid=1&token=SAMPLE' },
+  welcome: {
+    appName: "Nihongo EDU",
+    userName: "Nguyễn Văn A",
+    loginUrl: "http://nihongo.localhost:8080/login",
+  },
+  email_verification: {
+    appName: "Nihongo EDU",
+    userName: "Nguyễn Văn A",
+    verifyUrl: "http://nihongo.localhost:8080/verify-email?token=SAMPLE",
+    expiresMinutes: 1440,
+  },
+  password_reset: {
+    appName: "Nihongo EDU",
+    userName: "Nguyễn Văn A",
+    resetUrl: "http://nihongo.localhost:8080/reset-password?token=SAMPLE",
+    expiresMinutes: 30,
+  },
+  password_changed: {
+    appName: "Nihongo EDU",
+    userName: "Nguyễn Văn A",
+    supportUrl: "http://nihongo.localhost:8080/support",
+  },
+  weekly_progress: {
+    appName: "Nihongo EDU",
+    userName: "Nguyễn Văn A",
+    cardsReviewed: 42,
+    newMastered: 8,
+    totalMastered: 156,
+    currentStreak: 14,
+    streakLabel: "🔥 14 ngày",
+    appUrl: "http://nihongo.localhost:8080",
+    unsubscribeUrl:
+      "http://nihongo.localhost:8080/api/auth/email-preferences?uid=1&token=SAMPLE",
+  },
+  streak_milestone: {
+    appName: "Nihongo EDU",
+    userName: "Nguyễn Văn A",
+    milestone: 30,
+    currentStreak: 30,
+    emoji: "⭐",
+    appUrl: "http://nihongo.localhost:8080",
+    unsubscribeUrl:
+      "http://nihongo.localhost:8080/api/auth/email-preferences?uid=1&token=SAMPLE",
+  },
 };

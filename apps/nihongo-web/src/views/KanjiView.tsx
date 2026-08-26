@@ -124,9 +124,14 @@ export default function KanjiView() {
     <div className="container vocab-view">
       <div className="vocab-header">
         <h2 className="view-title">Kanji Look and Learn</h2>
-        <p className="kanji-list-links" style={{ margin: 0 }}>
-          <Link href="/kanji/list">Xem bảng kanji N5 → N1 →</Link>
-        </p>
+        <div className="vocab-header-links">
+          <Link href="/kanji/quiz" className="btn btn-primary">
+            Trắc nghiệm Kanji
+          </Link>
+          <Link href="/kanji/list" className="btn btn-outline">
+            Bảng N5 → N1
+          </Link>
+        </div>
 
         <form className="kanji-search-form" onSubmit={handleSearchSubmit}>
           <input

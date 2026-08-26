@@ -49,9 +49,7 @@ export default function KanjiPracticeView() {
 
   useEffect(() => {
     let canvas: Canvas;
-    let Brush: typeof PencilBrush;
     import('fabric').then(({ Canvas: FC, PencilBrush: PB }) => {
-      Brush = PB;
       const el = document.getElementById('kanji-practice-canvas') as HTMLCanvasElement;
       if (!el) return;
       canvas = new FC(el, {

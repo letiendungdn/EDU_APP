@@ -1,0 +1,237 @@
+<section class="container quiz-view vocab-quiz-view">
+  <header class="quiz-header">
+    <h2 class="view-title">Trắc nghiệm Kana</h2>
+    <p class="vocab-quiz-subtitle">
+      Hiragana / Katakana · {{ scopeLabel() }} · {{ pool().length }} chữ
+    </p>
+    <div class="vocab-quiz-links">
+      <a routerLink="/kana" class="btn btn-outline">Bảng kana</a>
+      <a routerLink="/vocab/quiz" class="btn btn-outline">TN từ vựng</a>
+    </div>
+  </header>
+
+  @if (phase() === 'setup') {
+    <div class="vocab-quiz-setup glass-panel">
+      <div class="vocab-quiz-mode-tabs" role="tablist" aria-label="Hướng hỏi">
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="mode() === 'char-to-romaji'"
+          [attr.aria-selected]="mode() === 'char-to-romaji'"
+          (click)="setMode('char-to-romaji')"
+        >
+          Chữ → Romaji
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="mode() === 'romaji-to-char'"
+          [attr.aria-selected]="mode() === 'romaji-to-char'"
+          (click)="setMode('romaji-to-char')"
+        >
+          Romaji → Chữ
+        </button>
+      </div>
+
+      <p class="vocab-quiz-mode-hint">
+        @if (mode() === 'char-to-romaji') {
+          Xem hiragana/katakana, chọn romaji đúng.
+        } @else {
+          Xem romaji, chọn chữ kana đúng.
+        }
+      </p>
+
+      <div class="vocab-quiz-scope-tabs" role="tablist" aria-label="Loại chữ">
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="script() === 'hiragana'"
+          [attr.aria-selected]="script() === 'hiragana'"
+          (click)="setScript('hiragana')"
+        >
+          Hiragana
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="script() === 'katakana'"
+          [attr.aria-selected]="script() === 'katakana'"
+          (click)="setScript('katakana')"
+        >
+          Katakana
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="script() === 'both'"
+          [attr.aria-selected]="script() === 'both'"
+          (click)="setScript('both')"
+        >
+          Cả hai
+        </button>
+      </div>
+
+      <div class="vocab-quiz-presets" role="group" aria-label="Nhóm âm">
+        @for (section of sectionOptions; track section.id) {
+          <button
+            type="button"
+            class="btn btn-outline vocab-quiz-preset-btn"
+            [class.active]="sectionIds().includes(section.id)"
+            (click)="toggleSection(section.id)"
+          >
+            {{ section.label }}
+          </button>
+        }
+        <button
+          type="button"
+          class="btn btn-outline vocab-quiz-preset-btn"
+          (click)="selectAllSections()"
+        >
+          Tất cả
+        </button>
+      </div>
+
+      <div class="quiz-actions">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="startQuiz()"
+          [disabled]="loading() || pool().length < 2"
+        >
+          @if (loading()) {
+            Đang tải...
+          } @else {
+            Bắt đầu · {{ pool().length }} câu (random)
+          }
+        </button>
+      </div>
+      @if (!loading() && pool().length < 2) {
+        <p class="vocab-quiz-empty-hint">Cần ít nhất 2 chữ để tạo trắc nghiệm.</p>
+      }
+    </div>
+  }
+
+  @if (phase() === 'quiz' && finished()) {
+    <div class="quiz-result glass-panel">
+      <div class="result-icon">{{ scoreCorrect() === questions().length ? '🎉' : '📚' }}</div>
+      <h3>Hoàn thành!</h3>
+      <p class="result-score">
+        Bạn trả lời đúng <strong>{{ scoreCorrect() }}</strong> /
+        <strong>{{ questions().length }}</strong> câu
+      </p>
+      <p class="result-percent">{{ scorePercent() }}%</p>
+      <div class="quiz-actions">
+        <button type="button" class="btn btn-primary" (click)="retry()">Làm lại (random mới)</button>
+        <button type="button" class="btn btn-outline" (click)="backToSetup()">Đổi chế độ</button>
+      </div>
+    </div>
+  }
+
+  @if (phase() === 'quiz' && !finished() && current(); as q) {
+    <p class="quiz-progress">
+      Câu {{ index() + 1 }} / {{ questions().length }}
+      @if (scoreTotal() > 0) {
+        <span class="quiz-score"> · Đúng {{ scoreCorrect() }}/{{ scoreTotal() }}</span>
+      }
+    </p>
+
+    <div class="quiz-card glass-panel">
+      <span class="quiz-type-badge">
+        {{ mode() === 'char-to-romaji' ? 'Chữ → Romaji' : 'Romaji → Chữ' }}
+        · {{ q.script === 'hiragana' ? 'ひらがな' : 'カタカナ' }}
+      </span>
+
+      <div class="vocab-quiz-prompt-row">
+        <h3
+          class="quiz-question"
+          [class.japanese-text]="mode() === 'char-to-romaji'"
+          [class.vocab-quiz-prompt-jp]="mode() === 'char-to-romaji'"
+        >
+          {{ q.prompt }}
+        </h3>
+        <button
+          type="button"
+          class="btn-audio vocab-quiz-audio"
+          title="Nghe phát âm"
+          aria-label="Nghe phát âm"
+          (click)="speakCurrent($event)"
+        >
+          🔊
+        </button>
+      </div>
+      @if (q.promptSub) {
+        <p class="vocab-quiz-prompt-sub">{{ q.promptSub }}</p>
+      }
+
+      <div class="quiz-options">
+        @for (option of q.options; track option.text) {
+          <div class="vocab-quiz-option-wrap">
+            <button
+              type="button"
+              class="quiz-option"
+              [class.japanese-text]="mode() === 'romaji-to-char'"
+              [class.selected]="selectedAnswer() === option.text"
+              [class.correct-answer]="result() !== null && option.text === q.answer"
+              [class.wrong-answer]="result() === 'wrong' && selectedAnswer() === option.text"
+              [disabled]="result() !== null"
+              (click)="selectAnswer(option.text)"
+            >
+              <span class="quiz-option-main">{{ option.text }}</span>
+              @if (result() !== null) {
+                <span
+                  class="quiz-option-reveal"
+                  [class.japanese-text]="mode() === 'char-to-romaji'"
+                >
+                  {{ option.reveal }}
+                </span>
+              }
+            </button>
+            @if ((mode() === 'romaji-to-char' || result() !== null) && option.speak) {
+              <button
+                type="button"
+                class="btn-audio-small vocab-quiz-option-audio"
+                [attr.title]="'Nghe ' + option.speak"
+                [attr.aria-label]="'Nghe ' + option.speak"
+                (click)="speakOption($event, option.speak)"
+              >
+                🔊
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      @if (result(); as r) {
+        <div class="feedback" [class.correct]="r === 'correct'" [class.wrong]="r === 'wrong'">
+          @if (r === 'correct') {
+            Đúng rồi!
+          } @else {
+            Sai rồi. Đáp án: {{ q.answer }}
+          }
+        </div>
+      }
+
+      <div class="quiz-actions">
+        @if (result() === null) {
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="submit()"
+            [disabled]="!selectedAnswer()"
+          >
+            Kiểm tra
+          </button>
+        } @else {
+          <button type="button" class="btn btn-primary" (click)="next()">
+            {{ index() + 1 >= questions().length ? 'Xem kết quả' : 'Câu tiếp' }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</section>

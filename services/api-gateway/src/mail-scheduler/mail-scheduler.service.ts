@@ -1,7 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
-import { PrismaService } from '@app/prisma';
-import { MailService } from '@app/common';
+import { Injectable, Logger } from "@nestjs/common";
+import { Cron } from "@nestjs/schedule";
+import { PrismaService } from "@app/prisma";
+import { MailService } from "@app/common";
 
 const MILESTONE_DAYS = [7, 30, 100];
 
@@ -15,7 +15,7 @@ export class MailSchedulerService {
   ) {}
 
   /** Every Sunday 8:00 AM Vietnam time */
-  @Cron('0 8 * * 0', { timeZone: 'Asia/Ho_Chi_Minh' })
+  @Cron("0 8 * * 0", { timeZone: "Asia/Ho_Chi_Minh" })
   async sendWeeklyProgress(): Promise<void> {
     const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
@@ -66,14 +66,17 @@ export class MailSchedulerService {
           totalMastered,
           currentStreak: streak,
         });
-      } catch (err) {
-        this.logger.error({ err, userId: user.id }, 'Weekly progress email failed');
+      } catch (err: unknown) {
+        this.logger.error(
+          { err, userId: user.id },
+          "Weekly progress email failed",
+        );
       }
     }
   }
 
   /** Every day 9:00 AM Vietnam time — check streak milestones */
-  @Cron('0 9 * * *', { timeZone: 'Asia/Ho_Chi_Minh' })
+  @Cron("0 9 * * *", { timeZone: "Asia/Ho_Chi_Minh" })
   async sendStreakMilestones(): Promise<void> {
     const users = await this.prisma.user.findMany({
       where: { emailBounced: false },
@@ -112,8 +115,11 @@ export class MailSchedulerService {
           create: { userId: user.id, lastMilestoneNotified: nextMilestone },
           update: { lastMilestoneNotified: nextMilestone },
         });
-      } catch (err) {
-        this.logger.error({ err, userId: user.id }, 'Streak milestone email failed');
+      } catch (err: unknown) {
+        this.logger.error(
+          { err, userId: user.id },
+          "Streak milestone email failed",
+        );
       }
     }
   }
@@ -123,7 +129,7 @@ export class MailSchedulerService {
     const reviews = await this.prisma.srsCard.findMany({
       where: { userId, lastReviewedAt: { not: null } },
       select: { lastReviewedAt: true },
-      orderBy: { lastReviewedAt: 'desc' },
+      orderBy: { lastReviewedAt: "desc" },
     });
 
     if (!reviews.length) return 0;

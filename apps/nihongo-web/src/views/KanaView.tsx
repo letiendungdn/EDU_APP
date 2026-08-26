@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import { playAudio } from '../utils/speech';
 import PlayAllButton from '../components/PlayAllButton';
 import { usePlayAll } from '../hooks/usePlayAll';
@@ -77,6 +78,11 @@ export default function KanaView() {
         <>
       <div className="kana-header">
         <h2 className="view-title">Kana Alphabet</h2>
+        <div className="vocab-header-links" style={{ marginBottom: '0.75rem' }}>
+          <Link href="/kana/quiz" className="btn btn-primary">
+            Trắc nghiệm Kana
+          </Link>
+        </div>
         <div className="tab-buttons">
           <button 
             className={`btn tab-btn ${activeTab === 'hiragana' ? 'active' : ''}`}

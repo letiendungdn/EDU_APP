@@ -1,0 +1,306 @@
+<section class="container quiz-view vocab-quiz-view">
+  <header class="quiz-header">
+    <h2 class="view-title">Trắc nghiệm Kanji</h2>
+    <p class="vocab-quiz-subtitle">
+      {{ modeLabel() }} · {{ sourceLabel() }} · {{ rangeLabel() }} · {{ pool().length }}
+      {{ poolSource() === 'minna' ? 'từ' : 'chữ' }}
+    </p>
+    <div class="vocab-quiz-links">
+      <a routerLink="/kanji" class="btn btn-outline">Flashcard</a>
+      <a routerLink="/kanji/list" class="btn btn-outline">Danh sách</a>
+      <a routerLink="/vocab" class="btn btn-outline">Từ vựng Minna</a>
+      <a routerLink="/vocab/quiz" class="btn btn-outline">TN từ vựng</a>
+    </div>
+  </header>
+
+  @if (phase() === 'setup') {
+    <div class="vocab-quiz-setup glass-panel">
+      <div class="vocab-quiz-scope-tabs" role="tablist" aria-label="Nguồn dữ liệu">
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="poolSource() === 'kanji'"
+          [attr.aria-selected]="poolSource() === 'kanji'"
+          (click)="setPoolSource('kanji')"
+        >
+          Bài kanji
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="poolSource() === 'minna'"
+          [attr.aria-selected]="poolSource() === 'minna'"
+          (click)="setPoolSource('minna')"
+        >
+          Minna (có kanji)
+        </button>
+      </div>
+
+      <div class="vocab-quiz-mode-tabs" role="tablist" aria-label="Hướng hỏi">
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="mode() === 'char-to-meaning'"
+          [attr.aria-selected]="mode() === 'char-to-meaning'"
+          (click)="setMode('char-to-meaning')"
+        >
+          Kanji → Nghĩa
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="mode() === 'meaning-to-char'"
+          [attr.aria-selected]="mode() === 'meaning-to-char'"
+          (click)="setMode('meaning-to-char')"
+        >
+          Nghĩa → Kanji
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="mode() === 'char-to-reading'"
+          [attr.aria-selected]="mode() === 'char-to-reading'"
+          (click)="setMode('char-to-reading')"
+        >
+          Kanji → Đọc
+        </button>
+      </div>
+
+      <p class="vocab-quiz-mode-hint">
+        @if (poolSource() === 'minna') {
+          @if (mode() === 'char-to-meaning') {
+            Xem chữ Hán của từ Minna, chọn nghĩa tiếng Việt.
+          } @else if (mode() === 'meaning-to-char') {
+            Xem nghĩa tiếng Việt, chọn dạng kanji của từ Minna.
+          } @else {
+            Xem chữ Hán của từ Minna, chọn cách đọc (kana).
+          }
+        } @else if (mode() === 'char-to-meaning') {
+          Xem kanji, chọn nghĩa tiếng Việt.
+        } @else if (mode() === 'meaning-to-char') {
+          Xem nghĩa tiếng Việt, chọn chữ kanji.
+        } @else {
+          Xem kanji, chọn cách đọc on/kun.
+        }
+      </p>
+
+      <div class="vocab-quiz-scope-tabs" role="tablist" aria-label="Phạm vi bài">
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="scopeMode() === 'single'"
+          [attr.aria-selected]="scopeMode() === 'single'"
+          (click)="setScope('single')"
+        >
+          Một bài
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="btn tab-btn"
+          [class.active]="scopeMode() === 'range'"
+          [attr.aria-selected]="scopeMode() === 'range'"
+          (click)="setScope('range')"
+        >
+          Nhiều bài
+        </button>
+      </div>
+
+      @if (scopeMode() === 'single') {
+        <div class="lesson-selector">
+          <label for="kanji-quiz-lesson">
+            {{ poolSource() === 'minna' ? 'Chọn bài Minna: ' : 'Chọn bài kanji: ' }}
+          </label>
+          <select
+            id="kanji-quiz-lesson"
+            class="select-input"
+            [value]="lesson()"
+            (change)="onLessonChange($event)"
+          >
+            @for (n of lessonOptions(); track n) {
+              <option [value]="n">Bài {{ n }}</option>
+            }
+          </select>
+        </div>
+      } @else {
+        <div class="vocab-quiz-range">
+          <div class="vocab-quiz-range-fields">
+            <label>
+              Từ bài
+              <select class="select-input" [value]="lessonFrom()" (change)="onFromChange($event)">
+                @for (n of lessonOptions(); track n) {
+                  <option [value]="n">Bài {{ n }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              Đến bài
+              <select class="select-input" [value]="lessonTo()" (change)="onToChange($event)">
+                @for (n of lessonOptions(); track n) {
+                  <option [value]="n">Bài {{ n }}</option>
+                }
+              </select>
+            </label>
+          </div>
+          <div class="vocab-quiz-presets">
+            @for (preset of rangePresets(); track preset.label) {
+              <button
+                type="button"
+                class="btn btn-outline vocab-quiz-preset-btn"
+                (click)="applyPreset(preset.from, preset.to)"
+              >
+                {{ preset.label }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="quiz-actions">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="startQuiz()"
+          [disabled]="loading() || pool().length < 2"
+        >
+          @if (loading()) {
+            Đang tải...
+          } @else {
+            Bắt đầu · {{ pool().length }} câu (random)
+          }
+        </button>
+      </div>
+      @if (!loading() && pool().length < 2) {
+        <p class="vocab-quiz-empty-hint">
+          @if (poolSource() === 'minna') {
+            Cần ít nhất 2 từ có kanji trong phạm vi đã chọn.
+          } @else {
+            Cần ít nhất 2 kanji để tạo trắc nghiệm.
+          }
+        </p>
+      }
+    </div>
+  }
+
+  @if (phase() === 'quiz' && finished()) {
+    <div class="quiz-result glass-panel">
+      <div class="result-icon">{{ scoreCorrect() === questions().length ? '🎉' : '📚' }}</div>
+      <h3>Hoàn thành!</h3>
+      <p class="result-score">
+        Bạn trả lời đúng <strong>{{ scoreCorrect() }}</strong> /
+        <strong>{{ questions().length }}</strong> câu
+      </p>
+      <p class="result-percent">{{ scorePercent() }}%</p>
+      <div class="quiz-actions">
+        <button type="button" class="btn btn-primary" (click)="retry()">Làm lại (random mới)</button>
+        <button type="button" class="btn btn-outline" (click)="backToSetup()">Đổi chế độ</button>
+      </div>
+    </div>
+  }
+
+  @if (phase() === 'quiz' && !finished() && current(); as q) {
+    <p class="quiz-progress">
+      Câu {{ index() + 1 }} / {{ questions().length }}
+      @if (scoreTotal() > 0) {
+        <span class="quiz-score"> · Đúng {{ scoreCorrect() }}/{{ scoreTotal() }}</span>
+      }
+    </p>
+
+    <div class="quiz-card glass-panel">
+      <span class="quiz-type-badge">
+        {{ modeLabel() }}
+        @if (q.lessonNumber != null) {
+          · Bài {{ q.lessonNumber }}
+        }
+      </span>
+
+      <div class="vocab-quiz-prompt-row">
+        <h3
+          class="quiz-question"
+          [class.japanese-text]="mode() !== 'meaning-to-char'"
+          [class.vocab-quiz-prompt-jp]="mode() !== 'meaning-to-char'"
+        >
+          {{ q.prompt }}
+        </h3>
+        <button
+          type="button"
+          class="btn-audio vocab-quiz-audio"
+          title="Nghe phát âm"
+          aria-label="Nghe phát âm"
+          (click)="speakCurrent($event)"
+        >
+          🔊
+        </button>
+      </div>
+      @if (q.promptSub) {
+        <p class="vocab-quiz-prompt-sub">{{ q.promptSub }}</p>
+      }
+
+      <div class="quiz-options">
+        @for (option of q.options; track option.text) {
+          <div class="vocab-quiz-option-wrap">
+            <button
+              type="button"
+              class="quiz-option"
+              [class.japanese-text]="optionUsesJapanese()"
+              [class.selected]="selectedAnswer() === option.text"
+              [class.correct-answer]="result() !== null && option.text === q.answer"
+              [class.wrong-answer]="result() === 'wrong' && selectedAnswer() === option.text"
+              [disabled]="result() !== null"
+              (click)="selectAnswer(option.text)"
+            >
+              <span class="quiz-option-main">{{ option.text }}</span>
+              @if (result() !== null) {
+                <span class="quiz-option-reveal">{{ option.reveal }}</span>
+              }
+            </button>
+            @if ((mode() === 'meaning-to-char' || result() !== null) && option.speak) {
+              <button
+                type="button"
+                class="btn-audio-small vocab-quiz-option-audio"
+                [attr.title]="'Nghe ' + option.speak"
+                [attr.aria-label]="'Nghe ' + option.speak"
+                (click)="speakOption($event, option.speak)"
+              >
+                🔊
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      @if (result(); as r) {
+        <div class="feedback" [class.correct]="r === 'correct'" [class.wrong]="r === 'wrong'">
+          @if (r === 'correct') {
+            Đúng rồi!
+          } @else {
+            Sai rồi. Đáp án: {{ q.answer }}
+          }
+        </div>
+      }
+
+      <div class="quiz-actions">
+        @if (result() === null) {
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="submit()"
+            [disabled]="!selectedAnswer()"
+          >
+            Kiểm tra
+          </button>
+        } @else {
+          <button type="button" class="btn btn-primary" (click)="next()">
+            {{ index() + 1 >= questions().length ? 'Xem kết quả' : 'Câu tiếp' }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</section>

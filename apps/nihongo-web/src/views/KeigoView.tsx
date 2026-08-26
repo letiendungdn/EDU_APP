@@ -19,7 +19,7 @@ export default function KeigoView() {
     const pool = [...new Set(KEIGO_ITEMS.flatMap((row) => [row.sonkei, row.kenjō, row.plain]))];
     const rest = pool.filter((p) => p !== answer).sort(() => Math.random() - 0.5).slice(0, 3);
     return [answer, ...rest].sort(() => Math.random() - 0.5);
-  }, [answer, index]);
+  }, [answer]);
 
   return (
     <div className="container drill-view">

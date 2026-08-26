@@ -4,21 +4,33 @@ import {
   Injectable,
   NotFoundException,
   forwardRef,
-} from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
-import { Role } from '@prisma/client';
-import { PrismaService } from '@app/prisma';
-import { MAIL_PORT, type MailAttachment, type MailPort, type MailTemplateStore } from '@app/common';
-import { MailService } from '@app/common';
-import { EMAIL_TEMPLATE_DEFAULTS, TEMPLATE_SAMPLE_VARS } from './email-template.defaults';
-import type { UpdateEmailTemplateDto } from './dto/update-email-template.dto';
-import type { BroadcastFilterDto, ComposeDto, SendToUserDto } from './dto/send-email.dto';
+} from "@nestjs/common";
+import { InjectQueue } from "@nestjs/bullmq";
+import { Queue } from "bullmq";
+import { Role } from "@prisma/client";
+import { PrismaService } from "@app/prisma";
+import {
+  MAIL_PORT,
+  type MailAttachment,
+  type MailPort,
+  type MailTemplateStore,
+} from "@app/common";
+import { MailService } from "@app/common";
+import {
+  EMAIL_TEMPLATE_DEFAULTS,
+  TEMPLATE_SAMPLE_VARS,
+} from "./email-template.defaults";
+import type { UpdateEmailTemplateDto } from "./dto/update-email-template.dto";
+import type {
+  BroadcastFilterDto,
+  ComposeDto,
+  SendToUserDto,
+} from "./dto/send-email.dto";
 import {
   EMAIL_BROADCAST_QUEUE,
   type ComposeJobData,
   type SendTemplateJobData,
-} from './email-broadcast.types';
+} from "./email-broadcast.types";
 
 const COMPOSE_INLINE_LIMIT = 20;
 
@@ -37,14 +49,20 @@ export class EmailTemplateService implements MailTemplateStore {
   async findActive(name: string) {
     const tpl = await this.prisma.emailTemplate.findFirst({
       where: { name, active: true },
-      select: { subject: true, htmlBody: true, textBody: true, attachments: true },
+      select: {
+        subject: true,
+        htmlBody: true,
+        textBody: true,
+        attachments: true,
+      },
     });
     if (!tpl) return null;
     return {
       subject: tpl.subject,
       htmlBody: tpl.htmlBody,
       textBody: tpl.textBody,
-      attachments: (tpl.attachments as Array<{ filename: string; url: string }>) ?? [],
+      attachments:
+        (tpl.attachments as Array<{ filename: string; url: string }>) ?? [],
     };
   }
 
@@ -61,7 +79,7 @@ export class EmailTemplateService implements MailTemplateStore {
         updatedById: true,
         updatedAt: true,
       },
-      orderBy: { name: 'asc' },
+      orderBy: { name: "asc" },
     });
 
     const dbMap = new Map(dbTemplates.map((t) => [t.name, t]));
@@ -115,7 +133,9 @@ export class EmailTemplateService implements MailTemplateStore {
     const def = EMAIL_TEMPLATE_DEFAULTS.find((d) => d.name === name);
     if (!def) throw new NotFoundException(`Template '${name}' không tồn tại`);
 
-    const existing = await this.prisma.emailTemplate.findUnique({ where: { name } });
+    const existing = await this.prisma.emailTemplate.findUnique({
+      where: { name },
+    });
 
     const data = {
       subject: dto.subject ?? existing?.subject ?? def.subject,
@@ -169,7 +189,10 @@ export class EmailTemplateService implements MailTemplateStore {
         results.push(def.name);
       }
     }
-    return { seeded: results, skipped: EMAIL_TEMPLATE_DEFAULTS.length - results.length };
+    return {
+      seeded: results,
+      skipped: EMAIL_TEMPLATE_DEFAULTS.length - results.length,
+    };
   }
 
   // ─── Admin: preview ───────────────────────────────────────────────────────
@@ -204,37 +227,42 @@ export class EmailTemplateService implements MailTemplateStore {
       subject: `[TEST] ${subject}`,
       html,
       text,
-      tags: ['test', name],
+      tags: ["test", name],
     });
     return { message: `Test email đã gửi tới ${toEmail}` };
   }
 
   // ─── Send to specific user ───────────────────────────────────────��────────
 
-  async sendToUser(templateName: string, dto: SendToUserDto, adminId: number) {
+  async sendToUser(templateName: string, dto: SendToUserDto, _adminId: number) {
     const def = EMAIL_TEMPLATE_DEFAULTS.find((d) => d.name === templateName);
-    if (!def) throw new NotFoundException(`Template '${templateName}' không tồn tại`);
+    if (!def)
+      throw new NotFoundException(`Template '${templateName}' không tồn tại`);
 
     const user = await this.prisma.user.findUnique({
       where: { id: dto.userId },
       select: { id: true, email: true, name: true, emailBounced: true },
     });
-    if (!user) throw new NotFoundException('User không tồn tại');
-    if (user.emailBounced) throw new BadRequestException('Email user đã bị bounce, không thể gửi');
+    if (!user) throw new NotFoundException("User không tồn tại");
+    if (user.emailBounced)
+      throw new BadRequestException("Email user đã bị bounce, không thể gửi");
 
     const mergedVars: Record<string, unknown> = {
-      ...TEMPLATE_SAMPLE_VARS[templateName] ?? {},
-      userName: user.name || user.email.split('@')[0],
+      ...(TEMPLATE_SAMPLE_VARS[templateName] ?? {}),
+      userName: user.name || user.email.split("@")[0],
       ...dto.vars,
     };
 
-    const { subject, html, text } = await this.preview(templateName, mergedVars);
+    const { subject, html, text } = await this.preview(
+      templateName,
+      mergedVars,
+    );
     await this.mailPort.send({
       to: { email: user.email, name: user.name ?? undefined },
       subject,
       html,
       text,
-      tags: [templateName, 'manual'],
+      tags: [templateName, "manual"],
     });
 
     return { message: `Email '${templateName}' đã gửi tới ${user.email}` };
@@ -242,9 +270,14 @@ export class EmailTemplateService implements MailTemplateStore {
 
   // ─── Broadcast ────────────────────────────────────────────────────────────
 
-  async broadcast(templateName: string, filter: BroadcastFilterDto = {}, adminId: number) {
+  async broadcast(
+    templateName: string,
+    filter: BroadcastFilterDto = {},
+    adminId: number,
+  ) {
     const def = EMAIL_TEMPLATE_DEFAULTS.find((d) => d.name === templateName);
-    if (!def) throw new NotFoundException(`Template '${templateName}' không tồn tại`);
+    if (!def)
+      throw new NotFoundException(`Template '${templateName}' không tồn tại`);
 
     const users = await this.prisma.user.findMany({
       where: {
@@ -259,32 +292,38 @@ export class EmailTemplateService implements MailTemplateStore {
     });
 
     if (!users.length) {
-      return { broadcastId: null, total: 0, message: 'Không có user nào khớp filter' };
+      return {
+        broadcastId: null,
+        total: 0,
+        message: "Không có user nào khớp filter",
+      };
     }
 
     const broadcast = await this.prisma.emailBroadcast.create({
       data: {
-        type: 'template',
+        type: "template",
         templateName,
         subject: def.subject,
-        filter: filter as object,
+        filter: filter,
         totalCount: users.length,
-        status: 'running',
+        status: "running",
         startedAt: new Date(),
         createdById: adminId,
       },
     });
 
-    const jobs = users.map((u): { name: string; data: SendTemplateJobData } => ({
-      name: 'send-template',
-      data: {
-        broadcastId: broadcast.id,
-        userId: u.id,
-        email: u.email,
-        name: u.name,
-        templateName,
-      },
-    }));
+    const jobs = users.map(
+      (u): { name: string; data: SendTemplateJobData } => ({
+        name: "send-template",
+        data: {
+          broadcastId: broadcast.id,
+          userId: u.id,
+          email: u.email,
+          name: u.name,
+          templateName,
+        },
+      }),
+    );
     await this.broadcastQueue.addBulk(jobs);
 
     return { broadcastId: broadcast.id, total: users.length };
@@ -293,9 +332,12 @@ export class EmailTemplateService implements MailTemplateStore {
   // ─── Free composer ────────────────────────────────────────────────────────
 
   async compose(dto: ComposeDto, adminId: number) {
-    if (!dto.to.length) throw new BadRequestException('Cần ít nhất 1 ��ịa chỉ email');
+    if (!dto.to.length)
+      throw new BadRequestException("Cần ít nhất 1 ��ịa chỉ email");
 
-    const attachments = dto.attachments as unknown as MailAttachment[] | undefined;
+    const attachments = dto.attachments as unknown as
+      | MailAttachment[]
+      | undefined;
 
     // Small lists: send inline synchronously
     if (dto.to.length <= COMPOSE_INLINE_LIMIT) {
@@ -304,41 +346,51 @@ export class EmailTemplateService implements MailTemplateStore {
           to: { email },
           subject: dto.subject,
           html: dto.html,
-          text: dto.text ?? '',
+          text: dto.text ?? "",
           attachments,
-          tags: ['composed', 'manual'],
+          tags: ["composed", "manual"],
         });
       }
-      return { broadcastId: null, total: dto.to.length, message: `Đã gửi tới ${dto.to.length} địa chỉ` };
+      return {
+        broadcastId: null,
+        total: dto.to.length,
+        message: `Đã gửi tới ${dto.to.length} địa chỉ`,
+      };
     }
 
     // Large lists: queue
     const broadcast = await this.prisma.emailBroadcast.create({
       data: {
-        type: 'compose',
+        type: "compose",
         subject: dto.subject,
         filter: {},
         totalCount: dto.to.length,
-        status: 'running',
+        status: "running",
         startedAt: new Date(),
         createdById: adminId,
       },
     });
 
-    const jobs = dto.to.map((email): { name: string; data: ComposeJobData } => ({
-      name: 'compose',
-      data: {
-        broadcastId: broadcast.id,
-        email,
-        subject: dto.subject,
-        html: dto.html,
-        text: dto.text ?? '',
-        attachments,
-      },
-    }));
+    const jobs = dto.to.map(
+      (email): { name: string; data: ComposeJobData } => ({
+        name: "compose",
+        data: {
+          broadcastId: broadcast.id,
+          email,
+          subject: dto.subject,
+          html: dto.html,
+          text: dto.text ?? "",
+          attachments,
+        },
+      }),
+    );
     await this.broadcastQueue.addBulk(jobs);
 
-    return { broadcastId: broadcast.id, total: dto.to.length, message: 'Đang xử lý trong nền' };
+    return {
+      broadcastId: broadcast.id,
+      total: dto.to.length,
+      message: "Đang xử lý trong nền",
+    };
   }
 
   // ─── Broadcast history ────────────────────────────────────────────────────
@@ -347,7 +399,7 @@ export class EmailTemplateService implements MailTemplateStore {
     const skip = (page - 1) * limit;
     const [items, total] = await Promise.all([
       this.prisma.emailBroadcast.findMany({
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: limit,
       }),
@@ -358,7 +410,7 @@ export class EmailTemplateService implements MailTemplateStore {
 
   async getBroadcast(id: string) {
     const item = await this.prisma.emailBroadcast.findUnique({ where: { id } });
-    if (!item) throw new NotFoundException('Broadcast không tồn tại');
+    if (!item) throw new NotFoundException("Broadcast không tồn tại");
     return item;
   }
 }
@@ -367,18 +419,35 @@ export class EmailTemplateService implements MailTemplateStore {
 
 function esc(s: string): string {
   return s
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
 }
 
 function subText(tmpl: string, vars: Record<string, unknown>): string {
-  return tmpl.replace(/\{\{(\w+)\}\}/g, (_, k) =>
-    vars[k] != null ? String(vars[k]) : `{{${k}}}`,
-  );
+  return tmpl.replace(/\{\{(\w+)\}\}/g, (_match, rawKey: string) => {
+    const value = vars[rawKey];
+    if (value == null) return `{{${rawKey}}}`;
+    return typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "boolean"
+      ? String(value)
+      : JSON.stringify(value);
+  });
 }
 
 function subHtml(tmpl: string, vars: Record<string, unknown>): string {
-  return tmpl.replace(/\{\{(\w+)\}\}/g, (_, k) =>
-    vars[k] != null ? esc(String(vars[k])) : `{{${k}}}`,
-  );
+  return tmpl.replace(/\{\{(\w+)\}\}/g, (_match, rawKey: string) => {
+    const value = vars[rawKey];
+    if (value == null) return `{{${rawKey}}}`;
+    const text =
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "boolean"
+        ? String(value)
+        : JSON.stringify(value);
+    return esc(text);
+  });
 }

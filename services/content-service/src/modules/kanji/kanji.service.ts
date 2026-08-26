@@ -1,10 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { JlptLevel, type Prisma } from "@prisma/client";
 import { PrismaService } from "@app/prisma";
-import type {
-  CreateKanjiVocabDto,
-  UpdateKanjiVocabDto,
-} from "@app/contracts";
+import type { CreateKanjiVocabDto, UpdateKanjiVocabDto } from "@app/contracts";
 
 function parseJlptLevel(value?: string): JlptLevel | undefined {
   if (!value) return undefined;
@@ -98,7 +95,8 @@ export class KanjiService {
       where: { id: kanjiEntryId },
       select: { id: true },
     });
-    if (!entry) throw new NotFoundException(`Kanji entry ${kanjiEntryId} not found`);
+    if (!entry)
+      throw new NotFoundException(`Kanji entry ${kanjiEntryId} not found`);
 
     let sortOrder = dto.sortOrder;
     if (sortOrder == null) {
@@ -147,7 +145,8 @@ export class KanjiService {
       where: { id: kanjiEntryId },
       select: { id: true },
     });
-    if (!entry) throw new NotFoundException(`Kanji entry ${kanjiEntryId} not found`);
+    if (!entry)
+      throw new NotFoundException(`Kanji entry ${kanjiEntryId} not found`);
 
     const existing = await this.prisma.kanjiVocab.findMany({
       where: { kanjiEntryId },

@@ -18,7 +18,9 @@ export class KanaRomajiController {
 
   @Post("romaji")
   @Public()
-  @ApiOperation({ summary: "Đọc kana/kanji — trả hiragana + romaji (tra DB từ vựng/kanji)" })
+  @ApiOperation({
+    summary: "Đọc kana/kanji — trả hiragana + romaji (tra DB từ vựng/kanji)",
+  })
   async romaji(@Body() dto: KanaRomajiDto) {
     const text = dto.text.trim();
     const reading = await this.kanaRomajiService.resolveReading(text);

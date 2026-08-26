@@ -3,7 +3,11 @@ import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import type { Cache } from "cache-manager";
 import { PrismaService } from "@app/prisma";
 import { CacheKeys, CacheTTL } from "@app/common";
-import { CreateExampleDto, CreateGrammarDto, UpdateGrammarDto } from "@app/contracts";
+import {
+  CreateExampleDto,
+  CreateGrammarDto,
+  UpdateGrammarDto,
+} from "@app/contracts";
 
 @Injectable()
 export class GrammarsService {

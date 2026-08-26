@@ -90,7 +90,9 @@ export class AdminController {
   }
 
   @Post("payments/:id/refund")
-  @ApiOperation({ summary: "Admin hoàn tiền giao dịch (toàn phần hoặc một phần)" })
+  @ApiOperation({
+    summary: "Admin hoàn tiền giao dịch (toàn phần hoặc một phần)",
+  })
   refundPayment(
     @CurrentUser() user: AuthUserPayload,
     @Param("id", ParseIntPipe) id: number,
@@ -146,13 +148,17 @@ export class AdminController {
   // ─── Email templates ───────────────────────────────────────────────────────
 
   @Get("email-templates")
-  @ApiOperation({ summary: "Danh sách email templates (hardcoded + DB override)" })
+  @ApiOperation({
+    summary: "Danh sách email templates (hardcoded + DB override)",
+  })
   listEmailTemplates() {
     return this.emailTemplate.listAll();
   }
 
   @Get("email-templates/:name")
-  @ApiOperation({ summary: "Chi tiết template (nội dung DB hoặc hardcoded default)" })
+  @ApiOperation({
+    summary: "Chi tiết template (nội dung DB hoặc hardcoded default)",
+  })
   getEmailTemplate(@Param("name") name: string) {
     return this.emailTemplate.findOne(name);
   }
@@ -168,7 +174,9 @@ export class AdminController {
   }
 
   @Delete("email-templates/:name")
-  @ApiOperation({ summary: "Xoá DB override — template về lại hardcoded default" })
+  @ApiOperation({
+    summary: "Xoá DB override — template về lại hardcoded default",
+  })
   resetEmailTemplate(@Param("name") name: string) {
     return this.emailTemplate.reset(name);
   }
@@ -183,7 +191,9 @@ export class AdminController {
   }
 
   @Post("email-templates/:name/test")
-  @ApiOperation({ summary: "Gửi test email tới địa chỉ chỉ định (hoặc email admin)" })
+  @ApiOperation({
+    summary: "Gửi test email tới địa chỉ chỉ định (hoặc email admin)",
+  })
   async testSendEmailTemplate(
     @CurrentUser() user: AuthUserPayload,
     @Param("name") name: string,
@@ -194,7 +204,10 @@ export class AdminController {
   }
 
   @Post("email-templates/seed")
-  @ApiOperation({ summary: "Seed tất cả templates vào DB từ hardcoded defaults (bỏ qua nếu đã có)" })
+  @ApiOperation({
+    summary:
+      "Seed tất cả templates vào DB từ hardcoded defaults (bỏ qua nếu đã có)",
+  })
   seedEmailTemplates(@CurrentUser() user: AuthUserPayload) {
     return this.emailTemplate.seedAll(user.id);
   }
@@ -227,10 +240,7 @@ export class AdminController {
 
   @Post("email/compose")
   @ApiOperation({ summary: "Soạn email tự do gửi tới danh sách địa chỉ" })
-  composeEmail(
-    @CurrentUser() user: AuthUserPayload,
-    @Body() dto: ComposeDto,
-  ) {
+  composeEmail(@CurrentUser() user: AuthUserPayload, @Body() dto: ComposeDto) {
     return this.emailTemplate.compose(dto, user.id);
   }
 
@@ -238,10 +248,7 @@ export class AdminController {
 
   @Get("email/broadcasts")
   @ApiOperation({ summary: "Lịch sử các lần broadcast / compose" })
-  listBroadcasts(
-    @Query("page") page?: string,
-    @Query("limit") limit?: string,
-  ) {
+  listBroadcasts(@Query("page") page?: string, @Query("limit") limit?: string) {
     return this.emailTemplate.listBroadcasts(
       page ? Number(page) : 1,
       limit ? Number(limit) : 20,

@@ -71,11 +71,14 @@ export class GrammarsController {
   @ApiOperation({ summary: "List grammars, optionally by lesson" })
   async findAll(@Query() query: LessonPaginationDto) {
     const result = await firstValueFrom(
-      this.contentClient.send<GrammarListResponse>(CONTENT_PATTERNS.GET_GRAMMARS, {
-        lessonNumber: query.lessonNumber,
-        page: query.page ?? 1,
-        limit: query.limit ?? 50,
-      }),
+      this.contentClient.send<GrammarListResponse>(
+        CONTENT_PATTERNS.GET_GRAMMARS,
+        {
+          lessonNumber: query.lessonNumber,
+          page: query.page ?? 1,
+          limit: query.limit ?? 50,
+        },
+      ),
     );
     return this.enrichGrammarList(result);
   }
@@ -118,9 +121,13 @@ export class GrammarsController {
     );
   }
 
-  private async enrichGrammarList(result: GrammarListResponse): Promise<GrammarListResponse> {
+  private async enrichGrammarList(
+    result: GrammarListResponse,
+  ): Promise<GrammarListResponse> {
     if (!result?.data?.length) return result;
-    const data = await Promise.all(result.data.map((grammar) => this.enrichGrammar(grammar)));
+    const data = await Promise.all(
+      result.data.map((grammar) => this.enrichGrammar(grammar)),
+    );
     return { ...result, data };
   }
 

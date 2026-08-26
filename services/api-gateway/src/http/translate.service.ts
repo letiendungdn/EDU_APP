@@ -34,8 +34,8 @@ export class TranslateService {
     const translated = json.responseData?.translatedText?.trim() ?? trimmed;
     this.cache.set(cacheKey, translated);
     if (this.cache.size > 500) {
-      const first = this.cache.keys().next().value;
-      if (first) this.cache.delete(first);
+      const firstKey = this.cache.keys().next().value as string | undefined;
+      if (firstKey) this.cache.delete(firstKey);
     }
 
     this.logger.debug(`Translated (${langPair}): ${trimmed.slice(0, 40)}…`);

@@ -13,6 +13,7 @@ const SLUGS = [
   "book-audio-files",
   "jlpt-roadmap",
   "jlpt-danang-schedule",
+  "home-page",
 ] as const;
 
 type ReferenceSlug = (typeof SLUGS)[number];
@@ -61,6 +62,8 @@ export class ReferenceService {
         return this.getJlptRoadmap();
       case "jlpt-danang-schedule":
         return this.getJlptDanangSchedule();
+      case "home-page":
+        return this.getHomePage();
       default:
         throw new NotFoundException(`Reference content not found: ${slug}`);
     }
@@ -78,6 +81,7 @@ export class ReferenceService {
       "book-audio-files": "File nghe sách tiếng Nhật",
       "jlpt-roadmap": "Lộ trình JLPT",
       "jlpt-danang-schedule": "Lịch thi JLPT Đà Nẵng",
+      "home-page": "Trang chủ — thống kê & mục học",
     };
     return titles[slug];
   }
@@ -182,13 +186,16 @@ export class ReferenceService {
       groups: groups.map((group) => ({
         id: group.slug,
         label: group.label,
+        labelJa: group.labelJa || undefined,
         hint: group.hint,
         items: group.items.map((item) => ({
           suffix: item.suffix,
+          forms: item.forms?.length ? item.forms : [item.suffix],
           kana: item.kana,
           romaji: item.romaji,
           meaning: item.meaningVi,
           attachesTo: item.attachesTo,
+          pos: item.pos?.length ? item.pos : ["noun"],
           exampleJa: item.exampleJa,
           exampleVi: item.exampleVi,
         })),
@@ -369,9 +376,7 @@ export class ReferenceService {
           label: this.bookAudioLevelLabel(level),
           items: (grouped.get(level) ?? []).map((item) => {
             const localFiles =
-              item.files.length > 0
-                ? item.files
-                : (item.folder?.files ?? []);
+              item.files.length > 0 ? item.files : (item.folder?.files ?? []);
             return {
               id: item.externalKey,
               no: item.listNo ?? undefined,
@@ -473,6 +478,34 @@ export class ReferenceService {
                 }
               : {}),
           })),
+        })),
+      })),
+    };
+  }
+
+  private async getHomePage() {
+    const [stats, sections] = await Promise.all([
+      this.prisma.homeStat.findMany({ orderBy: { sortOrder: "asc" } }),
+      this.prisma.homeFeatureSection.findMany({
+        include: { items: { orderBy: { sortOrder: "asc" } } },
+        orderBy: { sortOrder: "asc" },
+      }),
+    ]);
+
+    return {
+      stats: stats.map((stat) => ({
+        value: stat.value,
+        label: stat.label,
+        suffix: stat.suffix,
+      })),
+      sections: sections.map((section) => ({
+        id: section.slug,
+        title: section.title,
+        items: section.items.map((item) => ({
+          href: item.href,
+          icon: item.icon,
+          title: item.title,
+          desc: item.desc,
         })),
       })),
     };

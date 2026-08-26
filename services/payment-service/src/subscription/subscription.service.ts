@@ -55,7 +55,10 @@ export class SubscriptionService {
     }
 
     if (paymentMethodId) {
-      await this.paymentMethodService.assertUserOwnsCard(userId, paymentMethodId);
+      await this.paymentMethodService.assertUserOwnsCard(
+        userId,
+        paymentMethodId,
+      );
     }
 
     const stripeSub = await this.stripe.createSubscription({
@@ -129,7 +132,9 @@ export class SubscriptionService {
       orderBy: { createdAt: "desc" },
     });
     if (!payment) {
-      throw new BadRequestException("Không có giao dịch subscription để hoàn tiền");
+      throw new BadRequestException(
+        "Không có giao dịch subscription để hoàn tiền",
+      );
     }
 
     const result = await this.refundService.refundPayment(payment.id, {
@@ -138,7 +143,9 @@ export class SubscriptionService {
       reason: reason ?? "Yêu cầu hoàn tiền subscription",
     });
 
-    const sub = await this.prisma.subscription.findUnique({ where: { userId } });
+    const sub = await this.prisma.subscription.findUnique({
+      where: { userId },
+    });
     if (sub?.stripeSubscriptionId) {
       await this.stripe.cancelSubscription(sub.stripeSubscriptionId, false);
       await this.prisma.subscription.update({

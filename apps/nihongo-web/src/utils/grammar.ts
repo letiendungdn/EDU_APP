@@ -36,7 +36,7 @@ export function grammarUsageBullets(usage: string | null | undefined): string[] 
   return usage
     .split(/\n+/)
     .flatMap((line) => line.split(/(?=–)|(?=-\s)/))
-    .map((line) => line.replace(/^[\s–\-]+/, '').trim())
+    .map((line) => line.replace(/^[\s–-]+/, '').trim())
     .filter(Boolean);
 }
 

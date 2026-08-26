@@ -4,7 +4,13 @@ import {
   Logger,
   Optional,
 } from "@nestjs/common";
-import { SubscriptionPlan, SubscriptionStatus, PaymentStatus, SessionStatus, NotificationType } from "@prisma/client";
+import {
+  SubscriptionPlan,
+  SubscriptionStatus,
+  PaymentStatus,
+  SessionStatus,
+  NotificationType,
+} from "@prisma/client";
 import Stripe from "stripe";
 import { KafkaTopics, PaymentSucceededEvent } from "@app/contracts";
 import { PrismaService } from "@app/prisma";
@@ -261,8 +267,7 @@ export class WebhookService {
 
     const expanded = invoice as ExpandedStripeInvoice;
     const pi = expanded.payment_intent;
-    const paymentIntentId =
-      typeof pi === "string" ? pi : (pi?.id ?? null);
+    const paymentIntentId = typeof pi === "string" ? pi : (pi?.id ?? null);
     if (!paymentIntentId) return;
 
     let chargeId: string | null = null;
