@@ -783,6 +783,9 @@ model KanjiVocab {
   word         String
   reading      String
   meaningVi    String
+  exampleJa    String?
+  exampleKana  String?
+  exampleVi    String?
   sortOrder    Int        @default(0)
   kanjiEntryId Int
   kanjiEntry   KanjiEntry @relation(fields: [kanjiEntryId], references: [id], onDelete: Cascade)

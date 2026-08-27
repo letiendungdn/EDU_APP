@@ -19,9 +19,21 @@ type Props = {
   onPronounce: (e: React.MouseEvent, reading: string) => void;
 };
 
-type Draft = { word: string; reading: string; meaningVi: string };
+type Draft = {
+  word: string;
+  reading: string;
+  meaningVi: string;
+  exampleJa: string;
+  exampleVi: string;
+};
 
-const emptyDraft = (): Draft => ({ word: '', reading: '', meaningVi: '' });
+const emptyDraft = (): Draft => ({
+  word: '',
+  reading: '',
+  meaningVi: '',
+  exampleJa: '',
+  exampleVi: '',
+});
 
 export default function KanjiVocabSidepanel({
   kanjiEntryId,
@@ -106,6 +118,8 @@ export default function KanjiVocabSidepanel({
       word: item.word,
       reading: item.reading,
       meaningVi: item.meaningVi,
+      exampleJa: item.exampleJa ?? '',
+      exampleVi: item.exampleVi ?? '',
     });
   }
 
@@ -114,6 +128,8 @@ export default function KanjiVocabSidepanel({
     const word = draft.word.trim();
     const reading = draft.reading.trim();
     const meaningVi = draft.meaningVi.trim();
+    const exampleJa = draft.exampleJa.trim() || null;
+    const exampleVi = draft.exampleVi.trim() || null;
     if (!word || !reading || !meaningVi) {
       setError('Điền đủ từ, cách đọc và nghĩa');
       return;
@@ -121,7 +137,11 @@ export default function KanjiVocabSidepanel({
     setBusy(true);
     setError(null);
     try {
-      await updateKanjiVocab(editingId, { word, reading, meaningVi }, token);
+      await updateKanjiVocab(
+        editingId,
+        { word, reading, meaningVi, exampleJa, exampleVi },
+        token,
+      );
       setEditingId(null);
       await invalidate();
     } catch (e) {
@@ -151,6 +171,8 @@ export default function KanjiVocabSidepanel({
     const word = addDraft.word.trim();
     const reading = addDraft.reading.trim();
     const meaningVi = addDraft.meaningVi.trim();
+    const exampleJa = addDraft.exampleJa.trim() || null;
+    const exampleVi = addDraft.exampleVi.trim() || null;
     if (!word || !reading || !meaningVi) {
       setError('Điền đủ từ, cách đọc và nghĩa');
       return;
@@ -158,7 +180,11 @@ export default function KanjiVocabSidepanel({
     setBusy(true);
     setError(null);
     try {
-      await createKanjiVocab(kanjiEntryId, { word, reading, meaningVi }, token);
+      await createKanjiVocab(
+        kanjiEntryId,
+        { word, reading, meaningVi, exampleJa, exampleVi },
+        token,
+      );
       setAddDraft(emptyDraft());
       setAdding(false);
       await invalidate();
@@ -224,6 +250,17 @@ export default function KanjiVocabSidepanel({
             value={addDraft.meaningVi}
             onChange={(e) => setAddDraft((d) => ({ ...d, meaningVi: e.target.value }))}
           />
+          <input
+            className="japanese-text"
+            placeholder="Ví dụ JP (ペンが一本あります。)"
+            value={addDraft.exampleJa}
+            onChange={(e) => setAddDraft((d) => ({ ...d, exampleJa: e.target.value }))}
+          />
+          <input
+            placeholder="Ví dụ VI (Có một cây bút.)"
+            value={addDraft.exampleVi}
+            onChange={(e) => setAddDraft((d) => ({ ...d, exampleVi: e.target.value }))}
+          />
           <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void handleAdd()}>
             Lưu từ mới
           </button>
@@ -276,6 +313,17 @@ export default function KanjiVocabSidepanel({
                   value={draft.meaningVi}
                   onChange={(e) => setDraft((d) => ({ ...d, meaningVi: e.target.value }))}
                 />
+                <input
+                  className="japanese-text"
+                  placeholder="Ví dụ JP"
+                  value={draft.exampleJa}
+                  onChange={(e) => setDraft((d) => ({ ...d, exampleJa: e.target.value }))}
+                />
+                <input
+                  placeholder="Ví dụ VI"
+                  value={draft.exampleVi}
+                  onChange={(e) => setDraft((d) => ({ ...d, exampleVi: e.target.value }))}
+                />
                 <div className="kanji-vocab-admin-actions">
                   <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void saveEdit()}>
                     Lưu
@@ -291,27 +339,56 @@ export default function KanjiVocabSidepanel({
                 </div>
               </div>
             ) : (
-              <>
-                <span className="japanese-text">{v.word}</span>
-                <span className="kanji-vocab-reading">（{v.reading}）</span>
-                <span className="kanji-vocab-meaning">— {v.meaningVi}</span>
-                {canEdit && (
-                  <div className="kanji-vocab-admin-actions">
-                    <button type="button" title="Sửa" disabled={busy} onClick={() => startEdit(v)}>
-                      ✎
-                    </button>
-                    <button
-                      type="button"
-                      title="Xóa"
-                      className="kanji-vocab-admin-delete"
-                      disabled={busy}
-                      onClick={() => void handleDelete(v.id)}
-                    >
-                      ✕
-                    </button>
+              <div className="kanji-vocab-item-body">
+                <div className="kanji-vocab-item-main">
+                  <span className="japanese-text">{v.word}</span>
+                  <span className="kanji-vocab-reading">（{v.reading}）</span>
+                  <span className="kanji-vocab-meaning">— {v.meaningVi}</span>
+                  {canEdit && (
+                    <div className="kanji-vocab-admin-actions">
+                      <button type="button" title="Sửa" disabled={busy} onClick={() => startEdit(v)}>
+                        ✎
+                      </button>
+                      <button
+                        type="button"
+                        title="Xóa"
+                        className="kanji-vocab-admin-delete"
+                        disabled={busy}
+                        onClick={() => void handleDelete(v.id)}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
+                {(v.exampleJa || v.exampleVi) && (
+                  <div className="kanji-vocab-example">
+                    <div className="kanji-vocab-example-head">
+                      <span className="kanji-vocab-example-label">Ví dụ</span>
+                      {v.exampleJa ? (
+                        <button
+                          type="button"
+                          className="btn-audio-small"
+                          title="Nghe ví dụ"
+                          aria-label="Nghe ví dụ"
+                          onClick={(e) => onPronounce(e, v.exampleJa!)}
+                        >
+                          🔊
+                        </button>
+                      ) : null}
+                    </div>
+                    {v.exampleJa ? (
+                      <span className="kanji-vocab-example-ja japanese-text">{v.exampleJa}</span>
+                    ) : null}
+                    {v.exampleKana && v.exampleKana !== v.exampleJa ? (
+                      <span className="kanji-vocab-example-kana">{v.exampleKana}</span>
+                    ) : null}
+                    {v.exampleVi ? (
+                      <span className="kanji-vocab-example-vi">{v.exampleVi}</span>
+                    ) : null}
                   </div>
                 )}
-              </>
+              </div>
             )}
           </li>
         ))}

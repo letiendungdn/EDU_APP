@@ -10,20 +10,35 @@ import {
 } from 'class-validator';
 
 export class CreateKanjiVocabDto {
-  @ApiProperty({ example: '一本' })
+  @ApiProperty()
   @IsString()
   @MinLength(1)
   word: string;
 
-  @ApiProperty({ example: 'いっぽん' })
+  @ApiProperty()
   @IsString()
   @MinLength(1)
   reading: string;
 
-  @ApiProperty({ example: 'Số 1' })
+  @ApiProperty()
   @IsString()
   @MinLength(1)
   meaningVi: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  exampleJa?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  exampleKana?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  exampleVi?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -35,7 +50,7 @@ export class CreateKanjiVocabDto {
 export class UpdateKanjiVocabDto extends PartialType(CreateKanjiVocabDto) {}
 
 export class ReorderKanjiVocabDto {
-  @ApiProperty({ type: [Number], example: [3, 1, 2] })
+  @ApiProperty({ type: [Number] })
   @IsArray()
   @ArrayMinSize(1)
   @Type(() => Number)

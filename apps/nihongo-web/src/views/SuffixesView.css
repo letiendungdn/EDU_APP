@@ -145,12 +145,10 @@
   flex-direction: column;
   align-items: center;
   gap: 0.18rem;
-  padding: 1rem 0.75rem 0.9rem;
+  padding: 0.35rem 0.35rem 0.55rem;
   border-radius: 16px;
   border: 1px solid rgba(148, 163, 184, 0.28);
   background: rgba(255, 255, 255, 0.78);
-  cursor: pointer;
-  font-family: inherit;
   text-align: center;
   transition:
     transform var(--transition-fast),
@@ -158,10 +156,41 @@
     border-color var(--transition-fast);
 }
 
-.suffix-card:hover {
+.suffix-card:hover,
+.suffix-card:focus-within {
   transform: translateY(-2px);
   border-color: rgba(139, 92, 246, 0.45);
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.suffix-card.is-selected {
+  border-color: rgba(124, 58, 237, 0.7);
+  box-shadow:
+    0 0 0 2px rgba(124, 58, 237, 0.28),
+    0 8px 20px rgba(15, 23, 42, 0.08);
+  background: rgba(124, 58, 237, 0.08);
+}
+
+.suffix-card-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.65rem 0.4rem 0.35rem;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+  color: inherit;
+}
+
+.suffix-card-main:focus-visible {
+  outline: 2px solid rgba(124, 58, 237, 0.55);
+  outline-offset: 1px;
 }
 
 .suffix-ja {
@@ -243,10 +272,23 @@
 }
 
 .suffix-example-ja {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.45;
   color: var(--text-primary);
+  cursor: pointer;
+  text-align: center;
+}
+
+.suffix-example-ja:hover {
+  color: #7c3aed;
 }
 
 .suffix-example-vi {
@@ -282,8 +324,14 @@
   background: rgba(30, 41, 59, 0.72);
 }
 
-:root[data-theme='dark'] .suffix-card:hover {
+:root[data-theme='dark'] .suffix-card:hover,
+:root[data-theme='dark'] .suffix-card:focus-within {
   background: rgba(30, 41, 59, 0.95);
+}
+
+:root[data-theme='dark'] .suffix-card.is-selected {
+  background: rgba(124, 58, 237, 0.18);
+  border-color: rgba(196, 181, 253, 0.55);
 }
 
 :root[data-theme='dark'] .suffixes-subtitle a {

@@ -1555,7 +1555,7 @@
 .kanji-vocab-item {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: flex-start;
   gap: 0.4rem;
   padding: 0.55rem 0;
   border-bottom: 1px solid var(--border-color);
@@ -1608,6 +1608,78 @@
 .kanji-vocab-meaning {
   color: var(--text-primary);
   font-size: 1.05rem;
+}
+
+.kanji-vocab-item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.kanji-vocab-item-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.25rem;
+}
+
+.kanji-vocab-example {
+  margin-top: 0.15rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.55rem;
+  border: 1px dashed rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.kanji-vocab-example-head {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.kanji-vocab-example-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--primary-color, #ef4444);
+}
+
+.kanji-vocab-example .btn-audio-small {
+  width: 1.45rem;
+  height: 1.45rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.kanji-vocab-example-ja {
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.kanji-vocab-example-kana {
+  font-size: 0.75rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.kanji-vocab-example-vi {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--text-secondary);
 }
 
 .kanji-vocab-admin-actions {

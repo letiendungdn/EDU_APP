@@ -74,7 +74,15 @@ export interface KanjiEntry {
   mnemonicVi?: string | null;
   imageUrl?: string | null;
   lesson?: { lessonNumber: number; title: string | null; jlptLevel: string | null };
-  vocabularies?: Array<{ id: number; word: string; reading: string; meaningVi: string }>;
+  vocabularies?: Array<{
+    id: number;
+    word: string;
+    reading: string;
+    meaningVi: string;
+    exampleJa?: string | null;
+    exampleKana?: string | null;
+    exampleVi?: string | null;
+  }>;
 }
 
 export type JlptLevel = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';

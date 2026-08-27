@@ -160,15 +160,45 @@
       </div>
 
       @if (current()!.vocabularies?.length) {
-        <aside class="vocab-side glass-panel">
+        <aside class="vocab-side glass-panel kanji-vocab-sidepanel kanji-vocab-list">
           <h3>Từ vựng liên quan</h3>
           <ul>
             @for (v of current()!.vocabularies!; track v.id) {
               <li>
                 <button type="button" class="btn-audio-small" (click)="speak(v.reading, $event)">🔊</button>
-                <span class="japanese-text">{{ v.word }}</span>
-                <span class="reading">（{{ v.reading }}）</span>
-                <span class="vocab-meaning">— {{ v.meaningVi }}</span>
+                <div class="kanji-vocab-item-body">
+                  <div class="kanji-vocab-item-main">
+                    <span class="japanese-text">{{ v.word }}</span>
+                    <span class="reading">（{{ v.reading }}）</span>
+                    <span class="vocab-meaning">— {{ v.meaningVi }}</span>
+                  </div>
+                  @if (v.exampleJa || v.exampleVi) {
+                    <div class="kanji-vocab-example">
+                      <div class="kanji-vocab-example-head">
+                        <span class="kanji-vocab-example-label">Ví dụ</span>
+                        @if (v.exampleJa) {
+                          <button
+                            type="button"
+                            class="btn-audio-small"
+                            (click)="speak(v.exampleJa!, $event)"
+                            aria-label="Nghe ví dụ"
+                          >
+                            🔊
+                          </button>
+                        }
+                      </div>
+                      @if (v.exampleJa) {
+                        <span class="japanese-text kanji-vocab-example-ja">{{ v.exampleJa }}</span>
+                      }
+                      @if (v.exampleKana && v.exampleKana !== v.exampleJa) {
+                        <span class="kanji-vocab-example-kana">{{ v.exampleKana }}</span>
+                      }
+                      @if (v.exampleVi) {
+                        <span class="kanji-vocab-example-vi">{{ v.exampleVi }}</span>
+                      }
+                    </div>
+                  }
+                </div>
               </li>
             }
           </ul>

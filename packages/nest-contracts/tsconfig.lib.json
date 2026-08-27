@@ -2,7 +2,8 @@
   "extends": "../../services/tsconfig.json",
   "compilerOptions": {
     "declaration": true,
-    "outDir": "../../services/dist/packages/nest-contracts"
+    "outDir": "../../services/dist/packages/nest-contracts",
+    "strictPropertyInitialization": false
   },
   "include": ["src/**/*"],
   "exclude": ["**/*.spec.ts"]

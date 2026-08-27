@@ -12,6 +12,7 @@
     "seed:long-vowel": "ts-node seed-long-vowel-rules.ts",
     "seed:country-names": "ts-node seed-country-names.ts",
     "seed:vocab-suffixes": "ts-node seed-vocab-suffixes.ts",
+    "seed:kanji-vocab-examples": "ts-node seed-kanji-vocab-examples.ts",
     "seed:home-page": "ts-node seed-home-page.ts",
     "studio": "prisma studio"
   },
@@ -23,6 +24,5 @@
     "prisma": "6.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
-  },
-  "dependencies": {}
+  }
 }

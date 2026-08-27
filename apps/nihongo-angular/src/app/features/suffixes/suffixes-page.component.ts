@@ -23,6 +23,7 @@ export class SuffixesPageComponent {
   readonly activeId = signal('');
   readonly searchQuery = signal('');
   readonly playingAll = signal(false);
+  readonly selectedKey = signal<string | null>(null);
 
   readonly category = computed(() => {
     const groups = this.groups();
@@ -47,7 +48,17 @@ export class SuffixesPageComponent {
 
   setCategory(id: string): void {
     this.playingAll.set(false);
+    this.selectedKey.set(null);
     this.activeId.set(id);
+  }
+
+  itemKey(categoryId: string, item: VocabSuffixItem): string {
+    return `${categoryId}-${item.suffix}-${item.kana}`;
+  }
+
+  selectAndSpeak(key: string, text: string): void {
+    this.selectedKey.set(key);
+    playJapanese(text);
   }
 
   speak(kana: string): void {

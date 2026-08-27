@@ -26,11 +26,16 @@ function matchesSuffix(item: VocabSuffixItem, query: string): boolean {
   return haystack.includes(query);
 }
 
+function itemKey(categoryId: string, item: VocabSuffixItem): string {
+  return `${categoryId}-${item.suffix}-${item.kana}`;
+}
+
 export default function SuffixesView() {
   const { data, isLoading } = useJapaneseVocabSuffixesQuery();
   const groups = data?.groups ?? [];
   const [activeId, setActiveId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
 
   useEffect(() => {
@@ -49,6 +54,11 @@ export default function SuffixesView() {
 
   const handlePlayAll = () => {
     startPlayAll(items.map((item) => item.kana));
+  };
+
+  const selectAndSpeak = (key: string, text: string) => {
+    setSelectedKey(key);
+    void playAudio(text);
   };
 
   if (isLoading || !category) {
@@ -78,6 +88,7 @@ export default function SuffixesView() {
               onClick={() => {
                 stopPlayAll();
                 setActiveId(cat.id);
+                setSelectedKey(null);
               }}
             >
               {cat.label}
@@ -117,67 +128,58 @@ export default function SuffixesView() {
           <p className="suffixes-empty">Không tìm thấy hậu tố phù hợp.</p>
         ) : (
           <div className="suffixes-grid">
-            {items.map((item) => (
-              <button
-                key={`${category.id}-${item.suffix}-${item.kana}`}
-                type="button"
-                className="suffix-card"
-                onClick={() => playAudio(item.kana)}
-              >
-                <span className="suffix-ja japanese-text">{item.suffix}</span>
-                <span className="suffix-kana">{item.kana}</span>
-                <span className="suffix-romaji">{item.romaji}</span>
-                <span className="suffix-vi">{item.meaning}</span>
-                <span className="suffix-attach">Gắn: {item.attachesTo}</span>
-                {(item.exampleJa || item.exampleVi) && (
-                  <div
-                    className="suffix-example"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (item.exampleJa) playAudio(item.exampleJa);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (item.exampleJa) playAudio(item.exampleJa);
-                      }
-                    }}
-                    role="group"
-                    aria-label="Ví dụ"
+            {items.map((item) => {
+              const key = itemKey(category.id, item);
+              const selected = selectedKey === key;
+              return (
+                <article
+                  key={key}
+                  className={`suffix-card${selected ? ' is-selected' : ''}`}
+                >
+                  <button
+                    type="button"
+                    className="suffix-card-main"
+                    aria-pressed={selected}
+                    onClick={() => selectAndSpeak(key, item.kana)}
                   >
-                    <div className="suffix-example-head">
-                      <span className="suffix-example-label">Ví dụ</span>
-                      <span
-                        className="btn-audio-small"
-                        role="button"
-                        tabIndex={0}
-                        aria-label="Nghe ví dụ"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (item.exampleJa) playAudio(item.exampleJa);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (item.exampleJa) playAudio(item.exampleJa);
-                          }
-                        }}
-                      >
-                        🔊
-                      </span>
+                    <span className="suffix-ja japanese-text">{item.suffix}</span>
+                    <span className="suffix-kana">{item.kana}</span>
+                    <span className="suffix-romaji">{item.romaji}</span>
+                    <span className="suffix-vi">{item.meaning}</span>
+                    <span className="suffix-attach">Gắn: {item.attachesTo}</span>
+                  </button>
+                  {(item.exampleJa || item.exampleVi) && (
+                    <div className="suffix-example" aria-label="Ví dụ">
+                      <div className="suffix-example-head">
+                        <span className="suffix-example-label">Ví dụ</span>
+                        {item.exampleJa ? (
+                          <button
+                            type="button"
+                            className="btn-audio-small"
+                            aria-label="Nghe ví dụ"
+                            onClick={() => selectAndSpeak(key, item.exampleJa!)}
+                          >
+                            🔊
+                          </button>
+                        ) : null}
+                      </div>
+                      {item.exampleJa ? (
+                        <button
+                          type="button"
+                          className="suffix-example-ja japanese-text"
+                          onClick={() => selectAndSpeak(key, item.exampleJa!)}
+                        >
+                          {item.exampleJa}
+                        </button>
+                      ) : null}
+                      {item.exampleVi ? (
+                        <span className="suffix-example-vi">{item.exampleVi}</span>
+                      ) : null}
                     </div>
-                    {item.exampleJa ? (
-                      <span className="suffix-example-ja japanese-text">{item.exampleJa}</span>
-                    ) : null}
-                    {item.exampleVi ? (
-                      <span className="suffix-example-vi">{item.exampleVi}</span>
-                    ) : null}
-                  </div>
-                )}
-              </button>
-            ))}
+                  )}
+                </article>
+              );
+            })}
           </div>
         )}
       </div>

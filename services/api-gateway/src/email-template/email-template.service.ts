@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { InjectQueue } from "@nestjs/bullmq";
 import { Queue } from "bullmq";
-import { Role } from "@prisma/client";
+import { Role, type Prisma } from "@prisma/client";
 import { PrismaService } from "@app/prisma";
 import {
   MAIL_PORT,
@@ -304,7 +304,7 @@ export class EmailTemplateService implements MailTemplateStore {
         type: "template",
         templateName,
         subject: def.subject,
-        filter: filter,
+        filter: filter as Prisma.InputJsonValue,
         totalCount: users.length,
         status: "running",
         startedAt: new Date(),

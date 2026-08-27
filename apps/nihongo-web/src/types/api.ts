@@ -77,6 +77,9 @@ export interface KanjiEntry {
     word: string;
     reading: string;
     meaningVi: string;
+    exampleJa?: string | null;
+    exampleKana?: string | null;
+    exampleVi?: string | null;
     sortOrder?: number;
   }>;
 }
@@ -87,6 +90,9 @@ export interface CreateKanjiVocabInput {
   word: string;
   reading: string;
   meaningVi: string;
+  exampleJa?: string | null;
+  exampleKana?: string | null;
+  exampleVi?: string | null;
   sortOrder?: number;
 }
 
@@ -94,6 +100,9 @@ export interface UpdateKanjiVocabInput {
   word?: string;
   reading?: string;
   meaningVi?: string;
+  exampleJa?: string | null;
+  exampleKana?: string | null;
+  exampleVi?: string | null;
   sortOrder?: number;
 }
 

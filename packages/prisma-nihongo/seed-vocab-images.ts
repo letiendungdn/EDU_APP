@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from './generated/client';
 import { resolveVocabImage, toLocalImageUrl } from '@edu/vocab-images';
 
 type VocabImageRow = {

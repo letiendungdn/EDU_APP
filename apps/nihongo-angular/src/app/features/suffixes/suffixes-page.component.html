@@ -46,42 +46,52 @@
       } @else {
         <div class="suffixes-grid">
           @for (item of items(); track item.suffix + item.kana) {
-            <button type="button" class="suffix-card" (click)="speak(item.kana)">
-              <span class="suffix-ja japanese-text">{{ item.suffix }}</span>
-              <span class="suffix-kana">{{ item.kana }}</span>
-              <span class="suffix-romaji">{{ item.romaji }}</span>
-              <span class="suffix-vi">{{ item.meaning }}</span>
-              <span class="suffix-attach">Gắn: {{ item.attachesTo }}</span>
+            <article
+              class="suffix-card"
+              [class.is-selected]="selectedKey() === itemKey(category()!.id, item)"
+            >
+              <button
+                type="button"
+                class="suffix-card-main"
+                [attr.aria-pressed]="selectedKey() === itemKey(category()!.id, item)"
+                (click)="selectAndSpeak(itemKey(category()!.id, item), item.kana)"
+              >
+                <span class="suffix-ja japanese-text">{{ item.suffix }}</span>
+                <span class="suffix-kana">{{ item.kana }}</span>
+                <span class="suffix-romaji">{{ item.romaji }}</span>
+                <span class="suffix-vi">{{ item.meaning }}</span>
+                <span class="suffix-attach">Gắn: {{ item.attachesTo }}</span>
+              </button>
               @if (item.exampleJa || item.exampleVi) {
-                <div
-                  class="suffix-example"
-                  role="group"
-                  aria-label="Ví dụ"
-                  (click)="speakExample($event, item.exampleJa)"
-                >
+                <div class="suffix-example" aria-label="Ví dụ">
                   <div class="suffix-example-head">
                     <span class="suffix-example-label">Ví dụ</span>
-                    <span
-                      class="btn-audio-small"
-                      role="button"
-                      tabindex="0"
-                      aria-label="Nghe ví dụ"
-                      (click)="speakExample($event, item.exampleJa)"
-                      (keydown.enter)="speakExample($event, item.exampleJa)"
-                      (keydown.space)="speakExample($event, item.exampleJa); $event.preventDefault()"
-                    >
-                      🔊
-                    </span>
+                    @if (item.exampleJa) {
+                      <button
+                        type="button"
+                        class="btn-audio-small"
+                        aria-label="Nghe ví dụ"
+                        (click)="selectAndSpeak(itemKey(category()!.id, item), item.exampleJa!)"
+                      >
+                        🔊
+                      </button>
+                    }
                   </div>
                   @if (item.exampleJa) {
-                    <span class="suffix-example-ja japanese-text">{{ item.exampleJa }}</span>
+                    <button
+                      type="button"
+                      class="suffix-example-ja japanese-text"
+                      (click)="selectAndSpeak(itemKey(category()!.id, item), item.exampleJa!)"
+                    >
+                      {{ item.exampleJa }}
+                    </button>
                   }
                   @if (item.exampleVi) {
                     <span class="suffix-example-vi">{{ item.exampleVi }}</span>
                   }
                 </div>
               }
-            </button>
+            </article>
           }
         </div>
       }

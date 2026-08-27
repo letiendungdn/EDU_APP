@@ -66,6 +66,8 @@ export class KanjiService {
                 { word: { contains: q } },
                 { reading: { contains: q } },
                 { meaningVi: { contains: q, mode: "insensitive" } },
+                { exampleJa: { contains: q } },
+                { exampleVi: { contains: q, mode: "insensitive" } },
               ],
             },
           },
@@ -112,6 +114,9 @@ export class KanjiService {
         word: dto.word.trim(),
         reading: dto.reading.trim(),
         meaningVi: dto.meaningVi.trim(),
+        exampleJa: dto.exampleJa?.trim() || null,
+        exampleKana: dto.exampleKana?.trim() || null,
+        exampleVi: dto.exampleVi?.trim() || null,
         sortOrder,
         kanjiEntryId,
       },
@@ -128,6 +133,15 @@ export class KanjiService {
         ...(dto.word != null ? { word: dto.word.trim() } : {}),
         ...(dto.reading != null ? { reading: dto.reading.trim() } : {}),
         ...(dto.meaningVi != null ? { meaningVi: dto.meaningVi.trim() } : {}),
+        ...(dto.exampleJa !== undefined
+          ? { exampleJa: dto.exampleJa?.trim() || null }
+          : {}),
+        ...(dto.exampleKana !== undefined
+          ? { exampleKana: dto.exampleKana?.trim() || null }
+          : {}),
+        ...(dto.exampleVi !== undefined
+          ? { exampleVi: dto.exampleVi?.trim() || null }
+          : {}),
         ...(dto.sortOrder != null ? { sortOrder: dto.sortOrder } : {}),
       },
     });
