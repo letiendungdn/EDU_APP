@@ -12,7 +12,7 @@ import {
   type GrammarSrsCard,
 } from '../../core/utils/grammarSrs';
 import { JLPT_LISTENING_ITEMS, JLPT_LISTENING_TYPES, type JlptListeningType } from '../../core/data/jlpt-listening';
-import { ROLEPLAY_SCENES } from '../../core/data/roleplay';
+import type { JapaneseRoleplayPayload, RoleplayScene } from '../../core/models/reference.models';
 
 type ExtraTab = 'homophones' | 'keigo' | 'radicals' | 'grammar-srs' | 'listening' | 'roleplay';
 
@@ -76,12 +76,17 @@ export class PracticeExtraPageComponent {
   );
   readonly listenCurrent = computed(() => this.listenBank()[this.listenIndex()]);
 
-  readonly sceneId = signal(ROLEPLAY_SCENES[0].id);
-  readonly scenes = ROLEPLAY_SCENES;
+  readonly sceneId = signal('');
+  readonly roleplayLoading = signal(true);
+  readonly scenes = signal<RoleplayScene[]>([]);
   readonly lineIndex = signal(0);
   readonly hideJa = signal(true);
-  readonly scene = computed(() => ROLEPLAY_SCENES.find((s) => s.id === this.sceneId()) ?? ROLEPLAY_SCENES[0]);
-  readonly line = computed(() => this.scene().lines[this.lineIndex()]);
+  readonly scene = computed(() => {
+    const scenes = this.scenes();
+    const id = this.sceneId() || scenes[0]?.id || '';
+    return scenes.find((s) => s.id === id) ?? scenes[0] ?? null;
+  });
+  readonly line = computed(() => this.scene()?.lines[this.lineIndex()] ?? null);
 
   constructor() {
     const path = this.route.snapshot.routeConfig?.path ?? '';
@@ -98,6 +103,11 @@ export class PracticeExtraPageComponent {
     void this.api.getVocabulariesRange(1, 50).then((rows) => {
       this.groups.set(buildHomophoneGroups(rows));
       this.vocabLoading.set(false);
+    });
+    void this.api.getJapaneseRoleplay().then((data: JapaneseRoleplayPayload) => {
+      this.scenes.set(data.scenes);
+      this.sceneId.set(data.scenes[0]?.id ?? '');
+      this.roleplayLoading.set(false);
     });
   }
 

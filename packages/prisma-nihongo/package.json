@@ -13,6 +13,8 @@
     "seed:country-names": "ts-node seed-country-names.ts",
     "seed:vocab-suffixes": "ts-node seed-vocab-suffixes.ts",
     "seed:kanji-vocab-examples": "ts-node seed-kanji-vocab-examples.ts",
+    "seed:conversation": "ts-node seed-conversation.ts",
+    "seed:roleplay": "ts-node seed-roleplay.ts",
     "seed:home-page": "ts-node seed-home-page.ts",
     "studio": "prisma studio"
   },

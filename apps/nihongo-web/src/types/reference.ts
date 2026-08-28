@@ -108,6 +108,59 @@ export interface HomePagePayload {
   sections: HomeFeatureSection[];
 }
 
+export interface ConversationPhraseItem {
+  ja: string;
+  kana: string;
+  romaji: string;
+  vi: string;
+  note?: string;
+}
+
+export interface ConversationIntroLine {
+  ja: string;
+  kana: string;
+  romaji: string;
+  vi: string;
+  tip?: string;
+}
+
+export interface ConversationIntroSlot {
+  slot: string;
+  question: string;
+  examples: ConversationPhraseItem[];
+}
+
+export interface ConversationPhraseGroup {
+  id: string;
+  label: string;
+  hint: string;
+  items: ConversationPhraseItem[];
+}
+
+export interface JapaneseConversationPayload {
+  introScript: ConversationIntroLine[];
+  introSlots: ConversationIntroSlot[];
+  phraseGroups: ConversationPhraseGroup[];
+}
+
+export interface RoleplayLine {
+  role: string;
+  ja: string;
+  vi: string;
+}
+
+export interface RoleplayScene {
+  id: string;
+  title: string;
+  titleJa: string;
+  desc: string;
+  lines: RoleplayLine[];
+}
+
+export interface JapaneseRoleplayPayload {
+  scenes: RoleplayScene[];
+}
+
 export interface PronunciationRulePoint {
   label?: string;
   japanese?: string;

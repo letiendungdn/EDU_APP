@@ -35,6 +35,8 @@ import type {
   JapaneseCountryNamesPayload,
   JapaneseVocabSuffixesPayload,
   HomePagePayload,
+  JapaneseConversationPayload,
+  JapaneseRoleplayPayload,
   JapanesePronunciationRulesPayload,
   EnglishKatakanaPayload,
   JlptDaNangSchedulePayload,
@@ -340,6 +342,14 @@ export function fetchJapaneseVocabSuffixes() {
 
 export function fetchHomePage() {
   return fetchReference<HomePagePayload>('home-page');
+}
+
+export function fetchJapaneseConversation() {
+  return fetchReference<JapaneseConversationPayload>('japanese-conversation');
+}
+
+export function fetchJapaneseRoleplay() {
+  return fetchReference<JapaneseRoleplayPayload>('japanese-roleplay');
 }
 
 export function fetchJapanesePronunciationRules() {

@@ -123,25 +123,29 @@
   }
 
   @if (tab() === 'roleplay') {
+    @if (roleplayLoading() || !scene() || !line()) {
+      <p class="drill-meta">Đang tải bài đóng vai...</p>
+    } @else {
     <header class="drill-header"><h2 class="view-title">会話 — Đóng vai</h2></header>
     <div class="drill-toolbar">
-      @for (s of scenes; track s.id) {
+      @for (s of scenes(); track s.id) {
         <button type="button" class="tab-btn" [class.active]="sceneId() === s.id" (click)="setScene(s.id)">{{ s.title }}</button>
       }
     </div>
-    <p class="drill-meta" style="text-align: center">{{ scene().titleJa }} — {{ scene().desc }}</p>
+    <p class="drill-meta" style="text-align: center">{{ scene()!.titleJa }} — {{ scene()!.desc }}</p>
     <div class="drill-card">
-      <p class="drill-meta">{{ line().role }} · {{ lineIndex() + 1 }}/{{ scene().lines.length }}</p>
-      <p class="drill-prompt japanese-text">{{ hideJa() ? '……' : line().ja }}</p>
-      <p class="drill-meta">{{ line().vi }}</p>
+      <p class="drill-meta">{{ line()!.role }} · {{ lineIndex() + 1 }}/{{ scene()!.lines.length }}</p>
+      <p class="drill-prompt japanese-text">{{ hideJa() ? '……' : line()!.ja }}</p>
+      <p class="drill-meta">{{ line()!.vi }}</p>
       <div class="drill-toolbar">
-        <button type="button" class="btn btn-primary" (click)="speak(line().ja)">🔊 Nghe lượt này</button>
+        <button type="button" class="btn btn-primary" (click)="speak(line()!.ja)">🔊 Nghe lượt này</button>
         <button type="button" class="btn btn-outline" (click)="hideJa.set(!hideJa())">{{ hideJa() ? 'Hiện chữ' : 'Che chữ' }}</button>
       </div>
     </div>
     <div class="drill-toolbar">
       <button type="button" class="btn btn-nav" [disabled]="lineIndex() === 0" (click)="lineIndex.set(lineIndex() - 1); hideJa.set(true)">Lượt trước</button>
-      <button type="button" class="btn btn-nav" [disabled]="lineIndex() >= scene().lines.length - 1" (click)="lineIndex.set(lineIndex() + 1); hideJa.set(true)">Lượt sau</button>
+      <button type="button" class="btn btn-nav" [disabled]="lineIndex() >= scene()!.lines.length - 1" (click)="lineIndex.set(lineIndex() + 1); hideJa.set(true)">Lượt sau</button>
     </div>
+    }
   }
 </div>

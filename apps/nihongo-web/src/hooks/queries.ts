@@ -26,6 +26,8 @@ import {
   fetchJapaneseCountryNames,
   fetchJapaneseVocabSuffixes,
   fetchHomePage,
+  fetchJapaneseConversation,
+  fetchJapaneseRoleplay,
   fetchJapanesePronunciationRules,
   fetchEnglishKatakana,
   fetchJlptRoadmap,
@@ -78,6 +80,8 @@ export const queryKeys = {
   japaneseCountryNames: ['reference', 'japanese-country-names'] as const,
   japaneseVocabSuffixes: ['reference', 'japanese-vocab-suffixes'] as const,
   homePage: ['reference', 'home-page'] as const,
+  japaneseConversation: ['reference', 'japanese-conversation'] as const,
+  japaneseRoleplay: ['reference', 'japanese-roleplay'] as const,
   japanesePronunciationRules: ['reference', 'japanese-pronunciation-rules'] as const,
   englishKatakana: ['reference', 'english-katakana'] as const,
   dailyListeningConfig: ['reference', 'daily-listening'] as const,
@@ -232,6 +236,22 @@ export function useHomePageQuery() {
   return useQuery({
     queryKey: queryKeys.homePage,
     queryFn: fetchHomePage,
+    staleTime: STALE_5M,
+  });
+}
+
+export function useJapaneseConversationQuery() {
+  return useQuery({
+    queryKey: queryKeys.japaneseConversation,
+    queryFn: fetchJapaneseConversation,
+    staleTime: STALE_5M,
+  });
+}
+
+export function useJapaneseRoleplayQuery() {
+  return useQuery({
+    queryKey: queryKeys.japaneseRoleplay,
+    queryFn: fetchJapaneseRoleplay,
     staleTime: STALE_5M,
   });
 }

@@ -8,6 +8,8 @@ import { seedSubscriptionPlans } from './seed-plans';
 import { seedCountryNames } from './seed-country-names';
 import { seedVocabSuffixes } from './seed-vocab-suffixes';
 import { seedKanjiVocabExamples } from './seed-kanji-vocab-examples';
+import { seedConversation } from './seed-conversation';
+import { seedRoleplay } from './seed-roleplay';
 import { seedHomePage } from './seed-home-page';
 
 const prisma = new PrismaClient();
@@ -22,6 +24,8 @@ async function main() {
   await seedCountryNames(prisma);
   await seedVocabSuffixes(prisma);
   await seedKanjiVocabExamples(prisma);
+  await seedConversation(prisma);
+  await seedRoleplay(prisma);
   await seedHomePage(prisma);
   console.log('\nSeeding finished.');
 }

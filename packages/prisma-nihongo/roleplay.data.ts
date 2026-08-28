@@ -35,11 +35,11 @@ export const ROLEPLAY_SCENES: RoleplayScene[] = [
     desc: 'Gặp người mới, nói tên và quốc tịch.',
     lines: [
       { role: '先生', ja: '自己紹介をお願いします。', vi: 'Mời tự giới thiệu.' },
-      { role: 'あなた', ja: 'はじめまして。リンと申します。', vi: 'Rất vui được gặp. Tôi tên Linh.' },
+      { role: 'あなた', ja: 'はじめまして。ズンと申します。', vi: 'Rất vui được gặp. Tôi tên Dũng.' },
       { role: 'あなた', ja: 'ベトナムから来ました。大学生です。', vi: 'Tôi đến từ Việt Nam. Tôi là sinh viên.' },
       { role: 'あなた', ja: '趣味は音楽を聞くことです。', vi: 'Sở thích là nghe nhạc.' },
       { role: 'あなた', ja: 'どうぞよろしくお願いします。', vi: 'Rất mong được giúp đỡ.' },
-      { role: '先生', ja: 'リンさん、よろしくお願いします。', vi: 'Linh, rất mong được giúp đỡ.' },
+      { role: '先生', ja: 'ズンさん、よろしくお願いします。', vi: 'Dũng, rất mong được giúp đỡ.' },
     ],
   },
   {

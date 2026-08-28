@@ -53,6 +53,8 @@ import type {
   JapaneseCountersPayload,
   JapaneseVocabSuffixesPayload,
   HomePagePayload,
+  JapaneseConversationPayload,
+  JapaneseRoleplayPayload,
   JapanesePronunciationRulesPayload,
   JlptDaNangSchedulePayload,
   JlptRoadmapPayload,
@@ -244,6 +246,14 @@ export class ApiService {
 
   getHomePage(): Promise<HomePagePayload> {
     return this.getReference<HomePagePayload>('home-page');
+  }
+
+  getJapaneseConversation(): Promise<JapaneseConversationPayload> {
+    return this.getReference<JapaneseConversationPayload>('japanese-conversation');
+  }
+
+  getJapaneseRoleplay(): Promise<JapaneseRoleplayPayload> {
+    return this.getReference<JapaneseRoleplayPayload>('japanese-roleplay');
   }
 
   getJapanesePronunciationRules(): Promise<JapanesePronunciationRulesPayload> {

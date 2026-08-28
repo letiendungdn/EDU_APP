@@ -1,22 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { playAudio } from '../utils/speech';
-import { ROLEPLAY_SCENES } from '../data/roleplay';
+import { useJapaneseRoleplayQuery } from '../hooks/queries';
 import './DrillView.css';
 
 export default function RoleplayView() {
-  const [sceneId, setSceneId] = useState(ROLEPLAY_SCENES[0].id);
+  const { data, isLoading } = useJapaneseRoleplayQuery();
+  const scenes = data?.scenes ?? [];
+
+  const [sceneId, setSceneId] = useState('');
   const [lineIndex, setLineIndex] = useState(0);
   const [hideJa, setHideJa] = useState(true);
-  const scene = ROLEPLAY_SCENES.find((s) => s.id === sceneId) ?? ROLEPLAY_SCENES[0];
-  const line = scene.lines[lineIndex];
+
+  useEffect(() => {
+    if (scenes.length && !sceneId) {
+      setSceneId(scenes[0].id);
+    }
+  }, [scenes, sceneId]);
+
+  const scene = scenes.find((s) => s.id === sceneId) ?? scenes[0];
+  const line = scene?.lines[lineIndex];
 
   function playScene() {
+    if (!scene) return;
     scene.lines.forEach((item, i) => {
       window.setTimeout(() => playAudio(item.ja), i * 2200);
     });
+  }
+
+  if (isLoading || !data || !scene || !line) {
+    return (
+      <div className="container drill-view">
+        <p className="drill-meta">Đang tải bài đóng vai...</p>
+      </div>
+    );
   }
 
   return (
@@ -29,7 +48,7 @@ export default function RoleplayView() {
         </p>
       </header>
       <div className="drill-toolbar">
-        {ROLEPLAY_SCENES.map((s) => (
+        {scenes.map((s) => (
           <button
             key={s.id}
             type="button"

@@ -1,17 +1,12 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import type { ConversationPhraseItem } from '../types/reference';
 import PlayAllButton from '../components/PlayAllButton';
 import { usePlayAll } from '../hooks/usePlayAll';
+import { useJapaneseConversationQuery } from '../hooks/queries';
 import { playAudio } from '../utils/speech';
-import {
-  INTRO_SLOTS,
-  PHRASE_GROUPS,
-  SELF_INTRO_SCRIPT,
-  allPhrases,
-  type PhraseItem,
-} from '../data/conversation';
 import './DrillView.css';
 import './ConversationView.css';
 
@@ -26,30 +21,52 @@ function shuffle<T>(list: T[]): T[] {
   return next;
 }
 
-function quizOptions(correct: PhraseItem, bank: PhraseItem[]): string[] {
+function quizOptions(correct: ConversationPhraseItem, bank: ConversationPhraseItem[]): string[] {
   const rest = shuffle(bank.filter((p) => p.ja !== correct.ja)).slice(0, 3).map((p) => p.ja);
   return shuffle([correct.ja, ...rest]);
 }
 
 export default function ConversationView() {
+  const { data, isLoading } = useJapaneseConversationQuery();
+  const introScript = data?.introScript ?? [];
+  const introSlots = data?.introSlots ?? [];
+  const phraseGroups = data?.phraseGroups ?? [];
+
   const [mode, setMode] = useState<Mode>('intro');
   const [lineIndex, setLineIndex] = useState(0);
   const [hideJa, setHideJa] = useState(false);
-  const [groupId, setGroupId] = useState(PHRASE_GROUPS[0].id);
+  const [groupId, setGroupId] = useState('');
   const [qIndex, setQIndex] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
   const [score, setScore] = useState({ ok: 0, n: 0 });
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
 
-  const group = PHRASE_GROUPS.find((g) => g.id === groupId) ?? PHRASE_GROUPS[0];
-  const line = SELF_INTRO_SCRIPT[lineIndex];
-  const bank = useMemo(() => allPhrases(), []);
+  useEffect(() => {
+    if (phraseGroups.length && !groupId) {
+      setGroupId(phraseGroups[0].id);
+    }
+  }, [phraseGroups, groupId]);
+
+  const group = phraseGroups.find((g) => g.id === groupId) ?? phraseGroups[0];
+  const line = introScript[lineIndex];
+  const bank = useMemo(
+    () => phraseGroups.flatMap((g) => g.items),
+    [phraseGroups],
+  );
   const quizDeck = useMemo(() => shuffle(bank).slice(0, 16), [bank]);
   const currentQ = quizDeck[qIndex];
   const options = useMemo(
     () => (currentQ ? quizOptions(currentQ, bank) : []),
     [currentQ, bank],
   );
+
+  if (isLoading || !data || !introScript.length) {
+    return (
+      <div className="container drill-view conversation-view">
+        <p className="drill-meta">Đang tải bài giao tiếp...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container drill-view conversation-view">
@@ -73,7 +90,7 @@ export default function ConversationView() {
         </button>
       </div>
 
-      {mode === 'intro' && (
+      {mode === 'intro' && line && (
         <>
           <section className="drill-card intro-script">
             <p className="drill-meta">Bài mẫu — đổi tên / quê / nghề cho đúng bạn</p>
@@ -83,7 +100,7 @@ export default function ConversationView() {
             <p className="drill-meta">{line.kana} · {line.romaji}</p>
             <p>{line.vi}</p>
             {line.tip && <p className="intro-tip">{line.tip}</p>}
-            <p className="drill-score">{lineIndex + 1}/{SELF_INTRO_SCRIPT.length}</p>
+            <p className="drill-score">{lineIndex + 1}/{introScript.length}</p>
             <div className="drill-toolbar">
               <button type="button" className="btn btn-primary" onClick={() => playAudio(line.ja)}>🔊 Nghe câu này</button>
               <button type="button" className="btn btn-outline" onClick={() => setHideJa((v) => !v)}>
@@ -91,19 +108,19 @@ export default function ConversationView() {
               </button>
               <PlayAllButton
                 isPlaying={isPlayingAll}
-                onPlay={() => startPlayAll(SELF_INTRO_SCRIPT.map((l) => l.ja), { pauseMs: 700, onItemIndex: setLineIndex })}
+                onPlay={() => startPlayAll(introScript.map((l) => l.ja), { pauseMs: 700, onItemIndex: setLineIndex })}
                 onStop={stopPlayAll}
                 label="Đọc cả bài"
               />
             </div>
             <div className="drill-toolbar">
               <button type="button" className="btn btn-nav" disabled={lineIndex === 0} onClick={() => setLineIndex((i) => i - 1)}>Câu trước</button>
-              <button type="button" className="btn btn-nav" disabled={lineIndex >= SELF_INTRO_SCRIPT.length - 1} onClick={() => setLineIndex((i) => i + 1)}>Câu sau</button>
+              <button type="button" className="btn btn-nav" disabled={lineIndex >= introScript.length - 1} onClick={() => setLineIndex((i) => i + 1)}>Câu sau</button>
             </div>
           </section>
 
           <h3 className="conv-section-title">Ghép bài của bạn</h3>
-          {INTRO_SLOTS.map((slot) => (
+          {introSlots.map((slot) => (
             <section key={slot.slot} className="intro-slot">
               <h4>{slot.slot} <span className="japanese-text">· {slot.question}</span></h4>
               <div className="phrase-grid">
@@ -120,10 +137,10 @@ export default function ConversationView() {
         </>
       )}
 
-      {mode === 'phrases' && (
+      {mode === 'phrases' && group && (
         <>
           <div className="drill-toolbar">
-            {PHRASE_GROUPS.map((g) => (
+            {phraseGroups.map((g) => (
               <button
                 key={g.id}
                 type="button"

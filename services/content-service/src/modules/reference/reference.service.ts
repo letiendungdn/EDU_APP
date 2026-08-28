@@ -14,6 +14,8 @@ const SLUGS = [
   "jlpt-roadmap",
   "jlpt-danang-schedule",
   "home-page",
+  "japanese-conversation",
+  "japanese-roleplay",
 ] as const;
 
 type ReferenceSlug = (typeof SLUGS)[number];
@@ -64,6 +66,10 @@ export class ReferenceService {
         return this.getJlptDanangSchedule();
       case "home-page":
         return this.getHomePage();
+      case "japanese-conversation":
+        return this.getJapaneseConversation();
+      case "japanese-roleplay":
+        return this.getJapaneseRoleplay();
       default:
         throw new NotFoundException(`Reference content not found: ${slug}`);
     }
@@ -82,6 +88,8 @@ export class ReferenceService {
       "jlpt-roadmap": "Lộ trình JLPT",
       "jlpt-danang-schedule": "Lịch thi JLPT Đà Nẵng",
       "home-page": "Trang chủ — thống kê & mục học",
+      "japanese-conversation": "会話 — 自己紹介 & câu giao tiếp",
+      "japanese-roleplay": "会話 — Đóng vai hội thoại",
     };
     return titles[slug];
   }
@@ -506,6 +514,84 @@ export class ReferenceService {
           icon: item.icon,
           title: item.title,
           desc: item.desc,
+        })),
+      })),
+    };
+  }
+
+  private async getJapaneseConversation() {
+    const [introLines, introSlots, phraseGroups] = await Promise.all([
+      this.prisma.conversationIntroLine.findMany({
+        orderBy: { sortOrder: "asc" },
+      }),
+      this.prisma.conversationIntroSlot.findMany({
+        include: { examples: { orderBy: { sortOrder: "asc" } } },
+        orderBy: { sortOrder: "asc" },
+      }),
+      this.prisma.conversationPhraseGroup.findMany({
+        include: { items: { orderBy: { sortOrder: "asc" } } },
+        orderBy: { sortOrder: "asc" },
+      }),
+    ]);
+
+    if (!introLines.length && !phraseGroups.length) {
+      throw new NotFoundException("Japanese conversation content not seeded");
+    }
+
+    return {
+      introScript: introLines.map((line) => ({
+        ja: line.ja,
+        kana: line.kana,
+        romaji: line.romaji,
+        vi: line.vi,
+        tip: line.tip ?? undefined,
+      })),
+      introSlots: introSlots.map((slot) => ({
+        slot: slot.slot,
+        question: slot.question,
+        examples: slot.examples.map((ex) => ({
+          ja: ex.ja,
+          kana: ex.kana,
+          romaji: ex.romaji,
+          vi: ex.vi,
+          note: ex.note ?? undefined,
+        })),
+      })),
+      phraseGroups: phraseGroups.map((group) => ({
+        id: group.slug,
+        label: group.label,
+        hint: group.hint,
+        items: group.items.map((item) => ({
+          ja: item.ja,
+          kana: item.kana,
+          romaji: item.romaji,
+          vi: item.vi,
+          note: item.note ?? undefined,
+        })),
+      })),
+    };
+  }
+
+  private async getJapaneseRoleplay() {
+    const scenes = await this.prisma.roleplayScene.findMany({
+      include: { lines: { orderBy: { sortOrder: "asc" } } },
+      orderBy: { sortOrder: "asc" },
+    });
+
+    if (!scenes.length) {
+      throw new NotFoundException("Japanese roleplay content not seeded");
+    }
+
+    return {
+      scenes: scenes.map((scene) => ({
+        id: scene.slug,
+        title: scene.title,
+        titleJa: scene.titleJa,
+        desc: scene.desc,
+        lines: scene.lines.map((line) => ({
+          role: line.role,
+          ja: line.ja,
+          vi: line.vi,
         })),
       })),
     };

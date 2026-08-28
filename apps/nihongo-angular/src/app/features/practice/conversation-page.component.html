@@ -1,3 +1,8 @@
+@if (loading()) {
+  <div class="container drill-view conversation-view">
+    <p class="drill-meta">Đang tải bài giao tiếp...</p>
+  </div>
+} @else {
 <div class="container drill-view conversation-view">
   <header class="drill-header">
     <h2 class="view-title">会話 — Giao tiếp thông dụng</h2>
@@ -14,30 +19,32 @@
   </div>
 
   @if (mode() === 'intro') {
-    <section class="drill-card">
-      <p class="drill-meta">Bài mẫu — đổi tên / quê / nghề cho đúng bạn</p>
-      <p class="drill-prompt japanese-text">{{ hideJa() ? '……' : line().ja }}</p>
-      <p class="drill-meta">{{ line().kana }} · {{ line().romaji }}</p>
-      <p>{{ line().vi }}</p>
-      @if (line().tip) {
-        <p class="drill-meta">{{ line().tip }}</p>
-      }
-      <p class="drill-score">{{ lineIndex() + 1 }}/{{ script.length }}</p>
-      <div class="drill-toolbar">
-        <button type="button" class="btn btn-primary" (click)="speak(line().ja)">🔊 Nghe câu này</button>
-        <button type="button" class="btn btn-outline" (click)="hideJa.set(!hideJa())">{{ hideJa() ? 'Hiện chữ' : 'Che chữ' }}</button>
-        <button type="button" class="btn btn-outline" (click)="playScript()">
-          {{ playingAll() ? '⏹ Dừng' : 'Đọc cả bài' }}
-        </button>
-      </div>
-      <div class="drill-toolbar">
-        <button type="button" class="btn btn-nav" [disabled]="lineIndex() === 0" (click)="lineIndex.set(lineIndex() - 1)">Câu trước</button>
-        <button type="button" class="btn btn-nav" [disabled]="lineIndex() >= script.length - 1" (click)="lineIndex.set(lineIndex() + 1)">Câu sau</button>
-      </div>
-    </section>
+    @if (line(); as currentLine) {
+      <section class="drill-card">
+        <p class="drill-meta">Bài mẫu — đổi tên / quê / nghề cho đúng bạn</p>
+        <p class="drill-prompt japanese-text">{{ hideJa() ? '……' : currentLine.ja }}</p>
+        <p class="drill-meta">{{ currentLine.kana }} · {{ currentLine.romaji }}</p>
+        <p>{{ currentLine.vi }}</p>
+        @if (currentLine.tip) {
+          <p class="drill-meta">{{ currentLine.tip }}</p>
+        }
+        <p class="drill-score">{{ lineIndex() + 1 }}/{{ script().length }}</p>
+        <div class="drill-toolbar">
+          <button type="button" class="btn btn-primary" (click)="speak(currentLine.ja)">🔊 Nghe câu này</button>
+          <button type="button" class="btn btn-outline" (click)="hideJa.set(!hideJa())">{{ hideJa() ? 'Hiện chữ' : 'Che chữ' }}</button>
+          <button type="button" class="btn btn-outline" (click)="playScript()">
+            {{ playingAll() ? '⏹ Dừng' : 'Đọc cả bài' }}
+          </button>
+        </div>
+        <div class="drill-toolbar">
+          <button type="button" class="btn btn-nav" [disabled]="lineIndex() === 0" (click)="lineIndex.set(lineIndex() - 1)">Câu trước</button>
+          <button type="button" class="btn btn-nav" [disabled]="lineIndex() >= script().length - 1" (click)="lineIndex.set(lineIndex() + 1)">Câu sau</button>
+        </div>
+      </section>
+    }
 
     <h3 class="conv-section-title">Ghép bài của bạn</h3>
-    @for (slot of slots; track slot.slot) {
+    @for (slot of slots(); track slot.slot) {
       <section>
         <h4>{{ slot.slot }} <span class="japanese-text">· {{ slot.question }}</span></h4>
         <div class="phrase-grid">
@@ -54,32 +61,34 @@
   }
 
   @if (mode() === 'phrases') {
-    <div class="drill-toolbar">
-      @for (g of groups; track g.id) {
-        <button type="button" class="tab-btn" [class.active]="groupId() === g.id" (click)="setGroup(g.id)">{{ g.label }}</button>
-      }
-    </div>
-    <p class="drill-meta" style="text-align: center">{{ group().hint }}</p>
-    <div class="drill-toolbar">
-      <button type="button" class="btn btn-outline" (click)="playGroup()">
-        {{ playingAll() ? '⏹ Dừng' : 'Phát ' + group().items.length + ' câu' }}
-      </button>
-    </div>
-    <div class="phrase-grid">
-      @for (item of group().items; track item.ja) {
-        <button type="button" class="phrase-card" (click)="speak(item.ja)">
-          <strong class="japanese-text">{{ item.ja }}</strong>
-          <span class="japanese-text">{{ item.kana }}</span>
-          <span>{{ item.romaji }}</span>
-          <span>{{ item.vi }}</span>
+    @if (group(); as currentGroup) {
+      <div class="drill-toolbar">
+        @for (g of groups(); track g.id) {
+          <button type="button" class="tab-btn" [class.active]="groupId() === g.id" (click)="setGroup(g.id)">{{ g.label }}</button>
+        }
+      </div>
+      <p class="drill-meta" style="text-align: center">{{ currentGroup.hint }}</p>
+      <div class="drill-toolbar">
+        <button type="button" class="btn btn-outline" (click)="playGroup()">
+          {{ playingAll() ? '⏹ Dừng' : 'Phát ' + currentGroup.items.length + ' câu' }}
         </button>
-      }
-    </div>
+      </div>
+      <div class="phrase-grid">
+        @for (item of currentGroup.items; track item.ja) {
+          <button type="button" class="phrase-card" (click)="speak(item.ja)">
+            <strong class="japanese-text">{{ item.ja }}</strong>
+            <span class="japanese-text">{{ item.kana }}</span>
+            <span>{{ item.romaji }}</span>
+            <span>{{ item.vi }}</span>
+          </button>
+        }
+      </div>
+    }
   }
 
   @if (mode() === 'quiz') {
     @if (currentQ(); as q) {
-      <p class="drill-score">{{ qIndex() + 1 }}/{{ quizDeck.length }} · đúng {{ score().ok }}/{{ score().n || 0 }}</p>
+      <p class="drill-score">{{ qIndex() + 1 }}/{{ quizDeck().length }} · đúng {{ score().ok }}/{{ score().n || 0 }}</p>
       <div class="drill-card">
         <p class="drill-meta">Nghĩa tiếng Việt — chọn câu Nhật đúng</p>
         <p class="drill-prompt">{{ q.vi }}</p>
@@ -103,3 +112,4 @@
     }
   }
 </div>
+}

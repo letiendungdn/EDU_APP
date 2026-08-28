@@ -21,6 +21,14 @@
         >
           Katakana
         </button>
+        <button
+          type="button"
+          class="btn tab-btn"
+          [class.active]="activeTab() === 'both'"
+          (click)="setTab('both')"
+        >
+          Cả hai
+        </button>
       </div>
     </header>
 
@@ -37,38 +45,90 @@
           </label>
         </div>
 
-        <div class="kana-sections">
-          @for (section of currentSections(); track section.id) {
-            <section class="kana-section">
-              <h3 class="kana-section-title">
-                <span class="kana-section-title-jp japanese-text">{{ section.title }}</span>
-                @if (section.subtitle) {
-                  <span class="kana-section-title-sub">{{ section.subtitle }}</span>
-                }
-              </h3>
-              <div
-                class="kana-grid glass-panel"
-                [style.grid-template-columns]="'repeat(' + (section.columns ?? 5) + ', 1fr)'"
-              >
-                @for (item of section.rows.flat(); track $index) {
-                  <div
-                    class="kana-card"
-                    [class.active-card]="item.kana"
-                    [class.empty-card]="!item.kana"
-                    [class.selected]="item.kana && selectedKana() === item.kana"
-                    (click)="onCharClick(item)"
-                    (keyup.enter)="onCharClick(item)"
-                    [tabindex]="item.kana ? 0 : -1"
-                    role="button"
-                  >
-                    <span class="kana-char japanese-text">{{ item.kana }}</span>
-                    <span class="kana-romaji">{{ item.romaji }}</span>
-                  </div>
-                }
-              </div>
-            </section>
-          }
-        </div>
+        @if (activeTab() === 'both') {
+          <div class="kana-sections">
+            @for (section of pairedSections(); track section.id) {
+              <section class="kana-section">
+                <h3 class="kana-section-title">
+                  <span class="kana-section-title-jp japanese-text">{{ section.title }}</span>
+                  @if (section.subtitle) {
+                    <span class="kana-section-title-sub">{{ section.subtitle }}</span>
+                  }
+                </h3>
+                <div
+                  class="kana-grid glass-panel kana-grid--pair"
+                  [style.grid-template-columns]="'repeat(' + (section.columns ?? 5) + ', 1fr)'"
+                >
+                  @for (cell of section.rows.flat(); track $index) {
+                    <div
+                      class="kana-card kana-card--pair"
+                      [class.active-card]="cell.hiragana || cell.katakana"
+                      [class.empty-card]="!cell.hiragana && !cell.katakana"
+                      [class.selected]="pairCellSelected(cell)"
+                    >
+                      @if (cell.hiragana) {
+                        <button
+                          type="button"
+                          class="kana-pair-char japanese-text"
+                          [class.is-selected]="selectedKana() === cell.hiragana"
+                          (click)="onCharClick(cell.hiragana)"
+                          [attr.aria-label]="'Hiragana ' + cell.romaji"
+                        >
+                          {{ cell.hiragana }}
+                        </button>
+                      }
+                      @if (cell.katakana) {
+                        <button
+                          type="button"
+                          class="kana-pair-char kana-pair-char--kata japanese-text"
+                          [class.is-selected]="selectedKana() === cell.katakana"
+                          (click)="onCharClick(cell.katakana)"
+                          [attr.aria-label]="'Katakana ' + cell.romaji"
+                        >
+                          {{ cell.katakana }}
+                        </button>
+                      }
+                      <span class="kana-romaji">{{ cell.romaji }}</span>
+                    </div>
+                  }
+                </div>
+              </section>
+            }
+          </div>
+        } @else {
+          <div class="kana-sections">
+            @for (section of currentSections(); track section.id) {
+              <section class="kana-section">
+                <h3 class="kana-section-title">
+                  <span class="kana-section-title-jp japanese-text">{{ section.title }}</span>
+                  @if (section.subtitle) {
+                    <span class="kana-section-title-sub">{{ section.subtitle }}</span>
+                  }
+                </h3>
+                <div
+                  class="kana-grid glass-panel"
+                  [style.grid-template-columns]="'repeat(' + (section.columns ?? 5) + ', 1fr)'"
+                >
+                  @for (item of section.rows.flat(); track $index) {
+                    <div
+                      class="kana-card"
+                      [class.active-card]="item.kana"
+                      [class.empty-card]="!item.kana"
+                      [class.selected]="item.kana && selectedKana() === item.kana"
+                      (click)="onCharClick(item)"
+                      (keyup.enter)="onCharClick(item)"
+                      [tabindex]="item.kana ? 0 : -1"
+                      role="button"
+                    >
+                      <span class="kana-char japanese-text">{{ item.kana }}</span>
+                      <span class="kana-romaji">{{ item.romaji }}</span>
+                    </div>
+                  }
+                </div>
+              </section>
+            }
+          </div>
+        }
       </div>
 
       @if (selectedKana()) {

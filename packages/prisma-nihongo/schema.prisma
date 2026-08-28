@@ -342,6 +342,113 @@ model HomeFeatureItem {
 }
 
 // ─────────────────────────────────────────────
+// Conversation / 自己紹介 & daily phrases
+// ─────────────────────────────────────────────
+
+model ConversationIntroLine {
+  id        Int      @id @default(autoincrement())
+  ja        String
+  kana      String
+  romaji    String
+  vi        String
+  tip       String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model ConversationIntroSlot {
+  id        Int                         @id @default(autoincrement())
+  slot      String
+  question  String
+  sortOrder Int                         @default(0)
+  examples  ConversationIntroExample[]
+  createdAt DateTime                    @default(now())
+  updatedAt DateTime                    @updatedAt
+
+  @@index([sortOrder])
+}
+
+model ConversationIntroExample {
+  id        Int                   @id @default(autoincrement())
+  slotId    Int
+  slot      ConversationIntroSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  ja        String
+  kana      String
+  romaji    String
+  vi        String
+  note      String?
+  sortOrder Int                   @default(0)
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+
+  @@index([slotId, sortOrder])
+}
+
+model ConversationPhraseGroup {
+  id        Int                       @id @default(autoincrement())
+  slug      String                    @unique
+  label     String
+  hint      String
+  sortOrder Int                       @default(0)
+  items     ConversationPhraseItem[]
+  createdAt DateTime                  @default(now())
+  updatedAt DateTime                  @updatedAt
+
+  @@index([sortOrder])
+}
+
+model ConversationPhraseItem {
+  id        Int                      @id @default(autoincrement())
+  groupId   Int
+  group     ConversationPhraseGroup  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  ja        String
+  kana      String
+  romaji    String
+  vi        String
+  note      String?
+  sortOrder Int                      @default(0)
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+
+  @@index([groupId, sortOrder])
+}
+
+// ─────────────────────────────────────────────
+// Roleplay / đóng vai hội thoại
+// ─────────────────────────────────────────────
+
+model RoleplayScene {
+  id        Int            @id @default(autoincrement())
+  slug      String         @unique
+  title     String
+  titleJa   String
+  desc      String
+  sortOrder Int            @default(0)
+  lines     RoleplayLine[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([sortOrder])
+}
+
+model RoleplayLine {
+  id        Int           @id @default(autoincrement())
+  sceneId   Int
+  scene     RoleplayScene @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  role      String
+  ja        String
+  vi        String
+  sortOrder Int           @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([sceneId, sortOrder])
+}
+
+// ─────────────────────────────────────────────
 // Japanese pronunciation rules (reference)
 // ─────────────────────────────────────────────
 

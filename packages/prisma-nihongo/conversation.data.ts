@@ -36,10 +36,10 @@ export const SELF_INTRO_SCRIPT: IntroLine[] = [
     tip: 'Nói đầu tiên khi gặp người mới.',
   },
   {
-    ja: 'リンと申します。',
-    kana: 'リンともうします。',
-    romaji: 'Rin to mōshimasu.',
-    vi: 'Tôi tên là Linh. (khiêm nhường)',
+    ja: 'ズンと申します。',
+    kana: 'ズンともうします。',
+    romaji: 'Zun to mōshimasu.',
+    vi: 'Tôi tên là Dũng. (khiêm nhường)',
     tip: 'と申します lịch sự hơn です khi tự giới thiệu tên.',
   },
   {
@@ -80,9 +80,9 @@ export const INTRO_SLOTS: IntroSlot[] = [
     slot: 'Tên',
     question: 'お名前は？',
     examples: [
-      { ja: 'リンです。', kana: 'リンです。', romaji: 'Rin desu.', vi: 'Tôi là Linh.' },
-      { ja: 'リンと申します。', kana: 'リンともうします。', romaji: 'Rin to mōshimasu.', vi: 'Tôi tên Linh. (khiêm)' },
-      { ja: '私の名前はグエンです。', kana: 'わたしのなまえはグエンです。', romaji: 'Watashi no namae wa Guen desu.', vi: 'Tên tôi là Nguyễn.' },
+      { ja: 'ズンです。', kana: 'ズンです。', romaji: 'Zun desu.', vi: 'Tôi là Dũng.' },
+      { ja: 'ズンと申します。', kana: 'ズンともうします。', romaji: 'Zun to mōshimasu.', vi: 'Tôi tên Dũng. (khiêm)' },
+      { ja: '私の名前はレ・ズンです。', kana: 'わたしのなまえはレ・ズンです。', romaji: 'Watashi no namae wa Re Zun desu.', vi: 'Tên tôi là Lê Dũng.' },
     ],
   },
   {
@@ -261,6 +261,5 @@ export const PHRASE_GROUPS: PhraseGroup[] = [
   },
 ];
 
-export function allPhrases(): PhraseItem[] {
-  return PHRASE_GROUPS.flatMap((g) => g.items);
-}
+
+
