@@ -8,7 +8,7 @@ export async function seedBookAudio(prisma: PrismaClient) {
 }
 
 async function main() {
-  const { PrismaClient } = await import('./generated/client');
+  const { PrismaClient } = await import('./generated/client/index.js');
   const prisma = new PrismaClient();
   try {
     await seedBookAudio(prisma);
