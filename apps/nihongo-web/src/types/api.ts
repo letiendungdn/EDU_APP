@@ -2,6 +2,7 @@ export interface Lesson {
   id: number;
   lessonNumber: number;
   title: string | null;
+  jlptLevel?: string | null;
   createdAt?: string;
   updatedAt?: string;
   _count?: {
@@ -129,6 +130,7 @@ export interface MockExamTemplate {
   durationMinutes: number;
   totalQuestions: number;
   lessonRange: string;
+  scope?: string;
   description: string;
 }
 

@@ -7,6 +7,7 @@
     "migrate:deploy": "prisma migrate deploy",
     "migrate:dev": "prisma migrate dev",
     "seed": "ts-node seed.ts",
+    "seed:jlpt-content": "ts-node seed-jlpt-content.ts",
     "seed:pronunciation-rules": "ts-node seed-pronunciation-rules.ts",
     "seed:english-katakana": "ts-node seed-english-katakana.ts",
     "seed:long-vowel": "ts-node seed-long-vowel-rules.ts",

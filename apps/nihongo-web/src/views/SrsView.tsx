@@ -458,14 +458,15 @@ export default function SrsView() {
       <div className="srs-add-panel card card--sm">
         <h3 className="srs-add-panel__title">Thêm bài học vào bộ thẻ</h3>
         <p className="srs-add-panel__desc">
-          Chọn bài Minna no Nihongo để thêm toàn bộ từ vựng vào hàng ôn.
+          Nhập số bài để thêm toàn bộ từ vựng vào hàng ôn. Minna: 1–50.
+          JLPT: N3 = 301–304, N2 = 401–404, N1 = 501–503.
         </p>
         <div className="srs-add-form">
           <input
             type="number"
             min={1}
-            max={50}
-            placeholder="Số bài (1–50)"
+            max={599}
+            placeholder="Số bài (vd: 12 hoặc 301)"
             value={addLesson}
             onChange={(e) => setAddLesson(e.target.value)}
             className="input"

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, Suspense, type ReactNode } from 'react';
 
 const nihongoAppUrl = process.env.NEXT_PUBLIC_NIHONGO_APP_URL ?? 'http://localhost:5173';
 
@@ -62,7 +62,9 @@ export default function MainLayout({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={qc}>
-      <SsoHandler />
+      <Suspense fallback={null}>
+        <SsoHandler />
+      </Suspense>
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <header style={{ borderBottom: '1px solid var(--border)', padding: '0.75rem 0', background: 'var(--bg)', position: 'sticky', top: 0, zIndex: 100 }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>

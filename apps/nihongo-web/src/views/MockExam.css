@@ -61,6 +61,21 @@
   color: #93c5fd;
 }
 
+.mock-exam-level-badge.level-n3 {
+  background: rgba(168, 85, 247, 0.2);
+  color: #c4b5fd;
+}
+
+.mock-exam-level-badge.level-n2 {
+  background: rgba(249, 115, 22, 0.2);
+  color: #fdba74;
+}
+
+.mock-exam-level-badge.level-n1 {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
 .mock-exam-meta {
   list-style: none;
   padding: 0;

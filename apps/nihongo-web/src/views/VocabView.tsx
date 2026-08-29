@@ -253,6 +253,11 @@ export default function VocabView() {
   const currentLessonMeta = lessons.find((l) => l.lessonNumber === currentLesson);
   const lessonId = currentLessonMeta?.id ?? null;
   const expectedCount = currentLessonMeta?._count?.vocabularies ?? null;
+  const currentJlptLevel = currentLessonMeta?.jlptLevel ?? null;
+  const vocabTitle =
+    currentJlptLevel && ['N3', 'N2', 'N1'].includes(currentJlptLevel)
+      ? `Từ vựng JLPT ${currentJlptLevel}`
+      : 'Minna no Nihongo Vocabulary';
 
   useEffect(() => {
     stopPlayAll();
@@ -347,7 +352,7 @@ export default function VocabView() {
 
   const vocabHeader = (
     <div className="vocab-header">
-      <h2 className="view-title">Minna no Nihongo Vocabulary</h2>
+      <h2 className="view-title">{vocabTitle}</h2>
       <div className="vocab-header-links">
         <Link href="/vocab/quiz" className="btn btn-primary">
           Trắc nghiệm JP ↔ VI

@@ -34,7 +34,7 @@ export default function MockExamListPage() {
               <ul className="mock-exam-meta">
                 <li>⏱ {tpl.durationMinutes} phút</li>
                 <li>📝 {tpl.totalQuestions} câu</li>
-                <li>📖 Minna Bài {tpl.lessonRange}</li>
+                <li>📖 {tpl.scope ?? `Minna Bài ${tpl.lessonRange}`}</li>
               </ul>
               <Link href={`/mock-exam/${tpl.level}`} className="btn btn-primary mock-exam-start-btn">
                 Bắt đầu thi

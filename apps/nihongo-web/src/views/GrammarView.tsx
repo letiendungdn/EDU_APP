@@ -115,7 +115,13 @@ export default function GrammarView() {
   const [pinTick, setPinTick] = useState(0);
 
   const canEdit = isAdmin && editMode;
-  const lessonId = lessons.find((lesson) => lesson.lessonNumber === currentLesson)?.id ?? null;
+  const currentLessonMeta = lessons.find((lesson) => lesson.lessonNumber === currentLesson);
+  const lessonId = currentLessonMeta?.id ?? null;
+  const currentJlptLevel = currentLessonMeta?.jlptLevel ?? null;
+  const viewTitle =
+    currentJlptLevel && ['N3', 'N2', 'N1'].includes(currentJlptLevel)
+      ? `Ngữ pháp JLPT ${currentJlptLevel}`
+      : 'Ngữ pháp Minna no Nihongo';
 
   useEffect(() => {
     setAutoRead(readAutoReadPreference());
@@ -472,7 +478,7 @@ export default function GrammarView() {
   return (
     <div className="container grammar-view">
       <div className="grammar-header">
-        <h2 className="view-title grammar-view-title">Ngữ pháp Minna no Nihongo</h2>
+        <h2 className="view-title grammar-view-title">{viewTitle}</h2>
         <p className="grammar-lesson-summary">
           <Link href="/grammar-srs">Ôn mẫu đã ghim</Link>
         </p>
@@ -487,7 +493,8 @@ export default function GrammarView() {
 
         {!loading && lessonGrammar.length > 0 && (
           <p className="grammar-lesson-summary">
-            Bài {currentLesson} gồm {lessonGrammar.length} mục ngữ pháp
+            {currentLessonMeta?.title ?? `Bài ${currentLesson}`} gồm{' '}
+            {lessonGrammar.length} mục ngữ pháp
           </p>
         )}
 

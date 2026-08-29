@@ -55,6 +55,21 @@ export default function LessonSelector({
     );
   }, [data, filterWithContent]);
 
+  const groups = useMemo(() => {
+    const order: Array<{ key: string; label: string; levels: string[] }> = [
+      { key: 'minna', label: 'Minna no Nihongo', levels: ['', 'N5', 'N4'] },
+      { key: 'n3', label: 'JLPT N3', levels: ['N3'] },
+      { key: 'n2', label: 'JLPT N2', levels: ['N2'] },
+      { key: 'n1', label: 'JLPT N1', levels: ['N1'] },
+    ];
+    return order
+      .map((g) => ({
+        ...g,
+        items: lessons.filter((l) => g.levels.includes(l.jlptLevel ?? '')),
+      }))
+      .filter((g) => g.items.length > 0);
+  }, [lessons]);
+
   if (isLoading) {
     return (
       <div className="lesson-selector">
@@ -82,12 +97,23 @@ export default function LessonSelector({
         onChange={(e) => onChange(Number(e.target.value))}
         className="select-input"
       >
-        {lessons.map((lesson) => (
-          <option key={lesson.lessonNumber} value={lesson.lessonNumber}>
-            Bài {lesson.lessonNumber}
-            {countSuffixForLesson(lesson, resolvedCountKind)}
-          </option>
-        ))}
+        {groups.length > 1
+          ? groups.map((group) => (
+              <optgroup key={group.key} label={group.label}>
+                {group.items.map((lesson) => (
+                  <option key={lesson.lessonNumber} value={lesson.lessonNumber}>
+                    {lesson.title ?? `Bài ${lesson.lessonNumber}`}
+                    {countSuffixForLesson(lesson, resolvedCountKind)}
+                  </option>
+                ))}
+              </optgroup>
+            ))
+          : lessons.map((lesson) => (
+              <option key={lesson.lessonNumber} value={lesson.lessonNumber}>
+                {lesson.title ?? `Bài ${lesson.lessonNumber}`}
+                {countSuffixForLesson(lesson, resolvedCountKind)}
+              </option>
+            ))}
       </select>
     </div>
   );

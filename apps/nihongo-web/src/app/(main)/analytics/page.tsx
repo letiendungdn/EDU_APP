@@ -185,7 +185,7 @@ export default function AnalyticsPage() {
           </ResponsiveContainer>
           {/* Pass line */}
           <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            Ngưỡng đạt: N5 ≥ 60% · N4 ≥ 65%
+            Ngưỡng đạt: N5 ≥ 60% · N4–N1 ≥ 65%
           </p>
         </section>
       )}

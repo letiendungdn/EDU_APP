@@ -125,9 +125,9 @@ describe("MockExamsService", () => {
 
   describe("start()", () => {
     it("throws RpcException for unsupported level", async () => {
-      await expect(service.start("n3" as "n5")).rejects.toBeInstanceOf(
-        RpcException,
-      );
+      await expect(
+        service.start("n0" as unknown as "n5"),
+      ).rejects.toBeInstanceOf(RpcException);
     });
   });
 });

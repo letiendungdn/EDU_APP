@@ -12,7 +12,10 @@ import {
   UpsertDailyGoalsDto,
 } from "@app/contracts";
 import { handleGrpcDispatch, type PatternHandler } from "@app/common";
-import { MockExamsService } from "./modules/mock-exams/mock-exams.service";
+import {
+  MockExamsService,
+  type MockExamLevel,
+} from "./modules/mock-exams/mock-exams.service";
 import { ProgressService } from "./modules/progress/progress.service";
 import { SubmitExamCommand } from "./modules/mock-exams/commands/submit-exam.command";
 import { GetResultsQuery } from "./modules/mock-exams/queries/get-results.query";
@@ -33,7 +36,7 @@ export class ExamMsController implements OnModuleInit {
     this.routes = {
       [EXAM_PATTERNS.LIST_TEMPLATES]: () => this.listTemplates(),
       [EXAM_PATTERNS.START_EXAM]: (data) =>
-        this.startExam(data as { level: "n5" | "n4" }),
+        this.startExam(data as { level: MockExamLevel }),
       [EXAM_PATTERNS.SUBMIT_EXAM]: (data) =>
         this.submitExam(
           data as {
@@ -86,7 +89,7 @@ export class ExamMsController implements OnModuleInit {
     return this.mockExamsService.listTemplates();
   }
 
-  startExam(data: { level: "n5" | "n4" }) {
+  startExam(data: { level: MockExamLevel }) {
     return this.mockExamsService.start(data.level);
   }
 

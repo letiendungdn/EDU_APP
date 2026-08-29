@@ -27,7 +27,7 @@ function toQuestionType(
   return type === "MULTIPLE_CHOICE" ? "multiple_choice" : "fill_in_blank";
 }
 
-export type MockExamLevel = "n5" | "n4";
+export type MockExamLevel = "n5" | "n4" | "n3" | "n2" | "n1";
 
 export interface MockExamQuestionPublic {
   id: string;
@@ -68,6 +68,8 @@ interface LevelConfig {
   kanjiCount: number;
   listeningWordCount: number;
   listeningSentenceCount: number;
+  passThreshold: number;
+  description: string;
 }
 
 const LEVEL_CONFIG: Record<MockExamLevel, LevelConfig> = {
@@ -83,6 +85,8 @@ const LEVEL_CONFIG: Record<MockExamLevel, LevelConfig> = {
     kanjiCount: 5,
     listeningWordCount: 4,
     listeningSentenceCount: 4,
+    passThreshold: 60,
+    description: "Từ vựng, ngữ pháp, kanji & nghe (Minna I + KLL N5)",
   },
   n4: {
     title: "Đề thi thử JLPT N4",
@@ -96,6 +100,53 @@ const LEVEL_CONFIG: Record<MockExamLevel, LevelConfig> = {
     kanjiCount: 5,
     listeningWordCount: 4,
     listeningSentenceCount: 4,
+    passThreshold: 65,
+    description: "Từ vựng, ngữ pháp, kanji & nghe (Minna II + KLL N4)",
+  },
+  n3: {
+    title: "Đề thi thử JLPT N3",
+    durationMinutes: 70,
+    lessonFrom: 301,
+    lessonTo: 399,
+    kanjiLessonFrom: 21,
+    kanjiLessonTo: 32,
+    vocabCount: 12,
+    grammarCount: 10,
+    kanjiCount: 5,
+    listeningWordCount: 4,
+    listeningSentenceCount: 4,
+    passThreshold: 65,
+    description: "Từ vựng, ngữ pháp, kanji & nghe (bộ N3 trong app)",
+  },
+  n2: {
+    title: "Đề thi thử JLPT N2",
+    durationMinutes: 75,
+    lessonFrom: 401,
+    lessonTo: 499,
+    kanjiLessonFrom: 401,
+    kanjiLessonTo: 499,
+    vocabCount: 12,
+    grammarCount: 10,
+    kanjiCount: 5,
+    listeningWordCount: 4,
+    listeningSentenceCount: 4,
+    passThreshold: 65,
+    description: "Từ vựng, ngữ pháp, kanji & nghe (bộ N2 trong app)",
+  },
+  n1: {
+    title: "Đề thi thử JLPT N1",
+    durationMinutes: 80,
+    lessonFrom: 501,
+    lessonTo: 599,
+    kanjiLessonFrom: 501,
+    kanjiLessonTo: 599,
+    vocabCount: 12,
+    grammarCount: 10,
+    kanjiCount: 5,
+    listeningWordCount: 4,
+    listeningSentenceCount: 4,
+    passThreshold: 65,
+    description: "Từ vựng, ngữ pháp, kanji & nghe (bộ N1 trong app)",
   },
 };
 
@@ -116,16 +167,18 @@ export class MockExamsService {
         cfg.kanjiCount +
         cfg.listeningWordCount +
         cfg.listeningSentenceCount;
+      const scope =
+        cfg.lessonFrom <= 50
+          ? `Minna Bài ${cfg.lessonFrom}–${cfg.lessonTo}`
+          : `Bộ ${level.toUpperCase()} trong app`;
       return {
         level,
         title: cfg.title,
         durationMinutes: cfg.durationMinutes,
         totalQuestions,
         lessonRange: `${cfg.lessonFrom}–${cfg.lessonTo}`,
-        description:
-          level === "n5"
-            ? "Từ vựng, ngữ pháp, kanji & nghe (Minna I + KLL N5)"
-            : "Từ vựng, ngữ pháp, kanji & nghe (Minna II + KLL N4)",
+        scope,
+        description: cfg.description,
       };
     });
   }
@@ -365,7 +418,7 @@ export class MockExamsService {
     const correctCount = review.filter((r) => r.isCorrect).length;
     const total = review.length;
     const percent = total ? Math.round((correctCount / total) * 100) : 0;
-    const passThreshold = session.level === "n5" ? 60 : 65;
+    const passThreshold = LEVEL_CONFIG[session.level]?.passThreshold ?? 65;
     const passed = percent >= passThreshold;
 
     const sectionScores = ["vocab", "grammar", "kanji", "listening"].map(

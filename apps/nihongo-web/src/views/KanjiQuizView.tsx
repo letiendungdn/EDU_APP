@@ -43,7 +43,7 @@ const MINNA_RANGE_PRESETS = [
 export default function KanjiQuizView() {
   const searchParams = useSearchParams();
   const initialSource: PoolSource =
-    searchParams.get('source') === 'minna' ? 'minna' : 'kanji';
+    searchParams?.get('source') === 'minna' ? 'minna' : 'kanji';
 
   const { data: kanjiLessons = [] } = useKanjiLessonsQuery();
   const { data: minnaLessons = [] } = useLessonsQuery();
@@ -128,7 +128,7 @@ export default function KanjiQuizView() {
   );
 
   useEffect(() => {
-    const fromQuery = searchParams.get('source') === 'minna' ? 'minna' : 'kanji';
+    const fromQuery = searchParams?.get('source') === 'minna' ? 'minna' : 'kanji';
     setPoolSource(fromQuery);
   }, [searchParams]);
 
