@@ -19,6 +19,7 @@ export interface Vocabulary {
   romaji: string;
   meaning: string;
   lessonId: number;
+  sortOrder?: number;
   partOfSpeech?: string | null;
   imageUrl?: string | null;
   pitchAccent?: string | null;
@@ -105,6 +106,28 @@ export interface UpdateKanjiVocabInput {
   exampleJa?: string | null;
   exampleKana?: string | null;
   exampleVi?: string | null;
+  sortOrder?: number;
+}
+
+export interface CreateKanjiEntryInput {
+  character: string;
+  meaningVi: string;
+  lessonNumber: number;
+  hanViet?: string;
+  onyomi?: string;
+  kunyomi?: string;
+  jlptLevel?: string;
+  sortOrder?: number;
+}
+
+export interface UpdateKanjiEntryInput {
+  character?: string;
+  meaningVi?: string;
+  lessonNumber?: number;
+  hanViet?: string;
+  onyomi?: string;
+  kunyomi?: string;
+  jlptLevel?: string;
   sortOrder?: number;
 }
 

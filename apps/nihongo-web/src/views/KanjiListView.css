@@ -507,3 +507,115 @@
 [data-theme="light"] .kanji-cell-detail-meaning { color: var(--text-primary); }
 [data-theme="light"] .kanji-cell-detail-reading { color: var(--text-secondary); }
 [data-theme="light"] .kanji-cell-detail-meta { color: var(--text-muted); }
+
+.kanji-list-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.kanji-list-header-row .kanji-list-subtitle {
+  margin: 0.5rem auto 0;
+  text-align: left;
+}
+
+.kanji-admin-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.kanji-admin-toggle {
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-family: inherit;
+}
+
+.kanji-admin-toggle--on {
+  background: var(--primary-color);
+  border-color: transparent;
+  color: #fff;
+}
+
+.kanji-admin-form {
+  padding: 1.25rem;
+}
+
+.kanji-admin-form h3 {
+  margin: 0 0 1rem;
+}
+
+.kanji-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+}
+
+.kanji-admin-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+.kanji-admin-grid input,
+.kanji-admin-grid select {
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: var(--surface-color);
+  color: inherit;
+  font: inherit;
+}
+
+.kanji-admin-span2 {
+  grid-column: span 2;
+}
+
+.kanji-admin-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.kanji-admin-error {
+  color: #f87171;
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+}
+
+.kanji-admin-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.kanji-admin-delete:hover:not(:disabled) {
+  border-color: #f87171;
+  color: #f87171;
+}
+
+.kanji-cell-detail-meta {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .kanji-admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kanji-admin-span2 {
+    grid-column: span 1;
+  }
+}
+

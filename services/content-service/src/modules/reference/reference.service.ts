@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { JlptSessionStatus, KanaScript } from "@prisma/client";
 import { PrismaService } from "@app/prisma";
+import { VocabSuffixesService } from "./vocab-suffixes.service";
 
 const SLUGS = [
   "kana-charts",
@@ -32,7 +33,10 @@ function sessionStatusToApi(status: JlptSessionStatus): string {
 
 @Injectable()
 export class ReferenceService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private vocabSuffixesService: VocabSuffixesService,
+  ) {}
 
   findAll(): Array<{ slug: ReferenceSlug; title: string }> {
     return SLUGS.map((slug) => ({ slug, title: this.titleFor(slug) }));
@@ -184,31 +188,8 @@ export class ReferenceService {
     };
   }
 
-  private async getJapaneseVocabSuffixes() {
-    const groups = await this.prisma.vocabSuffixGroup.findMany({
-      include: { items: { orderBy: { sortOrder: "asc" } } },
-      orderBy: { sortOrder: "asc" },
-    });
-
-    return {
-      groups: groups.map((group) => ({
-        id: group.slug,
-        label: group.label,
-        labelJa: group.labelJa || undefined,
-        hint: group.hint,
-        items: group.items.map((item) => ({
-          suffix: item.suffix,
-          forms: item.forms?.length ? item.forms : [item.suffix],
-          kana: item.kana,
-          romaji: item.romaji,
-          meaning: item.meaningVi,
-          attachesTo: item.attachesTo,
-          pos: item.pos?.length ? item.pos : ["noun"],
-          exampleJa: item.exampleJa,
-          exampleVi: item.exampleVi,
-        })),
-      })),
-    };
+  private getJapaneseVocabSuffixes() {
+    return this.vocabSuffixesService.findAll();
   }
 
   private async getJapanesePronunciationRules() {

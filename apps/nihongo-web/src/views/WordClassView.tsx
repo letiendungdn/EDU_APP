@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useQueryClient } from '@tanstack/react-query';
 import PlayAllButton from '../components/PlayAllButton';
@@ -11,6 +11,7 @@ import { queryKeys } from '../api/query-keys';
 import {
   createVocabulary,
   deleteVocabulary,
+  reorderVocabularies,
   updateVocabulary,
   type VocabularyWithLesson,
 } from '../api';
@@ -56,6 +57,21 @@ function matchesWord(item: ClassifiedWord, query: string): boolean {
   return haystack.includes(query);
 }
 
+function sortClassifiedWords(a: ClassifiedWord, b: ClassifiedWord): number {
+  if (a.lessonNumber !== b.lessonNumber) return a.lessonNumber - b.lessonNumber;
+  const orderA = a.sortOrder ?? 0;
+  const orderB = b.sortOrder ?? 0;
+  if (orderA !== orderB) return orderA - orderB;
+  return a.id - b.id;
+}
+
+function lessonVocabOrder(
+  all: ClassifiedWord[],
+  lessonId: number,
+): ClassifiedWord[] {
+  return all.filter((item) => item.lessonId === lessonId).sort(sortClassifiedWords);
+}
+
 const HINTS: Record<WordClassTabId, string> = {
   noun: 'Danh từ (名詞) — người, đồ vật, chỗ, thời gian. Nhiều từ Minna hết い vẫn là danh từ: 学生・世界・先生.',
   'i-adj': 'Tính từ い (い形容詞) — chia trực tiếp: 高い → 高くない / 高かった. Bấm thẻ để nghe.',
@@ -77,9 +93,18 @@ export default function WordClassView() {
   const [draft, setDraft] = useState<Draft>(emptyDraft('noun', 0));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [orderedItems, setOrderedItems] = useState<ClassifiedWord[]>([]);
+  const [draggingId, setDraggingId] = useState<number | null>(null);
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
 
   const canEdit = isAdmin && editMode;
+  const searchActive = searchQuery.trim().length > 0;
+  const canReorder =
+    canEdit &&
+    !searchActive &&
+    !adding &&
+    editingId == null &&
+    !busy;
   const lessonOptions = useMemo(
     () => lessons.filter((lesson) => lesson.lessonNumber >= 1 && lesson.lessonNumber <= 50),
     [lessons],
@@ -108,12 +133,20 @@ export default function WordClassView() {
 
   const items = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    return classified.filter((item) => {
-      if (item.wordClass !== activeId) return false;
-      if (!q) return true;
-      return matchesWord(item, q);
-    });
+    return classified
+      .filter((item) => {
+        if (item.wordClass !== activeId) return false;
+        if (!q) return true;
+        return matchesWord(item, q);
+      })
+      .sort(sortClassifiedWords);
   }, [classified, activeId, searchQuery]);
+
+  useEffect(() => {
+    setOrderedItems(items);
+  }, [items]);
+
+  const displayItems = canReorder ? orderedItems : items;
 
   const defaultLessonId = lessonOptions[0]?.id ?? 0;
 
@@ -247,8 +280,70 @@ export default function WordClassView() {
     }
   }
 
+  async function persistLessonOrder(lessonId: number, orderedIds: number[]) {
+    if (!token) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await reorderVocabularies(lessonId, orderedIds, token);
+      await invalidateVocab();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Không sắp xếp được');
+      setOrderedItems(items);
+    } finally {
+      setBusy(false);
+      setDraggingId(null);
+    }
+  }
+
+  function handleDrop(targetId: number) {
+    if (!canReorder || draggingId == null || draggingId === targetId) {
+      setDraggingId(null);
+      return;
+    }
+
+    const dragged = orderedItems.find((item) => item.id === draggingId);
+    const target = orderedItems.find((item) => item.id === targetId);
+    if (!dragged || !target) {
+      setDraggingId(null);
+      return;
+    }
+
+    if (dragged.lessonId !== target.lessonId) {
+      setError('Chỉ sắp xếp được từ trong cùng một bài Minna (cùng số bài).');
+      setDraggingId(null);
+      return;
+    }
+
+    const lessonItems = lessonVocabOrder(classified, dragged.lessonId);
+    const from = lessonItems.findIndex((item) => item.id === draggingId);
+    const to = lessonItems.findIndex((item) => item.id === targetId);
+    if (from < 0 || to < 0) {
+      setDraggingId(null);
+      return;
+    }
+
+    const nextLesson = [...lessonItems];
+    const [moved] = nextLesson.splice(from, 1);
+    nextLesson.splice(to, 0, moved);
+
+    const nextTabItems = [...orderedItems];
+    const tabFrom = nextTabItems.findIndex((item) => item.id === draggingId);
+    const tabTo = nextTabItems.findIndex((item) => item.id === targetId);
+    if (tabFrom >= 0 && tabTo >= 0) {
+      const [movedTab] = nextTabItems.splice(tabFrom, 1);
+      nextTabItems.splice(tabTo, 0, movedTab);
+      setOrderedItems(nextTabItems);
+    }
+
+    void persistLessonOrder(
+      dragged.lessonId,
+      nextLesson.map((item) => item.id),
+    );
+  }
+
   const handlePlayAll = () => {
-    startPlayAll(items.map((item) => item.kana));
+    startPlayAll(displayItems.map((item) => item.kana));
   };
 
   function renderForm(onSave: () => void, onCancel: () => void, saveLabel: string) {
@@ -378,7 +473,7 @@ export default function WordClassView() {
 
         <div className="word-class-toolbar">
           <span className="word-class-count">
-            {items.length} từ · {wordClassLabel(activeId)}
+            {displayItems.length} từ · {wordClassLabel(activeId)}
           </span>
           <div className="word-class-toolbar-actions">
             {isAdmin && (
@@ -408,10 +503,16 @@ export default function WordClassView() {
               onPlay={handlePlayAll}
               onStop={stopPlayAll}
               label="Phát tất cả"
-              disabled={items.length === 0}
+              disabled={displayItems.length === 0}
             />
           </div>
         </div>
+
+        {canReorder && (
+          <p className="word-class-reorder-hint">
+            Kéo thả thẻ (⋮⋮) để sắp xếp — chỉ trong cùng bài Minna. Tắt ô tìm kiếm khi sắp xếp.
+          </p>
+        )}
 
         {error ? <p className="word-class-admin-error">{error}</p> : null}
 
@@ -423,11 +524,11 @@ export default function WordClassView() {
             )
           : null}
 
-        {items.length === 0 && !(canEdit && adding) ? (
+        {displayItems.length === 0 && !(canEdit && adding) ? (
           <p className="word-class-empty">Không tìm thấy từ phù hợp.</p>
         ) : (
           <div className="word-class-grid">
-            {items.map((item) => {
+            {displayItems.map((item) => {
               if (canEdit && editingId === item.id) {
                 return (
                   <div key={item.id} className="word-class-card word-class-card--editing">
@@ -442,7 +543,24 @@ export default function WordClassView() {
 
               if (canEdit) {
                 return (
-                  <div key={item.id} className="word-class-card word-class-card--admin">
+                  <div
+                    key={item.id}
+                    className={`word-class-card word-class-card--admin${
+                      draggingId === item.id ? ' word-class-card--dragging' : ''
+                    }`}
+                    draggable={canReorder}
+                    onDragStart={() => canReorder && setDraggingId(item.id)}
+                    onDragEnd={() => setDraggingId(null)}
+                    onDragOver={(e) => {
+                      if (canReorder) e.preventDefault();
+                    }}
+                    onDrop={() => handleDrop(item.id)}
+                  >
+                    {canReorder && (
+                      <span className="word-class-drag" title="Kéo thả để sắp xếp" aria-hidden>
+                        ⋮⋮
+                      </span>
+                    )}
                     <span className="word-class-badge">Bài {item.lessonNumber}</span>
                     {item.kanji ? (
                       <span className="word-class-kanji japanese-text">{item.kanji}</span>

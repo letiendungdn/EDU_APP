@@ -5,11 +5,18 @@ import {
   CreateExerciseDto,
   CreateGrammarDto,
   CreateKanjiVocabDto,
+  CreateKanjiEntryDto,
   CreateLessonDto,
   CreateVocabularyDto,
+  CreateVocabSuffixGroupDto,
+  CreateVocabSuffixItemDto,
+  UpdateVocabSuffixGroupDto,
+  UpdateVocabSuffixItemDto,
+  ReorderVocabSuffixItemsDto,
   UpdateExerciseDto,
   UpdateGrammarDto,
   UpdateKanjiVocabDto,
+  UpdateKanjiEntryDto,
   UpdateLessonDto,
   UpdateVocabularyDto,
 } from "@app/contracts";
@@ -22,6 +29,7 @@ import { KanjiService } from "./modules/kanji/kanji.service";
 import { ListeningService } from "./modules/listening/listening.service";
 import { ImportService } from "./modules/import/import.service";
 import { ReferenceService } from "./modules/reference/reference.service";
+import { VocabSuffixesService } from "./modules/reference/vocab-suffixes.service";
 import { ReadingService } from "./modules/reading/reading.service";
 
 @Controller()
@@ -37,6 +45,7 @@ export class ContentMsController implements OnModuleInit {
     private readonly listeningService: ListeningService,
     private readonly importService: ImportService,
     private readonly referenceService: ReferenceService,
+    private readonly vocabSuffixesService: VocabSuffixesService,
     private readonly readingService: ReadingService,
   ) {}
 
@@ -97,6 +106,12 @@ export class ContentMsController implements OnModuleInit {
         ),
       [CONTENT_PATTERNS.GET_KANJI_ENTRY]: (data) =>
         this.getKanjiEntry(data as { id: number }),
+      [CONTENT_PATTERNS.CREATE_KANJI_ENTRY]: (dto) =>
+        this.createKanjiEntry(dto as CreateKanjiEntryDto),
+      [CONTENT_PATTERNS.UPDATE_KANJI_ENTRY]: (data) =>
+        this.updateKanjiEntry(data as { id: number; dto: UpdateKanjiEntryDto }),
+      [CONTENT_PATTERNS.DELETE_KANJI_ENTRY]: (data) =>
+        this.deleteKanjiEntry(data as { id: number }),
       [CONTENT_PATTERNS.CREATE_KANJI_VOCAB]: (data) =>
         this.createKanjiVocab(
           data as { kanjiEntryId: number; dto: CreateKanjiVocabDto },
@@ -118,6 +133,25 @@ export class ContentMsController implements OnModuleInit {
       [CONTENT_PATTERNS.GET_REFERENCE_LIST]: () => this.getReferenceList(),
       [CONTENT_PATTERNS.GET_REFERENCE]: (data) =>
         this.getReference(data as { slug: string }),
+      [CONTENT_PATTERNS.GET_VOCAB_SUFFIXES]: () => this.getVocabSuffixes(),
+      [CONTENT_PATTERNS.CREATE_VOCAB_SUFFIX_GROUP]: (dto) =>
+        this.createVocabSuffixGroup(dto as CreateVocabSuffixGroupDto),
+      [CONTENT_PATTERNS.UPDATE_VOCAB_SUFFIX_GROUP]: (data) =>
+        this.updateVocabSuffixGroup(
+          data as { slug: string; dto: UpdateVocabSuffixGroupDto },
+        ),
+      [CONTENT_PATTERNS.DELETE_VOCAB_SUFFIX_GROUP]: (data) =>
+        this.deleteVocabSuffixGroup(data as { slug: string }),
+      [CONTENT_PATTERNS.CREATE_VOCAB_SUFFIX_ITEM]: (dto) =>
+        this.createVocabSuffixItem(dto as CreateVocabSuffixItemDto),
+      [CONTENT_PATTERNS.UPDATE_VOCAB_SUFFIX_ITEM]: (data) =>
+        this.updateVocabSuffixItem(
+          data as { id: number; dto: UpdateVocabSuffixItemDto },
+        ),
+      [CONTENT_PATTERNS.DELETE_VOCAB_SUFFIX_ITEM]: (data) =>
+        this.deleteVocabSuffixItem(data as { id: number }),
+      [CONTENT_PATTERNS.REORDER_VOCAB_SUFFIX_ITEMS]: (dto) =>
+        this.reorderVocabSuffixItems(dto as ReorderVocabSuffixItemsDto),
       [CONTENT_PATTERNS.GET_READING_PASSAGES]: (data) =>
         this.getReadingPassages(data as { jlptLevel?: string }),
       [CONTENT_PATTERNS.GET_READING_PASSAGE]: (data) =>
@@ -254,6 +288,18 @@ export class ContentMsController implements OnModuleInit {
     return this.kanjiService.findOne(data.id);
   }
 
+  createKanjiEntry(dto: CreateKanjiEntryDto) {
+    return this.kanjiService.createEntry(dto);
+  }
+
+  updateKanjiEntry(data: { id: number; dto: UpdateKanjiEntryDto }) {
+    return this.kanjiService.updateEntry(data.id, data.dto);
+  }
+
+  deleteKanjiEntry(data: { id: number }) {
+    return this.kanjiService.removeEntry(data.id);
+  }
+
   createKanjiVocab(data: { kanjiEntryId: number; dto: CreateKanjiVocabDto }) {
     return this.kanjiService.createVocab(data.kanjiEntryId, data.dto);
   }
@@ -292,6 +338,38 @@ export class ContentMsController implements OnModuleInit {
 
   getReference(data: { slug: string }) {
     return this.referenceService.findBySlug(data.slug);
+  }
+
+  getVocabSuffixes() {
+    return this.vocabSuffixesService.findAll();
+  }
+
+  createVocabSuffixGroup(dto: CreateVocabSuffixGroupDto) {
+    return this.vocabSuffixesService.createGroup(dto);
+  }
+
+  updateVocabSuffixGroup(data: { slug: string; dto: UpdateVocabSuffixGroupDto }) {
+    return this.vocabSuffixesService.updateGroup(data.slug, data.dto);
+  }
+
+  deleteVocabSuffixGroup(data: { slug: string }) {
+    return this.vocabSuffixesService.removeGroup(data.slug);
+  }
+
+  createVocabSuffixItem(dto: CreateVocabSuffixItemDto) {
+    return this.vocabSuffixesService.createItem(dto);
+  }
+
+  updateVocabSuffixItem(data: { id: number; dto: UpdateVocabSuffixItemDto }) {
+    return this.vocabSuffixesService.updateItem(data.id, data.dto);
+  }
+
+  deleteVocabSuffixItem(data: { id: number }) {
+    return this.vocabSuffixesService.removeItem(data.id);
+  }
+
+  reorderVocabSuffixItems(dto: ReorderVocabSuffixItemsDto) {
+    return this.vocabSuffixesService.reorderItems(dto.groupSlug, dto.orderedIds);
   }
 
   getReadingPassages(data: { jlptLevel?: string }) {

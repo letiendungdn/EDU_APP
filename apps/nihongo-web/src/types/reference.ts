@@ -61,6 +61,8 @@ export interface JapaneseCountryNamesPayload {
 }
 
 export interface VocabSuffixItem {
+  id?: number;
+  groupSlug?: string;
   suffix: string;
   forms?: string[];
   kana: string;
@@ -82,6 +84,50 @@ export interface VocabSuffixGroup {
 
 export interface JapaneseVocabSuffixesPayload {
   groups: VocabSuffixGroup[];
+}
+
+export interface CreateVocabSuffixGroupInput {
+  slug: string;
+  label: string;
+  labelJa?: string;
+  hint: string;
+  sortOrder?: number;
+}
+
+export interface UpdateVocabSuffixGroupInput {
+  slug?: string;
+  label?: string;
+  labelJa?: string;
+  hint?: string;
+  sortOrder?: number;
+}
+
+export interface CreateVocabSuffixItemInput {
+  groupSlug: string;
+  suffix: string;
+  forms?: string[];
+  kana: string;
+  romaji: string;
+  meaningVi: string;
+  attachesTo: string;
+  pos?: string[];
+  exampleJa: string;
+  exampleVi: string;
+  sortOrder?: number;
+}
+
+export interface UpdateVocabSuffixItemInput {
+  groupSlug?: string;
+  suffix?: string;
+  forms?: string[];
+  kana?: string;
+  romaji?: string;
+  meaningVi?: string;
+  attachesTo?: string;
+  pos?: string[];
+  exampleJa?: string;
+  exampleVi?: string;
+  sortOrder?: number;
 }
 
 export interface HomeStat {

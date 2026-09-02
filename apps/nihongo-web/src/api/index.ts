@@ -266,6 +266,36 @@ export function fetchKanjiByJlpt(jlptLevel: string) {
   return apiRequest<KanjiEntry[]>(`/kanji?jlptLevel=${encodeURIComponent(jlptLevel)}`);
 }
 
+export function createKanjiEntry(
+  data: import('../types/api').CreateKanjiEntryInput,
+  token: string,
+) {
+  return apiRequest<KanjiEntry>('/kanji', {
+    method: 'POST',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateKanjiEntry(
+  id: number,
+  data: import('../types/api').UpdateKanjiEntryInput,
+  token: string,
+) {
+  return apiRequest<KanjiEntry>(`/kanji/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteKanjiEntry(id: number, token: string) {
+  return apiRequest<{ ok: boolean; id: number }>(`/kanji/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
 export function createKanjiVocab(
   entryId: number,
   data: import('../types/api').CreateKanjiVocabInput,
@@ -381,6 +411,77 @@ export function fetchJapaneseCountryNames() {
 
 export function fetchJapaneseVocabSuffixes() {
   return fetchReference<JapaneseVocabSuffixesPayload>('japanese-vocab-suffixes');
+}
+
+export function createVocabSuffixGroup(
+  data: import('../types/reference').CreateVocabSuffixGroupInput,
+  token: string,
+) {
+  return apiRequest<import('../types/reference').VocabSuffixGroup>(
+    '/vocab-suffixes/groups',
+    { method: 'POST', token, body: JSON.stringify(data) },
+  );
+}
+
+export function updateVocabSuffixGroup(
+  slug: string,
+  data: import('../types/reference').UpdateVocabSuffixGroupInput,
+  token: string,
+) {
+  return apiRequest<import('../types/reference').VocabSuffixGroup>(
+    `/vocab-suffixes/groups/${encodeURIComponent(slug)}`,
+    { method: 'PATCH', token, body: JSON.stringify(data) },
+  );
+}
+
+export function deleteVocabSuffixGroup(slug: string, token: string) {
+  return apiRequest<{ ok: boolean; slug: string }>(
+    `/vocab-suffixes/groups/${encodeURIComponent(slug)}`,
+    { method: 'DELETE', token },
+  );
+}
+
+export function createVocabSuffixItem(
+  data: import('../types/reference').CreateVocabSuffixItemInput,
+  token: string,
+) {
+  return apiRequest<import('../types/reference').VocabSuffixItem>(
+    '/vocab-suffixes/items',
+    { method: 'POST', token, body: JSON.stringify(data) },
+  );
+}
+
+export function updateVocabSuffixItem(
+  id: number,
+  data: import('../types/reference').UpdateVocabSuffixItemInput,
+  token: string,
+) {
+  return apiRequest<import('../types/reference').VocabSuffixItem>(
+    `/vocab-suffixes/items/${id}`,
+    { method: 'PATCH', token, body: JSON.stringify(data) },
+  );
+}
+
+export function deleteVocabSuffixItem(id: number, token: string) {
+  return apiRequest<{ ok: boolean; id: number }>(`/vocab-suffixes/items/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
+export function reorderVocabSuffixItems(
+  groupSlug: string,
+  orderedIds: number[],
+  token: string,
+) {
+  return apiRequest<import('../types/reference').VocabSuffixGroup>(
+    '/vocab-suffixes/items/reorder',
+    {
+      method: 'PUT',
+      token,
+      body: JSON.stringify({ groupSlug, orderedIds }),
+    },
+  );
 }
 
 export function fetchHomePage() {

@@ -1,21 +1,43 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
-import { playAudio } from '../utils/speech';
-import { getKanjiSpeakItems } from '../utils/kanjiSpeak';
+import { useCallback, useMemo, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  createKanjiEntry,
+  deleteKanjiEntry,
+  updateKanjiEntry,
+} from '../api';
 import {
   useKanjiAllJlptQuery,
   useKanjiByJlptQuery,
   useKanjiLessonsQuery,
+  queryKeys,
 } from '../hooks/queries';
-import type { KanjiEntry, KanjiLesson } from '../types/api';
+import { useAuth } from '../hooks/useAuth';
+import { playAudio } from '../utils/speech';
+import { getKanjiSpeakItems } from '../utils/kanjiSpeak';
+import type {
+  CreateKanjiEntryInput,
+  KanjiEntry,
+  KanjiLesson,
+} from '../types/api';
 import './KanjiListView.css';
 
 const JLPT_ORDER = ['N5', 'N4', 'N3', 'N2', 'N1'] as const;
 type JlptLevel = (typeof JLPT_ORDER)[number];
 type ViewLevel = JlptLevel | 'ALL';
 type DisplayMode = 'grid' | 'table';
+
+interface KanjiFormValues {
+  character: string;
+  meaningVi: string;
+  lessonNumber: number;
+  hanViet: string;
+  onyomi: string;
+  kunyomi: string;
+  jlptLevel: JlptLevel;
+}
 
 interface JlptSummary {
   level: JlptLevel;
@@ -90,7 +112,196 @@ function getEntryJlpt(entry: KanjiEntry): string {
   return entry.jlptLevel ?? entry.lesson?.jlptLevel ?? '—';
 }
 
+function defaultFormValues(activeLevel: ViewLevel, lessons: KanjiLesson[]): KanjiFormValues {
+  const filtered =
+    activeLevel === 'ALL'
+      ? lessons
+      : lessons.filter((l) => l.jlptLevel === activeLevel);
+  const first = filtered[0] ?? lessons[0];
+
+  return {
+    character: '',
+    meaningVi: '',
+    lessonNumber: first?.lessonNumber ?? 1,
+    hanViet: '',
+    onyomi: '',
+    kunyomi: '',
+    jlptLevel: (activeLevel === 'ALL' ? 'N5' : activeLevel) as JlptLevel,
+  };
+}
+
+function entryToForm(entry: KanjiEntry): KanjiFormValues {
+  return {
+    character: entry.character,
+    meaningVi: entry.meaningVi,
+    lessonNumber: entry.lesson?.lessonNumber ?? 1,
+    hanViet: entry.hanViet ?? '',
+    onyomi: entry.onyomi ?? '',
+    kunyomi: entry.kunyomi ?? '',
+    jlptLevel: (entry.jlptLevel ?? entry.lesson?.jlptLevel ?? 'N5') as JlptLevel,
+  };
+}
+
+function formToPayload(values: KanjiFormValues): CreateKanjiEntryInput {
+  return {
+    character: values.character.trim(),
+    meaningVi: values.meaningVi.trim(),
+    lessonNumber: values.lessonNumber,
+    hanViet: values.hanViet.trim() || undefined,
+    onyomi: values.onyomi.trim() || undefined,
+    kunyomi: values.kunyomi.trim() || undefined,
+    jlptLevel: values.jlptLevel,
+  };
+}
+
+function KanjiEntryAdminForm({
+  initial,
+  editId,
+  lessons,
+  token,
+  onCancel,
+  onSaved,
+}: {
+  initial: KanjiFormValues;
+  editId?: number;
+  lessons: KanjiLesson[];
+  token: string;
+  onCancel: () => void;
+  onSaved: () => void;
+}) {
+  const [values, setValues] = useState(initial);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const lessonOptions = useMemo(
+    () =>
+      [...lessons].sort((a, b) => a.lessonNumber - b.lessonNumber).map((l) => ({
+        value: l.lessonNumber,
+        label: `Bài ${l.lessonNumber}${l.jlptLevel ? ` (${l.jlptLevel})` : ''}${l.title ? ` — ${l.title}` : ''}`,
+      })),
+    [lessons],
+  );
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    if (!values.character.trim() || !values.meaningVi.trim()) {
+      setError('Kanji và nghĩa tiếng Việt là bắt buộc.');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const payload = formToPayload(values);
+      if (editId != null) {
+        await updateKanjiEntry(editId, payload, token);
+      } else {
+        await createKanjiEntry(payload, token);
+      }
+      onSaved();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Không lưu được kanji.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <form className="kanji-admin-form glass-panel" onSubmit={handleSubmit}>
+      <h3>{editId != null ? 'Sửa kanji' : 'Thêm kanji mới'}</h3>
+      {error && <p className="kanji-admin-error">{error}</p>}
+
+      <div className="kanji-admin-grid">
+        <label>
+          Kanji *
+          <input
+            value={values.character}
+            onChange={(e) => setValues((v) => ({ ...v, character: e.target.value }))}
+            placeholder="食"
+            required
+          />
+        </label>
+        <label>
+          Hán Việt
+          <input
+            value={values.hanViet}
+            onChange={(e) => setValues((v) => ({ ...v, hanViet: e.target.value }))}
+            placeholder="Thực"
+          />
+        </label>
+        <label>
+          Âm ON
+          <input
+            value={values.onyomi}
+            onChange={(e) => setValues((v) => ({ ...v, onyomi: e.target.value }))}
+            placeholder="ショク"
+          />
+        </label>
+        <label>
+          Âm KUN
+          <input
+            value={values.kunyomi}
+            onChange={(e) => setValues((v) => ({ ...v, kunyomi: e.target.value }))}
+            placeholder="た(べる)"
+          />
+        </label>
+        <label className="kanji-admin-span2">
+          Nghĩa tiếng Việt *
+          <input
+            value={values.meaningVi}
+            onChange={(e) => setValues((v) => ({ ...v, meaningVi: e.target.value }))}
+            placeholder="ăn, thức ăn"
+            required
+          />
+        </label>
+        <label>
+          JLPT
+          <select
+            value={values.jlptLevel}
+            onChange={(e) =>
+              setValues((v) => ({ ...v, jlptLevel: e.target.value as JlptLevel }))
+            }
+          >
+            {JLPT_ORDER.map((level) => (
+              <option key={level} value={level}>
+                {level}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Bài kanji
+          <select
+            value={values.lessonNumber}
+            onChange={(e) =>
+              setValues((v) => ({ ...v, lessonNumber: Number(e.target.value) }))
+            }
+          >
+            {lessonOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <div className="kanji-admin-actions">
+        <button type="button" className="btn btn-outline btn-sm" onClick={onCancel}>
+          Hủy
+        </button>
+        <button type="submit" className="btn btn-primary btn-sm" disabled={saving}>
+          {saving ? 'Đang lưu...' : editId != null ? 'Cập nhật' : 'Thêm'}
+        </button>
+      </div>
+    </form>
+  );
+}
+
 export default function KanjiListView() {
+  const { isAdmin, token } = useAuth();
+  const queryClient = useQueryClient();
   const { data: lessons = [], isLoading: loadingLessons } = useKanjiLessonsQuery();
   const summary = useMemo(() => buildJlptSummary(lessons), [lessons]);
   const totalKanji = useMemo(() => summary.reduce((sum, item) => sum + item.count, 0), [summary]);
@@ -99,6 +310,12 @@ export default function KanjiListView() {
   const [searchInput, setSearchInput] = useState('');
   const [displayMode, setDisplayMode] = useState<DisplayMode>('grid');
   const [selectedEntry, setSelectedEntry] = useState<KanjiEntry | null>(null);
+  const [editMode, setEditMode] = useState(false);
+  const [formState, setFormState] = useState<
+    null | { mode: 'create' } | { mode: 'edit'; entry: KanjiEntry }
+  >(null);
+
+  const canEdit = isAdmin && editMode;
 
   const isAllView = activeLevel === 'ALL';
   const { data: allEntries = [], isLoading: loadingAll } = useKanjiAllJlptQuery(isAllView);
@@ -123,10 +340,27 @@ export default function KanjiListView() {
 
   const isLoading = loadingLessons || (isAllView ? loadingAll : loadingLevel);
 
+  const invalidateKanji = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.kanjiLessons });
+    for (const level of JLPT_ORDER) {
+      queryClient.invalidateQueries({ queryKey: queryKeys.kanjiByJlpt(level) });
+    }
+  }, [queryClient]);
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteKanjiEntry(id, token!),
+    onSuccess: (_data, id) => {
+      if (selectedEntry?.id === id) setSelectedEntry(null);
+      setFormState(null);
+      invalidateKanji();
+    },
+  });
+
   function selectLevel(level: ViewLevel) {
     setActiveLevel(level);
     setSearchInput('');
     setSelectedEntry(null);
+    setFormState(null);
   }
 
   function selectEntry(entry: KanjiEntry) {
@@ -134,19 +368,78 @@ export default function KanjiListView() {
     playAudio(getPrimaryReading(entry));
   }
 
+  function handleSaved() {
+    setFormState(null);
+    invalidateKanji();
+  }
+
+  function handleDelete(entry: KanjiEntry) {
+    if (!token) return;
+    const label = `${entry.character}${entry.hanViet ? ` (${entry.hanViet})` : ''}`;
+    if (!window.confirm(`Xóa kanji "${label}"? Từ vựng liên quan cũng sẽ bị xóa.`)) return;
+    deleteMutation.mutate(entry.id);
+  }
+
   return (
     <div className="container kanji-list-view">
-      <h2 className="view-title">Bảng tổng hợp Kanji JLPT</h2>
-      <p className="kanji-list-subtitle">
-        {loadingLessons
-          ? 'Đang tải thống kê kanji...'
-          : `${totalKanji} kanji theo cấp N5 → N1 — tra cứu Hán Việt, âm ON/KUN và nghĩa tiếng Việt.`}
-      </p>
+      <div className="kanji-list-header-row">
+        <div>
+          <h2 className="view-title">Bảng tổng hợp Kanji JLPT</h2>
+          <p className="kanji-list-subtitle">
+            {loadingLessons
+              ? 'Đang tải thống kê kanji...'
+              : `${totalKanji} kanji theo cấp N5 → N1 — tra cứu Hán Việt, âm ON/KUN và nghĩa tiếng Việt.`}
+          </p>
+        </div>
+        {isAdmin && (
+          <div className="kanji-admin-toolbar">
+            <button
+              type="button"
+              className={`kanji-admin-toggle${editMode ? ' kanji-admin-toggle--on' : ''}`}
+              onClick={() => {
+                setEditMode((v) => !v);
+                setFormState(null);
+              }}
+            >
+              {editMode ? 'Xong' : 'Sửa'}
+            </button>
+            {canEdit && (
+              <button
+                type="button"
+                className="btn btn-outline btn-sm"
+                onClick={() => setFormState({ mode: 'create' })}
+              >
+                + Thêm kanji
+              </button>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="kanji-list-links">
         <Link href="/kanji">← Flashcard theo bài</Link>
         <Link href="/kanji/quiz">Quiz kanji →</Link>
       </div>
+
+      {formState?.mode === 'create' && token && (
+        <KanjiEntryAdminForm
+          initial={defaultFormValues(activeLevel, lessons)}
+          lessons={lessons}
+          token={token}
+          onCancel={() => setFormState(null)}
+          onSaved={handleSaved}
+        />
+      )}
+      {formState?.mode === 'edit' && token && (
+        <KanjiEntryAdminForm
+          editId={formState.entry.id}
+          initial={entryToForm(formState.entry)}
+          lessons={lessons}
+          token={token}
+          onCancel={() => setFormState(null)}
+          onSaved={handleSaved}
+        />
+      )}
 
       <div className="kanji-summary-grid" role="group" aria-label="Tổng quan kanji theo JLPT">
         {summary.map((item) => (
@@ -246,8 +539,8 @@ export default function KanjiListView() {
         </p>
       ) : !activeMeta?.hasData ? (
         <p className="kanji-list-empty">
-          Chưa có kanji {isAllView ? 'trong hệ thống' : activeLevel} trong database. Khi thêm bài
-          học mới, bảng sẽ tự cập nhật.
+          Chưa có kanji {isAllView ? 'trong hệ thống' : activeLevel} trong database.
+          {canEdit ? ' Bấm "+ Thêm kanji" để tạo mới.' : ' Khi thêm bài học mới, bảng sẽ tự cập nhật.'}
         </p>
       ) : filteredEntries.length === 0 ? (
         <p className="kanji-list-empty">Không tìm thấy kanji phù hợp.</p>
@@ -309,6 +602,25 @@ export default function KanjiListView() {
                 >
                   Nghe đọc
                 </button>
+                {canEdit && (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-outline btn-sm"
+                      onClick={() => setFormState({ mode: 'edit', entry: selectedEntry })}
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline btn-sm kanji-admin-delete"
+                      disabled={deleteMutation.isPending}
+                      onClick={() => handleDelete(selectedEntry)}
+                    >
+                      Xóa
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           )}
@@ -326,6 +638,7 @@ export default function KanjiListView() {
                 <th>Âm KUN</th>
                 <th>Nghĩa</th>
                 <th>Bài</th>
+                {canEdit && <th>Thao tác</th>}
               </tr>
             </thead>
             <tbody>
@@ -356,6 +669,25 @@ export default function KanjiListView() {
                       ? `Bài ${entry.lesson.lessonNumber}`
                       : '—'}
                   </td>
+                  {canEdit && (
+                    <td className="kanji-admin-row-actions">
+                      <button
+                        type="button"
+                        className="btn btn-outline btn-sm"
+                        onClick={() => setFormState({ mode: 'edit', entry })}
+                      >
+                        Sửa
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-outline btn-sm kanji-admin-delete"
+                        disabled={deleteMutation.isPending}
+                        onClick={() => handleDelete(entry)}
+                      >
+                        Xóa
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

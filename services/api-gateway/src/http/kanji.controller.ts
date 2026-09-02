@@ -18,8 +18,10 @@ import { firstValueFrom } from "rxjs";
 import {
   CONTENT_PATTERNS,
   CreateKanjiVocabDto,
+  CreateKanjiEntryDto,
   ReorderKanjiVocabDto,
   UpdateKanjiVocabDto,
+  UpdateKanjiEntryDto,
 } from "@app/contracts";
 import { JwtAuthGuard, Public, Roles, RolesGuard } from "@app/common";
 
@@ -62,6 +64,42 @@ export class KanjiController {
   findOne(@Param("id") id: string) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.GET_KANJI_ENTRY, { id: +id }),
+    );
+  }
+
+  @Post("kanji")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Create kanji entry (admin)" })
+  createEntry(@Body() dto: CreateKanjiEntryDto) {
+    return firstValueFrom(
+      this.contentClient.send(CONTENT_PATTERNS.CREATE_KANJI_ENTRY, dto),
+    );
+  }
+
+  @Patch("kanji/:id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Update kanji entry (admin)" })
+  updateEntry(@Param("id") id: string, @Body() dto: UpdateKanjiEntryDto) {
+    return firstValueFrom(
+      this.contentClient.send(CONTENT_PATTERNS.UPDATE_KANJI_ENTRY, {
+        id: +id,
+        dto,
+      }),
+    );
+  }
+
+  @Delete("kanji/:id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Delete kanji entry (admin)" })
+  removeEntry(@Param("id") id: string) {
+    return firstValueFrom(
+      this.contentClient.send(CONTENT_PATTERNS.DELETE_KANJI_ENTRY, { id: +id }),
     );
   }
 

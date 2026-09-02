@@ -11,6 +11,7 @@ import { ImportController } from "./import.controller";
 import { JlptScheduleController } from "./jlpt-schedule.controller";
 import { JlptScheduleService } from "./jlpt-schedule.service";
 import { ReferenceController } from "./reference.controller";
+import { VocabSuffixesController } from "./vocab-suffixes.controller";
 import { ReadingController } from "./reading.controller";
 import { DictationController } from "./dictation.controller";
 import { AnalyticsController } from "./analytics.controller";
@@ -59,6 +60,7 @@ const httpImports: Array<Type | DynamicModule> = [
     ImportController,
     JlptScheduleController,
     ReferenceController,
+    VocabSuffixesController,
     ReadingController,
     DictationController,
     AnalyticsController,

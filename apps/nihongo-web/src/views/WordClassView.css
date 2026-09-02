@@ -245,6 +245,30 @@
 .word-class-card--admin,
 .word-class-card--editing {
   cursor: default;
+  position: relative;
+}
+
+.word-class-card--dragging {
+  opacity: 0.55;
+  border-style: dashed;
+}
+
+.word-class-drag {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.45rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  cursor: grab;
+  user-select: none;
+  line-height: 1;
+}
+
+.word-class-reorder-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  text-align: center;
 }
 
 .word-class-card--admin:hover,
