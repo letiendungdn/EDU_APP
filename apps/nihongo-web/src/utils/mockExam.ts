@@ -12,8 +12,10 @@ export interface MockExamQuestion {
   sectionName: string;
   type: 'multiple_choice' | 'fill_in_blank' | 'listening';
   question: string;
-  options?: string[];
+  options?: Array<{ text: string; imageUrl?: string }>;
+  imageUrl?: string;
   audioText?: string;
+  audioUrl?: string;
   lessonNumber?: number;
 }
 

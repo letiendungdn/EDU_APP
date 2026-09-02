@@ -188,6 +188,92 @@
   margin-bottom: 1rem;
 }
 
+.jlpt-buy-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.jlpt-buy-intro {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  font-size: 0.95rem;
+  max-width: 720px;
+}
+
+.jlpt-buy-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.jlpt-buy-card {
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.jlpt-buy-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.jlpt-buy-series {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+}
+
+.jlpt-buy-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.35rem;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.jlpt-buy-badge--vi {
+  border-color: color-mix(in srgb, #0d9488 45%, var(--border-color));
+  color: #0f766e;
+  background: color-mix(in srgb, #14b8a6 12%, transparent);
+}
+
+.jlpt-buy-card h4 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.jlpt-buy-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.jlpt-buy-note {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.jlpt-buy-link {
+  align-self: flex-start;
+  margin-top: 0.2rem;
+}
+
+.jlpt-buy-empty {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
 .jlpt-materials {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

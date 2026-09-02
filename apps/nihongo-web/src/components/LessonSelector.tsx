@@ -65,18 +65,38 @@ export default function LessonSelector({
   }, [data, filterWithContent, contentFilter]);
 
   const groups = useMemo(() => {
+    // Minna = lessonNumber 1–50 (jlptLevel trên các bài này chỉ là mức tương đương JLPT,
+    // không phải khóa JLPT riêng — trước đây bị tách sang nhóm N5/N4/N3/N2).
+    const isMinna = (n: number) => n >= 1 && n <= 50;
+    const byNumber = <T extends { lessonNumber: number }>(a: T, b: T) =>
+      a.lessonNumber - b.lessonNumber;
+
+    const minna = lessons.filter((l) => isMinna(l.lessonNumber)).sort(byNumber);
+    const rest = lessons.filter((l) => !isMinna(l.lessonNumber));
+
     const order: Array<{ key: string; label: string; levels: string[] }> = [
-      { key: 'minna', label: 'Minna no Nihongo', levels: ['', 'N5', 'N4'] },
+      { key: 'n5', label: 'JLPT N5', levels: ['N5', ''] },
+      { key: 'n4', label: 'JLPT N4', levels: ['N4'] },
       { key: 'n3', label: 'JLPT N3', levels: ['N3'] },
       { key: 'n2', label: 'JLPT N2', levels: ['N2'] },
       { key: 'n1', label: 'JLPT N1', levels: ['N1'] },
     ];
-    return order
+
+    const levelGroups = order
       .map((g) => ({
         ...g,
-        items: lessons.filter((l) => g.levels.includes(l.jlptLevel ?? '')),
+        items: rest
+          .filter((l) => g.levels.includes(l.jlptLevel ?? ''))
+          .sort(byNumber),
       }))
       .filter((g) => g.items.length > 0);
+
+    return [
+      ...(minna.length
+        ? [{ key: 'minna', label: 'Minna no Nihongo (bài 1–50)', items: minna }]
+        : []),
+      ...levelGroups,
+    ];
   }, [lessons]);
 
   if (isLoading) {
@@ -117,7 +137,7 @@ export default function LessonSelector({
                 ))}
               </optgroup>
             ))
-          : lessons.map((lesson) => (
+          : (groups[0]?.items ?? lessons).map((lesson) => (
               <option key={lesson.lessonNumber} value={lesson.lessonNumber}>
                 {lesson.title ?? `Bài ${lesson.lessonNumber}`}
                 {countSuffixForLesson(lesson, resolvedCountKind)}

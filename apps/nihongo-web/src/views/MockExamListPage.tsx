@@ -13,6 +13,7 @@ import { queryKeys } from '../api/query-keys';
 import { useAuth } from '../hooks/useAuth';
 import { useMockExamTemplatesQuery } from '../hooks/queries';
 import type { MockExamTemplateAdmin, MockExamTemplateInput } from '../types/api';
+import MockExamQuestionEditor from '../components/MockExamQuestionEditor';
 import './MockExam.css';
 
 const LEVELS = ['n5', 'n4', 'n3', 'n2', 'n1'] as const;
@@ -77,6 +78,7 @@ function emptyForm(level: (typeof LEVELS)[number] = 'n5'): MockExamTemplateInput
     level,
     title: `Đề thi thử JLPT ${level.toUpperCase()}`,
     description: '',
+    sourceMode: 'GENERATED',
     durationMinutes: preset.durationMinutes,
     lessonFrom: preset.lessonFrom,
     lessonTo: preset.lessonTo,
@@ -100,6 +102,7 @@ function adminToForm(tpl: MockExamTemplateAdmin): MockExamTemplateInput {
     level: tpl.level,
     title: tpl.title,
     description: tpl.description,
+    sourceMode: tpl.sourceMode ?? 'GENERATED',
     durationMinutes: tpl.durationMinutes,
     lessonFrom: tpl.lessonFrom,
     lessonTo: tpl.lessonTo,
@@ -143,6 +146,7 @@ function MockExamAdminForm({
   const [form, setForm] = useState(initial);
   const [error, setError] = useState('');
   const isEdit = editId != null;
+  const isCustom = form.sourceMode === 'CUSTOM';
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -163,7 +167,7 @@ function MockExamAdminForm({
       const next = { ...prev, [key]: value };
       if (key === 'level' && typeof value === 'string') {
         const preset = LEVEL_PRESETS[value as (typeof LEVELS)[number]];
-        if (preset) {
+        if (preset && next.sourceMode !== 'CUSTOM') {
           next.lessonFrom = preset.lessonFrom;
           next.lessonTo = preset.lessonTo;
           next.kanjiLessonFrom = preset.kanjiLessonFrom;
@@ -171,6 +175,14 @@ function MockExamAdminForm({
           next.durationMinutes = preset.durationMinutes;
           next.scope = preset.scope;
         }
+      }
+      if (key === 'sourceMode' && value === 'CUSTOM') {
+        next.scope = next.scope || 'Đề tự soạn';
+        next.vocabCount = 0;
+        next.grammarCount = 0;
+        next.kanjiCount = 0;
+        next.listeningWordCount = 0;
+        next.listeningSentenceCount = 0;
       }
       return next;
     });
@@ -200,6 +212,18 @@ function MockExamAdminForm({
                 {lv.toUpperCase()}
               </option>
             ))}
+          </select>
+        </label>
+        <label>
+          Loại đề
+          <select
+            value={form.sourceMode ?? 'GENERATED'}
+            onChange={(e) =>
+              setField('sourceMode', e.target.value as 'GENERATED' | 'CUSTOM')
+            }
+          >
+            <option value="GENERATED">Tự sinh từ bài học</option>
+            <option value="CUSTOM">Tự soạn câu hỏi + audio</option>
           </select>
         </label>
         <label>
@@ -249,93 +273,109 @@ function MockExamAdminForm({
             onChange={(e) => setField('passThreshold', Number(e.target.value))}
           />
         </label>
-        <label>
-          Bài học từ
-          <input
-            type="number"
-            min={1}
-            required
-            value={form.lessonFrom}
-            onChange={(e) => setField('lessonFrom', Number(e.target.value))}
-          />
-        </label>
-        <label>
-          Bài học đến
-          <input
-            type="number"
-            min={1}
-            required
-            value={form.lessonTo}
-            onChange={(e) => setField('lessonTo', Number(e.target.value))}
-          />
-        </label>
-        <label>
-          Kanji từ (bài)
-          <input
-            type="number"
-            min={1}
-            required
-            value={form.kanjiLessonFrom}
-            onChange={(e) => setField('kanjiLessonFrom', Number(e.target.value))}
-          />
-        </label>
-        <label>
-          Kanji đến (bài)
-          <input
-            type="number"
-            min={1}
-            required
-            value={form.kanjiLessonTo}
-            onChange={(e) => setField('kanjiLessonTo', Number(e.target.value))}
-          />
-        </label>
-        <label>
-          Số câu từ vựng
-          <input
-            type="number"
-            min={0}
-            value={form.vocabCount ?? 0}
-            onChange={(e) => setField('vocabCount', Number(e.target.value))}
-          />
-        </label>
-        <label>
-          Số câu ngữ pháp
-          <input
-            type="number"
-            min={0}
-            value={form.grammarCount ?? 0}
-            onChange={(e) => setField('grammarCount', Number(e.target.value))}
-          />
-        </label>
-        <label>
-          Số câu kanji
-          <input
-            type="number"
-            min={0}
-            value={form.kanjiCount ?? 0}
-            onChange={(e) => setField('kanjiCount', Number(e.target.value))}
-          />
-        </label>
-        <label>
-          Nghe — từ vựng
-          <input
-            type="number"
-            min={0}
-            value={form.listeningWordCount ?? 0}
-            onChange={(e) => setField('listeningWordCount', Number(e.target.value))}
-          />
-        </label>
-        <label>
-          Nghe — câu
-          <input
-            type="number"
-            min={0}
-            value={form.listeningSentenceCount ?? 0}
-            onChange={(e) =>
-              setField('listeningSentenceCount', Number(e.target.value))
-            }
-          />
-        </label>
+        {!isCustom && (
+          <>
+            <label>
+              Bài học từ
+              <input
+                type="number"
+                min={1}
+                required
+                value={form.lessonFrom}
+                onChange={(e) => setField('lessonFrom', Number(e.target.value))}
+              />
+            </label>
+            <label>
+              Bài học đến
+              <input
+                type="number"
+                min={1}
+                required
+                value={form.lessonTo}
+                onChange={(e) => setField('lessonTo', Number(e.target.value))}
+              />
+            </label>
+            <label>
+              Kanji từ (bài)
+              <input
+                type="number"
+                min={1}
+                required
+                value={form.kanjiLessonFrom}
+                onChange={(e) =>
+                  setField('kanjiLessonFrom', Number(e.target.value))
+                }
+              />
+            </label>
+            <label>
+              Kanji đến (bài)
+              <input
+                type="number"
+                min={1}
+                required
+                value={form.kanjiLessonTo}
+                onChange={(e) =>
+                  setField('kanjiLessonTo', Number(e.target.value))
+                }
+              />
+            </label>
+            <label>
+              Số câu từ vựng
+              <input
+                type="number"
+                min={0}
+                value={form.vocabCount ?? 0}
+                onChange={(e) => setField('vocabCount', Number(e.target.value))}
+              />
+            </label>
+            <label>
+              Số câu ngữ pháp
+              <input
+                type="number"
+                min={0}
+                value={form.grammarCount ?? 0}
+                onChange={(e) => setField('grammarCount', Number(e.target.value))}
+              />
+            </label>
+            <label>
+              Số câu kanji
+              <input
+                type="number"
+                min={0}
+                value={form.kanjiCount ?? 0}
+                onChange={(e) => setField('kanjiCount', Number(e.target.value))}
+              />
+            </label>
+            <label>
+              Nghe — từ vựng
+              <input
+                type="number"
+                min={0}
+                value={form.listeningWordCount ?? 0}
+                onChange={(e) =>
+                  setField('listeningWordCount', Number(e.target.value))
+                }
+              />
+            </label>
+            <label>
+              Nghe — câu
+              <input
+                type="number"
+                min={0}
+                value={form.listeningSentenceCount ?? 0}
+                onChange={(e) =>
+                  setField('listeningSentenceCount', Number(e.target.value))
+                }
+              />
+            </label>
+          </>
+        )}
+        {isCustom && (
+          <p className="mock-exam-admin-span2 mock-exam-admin-hint">
+            Đề tự soạn: sau khi lưu, bấm <strong>Câu hỏi</strong> trên thẻ đề để
+            thêm câu hỏi, đáp án và file âm thanh.
+          </p>
+        )}
         <label>
           Thứ tự hiển thị
           <input
@@ -363,9 +403,11 @@ function MockExamAdminForm({
         </label>
       </div>
 
-      <p className="mock-exam-admin-preview">
-        Tổng cộng: <strong>{computeTotalQuestions(form)}</strong> câu
-      </p>
+      {!isCustom && (
+        <p className="mock-exam-admin-preview">
+          Tổng cộng: <strong>{computeTotalQuestions(form)}</strong> câu
+        </p>
+      )}
 
       <div className="mock-exam-admin-actions">
         <button type="button" className="btn btn-outline" onClick={onCancel}>
@@ -386,6 +428,9 @@ export default function MockExamListPage() {
   const [formState, setFormState] = useState<
     null | { mode: 'create' } | { mode: 'edit'; tpl: MockExamTemplateAdmin }
   >(null);
+  const [questionsTpl, setQuestionsTpl] = useState<MockExamTemplateAdmin | null>(
+    null,
+  );
 
   const canEdit = isAdmin && editMode;
 
@@ -437,6 +482,7 @@ export default function MockExamListPage() {
                 onClick={() => {
                   setEditMode((v) => !v);
                   setFormState(null);
+                  setQuestionsTpl(null);
                 }}
               >
                 {editMode ? 'Xong' : 'Sửa'}
@@ -470,6 +516,18 @@ export default function MockExamListPage() {
           token={token}
           onCancel={() => setFormState(null)}
           onSaved={handleSaved}
+        />
+      )}
+
+      {questionsTpl && token && (
+        <MockExamQuestionEditor
+          templateId={questionsTpl.id}
+          title={questionsTpl.title}
+          token={token}
+          onClose={() => {
+            setQuestionsTpl(null);
+            invalidate();
+          }}
         />
       )}
 
@@ -509,6 +567,9 @@ export default function MockExamListPage() {
                   <li>⏱ {tpl.durationMinutes} phút</li>
                   <li>📝 {tpl.totalQuestions} câu</li>
                   <li>📖 {tpl.scope ?? `Minna Bài ${tpl.lessonRange}`}</li>
+                  {canEdit && (adminTpl.sourceMode ?? 'GENERATED') === 'CUSTOM' && (
+                    <li>✍️ Đề tự soạn</li>
+                  )}
                   {canEdit && adminTpl.slug && (
                     <li>🔗 /mock-exam/{adminTpl.slug}</li>
                   )}
@@ -525,6 +586,18 @@ export default function MockExamListPage() {
                   )}
                   {canEdit && adminTpl.id && (
                     <>
+                      {(adminTpl.sourceMode ?? 'GENERATED') === 'CUSTOM' && (
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm"
+                          onClick={() => {
+                            setFormState(null);
+                            setQuestionsTpl(adminTpl);
+                          }}
+                        >
+                          Câu hỏi
+                        </button>
+                      )}
                       <button
                         type="button"
                         className="btn btn-outline btn-sm"
@@ -564,7 +637,7 @@ export default function MockExamListPage() {
         <ul>
           <li>Không hiện đáp án trong lúc làm bài — giống kỳ thi thật.</li>
           <li>
-            Phần <strong>Nghe</strong>: audio TTS tự phát, nghe lại tối đa 2 lần/câu.
+            Phần <strong>Nghe</strong>: phát file audio nếu có, không thì dùng TTS; nghe lại tối đa 2 lần/câu.
           </li>
           <li>Có thể chuyển qua lại giữa các câu trước khi nộp bài.</li>
           <li>Hết giờ hệ thống tự nộp bài với các câu đã chọn.</li>

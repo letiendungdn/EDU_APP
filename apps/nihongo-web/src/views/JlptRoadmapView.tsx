@@ -9,6 +9,10 @@ import {
 } from '../hooks/queries';
 import type { JlptAnnouncement, JlptDaNangSchedule } from '../types/api';
 import type { JlptDaNangSchedulePayload } from '../types/reference';
+import {
+  JLPT_BOOK_GUIDE_INTRO,
+  booksForLevel,
+} from '../data/jlpt-book-guide';
 import './JlptRoadmapView.css';
 
 const STORAGE_KEY = 'nihongo-jlpt-progress';
@@ -166,8 +170,8 @@ export default function JlptRoadmapView() {
       <header className="jlpt-header">
         <h2 className="view-title">Lộ trình luyện thi JLPT</h2>
         <p className="jlpt-subtitle">
-          Lộ trình gắn Minna, Kanji KLL trong app — kèm sách luyện thi N5: Shin Nihongo no Kiso,
-          Shin Kanzen Master, Sō-Matome (文法 · 語彙 · 漢字) và đề Choukai / Dokkai.
+          Lộ trình gắn Minna & nội dung trong app — kèm gợi ý sách nên mua (Shin Kanzen Master,
+          Sō-Matome) có link bản tiếng Việt khi có.
         </p>
 
         <div className="jlpt-level-tabs">
@@ -379,8 +383,43 @@ export default function JlptRoadmapView() {
         </div>
       </section>
 
+      <section className="jlpt-section jlpt-buy-guide">
+        <h3>🛒 Sách nên mua</h3>
+        <p className="jlpt-buy-intro">{JLPT_BOOK_GUIDE_INTRO}</p>
+        <div className="jlpt-buy-list">
+          {booksForLevel(activeId).map((book) => (
+            <article key={book.id} className="jlpt-buy-card glass-panel">
+              <div className="jlpt-buy-card-top">
+                <span className="jlpt-buy-series">{book.series}</span>
+                {book.hasVietnamese ? (
+                  <span className="jlpt-buy-badge jlpt-buy-badge--vi">Có tiếng Việt</span>
+                ) : (
+                  <span className="jlpt-buy-badge">Chủ yếu tiếng Nhật</span>
+                )}
+              </div>
+              <h4>{book.title}</h4>
+              <p>{book.why}</p>
+              {book.vietnameseNote && (
+                <span className="jlpt-buy-note">{book.vietnameseNote}</span>
+              )}
+              <a
+                href={book.buyUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-sm btn-primary jlpt-buy-link"
+              >
+                {book.buyLabel} ↗
+              </a>
+            </article>
+          ))}
+        </div>
+        {booksForLevel(activeId).length === 0 && (
+          <p className="jlpt-buy-empty">Chưa có gợi ý sách riêng cho cấp này.</p>
+        )}
+      </section>
+
       <section className="jlpt-section">
-        <h3>📚 Tài liệu & sách luyện thi</h3>
+        <h3>📚 Tài liệu trong lộ trình (app + sách)</h3>
         <div className="jlpt-materials">
           {level.materials.map((mat) => (
             <article key={mat.title} className="jlpt-material-card glass-panel">

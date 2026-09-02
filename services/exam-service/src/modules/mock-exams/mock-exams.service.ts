@@ -11,7 +11,9 @@ import {
   normalizeAnswer,
 } from "@app/common";
 import type {
+  CreateMockExamQuestionDto,
   CreateMockExamTemplateDto,
+  UpdateMockExamQuestionDto,
   UpdateMockExamTemplateDto,
 } from "@app/contracts";
 import { PrismaService } from "@app/prisma";
@@ -39,8 +41,10 @@ export interface MockExamQuestionPublic {
   sectionName: string;
   type: "multiple_choice" | "fill_in_blank" | "listening";
   question: string;
-  options?: string[];
+  options?: Array<{ text: string; imageUrl?: string }>;
+  imageUrl?: string;
   audioText?: string;
+  audioUrl?: string;
   lessonNumber?: number;
 }
 
@@ -97,14 +101,20 @@ function templateToConfig(row: MockExamTemplate): LevelConfig {
   };
 }
 
-function totalQuestions(row: Pick<
-  MockExamTemplate,
-  | "vocabCount"
-  | "grammarCount"
-  | "kanjiCount"
-  | "listeningWordCount"
-  | "listeningSentenceCount"
->) {
+function totalQuestions(
+  row: Pick<
+    MockExamTemplate,
+    | "sourceMode"
+    | "vocabCount"
+    | "grammarCount"
+    | "kanjiCount"
+    | "listeningWordCount"
+    | "listeningSentenceCount"
+  > & { _count?: { questions?: number } },
+) {
+  if (row.sourceMode === "CUSTOM") {
+    return row._count?.questions ?? 0;
+  }
   return (
     row.vocabCount +
     row.grammarCount +
@@ -114,20 +124,31 @@ function totalQuestions(row: Pick<
   );
 }
 
+const SECTION_NAMES: Record<string, string> = {
+  vocab: "Từ vựng",
+  grammar: "Ngữ pháp",
+  kanji: "Kanji",
+  listening: "Nghe",
+};
+
 function resolveScope(row: MockExamTemplate): string {
   if (row.scope.trim()) return row.scope;
+  if (row.sourceMode === "CUSTOM") return "Đề tự soạn";
   if (row.lessonFrom <= 50 && row.lessonTo <= 50) {
     return `Minna Bài ${row.lessonFrom}–${row.lessonTo}`;
   }
   return `Bộ ${row.level.toUpperCase()} trong app`;
 }
 
-function toListItem(row: MockExamTemplate) {
+function toListItem(
+  row: MockExamTemplate & { _count?: { questions: number } },
+) {
   return {
     id: row.id,
     slug: row.slug,
     level: row.level,
     title: row.title,
+    sourceMode: row.sourceMode,
     durationMinutes: row.durationMinutes,
     totalQuestions: totalQuestions(row),
     lessonRange: `${row.lessonFrom}–${row.lessonTo}`,
@@ -138,7 +159,9 @@ function toListItem(row: MockExamTemplate) {
   };
 }
 
-function toAdminItem(row: MockExamTemplate) {
+function toAdminItem(
+  row: MockExamTemplate & { _count?: { questions: number } },
+) {
   return {
     ...toListItem(row),
     lessonFrom: row.lessonFrom,
@@ -154,6 +177,60 @@ function toAdminItem(row: MockExamTemplate) {
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
+}
+
+function toQuestionAdmin(
+  q: {
+    id: number;
+    templateId: number;
+    sectionId: string;
+    type: string;
+    question: string;
+    correctAnswer: string;
+    imageUrl: string | null;
+    audioText: string | null;
+    audioUrl: string | null;
+    sortOrder: number;
+    options: { text: string; imageUrl: string | null; sortOrder: number }[];
+  },
+) {
+  return {
+    id: q.id,
+    templateId: q.templateId,
+    sectionId: q.sectionId,
+    type: q.type,
+    question: q.question,
+    correctAnswer: q.correctAnswer,
+    imageUrl: q.imageUrl ?? undefined,
+    audioText: q.audioText ?? undefined,
+    audioUrl: q.audioUrl ?? undefined,
+    sortOrder: q.sortOrder,
+    options: q.options
+      .slice()
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((o) => ({
+        text: o.text,
+        imageUrl: o.imageUrl ?? undefined,
+      })),
+  };
+}
+
+function normalizeOptionInputs(
+  options?: Array<string | { text: string; imageUrl?: string | null }>,
+) {
+  if (!options?.length) return [];
+  return options
+    .map((item, index) => {
+      if (typeof item === "string") {
+        return { text: item.trim(), imageUrl: null as string | null, sortOrder: index };
+      }
+      return {
+        text: item.text.trim(),
+        imageUrl: item.imageUrl?.trim() || null,
+        sortOrder: index,
+      };
+    })
+    .filter((item) => item.text);
 }
 
 function slugify(input: string): string {
@@ -175,6 +252,7 @@ export class MockExamsService {
   async listTemplates() {
     const rows = await this.prisma.mockExamTemplate.findMany({
       where: { isPublished: true },
+      include: { _count: { select: { questions: true } } },
       orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
     });
     return rows.map(toListItem);
@@ -182,6 +260,7 @@ export class MockExamsService {
 
   async listTemplatesAdmin() {
     const rows = await this.prisma.mockExamTemplate.findMany({
+      include: { _count: { select: { questions: true } } },
       orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
     });
     return rows.map(toAdminItem);
@@ -190,6 +269,7 @@ export class MockExamsService {
   async getTemplate(id: number) {
     const row = await this.prisma.mockExamTemplate.findUnique({
       where: { id },
+      include: { _count: { select: { questions: true } } },
     });
     if (!row) {
       throw new RpcException({
@@ -215,27 +295,34 @@ export class MockExamsService {
       });
     }
 
+    const sourceMode = dto.sourceMode === "CUSTOM" ? "CUSTOM" : "GENERATED";
+    const isCustom = sourceMode === "CUSTOM";
+
     const row = await this.prisma.mockExamTemplate.create({
       data: {
         slug,
         level: dto.level,
         title: dto.title,
         description: dto.description ?? "",
+        sourceMode,
         durationMinutes: dto.durationMinutes,
-        lessonFrom: dto.lessonFrom,
-        lessonTo: dto.lessonTo,
-        kanjiLessonFrom: dto.kanjiLessonFrom,
-        kanjiLessonTo: dto.kanjiLessonTo,
-        vocabCount: dto.vocabCount ?? 12,
-        grammarCount: dto.grammarCount ?? 10,
-        kanjiCount: dto.kanjiCount ?? 5,
-        listeningWordCount: dto.listeningWordCount ?? 4,
-        listeningSentenceCount: dto.listeningSentenceCount ?? 4,
+        lessonFrom: dto.lessonFrom ?? 1,
+        lessonTo: dto.lessonTo ?? 1,
+        kanjiLessonFrom: dto.kanjiLessonFrom ?? 1,
+        kanjiLessonTo: dto.kanjiLessonTo ?? 1,
+        vocabCount: isCustom ? 0 : (dto.vocabCount ?? 12),
+        grammarCount: isCustom ? 0 : (dto.grammarCount ?? 10),
+        kanjiCount: isCustom ? 0 : (dto.kanjiCount ?? 5),
+        listeningWordCount: isCustom ? 0 : (dto.listeningWordCount ?? 4),
+        listeningSentenceCount: isCustom
+          ? 0
+          : (dto.listeningSentenceCount ?? 4),
         passThreshold: dto.passThreshold ?? 65,
-        scope: dto.scope ?? "",
+        scope: dto.scope ?? (isCustom ? "Đề tự soạn" : ""),
         isPublished: dto.isPublished ?? true,
         sortOrder: dto.sortOrder ?? 0,
       },
+      include: { _count: { select: { questions: true } } },
     });
 
     return toAdminItem(row);
@@ -271,6 +358,7 @@ export class MockExamsService {
         ...(dto.level !== undefined ? { level: dto.level } : {}),
         ...(dto.title !== undefined ? { title: dto.title } : {}),
         ...(dto.description !== undefined ? { description: dto.description } : {}),
+        ...(dto.sourceMode !== undefined ? { sourceMode: dto.sourceMode } : {}),
         ...(dto.durationMinutes !== undefined
           ? { durationMinutes: dto.durationMinutes }
           : {}),
@@ -302,6 +390,7 @@ export class MockExamsService {
           : {}),
         ...(dto.sortOrder !== undefined ? { sortOrder: dto.sortOrder } : {}),
       },
+      include: { _count: { select: { questions: true } } },
     });
 
     return toAdminItem(row);
@@ -320,6 +409,296 @@ export class MockExamsService {
 
     await this.prisma.mockExamTemplate.delete({ where: { id } });
     return { id, deleted: true };
+  }
+
+  async listQuestions(templateId: number) {
+    await this.requireTemplate(templateId);
+    const rows = await this.prisma.mockExamQuestion.findMany({
+      where: { templateId },
+      include: { options: { orderBy: { sortOrder: "asc" } } },
+      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+    });
+    return rows.map(toQuestionAdmin);
+  }
+
+  async createQuestion(templateId: number, dto: CreateMockExamQuestionDto) {
+    await this.requireTemplate(templateId);
+    this.assertQuestionPayload(dto);
+
+    let sortOrder = dto.sortOrder;
+    if (sortOrder == null) {
+      const agg = await this.prisma.mockExamQuestion.aggregate({
+        where: { templateId },
+        _max: { sortOrder: true },
+      });
+      sortOrder = (agg._max.sortOrder ?? -1) + 1;
+    }
+
+    const options = normalizeOptionInputs(dto.options);
+
+    const row = await this.prisma.mockExamQuestion.create({
+      data: {
+        templateId,
+        sectionId: dto.sectionId,
+        type: dto.type,
+        question: dto.question.trim(),
+        correctAnswer: dto.correctAnswer.trim(),
+        imageUrl: dto.imageUrl?.trim() || null,
+        audioText: dto.audioText?.trim() || null,
+        audioUrl: dto.audioUrl?.trim() || null,
+        sortOrder,
+        options: {
+          create: options.map((opt) => ({
+            text: opt.text,
+            imageUrl: opt.imageUrl,
+            sortOrder: opt.sortOrder,
+          })),
+        },
+      },
+      include: { options: { orderBy: { sortOrder: "asc" } } },
+    });
+
+    return toQuestionAdmin(row);
+  }
+
+  async updateQuestion(
+    templateId: number,
+    questionId: number,
+    dto: UpdateMockExamQuestionDto,
+  ) {
+    const existing = await this.prisma.mockExamQuestion.findFirst({
+      where: { id: questionId, templateId },
+    });
+    if (!existing) {
+      throw new RpcException({
+        statusCode: 404,
+        message: "Không tìm thấy câu hỏi",
+      });
+    }
+
+    const nextType = dto.type ?? existing.type;
+    const nextOptions =
+      dto.options !== undefined
+        ? normalizeOptionInputs(dto.options)
+        : undefined;
+    if (nextType === "multiple_choice" || nextType === "listening") {
+      const opts =
+        nextOptions ??
+        (
+          await this.prisma.mockExamQuestionOption.findMany({
+            where: { questionId },
+            orderBy: { sortOrder: "asc" },
+          })
+        ).map((o) => ({ text: o.text, imageUrl: o.imageUrl }));
+      if (opts.filter((t) => t.text.trim()).length < 2) {
+        throw new RpcException({
+          statusCode: 400,
+          message: "Câu trắc nghiệm / nghe cần ít nhất 2 đáp án",
+        });
+      }
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.mockExamQuestion.update({
+        where: { id: questionId },
+        data: {
+          ...(dto.sectionId !== undefined ? { sectionId: dto.sectionId } : {}),
+          ...(dto.type !== undefined ? { type: dto.type } : {}),
+          ...(dto.question !== undefined
+            ? { question: dto.question.trim() }
+            : {}),
+          ...(dto.correctAnswer !== undefined
+            ? { correctAnswer: dto.correctAnswer.trim() }
+            : {}),
+          ...(dto.imageUrl !== undefined
+            ? { imageUrl: dto.imageUrl?.trim() || null }
+            : {}),
+          ...(dto.audioText !== undefined
+            ? { audioText: dto.audioText?.trim() || null }
+            : {}),
+          ...(dto.audioUrl !== undefined
+            ? { audioUrl: dto.audioUrl?.trim() || null }
+            : {}),
+          ...(dto.sortOrder !== undefined ? { sortOrder: dto.sortOrder } : {}),
+        },
+      });
+
+      if (nextOptions !== undefined) {
+        await tx.mockExamQuestionOption.deleteMany({ where: { questionId } });
+        if (nextOptions.length) {
+          await tx.mockExamQuestionOption.createMany({
+            data: nextOptions.map((opt) => ({
+              questionId,
+              text: opt.text,
+              imageUrl: opt.imageUrl,
+              sortOrder: opt.sortOrder,
+            })),
+          });
+        }
+      }
+    });
+
+    const row = await this.prisma.mockExamQuestion.findUniqueOrThrow({
+      where: { id: questionId },
+      include: { options: { orderBy: { sortOrder: "asc" } } },
+    });
+    return toQuestionAdmin(row);
+  }
+
+  async deleteQuestion(templateId: number, questionId: number) {
+    const existing = await this.prisma.mockExamQuestion.findFirst({
+      where: { id: questionId, templateId },
+    });
+    if (!existing) {
+      throw new RpcException({
+        statusCode: 404,
+        message: "Không tìm thấy câu hỏi",
+      });
+    }
+    await this.prisma.mockExamQuestion.delete({ where: { id: questionId } });
+    return { id: questionId, deleted: true };
+  }
+
+  async reorderQuestions(templateId: number, orderedIds: number[]) {
+    await this.requireTemplate(templateId);
+    const existing = await this.prisma.mockExamQuestion.findMany({
+      where: { templateId },
+      select: { id: true },
+    });
+    const existingIds = new Set(existing.map((q) => q.id));
+    if (
+      orderedIds.length !== existingIds.size ||
+      orderedIds.some((id) => !existingIds.has(id))
+    ) {
+      throw new RpcException({
+        statusCode: 400,
+        message: "orderedIds phải gồm mọi câu hỏi của đề",
+      });
+    }
+
+    await this.prisma.$transaction(
+      orderedIds.map((id, index) =>
+        this.prisma.mockExamQuestion.update({
+          where: { id },
+          data: { sortOrder: index },
+        }),
+      ),
+    );
+
+    return this.listQuestions(templateId);
+  }
+
+  private async requireTemplate(id: number) {
+    const row = await this.prisma.mockExamTemplate.findUnique({
+      where: { id },
+    });
+    if (!row) {
+      throw new RpcException({
+        statusCode: 404,
+        message: "Không tìm thấy đề thi",
+      });
+    }
+    return row;
+  }
+
+  private assertQuestionPayload(
+    dto: Pick<
+      CreateMockExamQuestionDto,
+      "type" | "options" | "audioText" | "audioUrl" | "correctAnswer"
+    >,
+  ) {
+    if (dto.type === "multiple_choice" || dto.type === "listening") {
+      const opts = normalizeOptionInputs(dto.options);
+      if (opts.length < 2) {
+        throw new RpcException({
+          statusCode: 400,
+          message: "Câu trắc nghiệm / nghe cần ít nhất 2 đáp án",
+        });
+      }
+      if (!opts.some((o) => o.text === dto.correctAnswer.trim())) {
+        throw new RpcException({
+          statusCode: 400,
+          message: "Đáp án đúng phải nằm trong danh sách lựa chọn",
+        });
+      }
+    }
+    if (dto.type === "listening" && !dto.audioUrl?.trim() && !dto.audioText?.trim()) {
+      throw new RpcException({
+        statusCode: 400,
+        message: "Câu nghe cần file âm thanh hoặc audioText (TTS)",
+      });
+    }
+  }
+
+  private async startCustomExam(template: MockExamTemplate) {
+    const rows = await this.prisma.mockExamQuestion.findMany({
+      where: { templateId: template.id },
+      include: { options: { orderBy: { sortOrder: "asc" } } },
+      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+    });
+
+    if (rows.length === 0) {
+      throw new RpcException({
+        statusCode: 400,
+        message: "Đề tự soạn chưa có câu hỏi. Admin hãy thêm câu hỏi trước.",
+      });
+    }
+
+    const level = template.level as MockExamLevel;
+    const questions: MockExamQuestionPublic[] = [];
+    const answerKey: Record<string, string> = {};
+
+    rows.forEach((row, index) => {
+      const id = `q${index + 1}`;
+      const optionItems = row.options.map((o) => ({
+        text: o.text,
+        imageUrl: o.imageUrl ?? undefined,
+      }));
+      const type = row.type as MockExamQuestionPublic["type"];
+      questions.push({
+        id,
+        sectionId: row.sectionId,
+        sectionName: SECTION_NAMES[row.sectionId] ?? row.sectionId,
+        type,
+        question: row.question,
+        imageUrl: row.imageUrl ?? undefined,
+        options:
+          type === "multiple_choice" || type === "listening"
+            ? shuffle(optionItems)
+            : undefined,
+        audioText: row.audioText ?? undefined,
+        audioUrl: row.audioUrl ?? undefined,
+      });
+      answerKey[id] = row.correctAnswer;
+    });
+
+    const examId = randomUUID();
+    const session: MockExamSession = {
+      examId,
+      templateId: template.id,
+      templateSlug: template.slug,
+      level,
+      title: template.title,
+      durationMinutes: template.durationMinutes,
+      passThreshold: template.passThreshold,
+      startedAt: new Date().toISOString(),
+      questions,
+      answerKey,
+    };
+
+    await this.cacheManager.set(sessionKey(examId), session, SESSION_TTL_MS);
+
+    return {
+      examId,
+      templateId: template.id,
+      slug: template.slug,
+      level,
+      title: template.title,
+      durationMinutes: template.durationMinutes,
+      totalQuestions: questions.length,
+      sections: this.groupBySection(questions),
+      questions,
+    };
   }
 
   private async findTemplateByKey(key: string) {
@@ -349,6 +728,10 @@ export class MockExamsService {
         statusCode: 404,
         message: "Đề thi chưa được công bố",
       });
+    }
+
+    if (template.sourceMode === "CUSTOM") {
+      return this.startCustomExam(template);
     }
 
     const cfg = templateToConfig(template);
@@ -446,6 +829,7 @@ export class MockExamsService {
       options?: string[],
       lessonNumber?: number,
       audioText?: string,
+      audioUrl?: string,
     ) => {
       index += 1;
       const id = `q${index}`;
@@ -455,9 +839,10 @@ export class MockExamsService {
         sectionName,
         type,
         question,
-        options,
+        options: options?.map((text) => ({ text })),
         lessonNumber,
         audioText,
+        audioUrl,
       });
       answerKey[id] = answer;
     };

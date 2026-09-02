@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   Req,
   UseGuards,
   Inject,
@@ -20,6 +21,9 @@ import {
   EXAM_PATTERNS,
   CreateMockExamTemplateDto,
   UpdateMockExamTemplateDto,
+  CreateMockExamQuestionDto,
+  UpdateMockExamQuestionDto,
+  ReorderMockExamQuestionsDto,
 } from "@app/contracts";
 import {
   JwtAuthGuard,
@@ -107,6 +111,79 @@ export class MockExamsController {
   @ApiOperation({ summary: "Delete mock exam template (admin)" })
   remove(@Param("id", ParseIntPipe) id: number) {
     return sendExam(this.examClient, EXAM_PATTERNS.DELETE_TEMPLATE, { id });
+  }
+
+  @Get("admin/:id/questions")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "List questions for a custom mock exam (admin)" })
+  listQuestions(@Param("id", ParseIntPipe) id: number) {
+    return sendExam(this.examClient, EXAM_PATTERNS.LIST_QUESTIONS, {
+      templateId: id,
+    });
+  }
+
+  @Post("admin/:id/questions")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Add question to mock exam (admin)" })
+  createQuestion(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() dto: CreateMockExamQuestionDto,
+  ) {
+    return sendExam(this.examClient, EXAM_PATTERNS.CREATE_QUESTION, {
+      templateId: id,
+      dto,
+    });
+  }
+
+  @Patch("admin/:id/questions/:questionId")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Update mock exam question (admin)" })
+  updateQuestion(
+    @Param("id", ParseIntPipe) id: number,
+    @Param("questionId", ParseIntPipe) questionId: number,
+    @Body() dto: UpdateMockExamQuestionDto,
+  ) {
+    return sendExam(this.examClient, EXAM_PATTERNS.UPDATE_QUESTION, {
+      templateId: id,
+      questionId,
+      dto,
+    });
+  }
+
+  @Delete("admin/:id/questions/:questionId")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Delete mock exam question (admin)" })
+  removeQuestion(
+    @Param("id", ParseIntPipe) id: number,
+    @Param("questionId", ParseIntPipe) questionId: number,
+  ) {
+    return sendExam(this.examClient, EXAM_PATTERNS.DELETE_QUESTION, {
+      templateId: id,
+      questionId,
+    });
+  }
+
+  @Put("admin/:id/questions/reorder")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Reorder mock exam questions (admin)" })
+  reorderQuestions(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() dto: ReorderMockExamQuestionsDto,
+  ) {
+    return sendExam(this.examClient, EXAM_PATTERNS.REORDER_QUESTIONS, {
+      templateId: id,
+      dto,
+    });
   }
 
   @Get("history")

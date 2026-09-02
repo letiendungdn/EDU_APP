@@ -1066,11 +1066,13 @@ model MockExamTemplate {
   level                  String
   title                  String
   description            String   @default("")
+  /// GENERATED = rút ngẫu nhiên từ bài học; CUSTOM = câu hỏi tự soạn
+  sourceMode             String   @default("GENERATED")
   durationMinutes        Int
-  lessonFrom             Int
-  lessonTo               Int
-  kanjiLessonFrom        Int
-  kanjiLessonTo          Int
+  lessonFrom             Int      @default(1)
+  lessonTo               Int      @default(1)
+  kanjiLessonFrom        Int      @default(1)
+  kanjiLessonTo          Int      @default(1)
   vocabCount             Int      @default(12)
   grammarCount           Int      @default(10)
   kanjiCount             Int      @default(5)
@@ -1082,9 +1084,42 @@ model MockExamTemplate {
   sortOrder              Int      @default(0)
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
+  questions              MockExamQuestion[]
 
   @@index([level, sortOrder])
   @@index([isPublished, sortOrder])
+}
+
+model MockExamQuestion {
+  id            Int      @id @default(autoincrement())
+  templateId    Int
+  template      MockExamTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  /// vocab | grammar | kanji | listening
+  sectionId     String
+  /// multiple_choice | fill_in_blank | listening
+  type          String
+  question      String
+  correctAnswer String
+  imageUrl      String?
+  audioText     String?
+  audioUrl      String?
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  options       MockExamQuestionOption[]
+
+  @@index([templateId, sortOrder])
+}
+
+model MockExamQuestionOption {
+  id         Int      @id @default(autoincrement())
+  questionId Int
+  question   MockExamQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text       String
+  imageUrl   String?
+  sortOrder  Int      @default(0)
+
+  @@index([questionId, sortOrder])
 }
 
 model ListeningLog {

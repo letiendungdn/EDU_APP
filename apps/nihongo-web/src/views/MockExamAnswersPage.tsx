@@ -138,25 +138,45 @@ export default function MockExamAnswersPage() {
             </div>
 
             <p className="answer-question">{item.question}</p>
+            {item.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={item.imageUrl} alt="" className="mock-exam-question-image" />
+            ) : null}
 
-            {item.type === 'listening' && item.audioText && (
-              <ListeningPlayer audioText={item.audioText} autoPlay={false} showText unlimited />
+            {item.type === 'listening' && (item.audioUrl || item.audioText) && (
+              <ListeningPlayer
+                audioUrl={item.audioUrl}
+                audioText={item.audioText}
+                autoPlay={false}
+                showText
+                unlimited
+              />
             )}
 
             {(item.type === 'multiple_choice' || item.type === 'listening') &&
               item.options && item.options.length > 0 && (
               <ul className="answer-options-review">
                 {item.options.map((opt) => {
-                  const isCorrect = opt === item.correctAnswer;
-                  const isUser = opt === item.userAnswer;
+                  const isCorrect = opt.text === item.correctAnswer;
+                  const isUser = opt.text === item.userAnswer;
                   let cls = '';
                   if (isCorrect) cls = 'opt-correct';
                   else if (isUser && !item.isCorrect) cls = 'opt-wrong';
                   return (
-                    <li key={`${item.id}-${index}-${opt}`} className={cls}>
-                      {opt}
-                      {isCorrect && ' ✓'}
-                      {isUser && !item.isCorrect && ' (bạn chọn)'}
+                    <li key={`${item.id}-${index}-${opt.text}`} className={cls}>
+                      {opt.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={opt.imageUrl}
+                          alt=""
+                          className="mock-exam-option-image"
+                        />
+                      ) : null}
+                      <span>
+                        {opt.text}
+                        {isCorrect && ' ✓'}
+                        {isUser && !item.isCorrect && ' (bạn chọn)'}
+                      </span>
                     </li>
                   );
                 })}

@@ -183,24 +183,43 @@ export default function MockExamTakePage() {
               </span>
             </div>
 
-            {current.type === 'listening' && current.audioText && (
-              <ListeningPlayer audioText={current.audioText} />
+            {current.type === 'listening' && (current.audioUrl || current.audioText) && (
+              <ListeningPlayer
+                audioUrl={current.audioUrl}
+                audioText={current.audioText}
+              />
             )}
 
             <h3 className="quiz-question">{current.question}</h3>
+            {current.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={current.imageUrl}
+                alt=""
+                className="mock-exam-question-image"
+              />
+            ) : null}
 
             {current.type === 'multiple_choice' || current.type === 'listening' ? (
               <div className="quiz-options">
                 {(current.options ?? []).map((option) => (
                   <button
-                    key={option}
+                    key={option.text}
                     type="button"
                     className={`quiz-option ${
-                      answers[current.id] === option ? 'selected' : ''
+                      answers[current.id] === option.text ? 'selected' : ''
                     }`}
-                    onClick={() => setAnswer(current.id, option)}
+                    onClick={() => setAnswer(current.id, option.text)}
                   >
-                    {option}
+                    {option.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={option.imageUrl}
+                        alt=""
+                        className="mock-exam-option-image"
+                      />
+                    ) : null}
+                    <span>{option.text}</span>
                   </button>
                 ))}
               </div>

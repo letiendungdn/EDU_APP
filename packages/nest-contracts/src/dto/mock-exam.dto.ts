@@ -1,5 +1,9 @@
+import { Type } from 'class-transformer';
 import {
+  ArrayMinSize,
+  IsArray,
   IsBoolean,
+  IsIn,
   IsInt,
   IsOptional,
   IsString,
@@ -10,6 +14,9 @@ import {
 } from 'class-validator';
 
 const LEVEL_RE = /^n[1-5]$/;
+const SOURCE_MODES = ['GENERATED', 'CUSTOM'] as const;
+const SECTION_IDS = ['vocab', 'grammar', 'kanji', 'listening'] as const;
+const QUESTION_TYPES = ['multiple_choice', 'fill_in_blank', 'listening'] as const;
 
 export class CreateMockExamTemplateDto {
   @IsOptional()
@@ -32,26 +39,34 @@ export class CreateMockExamTemplateDto {
   @IsString()
   description?: string;
 
+  @IsOptional()
+  @IsIn([...SOURCE_MODES])
+  sourceMode?: (typeof SOURCE_MODES)[number];
+
   @IsInt()
   @Min(10)
   @Max(240)
   durationMinutes!: number;
 
+  @IsOptional()
   @IsInt()
   @Min(1)
-  lessonFrom!: number;
+  lessonFrom?: number;
 
+  @IsOptional()
   @IsInt()
   @Min(1)
-  lessonTo!: number;
+  lessonTo?: number;
 
+  @IsOptional()
   @IsInt()
   @Min(1)
-  kanjiLessonFrom!: number;
+  kanjiLessonFrom?: number;
 
+  @IsOptional()
   @IsInt()
   @Min(1)
-  kanjiLessonTo!: number;
+  kanjiLessonTo?: number;
 
   @IsOptional()
   @IsInt()
@@ -123,6 +138,10 @@ export class UpdateMockExamTemplateDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsIn([...SOURCE_MODES])
+  sourceMode?: (typeof SOURCE_MODES)[number];
 
   @IsOptional()
   @IsInt()
@@ -198,4 +217,103 @@ export class UpdateMockExamTemplateDto {
   @IsInt()
   @Min(0)
   sortOrder?: number;
+}
+
+export class MockExamOptionInputDto {
+  @IsString()
+  @MinLength(1)
+  text!: string;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string | null;
+}
+
+export class CreateMockExamQuestionDto {
+  @IsIn([...SECTION_IDS])
+  sectionId!: (typeof SECTION_IDS)[number];
+
+  @IsIn([...QUESTION_TYPES])
+  type!: (typeof QUESTION_TYPES)[number];
+
+  @IsString()
+  @MinLength(1)
+  question!: string;
+
+  @IsString()
+  @MinLength(1)
+  correctAnswer!: string;
+
+  /** Prefer objects with text + optional imageUrl; plain strings still accepted. */
+  @IsOptional()
+  @IsArray()
+  options?: Array<string | MockExamOptionInputDto>;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string | null;
+
+  @IsOptional()
+  @IsString()
+  audioText?: string | null;
+
+  @IsOptional()
+  @IsString()
+  audioUrl?: string | null;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  sortOrder?: number;
+}
+
+export class UpdateMockExamQuestionDto {
+  @IsOptional()
+  @IsIn([...SECTION_IDS])
+  sectionId?: (typeof SECTION_IDS)[number];
+
+  @IsOptional()
+  @IsIn([...QUESTION_TYPES])
+  type?: (typeof QUESTION_TYPES)[number];
+
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  question?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  correctAnswer?: string;
+
+  @IsOptional()
+  @IsArray()
+  options?: Array<string | MockExamOptionInputDto>;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string | null;
+
+  @IsOptional()
+  @IsString()
+  audioText?: string | null;
+
+  @IsOptional()
+  @IsString()
+  audioUrl?: string | null;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  sortOrder?: number;
+}
+
+export class ReorderMockExamQuestionsDto {
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => Number)
+  @IsInt({ each: true })
+  orderedIds!: number[];
 }

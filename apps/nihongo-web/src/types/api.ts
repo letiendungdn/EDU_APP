@@ -153,6 +153,7 @@ export interface MockExamTemplate {
   slug?: string;
   level: string;
   title: string;
+  sourceMode?: 'GENERATED' | 'CUSTOM';
   durationMinutes: number;
   totalQuestions: number;
   lessonRange: string;
@@ -165,6 +166,7 @@ export interface MockExamTemplate {
 export interface MockExamTemplateAdmin extends MockExamTemplate {
   id: number;
   slug: string;
+  sourceMode: 'GENERATED' | 'CUSTOM';
   lessonFrom: number;
   lessonTo: number;
   kanjiLessonFrom: number;
@@ -184,6 +186,7 @@ export interface MockExamTemplateInput {
   level: string;
   title: string;
   description?: string;
+  sourceMode?: 'GENERATED' | 'CUSTOM';
   durationMinutes: number;
   lessonFrom: number;
   lessonTo: number;
@@ -197,6 +200,37 @@ export interface MockExamTemplateInput {
   passThreshold?: number;
   scope?: string;
   isPublished?: boolean;
+  sortOrder?: number;
+}
+
+export interface MockExamQuestionOptionInput {
+  text: string;
+  imageUrl?: string | null;
+}
+
+export interface MockExamQuestionAdmin {
+  id: number;
+  templateId: number;
+  sectionId: 'vocab' | 'grammar' | 'kanji' | 'listening';
+  type: 'multiple_choice' | 'fill_in_blank' | 'listening';
+  question: string;
+  correctAnswer: string;
+  options: MockExamQuestionOptionInput[];
+  imageUrl?: string;
+  audioText?: string;
+  audioUrl?: string;
+  sortOrder: number;
+}
+
+export interface MockExamQuestionInput {
+  sectionId: 'vocab' | 'grammar' | 'kanji' | 'listening';
+  type: 'multiple_choice' | 'fill_in_blank' | 'listening';
+  question: string;
+  correctAnswer: string;
+  options?: MockExamQuestionOptionInput[];
+  imageUrl?: string | null;
+  audioText?: string | null;
+  audioUrl?: string | null;
   sortOrder?: number;
 }
 

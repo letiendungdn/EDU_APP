@@ -12,6 +12,9 @@ import {
   UpsertDailyGoalsDto,
   CreateMockExamTemplateDto,
   UpdateMockExamTemplateDto,
+  CreateMockExamQuestionDto,
+  UpdateMockExamQuestionDto,
+  ReorderMockExamQuestionsDto,
 } from "@app/contracts";
 import { handleGrpcDispatch, type PatternHandler } from "@app/common";
 import {
@@ -47,6 +50,28 @@ export class ExamMsController implements OnModuleInit {
         ),
       [EXAM_PATTERNS.DELETE_TEMPLATE]: (data) =>
         this.deleteTemplate(data as { id: number }),
+      [EXAM_PATTERNS.LIST_QUESTIONS]: (data) =>
+        this.listQuestions(data as { templateId: number }),
+      [EXAM_PATTERNS.CREATE_QUESTION]: (data) =>
+        this.createQuestion(
+          data as { templateId: number; dto: CreateMockExamQuestionDto },
+        ),
+      [EXAM_PATTERNS.UPDATE_QUESTION]: (data) =>
+        this.updateQuestion(
+          data as {
+            templateId: number;
+            questionId: number;
+            dto: UpdateMockExamQuestionDto;
+          },
+        ),
+      [EXAM_PATTERNS.DELETE_QUESTION]: (data) =>
+        this.deleteQuestion(
+          data as { templateId: number; questionId: number },
+        ),
+      [EXAM_PATTERNS.REORDER_QUESTIONS]: (data) =>
+        this.reorderQuestions(
+          data as { templateId: number; dto: ReorderMockExamQuestionsDto },
+        ),
       [EXAM_PATTERNS.START_EXAM]: (data) =>
         this.startExam(data as { key: string }),
       [EXAM_PATTERNS.SUBMIT_EXAM]: (data) =>
@@ -119,6 +144,46 @@ export class ExamMsController implements OnModuleInit {
 
   deleteTemplate(data: { id: number }) {
     return this.mockExamsService.deleteTemplate(data.id);
+  }
+
+  listQuestions(data: { templateId: number }) {
+    return this.mockExamsService.listQuestions(data.templateId);
+  }
+
+  createQuestion(data: {
+    templateId: number;
+    dto: CreateMockExamQuestionDto;
+  }) {
+    return this.mockExamsService.createQuestion(data.templateId, data.dto);
+  }
+
+  updateQuestion(data: {
+    templateId: number;
+    questionId: number;
+    dto: UpdateMockExamQuestionDto;
+  }) {
+    return this.mockExamsService.updateQuestion(
+      data.templateId,
+      data.questionId,
+      data.dto,
+    );
+  }
+
+  deleteQuestion(data: { templateId: number; questionId: number }) {
+    return this.mockExamsService.deleteQuestion(
+      data.templateId,
+      data.questionId,
+    );
+  }
+
+  reorderQuestions(data: {
+    templateId: number;
+    dto: ReorderMockExamQuestionsDto;
+  }) {
+    return this.mockExamsService.reorderQuestions(
+      data.templateId,
+      data.dto.orderedIds,
+    );
   }
 
   startExam(data: { key: string }) {

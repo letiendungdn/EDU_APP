@@ -385,6 +385,47 @@ export function deleteMockExamTemplate(id: number, token: string) {
   });
 }
 
+export function fetchMockExamQuestions(templateId: number, token: string) {
+  return apiRequest<import('../types/api').MockExamQuestionAdmin[]>(
+    `/mock-exams/admin/${templateId}/questions`,
+    { token },
+  );
+}
+
+export function createMockExamQuestion(
+  templateId: number,
+  data: import('../types/api').MockExamQuestionInput,
+  token: string,
+) {
+  return apiRequest<import('../types/api').MockExamQuestionAdmin>(
+    `/mock-exams/admin/${templateId}/questions`,
+    { method: 'POST', token, body: JSON.stringify(data) },
+  );
+}
+
+export function updateMockExamQuestion(
+  templateId: number,
+  questionId: number,
+  data: Partial<import('../types/api').MockExamQuestionInput>,
+  token: string,
+) {
+  return apiRequest<import('../types/api').MockExamQuestionAdmin>(
+    `/mock-exams/admin/${templateId}/questions/${questionId}`,
+    { method: 'PATCH', token, body: JSON.stringify(data) },
+  );
+}
+
+export function deleteMockExamQuestion(
+  templateId: number,
+  questionId: number,
+  token: string,
+) {
+  return apiRequest<{ id: number; deleted: boolean }>(
+    `/mock-exams/admin/${templateId}/questions/${questionId}`,
+    { method: 'DELETE', token },
+  );
+}
+
 export function fetchJlptDaNangSchedule() {
   return apiRequest<JlptDaNangSchedule>('/jlpt/da-nang/schedule');
 }
