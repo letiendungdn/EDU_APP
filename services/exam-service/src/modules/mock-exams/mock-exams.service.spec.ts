@@ -1,14 +1,18 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { RpcException } from "@nestjs/microservices";
+import { REDIS_CLIENT } from "@app/common";
 import { MockExamsService } from "./mock-exams.service";
 import { PrismaService } from "@app/prisma";
 
 const baseSession = {
   examId: "exam-1",
+  templateId: 1,
+  templateSlug: "n5",
   level: "n5" as const,
   title: "N5 Test",
   durationMinutes: 50,
+  passThreshold: 60,
   startedAt: new Date().toISOString(),
   questions: [
     {
@@ -44,7 +48,14 @@ describe("MockExamsService", () => {
   };
 
   const mockPrisma = {
-    examResult: { create: jest.fn().mockResolvedValue({}) },
+    examResult: { create: jest.fn().mockResolvedValue({ id: 1 }) },
+    mockExamTemplate: {
+      findMany: jest.fn().mockResolvedValue([]),
+      findUnique: jest.fn().mockResolvedValue(null),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
     lesson: { findMany: jest.fn().mockResolvedValue([]) },
     exercise: { findMany: jest.fn().mockResolvedValue([]) },
     kanjiEntry: { findMany: jest.fn().mockResolvedValue([]) },
@@ -59,6 +70,7 @@ describe("MockExamsService", () => {
         MockExamsService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: CACHE_MANAGER, useValue: mockCache },
+        { provide: REDIS_CLIENT, useValue: { publish: jest.fn() } },
       ],
     }).compile();
 

@@ -379,6 +379,7 @@ Thuật toán SM-2 port song song: `srs.ts` · `SrsAlgorithm.kt` · `srs_algorit
 | [run-mobile.md](./run-mobile.md) | Lệnh chạy + unit test |
 | [learn-edu-app.md](./learn-edu-app.md) | Lộ trình + Phụ lục Mobile |
 | [roadmap-react-native.md](./roadmap-react-native.md) | Roadmap RN dài |
+| [learn-android-kotlin.md](./learn-android-kotlin.md) | Học Android Kotlin (10 tuần, gắn `nihongo-android`) |
 | [roadmap-android.md](./roadmap-android.md) | Roadmap Android |
 | [roadmap-flutter.md](./roadmap-flutter.md) | Roadmap Flutter |
 | [roadmap-swift.md](./roadmap-swift.md) | Roadmap Swift |

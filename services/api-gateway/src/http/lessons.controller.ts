@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Inject,
+  Query,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
@@ -36,9 +37,9 @@ export class LessonsController {
   @Get()
   @Public()
   @ApiOperation({ summary: "List all lessons" })
-  findAll() {
+  findAll(@Query("has") has?: "grammar" | "vocab") {
     return firstValueFrom(
-      this.contentClient.send(CONTENT_PATTERNS.GET_LESSONS, {}),
+      this.contentClient.send(CONTENT_PATTERNS.GET_LESSONS, { has }),
     );
   }
 

@@ -17,7 +17,12 @@ import type { Grammar, Lesson } from '../../core/models/api.models';
         <h2 class="view-title">助詞 — Luyện trợ từ</h2>
         <p class="drill-subtitle">Che は/が/を/に/で trong ví dụ ngữ pháp. <a routerLink="/practice">Tất cả bài luyện</a></p>
       </header>
-      <app-lesson-selector [lessons]="lessons()" [value]="lesson()" (valueChange)="onLesson($event)" />
+      <app-lesson-selector
+        [lessons]="lessons()"
+        [value]="lesson()"
+        countKind="grammar"
+        (valueChange)="onLesson($event)"
+      />
       <label class="furigana-toggle">
         <input type="checkbox" [checked]="showFuri()" (change)="showFuri.set($any($event.target).checked)" />
         Hiện furigana
@@ -72,7 +77,7 @@ export class ParticlesPageComponent {
   readonly current = computed(() => this.questions()[this.index()]);
 
   constructor() {
-    void this.api.getLessons().then((list) => this.lessons.set(list));
+    void this.api.getLessons({ has: 'grammar' }).then((list) => this.lessons.set(list));
     void this.load(1);
   }
 

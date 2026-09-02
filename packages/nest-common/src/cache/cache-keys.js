@@ -1,15 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CacheTTL = exports.CacheKeys = void 0;
-exports.CacheKeys = {
-    vocabByLesson: (id) => `vocab:lesson:${id}`,
-    grammarByLesson: (id) => `grammar:lesson:${id}`,
-    lessonList: () => 'lessons:all',
+export const CacheKeys = {
+  vocabByLesson: (id) => `vocab:lesson:${id}`,
+  grammarByLesson: (id) => `grammar:lesson:${id}`,
+  lessonList: (has) => (has ? `lessons:${has}` : 'lessons:all'),
+  lessonListAll: () => ['lessons:all', 'lessons:grammar', 'lessons:vocab'],
 };
-exports.CacheTTL = {
-    short: 60,
-    medium: 300,
-    long: 3600,
-    veryLong: 86400,
+export const CacheTTL = {
+  short: 60,
+  medium: 300,
+  long: 3600,
+  veryLong: 86400,
 };
-//# sourceMappingURL=cache-keys.js.map

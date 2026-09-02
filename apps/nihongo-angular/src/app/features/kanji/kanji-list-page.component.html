@@ -1,13 +1,49 @@
 <section class="container kanji-list-view">
-  <h2 class="view-title">Bảng Kanji theo JLPT</h2>
-  <p class="subtitle">Tổng {{ totalKanji() }} kanji — dữ liệu từ DB qua API.</p>
-
-  <p class="links">
-    <a routerLink="/kanji">← Flashcard theo bài</a>
+  <h2 class="view-title">Bảng tổng hợp Kanji JLPT</h2>
+  <p class="kanji-list-subtitle">
+    {{ totalKanji() }} kanji theo cấp N5 → N1 — tra cứu Hán Việt, âm ON/KUN và nghĩa tiếng Việt.
   </p>
 
-  <div class="toolbar">
-    <div class="tabs">
+  <p class="kanji-list-links">
+    <a routerLink="/kanji">← Flashcard theo bài</a>
+    <a routerLink="/kanji/quiz">Quiz kanji →</a>
+  </p>
+
+  <div class="kanji-summary-grid" role="group" aria-label="Tổng quan kanji theo JLPT">
+    @for (item of summary(); track item.level) {
+      <button
+        type="button"
+        class="kanji-summary-card level-{{ item.level | lowercase }}"
+        [class.active]="activeLevel() === item.level"
+        (click)="setLevel(item.level)"
+      >
+        <span class="kanji-summary-level">{{ item.level }}</span>
+        <span class="kanji-summary-count">{{ item.count }}</span>
+        <span class="kanji-summary-hint">kanji · {{ item.hint }}</span>
+      </button>
+    }
+    <button
+      type="button"
+      class="kanji-summary-card level-all"
+      [class.active]="activeLevel() === 'ALL'"
+      (click)="setLevel('ALL')"
+    >
+      <span class="kanji-summary-level">Tất cả</span>
+      <span class="kanji-summary-count">{{ totalKanji() }}</span>
+      <span class="kanji-summary-hint">N5 → N1</span>
+    </button>
+  </div>
+
+  <div class="kanji-list-toolbar">
+    <div class="kanji-list-tabs">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeLevel() === 'ALL'"
+        (click)="setLevel('ALL')"
+      >
+        Tất cả ({{ totalKanji() }})
+      </button>
       @for (item of summary(); track item.level) {
         <button
           type="button"
@@ -22,31 +58,117 @@
 
     <input
       type="search"
-      class="search"
-      placeholder="Lọc kanji, Hán Việt, âm đọc, nghĩa..."
+      class="kanji-list-search"
+      placeholder="Lọc kanji, Hán Việt, âm đọc, nghĩa, JLPT..."
       [value]="searchInput()"
       (input)="onSearch($event)"
       [disabled]="!activeMeta().hasData"
     />
+
+    <div class="kanji-display-toggle" role="group" aria-label="Kiểu hiển thị">
+      <button
+        type="button"
+        class="display-btn"
+        [class.active]="displayMode() === 'grid'"
+        (click)="setDisplayMode('grid')"
+      >
+        Ô vuông
+      </button>
+      <button
+        type="button"
+        class="display-btn"
+        [class.active]="displayMode() === 'table'"
+        (click)="setDisplayMode('table')"
+      >
+        Bảng
+      </button>
+    </div>
   </div>
 
   @if (activeMeta(); as meta) {
-    <div class="meta glass-panel">
-      <span><strong>{{ meta.level }}</strong> — {{ meta.hint }}</span>
-      <span>Hiển thị <strong>{{ filteredEntries().length }}</strong> / {{ displayCount() }} kanji</span>
+    <div class="kanji-list-meta glass-panel">
+      <span>
+        <strong>{{ isAllView() ? 'Tất cả cấp' : meta.level }}</strong> — {{ meta.hint }}
+      </span>
+      <span>
+        Hiển thị <strong>{{ filteredEntries().length }}</strong> / {{ currentEntries().length }} kanji
+      </span>
     </div>
   }
 
-  @if (!activeMeta().hasData) {
-    <p class="empty">Chưa có kanji {{ activeLevel() }} trong database.</p>
+  @if (loading() || loadingAll()) {
+    <p class="kanji-list-empty">
+      Đang tải bảng kanji {{ isAllView() ? 'tổng hợp' : activeLevel() }}...
+    </p>
+  } @else if (!activeMeta().hasData) {
+    <p class="kanji-list-empty">
+      Chưa có kanji {{ isAllView() ? 'trong hệ thống' : activeLevel() }} trong database.
+    </p>
   } @else if (filteredEntries().length === 0) {
-    <p class="empty">Không tìm thấy kanji phù hợp.</p>
+    <p class="kanji-list-empty">Không tìm thấy kanji phù hợp.</p>
+  } @else if (displayMode() === 'grid') {
+    <div class="kanji-cell-grid-wrap glass-panel">
+      <div class="kanji-cell-grid" role="list" aria-label="Lưới kanji">
+        @for (entry of filteredEntries(); track entry.id) {
+          <button
+            type="button"
+            role="listitem"
+            [class]="
+              'kanji-cell' +
+              (selectedEntry()?.id === entry.id ? ' selected' : '') +
+              (isAllView() ? ' level-' + (entryJlpt(entry) | lowercase) : '')
+            "
+            [title]="entryTitle(entry)"
+            (click)="selectEntry(entry)"
+          >
+            @if (isAllView() && entryJlpt(entry) !== '—') {
+              <span class="kanji-cell-badge">{{ entryJlpt(entry) }}</span>
+            }
+            <span class="kanji-cell-char">{{ entry.character }}</span>
+            @if (entry.hanViet) {
+              <span class="kanji-cell-hv">{{ entry.hanViet }}</span>
+            }
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (selectedEntry(); as selected) {
+      <div class="kanji-cell-detail glass-panel">
+        <div class="kanji-cell-detail-main">
+          <span class="kanji-cell-detail-char">{{ selected.character }}</span>
+          <div>
+            <p class="kanji-cell-detail-hv">{{ selected.hanViet ?? '—' }}</p>
+            <p class="kanji-cell-detail-reading">
+              ON: {{ selected.onyomi ?? '—' }} · KUN: {{ selected.kunyomi ?? '—' }}
+            </p>
+            <p class="kanji-cell-detail-meaning">{{ selected.meaningVi }}</p>
+          </div>
+        </div>
+        <div class="kanji-cell-detail-meta">
+          @if (isAllView()) {
+            <span class="kanji-list-jlpt level-{{ entryJlpt(selected) | lowercase }}">
+              {{ entryJlpt(selected) }}
+            </span>
+          }
+          @if (selected.lesson?.lessonNumber) {
+            <span>Bài {{ selected.lesson?.lessonNumber }}</span>
+          }
+          <button type="button" class="kanji-cell-detail-speak" (click)="speak(selected)">
+            Nghe đọc
+          </button>
+        </div>
+      </div>
+    }
   } @else {
-    <div class="table-wrap glass-panel">
-      <table>
+    <div class="kanji-list-table-wrap glass-panel">
+      <table class="kanji-list-table">
         <thead>
           <tr>
             <th>#</th>
+            @if (isAllView()) {
+              <th>JLPT</th>
+            }
             <th>Kanji</th>
             <th>Hán Việt</th>
             <th>Âm ON</th>
@@ -59,16 +181,23 @@
           @for (entry of filteredEntries(); track entry.id; let i = $index) {
             <tr>
               <td>{{ i + 1 }}</td>
+              @if (isAllView()) {
+                <td class="kanji-list-jlpt level-{{ entryJlpt(entry) | lowercase }}">
+                  {{ entryJlpt(entry) }}
+                </td>
+              }
               <td>
-                <button type="button" class="kanji-char" (click)="speak(entry)">
+                <button type="button" class="kanji-list-char" (click)="speak(entry)">
                   {{ entry.character }}
                 </button>
               </td>
-              <td class="hanviet">{{ entry.hanViet ?? '—' }}</td>
-              <td>{{ entry.onyomi ?? '—' }}</td>
-              <td>{{ entry.kunyomi ?? '—' }}</td>
-              <td>{{ entry.meaningVi }}</td>
-              <td>{{ entry.lesson?.lessonNumber ? 'Bài ' + entry.lesson?.lessonNumber : '—' }}</td>
+              <td class="kanji-list-hanviet">{{ entry.hanViet ?? '—' }}</td>
+              <td class="kanji-list-reading">{{ entry.onyomi ?? '—' }}</td>
+              <td class="kanji-list-reading">{{ entry.kunyomi ?? '—' }}</td>
+              <td class="kanji-list-meaning">{{ entry.meaningVi }}</td>
+              <td class="kanji-list-lesson">
+                {{ entry.lesson?.lessonNumber ? 'Bài ' + entry.lesson?.lessonNumber : '—' }}
+              </td>
             </tr>
           }
         </tbody>

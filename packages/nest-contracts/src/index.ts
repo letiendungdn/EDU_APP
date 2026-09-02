@@ -8,3 +8,4 @@ export * from './dto/lesson.dto';
 export * from './dto/pagination.dto';
 export * from './dto/progress.dto';
 export * from './dto/kanji-vocab.dto';
+export * from './dto/mock-exam.dto';

@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   Param,
+  ParseIntPipe,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -11,11 +14,19 @@ import {
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Role } from "@prisma/client";
 import { firstValueFrom } from "rxjs";
-import { EXAM_PATTERNS } from "@app/contracts";
 import {
+  EXAM_PATTERNS,
+  CreateMockExamTemplateDto,
+  UpdateMockExamTemplateDto,
+} from "@app/contracts";
+import {
+  JwtAuthGuard,
   OptionalJwtAuthGuard,
   Public,
+  Roles,
+  RolesGuard,
   resolveMicroserviceError,
 } from "@app/common";
 import type { AuthUserPayload } from "@app/common";
@@ -45,12 +56,61 @@ export class MockExamsController {
 
   @Get()
   @Public()
-  @ApiOperation({ summary: "List mock exam templates" })
+  @ApiOperation({ summary: "List published mock exam templates" })
   list() {
     return sendExam(this.examClient, EXAM_PATTERNS.LIST_TEMPLATES, {});
   }
 
+  @Get("admin")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "List all mock exam templates (admin)" })
+  listAdmin() {
+    return sendExam(this.examClient, EXAM_PATTERNS.LIST_TEMPLATES_ADMIN, {});
+  }
+
+  @Get("admin/:id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Get mock exam template detail (admin)" })
+  getOne(@Param("id", ParseIntPipe) id: number) {
+    return sendExam(this.examClient, EXAM_PATTERNS.GET_TEMPLATE, { id });
+  }
+
+  @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Create mock exam template (admin)" })
+  create(@Body() dto: CreateMockExamTemplateDto) {
+    return sendExam(this.examClient, EXAM_PATTERNS.CREATE_TEMPLATE, dto);
+  }
+
+  @Patch("admin/:id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Update mock exam template (admin)" })
+  update(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() dto: UpdateMockExamTemplateDto,
+  ) {
+    return sendExam(this.examClient, EXAM_PATTERNS.UPDATE_TEMPLATE, { id, dto });
+  }
+
+  @Delete("admin/:id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Delete mock exam template (admin)" })
+  remove(@Param("id", ParseIntPipe) id: number) {
+    return sendExam(this.examClient, EXAM_PATTERNS.DELETE_TEMPLATE, { id });
+  }
+
   @Get("history")
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Last 20 exam results for current user" })
   history(@Req() req: { user: AuthUserPayload }) {
@@ -59,11 +119,11 @@ export class MockExamsController {
     });
   }
 
-  @Post(":level/start")
+  @Post(":key/start")
   @Public()
-  @ApiOperation({ summary: "Start a mock exam" })
-  start(@Param("level") level: string) {
-    return sendExam(this.examClient, EXAM_PATTERNS.START_EXAM, { level });
+  @ApiOperation({ summary: "Start a mock exam by slug or id" })
+  start(@Param("key") key: string) {
+    return sendExam(this.examClient, EXAM_PATTERNS.START_EXAM, { key });
   }
 
   @Post(":examId/submit")

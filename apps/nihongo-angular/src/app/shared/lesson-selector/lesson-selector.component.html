@@ -1,12 +1,9 @@
 <div class="lesson-selector">
   <label for="lesson-select">Chọn bài học:</label>
   <select id="lesson-select" class="select-input" [value]="value" (change)="onSelect($event)">
-    @for (lesson of lessons; track lesson.lessonNumber) {
+    @for (lesson of visibleLessons; track lesson.lessonNumber) {
       <option [value]="lesson.lessonNumber">
-        Bài {{ lesson.lessonNumber }}
-        @if (lesson._count?.vocabularies) {
-          ({{ lesson._count?.vocabularies }} từ)
-        }
+        {{ labelFor(lesson) }}{{ countSuffix(lesson) }}
       </option>
     }
   </select>

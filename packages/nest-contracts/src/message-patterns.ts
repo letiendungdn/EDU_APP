@@ -38,6 +38,11 @@ export const CONTENT_PATTERNS = {
 
 export const EXAM_PATTERNS = {
   LIST_TEMPLATES: 'exam.templates.list',
+  LIST_TEMPLATES_ADMIN: 'exam.templates.listAdmin',
+  GET_TEMPLATE: 'exam.templates.get',
+  CREATE_TEMPLATE: 'exam.templates.create',
+  UPDATE_TEMPLATE: 'exam.templates.update',
+  DELETE_TEMPLATE: 'exam.templates.delete',
   START_EXAM: 'exam.start',
   SUBMIT_EXAM: 'exam.submit',
   GET_HISTORY: 'exam.history.get',

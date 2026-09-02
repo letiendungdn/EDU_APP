@@ -2,7 +2,7 @@
 // Mỗi "unit" ánh xạ 1 Lesson (lessonNumber theo quy ước 3xx/4xx/5xx).
 // Danh sách còn mở rộng: thêm phần tử vào `items` hoặc thêm unit mới.
 
-export type JlptGrammarLevel = 'N3' | 'N2' | 'N1';
+export type JlptGrammarLevel = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 
 export type JlptGrammarExample = {
   jp: string;

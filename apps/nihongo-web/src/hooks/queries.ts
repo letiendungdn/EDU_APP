@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys as domainQueryKeys } from '../api/query-keys';
 import {
   useExamTemplates,
@@ -165,6 +165,24 @@ export function useKanjiByJlptQuery(jlptLevel: string) {
     enabled: Boolean(jlptLevel),
     staleTime: STALE_5M,
   });
+}
+
+const JLPT_KANJI_LEVELS = ['N5', 'N4', 'N3', 'N2', 'N1'] as const;
+
+export function useKanjiAllJlptQuery(enabled = true) {
+  const results = useQueries({
+    queries: JLPT_KANJI_LEVELS.map((level) => ({
+      queryKey: queryKeys.kanjiByJlpt(level),
+      queryFn: () => fetchKanjiByJlpt(level),
+      enabled,
+      staleTime: STALE_5M,
+    })),
+  });
+
+  const isLoading = results.some((r) => r.isLoading);
+  const data = JLPT_KANJI_LEVELS.flatMap((level, index) => results[index]?.data ?? []);
+
+  return { data, isLoading };
 }
 
 export function useVocabRangeQuery(

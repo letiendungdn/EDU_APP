@@ -15,6 +15,8 @@ import type {
   ListeningPlaylist,
   LoginResponse,
   MockExamTemplate,
+  MockExamTemplateAdmin,
+  MockExamTemplateInput,
   PaginatedResponse,
   PaymentRecord,
   PaymentStatus,
@@ -71,8 +73,11 @@ async function fetchPaginatedAll<T>(
   return all;
 }
 
-export function fetchLessons() {
-  return apiRequest<Lesson[]>('/lessons');
+export type LessonContentFilter = 'grammar' | 'vocab';
+
+export function fetchLessons(options?: { has?: LessonContentFilter }) {
+  const qs = options?.has ? `?has=${options.has}` : '';
+  return apiRequest<Lesson[]>(`/lessons${qs}`);
 }
 
 export function fetchVocabularies(lessonNumber: number) {
@@ -310,6 +315,44 @@ export function fetchListeningPlaylist(lessonFrom = 1, lessonTo = 25, limit = 12
 
 export function fetchMockExamTemplates() {
   return apiRequest<MockExamTemplate[]>('/mock-exams');
+}
+
+export function fetchMockExamTemplatesAdmin(token: string) {
+  return apiRequest<MockExamTemplateAdmin[]>('/mock-exams/admin', { token });
+}
+
+export function fetchMockExamTemplateAdmin(id: number, token: string) {
+  return apiRequest<MockExamTemplateAdmin>(`/mock-exams/admin/${id}`, { token });
+}
+
+export function createMockExamTemplate(
+  data: MockExamTemplateInput,
+  token: string,
+) {
+  return apiRequest<MockExamTemplateAdmin>('/mock-exams', {
+    method: 'POST',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateMockExamTemplate(
+  id: number,
+  data: Partial<MockExamTemplateInput>,
+  token: string,
+) {
+  return apiRequest<MockExamTemplateAdmin>(`/mock-exams/admin/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteMockExamTemplate(id: number, token: string) {
+  return apiRequest<{ id: number; deleted: boolean }>(`/mock-exams/admin/${id}`, {
+    method: 'DELETE',
+    token,
+  });
 }
 
 export function fetchJlptDaNangSchedule() {

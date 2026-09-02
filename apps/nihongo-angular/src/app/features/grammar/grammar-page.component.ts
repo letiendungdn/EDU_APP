@@ -69,7 +69,7 @@ export class GrammarPageComponent {
   readonly exampleRomaji = grammarExampleRomaji;
 
   constructor() {
-    void this.api.getLessons().then((data) => this.lessons.set(data));
+    void this.api.getLessons({ has: 'grammar' }).then((data) => this.lessons.set(data));
 
     effect(() => {
       const n = this.lesson();
@@ -265,7 +265,7 @@ export class GrammarPageComponent {
   private async reload(): Promise<void> {
     const list = await this.api.getGrammars(this.lesson());
     this.grammars.set(list);
-    const lessons = await this.api.getLessons();
+    const lessons = await this.api.getLessons({ has: 'grammar' });
     this.lessons.set(lessons);
   }
 }

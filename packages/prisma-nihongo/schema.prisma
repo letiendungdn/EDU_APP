@@ -1059,6 +1059,34 @@ model ExamSectionResult {
   @@index([examResultId])
 }
 
+/// Cấu hình đề thi thử JLPT — admin quản lý qua /mock-exam.
+model MockExamTemplate {
+  id                     Int      @id @default(autoincrement())
+  slug                   String   @unique
+  level                  String
+  title                  String
+  description            String   @default("")
+  durationMinutes        Int
+  lessonFrom             Int
+  lessonTo               Int
+  kanjiLessonFrom        Int
+  kanjiLessonTo          Int
+  vocabCount             Int      @default(12)
+  grammarCount           Int      @default(10)
+  kanjiCount             Int      @default(5)
+  listeningWordCount     Int      @default(4)
+  listeningSentenceCount Int      @default(4)
+  passThreshold          Int      @default(65)
+  scope                  String   @default("")
+  isPublished            Boolean  @default(true)
+  sortOrder              Int      @default(0)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@index([level, sortOrder])
+  @@index([isPublished, sortOrder])
+}
+
 model ListeningLog {
   id         Int      @id @default(autoincrement())
   userId     Int

@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict jGg4sZDvgD48qVSbPTobTnGSqvLvmy2db7B94Hv093tm1OgxifpYtZYjlhXY6kI
+\restrict oYDdqNqkHGUvCyyf37FHDCzLGbmaR45Vfn7XfmIcGRzoTcELQUtwofTtJr3lJNv
 
 -- Dumped from database version 16.14
 -- Dumped by pg_dump version 16.14
@@ -385,7 +385,9 @@ CREATE TABLE public."ChatMessage" (
     "senderId" integer NOT NULL,
     content text NOT NULL,
     "readAt" timestamp(3) without time zone,
-    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "fileUrl" text,
+    "fileType" text
 );
 
 
@@ -590,6 +592,208 @@ ALTER SEQUENCE public."CoachingSession_id_seq" OWNED BY public."CoachingSession"
 
 
 --
+-- Name: ConversationIntroExample; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."ConversationIntroExample" (
+    id integer NOT NULL,
+    "slotId" integer NOT NULL,
+    ja text NOT NULL,
+    kana text NOT NULL,
+    romaji text NOT NULL,
+    vi text NOT NULL,
+    note text,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."ConversationIntroExample" OWNER TO nihongo;
+
+--
+-- Name: ConversationIntroExample_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."ConversationIntroExample_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."ConversationIntroExample_id_seq" OWNER TO nihongo;
+
+--
+-- Name: ConversationIntroExample_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."ConversationIntroExample_id_seq" OWNED BY public."ConversationIntroExample".id;
+
+
+--
+-- Name: ConversationIntroLine; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."ConversationIntroLine" (
+    id integer NOT NULL,
+    ja text NOT NULL,
+    kana text NOT NULL,
+    romaji text NOT NULL,
+    vi text NOT NULL,
+    tip text,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."ConversationIntroLine" OWNER TO nihongo;
+
+--
+-- Name: ConversationIntroLine_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."ConversationIntroLine_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."ConversationIntroLine_id_seq" OWNER TO nihongo;
+
+--
+-- Name: ConversationIntroLine_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."ConversationIntroLine_id_seq" OWNED BY public."ConversationIntroLine".id;
+
+
+--
+-- Name: ConversationIntroSlot; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."ConversationIntroSlot" (
+    id integer NOT NULL,
+    slot text NOT NULL,
+    question text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."ConversationIntroSlot" OWNER TO nihongo;
+
+--
+-- Name: ConversationIntroSlot_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."ConversationIntroSlot_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."ConversationIntroSlot_id_seq" OWNER TO nihongo;
+
+--
+-- Name: ConversationIntroSlot_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."ConversationIntroSlot_id_seq" OWNED BY public."ConversationIntroSlot".id;
+
+
+--
+-- Name: ConversationPhraseGroup; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."ConversationPhraseGroup" (
+    id integer NOT NULL,
+    slug text NOT NULL,
+    label text NOT NULL,
+    hint text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."ConversationPhraseGroup" OWNER TO nihongo;
+
+--
+-- Name: ConversationPhraseGroup_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."ConversationPhraseGroup_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."ConversationPhraseGroup_id_seq" OWNER TO nihongo;
+
+--
+-- Name: ConversationPhraseGroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."ConversationPhraseGroup_id_seq" OWNED BY public."ConversationPhraseGroup".id;
+
+
+--
+-- Name: ConversationPhraseItem; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."ConversationPhraseItem" (
+    id integer NOT NULL,
+    "groupId" integer NOT NULL,
+    ja text NOT NULL,
+    kana text NOT NULL,
+    romaji text NOT NULL,
+    vi text NOT NULL,
+    note text,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."ConversationPhraseItem" OWNER TO nihongo;
+
+--
+-- Name: ConversationPhraseItem_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."ConversationPhraseItem_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."ConversationPhraseItem_id_seq" OWNER TO nihongo;
+
+--
+-- Name: ConversationPhraseItem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."ConversationPhraseItem_id_seq" OWNED BY public."ConversationPhraseItem".id;
+
+
+--
 -- Name: CounterCategory; Type: TABLE; Schema: public; Owner: nihongo
 --
 
@@ -666,6 +870,84 @@ ALTER SEQUENCE public."CounterItem_id_seq" OWNER TO nihongo;
 --
 
 ALTER SEQUENCE public."CounterItem_id_seq" OWNED BY public."CounterItem".id;
+
+
+--
+-- Name: CountryNameItem; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."CountryNameItem" (
+    id integer NOT NULL,
+    "regionId" integer NOT NULL,
+    "nameJa" text NOT NULL,
+    kana text NOT NULL,
+    romaji text NOT NULL,
+    "meaningVi" text NOT NULL,
+    "countryCode" text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public."CountryNameItem" OWNER TO nihongo;
+
+--
+-- Name: CountryNameItem_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."CountryNameItem_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."CountryNameItem_id_seq" OWNER TO nihongo;
+
+--
+-- Name: CountryNameItem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."CountryNameItem_id_seq" OWNED BY public."CountryNameItem".id;
+
+
+--
+-- Name: CountryRegion; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."CountryRegion" (
+    id integer NOT NULL,
+    slug text NOT NULL,
+    label text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."CountryRegion" OWNER TO nihongo;
+
+--
+-- Name: CountryRegion_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."CountryRegion_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."CountryRegion_id_seq" OWNER TO nihongo;
+
+--
+-- Name: CountryRegion_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."CountryRegion_id_seq" OWNED BY public."CountryRegion".id;
 
 
 --
@@ -1390,6 +1672,124 @@ ALTER SEQUENCE public."Grammar_id_seq" OWNED BY public."Grammar".id;
 
 
 --
+-- Name: HomeFeatureItem; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."HomeFeatureItem" (
+    id integer NOT NULL,
+    "sectionId" integer NOT NULL,
+    href text NOT NULL,
+    icon text NOT NULL,
+    title text NOT NULL,
+    "desc" text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."HomeFeatureItem" OWNER TO nihongo;
+
+--
+-- Name: HomeFeatureItem_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."HomeFeatureItem_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."HomeFeatureItem_id_seq" OWNER TO nihongo;
+
+--
+-- Name: HomeFeatureItem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."HomeFeatureItem_id_seq" OWNED BY public."HomeFeatureItem".id;
+
+
+--
+-- Name: HomeFeatureSection; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."HomeFeatureSection" (
+    id integer NOT NULL,
+    slug text NOT NULL,
+    title text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."HomeFeatureSection" OWNER TO nihongo;
+
+--
+-- Name: HomeFeatureSection_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."HomeFeatureSection_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."HomeFeatureSection_id_seq" OWNER TO nihongo;
+
+--
+-- Name: HomeFeatureSection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."HomeFeatureSection_id_seq" OWNED BY public."HomeFeatureSection".id;
+
+
+--
+-- Name: HomeStat; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."HomeStat" (
+    id integer NOT NULL,
+    value text NOT NULL,
+    label text NOT NULL,
+    suffix text DEFAULT ''::text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."HomeStat" OWNER TO nihongo;
+
+--
+-- Name: HomeStat_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."HomeStat_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."HomeStat_id_seq" OWNER TO nihongo;
+
+--
+-- Name: HomeStat_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."HomeStat_id_seq" OWNED BY public."HomeStat".id;
+
+
+--
 -- Name: JlptExamBriefing; Type: TABLE; Schema: public; Owner: nihongo
 --
 
@@ -1994,7 +2394,10 @@ CREATE TABLE public."KanjiVocab" (
     "meaningVi" text NOT NULL,
     "kanjiEntryId" integer NOT NULL,
     "sortOrder" integer DEFAULT 0 NOT NULL,
-    "vocabularyId" integer
+    "vocabularyId" integer,
+    "exampleJa" text,
+    "exampleKana" text,
+    "exampleVi" text
 );
 
 
@@ -2069,7 +2472,9 @@ CREATE TABLE public."LearnerChatMessage" (
     "senderId" integer NOT NULL,
     content text NOT NULL,
     "readAt" timestamp(3) without time zone,
-    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "fileUrl" text,
+    "fileType" text
 );
 
 
@@ -2306,6 +2711,59 @@ ALTER SEQUENCE public."LiveSession_id_seq" OWNER TO nihongo;
 --
 
 ALTER SEQUENCE public."LiveSession_id_seq" OWNED BY public."LiveSession".id;
+
+
+--
+-- Name: MockExamTemplate; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."MockExamTemplate" (
+    id integer NOT NULL,
+    slug text NOT NULL,
+    level text NOT NULL,
+    title text NOT NULL,
+    description text DEFAULT ''::text NOT NULL,
+    "durationMinutes" integer NOT NULL,
+    "lessonFrom" integer NOT NULL,
+    "lessonTo" integer NOT NULL,
+    "kanjiLessonFrom" integer NOT NULL,
+    "kanjiLessonTo" integer NOT NULL,
+    "vocabCount" integer DEFAULT 12 NOT NULL,
+    "grammarCount" integer DEFAULT 10 NOT NULL,
+    "kanjiCount" integer DEFAULT 5 NOT NULL,
+    "listeningWordCount" integer DEFAULT 4 NOT NULL,
+    "listeningSentenceCount" integer DEFAULT 4 NOT NULL,
+    "passThreshold" integer DEFAULT 65 NOT NULL,
+    scope text DEFAULT ''::text NOT NULL,
+    "isPublished" boolean DEFAULT true NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."MockExamTemplate" OWNER TO nihongo;
+
+--
+-- Name: MockExamTemplate_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."MockExamTemplate_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."MockExamTemplate_id_seq" OWNER TO nihongo;
+
+--
+-- Name: MockExamTemplate_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."MockExamTemplate_id_seq" OWNED BY public."MockExamTemplate".id;
 
 
 --
@@ -2893,6 +3351,86 @@ CREATE TABLE public."RefreshToken" (
 ALTER TABLE public."RefreshToken" OWNER TO nihongo;
 
 --
+-- Name: RoleplayLine; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."RoleplayLine" (
+    id integer NOT NULL,
+    "sceneId" integer NOT NULL,
+    role text NOT NULL,
+    ja text NOT NULL,
+    vi text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."RoleplayLine" OWNER TO nihongo;
+
+--
+-- Name: RoleplayLine_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."RoleplayLine_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."RoleplayLine_id_seq" OWNER TO nihongo;
+
+--
+-- Name: RoleplayLine_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."RoleplayLine_id_seq" OWNED BY public."RoleplayLine".id;
+
+
+--
+-- Name: RoleplayScene; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."RoleplayScene" (
+    id integer NOT NULL,
+    slug text NOT NULL,
+    title text NOT NULL,
+    "titleJa" text NOT NULL,
+    "desc" text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."RoleplayScene" OWNER TO nihongo;
+
+--
+-- Name: RoleplayScene_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."RoleplayScene_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."RoleplayScene_id_seq" OWNER TO nihongo;
+
+--
+-- Name: RoleplayScene_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."RoleplayScene_id_seq" OWNED BY public."RoleplayScene".id;
+
+
+--
 -- Name: SrsCard; Type: TABLE; Schema: public; Owner: nihongo
 --
 
@@ -3151,7 +3689,9 @@ CREATE TABLE public."SupportMessage" (
     "senderId" integer NOT NULL,
     content text NOT NULL,
     "readAt" timestamp(3) without time zone,
-    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "fileUrl" text,
+    "fileType" text
 );
 
 
@@ -3265,6 +3805,92 @@ ALTER SEQUENCE public."User_id_seq" OWNED BY public."User".id;
 
 
 --
+-- Name: VocabSuffixGroup; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."VocabSuffixGroup" (
+    id integer NOT NULL,
+    slug text NOT NULL,
+    label text NOT NULL,
+    hint text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "labelJa" text DEFAULT ''::text NOT NULL
+);
+
+
+ALTER TABLE public."VocabSuffixGroup" OWNER TO nihongo;
+
+--
+-- Name: VocabSuffixGroup_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."VocabSuffixGroup_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."VocabSuffixGroup_id_seq" OWNER TO nihongo;
+
+--
+-- Name: VocabSuffixGroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."VocabSuffixGroup_id_seq" OWNED BY public."VocabSuffixGroup".id;
+
+
+--
+-- Name: VocabSuffixItem; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."VocabSuffixItem" (
+    id integer NOT NULL,
+    "groupId" integer NOT NULL,
+    suffix text NOT NULL,
+    kana text NOT NULL,
+    romaji text NOT NULL,
+    "meaningVi" text NOT NULL,
+    "attachesTo" text NOT NULL,
+    "exampleJa" text NOT NULL,
+    "exampleVi" text NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    forms text[] DEFAULT ARRAY[]::text[] NOT NULL,
+    pos text[] DEFAULT ARRAY[]::text[] NOT NULL
+);
+
+
+ALTER TABLE public."VocabSuffixItem" OWNER TO nihongo;
+
+--
+-- Name: VocabSuffixItem_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."VocabSuffixItem_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."VocabSuffixItem_id_seq" OWNER TO nihongo;
+
+--
+-- Name: VocabSuffixItem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."VocabSuffixItem_id_seq" OWNED BY public."VocabSuffixItem".id;
+
+
+--
 -- Name: Vocabulary; Type: TABLE; Schema: public; Owner: nihongo
 --
 
@@ -3284,7 +3910,10 @@ CREATE TABLE public."Vocabulary" (
     "audioUrl" text,
     "frequencyRank" integer,
     "imageUrl" text,
-    "sortOrder" integer DEFAULT 0 NOT NULL
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "exampleJa" text,
+    "exampleKana" text,
+    "exampleVi" text
 );
 
 
@@ -3466,6 +4095,41 @@ ALTER TABLE ONLY public."CoachingSession" ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- Name: ConversationIntroExample id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationIntroExample" ALTER COLUMN id SET DEFAULT nextval('public."ConversationIntroExample_id_seq"'::regclass);
+
+
+--
+-- Name: ConversationIntroLine id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationIntroLine" ALTER COLUMN id SET DEFAULT nextval('public."ConversationIntroLine_id_seq"'::regclass);
+
+
+--
+-- Name: ConversationIntroSlot id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationIntroSlot" ALTER COLUMN id SET DEFAULT nextval('public."ConversationIntroSlot_id_seq"'::regclass);
+
+
+--
+-- Name: ConversationPhraseGroup id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationPhraseGroup" ALTER COLUMN id SET DEFAULT nextval('public."ConversationPhraseGroup_id_seq"'::regclass);
+
+
+--
+-- Name: ConversationPhraseItem id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationPhraseItem" ALTER COLUMN id SET DEFAULT nextval('public."ConversationPhraseItem_id_seq"'::regclass);
+
+
+--
 -- Name: CounterCategory id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -3477,6 +4141,20 @@ ALTER TABLE ONLY public."CounterCategory" ALTER COLUMN id SET DEFAULT nextval('p
 --
 
 ALTER TABLE ONLY public."CounterItem" ALTER COLUMN id SET DEFAULT nextval('public."CounterItem_id_seq"'::regclass);
+
+
+--
+-- Name: CountryNameItem id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."CountryNameItem" ALTER COLUMN id SET DEFAULT nextval('public."CountryNameItem_id_seq"'::regclass);
+
+
+--
+-- Name: CountryRegion id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."CountryRegion" ALTER COLUMN id SET DEFAULT nextval('public."CountryRegion_id_seq"'::regclass);
 
 
 --
@@ -3596,6 +4274,27 @@ ALTER TABLE ONLY public."ExerciseOption" ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public."Grammar" ALTER COLUMN id SET DEFAULT nextval('public."Grammar_id_seq"'::regclass);
+
+
+--
+-- Name: HomeFeatureItem id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."HomeFeatureItem" ALTER COLUMN id SET DEFAULT nextval('public."HomeFeatureItem_id_seq"'::regclass);
+
+
+--
+-- Name: HomeFeatureSection id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."HomeFeatureSection" ALTER COLUMN id SET DEFAULT nextval('public."HomeFeatureSection_id_seq"'::regclass);
+
+
+--
+-- Name: HomeStat id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."HomeStat" ALTER COLUMN id SET DEFAULT nextval('public."HomeStat_id_seq"'::regclass);
 
 
 --
@@ -3746,6 +4445,13 @@ ALTER TABLE ONLY public."LiveSession" ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: MockExamTemplate id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."MockExamTemplate" ALTER COLUMN id SET DEFAULT nextval('public."MockExamTemplate_id_seq"'::regclass);
+
+
+--
 -- Name: Notification id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -3837,6 +4543,20 @@ ALTER TABLE ONLY public."ReadingQuestionOption" ALTER COLUMN id SET DEFAULT next
 
 
 --
+-- Name: RoleplayLine id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."RoleplayLine" ALTER COLUMN id SET DEFAULT nextval('public."RoleplayLine_id_seq"'::regclass);
+
+
+--
+-- Name: RoleplayScene id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."RoleplayScene" ALTER COLUMN id SET DEFAULT nextval('public."RoleplayScene_id_seq"'::regclass);
+
+
+--
 -- Name: SrsCard id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -3897,6 +4617,20 @@ ALTER TABLE ONLY public."SupportThread" ALTER COLUMN id SET DEFAULT nextval('pub
 --
 
 ALTER TABLE ONLY public."User" ALTER COLUMN id SET DEFAULT nextval('public."User_id_seq"'::regclass);
+
+
+--
+-- Name: VocabSuffixGroup id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."VocabSuffixGroup" ALTER COLUMN id SET DEFAULT nextval('public."VocabSuffixGroup_id_seq"'::regclass);
+
+
+--
+-- Name: VocabSuffixItem id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."VocabSuffixItem" ALTER COLUMN id SET DEFAULT nextval('public."VocabSuffixItem_id_seq"'::regclass);
 
 
 --
@@ -3993,6 +4727,46 @@ ALTER TABLE ONLY public."CoachingSession"
 
 
 --
+-- Name: ConversationIntroExample ConversationIntroExample_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationIntroExample"
+    ADD CONSTRAINT "ConversationIntroExample_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: ConversationIntroLine ConversationIntroLine_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationIntroLine"
+    ADD CONSTRAINT "ConversationIntroLine_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: ConversationIntroSlot ConversationIntroSlot_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationIntroSlot"
+    ADD CONSTRAINT "ConversationIntroSlot_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: ConversationPhraseGroup ConversationPhraseGroup_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationPhraseGroup"
+    ADD CONSTRAINT "ConversationPhraseGroup_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: ConversationPhraseItem ConversationPhraseItem_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationPhraseItem"
+    ADD CONSTRAINT "ConversationPhraseItem_pkey" PRIMARY KEY (id);
+
+
+--
 -- Name: CounterCategory CounterCategory_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -4006,6 +4780,22 @@ ALTER TABLE ONLY public."CounterCategory"
 
 ALTER TABLE ONLY public."CounterItem"
     ADD CONSTRAINT "CounterItem_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: CountryNameItem CountryNameItem_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."CountryNameItem"
+    ADD CONSTRAINT "CountryNameItem_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: CountryRegion CountryRegion_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."CountryRegion"
+    ADD CONSTRAINT "CountryRegion_pkey" PRIMARY KEY (id);
 
 
 --
@@ -4166,6 +4956,30 @@ ALTER TABLE ONLY public."Exercise"
 
 ALTER TABLE ONLY public."Grammar"
     ADD CONSTRAINT "Grammar_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: HomeFeatureItem HomeFeatureItem_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."HomeFeatureItem"
+    ADD CONSTRAINT "HomeFeatureItem_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: HomeFeatureSection HomeFeatureSection_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."HomeFeatureSection"
+    ADD CONSTRAINT "HomeFeatureSection_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: HomeStat HomeStat_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."HomeStat"
+    ADD CONSTRAINT "HomeStat_pkey" PRIMARY KEY (id);
 
 
 --
@@ -4385,6 +5199,14 @@ ALTER TABLE ONLY public."LiveSession"
 
 
 --
+-- Name: MockExamTemplate MockExamTemplate_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."MockExamTemplate"
+    ADD CONSTRAINT "MockExamTemplate_pkey" PRIMARY KEY (id);
+
+
+--
 -- Name: Notification Notification_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -4521,6 +5343,22 @@ ALTER TABLE ONLY public."RefreshToken"
 
 
 --
+-- Name: RoleplayLine RoleplayLine_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."RoleplayLine"
+    ADD CONSTRAINT "RoleplayLine_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: RoleplayScene RoleplayScene_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."RoleplayScene"
+    ADD CONSTRAINT "RoleplayScene_pkey" PRIMARY KEY (id);
+
+
+--
 -- Name: SrsCard SrsCard_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -4590,6 +5428,22 @@ ALTER TABLE ONLY public."SupportThread"
 
 ALTER TABLE ONLY public."User"
     ADD CONSTRAINT "User_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: VocabSuffixGroup VocabSuffixGroup_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."VocabSuffixGroup"
+    ADD CONSTRAINT "VocabSuffixGroup_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: VocabSuffixItem VocabSuffixItem_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."VocabSuffixItem"
+    ADD CONSTRAINT "VocabSuffixItem_pkey" PRIMARY KEY (id);
 
 
 --
@@ -4751,6 +5605,48 @@ CREATE INDEX "CoachingSession_status_scheduledAt_idx" ON public."CoachingSession
 
 
 --
+-- Name: ConversationIntroExample_slotId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "ConversationIntroExample_slotId_sortOrder_idx" ON public."ConversationIntroExample" USING btree ("slotId", "sortOrder");
+
+
+--
+-- Name: ConversationIntroLine_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "ConversationIntroLine_sortOrder_idx" ON public."ConversationIntroLine" USING btree ("sortOrder");
+
+
+--
+-- Name: ConversationIntroSlot_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "ConversationIntroSlot_sortOrder_idx" ON public."ConversationIntroSlot" USING btree ("sortOrder");
+
+
+--
+-- Name: ConversationPhraseGroup_slug_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "ConversationPhraseGroup_slug_key" ON public."ConversationPhraseGroup" USING btree (slug);
+
+
+--
+-- Name: ConversationPhraseGroup_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "ConversationPhraseGroup_sortOrder_idx" ON public."ConversationPhraseGroup" USING btree ("sortOrder");
+
+
+--
+-- Name: ConversationPhraseItem_groupId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "ConversationPhraseItem_groupId_sortOrder_idx" ON public."ConversationPhraseItem" USING btree ("groupId", "sortOrder");
+
+
+--
 -- Name: CounterCategory_slug_key; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -4762,6 +5658,27 @@ CREATE UNIQUE INDEX "CounterCategory_slug_key" ON public."CounterCategory" USING
 --
 
 CREATE INDEX "CounterItem_categoryId_sortOrder_idx" ON public."CounterItem" USING btree ("categoryId", "sortOrder");
+
+
+--
+-- Name: CountryNameItem_regionId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "CountryNameItem_regionId_sortOrder_idx" ON public."CountryNameItem" USING btree ("regionId", "sortOrder");
+
+
+--
+-- Name: CountryRegion_slug_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "CountryRegion_slug_key" ON public."CountryRegion" USING btree (slug);
+
+
+--
+-- Name: CountryRegion_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "CountryRegion_sortOrder_idx" ON public."CountryRegion" USING btree ("sortOrder");
 
 
 --
@@ -4951,6 +5868,34 @@ CREATE INDEX "Grammar_jlptLevel_idx" ON public."Grammar" USING btree ("jlptLevel
 --
 
 CREATE INDEX "Grammar_lessonId_sortOrder_idx" ON public."Grammar" USING btree ("lessonId", "sortOrder");
+
+
+--
+-- Name: HomeFeatureItem_sectionId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "HomeFeatureItem_sectionId_sortOrder_idx" ON public."HomeFeatureItem" USING btree ("sectionId", "sortOrder");
+
+
+--
+-- Name: HomeFeatureSection_slug_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "HomeFeatureSection_slug_key" ON public."HomeFeatureSection" USING btree (slug);
+
+
+--
+-- Name: HomeFeatureSection_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "HomeFeatureSection_sortOrder_idx" ON public."HomeFeatureSection" USING btree ("sortOrder");
+
+
+--
+-- Name: HomeStat_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "HomeStat_sortOrder_idx" ON public."HomeStat" USING btree ("sortOrder");
 
 
 --
@@ -5178,6 +6123,27 @@ CREATE INDEX "LiveSession_status_idx" ON public."LiveSession" USING btree (statu
 
 
 --
+-- Name: MockExamTemplate_isPublished_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "MockExamTemplate_isPublished_sortOrder_idx" ON public."MockExamTemplate" USING btree ("isPublished", "sortOrder");
+
+
+--
+-- Name: MockExamTemplate_level_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "MockExamTemplate_level_sortOrder_idx" ON public."MockExamTemplate" USING btree (level, "sortOrder");
+
+
+--
+-- Name: MockExamTemplate_slug_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "MockExamTemplate_slug_key" ON public."MockExamTemplate" USING btree (slug);
+
+
+--
 -- Name: Notification_userId_readAt_createdAt_idx; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -5367,6 +6333,27 @@ CREATE INDEX "RefreshToken_userId_idx" ON public."RefreshToken" USING btree ("us
 
 
 --
+-- Name: RoleplayLine_sceneId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "RoleplayLine_sceneId_sortOrder_idx" ON public."RoleplayLine" USING btree ("sceneId", "sortOrder");
+
+
+--
+-- Name: RoleplayScene_slug_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "RoleplayScene_slug_key" ON public."RoleplayScene" USING btree (slug);
+
+
+--
+-- Name: RoleplayScene_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "RoleplayScene_sortOrder_idx" ON public."RoleplayScene" USING btree ("sortOrder");
+
+
+--
 -- Name: SrsCard_userId_contentType_contentId_key; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -5490,6 +6477,27 @@ CREATE UNIQUE INDEX "User_keycloakId_key" ON public."User" USING btree ("keycloa
 --
 
 CREATE INDEX "User_role_idx" ON public."User" USING btree (role);
+
+
+--
+-- Name: VocabSuffixGroup_slug_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "VocabSuffixGroup_slug_key" ON public."VocabSuffixGroup" USING btree (slug);
+
+
+--
+-- Name: VocabSuffixGroup_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "VocabSuffixGroup_sortOrder_idx" ON public."VocabSuffixGroup" USING btree ("sortOrder");
+
+
+--
+-- Name: VocabSuffixItem_groupId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "VocabSuffixItem_groupId_sortOrder_idx" ON public."VocabSuffixItem" USING btree ("groupId", "sortOrder");
 
 
 --
@@ -5638,11 +6646,35 @@ ALTER TABLE ONLY public."CoachingSession"
 
 
 --
+-- Name: ConversationIntroExample ConversationIntroExample_slotId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationIntroExample"
+    ADD CONSTRAINT "ConversationIntroExample_slotId_fkey" FOREIGN KEY ("slotId") REFERENCES public."ConversationIntroSlot"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: ConversationPhraseItem ConversationPhraseItem_groupId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ConversationPhraseItem"
+    ADD CONSTRAINT "ConversationPhraseItem_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES public."ConversationPhraseGroup"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: CounterItem CounterItem_categoryId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
 --
 
 ALTER TABLE ONLY public."CounterItem"
     ADD CONSTRAINT "CounterItem_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES public."CounterCategory"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: CountryNameItem CountryNameItem_regionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."CountryNameItem"
+    ADD CONSTRAINT "CountryNameItem_regionId_fkey" FOREIGN KEY ("regionId") REFERENCES public."CountryRegion"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -5763,6 +6795,14 @@ ALTER TABLE ONLY public."Exercise"
 
 ALTER TABLE ONLY public."Grammar"
     ADD CONSTRAINT "Grammar_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES public."Lesson"(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: HomeFeatureItem HomeFeatureItem_sectionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."HomeFeatureItem"
+    ADD CONSTRAINT "HomeFeatureItem_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES public."HomeFeatureSection"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -5990,6 +7030,14 @@ ALTER TABLE ONLY public."RefreshToken"
 
 
 --
+-- Name: RoleplayLine RoleplayLine_sceneId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."RoleplayLine"
+    ADD CONSTRAINT "RoleplayLine_sceneId_fkey" FOREIGN KEY ("sceneId") REFERENCES public."RoleplayScene"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: SrsCard SrsCard_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -6046,6 +7094,14 @@ ALTER TABLE ONLY public."SupportThread"
 
 
 --
+-- Name: VocabSuffixItem VocabSuffixItem_groupId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."VocabSuffixItem"
+    ADD CONSTRAINT "VocabSuffixItem_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES public."VocabSuffixGroup"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: VocabularyKanjiLink VocabularyKanjiLink_kanjiEntryId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -6073,5 +7129,5 @@ ALTER TABLE ONLY public."Vocabulary"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict jGg4sZDvgD48qVSbPTobTnGSqvLvmy2db7B94Hv093tm1OgxifpYtZYjlhXY6kI
+\unrestrict oYDdqNqkHGUvCyyf37FHDCzLGbmaR45Vfn7XfmIcGRzoTcELQUtwofTtJr3lJNv
 

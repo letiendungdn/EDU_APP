@@ -10,11 +10,12 @@ import {
   SyncReviewDto,
   UpsertDailyNoteDto,
   UpsertDailyGoalsDto,
+  CreateMockExamTemplateDto,
+  UpdateMockExamTemplateDto,
 } from "@app/contracts";
 import { handleGrpcDispatch, type PatternHandler } from "@app/common";
 import {
   MockExamsService,
-  type MockExamLevel,
 } from "./modules/mock-exams/mock-exams.service";
 import { ProgressService } from "./modules/progress/progress.service";
 import { SubmitExamCommand } from "./modules/mock-exams/commands/submit-exam.command";
@@ -35,8 +36,19 @@ export class ExamMsController implements OnModuleInit {
   onModuleInit() {
     this.routes = {
       [EXAM_PATTERNS.LIST_TEMPLATES]: () => this.listTemplates(),
+      [EXAM_PATTERNS.LIST_TEMPLATES_ADMIN]: () => this.listTemplatesAdmin(),
+      [EXAM_PATTERNS.GET_TEMPLATE]: (data) =>
+        this.getTemplate(data as { id: number }),
+      [EXAM_PATTERNS.CREATE_TEMPLATE]: (data) =>
+        this.createTemplate(data as CreateMockExamTemplateDto),
+      [EXAM_PATTERNS.UPDATE_TEMPLATE]: (data) =>
+        this.updateTemplate(
+          data as { id: number; dto: UpdateMockExamTemplateDto },
+        ),
+      [EXAM_PATTERNS.DELETE_TEMPLATE]: (data) =>
+        this.deleteTemplate(data as { id: number }),
       [EXAM_PATTERNS.START_EXAM]: (data) =>
-        this.startExam(data as { level: MockExamLevel }),
+        this.startExam(data as { key: string }),
       [EXAM_PATTERNS.SUBMIT_EXAM]: (data) =>
         this.submitExam(
           data as {
@@ -89,8 +101,28 @@ export class ExamMsController implements OnModuleInit {
     return this.mockExamsService.listTemplates();
   }
 
-  startExam(data: { level: MockExamLevel }) {
-    return this.mockExamsService.start(data.level);
+  listTemplatesAdmin() {
+    return this.mockExamsService.listTemplatesAdmin();
+  }
+
+  getTemplate(data: { id: number }) {
+    return this.mockExamsService.getTemplate(data.id);
+  }
+
+  createTemplate(dto: CreateMockExamTemplateDto) {
+    return this.mockExamsService.createTemplate(dto);
+  }
+
+  updateTemplate(data: { id: number; dto: UpdateMockExamTemplateDto }) {
+    return this.mockExamsService.updateTemplate(data.id, data.dto);
+  }
+
+  deleteTemplate(data: { id: number }) {
+    return this.mockExamsService.deleteTemplate(data.id);
+  }
+
+  startExam(data: { key: string }) {
+    return this.mockExamsService.start(data.key);
   }
 
   async submitExam(data: {

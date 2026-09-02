@@ -20,6 +20,7 @@ const NAV_GROUPS = [
       { href: '/vocab',     icon: '単',  label: 'Từ vựng' },
       { href: '/grammar',   icon: '文',  label: 'Ngữ pháp' },
       { href: '/kanji',     icon: '漢',  label: 'Kanji' },
+      { href: '/kanji/list', icon: '表', label: 'Bảng Kanji JLPT' },
       { href: '/strokes',   icon: '筆',  label: 'Tra nét viết' },
       { href: '/counters',  icon: '①',  label: 'Đếm số' },
       { href: '/suffixes',     icon: '語',  label: 'Hậu tố' },

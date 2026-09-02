@@ -18,6 +18,7 @@ export const NAV_GROUPS: NavGroupConfig[] = [
       { path: '/vocab', icon: '単', label: 'Từ vựng' },
       { path: '/grammar', icon: '文', label: 'Ngữ pháp' },
       { path: '/kanji', icon: '漢', label: 'Kanji' },
+      { path: '/kanji/list', icon: '表', label: 'Bảng Kanji JLPT' },
       { path: '/strokes', icon: '筆', label: 'Tra nét viết' },
       { path: '/counters', icon: '①', label: 'Đếm số' },
       { path: '/suffixes', icon: '語', label: 'Hậu tố' },

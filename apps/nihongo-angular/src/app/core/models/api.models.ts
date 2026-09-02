@@ -70,6 +70,7 @@ export interface KanjiEntry {
   onyomi: string | null;
   kunyomi: string | null;
   meaningVi: string;
+  jlptLevel?: string | null;
   mnemonicJp?: string | null;
   mnemonicVi?: string | null;
   imageUrl?: string | null;

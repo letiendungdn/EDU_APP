@@ -488,7 +488,6 @@ export default function GrammarView() {
           value={currentLesson}
           onChange={setCurrentLesson}
           countKind="grammar"
-          filterWithContent={!canEdit}
         />
 
         {!loading && lessonGrammar.length > 0 && (

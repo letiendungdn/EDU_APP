@@ -29,7 +29,7 @@ Snapshot **nihongo** `*.sql` được commit trong repo (restore nhanh). Chạy 
 ## Restore
 
 ```powershell
-Get-Content infra\backups\nihongo_20260725_144146.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content infra\backups\nihongo_20260902_215128.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 # English (tùy chọn, nếu có container + file backup):
 # Get-Content infra\backups\english_learning_YYYYMMDD_HHMMSS.sql | docker exec -i edu-postgres-english psql -U english english_learning
 ```

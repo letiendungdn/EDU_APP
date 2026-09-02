@@ -1,3 +1,4 @@
+import { LowerCasePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
@@ -5,6 +6,9 @@ import { playJapanese } from '../../core/utils/speech.util';
 import { getKanjiSpeakItems } from '../../core/utils/kanji-speak';
 import type { JlptLevel, KanjiEntry, KanjiLesson } from '../../core/models/api.models';
 import { JLPT_LEVELS } from '../../core/models/api.models';
+
+type ViewLevel = JlptLevel | 'ALL';
+type DisplayMode = 'grid' | 'table';
 
 interface JlptSummary {
   level: JlptLevel;
@@ -30,9 +34,9 @@ function buildJlptSummary(lessons: KanjiLesson[]): JlptSummary[] {
     const { count, lessonNumbers } = buckets.get(level)!;
     lessonNumbers.sort((a, b) => a - b);
     let hint: string;
-    if (count === 0) hint = 'Chưa có dữ liệu kanji cho cấp này trong hệ thống.';
-    else if (lessonNumbers.length === 1) hint = `Bài ${lessonNumbers[0]} — ${count} kanji.`;
-    else hint = `Bài ${lessonNumbers[0]}–${lessonNumbers[lessonNumbers.length - 1]} — ${count} kanji.`;
+    if (count === 0) hint = 'Chưa có dữ liệu';
+    else if (lessonNumbers.length === 1) hint = `Bài ${lessonNumbers[0]}`;
+    else hint = `Bài ${lessonNumbers[0]}–${lessonNumbers[lessonNumbers.length - 1]}`;
     return { level, count, hint, hasData: count > 0 };
   });
 }
@@ -46,6 +50,8 @@ function matchesSearch(entry: KanjiEntry, query: string): boolean {
     entry.onyomi,
     entry.kunyomi,
     entry.meaningVi,
+    entry.jlptLevel,
+    entry.lesson?.jlptLevel,
     entry.lesson?.lessonNumber != null ? `bài ${entry.lesson.lessonNumber}` : '',
   ]
     .filter(Boolean)
@@ -54,10 +60,14 @@ function matchesSearch(entry: KanjiEntry, query: string): boolean {
   return haystack.includes(q);
 }
 
+function getEntryJlpt(entry: KanjiEntry): string {
+  return entry.jlptLevel ?? entry.lesson?.jlptLevel ?? '—';
+}
+
 @Component({
   selector: 'app-kanji-list-page',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, LowerCasePipe],
   templateUrl: './kanji-list-page.component.html',
   styleUrl: './kanji-list-page.component.scss',
 })
@@ -65,8 +75,10 @@ export class KanjiListPageComponent {
   private readonly api = inject(ApiService);
 
   readonly jlptLevels = JLPT_LEVELS;
-  readonly activeLevel = signal<JlptLevel>('N5');
+  readonly activeLevel = signal<ViewLevel>('ALL');
   readonly searchInput = signal('');
+  readonly displayMode = signal<DisplayMode>('grid');
+  readonly selectedEntry = signal<KanjiEntry | null>(null);
   readonly lessons = signal<KanjiLesson[]>([]);
   readonly entriesCache = signal<Record<JlptLevel, KanjiEntry[]>>({
     N5: [],
@@ -76,36 +88,67 @@ export class KanjiListPageComponent {
     N1: [],
   });
   readonly loading = signal(false);
+  readonly loadingAll = signal(false);
 
   readonly summary = computed(() => buildJlptSummary(this.lessons()));
   readonly totalKanji = computed(() => this.summary().reduce((sum, item) => sum + item.count, 0));
+  readonly isAllView = computed(() => this.activeLevel() === 'ALL');
 
-  readonly filteredEntries = computed(() => {
-    const level = this.activeLevel();
-    const list = this.entriesCache()[level] ?? [];
-    return list.filter((entry) => matchesSearch(entry, this.searchInput()));
-  });
-
-  readonly activeMeta = computed(
-    () => this.summary().find((item) => item.level === this.activeLevel()) ?? this.summary()[0],
+  readonly allEntries = computed(() =>
+    JLPT_LEVELS.flatMap((level) => this.entriesCache()[level] ?? []),
   );
 
-  readonly displayCount = computed(() => {
-    const level = this.activeLevel();
-    return (this.entriesCache()[level] ?? []).length;
+  readonly currentEntries = computed(() =>
+    this.isAllView() ? this.allEntries() : (this.entriesCache()[this.activeLevel() as JlptLevel] ?? []),
+  );
+
+  readonly filteredEntries = computed(() =>
+    this.currentEntries().filter((entry) => matchesSearch(entry, this.searchInput())),
+  );
+
+  readonly activeMeta = computed(() => {
+    if (this.isAllView()) {
+      const total = this.totalKanji();
+      return {
+        level: 'ALL' as const,
+        count: total,
+        hint: `Gộp ${JLPT_LEVELS.join(', ')} — ${total} kanji`,
+        hasData: total > 0,
+      };
+    }
+    return this.summary().find((item) => item.level === this.activeLevel()) ?? this.summary()[0];
   });
 
   constructor() {
     void this.api.getKanjiLessons().then((data) => this.lessons.set(data));
 
     effect(() => {
-      void this.loadLevel(this.activeLevel());
+      const level = this.activeLevel();
+      if (level === 'ALL') {
+        void this.loadAllLevels();
+      } else {
+        void this.loadLevel(level);
+      }
     });
   }
 
-  setLevel(level: JlptLevel): void {
+  setLevel(level: ViewLevel): void {
     this.activeLevel.set(level);
     this.searchInput.set('');
+    this.selectedEntry.set(null);
+  }
+
+  setDisplayMode(mode: DisplayMode): void {
+    this.displayMode.set(mode);
+  }
+
+  selectEntry(entry: KanjiEntry): void {
+    this.selectedEntry.set(entry);
+    this.speak(entry);
+  }
+
+  entryTitle(entry: KanjiEntry): string {
+    return [entry.hanViet, entry.onyomi, entry.kunyomi, entry.meaningVi].filter(Boolean).join(' · ');
   }
 
   onSearch(event: Event): void {
@@ -114,6 +157,29 @@ export class KanjiListPageComponent {
 
   speak(entry: KanjiEntry): void {
     playJapanese(getKanjiSpeakItems(entry)[0] ?? entry.character);
+  }
+
+  entryJlpt(entry: KanjiEntry): string {
+    return getEntryJlpt(entry);
+  }
+
+  private async loadAllLevels(): Promise<void> {
+    const missing = JLPT_LEVELS.filter((level) => (this.entriesCache()[level] ?? []).length === 0);
+    if (missing.length === 0) return;
+
+    this.loadingAll.set(true);
+    try {
+      const results = await Promise.all(missing.map((level) => this.api.getKanjiByJlpt(level)));
+      this.entriesCache.update((cache) => {
+        const next = { ...cache };
+        missing.forEach((level, index) => {
+          next[level] = results[index] ?? [];
+        });
+        return next;
+      });
+    } finally {
+      this.loadingAll.set(false);
+    }
   }
 
   private async loadLevel(level: JlptLevel): Promise<void> {

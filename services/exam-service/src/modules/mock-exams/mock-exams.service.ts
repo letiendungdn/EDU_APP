@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { RpcException } from "@nestjs/microservices";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import type { Cache } from "cache-manager";
-import type { ExerciseType } from "@prisma/client";
+import type { ExerciseType, MockExamTemplate } from "@prisma/client";
 import {
   REDIS_CLIENT,
   sample,
@@ -10,6 +10,10 @@ import {
   speechTextFromJapanese,
   normalizeAnswer,
 } from "@app/common";
+import type {
+  CreateMockExamTemplateDto,
+  UpdateMockExamTemplateDto,
+} from "@app/contracts";
 import { PrismaService } from "@app/prisma";
 import type Redis from "ioredis";
 import { randomUUID } from "crypto";
@@ -48,9 +52,12 @@ export interface MockExamReviewItem extends MockExamQuestionPublic {
 
 export interface MockExamSession {
   examId: string;
+  templateId: number;
+  templateSlug: string;
   level: MockExamLevel;
   title: string;
   durationMinutes: number;
+  passThreshold: number;
   startedAt: string;
   questions: MockExamQuestionPublic[];
   answerKey: Record<string, string>;
@@ -72,83 +79,90 @@ interface LevelConfig {
   description: string;
 }
 
-const LEVEL_CONFIG: Record<MockExamLevel, LevelConfig> = {
-  n5: {
-    title: "Đề thi thử JLPT N5",
-    durationMinutes: 50,
-    lessonFrom: 1,
-    lessonTo: 25,
-    kanjiLessonFrom: 1,
-    kanjiLessonTo: 10,
-    vocabCount: 12,
-    grammarCount: 8,
-    kanjiCount: 5,
-    listeningWordCount: 4,
-    listeningSentenceCount: 4,
-    passThreshold: 60,
-    description: "Từ vựng, ngữ pháp, kanji & nghe (Minna I + KLL N5)",
-  },
-  n4: {
-    title: "Đề thi thử JLPT N4",
-    durationMinutes: 65,
-    lessonFrom: 26,
-    lessonTo: 50,
-    kanjiLessonFrom: 11,
-    kanjiLessonTo: 20,
-    vocabCount: 12,
-    grammarCount: 10,
-    kanjiCount: 5,
-    listeningWordCount: 4,
-    listeningSentenceCount: 4,
-    passThreshold: 65,
-    description: "Từ vựng, ngữ pháp, kanji & nghe (Minna II + KLL N4)",
-  },
-  n3: {
-    title: "Đề thi thử JLPT N3",
-    durationMinutes: 70,
-    lessonFrom: 301,
-    lessonTo: 399,
-    kanjiLessonFrom: 21,
-    kanjiLessonTo: 32,
-    vocabCount: 12,
-    grammarCount: 10,
-    kanjiCount: 5,
-    listeningWordCount: 4,
-    listeningSentenceCount: 4,
-    passThreshold: 65,
-    description: "Từ vựng, ngữ pháp, kanji & nghe (bộ N3 trong app)",
-  },
-  n2: {
-    title: "Đề thi thử JLPT N2",
-    durationMinutes: 75,
-    lessonFrom: 401,
-    lessonTo: 499,
-    kanjiLessonFrom: 401,
-    kanjiLessonTo: 499,
-    vocabCount: 12,
-    grammarCount: 10,
-    kanjiCount: 5,
-    listeningWordCount: 4,
-    listeningSentenceCount: 4,
-    passThreshold: 65,
-    description: "Từ vựng, ngữ pháp, kanji & nghe (bộ N2 trong app)",
-  },
-  n1: {
-    title: "Đề thi thử JLPT N1",
-    durationMinutes: 80,
-    lessonFrom: 501,
-    lessonTo: 599,
-    kanjiLessonFrom: 501,
-    kanjiLessonTo: 599,
-    vocabCount: 12,
-    grammarCount: 10,
-    kanjiCount: 5,
-    listeningWordCount: 4,
-    listeningSentenceCount: 4,
-    passThreshold: 65,
-    description: "Từ vựng, ngữ pháp, kanji & nghe (bộ N1 trong app)",
-  },
-};
+function templateToConfig(row: MockExamTemplate): LevelConfig {
+  return {
+    title: row.title,
+    durationMinutes: row.durationMinutes,
+    lessonFrom: row.lessonFrom,
+    lessonTo: row.lessonTo,
+    kanjiLessonFrom: row.kanjiLessonFrom,
+    kanjiLessonTo: row.kanjiLessonTo,
+    vocabCount: row.vocabCount,
+    grammarCount: row.grammarCount,
+    kanjiCount: row.kanjiCount,
+    listeningWordCount: row.listeningWordCount,
+    listeningSentenceCount: row.listeningSentenceCount,
+    passThreshold: row.passThreshold,
+    description: row.description,
+  };
+}
+
+function totalQuestions(row: Pick<
+  MockExamTemplate,
+  | "vocabCount"
+  | "grammarCount"
+  | "kanjiCount"
+  | "listeningWordCount"
+  | "listeningSentenceCount"
+>) {
+  return (
+    row.vocabCount +
+    row.grammarCount +
+    row.kanjiCount +
+    row.listeningWordCount +
+    row.listeningSentenceCount
+  );
+}
+
+function resolveScope(row: MockExamTemplate): string {
+  if (row.scope.trim()) return row.scope;
+  if (row.lessonFrom <= 50 && row.lessonTo <= 50) {
+    return `Minna Bài ${row.lessonFrom}–${row.lessonTo}`;
+  }
+  return `Bộ ${row.level.toUpperCase()} trong app`;
+}
+
+function toListItem(row: MockExamTemplate) {
+  return {
+    id: row.id,
+    slug: row.slug,
+    level: row.level,
+    title: row.title,
+    durationMinutes: row.durationMinutes,
+    totalQuestions: totalQuestions(row),
+    lessonRange: `${row.lessonFrom}–${row.lessonTo}`,
+    scope: resolveScope(row),
+    description: row.description,
+    isPublished: row.isPublished,
+    sortOrder: row.sortOrder,
+  };
+}
+
+function toAdminItem(row: MockExamTemplate) {
+  return {
+    ...toListItem(row),
+    lessonFrom: row.lessonFrom,
+    lessonTo: row.lessonTo,
+    kanjiLessonFrom: row.kanjiLessonFrom,
+    kanjiLessonTo: row.kanjiLessonTo,
+    vocabCount: row.vocabCount,
+    grammarCount: row.grammarCount,
+    kanjiCount: row.kanjiCount,
+    listeningWordCount: row.listeningWordCount,
+    listeningSentenceCount: row.listeningSentenceCount,
+    passThreshold: row.passThreshold,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
+function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+}
 
 @Injectable()
 export class MockExamsService {
@@ -158,39 +172,187 @@ export class MockExamsService {
     @Inject(REDIS_CLIENT) private readonly redis: Redis,
   ) {}
 
-  listTemplates() {
-    return (Object.keys(LEVEL_CONFIG) as MockExamLevel[]).map((level) => {
-      const cfg = LEVEL_CONFIG[level];
-      const totalQuestions =
-        cfg.vocabCount +
-        cfg.grammarCount +
-        cfg.kanjiCount +
-        cfg.listeningWordCount +
-        cfg.listeningSentenceCount;
-      const scope =
-        cfg.lessonFrom <= 50
-          ? `Minna Bài ${cfg.lessonFrom}–${cfg.lessonTo}`
-          : `Bộ ${level.toUpperCase()} trong app`;
-      return {
-        level,
-        title: cfg.title,
-        durationMinutes: cfg.durationMinutes,
-        totalQuestions,
-        lessonRange: `${cfg.lessonFrom}–${cfg.lessonTo}`,
-        scope,
-        description: cfg.description,
-      };
+  async listTemplates() {
+    const rows = await this.prisma.mockExamTemplate.findMany({
+      where: { isPublished: true },
+      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+    });
+    return rows.map(toListItem);
+  }
+
+  async listTemplatesAdmin() {
+    const rows = await this.prisma.mockExamTemplate.findMany({
+      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+    });
+    return rows.map(toAdminItem);
+  }
+
+  async getTemplate(id: number) {
+    const row = await this.prisma.mockExamTemplate.findUnique({
+      where: { id },
+    });
+    if (!row) {
+      throw new RpcException({
+        statusCode: 404,
+        message: "Không tìm thấy đề thi",
+      });
+    }
+    return toAdminItem(row);
+  }
+
+  async createTemplate(dto: CreateMockExamTemplateDto) {
+    const slug =
+      dto.slug?.trim() ||
+      `${dto.level}-${slugify(dto.title) || "de"}-${Date.now()}`;
+
+    const existing = await this.prisma.mockExamTemplate.findUnique({
+      where: { slug },
+    });
+    if (existing) {
+      throw new RpcException({
+        statusCode: 409,
+        message: `Slug "${slug}" đã tồn tại`,
+      });
+    }
+
+    const row = await this.prisma.mockExamTemplate.create({
+      data: {
+        slug,
+        level: dto.level,
+        title: dto.title,
+        description: dto.description ?? "",
+        durationMinutes: dto.durationMinutes,
+        lessonFrom: dto.lessonFrom,
+        lessonTo: dto.lessonTo,
+        kanjiLessonFrom: dto.kanjiLessonFrom,
+        kanjiLessonTo: dto.kanjiLessonTo,
+        vocabCount: dto.vocabCount ?? 12,
+        grammarCount: dto.grammarCount ?? 10,
+        kanjiCount: dto.kanjiCount ?? 5,
+        listeningWordCount: dto.listeningWordCount ?? 4,
+        listeningSentenceCount: dto.listeningSentenceCount ?? 4,
+        passThreshold: dto.passThreshold ?? 65,
+        scope: dto.scope ?? "",
+        isPublished: dto.isPublished ?? true,
+        sortOrder: dto.sortOrder ?? 0,
+      },
+    });
+
+    return toAdminItem(row);
+  }
+
+  async updateTemplate(id: number, dto: UpdateMockExamTemplateDto) {
+    const current = await this.prisma.mockExamTemplate.findUnique({
+      where: { id },
+    });
+    if (!current) {
+      throw new RpcException({
+        statusCode: 404,
+        message: "Không tìm thấy đề thi",
+      });
+    }
+
+    if (dto.slug && dto.slug !== current.slug) {
+      const taken = await this.prisma.mockExamTemplate.findUnique({
+        where: { slug: dto.slug },
+      });
+      if (taken) {
+        throw new RpcException({
+          statusCode: 409,
+          message: `Slug "${dto.slug}" đã tồn tại`,
+        });
+      }
+    }
+
+    const row = await this.prisma.mockExamTemplate.update({
+      where: { id },
+      data: {
+        ...(dto.slug !== undefined ? { slug: dto.slug } : {}),
+        ...(dto.level !== undefined ? { level: dto.level } : {}),
+        ...(dto.title !== undefined ? { title: dto.title } : {}),
+        ...(dto.description !== undefined ? { description: dto.description } : {}),
+        ...(dto.durationMinutes !== undefined
+          ? { durationMinutes: dto.durationMinutes }
+          : {}),
+        ...(dto.lessonFrom !== undefined ? { lessonFrom: dto.lessonFrom } : {}),
+        ...(dto.lessonTo !== undefined ? { lessonTo: dto.lessonTo } : {}),
+        ...(dto.kanjiLessonFrom !== undefined
+          ? { kanjiLessonFrom: dto.kanjiLessonFrom }
+          : {}),
+        ...(dto.kanjiLessonTo !== undefined
+          ? { kanjiLessonTo: dto.kanjiLessonTo }
+          : {}),
+        ...(dto.vocabCount !== undefined ? { vocabCount: dto.vocabCount } : {}),
+        ...(dto.grammarCount !== undefined
+          ? { grammarCount: dto.grammarCount }
+          : {}),
+        ...(dto.kanjiCount !== undefined ? { kanjiCount: dto.kanjiCount } : {}),
+        ...(dto.listeningWordCount !== undefined
+          ? { listeningWordCount: dto.listeningWordCount }
+          : {}),
+        ...(dto.listeningSentenceCount !== undefined
+          ? { listeningSentenceCount: dto.listeningSentenceCount }
+          : {}),
+        ...(dto.passThreshold !== undefined
+          ? { passThreshold: dto.passThreshold }
+          : {}),
+        ...(dto.scope !== undefined ? { scope: dto.scope } : {}),
+        ...(dto.isPublished !== undefined
+          ? { isPublished: dto.isPublished }
+          : {}),
+        ...(dto.sortOrder !== undefined ? { sortOrder: dto.sortOrder } : {}),
+      },
+    });
+
+    return toAdminItem(row);
+  }
+
+  async deleteTemplate(id: number) {
+    const current = await this.prisma.mockExamTemplate.findUnique({
+      where: { id },
+    });
+    if (!current) {
+      throw new RpcException({
+        statusCode: 404,
+        message: "Không tìm thấy đề thi",
+      });
+    }
+
+    await this.prisma.mockExamTemplate.delete({ where: { id } });
+    return { id, deleted: true };
+  }
+
+  private async findTemplateByKey(key: string) {
+    const numericId = Number(key);
+    if (Number.isInteger(numericId) && numericId > 0) {
+      const byId = await this.prisma.mockExamTemplate.findUnique({
+        where: { id: numericId },
+      });
+      if (byId) return byId;
+    }
+
+    return this.prisma.mockExamTemplate.findUnique({
+      where: { slug: key.toLowerCase() },
     });
   }
 
-  async start(level: MockExamLevel) {
-    const cfg = LEVEL_CONFIG[level];
-    if (!cfg) {
+  async start(key: string) {
+    const template = await this.findTemplateByKey(key);
+    if (!template) {
       throw new RpcException({
         statusCode: 404,
-        message: `Cấp độ ${level} không hỗ trợ`,
+        message: `Đề thi "${key}" không tồn tại`,
       });
     }
+    if (!template.isPublished) {
+      throw new RpcException({
+        statusCode: 404,
+        message: "Đề thi chưa được công bố",
+      });
+    }
+
+    const cfg = templateToConfig(template);
+    const level = template.level as MockExamLevel;
 
     const lessons = await this.prisma.lesson.findMany({
       where: {
@@ -366,9 +528,12 @@ export class MockExamsService {
     const examId = randomUUID();
     const session: MockExamSession = {
       examId,
+      templateId: template.id,
+      templateSlug: template.slug,
       level,
       title: cfg.title,
       durationMinutes: cfg.durationMinutes,
+      passThreshold: cfg.passThreshold,
       startedAt: new Date().toISOString(),
       questions,
       answerKey,
@@ -378,6 +543,8 @@ export class MockExamsService {
 
     return {
       examId,
+      templateId: template.id,
+      slug: template.slug,
       level,
       title: cfg.title,
       durationMinutes: cfg.durationMinutes,
@@ -418,7 +585,7 @@ export class MockExamsService {
     const correctCount = review.filter((r) => r.isCorrect).length;
     const total = review.length;
     const percent = total ? Math.round((correctCount / total) * 100) : 0;
-    const passThreshold = LEVEL_CONFIG[session.level]?.passThreshold ?? 65;
+    const passThreshold = session.passThreshold ?? 65;
     const passed = percent >= passThreshold;
 
     const sectionScores = ["vocab", "grammar", "kanji", "listening"].map(
@@ -495,6 +662,7 @@ export class MockExamsService {
     return {
       examId,
       level: session.level,
+      slug: session.templateSlug,
       title: session.title,
       correctCount,
       total,

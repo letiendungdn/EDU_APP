@@ -12,12 +12,18 @@ import { seedKanjiVocabExamples } from './seed-kanji-vocab-examples';
 import { seedConversation } from './seed-conversation';
 import { seedRoleplay } from './seed-roleplay';
 import { seedHomePage } from './seed-home-page';
+import { seedJlptTags } from './seed-jlpt-tags';
+import { seedJlptRoadmapN2N1 } from './seed-jlpt-roadmap-n2-n1';
+import { seedMockExamTemplates } from './seed-mock-exam-templates';
 
 const prisma = new PrismaClient();
 
 async function main() {
   await seedContent(prisma);
   await seedJlptContent(prisma);
+  await seedJlptTags(prisma);
+  await seedJlptRoadmapN2N1(prisma);
+  await seedMockExamTemplates(prisma);
   await seedPronunciationRules(prisma);
   await seedEnglishKatakana(prisma);
   await seedKanaRomaji(prisma);

@@ -349,5 +349,5 @@ npm run docker:up:nihongo
 | [system-design.md](./system-design.md) | Gateway + clients |
 | [learn-edu-app.md](./learn-edu-app.md) | Lộ trình monorepo tổng |
 | [roadmap-reactjs.md](./roadmap-reactjs.md) | App Next/React song song (:5173) |
-| Roadmap mobile | [roadmap-android.md](./roadmap-android.md) · [roadmap-swift.md](./roadmap-swift.md) · … |
+| Roadmap mobile | [learn-android-kotlin.md](./learn-android-kotlin.md) · [roadmap-android.md](./roadmap-android.md) · [roadmap-swift.md](./roadmap-swift.md) · … |
 | [Angular docs](https://angular.dev/) | Official |

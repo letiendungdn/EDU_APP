@@ -42,7 +42,8 @@ export class ContentMsController implements OnModuleInit {
 
   onModuleInit() {
     this.routes = {
-      [CONTENT_PATTERNS.GET_LESSONS]: () => this.getLessons(),
+      [CONTENT_PATTERNS.GET_LESSONS]: (data) =>
+        this.getLessons(data as { has?: "grammar" | "vocab" }),
       [CONTENT_PATTERNS.GET_LESSON]: (data) =>
         this.getLesson(data as { lessonNumber: number }),
       [CONTENT_PATTERNS.CREATE_LESSON]: (dto) =>
@@ -137,8 +138,8 @@ export class ContentMsController implements OnModuleInit {
     return handleGrpcDispatch(this.routes, data);
   }
 
-  getLessons() {
-    return this.lessonsService.findAll();
+  getLessons(data?: { has?: "grammar" | "vocab" }) {
+    return this.lessonsService.findAll(data);
   }
 
   getLesson(data: { lessonNumber: number }) {

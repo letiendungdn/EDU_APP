@@ -1,7 +1,8 @@
 export declare const CacheKeys: {
     readonly vocabByLesson: (id: number) => string;
     readonly grammarByLesson: (id: number) => string;
-    readonly lessonList: () => string;
+    readonly lessonList: (has?: "grammar" | "vocab") => string;
+    readonly lessonListAll: () => readonly ["lessons:all", "lessons:grammar", "lessons:vocab"];
 };
 export declare const CacheTTL: {
     readonly short: 60;

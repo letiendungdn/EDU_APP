@@ -327,7 +327,7 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 | 4 | ViewModel + Flow; SRS | `SrsViewModel`, `SrsAlgorithm` |
 | 5 | CameraX + ML Kit Japanese | `presentation/camera/` |
 
-**Đọc thêm:** [roadmap-android.md](./roadmap-android.md), [cursor-android-offline.md](./cursor-android-offline.md)
+**Đọc thêm:** [learn-android-kotlin.md](./learn-android-kotlin.md) (lộ trình học tuần + bài tập), [roadmap-android.md](./roadmap-android.md), [cursor-android-offline.md](./cursor-android-offline.md)
 
 **Sản phẩm tuần:** thêm field UI + chạy `SrsAlgorithmTest` xanh.
 
@@ -553,7 +553,7 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 | Stack | File |
 |-------|------|
 | React Native | [roadmap-react-native.md](./roadmap-react-native.md) |
-| Android | [roadmap-android.md](./roadmap-android.md) |
+| Android | [learn-android-kotlin.md](./learn-android-kotlin.md) · [roadmap-android.md](./roadmap-android.md) |
 | Flutter | [roadmap-flutter.md](./roadmap-flutter.md) |
 | Swift | [roadmap-swift.md](./roadmap-swift.md) |
 | Angular (web) | [roadmap-angular.md](./roadmap-angular.md) |

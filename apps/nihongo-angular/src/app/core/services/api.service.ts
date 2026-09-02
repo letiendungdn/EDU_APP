@@ -63,8 +63,9 @@ import type {
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  getLessons(): Promise<Lesson[]> {
-    return apiFetch<Lesson[]>('/lessons');
+  getLessons(options?: { has?: 'grammar' | 'vocab' }): Promise<Lesson[]> {
+    const qs = options?.has ? `?has=${options.has}` : '';
+    return apiFetch<Lesson[]>(`/lessons${qs}`);
   }
 
   getVocabularies(lessonNumber: number): Promise<Vocabulary[]> {

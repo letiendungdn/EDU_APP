@@ -143,6 +143,8 @@ export class VocabulariesService {
 
   private async invalidateLessonCaches(lessonId: number) {
     await this.cacheManager.del(CacheKeys.vocabByLesson(lessonId));
-    await this.cacheManager.del(CacheKeys.lessonList());
+    await Promise.all(
+      CacheKeys.lessonListAll().map((key) => this.cacheManager.del(key)),
+    );
   }
 }

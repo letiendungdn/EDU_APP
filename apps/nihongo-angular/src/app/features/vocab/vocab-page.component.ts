@@ -101,7 +101,7 @@ export class VocabPageComponent {
   });
 
   constructor() {
-    void this.api.getLessons().then((data) => this.lessons.set(data));
+    void this.api.getLessons({ has: 'vocab' }).then((data) => this.lessons.set(data));
 
     effect(() => {
       const n = this.lesson();

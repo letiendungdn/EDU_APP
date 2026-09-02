@@ -1,10 +1,9 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useLessonsQuery } from '../hooks/queries';
+import { useLessons } from '../hooks/queries';
 
 export type LessonCountKind = 'vocab' | 'grammar' | 'none';
-
 interface LessonSelectorProps {
   value: number;
   onChange: (lessonNumber: number) => void;
@@ -42,18 +41,28 @@ export default function LessonSelector({
 }: LessonSelectorProps) {
   const resolvedCountKind: LessonCountKind =
     countKind ?? (showVocabCount ? 'vocab' : 'none');
-  const { data, isLoading, isError } = useLessonsQuery();
+  const contentFilter: 'grammar' | 'vocab' | undefined =
+    resolvedCountKind === 'grammar'
+      ? 'grammar'
+      : resolvedCountKind === 'vocab' && filterWithContent !== false
+        ? 'vocab'
+        : undefined;
+  const { data, isLoading, isError } = useLessons(
+    contentFilter ? { has: contentFilter } : undefined,
+  );
 
   const lessons = useMemo(() => {
     if (!data) return [];
+    if (contentFilter) return data;
     if (!filterWithContent) return data;
+
     return data.filter(
       (l) =>
         (l._count?.vocabularies ?? 0) > 0 ||
         (l._count?.grammars ?? 0) > 0 ||
         (l._count?.exercises ?? 0) > 0,
     );
-  }, [data, filterWithContent]);
+  }, [data, filterWithContent, contentFilter]);
 
   const groups = useMemo(() => {
     const order: Array<{ key: string; label: string; levels: string[] }> = [

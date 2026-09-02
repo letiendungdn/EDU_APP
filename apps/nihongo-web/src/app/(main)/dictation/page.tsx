@@ -24,7 +24,7 @@ export default function DictationPage() {
   const [revealed, setRevealed] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { data: lessons = [] } = useQuery({ queryKey: ['lessons'], queryFn: fetchLessons });
+  const { data: lessons = [] } = useQuery({ queryKey: ['lessons'], queryFn: () => fetchLessons() });
 
   const { data: _vocab = [], isLoading, refetch } = useQuery({
     queryKey: ['dictation-vocab', lessonNumber],

@@ -14,16 +14,24 @@ export class LessonsService {
 
   async create(dto: CreateLessonDto) {
     const lesson = await this.prisma.lesson.create({ data: dto });
-    await this.cacheManager.del(CacheKeys.lessonList());
+    await this.invalidateLessonLists();
     return lesson;
   }
 
-  async findAll() {
-    const cacheKey = CacheKeys.lessonList();
+  async findAll(options?: { has?: "grammar" | "vocab" }) {
+    const cacheKey = CacheKeys.lessonList(options?.has);
     const cached = await this.cacheManager.get(cacheKey);
     if (cached) return cached;
 
+    const where =
+      options?.has === "grammar"
+        ? { grammars: { some: {} } }
+        : options?.has === "vocab"
+          ? { vocabularies: { some: {} } }
+          : undefined;
+
     const lessons = await this.prisma.lesson.findMany({
+      where,
       orderBy: { lessonNumber: "asc" },
       include: {
         _count: {
@@ -51,7 +59,7 @@ export class LessonsService {
       where: { id },
       data: dto,
     });
-    await this.cacheManager.del(CacheKeys.lessonList());
+    await this.invalidateLessonLists();
     return lesson;
   }
 
@@ -59,7 +67,13 @@ export class LessonsService {
     const lesson = await this.prisma.lesson.delete({
       where: { id },
     });
-    await this.cacheManager.del(CacheKeys.lessonList());
+    await this.invalidateLessonLists();
     return lesson;
+  }
+
+  private async invalidateLessonLists() {
+    await Promise.all(
+      CacheKeys.lessonListAll().map((key) => this.cacheManager.del(key)),
+    );
   }
 }

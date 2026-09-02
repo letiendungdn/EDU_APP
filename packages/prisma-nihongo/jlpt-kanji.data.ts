@@ -3,7 +3,7 @@
 // lessonNumber của KanjiLesson: 401–403 (N2), 501–502 (N1) — không đụng 1–32.
 // Mở rộng: thêm phần tử vào `entries` hoặc thêm KanjiLesson mới.
 
-export type JlptKanjiLevel = 'N2' | 'N1';
+export type JlptKanjiLevel = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 
 export type JlptKanjiEntry = {
   character: string;

@@ -1,7 +1,9 @@
 export const CacheKeys = {
   vocabByLesson: (id: number) => `vocab:lesson:${id}`,
   grammarByLesson: (id: number) => `grammar:lesson:${id}`,
-  lessonList: () => 'lessons:all',
+  lessonList: (has?: 'grammar' | 'vocab') =>
+    has ? `lessons:${has}` : 'lessons:all',
+  lessonListAll: () => ['lessons:all', 'lessons:grammar', 'lessons:vocab'] as const,
 } as const;
 
 export const CacheTTL = {

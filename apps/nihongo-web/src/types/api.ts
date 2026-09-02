@@ -68,6 +68,7 @@ export interface KanjiEntry {
   onyomi: string | null;
   kunyomi: string | null;
   meaningVi: string;
+  jlptLevel?: string | null;
   mnemonicJp?: string | null;
   mnemonicVi?: string | null;
   imageUrl?: string | null;
@@ -125,6 +126,8 @@ export interface ListeningPlaylist {
 }
 
 export interface MockExamTemplate {
+  id?: number;
+  slug?: string;
   level: string;
   title: string;
   durationMinutes: number;
@@ -132,6 +135,46 @@ export interface MockExamTemplate {
   lessonRange: string;
   scope?: string;
   description: string;
+  isPublished?: boolean;
+  sortOrder?: number;
+}
+
+export interface MockExamTemplateAdmin extends MockExamTemplate {
+  id: number;
+  slug: string;
+  lessonFrom: number;
+  lessonTo: number;
+  kanjiLessonFrom: number;
+  kanjiLessonTo: number;
+  vocabCount: number;
+  grammarCount: number;
+  kanjiCount: number;
+  listeningWordCount: number;
+  listeningSentenceCount: number;
+  passThreshold: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface MockExamTemplateInput {
+  slug?: string;
+  level: string;
+  title: string;
+  description?: string;
+  durationMinutes: number;
+  lessonFrom: number;
+  lessonTo: number;
+  kanjiLessonFrom: number;
+  kanjiLessonTo: number;
+  vocabCount?: number;
+  grammarCount?: number;
+  kanjiCount?: number;
+  listeningWordCount?: number;
+  listeningSentenceCount?: number;
+  passThreshold?: number;
+  scope?: string;
+  isPublished?: boolean;
+  sortOrder?: number;
 }
 
 export interface AuthUser {

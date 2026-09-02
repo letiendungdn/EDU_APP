@@ -3,7 +3,7 @@
 // nên mỗi "Bài" JLPT có cả ngữ pháp lẫn từ vựng.
 // Mở rộng: thêm phần tử vào `words` hoặc thêm unit mới.
 
-export type JlptVocabLevel = 'N3' | 'N2' | 'N1';
+export type JlptVocabLevel = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 
 export type JlptVocabWord = {
   kanji?: string;
