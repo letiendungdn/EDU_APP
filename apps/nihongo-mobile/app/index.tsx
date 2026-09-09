@@ -69,6 +69,15 @@ export default function HomeScreen() {
         }
       />
 
+      <Text style={styles.sectionLabel}>THI THỬ</Text>
+      <NavCard
+        icon="📝"
+        title="Mock Exam JLPT"
+        subtitle="Làm đề thi thử N5→N1 có đồng hồ đếm ngược"
+        badge="MỚI"
+        onPress={() => router.push('/mock-exam')}
+      />
+
       <Text style={styles.sectionLabel}>AI & LIVESTREAM</Text>
       <NavCard
         icon="🧠"

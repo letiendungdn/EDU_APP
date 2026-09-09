@@ -1,0 +1,57 @@
+default_platform(:ios)
+
+platform :ios do
+
+  desc "Sync certificates bằng Fastlane Match"
+  lane :certificates do
+    match(
+      type: "appstore",
+      app_identifier: "com.nihongocli",
+      git_url: ENV["MATCH_GIT_URL"],      # private Git repo chứa cert
+      readonly: is_ci,                     # CI chỉ đọc, không tạo mới
+    )
+  end
+
+  desc "Build + upload lên TestFlight"
+  lane :beta do
+    # Lấy App Store Connect API key
+    app_store_connect_api_key(
+      key_id:        ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id:     ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+      key_content:   ENV["APP_STORE_CONNECT_API_KEY_CONTENT"],
+      is_key_content_base64: true,
+    )
+
+    # Sync cert + provisioning profile
+    certificates
+
+    # Tăng build number tự động theo CI run number
+    increment_build_number(
+      build_number: ENV["GITHUB_RUN_NUMBER"] || Time.now.to_i.to_s
+    )
+
+    # Build IPA
+    build_app(
+      scheme: "NihongoCLI",
+      workspace: "NihongoCLI.xcworkspace",
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "NihongoCLI.ipa",
+    )
+
+    # Upload lên TestFlight
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,   # không chờ Apple process
+    )
+  end
+
+  desc "Build local để test (không upload)"
+  lane :build_local do
+    build_app(
+      scheme: "NihongoCLI",
+      workspace: "NihongoCLI.xcworkspace",
+      export_method: "development",
+    )
+  end
+
+end

@@ -1,0 +1,4 @@
+app_identifier("com.nihongocli")
+apple_id("hayworkteam@hayworkglobal.com")
+itc_team_id("")       # điền Team ID từ App Store Connect
+team_id("")           # điền Team ID từ Apple Developer portal

@@ -1,0 +1,2 @@
+json_key_file("")                      # để trống, dùng SUPPLY_JSON_KEY_DATA từ env
+package_name("com.nihongocli")
