@@ -1,11 +1,7 @@
 ﻿# Dependencies
 node_modules/
 
-# Secrets (không commit credential)
-.env
-!.env.example
-**/.env
-!**/.env.example
+# Client secrets JSON (env files are tracked intentionally for this hobby repo)
 **/client_secret*.json
 !**/client_secret.example.json
 
