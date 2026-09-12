@@ -92,6 +92,7 @@ export default function VocabWordList({
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [orderedVocab, setOrderedVocab] = useState<Vocabulary[]>(vocabularies);
   const [draggingId, setDraggingId] = useState<number | null>(null);
+  const [copiedId, setCopiedId] = useState<number | null>(null);
 
   const canEdit = isAdmin && editMode;
   const searchActive = searchQuery.trim().length > 0;
@@ -144,6 +145,15 @@ export default function VocabWordList({
       rowVirtualizer.scrollToIndex(filteredIndex, { align: 'auto' });
     }
   }, [currentIndex, lessonNumber, searchQuery, filteredVocab, rowVirtualizer, useVirtual]);
+
+  function handleCopyRow(e: React.MouseEvent, vocab: Vocabulary) {
+    e.stopPropagation();
+    const parts = [vocab.kanji, vocab.kana, vocab.romaji, vocab.meaning].filter(Boolean);
+    void navigator.clipboard.writeText(parts.join('\t')).then(() => {
+      setCopiedId(vocab.id);
+      setTimeout(() => setCopiedId((id) => (id === vocab.id ? null : id)), 1500);
+    });
+  }
 
   function toggleEditMode() {
     setEditMode((on) => {
@@ -504,27 +514,37 @@ export default function VocabWordList({
             </span>
           ) : null}
         </button>
-        {canEdit && (
-          <div className="vocab-admin-row-actions">
-            <button
-              type="button"
-              title="Sửa"
-              disabled={busy}
-              onClick={() => startEdit(vocab)}
-            >
-              ✎
-            </button>
-            <button
-              type="button"
-              title="Xóa"
-              className="vocab-admin-delete"
-              disabled={busy}
-              onClick={() => void handleDelete(vocab.id, index)}
-            >
-              ✕
-            </button>
-          </div>
-        )}
+        <div className="vocab-admin-row-actions">
+          <button
+            type="button"
+            className={`vocab-copy-row-btn${copiedId === vocab.id ? ' vocab-copy-row-btn--copied' : ''}`}
+            title={copiedId === vocab.id ? 'Đã copy!' : 'Sao chép'}
+            onClick={(e) => handleCopyRow(e, vocab)}
+          >
+            {copiedId === vocab.id ? '✓' : '📋'}
+          </button>
+          {canEdit && (
+            <>
+              <button
+                type="button"
+                title="Sửa"
+                disabled={busy}
+                onClick={() => startEdit(vocab)}
+              >
+                ✎
+              </button>
+              <button
+                type="button"
+                title="Xóa"
+                className="vocab-admin-delete"
+                disabled={busy}
+                onClick={() => void handleDelete(vocab.id, index)}
+              >
+                ✕
+              </button>
+            </>
+          )}
+        </div>
       </div>
     );
   }

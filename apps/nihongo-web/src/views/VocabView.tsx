@@ -241,10 +241,22 @@ function FlashcardReadingStrokes({
   );
 }
 
+function useCopyText() {
+  const [copied, setCopied] = useState(false);
+  const copy = (text: string) => {
+    void navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  };
+  return { copied, copy };
+}
+
 export default function VocabView() {
   const [currentLesson, setCurrentLesson] = useState(1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const { copied: flashcardCopied, copy: copyFlashcard } = useCopyText();
   const { isAdmin } = useAuth();
   const { data: lessons = [] } = useLessonsQuery();
   const { data: lessonVocab = [], isLoading: loading } = useVocabulariesQuery(currentLesson);
@@ -329,6 +341,13 @@ export default function VocabView() {
 
   const handleStrokeCharClick = () => {
     if (currentVocab) playAudio(currentVocab.kana);
+  };
+
+  const handleCopyVocab = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!currentVocab) return;
+    const parts = [currentVocab.kanji, currentVocab.kana, currentVocab.romaji, currentVocab.meaning].filter(Boolean);
+    copyFlashcard(parts.join('\t'));
   };
 
   const handlePlayAll = () => {
@@ -452,6 +471,14 @@ export default function VocabView() {
                     </div>
                   </div>
                   <div className="flashcard-front-meta">
+                    <button
+                      type="button"
+                      className={`vocab-copy-btn${flashcardCopied ? ' vocab-copy-btn--copied' : ''}`}
+                      onClick={handleCopyVocab}
+                      title="Sao chép từ vựng"
+                    >
+                      {flashcardCopied ? '✓ Đã copy' : '📋 Copy'}
+                    </button>
                     <FlashcardJapaneseText text={currentVocab.romaji} className="vocab-romaji" />
                     <span className="vocab-meaning">{currentVocab.meaning}</span>
                     {currentVocab.pitchAccent ? (

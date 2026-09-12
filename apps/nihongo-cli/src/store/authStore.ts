@@ -2,7 +2,7 @@ import {create} from 'zustand';
 import {persist, createJSONStorage} from 'zustand/middleware';
 import {MMKV} from 'react-native-mmkv';
 import {authApi} from '../api/auth';
-import type {User} from '../types';
+import type {User, AuthTokens} from '../types';
 
 const storage = new MMKV({id: 'auth-store'});
 
@@ -18,6 +18,7 @@ type AuthState = {
   user: User | null;
   isLoggedIn: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginWithOAuth: (tokens: AuthTokens & {user: User}) => void;
   refresh: () => Promise<void>;
   logout: () => void;
 };
@@ -38,6 +39,10 @@ export const useAuthStore = create<AuthState>()(
           user: data.user,
           isLoggedIn: true,
         });
+      },
+
+      loginWithOAuth: ({accessToken, refreshToken, user}) => {
+        set({accessToken, refreshToken, user, isLoggedIn: true});
       },
 
       refresh: async () => {

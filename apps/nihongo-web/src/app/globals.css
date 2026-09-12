@@ -64,6 +64,12 @@
   /* Icon surface */
   --icon-surface: rgba(255 255 255 / 0.07);
 
+  /* Heatmap (activity calendar) */
+  --heatmap-1: #14532d;
+  --heatmap-2: #166534;
+  --heatmap-3: #4ade80;
+  --heatmap-4: #86efac;
+
   /* Transition */
   --transition-fast:   0.15s ease;
   --transition-normal: 0.25s ease;
@@ -120,6 +126,12 @@
   --shadow-lg:   0 8px 32px rgba(0 0 0 / 0.09), 0 0 0 1px rgba(0 0 0 / 0.04);
 
   /* Sidebar stays dark in light mode — intentional */
+
+  /* Heatmap — light mode uses deeper greens for contrast on white */
+  --heatmap-1: #166534;
+  --heatmap-2: #16a34a;
+  --heatmap-3: #22c55e;
+  --heatmap-4: #4ade80;
 }
 
 /* Light mode card overrides */
@@ -1288,4 +1300,164 @@ textarea::placeholder { color: var(--text-muted); }
   .home-stat:nth-child(even) { border-right: none; }
   .home-stat:nth-child(1),
   .home-stat:nth-child(2) { border-bottom: 1px solid var(--border-color); }
+}
+
+/* ── Home Widgets (SRS + Word of the Day) ─────────────────────────────── */
+.home-widgets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+/* SRS Widget */
+.home-srs-widget {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.home-srs-widget--auth:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.home-srs-widget__icon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.home-srs-widget__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.home-srs-widget__title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-srs-widget__due {
+  color: var(--primary);
+}
+
+.home-srs-widget__sub {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.home-srs-widget__cta {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+}
+
+.home-srs-widget__arrow {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+
+.home-srs-widget--auth:hover .home-srs-widget__arrow {
+  transform: translateX(3px);
+}
+
+/* Word of the Day Widget */
+.home-wotd {
+  padding: 1rem 1.25rem;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.home-wotd--loading {
+  display: flex;
+  align-items: stretch;
+}
+
+.home-wotd__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.home-wotd__content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.home-wotd__jp {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.home-wotd__kanji {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.home-wotd__kana {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.home-wotd__audio {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0.2rem;
+  border-radius: 6px;
+  transition: background 0.12s;
+  flex-shrink: 0;
+}
+
+.home-wotd__audio:hover {
+  background: var(--hover-bg, color-mix(in srgb, var(--primary) 10%, transparent));
+}
+
+.home-wotd__meaning {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 0.15rem;
+}
+
+.home-wotd__romaji {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .home-widgets {
+    grid-template-columns: 1fr;
+  }
 }

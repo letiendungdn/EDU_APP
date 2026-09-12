@@ -19,15 +19,12 @@ export default function GoogleSignInButton({
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
   if (!clientId) {
+    if (process.env.NODE_ENV !== 'development') return null;
     return (
       <p className="auth-google-hint">
-        <strong>Đăng ký bằng Gmail</strong> chưa bật. Tạo OAuth Client ID tại{' '}
-        <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer">
-          Google Cloud Console
-        </a>
-        , rồi thêm <code>NEXT_PUBLIC_GOOGLE_CLIENT_ID</code> vào{' '}
-        <code>apps/nihongo-web/.env</code> và <code>GOOGLE_CLIENT_ID</code> vào{' '}
-        <code>services/.env</code>. Xem <code>docs/google-oauth-setup.md</code>.
+        <strong>Đăng ký bằng Gmail</strong> chưa bật. Thêm <code>NEXT_PUBLIC_GOOGLE_CLIENT_ID</code> vào{' '}
+        <code>apps/nihongo-web/.env</code> (dev) hoặc rebuild Docker với{' '}
+        <code>docker compose build --no-cache nihongo-web</code>.
       </p>
     );
   }

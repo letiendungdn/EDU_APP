@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   createKanjiEntry,
@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import { playAudio } from '../utils/speech';
 import { getKanjiSpeakItems } from '../utils/kanjiSpeak';
+import StrokeOrder from '../components/StrokeOrder';
 import type {
   CreateKanjiEntryInput,
   KanjiEntry,
@@ -152,6 +153,71 @@ function formToPayload(values: KanjiFormValues): CreateKanjiEntryInput {
     kunyomi: values.kunyomi.trim() || undefined,
     jlptLevel: values.jlptLevel,
   };
+}
+
+function KanjiPopup({
+  entry,
+  showJlpt,
+  onClose,
+}: {
+  entry: KanjiEntry;
+  showJlpt: boolean;
+  onClose: () => void;
+}) {
+  const jlpt = getEntryJlpt(entry);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div className="kanji-popup-overlay" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="kanji-popup" onClick={(e) => e.stopPropagation()}>
+        <button type="button" className="kanji-popup-close" onClick={onClose} aria-label="Đóng">✕</button>
+
+        <div className="kanji-popup-header">
+          <span className="kanji-popup-char">{entry.character}</span>
+          <div className="kanji-popup-meta">
+            {entry.hanViet && <span className="kanji-popup-hanviet">{entry.hanViet}</span>}
+            {showJlpt && jlpt !== '—' && (
+              <span className={`kanji-popup-jlpt level-${jlpt.toLowerCase()}`}>{jlpt}</span>
+            )}
+            {entry.lesson?.lessonNumber != null && (
+              <span className="kanji-popup-lesson">Bài {entry.lesson.lessonNumber}</span>
+            )}
+          </div>
+        </div>
+
+        <div className="kanji-popup-stroke">
+          <StrokeOrder text={entry.character} width={200} height={200} />
+          <p className="kanji-popup-stroke-hint">Nhấn vào chữ để xem lại nét</p>
+        </div>
+
+        <div className="kanji-popup-readings">
+          <div className="kanji-popup-reading-row">
+            <span className="kanji-popup-reading-label">ON</span>
+            <span className="kanji-popup-reading-val japanese-text">{entry.onyomi || '—'}</span>
+          </div>
+          <div className="kanji-popup-reading-row">
+            <span className="kanji-popup-reading-label">KUN</span>
+            <span className="kanji-popup-reading-val japanese-text">{entry.kunyomi || '—'}</span>
+          </div>
+        </div>
+
+        <p className="kanji-popup-meaning">{entry.meaningVi}</p>
+
+        <button
+          type="button"
+          className="btn btn-outline kanji-popup-audio"
+          onClick={() => playAudio(getPrimaryReading(entry))}
+        >
+          🔊 Nghe đọc
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function KanjiEntryAdminForm({
@@ -310,6 +376,7 @@ export default function KanjiListView() {
   const [searchInput, setSearchInput] = useState('');
   const [displayMode, setDisplayMode] = useState<DisplayMode>('grid');
   const [selectedEntry, setSelectedEntry] = useState<KanjiEntry | null>(null);
+  const [popupEntry, setPopupEntry] = useState<KanjiEntry | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [formState, setFormState] = useState<
     null | { mode: 'create' } | { mode: 'edit'; entry: KanjiEntry }
@@ -360,11 +427,13 @@ export default function KanjiListView() {
     setActiveLevel(level);
     setSearchInput('');
     setSelectedEntry(null);
+    setPopupEntry(null);
     setFormState(null);
   }
 
   function selectEntry(entry: KanjiEntry) {
     setSelectedEntry(entry);
+    setPopupEntry(entry);
     playAudio(getPrimaryReading(entry));
   }
 
@@ -383,13 +452,15 @@ export default function KanjiListView() {
   return (
     <div className="container kanji-list-view">
       <div className="kanji-list-header-row">
-        <div>
-          <h2 className="view-title">Bảng tổng hợp Kanji JLPT</h2>
-          <p className="kanji-list-subtitle">
-            {loadingLessons
-              ? 'Đang tải thống kê kanji...'
-              : `${totalKanji} kanji theo cấp N5 → N1 — tra cứu Hán Việt, âm ON/KUN và nghĩa tiếng Việt.`}
-          </p>
+        <h2 className="view-title">漢字一覧 · Bảng Kanji JLPT</h2>
+        <p className="kanji-list-subtitle">
+          {loadingLessons
+            ? 'Đang tải thống kê kanji...'
+            : `${totalKanji} kanji theo cấp N5 → N1 — tra cứu Hán Việt, âm ON/KUN và nghĩa tiếng Việt.`}
+        </p>
+        <div className="kanji-list-links">
+          <Link href="/kanji">← Flashcard theo bài</Link>
+          <Link href="/kanji/quiz">Quiz kanji →</Link>
         </div>
         {isAdmin && (
           <div className="kanji-admin-toolbar">
@@ -414,11 +485,6 @@ export default function KanjiListView() {
             )}
           </div>
         )}
-      </div>
-
-      <div className="kanji-list-links">
-        <Link href="/kanji">← Flashcard theo bài</Link>
-        <Link href="/kanji/quiz">Quiz kanji →</Link>
       </div>
 
       {formState?.mode === 'create' && token && (
@@ -654,8 +720,8 @@ export default function KanjiListView() {
                     <button
                       type="button"
                       className="kanji-list-char"
-                      onClick={() => playAudio(getPrimaryReading(entry))}
-                      title="Nghe đọc"
+                      onClick={() => selectEntry(entry)}
+                      title="Xem nét viết và nghĩa"
                     >
                       {entry.character}
                     </button>
@@ -693,6 +759,14 @@ export default function KanjiListView() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {popupEntry && (
+        <KanjiPopup
+          entry={popupEntry}
+          showJlpt={isAllView}
+          onClose={() => setPopupEntry(null)}
+        />
       )}
     </div>
   );

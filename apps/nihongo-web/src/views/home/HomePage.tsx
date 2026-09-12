@@ -3,7 +3,9 @@
 import { useHomePageQuery } from '../../hooks/queries';
 import HomeFeatureSection from './HomeFeatureSection';
 import HomeHero from './HomeHero';
+import HomeSrsWidget from './HomeSrsWidget';
 import HomeStats from './HomeStats';
+import HomeWordOfDay from './HomeWordOfDay';
 
 export default function HomePage() {
   const { data, isLoading, isError } = useHomePageQuery();
@@ -13,8 +15,18 @@ export default function HomePage() {
   return (
     <div className="home-page">
       <HomeHero />
+
+      {/* SRS due today + Word of the day — nằm dưới hero, trên stats */}
+      <div className="home-widgets">
+        <HomeSrsWidget />
+        <HomeWordOfDay />
+      </div>
+
       {isLoading ? (
-        <p className="home-loading">Đang tải trang chủ...</p>
+        <div className="home-loading">
+          <div className="skeleton" style={{ height: 60, borderRadius: 12, marginBottom: 12 }} />
+          <div className="skeleton" style={{ height: 200, borderRadius: 12 }} />
+        </div>
       ) : isError ? (
         <p className="home-loading">Không tải được nội dung trang chủ.</p>
       ) : (

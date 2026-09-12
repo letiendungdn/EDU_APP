@@ -223,7 +223,7 @@ export default function SrsView() {
           <span style={{ fontSize: '2.5rem' }}>🔐</span>
           <h2>Đăng nhập để dùng SRS</h2>
           <p>Tiến độ ôn tập được lưu theo tài khoản — cần đăng nhập để sử dụng.</p>
-          <Link href="/login" className="btn btn-primary">Đăng nhập</Link>
+          <Link href="/login?redirect=/srs" className="btn btn-primary">Đăng nhập</Link>
         </div>
       </div>
     );

@@ -148,7 +148,7 @@ export default function LoginPage() {
             type="button"
             className="btn btn-ghost btn-block"
             style={{ marginTop: '0.75rem' }}
-            onClick={() => setShowDevLogin(true)}
+            onClick={() => { setShowDevLogin(true); setError(''); }}
           >
             Dev login (email / mật khẩu)
           </button>

@@ -32,11 +32,11 @@ function Heatmap({ data }: { data: { date: string; seconds: number }[] }) {
   }
 
   function color(s: number) {
-    if (s === 0) return 'var(--border)';
-    if (s < 300) return '#166534';
-    if (s < 900) return '#16a34a';
-    if (s < 1800) return '#4ade80';
-    return '#86efac';
+    if (s === 0) return 'var(--border-color)';
+    if (s < 300) return 'var(--heatmap-1, #166534)';
+    if (s < 900) return 'var(--heatmap-2, #16a34a)';
+    if (s < 1800) return 'var(--heatmap-3, #4ade80)';
+    return 'var(--heatmap-4, #86efac)';
   }
 
   const weeks: typeof cells[] = [];
@@ -57,7 +57,7 @@ function Heatmap({ data }: { data: { date: string; seconds: number }[] }) {
           </div>
         ))}
       </div>
-      <div style={{ display: 'flex', gap: 4, alignItems: 'center', marginTop: 8, fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+      <div style={{ display: 'flex', gap: 4, alignItems: 'center', marginTop: 8, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
         Ít
         {[0, 300, 900, 1800, 3600].map((s) => (
           <div key={s} style={{ width: 12, height: 12, borderRadius: 2, background: color(s) }} />
@@ -72,8 +72,8 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub?: s
   return (
     <div className="card" style={{ textAlign: 'center', padding: '1.25rem 1rem' }}>
       <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>{value}</div>
-      <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 4 }}>{label}</div>
-      {sub && <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{sub}</div>}
+      <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: 4 }}>{label}</div>
+      {sub && <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{sub}</div>}
     </div>
   );
 }
@@ -90,10 +90,12 @@ export default function AnalyticsPage() {
   if (!token) {
     return (
       <div className="container" style={{ padding: '3rem', textAlign: 'center' }}>
-        <h2>Tiến độ học</h2>
-        <p style={{ color: 'var(--text-muted)', marginTop: '1rem' }}>
-          Đăng nhập để xem tiến độ học của bạn.
+        <span style={{ fontSize: '2.5rem' }}>📊</span>
+        <h2 style={{ marginTop: '0.75rem' }}>Tiến độ học</h2>
+        <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', marginBottom: '1.5rem' }}>
+          Đăng nhập để xem biểu đồ thời gian học, lịch sử thi và thống kê SRS.
         </p>
+        <a href="/login?redirect=/analytics" className="btn btn-primary">Đăng nhập</a>
       </div>
     );
   }
@@ -123,7 +125,7 @@ export default function AnalyticsPage() {
   return (
     <div className="container" style={{ padding: '1.5rem 1rem' }}>
       <h1 style={{ marginBottom: '0.25rem' }}>Tiến độ học</h1>
-      <p style={{ color: 'var(--text-muted)', marginBottom: '1.75rem' }}>Thống kê toàn bộ quá trình học</p>
+      <p style={{ color: 'var(--text-secondary)', marginBottom: '1.75rem' }}>Thống kê toàn bộ quá trình học</p>
 
       {/* Overview cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
@@ -175,7 +177,7 @@ export default function AnalyticsPage() {
           <h2 style={{ fontSize: '1rem', marginBottom: '1rem' }}>Lịch sử thi mock exam</h2>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={examChartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
               <XAxis dataKey="date" tick={{ fontSize: 11 }} />
               <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} unit="%" />
               <Tooltip formatter={(v) => [`${v}%`, 'Điểm']} />
@@ -184,14 +186,14 @@ export default function AnalyticsPage() {
             </LineChart>
           </ResponsiveContainer>
           {/* Pass line */}
-          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
             Ngưỡng đạt: N5 ≥ 60% · N4–N1 ≥ 65%
           </p>
         </section>
       )}
 
       {examChartData.length === 0 && last30Study.length === 0 && (
-        <div className="card" style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-muted)' }}>
+        <div className="card" style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-secondary)' }}>
           Chưa có dữ liệu. Học và luyện tập để xem thống kê ở đây!
         </div>
       )}

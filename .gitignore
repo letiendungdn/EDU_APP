@@ -12,6 +12,10 @@ coverage/
 .agents/
 .claude/
 .continue/
+.playwright-mcp/
+
+# Screenshot junk at repo root (Playwright / manual captures)
+/*.png
 
 # Build output
 dist/

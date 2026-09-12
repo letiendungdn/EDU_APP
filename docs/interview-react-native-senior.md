@@ -23,6 +23,8 @@
 15. [CI/CD — GitHub Actions + Fastlane](#15-cicd--github-actions--fastlane)
 16. [Setup Keystore + Play Store + ASC + Match](#16-setup-keystore--play-store--app-store-connect--fastlane-match)
 17. [Lộ trình học AWS cho Mobile Developer](#17-lộ-trình-học-aws-cho-mobile-developer)
+18. [OAuth 2.0 / OIDC trên React Native](#18-oauth-20--oidc-trên-react-native)
+19. [Expo — Kinh nghiệm thực tế](#19-expo--kinh-nghiệm-thực-tế)
 
 ---
 
@@ -1800,6 +1802,321 @@ Tuần 8:    Amplify + Cognito (optional)
 
 ---
 
+## 18. OAuth 2.0 / OIDC trên React Native
+
+### Q: Implement Google Sign-In và Keycloak OIDC trên React Native như thế nào?
+
+---
+
+### 18.1 So sánh các phương pháp auth trên mobile
+
+| Phương pháp | Library | Ưu điểm | Nhược điểm |
+|------------|---------|---------|------------|
+| Email/Password | Axios | Đơn giản | Tự quản lý credential |
+| Google Sign-In | `@react-native-google-signin/google-signin` | Native UX, Google xác thực | Cần Google Cloud setup |
+| Apple Sign-In | `@invertase/react-native-apple-authentication` | Bắt buộc iOS nếu có social login | iOS-only |
+| Keycloak OIDC | `react-native-app-auth` | Tập trung auth, PKCE, SSO | Cần Keycloak server |
+| Generic OAuth2 | `react-native-app-auth` | Hỗ trợ mọi OIDC provider | Cần config thủ công |
+
+**Rule:** App production hiện đại cần ít nhất **1 social login** + **PKCE cho OIDC flows**.
+
+---
+
+### 18.2 Google Sign-In — Flow
+
+```
+App → GoogleSignin.signIn() → Google Account Picker
+  → User chọn tài khoản → App nhận idToken (JWT do Google ký)
+  → App gửi idToken lên backend
+  → Backend verify với Google Public Keys (JWKS)
+  → Backend tạo user nếu chưa có → trả app's JWT
+```
+
+**Code hook:**
+```typescript
+// src/hooks/useOAuth.ts
+import { GoogleSignin, statusCodes, isErrorWithCode } from '@react-native-google-signin/google-signin';
+
+GoogleSignin.configure({
+  webClientId: 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com',
+  offlineAccess: true,   // lấy server_auth_code nếu cần
+});
+
+export function useGoogleSignIn() {
+  const loginWithOAuth = useAuthStore(s => s.loginWithOAuth);
+
+  const signIn = async () => {
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
+    const { idToken } = await GoogleSignin.getTokens();
+
+    // Gửi idToken lên backend → backend verify + trả JWT của app
+    const data = await authApi.loginWithGoogle(idToken!);
+    loginWithOAuth(data);
+  };
+}
+```
+
+**Backend verify (NestJS / Express):**
+```typescript
+const ticket = await googleClient.verifyIdToken({
+  idToken,
+  audience: GOOGLE_CLIENT_ID,
+});
+const { email, name, sub: googleId } = ticket.getPayload()!;
+// upsert user → issue JWT
+```
+
+---
+
+### 18.3 Keycloak OIDC với PKCE — Flow
+
+```
+App sinh code_verifier (random 64 bytes)
+  → tính code_challenge = BASE64URL(SHA256(code_verifier))
+  → Mở browser: Keycloak /auth?code_challenge=...&code_challenge_method=S256
+  → User đăng nhập Keycloak → redirect về app với ?code=XXXX
+  → App gửi code + code_verifier tới Keycloak /token
+  → Keycloak verify SHA256(code_verifier) == code_challenge → cấp token
+  → App gửi Keycloak access_token lên backend → exchange lấy app JWT
+```
+
+**Tại sao cần PKCE?** Không có PKCE: authorization_code bị chặn giữa chừng (malicious app có cùng URL scheme) → code interception attack. PKCE: ngay cả khi code bị chặn, kẻ tấn công không có `code_verifier` → không đổi được token.
+
+```typescript
+import { authorize } from 'react-native-app-auth';
+
+const keycloakConfig = {
+  issuer: 'https://auth.example.com/realms/my-realm',
+  clientId: 'nihongo-mobile',    // Public client — không có secret
+  redirectUrl: 'com.nihongocli://oauth/callback',
+  scopes: ['openid', 'profile', 'email'],
+  serviceConfiguration: {
+    authorizationEndpoint: '...../auth',
+    tokenEndpoint: '...../token',
+  },
+};
+
+export function useKeycloakOidc() {
+  const signIn = async () => {
+    // react-native-app-auth tự sinh code_verifier + code_challenge
+    const result = await authorize(keycloakConfig);
+
+    // Gửi lên backend để exchange lấy app JWT
+    const data = await authApi.loginWithKeycloak(
+      result.authorizationCode!,
+      result.codeVerifier!,
+      'com.nihongocli://oauth/callback',
+    );
+    loginWithOAuth(data);
+  };
+}
+```
+
+---
+
+### 18.4 Setup Keycloak Public Client
+
+Trong Keycloak Admin → Clients → Create:
+- **Client type:** Public (không có client_secret — mobile không giữ secret an toàn được)
+- **Standard flow:** ON (Authorization Code)
+- **Direct access grants:** OFF (password grant — không dùng trên mobile)
+- **Valid redirect URIs:** `com.nihongocli://oauth/callback`
+- **PKCE:** Bắt buộc bằng Authentication Flow settings
+
+---
+
+### 18.5 Android Setup
+
+`android/app/build.gradle`:
+```gradle
+manifestPlaceholders = [appAuthRedirectScheme: "com.nihongocli"]
+```
+
+`google-services.json` → `android/app/` (từ Firebase / Google Cloud Console).
+
+---
+
+### 18.6 iOS Setup
+
+`Info.plist`:
+```xml
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleURLSchemes</key>
+    <array><string>com.nihongocli</string></array>
+  </dict>
+</array>
+```
+
+`AppDelegate.mm`:
+```objc
+#import <RNGoogleSignin/RNGoogleSignin.h>
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary *)options {
+  return [RNGoogleSignin application:app openURL:url options:options];
+}
+```
+
+---
+
+### 18.7 Token Storage — MMKV vs AsyncStorage
+
+| | AsyncStorage | MMKV |
+|--|--|--|
+| Encryption | ❌ Plain text | ✅ AES-128 (Keychain/Keystore) |
+| Performance | Async JS bridge | Sync native |
+| OWASP M1 | ❌ Fail | ✅ Pass |
+| Dùng cho token | ❌ Không bao giờ | ✅ Luôn dùng |
+
+```typescript
+// Đúng — MMKV encrypt native
+const storage = new MMKV({ id: 'auth-store' });
+```
+
+---
+
+## 19. Expo — Kinh nghiệm thực tế
+
+### Q: Bạn có kinh nghiệm với Expo không? So với CLI thì khác gì?
+
+---
+
+### 19.1 Ba workflow của Expo
+
+```
+Expo Managed      →  Expo Bare      →  React Native CLI
+(full managed)       (eject ra)         (full control)
+```
+
+| | Managed | Bare | CLI |
+|--|--|--|--|
+| Native code | Ẩn | Mở | Mở |
+| EAS Build | ✅ | ✅ | Dùng Fastlane |
+| EAS Update (OTA) | ✅ | ✅ | CodePush |
+| Custom native module | ❌ | ✅ | ✅ |
+| BLE / USB | ❌ | ✅ | ✅ |
+| Expo SDK | Đầy đủ | Một phần | Không |
+| Setup time | Nhanh | Trung bình | Chậm |
+
+---
+
+### 19.2 Expo Router vs React Navigation
+
+**React Navigation** (dùng trong nihongo-cli):
+```typescript
+const Stack = createNativeStackNavigator<RootStackParamList>();
+// File-based: không — phải khai báo thủ công từng screen
+```
+
+**Expo Router** (file-based routing như Next.js):
+```
+app/
+  _layout.tsx       ← Root layout + Stack/Tab config
+  index.tsx         ← Route "/"
+  vocab/
+    index.tsx       ← Route "/vocab"
+    [id].tsx        ← Route "/vocab/123" (dynamic)
+  (tabs)/
+    _layout.tsx     ← Tab navigator
+    home.tsx
+    review.tsx
+```
+
+```typescript
+// app/vocab/[id].tsx
+import { useLocalSearchParams } from 'expo-router';
+
+export default function VocabDetail() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  return <Text>Vocab #{id}</Text>;
+}
+```
+
+**Ưu điểm Expo Router:** Deep linking tự động, SEO (web), type-safe params, không cần khai báo screen thủ công.
+
+---
+
+### 19.3 EAS Build — Build cloud không cần Mac
+
+```bash
+# Cài
+npm install -g eas-cli
+eas login
+
+# Config (tạo eas.json)
+eas build:configure
+
+# Build Android (không cần Android Studio local)
+eas build --platform android --profile preview
+
+# Build iOS (không cần Mac — EAS dùng Mac server của Expo)
+eas build --platform ios --profile production
+```
+
+`eas.json`:
+```json
+{
+  "build": {
+    "preview": {
+      "android": { "buildType": "apk" }
+    },
+    "production": {
+      "ios": { "simulator": false },
+      "android": { "buildType": "app-bundle" }
+    }
+  }
+}
+```
+
+---
+
+### 19.4 EAS Update — OTA không qua store
+
+```bash
+# Push update JS bundle lên cloud (không cần release lên store)
+eas update --branch production --message "fix vocab display bug"
+```
+
+**App tự nhận update:**
+```typescript
+import * as Updates from 'expo-updates';
+
+async function checkUpdate() {
+  const update = await Updates.checkForUpdateAsync();
+  if (update.isAvailable) {
+    await Updates.fetchUpdateAsync();
+    await Updates.reloadAsync(); // restart app với bundle mới
+  }
+}
+```
+
+**Giới hạn OTA:** Chỉ update JS bundle + assets. Không update native code (thêm thư viện native, config native) → vẫn cần release lên store.
+
+---
+
+### 19.5 Khi nào chọn Expo, khi nào chọn CLI?
+
+**Expo Managed / Bare khi:**
+- Team nhỏ, ship nhanh, không có native dev
+- Cần OTA update thường xuyên (hotfix)
+- App không cần BLE, USB, camera custom pipeline
+- Muốn build iOS mà không có Mac (EAS Build)
+- Internal tools, B2B apps
+
+**React Native CLI khi:**
+- Cần native module đặc biệt (BLE trong nihongo-cli ICUCO, USB, NFC)
+- Cần background service thực sự (foreground service Android)
+- Team có iOS/Android native developer
+- App IoT, hardware integration
+- Cần tối ưu build config chi tiết (custom Gradle tasks, CocoaPods)
+
+**Trong project này:**
+- `nihongo-cli` → **CLI** vì demo native integration (SQLite native, MMKV native, react-native-app-auth)
+- Nếu rebuild cho production nhanh → **Expo Bare** + EAS: giữ nguyên code, thêm EAS tooling
+
+---
+
 ## Tài liệu liên quan
 
 | File | Nội dung |
@@ -1809,3 +2126,4 @@ Tuần 8:    Amplify + Cognito (optional)
 | [interview-questions.md](./interview-questions.md) | Câu hỏi phỏng vấn backend |
 | [interview-devops.md](./interview-devops.md) | Câu hỏi DevOps / infra |
 | [system-design.md](./system-design.md) | Kiến trúc EDU App |
+| [security-owasp-mobile.md](./security-owasp-mobile.md) | OWASP Mobile Top 10 + thực tế trong app |
