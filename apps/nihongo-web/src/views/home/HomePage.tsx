@@ -2,6 +2,7 @@
 
 import { useHomePageQuery } from '../../hooks/queries';
 import HomeFeatureSection from './HomeFeatureSection';
+import HomeGoalBanner from './HomeGoalBanner';
 import HomeHero from './HomeHero';
 import HomeSrsWidget from './HomeSrsWidget';
 import HomeStats from './HomeStats';
@@ -15,6 +16,8 @@ export default function HomePage() {
   return (
     <div className="home-page">
       <HomeHero />
+
+      <HomeGoalBanner />
 
       {/* SRS due today + Word of the day — nằm dưới hero, trên stats */}
       <div className="home-widgets">

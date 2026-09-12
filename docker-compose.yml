@@ -33,6 +33,8 @@ services:
     image: confluentinc/cp-zookeeper:7.6.1
     container_name: edu-zookeeper
     restart: unless-stopped
+    ports:
+      - '2181:2181'
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -115,6 +117,8 @@ services:
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD:-keycloak}
       POSTGRES_DB: keycloak
+    ports:
+      - '5435:5432'
     volumes:
       - postgres_keycloak_data:/var/lib/postgresql/data
     healthcheck:
@@ -128,6 +132,8 @@ services:
     container_name: edu-keycloak
     restart: unless-stopped
     command: ['start-dev', '--import-realm']
+    ports:
+      - '8081:8080'
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak
@@ -158,6 +164,8 @@ services:
       dockerfile: services/content-service/Dockerfile
     container_name: edu-content
     restart: unless-stopped
+    ports:
+      - '50051:50051'
     environment:
       DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres-nihongo:5432/nihongo
       REDIS_URL: redis://redis:6379
@@ -176,6 +184,8 @@ services:
       dockerfile: services/exam-service/Dockerfile
     container_name: edu-exam
     restart: unless-stopped
+    ports:
+      - '50052:50052'
     environment:
       DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres-nihongo:5432/nihongo
       REDIS_URL: redis://redis:6379
@@ -294,6 +304,8 @@ services:
         NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-}
     container_name: edu-nihongo-web
     restart: unless-stopped
+    ports:
+      - '5173:5173'
     environment:
       API_URL: http://api-gateway:3000
       ENGLISH_APP_INTERNAL_URL: http://english-web:3001
@@ -315,6 +327,8 @@ services:
         KEYCLOAK_CLIENT_ID: ${NEXT_PUBLIC_KEYCLOAK_ANGULAR_CLIENT_ID:-nihongo-angular}
     container_name: edu-nihongo-angular
     restart: unless-stopped
+    ports:
+      - '5174:80'
     depends_on:
       - api-gateway
 
@@ -325,6 +339,8 @@ services:
       dockerfile: apps/english-web/Dockerfile
     container_name: edu-english-web
     restart: unless-stopped
+    ports:
+      - '3001:3001'
     environment:
       API_URL: http://api-gateway:3000
       NEXT_PUBLIC_NIHONGO_APP_URL: ${NEXT_PUBLIC_NIHONGO_APP_URL:-http://nihongo.localhost:8080}

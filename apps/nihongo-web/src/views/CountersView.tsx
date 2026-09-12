@@ -1,15 +1,64 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { playAudio } from '../utils/speech';
 import PlayAllButton from '../components/PlayAllButton';
 import { usePlayAll } from '../hooks/usePlayAll';
 import { useJapaneseCountersQuery } from '../hooks/queries';
+import StrokeOrder from '../components/StrokeOrder';
 import type { CounterItem } from '../types/reference';
 import { counterHintBullets } from '../utils/counter-hint';
 import { buildCounterSentenceQuestions } from '../utils/counterSentences';
 import './CountersView.css';
 import './DrillView.css';
+
+function CounterPopup({
+  item,
+  onClose,
+}: {
+  item: CounterItem;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  const strokeText = item.kanji || item.kana;
+
+  return (
+    <div className="counter-popup-overlay" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="counter-popup" onClick={(e) => e.stopPropagation()}>
+        <button type="button" className="counter-popup-close" onClick={onClose} aria-label="Đóng">✕</button>
+
+        <div className="counter-popup-header">
+          {item.kanji && <span className="counter-popup-kanji japanese-text">{item.kanji}</span>}
+          <div className="counter-popup-meta">
+            <span className="counter-popup-num">{item.n}</span>
+            <span className="counter-popup-kana japanese-text">{item.kana}</span>
+            <span className="counter-popup-romaji">{item.romaji}</span>
+          </div>
+        </div>
+
+        <div className="counter-popup-stroke">
+          <StrokeOrder text={strokeText} width={200} height={200} />
+          <p className="counter-popup-stroke-hint">Nhấn vào chữ để xem lại nét</p>
+        </div>
+
+        <p className="counter-popup-vi">{item.vi}</p>
+
+        <button
+          type="button"
+          className="btn btn-outline counter-popup-audio"
+          onClick={() => playAudio(item.kana)}
+        >
+          🔊 Nghe đọc
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function CountersView() {
   const { data, isLoading } = useJapaneseCountersQuery();
@@ -20,6 +69,19 @@ export default function CountersView() {
   const [picked, setPicked] = useState<string | null>(null);
   const [score, setScore] = useState({ ok: 0, n: 0 });
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
+
+  const [popupItem, setPopupItem] = useState<CounterItem | null>(null);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  function handleCopyItem(e: React.MouseEvent, item: CounterItem) {
+    e.stopPropagation();
+    const key = `${item.n}-${item.kana}`;
+    const parts = [item.kanji, item.kana, item.romaji, item.vi].filter(Boolean);
+    void navigator.clipboard.writeText(parts.join('\t')).then(() => {
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey((k) => (k === key ? null : k)), 1500);
+    });
+  }
 
   const resolvedActiveId = activeId || counterCategories[0]?.id || '';
   const category =
@@ -113,38 +175,66 @@ export default function CountersView() {
         </div>
 
         <div className="counters-grid">
-          {(category.items as CounterItem[]).map((item) => (
-            <div
-              key={`${category.id}-${item.n}-${item.kana}`}
-              className="counter-card"
-              role="button"
-              tabIndex={0}
-              onClick={() => playAudio(item.kana)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  playAudio(item.kana);
-                }
-              }}
-            >
-              <span className="counter-num">{item.n}</span>
-              <button
-                type="button"
-                className="counter-audio-btn"
-                title="Nghe phát âm"
-                aria-label="Nghe phát âm"
-                onClick={(e) => playItem(item.kana, e)}
+          {(category.items as CounterItem[]).map((item) => {
+            const itemKey = `${item.n}-${item.kana}`;
+            const isCopied = copiedKey === itemKey;
+            return (
+              <div
+                key={`${category.id}-${itemKey}`}
+                className="counter-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => playAudio(item.kana)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    playAudio(item.kana);
+                  }
+                }}
               >
-                🔊
-              </button>
-              {item.kanji ? (
-                <span className="counter-kanji japanese-text">{item.kanji}</span>
-              ) : null}
-              <span className="counter-kana japanese-text">{item.kana}</span>
-              <span className="counter-romaji">{item.romaji}</span>
-              <span className="counter-vi">{item.vi}</span>
-            </div>
-          ))}
+                <span className="counter-num">{item.n}</span>
+                <button
+                  type="button"
+                  className="counter-audio-btn"
+                  title="Nghe phát âm"
+                  aria-label="Nghe phát âm"
+                  onClick={(e) => playItem(item.kana, e)}
+                >
+                  🔊
+                </button>
+                {item.kanji ? (
+                  <button
+                    type="button"
+                    className="counter-kanji counter-kanji--btn japanese-text"
+                    title="Xem nét viết"
+                    onClick={(e) => { e.stopPropagation(); setPopupItem(item); }}
+                  >
+                    {item.kanji}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="counter-kana counter-kana--btn japanese-text"
+                    title="Xem nét viết"
+                    onClick={(e) => { e.stopPropagation(); setPopupItem(item); }}
+                  >
+                    {item.kana}
+                  </button>
+                )}
+                {item.kanji && <span className="counter-kana japanese-text">{item.kana}</span>}
+                <span className="counter-romaji">{item.romaji}</span>
+                <span className="counter-vi">{item.vi}</span>
+                <button
+                  type="button"
+                  className={`counter-copy-btn${isCopied ? ' counter-copy-btn--copied' : ''}`}
+                  title={isCopied ? 'Đã copy!' : 'Sao chép'}
+                  onClick={(e) => handleCopyItem(e, item)}
+                >
+                  {isCopied ? '✓' : '📋'}
+                </button>
+              </div>
+            );
+          })}
         </div>
 
         <div className="counters-play-bottom">
@@ -217,6 +307,10 @@ export default function CountersView() {
             </>
           )}
         </div>
+      )}
+
+      {popupItem && (
+        <CounterPopup item={popupItem} onClose={() => setPopupItem(null)} />
       )}
     </div>
   );

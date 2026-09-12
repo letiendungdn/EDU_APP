@@ -31,9 +31,11 @@ Login qua nút Keycloak trên `/login` (web + mobile đều dùng được):
 |----|--------------------|-----------------|----------|
 | PostgreSQL Nihongo | `localhost:5433` | `nihongo` / `nihongo` | `nihongo` |
 | PostgreSQL English | `localhost:5434` | `english` / `english` | `english_learning` |
-| PostgreSQL Keycloak | (nội bộ Docker) | `keycloak` / `keycloak` | `keycloak` |
+| PostgreSQL Keycloak | `localhost:5435` | `keycloak` / `keycloak` | `keycloak` |
 | MongoDB (audit log) | `localhost:27017` | *không auth* | `nihongo_audit` |
 | Redis | `localhost:6379` | *không auth* | — |
+
+Hướng dẫn **pgAdmin / Redis Insight / Compass**: [dev-tools-connect.md](./dev-tools-connect.md).
 
 Kết nối nhanh:
 

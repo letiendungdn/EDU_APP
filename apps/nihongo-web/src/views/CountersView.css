@@ -286,3 +286,212 @@
 [data-theme="light"] .counter-vi {
   color: #4b5563;
 }
+
+/* ── Kanji/kana as clickable stroke-order trigger ── */
+.counter-kanji--btn,
+.counter-kana--btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.12s;
+}
+
+.counter-kanji--btn {
+  font-size: 2.35rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-top: 0.15rem;
+  color: #1c1917;
+}
+
+.counter-kana--btn {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.counter-kanji--btn:hover,
+.counter-kana--btn:hover {
+  color: #3b82f6;
+}
+
+[data-theme="light"] .counter-kanji--btn { color: #1c1917; }
+[data-theme="light"] .counter-kana--btn  { color: #374151; }
+[data-theme="dark"]  .counter-kanji--btn { color: #f1f5f9; }
+[data-theme="dark"]  .counter-kana--btn  { color: #e2e8f0; }
+
+/* ── Copy button (bottom-left of card) ── */
+.counter-copy-btn {
+  position: absolute;
+  bottom: 0.45rem;
+  left: 0.45rem;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.counter-card:hover .counter-copy-btn,
+.counter-copy-btn--copied {
+  opacity: 1;
+}
+
+.counter-copy-btn:hover {
+  border-color: rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.04);
+}
+
+.counter-copy-btn--copied {
+  color: #22c55e !important;
+  border-color: #22c55e !important;
+}
+
+/* ── Counter Popup Modal ── */
+.counter-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.15s ease;
+}
+
+.counter-popup {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 18px;
+  padding: 1.75rem 1.5rem 1.5rem;
+  max-width: 340px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  animation: slideUp 0.18s ease;
+}
+
+.counter-popup-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  line-height: 1;
+  transition: color 0.12s;
+}
+
+.counter-popup-close:hover { color: #374151; }
+
+.counter-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.counter-popup-kanji {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #111827;
+  flex-shrink: 0;
+}
+
+.counter-popup-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.counter-popup-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.counter-popup-kana {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.counter-popup-romaji {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.counter-popup-stroke {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  width: 100%;
+}
+
+.counter-popup-stroke-hint {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.counter-popup-vi {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  text-align: center;
+  margin: 0;
+}
+
+.counter-popup-audio {
+  width: 100%;
+  justify-content: center;
+}
+
+[data-theme="dark"] .counter-popup {
+  background: var(--surface-color);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .counter-popup-kanji { color: var(--text-primary); }
+[data-theme="dark"] .counter-popup-kana  { color: var(--text-primary); }
+[data-theme="dark"] .counter-popup-vi    { color: var(--text-primary); }
+[data-theme="dark"] .counter-popup-close { color: var(--text-secondary); }
+[data-theme="dark"] .counter-popup-close:hover { color: var(--text-primary); }
+[data-theme="dark"] .counter-popup-stroke {
+  background: rgba(255,255,255,0.04);
+  border-color: var(--border-color);
+}
+
+@media (max-width: 480px) {
+  .counter-popup { padding: 1.25rem 1rem 1rem; }
+  .counter-popup-kanji { font-size: 2.75rem; }
+}

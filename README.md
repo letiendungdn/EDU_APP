@@ -235,6 +235,8 @@ npm test -- --coverage -w @edu/nihongo-services
 
 | File | Nội dung |
 |------|----------|
+| [docs/accounts.md](docs/accounts.md) | Tài khoản dev (app, Keycloak, DB) |
+| [docs/dev-tools-connect.md](docs/dev-tools-connect.md) | pgAdmin / Redis Insight / Mongo / port map |
 | [docs/system-design.md](docs/system-design.md) | Kiến trúc, request flows, auth |
 | [docs/db-design.md](docs/db-design.md) | ER diagrams, schema reference, backup |
 | [docs/run-local.md](docs/run-local.md) | Hướng dẫn chạy local từng bước |
