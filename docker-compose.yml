@@ -212,6 +212,8 @@ services:
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080,http://nihongo.localhost:8080,http://nihongo-angular.localhost:8080,http://auth.localhost:8080,http://english.localhost:8080,http://localhost:5173,http://localhost:5174,http://localhost:3001}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@nihongo.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
       BREVO_API_KEY: ${BREVO_API_KEY:-}
       MAIL_FROM_EMAIL: ${MAIL_FROM_EMAIL:-noreply@nihongo.local}
       MAIL_FROM_NAME: ${MAIL_FROM_NAME:-Nihongo EDU}
@@ -288,6 +290,8 @@ services:
         NEXT_PUBLIC_KEYCLOAK_URL: ${NEXT_PUBLIC_KEYCLOAK_URL:-http://auth.localhost:8080}
         NEXT_PUBLIC_KEYCLOAK_REALM: ${NEXT_PUBLIC_KEYCLOAK_REALM:-edu-app}
         NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: ${NEXT_PUBLIC_KEYCLOAK_CLIENT_ID:-nihongo-web}
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-}
+        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-}
     container_name: edu-nihongo-web
     restart: unless-stopped
     environment:
