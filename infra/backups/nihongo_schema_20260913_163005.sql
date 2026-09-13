@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict MBkzrOf4QhXAf8ETGkYFtMoLthguoCCPTum3EwnwJnMLS9iuIm7wIFeFEdPX86o
+\restrict tIKD59d38Jc922H2Gbe3OZV7JuBQTN5GYLodj55YvzLTTejqn3AOtbEEMek18sY
 
 -- Dumped from database version 16.14
 -- Dumped by pg_dump version 16.14
@@ -948,6 +948,44 @@ ALTER SEQUENCE public."CountryRegion_id_seq" OWNER TO nihongo;
 --
 
 ALTER SEQUENCE public."CountryRegion_id_seq" OWNED BY public."CountryRegion".id;
+
+
+--
+-- Name: DailyActivity; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."DailyActivity" (
+    id integer NOT NULL,
+    "userId" integer NOT NULL,
+    date text NOT NULL,
+    kind text NOT NULL,
+    count integer DEFAULT 1 NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."DailyActivity" OWNER TO nihongo;
+
+--
+-- Name: DailyActivity_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."DailyActivity_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."DailyActivity_id_seq" OWNER TO nihongo;
+
+--
+-- Name: DailyActivity_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."DailyActivity_id_seq" OWNED BY public."DailyActivity".id;
 
 
 --
@@ -4240,6 +4278,13 @@ ALTER TABLE ONLY public."CountryRegion" ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
+-- Name: DailyActivity id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."DailyActivity" ALTER COLUMN id SET DEFAULT nextval('public."DailyActivity_id_seq"'::regclass);
+
+
+--
 -- Name: DailyGoal id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -4892,6 +4937,14 @@ ALTER TABLE ONLY public."CountryNameItem"
 
 ALTER TABLE ONLY public."CountryRegion"
     ADD CONSTRAINT "CountryRegion_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: DailyActivity DailyActivity_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."DailyActivity"
+    ADD CONSTRAINT "DailyActivity_pkey" PRIMARY KEY (id);
 
 
 --
@@ -5791,6 +5844,20 @@ CREATE UNIQUE INDEX "CountryRegion_slug_key" ON public."CountryRegion" USING btr
 --
 
 CREATE INDEX "CountryRegion_sortOrder_idx" ON public."CountryRegion" USING btree ("sortOrder");
+
+
+--
+-- Name: DailyActivity_userId_date_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "DailyActivity_userId_date_idx" ON public."DailyActivity" USING btree ("userId", date);
+
+
+--
+-- Name: DailyActivity_userId_date_kind_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "DailyActivity_userId_date_kind_key" ON public."DailyActivity" USING btree ("userId", date, kind);
 
 
 --
@@ -6804,6 +6871,14 @@ ALTER TABLE ONLY public."CountryNameItem"
 
 
 --
+-- Name: DailyActivity DailyActivity_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."DailyActivity"
+    ADD CONSTRAINT "DailyActivity_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: DailyGoalItem DailyGoalItem_goalId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -7271,5 +7346,5 @@ ALTER TABLE ONLY public."Vocabulary"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict MBkzrOf4QhXAf8ETGkYFtMoLthguoCCPTum3EwnwJnMLS9iuIm7wIFeFEdPX86o
+\unrestrict tIKD59d38Jc922H2Gbe3OZV7JuBQTN5GYLodj55YvzLTTejqn3AOtbEEMek18sY
 
