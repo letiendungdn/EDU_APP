@@ -15,9 +15,19 @@ export interface ListeningPlaylistItem {
 export class ListeningService {
   constructor(private prisma: PrismaService) {}
 
-  async getPlaylist(lessonFrom: number, lessonTo: number, limit = 120) {
+  async getPlaylist(
+    lessonFrom: number,
+    lessonTo: number,
+    limit = 120,
+    jlptLevel?: "N5" | "N4" | "N3" | "N2" | "N1",
+  ) {
+    // Lesson.lessonNumber không còn là dải độc quyền theo cấp (nội dung JLPT
+    // "boost/expand" nằm ở nhiều dải số khác nhau, có thể chồng lấn giữa các
+    // cấp) — khi biết jlptLevel, lọc theo field đó đáng tin cậy hơn range.
     const lessons = await this.prisma.lesson.findMany({
-      where: { lessonNumber: { gte: lessonFrom, lte: lessonTo } },
+      where: jlptLevel
+        ? { jlptLevel }
+        : { lessonNumber: { gte: lessonFrom, lte: lessonTo } },
       select: { id: true, lessonNumber: true },
       orderBy: { lessonNumber: "asc" },
     });

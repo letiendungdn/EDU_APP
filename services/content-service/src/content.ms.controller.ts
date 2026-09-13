@@ -52,7 +52,9 @@ export class ContentMsController implements OnModuleInit {
   onModuleInit() {
     this.routes = {
       [CONTENT_PATTERNS.GET_LESSONS]: (data) =>
-        this.getLessons(data as { has?: "grammar" | "vocab" }),
+        this.getLessons(
+          data as { has?: "grammar" | "vocab"; jlptLevel?: string; query?: string },
+        ),
       [CONTENT_PATTERNS.GET_LESSON]: (data) =>
         this.getLesson(data as { lessonNumber: number }),
       [CONTENT_PATTERNS.CREATE_LESSON]: (dto) =>
@@ -63,7 +65,13 @@ export class ContentMsController implements OnModuleInit {
         this.deleteLesson(data as { id: number }),
       [CONTENT_PATTERNS.GET_VOCABULARIES]: (data) =>
         this.getVocabularies(
-          data as { lessonNumber?: number; page?: number; limit?: number },
+          data as {
+            lessonNumber?: number;
+            page?: number;
+            limit?: number;
+            jlptLevel?: string;
+            query?: string;
+          },
         ),
       [CONTENT_PATTERNS.GET_VOCABULARY]: (data) =>
         this.getVocabulary(data as { id: number }),
@@ -79,7 +87,13 @@ export class ContentMsController implements OnModuleInit {
         ),
       [CONTENT_PATTERNS.GET_GRAMMARS]: (data) =>
         this.getGrammars(
-          data as { lessonNumber?: number; page?: number; limit?: number },
+          data as {
+            lessonNumber?: number;
+            page?: number;
+            limit?: number;
+            jlptLevel?: string;
+            query?: string;
+          },
         ),
       [CONTENT_PATTERNS.GET_GRAMMAR]: (data) =>
         this.getGrammar(data as { id: number }),
@@ -90,7 +104,15 @@ export class ContentMsController implements OnModuleInit {
       [CONTENT_PATTERNS.DELETE_GRAMMAR]: (data) =>
         this.deleteGrammar(data as { id: number }),
       [CONTENT_PATTERNS.GET_EXERCISES]: (data) =>
-        this.getExercises(data as { lessonNumber?: number }),
+        this.getExercises(
+          data as {
+            lessonNumber?: number;
+            jlptLevel?: string;
+            query?: string;
+            page?: number;
+            limit?: number;
+          },
+        ),
       [CONTENT_PATTERNS.GET_EXERCISE]: (data) =>
         this.getExercise(data as { id: number }),
       [CONTENT_PATTERNS.CREATE_EXERCISE]: (dto) =>
@@ -100,6 +122,29 @@ export class ContentMsController implements OnModuleInit {
       [CONTENT_PATTERNS.DELETE_EXERCISE]: (data) =>
         this.deleteExercise(data as { id: number }),
       [CONTENT_PATTERNS.GET_KANJI_LESSONS]: () => this.getKanjiLessons(),
+      [CONTENT_PATTERNS.CREATE_KANJI_LESSON]: (dto) =>
+        this.createKanjiLesson(
+          dto as {
+            lessonNumber: number;
+            title?: string;
+            jlptLevel?: string;
+            sortOrder?: number;
+          },
+        ),
+      [CONTENT_PATTERNS.UPDATE_KANJI_LESSON]: (data) =>
+        this.updateKanjiLesson(
+          data as {
+            id: number;
+            dto: {
+              lessonNumber?: number;
+              title?: string;
+              jlptLevel?: string;
+              sortOrder?: number;
+            };
+          },
+        ),
+      [CONTENT_PATTERNS.DELETE_KANJI_LESSON]: (data) =>
+        this.deleteKanjiLesson(data as { id: number }),
       [CONTENT_PATTERNS.GET_KANJI_ENTRIES]: (data) =>
         this.getKanjiEntries(
           data as { lessonNumber?: number; query?: string; jlptLevel?: string },
@@ -126,7 +171,12 @@ export class ContentMsController implements OnModuleInit {
         ),
       [CONTENT_PATTERNS.GET_LISTENING_PLAYLIST]: (data) =>
         this.getListeningPlaylist(
-          data as { lessonFrom: number; lessonTo: number; limit: number },
+          data as {
+            lessonFrom: number;
+            lessonTo: number;
+            limit: number;
+            jlptLevel?: "N5" | "N4" | "N3" | "N2" | "N1";
+          },
         ),
       [CONTENT_PATTERNS.IMPORT_VOCAB]: (data) =>
         this.importVocab(data as { lessonNumber: number; text: string }),
@@ -164,6 +214,45 @@ export class ContentMsController implements OnModuleInit {
             userId?: number;
           },
         ),
+      [CONTENT_PATTERNS.CREATE_READING_PASSAGE]: (dto) =>
+        this.createReadingPassage(
+          dto as {
+            title: string;
+            content: string;
+            jlptLevel?: string;
+            source?: string;
+            estimatedMin?: number;
+            sortOrder?: number;
+            questions?: {
+              question: string;
+              answer: string;
+              explanation?: string;
+              options: string[];
+            }[];
+          },
+        ),
+      [CONTENT_PATTERNS.UPDATE_READING_PASSAGE]: (data) =>
+        this.updateReadingPassage(
+          data as {
+            id: number;
+            dto: {
+              title?: string;
+              content?: string;
+              jlptLevel?: string;
+              source?: string;
+              estimatedMin?: number;
+              sortOrder?: number;
+              questions?: {
+                question: string;
+                answer: string;
+                explanation?: string;
+                options: string[];
+              }[];
+            };
+          },
+        ),
+      [CONTENT_PATTERNS.DELETE_READING_PASSAGE]: (data) =>
+        this.deleteReadingPassage(data as { id: number }),
     };
   }
 
@@ -172,7 +261,11 @@ export class ContentMsController implements OnModuleInit {
     return handleGrpcDispatch(this.routes, data);
   }
 
-  getLessons(data?: { has?: "grammar" | "vocab" }) {
+  getLessons(data?: {
+    has?: "grammar" | "vocab";
+    jlptLevel?: string;
+    query?: string;
+  }) {
     return this.lessonsService.findAll(data);
   }
 
@@ -196,11 +289,15 @@ export class ContentMsController implements OnModuleInit {
     lessonNumber?: number;
     page?: number;
     limit?: number;
+    jlptLevel?: string;
+    query?: string;
   }) {
     return this.vocabulariesService.findAll(
       data.lessonNumber,
       data.page,
       data.limit,
+      data.jlptLevel,
+      data.query,
     );
   }
 
@@ -224,11 +321,19 @@ export class ContentMsController implements OnModuleInit {
     return this.vocabulariesService.reorder(data.lessonId, data.orderedIds);
   }
 
-  getGrammars(data: { lessonNumber?: number; page?: number; limit?: number }) {
+  getGrammars(data: {
+    lessonNumber?: number;
+    page?: number;
+    limit?: number;
+    jlptLevel?: string;
+    query?: string;
+  }) {
     return this.grammarsService.findAll(
       data.lessonNumber,
       data.page,
       data.limit,
+      data.jlptLevel,
+      data.query,
     );
   }
 
@@ -248,8 +353,14 @@ export class ContentMsController implements OnModuleInit {
     return this.grammarsService.remove(data.id);
   }
 
-  getExercises(data: { lessonNumber?: number }) {
-    return this.exercisesService.findAll(data.lessonNumber);
+  getExercises(data: {
+    lessonNumber?: number;
+    jlptLevel?: string;
+    query?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    return this.exercisesService.findAll(data);
   }
 
   getExercise(data: { id: number }) {
@@ -270,6 +381,31 @@ export class ContentMsController implements OnModuleInit {
 
   getKanjiLessons() {
     return this.kanjiService.findAllLessons();
+  }
+
+  createKanjiLesson(dto: {
+    lessonNumber: number;
+    title?: string;
+    jlptLevel?: string;
+    sortOrder?: number;
+  }) {
+    return this.kanjiService.createLesson(dto);
+  }
+
+  updateKanjiLesson(data: {
+    id: number;
+    dto: {
+      lessonNumber?: number;
+      title?: string;
+      jlptLevel?: string;
+      sortOrder?: number;
+    };
+  }) {
+    return this.kanjiService.updateLesson(data.id, data.dto);
+  }
+
+  deleteKanjiLesson(data: { id: number }) {
+    return this.kanjiService.removeLesson(data.id);
   }
 
   getKanjiEntries(data: {
@@ -320,11 +456,13 @@ export class ContentMsController implements OnModuleInit {
     lessonFrom: number;
     lessonTo: number;
     limit: number;
+    jlptLevel?: "N5" | "N4" | "N3" | "N2" | "N1";
   }) {
     return this.listeningService.getPlaylist(
       data.lessonFrom,
       data.lessonTo,
       data.limit,
+      data.jlptLevel,
     );
   }
 
@@ -390,5 +528,46 @@ export class ContentMsController implements OnModuleInit {
       data.answers,
       data.userId,
     );
+  }
+
+  createReadingPassage(dto: {
+    title: string;
+    content: string;
+    jlptLevel?: string;
+    source?: string;
+    estimatedMin?: number;
+    sortOrder?: number;
+    questions?: {
+      question: string;
+      answer: string;
+      explanation?: string;
+      options: string[];
+    }[];
+  }) {
+    return this.readingService.create(dto);
+  }
+
+  updateReadingPassage(data: {
+    id: number;
+    dto: {
+      title?: string;
+      content?: string;
+      jlptLevel?: string;
+      source?: string;
+      estimatedMin?: number;
+      sortOrder?: number;
+      questions?: {
+        question: string;
+        answer: string;
+        explanation?: string;
+        options: string[];
+      }[];
+    };
+  }) {
+    return this.readingService.update(data.id, data.dto);
+  }
+
+  deleteReadingPassage(data: { id: number }) {
+    return this.readingService.remove(data.id);
   }
 }

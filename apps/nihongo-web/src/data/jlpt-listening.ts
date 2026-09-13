@@ -1,8 +1,10 @@
 export type JlptListeningType = 'sokuji' | 'kadai' | 'point' | 'hatsua';
+export type JlptListeningLevel = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 
 export type JlptListeningItem = {
   type: JlptListeningType;
   typeLabel: string;
+  jlptLevel: JlptListeningLevel;
   promptJa: string;
   promptVi: string;
   options: string[];
@@ -20,6 +22,7 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'sokuji',
     typeLabel: '即時応答',
+    jlptLevel: 'N5',
     promptJa: 'いらっしゃいませ。',
     promptVi: 'Nhân viên cửa hàng chào bạn.',
     options: ['こんにちは。', 'いただきます。', 'おやすみなさい。', 'ただいま。'],
@@ -28,6 +31,7 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'sokuji',
     typeLabel: '即時応答',
+    jlptLevel: 'N5',
     promptJa: 'お名前は？',
     promptVi: 'Người kia hỏi tên bạn.',
     options: ['リンです。', 'どうぞ。', 'すみません。', 'はい、そうです。'],
@@ -36,6 +40,7 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'sokuji',
     typeLabel: '即時応答',
+    jlptLevel: 'N5',
     promptJa: '今、何時ですか。',
     promptVi: 'Người kia hỏi mấy giờ.',
     options: ['三時です。', 'はい、そうです。', 'どうぞ。', 'はじめまして。'],
@@ -44,6 +49,7 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'sokuji',
     typeLabel: '即時応答',
+    jlptLevel: 'N5',
     promptJa: 'お茶、いかがですか。',
     promptVi: 'Người kia mời trà.',
     options: ['はい、いただきます。', 'はじめまして。', '行ってきます。', 'お大事に。'],
@@ -52,6 +58,7 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'kadai',
     typeLabel: '課題理解',
+    jlptLevel: 'N5',
     promptJa: '駅へ行きたいです。どうしますか。',
     promptVi: 'Bạn muốn đến ga. Nên làm gì?',
     options: ['地図を見ます。', 'ご飯を食べます。', '本を借ります。', '手紙を書きます。'],
@@ -60,6 +67,7 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'kadai',
     typeLabel: '課題理解',
+    jlptLevel: 'N5',
     promptJa: '頭が痛いです。どうしますか。',
     promptVi: 'Bạn bị đau đầu. Nên làm gì?',
     options: ['薬を飲みます。', '映画を見ます。', '泳ぎます。', '歌を歌います。'],
@@ -68,6 +76,7 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'kadai',
     typeLabel: '課題理解',
+    jlptLevel: 'N5',
     promptJa: '明日テストがあります。どうしますか。',
     promptVi: 'Mai có kiểm tra. Nên làm gì?',
     options: ['勉強します。', '旅行します。', '寝坊します。', '買い物しません。'],
@@ -76,6 +85,7 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'point',
     typeLabel: 'ポイント理解',
+    jlptLevel: 'N5',
     promptJa: '男：明日は何時に会いましょうか。女：十時はどうですか。男：はい、じゃあ駅で。',
     promptVi: 'Họ sẽ gặp nhau khi nào, ở đâu?',
     options: ['明日の十時、駅で', '今日の十時、学校で', '明日の九時、駅で', '明日の十時、うちで'],
@@ -84,6 +94,7 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'point',
     typeLabel: 'ポイント理解',
+    jlptLevel: 'N5',
     promptJa: '女：この本、いくらですか。男：八百円です。女：じゃあ、これをください。',
     promptVi: 'Người phụ nữ làm gì?',
     options: ['本を八百円で買います', '本を借ります', '本を返します', '本を八百円で売ります'],
@@ -92,6 +103,7 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'hatsua',
     typeLabel: '発話表現',
+    jlptLevel: 'N5',
     promptJa: '友達の家へ行きます。何と言いますか。',
     promptVi: 'Đến nhà bạn. Nói gì khi vào?',
     options: ['おじゃまします。', 'いってきます。', 'ただいま。', 'ごちそうさまでした。'],
@@ -100,6 +112,7 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'hatsua',
     typeLabel: '発話表現',
+    jlptLevel: 'N5',
     promptJa: '電車の中で人が足を踏みました。何と言いますか。',
     promptVi: 'Trên tàu có người giẫm chân bạn.',
     options: ['すみません。', 'いただきます。', 'おめでとうございます。', '行ってらっしゃい。'],
@@ -108,9 +121,162 @@ export const JLPT_LISTENING_ITEMS: JlptListeningItem[] = [
   {
     type: 'hatsua',
     typeLabel: '発話表現',
+    jlptLevel: 'N5',
     promptJa: 'お店で水がほしいです。何と言いますか。',
     promptVi: 'Ở quán, bạn muốn nước.',
     options: ['水をください。', '水を貸してください。', '水を捨ててください。', '水を返してください。'],
     answer: '水をください。',
+  },
+
+  // ─────────────────────────────── N4 ───────────────────────────────
+  {
+    type: 'sokuji',
+    typeLabel: '即時応答',
+    jlptLevel: 'N4',
+    promptJa: '手伝ってもらえますか。',
+    promptVi: 'Ai đó hỏi bạn có thể giúp không.',
+    options: ['はい、いいですよ。', 'いってきます。', 'おかげさまで。', 'しつれいします。'],
+    answer: 'はい、いいですよ。',
+  },
+  {
+    type: 'kadai',
+    typeLabel: '課題理解',
+    jlptLevel: 'N4',
+    promptJa: '雨が降りそうです。傘がありません。どうしますか。',
+    promptVi: 'Trời sắp mưa mà không có ô. Nên làm gì?',
+    options: ['コンビニで傘を買います。', '傘を売ります。', '友達に傘をあげます。', '歌を歌います。'],
+    answer: 'コンビニで傘を買います。',
+  },
+  {
+    type: 'point',
+    typeLabel: 'ポイント理解',
+    jlptLevel: 'N4',
+    promptJa: '男：週末、映画を見に行きませんか。女：いいですね。でも土曜日は約束があるので、日曜日はどうですか。男：分かりました、日曜日にしましょう。',
+    promptVi: 'Họ sẽ đi xem phim khi nào?',
+    options: ['日曜日', '土曜日', '今日', '来週'],
+    answer: '日曜日',
+  },
+  {
+    type: 'hatsua',
+    typeLabel: '発話表現',
+    jlptLevel: 'N4',
+    promptJa: '会議に遅れそうです。何と言いますか。',
+    promptVi: 'Bạn sắp trễ họp. Nói gì để báo trước?',
+    options: ['少し遅れます、すみません。', 'おめでとうございます。', 'ごちそうさまでした。', 'いってらっしゃい。'],
+    answer: '少し遅れます、すみません。',
+  },
+
+  // ─────────────────────────────── N3 ───────────────────────────────
+  {
+    type: 'sokuji',
+    typeLabel: '即時応答',
+    jlptLevel: 'N3',
+    promptJa: 'この仕事、明日までにできますか。',
+    promptVi: 'Sếp hỏi bạn có làm xong việc trước ngày mai không.',
+    options: ['頑張ってみます。', 'おかまいなく。', 'お待たせしました。', 'お世話になります。'],
+    answer: '頑張ってみます。',
+  },
+  {
+    type: 'kadai',
+    typeLabel: '課題理解',
+    jlptLevel: 'N3',
+    promptJa: '資料をコピーしなければなりません。でもコピー機が壊れています。どうしますか。',
+    promptVi: 'Cần photo tài liệu nhưng máy hỏng. Nên làm gì?',
+    options: ['隣の部署に頼みます。', '資料を捨てます。', '会議を中止します。', 'コピー機を買います。'],
+    answer: '隣の部署に頼みます。',
+  },
+  {
+    type: 'point',
+    typeLabel: 'ポイント理解',
+    jlptLevel: 'N3',
+    promptJa: '女：この企画、来週の会議で発表しますよね。男：実は、部長の都合で再来週に延期になったんです。女：そうなんですね、分かりました。',
+    promptVi: 'Buổi thuyết trình sẽ diễn ra khi nào?',
+    options: ['再来週', '来週', '今週', '今日'],
+    answer: '再来週',
+  },
+  {
+    type: 'hatsua',
+    typeLabel: '発話表現',
+    jlptLevel: 'N3',
+    promptJa: '取引先に約束の時間に遅れそうです。何と言いますか。',
+    promptVi: 'Sắp trễ hẹn với đối tác. Nói gì?',
+    options: ['申し訳ございません、少々遅れます。', 'お疲れ様でした。', 'よろしくお願いします。', 'お先に失礼します。'],
+    answer: '申し訳ございません、少々遅れます。',
+  },
+
+  // ─────────────────────────────── N2 ───────────────────────────────
+  {
+    type: 'sokuji',
+    typeLabel: '即時応答',
+    jlptLevel: 'N2',
+    promptJa: 'この件について、もう少し詳しく説明していただけますか。',
+    promptVi: 'Đối phương nhờ giải thích kỹ hơn.',
+    options: ['承知いたしました。', 'お邪魔します。', 'おかげさまで。', 'とんでもないです。'],
+    answer: '承知いたしました。',
+  },
+  {
+    type: 'kadai',
+    typeLabel: '課題理解',
+    jlptLevel: 'N2',
+    promptJa: '取引先からのメールに、すぐ返事をしなければなりません。しかし今、会議中です。どうしますか。',
+    promptVi: 'Cần trả lời email gấp nhưng đang họp. Nên làm gì?',
+    options: ['会議の後で返信します。', '会議を無視してメールします。', 'メールを削除します。', '取引先に電話で怒ります。'],
+    answer: '会議の後で返信します。',
+  },
+  {
+    type: 'point',
+    typeLabel: 'ポイント理解',
+    jlptLevel: 'N2',
+    promptJa: '男：新しいプロジェクトのリーダー、誰にしましょうか。女：田中さんはどうでしょう。経験も豊富ですし。男：ただ、来月から出張が続くので、難しいかもしれません。',
+    promptVi: '田中さんがリーダーになるのが難しい理由は何か。',
+    options: ['来月から出張が続くから', '経験が少ないから', 'リーダーをやりたくないから', 'もう退職するから'],
+    answer: '来月から出張が続くから',
+  },
+  {
+    type: 'hatsua',
+    typeLabel: '発話表現',
+    jlptLevel: 'N2',
+    promptJa: '会議で反対意見を丁寧に伝えたいです。何と言いますか。',
+    promptVi: 'Muốn nêu ý kiến phản đối một cách lịch sự trong họp.',
+    options: ['恐れ入りますが、少し違う意見もございます。', 'それは絶対に間違っています。', 'どうでもいいです。', '後で考えます。'],
+    answer: '恐れ入りますが、少し違う意見もございます。',
+  },
+
+  // ─────────────────────────────── N1 ───────────────────────────────
+  {
+    type: 'sokuji',
+    typeLabel: '即時応答',
+    jlptLevel: 'N1',
+    promptJa: 'この度は、大変ご迷惑をおかけしまして、誠に申し訳ございません。',
+    promptVi: 'Đối phương xin lỗi trang trọng vì gây phiền hà.',
+    options: ['いえいえ、お気になさらず。', 'おめでとうございます。', 'よろしくお願いいたします。', 'お邪魔いたしました。'],
+    answer: 'いえいえ、お気になさらず。',
+  },
+  {
+    type: 'kadai',
+    typeLabel: '課題理解',
+    jlptLevel: 'N1',
+    promptJa: '取引先との契約内容に不明な点があります。しかし担当者は今、休暇中です。どうしますか。',
+    promptVi: 'Có điểm chưa rõ trong hợp đồng nhưng người phụ trách đang nghỉ phép. Nên làm gì?',
+    options: ['別の担当者に確認します。', '契約を無効にします。', '休暇中の担当者の家に行きます。', '何もせず待ちます。'],
+    answer: '別の担当者に確認します。',
+  },
+  {
+    type: 'point',
+    typeLabel: 'ポイント理解',
+    jlptLevel: 'N1',
+    promptJa: '男：今回の調査結果について、率直な意見を伺いたいのですが。女：正直申し上げますと、現行の方針には多少の懸念がございます。男：具体的にはどのような点でしょうか。',
+    promptVi: '女の人は現行の方針についてどう思っているか。',
+    options: ['多少の懸念がある', '全く問題ないと思っている', '非常に満足している', '何も意見がない'],
+    answer: '多少の懸念がある',
+  },
+  {
+    type: 'hatsua',
+    typeLabel: '発話表現',
+    jlptLevel: 'N1',
+    promptJa: '目上の人に、こちらの案を控えめに提案したいです。何と言いますか。',
+    promptVi: 'Muốn đề xuất khiêm tốn ý tưởng của mình với cấp trên.',
+    options: ['僭越ながら、一つご提案がございます。', 'これしかありません。', '私の案が一番いいです。', 'どうでもいいことですが。'],
+    answer: '僭越ながら、一つご提案がございます。',
   },
 ];

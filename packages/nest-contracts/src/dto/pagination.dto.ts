@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsIn, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class PaginationDto {
   @ApiPropertyOptional({ default: 1 })
@@ -27,4 +27,14 @@ export class LessonPaginationDto extends PaginationDto {
   @IsInt()
   @Min(1)
   lessonNumber?: number;
+
+  @ApiPropertyOptional({ description: 'Filter by JLPT level', enum: ['N5', 'N4', 'N3', 'N2', 'N1'] })
+  @IsOptional()
+  @IsIn(['N5', 'N4', 'N3', 'N2', 'N1'])
+  jlptLevel?: string;
+
+  @ApiPropertyOptional({ description: 'Free-text search' })
+  @IsOptional()
+  @IsString()
+  q?: string;
 }

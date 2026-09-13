@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { RpcException } from "@nestjs/microservices";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import type { Cache } from "cache-manager";
-import type { ExerciseType, MockExamTemplate } from "@prisma/client";
+import type { ExerciseType, JlptLevel, MockExamTemplate } from "@prisma/client";
 import {
   REDIS_CLIENT,
   sample,
@@ -129,6 +129,7 @@ const SECTION_NAMES: Record<string, string> = {
   grammar: "Ngữ pháp",
   kanji: "Kanji",
   listening: "Nghe",
+  reading: "Đọc hiểu",
 };
 
 function resolveScope(row: MockExamTemplate): string {
@@ -736,11 +737,14 @@ export class MockExamsService {
 
     const cfg = templateToConfig(template);
     const level = template.level as MockExamLevel;
+    const jlptLevel = level.toUpperCase() as JlptLevel;
 
+    // Lọc theo jlptLevel thay vì lessonNumber range: các file "boost/expand"
+    // seed nội dung ở nhiều dải lessonNumber khác nhau, không nằm gọn trong
+    // [lessonFrom, lessonTo] của template, nên lọc theo range sẽ bỏ sót phần
+    // lớn nội dung N2/N1 đã seed. jlptLevel là nguồn sự thật đáng tin cậy hơn.
     const lessons = await this.prisma.lesson.findMany({
-      where: {
-        lessonNumber: { gte: cfg.lessonFrom, lte: cfg.lessonTo },
-      },
+      where: { jlptLevel },
       select: { id: true, lessonNumber: true },
     });
 
@@ -765,11 +769,7 @@ export class MockExamsService {
     const pickedGrammar = sample(grammarCandidates, cfg.grammarCount);
 
     const kanjiEntries = await this.prisma.kanjiEntry.findMany({
-      where: {
-        lesson: {
-          lessonNumber: { gte: cfg.kanjiLessonFrom, lte: cfg.kanjiLessonTo },
-        },
-      },
+      where: { lesson: { jlptLevel } },
       include: { lesson: { select: { lessonNumber: true } } },
     });
 

@@ -73,7 +73,8 @@ export const queryKeys = {
   kanjiSearch: (query: string) => ['kanji-search', query] as const,
   kanjiByJlpt: (level: string) => ['kanji-jlpt', level] as const,
   vocabRange: (from: number, to: number) => domainQueryKeys.vocab.byRange(from, to),
-  listeningPlaylist: (from: number, to: number) => ['listening-playlist', from, to] as const,
+  listeningPlaylist: (from: number, to: number, level?: string) =>
+    ['listening-playlist', from, to, level] as const,
   jlptDaNangSchedule: ['jlpt-da-nang-schedule'] as const,
   kanaCharts: ['reference', 'kana-charts'] as const,
   japaneseCounters: ['reference', 'japanese-counters'] as const,
@@ -201,10 +202,14 @@ export function useVocabRangeQuery(
   });
 }
 
-export function useListeningPlaylistQuery(lessonFrom: number, lessonTo: number) {
+export function useListeningPlaylistQuery(
+  lessonFrom: number,
+  lessonTo: number,
+  jlptLevel?: 'N5' | 'N4' | 'N3' | 'N2' | 'N1',
+) {
   return useQuery({
-    queryKey: queryKeys.listeningPlaylist(lessonFrom, lessonTo),
-    queryFn: () => fetchListeningPlaylist(lessonFrom, lessonTo),
+    queryKey: queryKeys.listeningPlaylist(lessonFrom, lessonTo, jlptLevel),
+    queryFn: () => fetchListeningPlaylist(lessonFrom, lessonTo, 120, jlptLevel),
     staleTime: STALE_5M,
   });
 }

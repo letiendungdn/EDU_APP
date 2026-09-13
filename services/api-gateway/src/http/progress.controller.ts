@@ -12,6 +12,7 @@ import { ClientProxy } from "@nestjs/microservices";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { firstValueFrom } from "rxjs";
 import {
+  LogActivityDto,
   LogListeningDto,
   PROGRESS_PATTERNS,
   SrsAddLessonDto,
@@ -175,6 +176,30 @@ export class ProgressController {
       this.examClient.send(PROGRESS_PATTERNS.SRS_ADD_LESSON, {
         userId: user.id,
         dto,
+      }),
+    );
+  }
+
+  @Post("activity")
+  @ApiOperation({ summary: "Log a daily activity (vocab or kanji studied)" })
+  logActivity(
+    @CurrentUser() user: AuthUserPayload,
+    @Body() dto: LogActivityDto,
+  ) {
+    return firstValueFrom(
+      this.examClient.send(PROGRESS_PATTERNS.LOG_ACTIVITY, {
+        userId: user.id,
+        dto,
+      }),
+    );
+  }
+
+  @Get("today")
+  @ApiOperation({ summary: "Get today's activity status for all goal tasks" })
+  getTodayActivity(@CurrentUser() user: AuthUserPayload) {
+    return firstValueFrom(
+      this.examClient.send(PROGRESS_PATTERNS.GET_TODAY, {
+        userId: user.id,
       }),
     );
   }

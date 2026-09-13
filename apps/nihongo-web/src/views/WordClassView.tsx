@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useQueryClient } from '@tanstack/react-query';
 import PlayAllButton from '../components/PlayAllButton';
+import StrokeOrder from '../components/StrokeOrder';
 import { usePlayAll } from '../hooks/usePlayAll';
 import { useAuth } from '../hooks/useAuth';
 import { useLessonsQuery, useVocabRangeQuery } from '../hooks/queries';
@@ -24,6 +25,133 @@ import {
   type WordClassTabId,
 } from '../utils/minnaWordClass';
 import './WordClassView.css';
+
+function WordClassPopup({
+  item,
+  token,
+  isAdmin,
+  onClose,
+  onSaved,
+}: {
+  item: ClassifiedWord;
+  token?: string;
+  isAdmin: boolean;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState({ kanji: item.kanji ?? '', kana: item.kana, romaji: item.romaji, meaning: item.meaning });
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const text = item.kanji || item.kana;
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  function handleCopy() {
+    void navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
+
+  async function handleSave() {
+    if (!token) return;
+    setBusy(true);
+    setErr(null);
+    try {
+      await updateVocabulary(item.id, {
+        kanji: draft.kanji.trim() || null,
+        kana: draft.kana.trim(),
+        romaji: draft.romaji.trim(),
+        meaning: draft.meaning.trim(),
+        lessonId: item.lessonId,
+        partOfSpeech: item.wordClass,
+      }, token);
+      onSaved();
+      setEditing(false);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Lỗi lưu');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="wc-popup-overlay" onClick={onClose}>
+      <div className="wc-popup" role="dialog" aria-modal onClick={(e) => e.stopPropagation()}>
+
+        {/* Top bar */}
+        <div className="wc-popup-topbar">
+          <div className="wc-popup-topbar-left">
+            <button className="wc-popup-icon-btn" onClick={() => void playAudio(item.kana)} title="Nghe phát âm">🔊</button>
+            <button className="wc-popup-icon-btn" onClick={handleCopy} title="Sao chép">
+              {copied ? '✓' : '📋'}
+            </button>
+            {isAdmin && (
+              <button className="wc-popup-icon-btn wc-popup-edit-btn" onClick={() => { setEditing((v) => !v); setErr(null); }} title="Sửa">
+                {editing ? '✕ Hủy' : '✎ Sửa'}
+              </button>
+            )}
+          </div>
+          <button className="wc-popup-close" onClick={onClose} aria-label="Đóng">✕</button>
+        </div>
+
+        {/* Header */}
+        <div className="wc-popup-header">
+          <span className="wc-popup-ja japanese-text">{text}</span>
+          {item.kanji && <span className="wc-popup-kana japanese-text">{item.kana}</span>}
+          <span className="wc-popup-romaji">{item.romaji}</span>
+          <span className="wc-popup-tag">{wordClassLabel(item.wordClass)} · Bài {item.lessonNumber}</span>
+        </div>
+
+        {/* Stroke order */}
+        <div className="wc-popup-stroke">
+          <StrokeOrder text={text} width={180} height={180} />
+          <p className="wc-popup-stroke-hint">Nhấn vào chữ để xem lại nét</p>
+        </div>
+
+        <p className="wc-popup-vi">{item.meaning}</p>
+
+        {/* Admin edit form */}
+        {editing && (
+          <div className="wc-popup-edit-form">
+            {err && <p className="wc-popup-edit-err">{err}</p>}
+            <label className="wc-popup-edit-field">
+              <span>Kanji</span>
+              <input className="japanese-text" value={draft.kanji} disabled={busy}
+                onChange={(e) => setDraft((d) => ({ ...d, kanji: e.target.value }))} placeholder="Tuỳ chọn" />
+            </label>
+            <label className="wc-popup-edit-field">
+              <span>Kana *</span>
+              <input className="japanese-text" value={draft.kana} disabled={busy}
+                onChange={(e) => setDraft((d) => ({ ...d, kana: e.target.value }))} />
+            </label>
+            <label className="wc-popup-edit-field">
+              <span>Romaji *</span>
+              <input value={draft.romaji} disabled={busy}
+                onChange={(e) => setDraft((d) => ({ ...d, romaji: e.target.value }))} />
+            </label>
+            <label className="wc-popup-edit-field">
+              <span>Nghĩa *</span>
+              <input value={draft.meaning} disabled={busy}
+                onChange={(e) => setDraft((d) => ({ ...d, meaning: e.target.value }))} />
+            </label>
+            <div className="wc-popup-edit-actions">
+              <button className="btn btn-primary btn-sm" disabled={busy} onClick={() => void handleSave()}>
+                {busy ? 'Đang lưu…' : 'Lưu'}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 type ClassifiedWord = VocabularyWithLesson & {
   wordClass: MinnaWordClass;
@@ -95,6 +223,7 @@ export default function WordClassView() {
   const [error, setError] = useState<string | null>(null);
   const [orderedItems, setOrderedItems] = useState<ClassifiedWord[]>([]);
   const [draggingId, setDraggingId] = useState<number | null>(null);
+  const [popupItem, setPopupItem] = useState<ClassifiedWord | null>(null);
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
 
   const canEdit = isAdmin && editMode;
@@ -427,6 +556,15 @@ export default function WordClassView() {
 
   return (
     <div className="container word-class-view">
+      {popupItem && (
+        <WordClassPopup
+          item={popupItem}
+          token={token ?? undefined}
+          isAdmin={isAdmin}
+          onClose={() => setPopupItem(null)}
+          onSaved={() => { setPopupItem(null); void invalidateVocab(); }}
+        />
+      )}
       <div className="word-class-header">
         <h2 className="view-title word-class-view-title">Loại từ</h2>
         <p className="word-class-subtitle">
@@ -590,7 +728,7 @@ export default function WordClassView() {
                   key={`${item.wordClass}-${item.id}`}
                   type="button"
                   className={`word-class-card word-class-card--${item.wordClass}`}
-                  onClick={() => playAudio(item.kana)}
+                  onClick={() => setPopupItem(item)}
                 >
                   <span className="word-class-badge">Bài {item.lessonNumber}</span>
                   {item.kanji ? (

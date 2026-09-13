@@ -278,6 +278,40 @@
   margin: 0;
 }
 
+/* ── Vocab mastery sub-progress ── */
+.goal-banner__vocab-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.25rem;
+}
+
+.goal-banner__vocab-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.goal-banner__vocab-label {
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.goal-banner__vocab-count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #22c55e;
+  font-variant-numeric: tabular-nums;
+}
+
+.goal-banner__progress-bar--vocab {
+  margin-top: 0;
+}
+
+.goal-banner__progress-fill--green {
+  background: linear-gradient(90deg, #22c55e, #16a34a) !important;
+}
+
 /* ── Right column ── */
 .goal-banner__right {
   display: flex;
@@ -362,6 +396,42 @@
 
 .goal-banner__task-label:hover {
   color: #63b3ed;
+}
+
+/* auto-managed checkbox (SRS) */
+.goal-banner__check-btn--auto {
+  cursor: default;
+  opacity: 0.85;
+}
+
+/* SRS due count badge */
+.goal-banner__due-badge {
+  margin-left: auto;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 99px;
+  padding: 0.05rem 0.4rem;
+  min-width: 1.2rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Login hint */
+.goal-banner__login-hint {
+  font-size: 0.72rem;
+  color: #475569;
+  margin: 0.4rem 0 0;
+}
+
+.goal-banner__login-link {
+  color: #63b3ed;
+  text-decoration: none;
+}
+
+.goal-banner__login-link:hover {
+  text-decoration: underline;
 }
 
 /* ── Light theme override ── */

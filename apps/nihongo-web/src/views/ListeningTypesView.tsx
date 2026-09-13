@@ -6,19 +6,26 @@ import { playAudio } from '../utils/speech';
 import {
   JLPT_LISTENING_ITEMS,
   JLPT_LISTENING_TYPES,
+  type JlptListeningLevel,
   type JlptListeningType,
 } from '../data/jlpt-listening';
 import './DrillView.css';
 
+const LEVELS: JlptListeningLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
+
 export default function ListeningTypesView() {
   const [kind, setKind] = useState<JlptListeningType | 'all'>('all');
+  const [level, setLevel] = useState<JlptListeningLevel | 'all'>('all');
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
   const [score, setScore] = useState({ ok: 0, n: 0 });
 
   const bank = useMemo(
-    () => (kind === 'all' ? JLPT_LISTENING_ITEMS : JLPT_LISTENING_ITEMS.filter((i) => i.type === kind)),
-    [kind],
+    () =>
+      JLPT_LISTENING_ITEMS.filter(
+        (i) => (kind === 'all' || i.type === kind) && (level === 'all' || i.jlptLevel === level),
+      ),
+    [kind, level],
   );
   const current = bank[index];
 
@@ -42,6 +49,21 @@ export default function ListeningTypesView() {
           <Link href="/practice">Hub luyện tập</Link>
         </p>
       </header>
+      <div className="drill-toolbar">
+        <button type="button" className={`tab-btn ${level === 'all' ? 'active' : ''}`} onClick={() => { setLevel('all'); setIndex(0); setPicked(null); }}>
+          Mọi cấp
+        </button>
+        {LEVELS.map((l) => (
+          <button
+            key={l}
+            type="button"
+            className={`tab-btn ${level === l ? 'active' : ''}`}
+            onClick={() => { setLevel(l); setIndex(0); setPicked(null); }}
+          >
+            {l}
+          </button>
+        ))}
+      </div>
       <div className="drill-toolbar">
         <button type="button" className={`tab-btn ${kind === 'all' ? 'active' : ''}`} onClick={() => { setKind('all'); setIndex(0); setPicked(null); }}>
           Tất cả

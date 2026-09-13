@@ -10,9 +10,8 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { PaymentStatus } from "@prisma/client";
+import { PaymentStatus, Role } from "@prisma/client";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { Role } from "@prisma/client";
 import {
   CurrentUser,
   JwtAuthGuard,
@@ -59,6 +58,27 @@ export class AdminController {
   @ApiOperation({ summary: "Danh sách users kèm số bài thi" })
   listUsers() {
     return this.adminService.listUsers();
+  }
+
+  @Patch("users/:id/role")
+  @ApiOperation({ summary: "Đổi role user (USER | TEACHER | ADMIN)" })
+  updateUserRole(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() body: { role: Role },
+  ) {
+    return this.adminService.updateUserRole(id, body.role);
+  }
+
+  @Get("exam-results")
+  @ApiOperation({ summary: "Danh sách kết quả thi thử" })
+  listExamResults(@Query("limit") limit?: string) {
+    return this.adminService.listExamResults(limit ? Number(limit) : 100);
+  }
+
+  @Delete("exam-results/:id")
+  @ApiOperation({ summary: "Xoá một kết quả thi thử" })
+  deleteExamResult(@Param("id", ParseIntPipe) id: number) {
+    return this.adminService.deleteExamResult(id);
   }
 
   @Post("import/vocab")

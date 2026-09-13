@@ -131,3 +131,13 @@ export class SrsAddLessonDto {
   @Min(1)
   lessonNumber: number;
 }
+
+export class LogActivityDto {
+  @ApiProperty({ example: 'vocab', description: 'Activity kind: vocab | kanji' })
+  @IsString()
+  kind: string;
+
+  @ApiProperty({ example: '2026-09-12' })
+  @IsString()
+  date: string;
+}

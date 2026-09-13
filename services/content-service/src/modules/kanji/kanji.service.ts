@@ -42,6 +42,58 @@ export class KanjiService {
     });
   }
 
+  createLesson(dto: {
+    lessonNumber: number;
+    title?: string;
+    jlptLevel?: string;
+    sortOrder?: number;
+  }) {
+    return this.prisma.kanjiLesson.create({
+      data: {
+        lessonNumber: dto.lessonNumber,
+        title: dto.title ?? null,
+        jlptLevel: parseJlptLevel(dto.jlptLevel),
+        sortOrder: dto.sortOrder ?? 0,
+      },
+    });
+  }
+
+  updateLesson(
+    id: number,
+    dto: {
+      lessonNumber?: number;
+      title?: string;
+      jlptLevel?: string;
+      sortOrder?: number;
+    },
+  ) {
+    return this.prisma.kanjiLesson.update({
+      where: { id },
+      data: {
+        ...(dto.lessonNumber !== undefined
+          ? { lessonNumber: dto.lessonNumber }
+          : {}),
+        ...(dto.title !== undefined ? { title: dto.title } : {}),
+        ...(dto.jlptLevel !== undefined
+          ? { jlptLevel: parseJlptLevel(dto.jlptLevel) }
+          : {}),
+        ...(dto.sortOrder !== undefined ? { sortOrder: dto.sortOrder } : {}),
+      },
+    });
+  }
+
+  async removeLesson(id: number) {
+    const entryCount = await this.prisma.kanjiEntry.count({
+      where: { lessonId: id },
+    });
+    if (entryCount > 0) {
+      throw new BadRequestException(
+        `Không thể xoá: lesson này còn ${entryCount} kanji. Hãy xoá hết kanji trước.`,
+      );
+    }
+    return this.prisma.kanjiLesson.delete({ where: { id } });
+  }
+
   findEntries(lessonNumber?: number, query?: string, jlptLevel?: string) {
     const q = query?.trim();
     const level = parseJlptLevel(jlptLevel);

@@ -19,6 +19,7 @@ import type {
   VocabSuffixItem,
 } from '../types/reference';
 import PlayAllButton from '../components/PlayAllButton';
+import StrokeOrder from '../components/StrokeOrder';
 import { usePlayAll } from '../hooks/usePlayAll';
 import { useJapaneseVocabSuffixesQuery, queryKeys } from '../hooks/queries';
 import { useAuth } from '../hooks/useAuth';
@@ -408,6 +409,167 @@ function SuffixGroupAdminForm({
   );
 }
 
+function SuffixPopup({
+  item,
+  token,
+  isAdmin,
+  onClose,
+  onSaved,
+}: {
+  item: VocabSuffixItem;
+  token?: string;
+  isAdmin: boolean;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState({
+    suffix: item.suffix,
+    kana: item.kana,
+    romaji: item.romaji,
+    meaningVi: item.meaning,
+    exampleJa: item.exampleJa ?? '',
+    exampleVi: item.exampleVi ?? '',
+  });
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  function handleCopy() {
+    void navigator.clipboard.writeText(item.suffix).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
+
+  async function handleSave() {
+    if (!token || item.id == null) return;
+    setBusy(true);
+    setErr(null);
+    try {
+      await updateVocabSuffixItem(item.id, {
+        groupSlug: item.groupSlug ?? '',
+        suffix: draft.suffix.trim(),
+        forms: item.forms ?? [draft.suffix.trim()],
+        kana: draft.kana.trim(),
+        romaji: draft.romaji.trim(),
+        meaningVi: draft.meaningVi.trim(),
+        attachesTo: item.attachesTo ?? '',
+        pos: (item.pos ?? ['noun']) as ('noun' | 'verb' | 'i-adj' | 'na-adj')[],
+        exampleJa: draft.exampleJa.trim(),
+        exampleVi: draft.exampleVi.trim(),
+      }, token);
+      onSaved();
+      setEditing(false);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Lỗi lưu');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="sfx-popup-overlay" onClick={onClose}>
+      <div className="sfx-popup" role="dialog" aria-modal onClick={(e) => e.stopPropagation()}>
+
+        {/* Top bar */}
+        <div className="sfx-popup-topbar">
+          <div className="sfx-popup-topbar-left">
+            <button className="sfx-popup-icon-btn" onClick={() => void playAudio(item.kana)} title="Nghe phát âm">🔊</button>
+            <button className="sfx-popup-icon-btn" onClick={handleCopy} title="Sao chép">
+              {copied ? '✓' : '📋'}
+            </button>
+            {isAdmin && (
+              <button className="sfx-popup-icon-btn sfx-popup-edit-btn" onClick={() => { setEditing((v) => !v); setErr(null); }}>
+                {editing ? '✕ Hủy' : '✎ Sửa'}
+              </button>
+            )}
+          </div>
+          <button className="sfx-popup-close" onClick={onClose} aria-label="Đóng">✕</button>
+        </div>
+
+        {/* Header */}
+        <div className="sfx-popup-header">
+          <span className="sfx-popup-ja japanese-text">{item.suffix}</span>
+          {item.kana !== item.suffix && (
+            <span className="sfx-popup-kana japanese-text">{item.kana}</span>
+          )}
+          <span className="sfx-popup-romaji">{item.romaji}</span>
+          {item.attachesTo && <span className="sfx-popup-attach-tag">Gắn: {item.attachesTo}</span>}
+        </div>
+
+        {/* Stroke order */}
+        <div className="sfx-popup-stroke">
+          <StrokeOrder text={item.suffix} width={180} height={180} />
+          <p className="sfx-popup-stroke-hint">Nhấn vào chữ để xem lại nét</p>
+        </div>
+
+        <p className="sfx-popup-vi">{item.meaning}</p>
+
+        {(item.exampleJa || item.exampleVi) && (
+          <div className="sfx-popup-example">
+            {item.exampleJa && (
+              <button type="button" className="sfx-popup-example-ja japanese-text"
+                onClick={() => void playAudio(item.exampleJa!)}>
+                {item.exampleJa}
+              </button>
+            )}
+            {item.exampleVi && <span className="sfx-popup-example-vi">{item.exampleVi}</span>}
+          </div>
+        )}
+
+        {/* Admin edit form */}
+        {editing && (
+          <div className="sfx-popup-edit-form">
+            {err && <p className="sfx-popup-edit-err">{err}</p>}
+            <label className="sfx-popup-edit-field">
+              <span>Hậu tố</span>
+              <input className="japanese-text" value={draft.suffix} disabled={busy}
+                onChange={(e) => setDraft((d) => ({ ...d, suffix: e.target.value }))} />
+            </label>
+            <label className="sfx-popup-edit-field">
+              <span>Kana</span>
+              <input className="japanese-text" value={draft.kana} disabled={busy}
+                onChange={(e) => setDraft((d) => ({ ...d, kana: e.target.value }))} />
+            </label>
+            <label className="sfx-popup-edit-field">
+              <span>Romaji</span>
+              <input value={draft.romaji} disabled={busy}
+                onChange={(e) => setDraft((d) => ({ ...d, romaji: e.target.value }))} />
+            </label>
+            <label className="sfx-popup-edit-field">
+              <span>Nghĩa</span>
+              <input value={draft.meaningVi} disabled={busy}
+                onChange={(e) => setDraft((d) => ({ ...d, meaningVi: e.target.value }))} />
+            </label>
+            <label className="sfx-popup-edit-field">
+              <span>Ví dụ JP</span>
+              <input className="japanese-text" value={draft.exampleJa} disabled={busy}
+                onChange={(e) => setDraft((d) => ({ ...d, exampleJa: e.target.value }))} />
+            </label>
+            <label className="sfx-popup-edit-field">
+              <span>Ví dụ VN</span>
+              <input value={draft.exampleVi} disabled={busy}
+                onChange={(e) => setDraft((d) => ({ ...d, exampleVi: e.target.value }))} />
+            </label>
+            <div className="sfx-popup-edit-actions">
+              <button className="btn btn-primary btn-sm" disabled={busy} onClick={() => void handleSave()}>
+                {busy ? 'Đang lưu…' : 'Lưu'}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function SuffixesView() {
   const { isAdmin, token } = useAuth();
   const queryClient = useQueryClient();
@@ -416,6 +578,7 @@ export default function SuffixesView() {
   const [activeId, setActiveId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [popupItem, setPopupItem] = useState<VocabSuffixItem | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [itemFormState, setItemFormState] = useState<
     null | { mode: 'create' } | { mode: 'edit'; item: VocabSuffixItem }
@@ -568,6 +731,15 @@ export default function SuffixesView() {
 
   return (
     <div className="container suffixes-view">
+      {popupItem && (
+        <SuffixPopup
+          item={popupItem}
+          token={token ?? undefined}
+          isAdmin={isAdmin}
+          onClose={() => setPopupItem(null)}
+          onSaved={() => { setPopupItem(null); invalidate(); }}
+        />
+      )}
       <div className="suffixes-header">
         <div className="suffixes-header-row">
           <div>
@@ -762,7 +934,7 @@ export default function SuffixesView() {
                       type="button"
                       className="suffix-card-main"
                       aria-pressed={selected}
-                      onClick={() => selectAndSpeak(key, item.kana)}
+                      onClick={() => { selectAndSpeak(key, item.kana); setPopupItem(item); }}
                     >
                       <span className="suffix-ja japanese-text">{item.suffix}</span>
                       <span className="suffix-kana">{item.kana}</span>

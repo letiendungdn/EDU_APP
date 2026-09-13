@@ -2,6 +2,9 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
+import { fetchTodayActivity, type TodayActivity } from '@/api';
 import './HomeGoalBanner.css';
 
 const LEVELS = ['N5', 'N4', 'N3', 'N2', 'N1'] as const;
@@ -11,9 +14,9 @@ const STORAGE_GOAL = 'user-goal-v1';
 
 interface GoalConfig {
   level: JlptLevel;
-  startDate: string; // ISO yyyy-mm-dd
-  endDate: string;   // ISO yyyy-mm-dd
-  label: string;     // custom description e.g. "Kỳ thi 7/2027"
+  startDate: string;
+  endDate: string;
+  label: string;
 }
 
 const DEFAULT_GOAL: GoalConfig = {
@@ -28,9 +31,7 @@ function loadGoal(): GoalConfig {
     const raw = localStorage.getItem(STORAGE_GOAL);
     if (!raw) return DEFAULT_GOAL;
     return { ...DEFAULT_GOAL, ...JSON.parse(raw) } as GoalConfig;
-  } catch {
-    return DEFAULT_GOAL;
-  }
+  } catch { return DEFAULT_GOAL; }
 }
 
 function saveGoal(g: GoalConfig) {
@@ -39,9 +40,9 @@ function saveGoal(g: GoalConfig) {
 
 const TASKS = [
   { id: 'srs',      label: 'Ôn SRS hàng ngày', icon: '🧠', href: '/srs' },
-  { id: 'lesson',   label: 'Học bài mới',        icon: '📖', href: '/vocab' },
+  { id: 'vocab',    label: 'Học bài mới',        icon: '📖', href: '/vocab' },
   { id: 'kanji',    label: 'Luyện kanji',         icon: '漢', href: '/kanji/list' },
-  { id: 'mockexam', label: 'Làm đề thi thử',     icon: '📝', href: '/mock-exam' },
+  { id: 'exam',     label: 'Làm đề thi thử',     icon: '📝', href: '/mock-exam' },
 ] as const;
 
 type TaskId = (typeof TASKS)[number]['id'];
@@ -64,11 +65,19 @@ function saveChecked(s: Set<TaskId>) {
 }
 
 export default function HomeGoalBanner() {
+  const { isAuthenticated } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [goal, setGoal] = useState<GoalConfig>(DEFAULT_GOAL);
   const [checked, setChecked] = useState<Set<TaskId>>(new Set());
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<GoalConfig>(DEFAULT_GOAL);
+
+  const { data: todayActivity } = useQuery<TodayActivity>({
+    queryKey: ['today-activity'],
+    queryFn: fetchTodayActivity,
+    enabled: isAuthenticated,
+    staleTime: 60_000,
+  });
 
   useEffect(() => {
     const g = loadGoal();
@@ -87,7 +96,16 @@ export default function HomeGoalBanner() {
   const progress  = Math.min(100, Math.round((elapsed / totalDays) * 100));
   const finished  = daysLeft === 0;
 
+  function isDone(id: TaskId): boolean {
+    if (isAuthenticated && todayActivity) {
+      return todayActivity[id as keyof TodayActivity] ?? false;
+    }
+    return mounted && checked.has(id);
+  }
+
   function toggle(id: TaskId) {
+    // auto-managed when authenticated
+    if (isAuthenticated && todayActivity) return;
     setChecked((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id); else next.add(id);
@@ -96,10 +114,10 @@ export default function HomeGoalBanner() {
     });
   }
 
+  const doneCount = TASKS.filter((t) => isDone(t.id)).length;
+
   function openEdit() { setDraft(goal); setEditing(true); }
-
   function cancelEdit() { setEditing(false); }
-
   function saveEdit() {
     if (!draft.endDate) return;
     const updated: GoalConfig = {
@@ -216,23 +234,26 @@ export default function HomeGoalBanner() {
         <p className="goal-banner__dates">
           {startDate.toLocaleDateString('vi-VN')} → {endDate.toLocaleDateString('vi-VN')}
         </p>
+
       </div>
 
       {/* Right: daily checklist */}
       <div className="goal-banner__right">
         <p className="goal-banner__check-title">
-          Hôm nay {mounted ? `· ${checked.size}/${TASKS.length} xong` : ''}
+          Hôm nay {mounted ? `· ${doneCount}/${TASKS.length} xong` : ''}
         </p>
         <ul className="goal-banner__checklist">
           {TASKS.map((task) => {
-            const done = mounted && checked.has(task.id);
+            const done = isDone(task.id);
+            const isAuto = isAuthenticated && !!todayActivity;
             return (
               <li key={task.id} className={`goal-banner__task${done ? ' goal-banner__task--done' : ''}`}>
                 <button
                   type="button"
-                  className="goal-banner__check-btn"
+                  className={`goal-banner__check-btn${isAuto ? ' goal-banner__check-btn--auto' : ''}`}
                   onClick={() => toggle(task.id)}
                   aria-label={done ? `Bỏ chọn: ${task.label}` : `Đánh dấu xong: ${task.label}`}
+                  title={isAuto ? 'Tự động nhận biết' : undefined}
                 >
                   {done ? '✓' : ''}
                 </button>
@@ -242,6 +263,12 @@ export default function HomeGoalBanner() {
             );
           })}
         </ul>
+        {!isAuthenticated && mounted && (
+          <p className="goal-banner__login-hint">
+            <Link href="/login" className="goal-banner__login-link">Đăng nhập</Link>
+            {' '}để tự động nhận biết tiến độ
+          </p>
+        )}
       </div>
     </div>
   );

@@ -933,6 +933,7 @@ model User {
   studyStreak    StudyStreak?
   dailyNotes     DailyNote[]
   dailyGoals     DailyGoal[]
+  dailyActivities DailyActivity[]
   refreshTokens  RefreshToken[]
   passwordResetTokens PasswordResetToken[]
   subscription   Subscription?
@@ -1159,6 +1160,20 @@ model StudyStreak {
   longestStreak Int      @default(0)
   lastStudyDate String?  // YYYY-MM-DD
   updatedAt     DateTime @updatedAt
+}
+
+// Daily activity tracking (vocab studied, kanji practiced, etc.)
+model DailyActivity {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      String   // YYYY-MM-DD
+  kind      String   // 'vocab' | 'kanji'
+  count     Int      @default(1)
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date, kind])
+  @@index([userId, date])
 }
 
 // ─────────────────────────────────────────────

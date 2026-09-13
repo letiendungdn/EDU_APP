@@ -51,6 +51,8 @@ export class VocabulariesController {
         lessonNumber: query.lessonNumber,
         page: query.page ?? 1,
         limit: query.limit ?? 50,
+        jlptLevel: query.jlptLevel,
+        query: query.q,
       }),
     );
   }

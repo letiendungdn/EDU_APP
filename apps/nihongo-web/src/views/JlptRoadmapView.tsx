@@ -6,6 +6,7 @@ import {
   useJlptDaNangScheduleQuery,
   useJlptDaNangStaticQuery,
   useJlptRoadmapQuery,
+  useLessonsQuery,
 } from '../hooks/queries';
 import type { JlptAnnouncement, JlptDaNangSchedule } from '../types/api';
 import type { JlptDaNangSchedulePayload } from '../types/reference';
@@ -138,6 +139,15 @@ export default function JlptRoadmapView() {
     (scheduleError && staticSchedule ? buildFallbackSchedule(staticSchedule) : null);
 
   const level = jlptLevels.find((l) => l.id === activeId) ?? jlptLevels[0];
+
+  const { data: lessons = [] } = useLessonsQuery();
+  const appVocabCount = useMemo(() => {
+    const target = level?.id?.toUpperCase();
+    if (!target) return null;
+    return lessons
+      .filter((l) => l.jlptLevel === target)
+      .reduce((sum, l) => sum + (l._count?.vocabularies ?? 0), 0);
+  }, [lessons, level?.id]);
 
   const allTaskIds = useMemo(
     () => level?.phases.flatMap((p) => p.tasks.map((t) => t.id)) ?? [],
@@ -356,9 +366,12 @@ export default function JlptRoadmapView() {
         <div className="jlpt-stats" style={{ '--level-color': level.color } as React.CSSProperties}>
           <div><strong>Thời gian</strong><span>{level.duration}</span></div>
           <div>
-            <strong>Từ vựng</strong>
+            <strong>Từ vựng (mục tiêu kỳ thi)</strong>
             <span>{level.vocabTarget}</span>
             {level.vocabIncrement ? <small className="jlpt-stat-increment">{level.vocabIncrement}</small> : null}
+            {appVocabCount !== null ? (
+              <small className="jlpt-stat-appcount">App hiện có: {appVocabCount} từ</small>
+            ) : null}
           </div>
           <div>
             <strong>Kanji</strong>

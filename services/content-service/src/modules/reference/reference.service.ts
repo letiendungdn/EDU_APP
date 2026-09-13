@@ -325,6 +325,17 @@ export class ReferenceService {
         label: p.label,
         lessonFrom: p.lessonFrom,
         lessonTo: p.lessonTo,
+        // externalKey theo quy ước "<level>-<tên>" (vd "n3-full") — suy ra cấp
+        // JLPT từ đó để lọc playlist theo jlptLevel thay vì chỉ lessonNumber
+        // range (các range JLPT "boost/expand" chồng lấn giữa các cấp).
+        jlptLevel: p.externalKey.match(/^n([1-5])-/)?.[1]
+          ? (`N${p.externalKey.match(/^n([1-5])-/)![1]}` as
+              | "N5"
+              | "N4"
+              | "N3"
+              | "N2"
+              | "N1")
+          : undefined,
       })),
     };
   }

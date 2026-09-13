@@ -1,18 +1,32 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
+  Patch,
   Post,
   Query,
   Req,
+  UseGuards,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Role } from "@prisma/client";
 import { firstValueFrom } from "rxjs";
-import { CONTENT_PATTERNS } from "@app/contracts";
-import { Public, type AuthUserPayload } from "@app/common";
+import {
+  CONTENT_PATTERNS,
+  CreateReadingPassageDto,
+  UpdateReadingPassageDto,
+} from "@app/contracts";
+import {
+  JwtAuthGuard,
+  Public,
+  Roles,
+  RolesGuard,
+  type AuthUserPayload,
+} from "@app/common";
 
 @ApiTags("reading")
 @Controller("api/reading")
@@ -38,6 +52,44 @@ export class ReadingController {
   findOne(@Param("id") id: string) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.GET_READING_PASSAGE, {
+        id: +id,
+      }),
+    );
+  }
+
+  @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Create reading passage (admin)" })
+  create(@Body() dto: CreateReadingPassageDto) {
+    return firstValueFrom(
+      this.contentClient.send(CONTENT_PATTERNS.CREATE_READING_PASSAGE, dto),
+    );
+  }
+
+  @Patch(":id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Update reading passage (admin)" })
+  update(@Param("id") id: string, @Body() dto: UpdateReadingPassageDto) {
+    return firstValueFrom(
+      this.contentClient.send(CONTENT_PATTERNS.UPDATE_READING_PASSAGE, {
+        id: +id,
+        dto,
+      }),
+    );
+  }
+
+  @Delete(":id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Delete reading passage (admin)" })
+  remove(@Param("id") id: string) {
+    return firstValueFrom(
+      this.contentClient.send(CONTENT_PATTERNS.DELETE_READING_PASSAGE, {
         id: +id,
       }),
     );

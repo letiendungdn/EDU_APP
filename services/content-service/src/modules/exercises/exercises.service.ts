@@ -66,7 +66,15 @@ export class ExercisesService {
     return mapExercise(created);
   }
 
-  async findAll(lessonNumber?: number) {
+  async findAll(params?: {
+    lessonNumber?: number;
+    jlptLevel?: string;
+    query?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    const { lessonNumber, jlptLevel, query, page, limit } = params ?? {};
+
     let lessonId: number | undefined;
     if (lessonNumber) {
       const lesson = await this.prisma.lesson.findUnique({
@@ -76,12 +84,36 @@ export class ExercisesService {
       if (!lesson) return [];
       lessonId = lesson.id;
     }
-    const rows = await this.prisma.exercise.findMany({
-      where: lessonId ? { lessonId } : undefined,
-      include: { options: { orderBy: { sortOrder: "asc" } } },
-      orderBy: { id: "asc" },
-    });
-    return rows.map(mapExercise);
+
+    // Không truyền jlptLevel/query/page → giữ nguyên hành vi cũ (mảng phẳng),
+    // dùng bởi AdminLessonPicker (xem theo từng lesson, số lượng nhỏ).
+    if (!jlptLevel && !query && page === undefined) {
+      const rows = await this.prisma.exercise.findMany({
+        where: lessonId ? { lessonId } : undefined,
+        include: { options: { orderBy: { sortOrder: "asc" } } },
+        orderBy: { id: "asc" },
+      });
+      return rows.map(mapExercise);
+    }
+
+    const where: Record<string, unknown> = {};
+    if (lessonId) where.lessonId = lessonId;
+    if (jlptLevel) where.lesson = { jlptLevel };
+    if (query) where.question = { contains: query, mode: "insensitive" };
+
+    const p = page ?? 1;
+    const l = limit ?? 50;
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.exercise.findMany({
+        where,
+        include: { options: { orderBy: { sortOrder: "asc" } } },
+        orderBy: { id: "asc" },
+        skip: (p - 1) * l,
+        take: l,
+      }),
+      this.prisma.exercise.count({ where }),
+    ]);
+    return { data: rows.map(mapExercise), total, page: p, limit: l };
   }
 
   async findOne(id: number) {

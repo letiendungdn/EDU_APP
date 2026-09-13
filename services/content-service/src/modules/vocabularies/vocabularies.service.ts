@@ -40,7 +40,43 @@ export class VocabulariesService {
     return vocab;
   }
 
-  async findAll(lessonNumber?: number, page = 1, limit = 50) {
+  async findAll(
+    lessonNumber?: number,
+    page = 1,
+    limit = 50,
+    jlptLevel?: string,
+    query?: string,
+  ) {
+    if (jlptLevel || query) {
+      const where: Record<string, unknown> = {};
+      if (lessonNumber) {
+        const lesson = await this.prisma.lesson.findUnique({
+          where: { lessonNumber },
+          select: { id: true },
+        });
+        if (!lesson) return { data: [], total: 0, page, limit };
+        where.lessonId = lesson.id;
+      }
+      if (jlptLevel) where.jlptLevel = jlptLevel;
+      if (query) {
+        where.OR = [
+          { kanji: { contains: query, mode: "insensitive" } },
+          { kana: { contains: query, mode: "insensitive" } },
+          { meaning: { contains: query, mode: "insensitive" } },
+        ];
+      }
+      const [data, total] = await this.prisma.$transaction([
+        this.prisma.vocabulary.findMany({
+          where,
+          orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+          skip: (page - 1) * limit,
+          take: limit,
+        }),
+        this.prisma.vocabulary.count({ where }),
+      ]);
+      return { data, total, page, limit };
+    }
+
     let lessonId: number | undefined;
     if (lessonNumber) {
       const lesson = await this.prisma.lesson.findUnique({

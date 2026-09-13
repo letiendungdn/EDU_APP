@@ -19,9 +19,11 @@ import {
   CONTENT_PATTERNS,
   CreateKanjiVocabDto,
   CreateKanjiEntryDto,
+  CreateKanjiLessonDto,
   ReorderKanjiVocabDto,
   UpdateKanjiVocabDto,
   UpdateKanjiEntryDto,
+  UpdateKanjiLessonDto,
 } from "@app/contracts";
 import { JwtAuthGuard, Public, Roles, RolesGuard } from "@app/common";
 
@@ -38,6 +40,44 @@ export class KanjiController {
   findAllLessons() {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.GET_KANJI_LESSONS, {}),
+    );
+  }
+
+  @Post("kanji-lessons")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Create kanji lesson (admin)" })
+  createLesson(@Body() dto: CreateKanjiLessonDto) {
+    return firstValueFrom(
+      this.contentClient.send(CONTENT_PATTERNS.CREATE_KANJI_LESSON, dto),
+    );
+  }
+
+  @Patch("kanji-lessons/:id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Update kanji lesson (admin)" })
+  updateLesson(@Param("id") id: string, @Body() dto: UpdateKanjiLessonDto) {
+    return firstValueFrom(
+      this.contentClient.send(CONTENT_PATTERNS.UPDATE_KANJI_LESSON, {
+        id: +id,
+        dto,
+      }),
+    );
+  }
+
+  @Delete("kanji-lessons/:id")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Delete kanji lesson (admin)" })
+  removeLesson(@Param("id") id: string) {
+    return firstValueFrom(
+      this.contentClient.send(CONTENT_PATTERNS.DELETE_KANJI_LESSON, {
+        id: +id,
+      }),
     );
   }
 

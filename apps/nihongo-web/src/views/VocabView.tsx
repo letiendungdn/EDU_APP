@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { playAudio } from '../utils/speech';
 import LessonSelector from '../components/LessonSelector';
@@ -21,6 +21,7 @@ import {
 } from '../utils/japanese';
 import FlashcardJapaneseText from '../components/FlashcardJapaneseText';
 import { getVocabExamples } from '../utils/vocabPatternExample';
+import { logActivity } from '../api';
 import './VocabView.css';
 
 function strokeBoxSize(charCount: number, dense = false): number {
@@ -252,15 +253,26 @@ function useCopyText() {
   return { copied, copy };
 }
 
-export default function VocabView() {
-  const [currentLesson, setCurrentLesson] = useState(1);
+export default function VocabView({
+  initialLessonNumber,
+}: {
+  initialLessonNumber?: number;
+} = {}) {
+  const [currentLesson, setCurrentLesson] = useState(initialLessonNumber ?? 1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const vocabLoggedRef = useRef(false);
   const { copied: flashcardCopied, copy: copyFlashcard } = useCopyText();
   const { isAdmin } = useAuth();
   const { data: lessons = [] } = useLessonsQuery();
   const { data: lessonVocab = [], isLoading: loading } = useVocabulariesQuery(currentLesson);
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
+
+  useEffect(() => {
+    if (initialLessonNumber != null && initialLessonNumber > 0) {
+      setCurrentLesson(initialLessonNumber);
+    }
+  }, [initialLessonNumber]);
 
   const currentLessonMeta = lessons.find((l) => l.lessonNumber === currentLesson);
   const lessonId = currentLessonMeta?.id ?? null;
@@ -432,11 +444,30 @@ export default function VocabView() {
           {vocabHeader}
           {currentVocab ? (
           <div className="flashcard-container">
+            <div className="vocab-controls vocab-controls--top">
+              <PlayAllButton
+                isPlaying={isPlayingAll}
+                onPlay={handlePlayAll}
+                onStop={stopPlayAll}
+              />
+              <button type="button" className="btn btn-nav" onClick={handlePrev}>
+                ⬅️ Trước
+              </button>
+              <button type="button" className="btn btn-nav" onClick={handleNext}>
+                Sau ➡️
+              </button>
+            </div>
             <div
               className={`flashcard ${isFlipped ? 'flipped' : ''}${
                 hasMultipleReadings ? ' flashcard--multi-reading' : ''
               }`}
-              onClick={() => setIsFlipped(!isFlipped)}
+              onClick={() => {
+                setIsFlipped(!isFlipped);
+                if (!isFlipped && !vocabLoggedRef.current) {
+                  vocabLoggedRef.current = true;
+                  void logActivity('vocab');
+                }
+              }}
             >
               <div className="flashcard-face flashcard-front">
                 <div className="flashcard-front-body">
@@ -569,20 +600,6 @@ export default function VocabView() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div className="vocab-controls">
-              <PlayAllButton
-                isPlaying={isPlayingAll}
-                onPlay={handlePlayAll}
-                onStop={stopPlayAll}
-              />
-              <button type="button" className="btn btn-nav" onClick={handlePrev}>
-                ⬅️ Trước
-              </button>
-              <button type="button" className="btn btn-nav" onClick={handleNext}>
-                Sau ➡️
-              </button>
             </div>
           </div>
           ) : (

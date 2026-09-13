@@ -285,6 +285,7 @@ export interface ListeningPreset {
   label: string;
   lessonFrom: number;
   lessonTo: number;
+  jlptLevel?: 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 }
 
 export interface DailyListeningPayload {

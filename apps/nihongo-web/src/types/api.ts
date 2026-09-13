@@ -59,6 +59,7 @@ export interface KanjiLesson {
   lessonNumber: number;
   title: string | null;
   jlptLevel: string | null;
+  sortOrder?: number;
   _count?: { entries: number };
 }
 

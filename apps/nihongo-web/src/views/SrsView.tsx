@@ -58,6 +58,36 @@ function previewInterval(quality: number, ef: number, interval: number, reps: nu
   return `${months} tháng`;
 }
 
+// ── Lesson groups ──────────────────────────────────────────────────────────
+
+const LESSON_GROUPS = [
+  {
+    id: 'minna1',
+    label: 'Minna 上 (1–25)',
+    lessons: Array.from({ length: 25 }, (_, i) => i + 1),
+  },
+  {
+    id: 'minna2',
+    label: 'Minna 下 (26–50)',
+    lessons: Array.from({ length: 25 }, (_, i) => i + 26),
+  },
+  {
+    id: 'n3',
+    label: 'JLPT N3',
+    lessons: [301, 302, 303, 304],
+  },
+  {
+    id: 'n2',
+    label: 'JLPT N2',
+    lessons: [401, 402, 403, 404],
+  },
+  {
+    id: 'n1',
+    label: 'JLPT N1',
+    lessons: [501, 502, 503],
+  },
+] as const;
+
 // ── Component ──────────────────────────────────────────────────────────────
 
 type Phase = 'loading' | 'needs-auth' | 'stats' | 'review' | 'done';
@@ -80,7 +110,8 @@ export default function SrsView() {
   const [lastResult, setLastResult] = useState<ReviewResult | null>(null);
   const [sessionCorrect, setSessionCorrect] = useState(0);
   const [sessionTotal, setSessionTotal] = useState(0);
-  const [addLesson, setAddLesson] = useState('');
+  const [selectedLessons, setSelectedLessons] = useState<Set<number>>(new Set());
+  const [addLessonGroup, setAddLessonGroup] = useState<typeof LESSON_GROUPS[number]['id']>(LESSON_GROUPS[0].id);
   const [addingLesson, setAddingLesson] = useState(false);
   const [addMsg, setAddMsg] = useState('');
   const [mode, setMode] = useState<SrsMode>('jp-vi');
@@ -186,22 +217,30 @@ export default function SrsView() {
   };
 
   const handleAddLesson = async () => {
-    const n = parseInt(addLesson, 10);
-    if (!n || n < 1) return;
+    if (selectedLessons.size === 0) return;
     setAddingLesson(true);
-    try {
-      const r = await apiRequest<{ added: number }>('/progress/srs/add-lesson', {
-        method: 'POST',
-        body: JSON.stringify({ lessonNumber: n }),
-      });
-      setAddMsg(`Đã thêm ${r.added} từ từ bài ${n} vào bộ thẻ.`);
-      await loadStats();
-    } catch {
-      setAddMsg('Lỗi — không thể thêm bài.');
+    let totalAdded = 0;
+    const failed: number[] = [];
+    for (const n of selectedLessons) {
+      try {
+        const r = await apiRequest<{ added: number }>('/progress/srs/add-lesson', {
+          method: 'POST',
+          body: JSON.stringify({ lessonNumber: n }),
+        });
+        totalAdded += r.added;
+      } catch {
+        failed.push(n);
+      }
     }
+    if (failed.length > 0) {
+      setAddMsg(`Thêm xong. ${totalAdded} từ đã thêm. Lỗi bài: ${failed.join(', ')}.`);
+    } else {
+      setAddMsg(`Đã thêm ${totalAdded} từ từ ${selectedLessons.size} bài vào bộ thẻ.`);
+    }
+    await loadStats();
     setAddingLesson(false);
-    setAddLesson('');
-    setTimeout(() => setAddMsg(''), 4000);
+    setSelectedLessons(new Set());
+    setTimeout(() => setAddMsg(''), 5000);
   };
 
   const card = queue[index];
@@ -457,28 +496,80 @@ export default function SrsView() {
       {/* Add lesson panel */}
       <div className="srs-add-panel card card--sm">
         <h3 className="srs-add-panel__title">Thêm bài học vào bộ thẻ</h3>
-        <p className="srs-add-panel__desc">
-          Nhập số bài để thêm toàn bộ từ vựng vào hàng ôn. Minna: 1–50.
-          JLPT: N3 = 301–304, N2 = 401–404, N1 = 501–503.
-        </p>
+
+        {/* Group tabs */}
+        <div className="srs-add-tabs">
+          {LESSON_GROUPS.map((g) => (
+            <button
+              key={g.id}
+              type="button"
+              className={`srs-add-tab${addLessonGroup === g.id ? ' srs-add-tab--active' : ''}`}
+              onClick={() => setAddLessonGroup(g.id)}
+            >
+              {g.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Lesson pills */}
+        {LESSON_GROUPS.map((g) => g.id === addLessonGroup && (
+          <div key={g.id} className="srs-add-lessons">
+            <div className="srs-add-lessons__grid">
+              {g.lessons.map((n) => {
+                const sel = selectedLessons.has(n);
+                return (
+                  <button
+                    key={n}
+                    type="button"
+                    className={`srs-lesson-pill${sel ? ' srs-lesson-pill--selected' : ''}`}
+                    onClick={() => {
+                      setSelectedLessons((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(n)) next.delete(n); else next.add(n);
+                        return next;
+                      });
+                    }}
+                  >
+                    {n}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="srs-add-lessons__actions">
+              <button
+                type="button"
+                className="btn btn-outline btn-sm"
+                onClick={() => {
+                  setSelectedLessons((prev) => {
+                    const next = new Set(prev);
+                    const allSelected = g.lessons.every((n) => next.has(n));
+                    if (allSelected) {
+                      g.lessons.forEach((n) => next.delete(n));
+                    } else {
+                      g.lessons.forEach((n) => next.add(n));
+                    }
+                    return next;
+                  });
+                }}
+              >
+                {g.lessons.every((n) => selectedLessons.has(n)) ? 'Bỏ chọn tất cả' : 'Chọn tất cả'}
+              </button>
+            </div>
+          </div>
+        ))}
+
         <div className="srs-add-form">
-          <input
-            type="number"
-            min={1}
-            max={599}
-            placeholder="Số bài (vd: 12 hoặc 301)"
-            value={addLesson}
-            onChange={(e) => setAddLesson(e.target.value)}
-            className="input"
-            style={{ maxWidth: '160px' }}
-            onKeyDown={(e) => e.key === 'Enter' && handleAddLesson()}
-          />
+          <span className="srs-add-selected-count">
+            {selectedLessons.size > 0
+              ? `${selectedLessons.size} bài đã chọn`
+              : 'Chưa chọn bài nào'}
+          </span>
           <button
             className="btn btn-outline"
             onClick={handleAddLesson}
-            disabled={addingLesson || !addLesson}
+            disabled={addingLesson || selectedLessons.size === 0}
           >
-            {addingLesson ? 'Đang thêm…' : 'Thêm bài'}
+            {addingLesson ? 'Đang thêm…' : `Thêm${selectedLessons.size > 0 ? ` ${selectedLessons.size} bài` : ''}`}
           </button>
         </div>
         {addMsg && <p className="srs-add-msg">{addMsg}</p>}

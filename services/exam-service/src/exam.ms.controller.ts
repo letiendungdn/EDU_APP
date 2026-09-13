@@ -3,6 +3,7 @@ import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { GrpcMethod } from "@nestjs/microservices";
 import {
   EXAM_PATTERNS,
+  LogActivityDto,
   LogListeningDto,
   PROGRESS_PATTERNS,
   SrsAddLessonDto,
@@ -114,6 +115,10 @@ export class ExamMsController implements OnModuleInit {
         this.getSrsStats(data as { userId: number }),
       [PROGRESS_PATTERNS.SRS_ADD_LESSON]: (data) =>
         this.addLessonToSrs(data as { userId: number; dto: SrsAddLessonDto }),
+      [PROGRESS_PATTERNS.LOG_ACTIVITY]: (data) =>
+        this.logActivity(data as { userId: number; dto: LogActivityDto }),
+      [PROGRESS_PATTERNS.GET_TODAY]: (data) =>
+        this.getTodayActivity(data as { userId: number }),
     };
   }
 
@@ -260,5 +265,13 @@ export class ExamMsController implements OnModuleInit {
 
   addLessonToSrs(data: { userId: number; dto: SrsAddLessonDto }) {
     return this.progressService.addLessonToSrs(data.userId, data.dto);
+  }
+
+  logActivity(data: { userId: number; dto: LogActivityDto }) {
+    return this.progressService.logActivity(data.userId, data.dto);
+  }
+
+  getTodayActivity(data: { userId: number }) {
+    return this.progressService.getTodayActivity(data.userId);
   }
 }

@@ -1,6 +1,10 @@
 import { PrismaClient } from './generated/client';
 import { seedContent } from './seed-content';
 import { seedJlptContent } from './seed-jlpt-content';
+import { seedJlptExercises } from './seed-jlpt-exercises';
+import { seedJlptReadingExpand } from './seed-jlpt-reading-expand';
+import { seedListeningPresetsExpand } from './seed-listening-presets-expand';
+import { seedMockExamRecent } from './seed-mock-exam-recent';
 import { seedPronunciationRules } from './seed-pronunciation-rules';
 import { seedEnglishKatakana } from './seed-english-katakana';
 import { seedKanaRomaji } from './seed-kana-romaji';
@@ -21,9 +25,13 @@ const prisma = new PrismaClient();
 async function main() {
   await seedContent(prisma);
   await seedJlptContent(prisma);
+  await seedJlptExercises(prisma);
+  await seedJlptReadingExpand(prisma);
+  await seedListeningPresetsExpand(prisma);
   await seedJlptTags(prisma);
   await seedJlptRoadmapN2N1(prisma);
   await seedMockExamTemplates(prisma);
+  await seedMockExamRecent(prisma);
   await seedPronunciationRules(prisma);
   await seedEnglishKatakana(prisma);
   await seedKanaRomaji(prisma);

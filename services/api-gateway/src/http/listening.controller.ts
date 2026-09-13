@@ -19,12 +19,14 @@ export class ListeningController {
     @Query("lessonFrom") lessonFrom = "1",
     @Query("lessonTo") lessonTo = "25",
     @Query("limit") limit = "120",
+    @Query("jlptLevel") jlptLevel?: "N5" | "N4" | "N3" | "N2" | "N1",
   ) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.GET_LISTENING_PLAYLIST, {
         lessonFrom: +lessonFrom,
         lessonTo: +lessonTo,
         limit: +limit,
+        jlptLevel,
       }),
     );
   }

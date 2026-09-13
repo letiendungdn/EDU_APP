@@ -21,6 +21,9 @@ export const CONTENT_PATTERNS = {
   UPDATE_EXERCISE: 'content.exercises.update',
   DELETE_EXERCISE: 'content.exercises.delete',
   GET_KANJI_LESSONS: 'content.kanji-lessons.findAll',
+  CREATE_KANJI_LESSON: 'content.kanji-lessons.create',
+  UPDATE_KANJI_LESSON: 'content.kanji-lessons.update',
+  DELETE_KANJI_LESSON: 'content.kanji-lessons.delete',
   GET_KANJI_ENTRIES: 'content.kanji-entries.findAll',
   GET_KANJI_ENTRY: 'content.kanji-entries.findOne',
   CREATE_KANJI_ENTRY: 'content.kanji-entries.create',
@@ -45,6 +48,9 @@ export const CONTENT_PATTERNS = {
   GET_READING_PASSAGES: 'content.reading.findAll',
   GET_READING_PASSAGE: 'content.reading.findOne',
   SUBMIT_READING: 'content.reading.submit',
+  CREATE_READING_PASSAGE: 'content.reading.create',
+  UPDATE_READING_PASSAGE: 'content.reading.update',
+  DELETE_READING_PASSAGE: 'content.reading.delete',
 } as const;
 
 export const EXAM_PATTERNS = {
@@ -78,4 +84,6 @@ export const PROGRESS_PATTERNS = {
   SRS_SUBMIT_REVIEW:'progress.srs.review',
   SRS_GET_STATS:    'progress.srs.stats',
   SRS_ADD_LESSON:   'progress.srs.add-lesson',
+  LOG_ACTIVITY:     'progress.activity.log',
+  GET_TODAY:        'progress.today.get',
 } as const;

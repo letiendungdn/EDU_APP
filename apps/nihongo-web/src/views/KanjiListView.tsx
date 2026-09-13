@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   createKanjiEntry,
   deleteKanjiEntry,
+  logActivity,
   updateKanjiEntry,
 } from '../api';
 import {
@@ -165,6 +166,7 @@ function KanjiPopup({
   onClose: () => void;
 }) {
   const jlpt = getEntryJlpt(entry);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -172,10 +174,22 @@ function KanjiPopup({
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose]);
 
+  function handleCopy() {
+    void navigator.clipboard.writeText(entry.character).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
+
   return (
     <div className="kanji-popup-overlay" onClick={onClose} role="dialog" aria-modal="true">
       <div className="kanji-popup" onClick={(e) => e.stopPropagation()}>
-        <button type="button" className="kanji-popup-close" onClick={onClose} aria-label="Đóng">✕</button>
+        <div className="kanji-popup-topbar">
+          <button type="button" className="kanji-popup-icon-btn" onClick={handleCopy} title="Sao chép chữ kanji" aria-label="Sao chép">
+            {copied ? '✓' : '📋'}
+          </button>
+          <button type="button" className="kanji-popup-close" onClick={onClose} aria-label="Đóng">✕</button>
+        </div>
 
         <div className="kanji-popup-header">
           <span className="kanji-popup-char">{entry.character}</span>
@@ -377,6 +391,7 @@ export default function KanjiListView() {
   const [displayMode, setDisplayMode] = useState<DisplayMode>('grid');
   const [selectedEntry, setSelectedEntry] = useState<KanjiEntry | null>(null);
   const [popupEntry, setPopupEntry] = useState<KanjiEntry | null>(null);
+  const kanjiLoggedRef = useRef(false);
   const [editMode, setEditMode] = useState(false);
   const [formState, setFormState] = useState<
     null | { mode: 'create' } | { mode: 'edit'; entry: KanjiEntry }
@@ -435,6 +450,10 @@ export default function KanjiListView() {
     setSelectedEntry(entry);
     setPopupEntry(entry);
     playAudio(getPrimaryReading(entry));
+    if (!kanjiLoggedRef.current) {
+      kanjiLoggedRef.current = true;
+      void logActivity('kanji');
+    }
   }
 
   function handleSaved() {

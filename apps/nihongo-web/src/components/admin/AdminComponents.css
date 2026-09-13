@@ -1,0 +1,328 @@
+/* Bộ component dùng chung cho trang Admin — xây trên nền .btn/.glass-panel
+   và các CSS custom properties đã có ở globals.css (đã hỗ trợ dark/light qua
+   [data-theme]). Không định nghĩa lại token màu ở đây. */
+
+/* ── DataTable ─────────────────────────────────────────────────────── */
+.admin-dt-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.admin-dt {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  min-width: 480px;
+}
+
+.admin-dt thead th {
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  background: var(--surface-color-light);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-dt tbody td {
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  vertical-align: top;
+}
+
+.admin-dt tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-dt tbody tr:hover {
+  background: var(--surface-hover);
+}
+
+.admin-dt__checkbox-col {
+  width: 2rem;
+}
+
+.admin-dt__actions-col {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.admin-dt__actions {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+
+.admin-dt__empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--text-muted);
+}
+
+.admin-dt__loading {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--text-secondary);
+}
+
+.admin-dt__bulkbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+/* ── Toolbar: filter + search ─────────────────────────────────────── */
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.admin-search-input {
+  flex: 1 1 220px;
+  min-width: 160px;
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-primary);
+  font-size: 0.88rem;
+}
+
+.admin-search-input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+}
+
+.admin-jlpt-filter {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.admin-jlpt-filter__btn {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.admin-jlpt-filter__btn:hover {
+  border-color: var(--primary-color);
+  color: var(--text-primary);
+}
+
+.admin-jlpt-filter__btn.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+}
+
+/* ── Pagination ───────────────────────────────────────────────────── */
+.admin-dt-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.admin-dt-pagination__pages {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+/* ── Modal ────────────────────────────────────────────────────────── */
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0 0 0 / 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 4vh 1rem;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.admin-modal {
+  width: 100%;
+  max-width: 560px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  padding: 1.25rem;
+}
+
+.admin-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.admin-modal__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.admin-modal__close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+}
+
+.admin-modal__close:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.admin-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+
+/* ── Toast ────────────────────────────────────────────────────────── */
+.admin-toast-stack {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1100;
+  max-width: min(360px, calc(100vw - 2rem));
+}
+
+.admin-toast {
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid;
+  animation: admin-toast-in 0.15s ease;
+}
+
+@keyframes admin-toast-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-toast--success {
+  background: var(--color-success-bg);
+  border-color: var(--color-success-border);
+  color: var(--color-success);
+}
+
+.admin-toast--error {
+  background: var(--color-error-bg);
+  border-color: var(--color-error-border);
+  color: var(--color-error);
+}
+
+.admin-toast--info {
+  background: var(--color-info-bg);
+  border-color: var(--color-info-border);
+  color: var(--color-info);
+}
+
+/* ── Lesson picker (thay AdminByLessonShell) ─────────────────────── */
+.admin-lp {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .admin-lp {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-lp__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.admin-lp__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+.admin-lp__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--text-secondary);
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.admin-lp__item:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.admin-lp__item.active {
+  background: var(--primary-subtle);
+  border-color: var(--primary-color);
+  color: var(--text-primary);
+}
+
+.admin-lp__item-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.admin-lp__empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-muted);
+}

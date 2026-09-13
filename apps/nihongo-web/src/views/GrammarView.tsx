@@ -94,8 +94,16 @@ function grammarCardId(grammar: Grammar, index: number): string {
   return String(grammar.id ?? index);
 }
 
-export default function GrammarView() {
-  const [currentLesson, setCurrentLesson] = useState(1);
+export default function GrammarView({
+  initialLessonNumber,
+  hideLessonSelector = false,
+  startInEditMode = false,
+}: {
+  initialLessonNumber?: number;
+  hideLessonSelector?: boolean;
+  startInEditMode?: boolean;
+} = {}) {
+  const [currentLesson, setCurrentLesson] = useState(initialLessonNumber ?? 1);
   const [autoRead, setAutoRead] = useState(false);
   const [speechFocus, setSpeechFocus] = useState<SpeechFocus | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -105,7 +113,18 @@ export default function GrammarView() {
   const { data: lessons = [] } = useLessonsQuery();
   const { data: lessonGrammar = [], isLoading: loading } = useGrammarsQuery(currentLesson);
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(Boolean(startInEditMode));
+
+  useEffect(() => {
+    if (initialLessonNumber != null && initialLessonNumber > 0) {
+      setCurrentLesson(initialLessonNumber);
+    }
+  }, [initialLessonNumber]);
+
+  useEffect(() => {
+    if (startInEditMode && isAdmin) setEditMode(true);
+  }, [startInEditMode, isAdmin]);
+
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [draft, setDraft] = useState<GrammarDraft>(emptyGrammarDraft());
@@ -476,19 +495,23 @@ export default function GrammarView() {
   }
 
   return (
-    <div className="container grammar-view">
+    <div className={`container grammar-view${hideLessonSelector ? ' grammar-view--embedded' : ''}`}>
       <div className="grammar-header">
-        <h2 className="view-title grammar-view-title">{viewTitle}</h2>
-        <p className="grammar-lesson-summary">
-          <Link href="/grammar-srs">Ôn mẫu đã ghim</Link>
-        </p>
+        {!hideLessonSelector && (
+          <>
+            <h2 className="view-title grammar-view-title">{viewTitle}</h2>
+            <p className="grammar-lesson-summary">
+              <Link href="/grammar-srs">Ôn mẫu đã ghim</Link>
+            </p>
 
-        <LessonSelector
-          id="grammar-lesson-select"
-          value={currentLesson}
-          onChange={setCurrentLesson}
-          countKind="grammar"
-        />
+            <LessonSelector
+              id="grammar-lesson-select"
+              value={currentLesson}
+              onChange={setCurrentLesson}
+              countKind="grammar"
+            />
+          </>
+        )}
 
         {!loading && lessonGrammar.length > 0 && (
           <p className="grammar-lesson-summary">

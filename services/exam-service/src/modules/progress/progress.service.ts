@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@app/prisma";
 import { SrsCardRepository } from "@app/prisma/srs-card.repository";
 import {
+  LogActivityDto,
   LogListeningDto,
   SrsAddLessonDto,
   SrsReviewDto,
@@ -214,5 +215,47 @@ export class ProgressService {
 
   addLessonToSrs(userId: number, dto: SrsAddLessonDto) {
     return this.srsCards.addLessonToSrs(userId, dto.lessonNumber);
+  }
+
+  async logActivity(userId: number, dto: LogActivityDto) {
+    await this.prisma.dailyActivity.upsert({
+      where: { userId_date_kind: { userId, date: dto.date, kind: dto.kind } },
+      create: { userId, date: dto.date, kind: dto.kind, count: 1 },
+      update: { count: { increment: 1 } },
+    });
+    return { ok: true };
+  }
+
+  async getTodayActivity(userId: number) {
+    const today = new Date().toISOString().slice(0, 10);
+
+    const [srsStats, activities, examToday] = await Promise.all([
+      this.srsCards.getSrsStats(userId),
+      this.prisma.dailyActivity.findMany({
+        where: { userId, date: today },
+        select: { kind: true, count: true },
+      }),
+      this.prisma.examResult.findFirst({
+        where: {
+          userId,
+          submittedAt: {
+            gte: new Date(today),
+            lt: new Date(new Date(today).getTime() + 86_400_000),
+          },
+        },
+        select: { id: true },
+      }),
+    ]);
+
+    const activityMap = Object.fromEntries(
+      activities.map((a) => [a.kind, a.count]),
+    );
+
+    return {
+      srs: srsStats.total > 0 && srsStats.dueToday === 0,
+      vocab: (activityMap['vocab'] ?? 0) > 0,
+      kanji: (activityMap['kanji'] ?? 0) > 0,
+      exam: !!examToday,
+    };
   }
 }

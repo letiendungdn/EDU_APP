@@ -163,6 +163,13 @@
   opacity: 0.9;
 }
 
+.jlpt-stat-appcount {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  opacity: 0.85;
+}
+
 .jlpt-exam-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

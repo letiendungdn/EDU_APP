@@ -32,6 +32,7 @@ export default function DailyListeningView() {
   const { data: playlistData, isLoading: loading } = useListeningPlaylistQuery(
     preset?.lessonFrom ?? 1,
     preset?.lessonTo ?? 25,
+    preset?.jlptLevel,
   );
   const playlist: ListeningPlaylistItem[] = playlistData?.items ?? [];
 

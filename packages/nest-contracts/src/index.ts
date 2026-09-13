@@ -9,5 +9,7 @@ export * from './dto/pagination.dto';
 export * from './dto/progress.dto';
 export * from './dto/kanji-vocab.dto';
 export * from './dto/kanji-entry.dto';
+export * from './dto/kanji-lesson.dto';
+export * from './dto/reading-passage.dto';
 export * from './dto/mock-exam.dto';
 export * from './dto/vocab-suffix.dto';

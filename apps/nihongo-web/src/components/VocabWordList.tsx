@@ -67,6 +67,8 @@ type Props = {
   currentIndex: number;
   expectedCount: number | null;
   onSelectWord: (index: number) => void;
+  /** Admin content: mở sẵn chế độ sửa */
+  startInEditMode?: boolean;
 };
 
 export default function VocabWordList({
@@ -76,12 +78,18 @@ export default function VocabWordList({
   currentIndex,
   expectedCount,
   onSelectWord,
+  startInEditMode = false,
 }: Props) {
   const { isAdmin, token } = useAuth();
   const queryClient = useQueryClient();
   const listScrollRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(Boolean(startInEditMode));
+
+  useEffect(() => {
+    if (startInEditMode && isAdmin) setEditMode(true);
+  }, [startInEditMode, isAdmin]);
+
   const [editingId, setEditingId] = useState<number | null>(null);
   const [draft, setDraft] = useState<Draft>(emptyDraft());
   const [adding, setAdding] = useState(false);

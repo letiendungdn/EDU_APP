@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { type ReactNode } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { ADMIN_CONTENT_RESOURCES } from '@/config/adminResources';
 
 type NavItem = {
   href: string;
@@ -21,6 +22,10 @@ const NAV: NavSection[] = [
     items: [
       { href: '/admin', label: 'Dashboard', icon: '▦' },
     ],
+  },
+  {
+    title: 'Nội dung',
+    items: ADMIN_CONTENT_RESOURCES.map((r) => ({ href: r.href, label: r.title, icon: r.icon })),
   },
   {
     title: 'Quản lý',

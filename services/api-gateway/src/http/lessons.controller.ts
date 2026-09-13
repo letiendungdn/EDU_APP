@@ -8,16 +8,18 @@ import {
   Delete,
   Inject,
   Query,
+  UseGuards,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Role } from "@prisma/client";
 import { firstValueFrom } from "rxjs";
 import {
   CONTENT_PATTERNS,
   CreateLessonDto,
   UpdateLessonDto,
 } from "@app/contracts";
-import { Public } from "@app/common";
+import { JwtAuthGuard, Public, Roles, RolesGuard } from "@app/common";
 
 @ApiTags("lessons")
 @Controller("api/lessons")
@@ -27,7 +29,10 @@ export class LessonsController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: "Create a lesson" })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Create a lesson (admin)" })
   create(@Body() dto: CreateLessonDto) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.CREATE_LESSON, dto),
@@ -37,9 +42,17 @@ export class LessonsController {
   @Get()
   @Public()
   @ApiOperation({ summary: "List all lessons" })
-  findAll(@Query("has") has?: "grammar" | "vocab") {
+  findAll(
+    @Query("has") has?: "grammar" | "vocab",
+    @Query("jlptLevel") jlptLevel?: string,
+    @Query("q") q?: string,
+  ) {
     return firstValueFrom(
-      this.contentClient.send(CONTENT_PATTERNS.GET_LESSONS, { has }),
+      this.contentClient.send(CONTENT_PATTERNS.GET_LESSONS, {
+        has,
+        jlptLevel: jlptLevel?.trim() || undefined,
+        query: q?.trim() || undefined,
+      }),
     );
   }
 
@@ -55,7 +68,10 @@ export class LessonsController {
   }
 
   @Patch(":id")
-  @ApiOperation({ summary: "Update a lesson" })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Update a lesson (admin)" })
   update(@Param("id") id: string, @Body() dto: UpdateLessonDto) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.UPDATE_LESSON, { id: +id, dto }),
@@ -63,7 +79,10 @@ export class LessonsController {
   }
 
   @Delete(":id")
-  @ApiOperation({ summary: "Delete a lesson" })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Delete a lesson (admin)" })
   remove(@Param("id") id: string) {
     return firstValueFrom(
       this.contentClient.send(CONTENT_PATTERNS.DELETE_LESSON, { id: +id }),

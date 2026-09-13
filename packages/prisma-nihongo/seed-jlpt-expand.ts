@@ -6,15 +6,87 @@
  */
 import { PrismaClient, type PrismaClient as PrismaClientType } from './generated/client';
 import { JLPT_KANJI_EXPAND } from './jlpt-kanji-expand.data';
-import { JLPT_KANJI_GAP_FILL } from './jlpt-kanji-gap-fill.data';
+import { JLPT_KANJI_BOOST2 } from './jlpt-kanji-boost2.data';
+import { JLPT_KANJI_BOOST2_N2 } from './jlpt-kanji-boost2-n2.data';
+import { JLPT_KANJI_BOOST2_N1 } from './jlpt-kanji-boost2-n1.data';
+import { JLPT_KANJI_BOOST3_N2 } from './jlpt-kanji-boost3-n2.data';
+import { JLPT_KANJI_BOOST4_N1_A } from './jlpt-kanji-boost4-n1a.data';
+import { JLPT_KANJI_BOOST4_N1_B } from './jlpt-kanji-boost4-n1b.data';
+import { JLPT_KANJI_BOOST4_N1_C } from './jlpt-kanji-boost4-n1c.data';
+import { JLPT_KANJI_BOOST4_N1_D } from './jlpt-kanji-boost4-n1d.data';
+import { JLPT_KANJI_BOOST4_N1_E } from './jlpt-kanji-boost4-n1e.data';
+import { JLPT_KANJI_BOOST4_N1_F } from './jlpt-kanji-boost4-n1f.data';
+import { JLPT_KANJI_BOOST4_N1_G } from './jlpt-kanji-boost4-n1g.data';
+import { JLPT_KANJI_BOOST4_N1_H } from './jlpt-kanji-boost4-n1h.data';
+import { JLPT_KANJI_BOOST4_N1_I } from './jlpt-kanji-boost4-n1i.data';
 import { JLPT_VOCAB_EXPAND } from './jlpt-vocab-expand.data';
-import { JLPT_VOCAB_GAP_FILL } from './jlpt-vocab-gap-fill.data';
 import { JLPT_VOCAB_GAP_TOPUP } from './jlpt-vocab-gap-topup.data';
+import { JLPT_VOCAB_REVIEW_BOOST } from './jlpt-vocab-review-boost.data';
+import { JLPT_VOCAB_BOOST3_N5 } from './jlpt-vocab-boost3-n5.data';
+import { JLPT_VOCAB_BOOST3_N4 } from './jlpt-vocab-boost3-n4.data';
+import { JLPT_VOCAB_BOOST3_N3 } from './jlpt-vocab-boost3-n3.data';
+import { JLPT_VOCAB_BOOST3_N2 } from './jlpt-vocab-boost3-n2.data';
+import { JLPT_VOCAB_BOOST3_N1 } from './jlpt-vocab-boost3-n1.data';
+import { JLPT_VOCAB_BOOST4_N5 } from './jlpt-vocab-boost4-n5.data';
+import { JLPT_VOCAB_BOOST4_N4 } from './jlpt-vocab-boost4-n4.data';
+import { JLPT_VOCAB_BOOST4_N3_PART1 } from './jlpt-vocab-boost4-n3a.data';
+import { JLPT_VOCAB_BOOST4_N3_PART2 } from './jlpt-vocab-boost4-n3b.data';
+import { JLPT_VOCAB_BOOST4_N3_PART3 } from './jlpt-vocab-boost4-n3c.data';
+import { JLPT_VOCAB_BOOST4_N3_PART4 } from './jlpt-vocab-boost4-n3d.data';
+import { JLPT_VOCAB_BOOST4_N3_PART5 } from './jlpt-vocab-boost4-n3e.data';
+import { JLPT_VOCAB_BOOST4_N3_PART6 } from './jlpt-vocab-boost4-n3f.data';
+import { JLPT_VOCAB_BOOST4_N3_PART7 } from './jlpt-vocab-boost4-n3g.data';
+import { JLPT_VOCAB_BOOST4_N3_PART8 } from './jlpt-vocab-boost4-n3h.data';
+import { JLPT_VOCAB_BOOST4_N2_PART1 } from './jlpt-vocab-boost4-n2a.data';
+import { JLPT_VOCAB_BOOST4_N2_PART2 } from './jlpt-vocab-boost4-n2b.data';
+import { JLPT_VOCAB_BOOST4_N2_PART3 } from './jlpt-vocab-boost4-n2c.data';
+import { JLPT_VOCAB_BOOST4_N2_PART4 } from './jlpt-vocab-boost4-n2d.data';
+import { JLPT_VOCAB_BOOST4_N2_PART5 } from './jlpt-vocab-boost4-n2e.data';
+import { JLPT_VOCAB_BOOST4_N2_PART6 } from './jlpt-vocab-boost4-n2f.data';
+import { JLPT_VOCAB_BOOST4_N2_PART7 } from './jlpt-vocab-boost4-n2g.data';
+import { JLPT_VOCAB_BOOST4_N2_PART8 } from './jlpt-vocab-boost4-n2h.data';
+import { JLPT_VOCAB_BOOST4_N2_PART9 } from './jlpt-vocab-boost4-n2i.data';
+import { JLPT_VOCAB_BOOST4_N1_PART1 } from './jlpt-vocab-boost4-n1a.data';
+import { JLPT_VOCAB_BOOST4_N1_PART2 } from './jlpt-vocab-boost4-n1b.data';
+import { JLPT_VOCAB_BOOST4_N1_PART3 } from './jlpt-vocab-boost4-n1c.data';
+import { JLPT_VOCAB_BOOST4_N1_PART4 } from './jlpt-vocab-boost4-n1d.data';
+import { JLPT_VOCAB_BOOST4_N1_PART5 } from './jlpt-vocab-boost4-n1e.data';
+import { JLPT_VOCAB_BOOST4_N1_PART6 } from './jlpt-vocab-boost4-n1f.data';
+import { JLPT_VOCAB_BOOST4_N1_PART7 } from './jlpt-vocab-boost4-n1g.data';
+import { JLPT_VOCAB_BOOST4_N1_PART8 } from './jlpt-vocab-boost4-n1h.data';
+import { JLPT_VOCAB_BOOST4_N1_PART9 } from './jlpt-vocab-boost4-n1i.data';
+import { JLPT_VOCAB_BOOST4_N1_PART10 } from './jlpt-vocab-boost4-n1j.data';
+import { JLPT_VOCAB_BOOST4_N1_PART11 } from './jlpt-vocab-boost4-n1k.data';
+import { JLPT_VOCAB_BOOST4_N1_PART12 } from './jlpt-vocab-boost4-n1l.data';
+import { JLPT_VOCAB_BOOST4_N1_PART13 } from './jlpt-vocab-boost4-n1m.data';
+import { JLPT_VOCAB_BOOST4_N1_PART14 } from './jlpt-vocab-boost4-n1n.data';
+import { JLPT_VOCAB_BOOST4_N1_PART15 } from './jlpt-vocab-boost4-n1o.data';
+import { JLPT_VOCAB_BOOST4_N1_PART16 } from './jlpt-vocab-boost4-n1p.data';
+import { JLPT_VOCAB_BOOST4_N1_PART17 } from './jlpt-vocab-boost4-n1q.data';
+import { JLPT_VOCAB_BOOST4_N1_PART18 } from './jlpt-vocab-boost4-n1r.data';
+import { JLPT_VOCAB_BOOST4_N1_PART19 } from './jlpt-vocab-boost4-n1s.data';
+import { JLPT_VOCAB_BOOST4_N1_PART20 } from './jlpt-vocab-boost4-n1t.data';
+import { JLPT_VOCAB_BOOST4_N1_PART21 } from './jlpt-vocab-boost4-n1u.data';
+import { JLPT_VOCAB_BOOST4_N1_PART22 } from './jlpt-vocab-boost4-n1v.data';
+import { JLPT_VOCAB_BOOST4_N1_PART23 } from './jlpt-vocab-boost4-n1w.data';
+import { JLPT_VOCAB_BOOST5_N3 } from './jlpt-vocab-boost5-n3.data';
+import { JLPT_VOCAB_BOOST5_N2 } from './jlpt-vocab-boost5-n2.data';
+import { JLPT_VOCAB_BOOST5_N1 } from './jlpt-vocab-boost5-n1.data';
 import { JLPT_GRAMMAR_EXPAND } from './jlpt-grammar-expand.data';
 import { JLPT_GRAMMAR_GAP_FILL } from './jlpt-grammar-gap-fill.data';
 import { JLPT_VOCAB_UNITS } from './jlpt-vocab.data';
 import { JLPT_GRAMMAR_UNITS, type JlptGrammarUnit } from './jlpt-grammar.data';
 import { seedJlptTags } from './seed-jlpt-tags';
+
+// ⚠️ ĐÃ TẮT: JLPT_KANJI_GAP_FILL (jlpt-kanji-gap-fill.data.ts) và
+// JLPT_VOCAB_GAP_FILL (jlpt-vocab-gap-fill.data.ts) — cả hai được sinh tự động
+// bởi scripts/build-jlpt-{kanji,vocab}-gap-fill.mjs từ dữ liệu tiếng Anh của
+// OpenJLPT. Bộ dịch EN→VI trong script chỉ tra một bảng ~70 từ đơn rồi giữ
+// nguyên phần còn lại — phần lớn "meaning"/"meaningVi" bị bỏ sót vẫn là tiếng
+// Anh, hoặc thành "để" vô nghĩa (do EN_VI['to'] = 'để' áp lên mọi cụm bắt đầu
+// bằng "to "). App này chủ yếu Việt–Nhật nên KHÔNG được seed dữ liệu này cho
+// tới khi có bản dịch tiếng Việt đáng tin cậy. Đừng import lại hai file trên
+// vào mảng seed bên dưới trừ khi đã dịch lại toàn bộ "meaning"/"meaningVi".
 
 function dedupeBy<T>(items: T[], keyFn: (item: T) => string): T[] {
   const seen = new Set<string>();
@@ -110,7 +182,22 @@ export async function seedJlptExpand(prisma: PrismaClientType) {
   );
 
   // ─── Kanji (KanjiLesson) ───────────────────────────────────────────
-  for (const kl of [...JLPT_KANJI_EXPAND, ...JLPT_KANJI_GAP_FILL]) {
+  for (const kl of [
+    ...JLPT_KANJI_EXPAND,
+    ...JLPT_KANJI_BOOST2,
+    ...JLPT_KANJI_BOOST2_N2,
+    ...JLPT_KANJI_BOOST2_N1,
+    ...JLPT_KANJI_BOOST3_N2,
+    ...JLPT_KANJI_BOOST4_N1_A,
+    ...JLPT_KANJI_BOOST4_N1_B,
+    ...JLPT_KANJI_BOOST4_N1_C,
+    ...JLPT_KANJI_BOOST4_N1_D,
+    ...JLPT_KANJI_BOOST4_N1_E,
+    ...JLPT_KANJI_BOOST4_N1_F,
+    ...JLPT_KANJI_BOOST4_N1_G,
+    ...JLPT_KANJI_BOOST4_N1_H,
+    ...JLPT_KANJI_BOOST4_N1_I,
+  ]) {
     const entries = dedupeBy(kl.entries, (e) => e.character);
     const lesson = await prisma.kanjiLesson.upsert({
       where: { lessonNumber: kl.lessonNumber },
@@ -161,7 +248,61 @@ export async function seedJlptExpand(prisma: PrismaClientType) {
     (await prisma.vocabulary.findMany({ select: { kana: true } })).map((v) => v.kana),
   );
 
-  for (const unit of [...JLPT_VOCAB_EXPAND, ...JLPT_VOCAB_GAP_FILL, ...JLPT_VOCAB_GAP_TOPUP]) {
+  for (const unit of [
+    ...JLPT_VOCAB_EXPAND,
+    ...JLPT_VOCAB_GAP_TOPUP,
+    ...JLPT_VOCAB_REVIEW_BOOST,
+    ...JLPT_VOCAB_BOOST3_N5,
+    ...JLPT_VOCAB_BOOST4_N5,
+    ...JLPT_VOCAB_BOOST3_N4,
+    ...JLPT_VOCAB_BOOST4_N4,
+    ...JLPT_VOCAB_BOOST3_N3,
+    ...JLPT_VOCAB_BOOST4_N3_PART1,
+    ...JLPT_VOCAB_BOOST4_N3_PART2,
+    ...JLPT_VOCAB_BOOST4_N3_PART3,
+    ...JLPT_VOCAB_BOOST4_N3_PART4,
+    ...JLPT_VOCAB_BOOST4_N3_PART5,
+    ...JLPT_VOCAB_BOOST4_N3_PART6,
+    ...JLPT_VOCAB_BOOST4_N3_PART7,
+    ...JLPT_VOCAB_BOOST4_N3_PART8,
+    ...JLPT_VOCAB_BOOST3_N2,
+    ...JLPT_VOCAB_BOOST4_N2_PART1,
+    ...JLPT_VOCAB_BOOST4_N2_PART2,
+    ...JLPT_VOCAB_BOOST4_N2_PART3,
+    ...JLPT_VOCAB_BOOST4_N2_PART4,
+    ...JLPT_VOCAB_BOOST4_N2_PART5,
+    ...JLPT_VOCAB_BOOST4_N2_PART6,
+    ...JLPT_VOCAB_BOOST4_N2_PART7,
+    ...JLPT_VOCAB_BOOST4_N2_PART8,
+    ...JLPT_VOCAB_BOOST4_N2_PART9,
+    ...JLPT_VOCAB_BOOST3_N1,
+    ...JLPT_VOCAB_BOOST4_N1_PART1,
+    ...JLPT_VOCAB_BOOST4_N1_PART2,
+    ...JLPT_VOCAB_BOOST4_N1_PART3,
+    ...JLPT_VOCAB_BOOST4_N1_PART4,
+    ...JLPT_VOCAB_BOOST4_N1_PART5,
+    ...JLPT_VOCAB_BOOST4_N1_PART6,
+    ...JLPT_VOCAB_BOOST4_N1_PART7,
+    ...JLPT_VOCAB_BOOST4_N1_PART8,
+    ...JLPT_VOCAB_BOOST4_N1_PART9,
+    ...JLPT_VOCAB_BOOST4_N1_PART10,
+    ...JLPT_VOCAB_BOOST4_N1_PART11,
+    ...JLPT_VOCAB_BOOST4_N1_PART12,
+    ...JLPT_VOCAB_BOOST4_N1_PART13,
+    ...JLPT_VOCAB_BOOST4_N1_PART14,
+    ...JLPT_VOCAB_BOOST4_N1_PART15,
+    ...JLPT_VOCAB_BOOST4_N1_PART16,
+    ...JLPT_VOCAB_BOOST4_N1_PART17,
+    ...JLPT_VOCAB_BOOST4_N1_PART18,
+    ...JLPT_VOCAB_BOOST4_N1_PART19,
+    ...JLPT_VOCAB_BOOST4_N1_PART20,
+    ...JLPT_VOCAB_BOOST4_N1_PART21,
+    ...JLPT_VOCAB_BOOST4_N1_PART22,
+    ...JLPT_VOCAB_BOOST4_N1_PART23,
+    ...JLPT_VOCAB_BOOST5_N3,
+    ...JLPT_VOCAB_BOOST5_N2,
+    ...JLPT_VOCAB_BOOST5_N1,
+  ]) {
     const words = dedupeBy(unit.words, (w) => w.kana);
     const grammarUnit = findGrammarUnit(unit.lessonNumber);
     const title =

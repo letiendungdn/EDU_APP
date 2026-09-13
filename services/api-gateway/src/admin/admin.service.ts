@@ -1,6 +1,7 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { firstValueFrom } from "rxjs";
+import { Role } from "@prisma/client";
 import { CONTENT_PATTERNS } from "@app/contracts";
 import { PrismaService } from "@app/prisma";
 
@@ -19,6 +20,8 @@ export class AdminService {
       exercises,
       kanjiLessons,
       kanjiEntries,
+      reading,
+      mockExams,
       users,
       examResults,
     ] = await Promise.all([
@@ -28,6 +31,8 @@ export class AdminService {
       this.prisma.exercise.count(),
       this.prisma.kanjiLesson.count(),
       this.prisma.kanjiEntry.count(),
+      this.prisma.readingPassage.count(),
+      this.prisma.mockExamTemplate.count(),
       this.prisma.user.count(),
       this.prisma.examResult.count(),
     ]);
@@ -53,6 +58,8 @@ export class AdminService {
         exercises,
         kanjiLessons,
         kanjiEntries,
+        reading,
+        mockExams,
         users,
         examResults,
       },
@@ -73,6 +80,36 @@ export class AdminService {
       },
       orderBy: { createdAt: "desc" },
     });
+  }
+
+  updateUserRole(userId: number, role: Role) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { role },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        name: true,
+        createdAt: true,
+        _count: { select: { examResults: true } },
+      },
+    });
+  }
+
+  listExamResults(limit = 100) {
+    return this.prisma.examResult.findMany({
+      take: Math.min(Math.max(limit, 1), 500),
+      orderBy: { submittedAt: "desc" },
+      include: {
+        user: { select: { id: true, email: true, name: true } },
+        sections: true,
+      },
+    });
+  }
+
+  deleteExamResult(id: number) {
+    return this.prisma.examResult.delete({ where: { id } });
   }
 
   importVocab(lessonNumber: number, text: string) {

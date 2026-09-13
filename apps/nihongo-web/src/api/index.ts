@@ -203,12 +203,59 @@ export function deleteGrammar(id: number, token: string) {
   });
 }
 
-export function fetchExercises(lessonNumber: number) {
-  return apiRequest<Exercise[]>(`/exercises?lessonNumber=${lessonNumber}`);
+export function fetchExercises(lessonNumber?: number) {
+  const qs = lessonNumber != null ? `?lessonNumber=${lessonNumber}` : '';
+  return apiRequest<Exercise[]>(`/exercises${qs}`);
+}
+
+export function fetchExercisesFiltered(params: {
+  jlptLevel?: string;
+  q?: string;
+  page?: number;
+  limit?: number;
+}) {
+  const usp = new URLSearchParams();
+  if (params.jlptLevel) usp.set('jlptLevel', params.jlptLevel);
+  if (params.q) usp.set('q', params.q);
+  usp.set('page', String(params.page ?? 1));
+  usp.set('limit', String(params.limit ?? 50));
+  return apiRequest<{ data: Exercise[]; total: number; page: number; limit: number }>(
+    `/exercises?${usp.toString()}`,
+  );
 }
 
 export function fetchKanjiLessons() {
   return apiRequest<KanjiLesson[]>('/kanji-lessons');
+}
+
+export interface KanjiLessonInput {
+  lessonNumber: number;
+  title?: string;
+  jlptLevel?: string;
+  sortOrder?: number;
+}
+
+export function createKanjiLesson(data: KanjiLessonInput, token: string) {
+  return apiRequest<KanjiLesson>('/kanji-lessons', {
+    method: 'POST',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateKanjiLesson(id: number, data: Partial<KanjiLessonInput>, token: string) {
+  return apiRequest<KanjiLesson>(`/kanji-lessons/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteKanjiLesson(id: number, token: string) {
+  return apiRequest<{ ok: boolean }>(`/kanji-lessons/${id}`, {
+    method: 'DELETE',
+    token,
+  });
 }
 
 export function fetchKanjiEntries(lessonNumber: number) {
@@ -337,9 +384,15 @@ export function reorderKanjiVocab(
   );
 }
 
-export function fetchListeningPlaylist(lessonFrom = 1, lessonTo = 25, limit = 120) {
+export function fetchListeningPlaylist(
+  lessonFrom = 1,
+  lessonTo = 25,
+  limit = 120,
+  jlptLevel?: 'N5' | 'N4' | 'N3' | 'N2' | 'N1',
+) {
+  const levelParam = jlptLevel ? `&jlptLevel=${jlptLevel}` : '';
   return apiRequest<ListeningPlaylist>(
-    `/listening/playlist?lessonFrom=${lessonFrom}&lessonTo=${lessonTo}&limit=${limit}`,
+    `/listening/playlist?lessonFrom=${lessonFrom}&lessonTo=${lessonTo}&limit=${limit}${levelParam}`,
   );
 }
 
@@ -651,6 +704,121 @@ export function fetchAdminUsers(token: string) {
   return apiRequest<AdminUserSummary[]>('/admin/users', { token });
 }
 
+export function updateAdminUserRole(
+  token: string,
+  userId: number,
+  role: 'USER' | 'TEACHER' | 'ADMIN',
+) {
+  return apiRequest<AdminUserSummary>(`/admin/users/${userId}/role`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify({ role }),
+  });
+}
+
+export type AdminExamResult = {
+  id: number;
+  examId: string;
+  level: string;
+  title: string;
+  correctCount: number;
+  total: number;
+  percent: number;
+  passed: boolean;
+  submittedAt: string;
+  user: { id: number; email: string; name: string | null } | null;
+  sections: Array<{
+    id: number;
+    section: string;
+    correct: number;
+    total: number;
+    percent: number;
+  }>;
+};
+
+export function fetchAdminExamResults(token: string, limit = 100) {
+  return apiRequest<AdminExamResult[]>(`/admin/exam-results?limit=${limit}`, { token });
+}
+
+export function deleteAdminExamResult(token: string, id: number) {
+  return apiRequest<{ id: number }>(`/admin/exam-results/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
+export function createLesson(
+  data: { lessonNumber: number; title?: string },
+  token: string,
+) {
+  return apiRequest<Lesson>('/lessons', {
+    method: 'POST',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateLesson(
+  id: number,
+  data: { lessonNumber?: number; title?: string },
+  token: string,
+) {
+  return apiRequest<Lesson>(`/lessons/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteLesson(id: number, token: string) {
+  return apiRequest<{ id: number }>(`/lessons/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
+export function createExercise(
+  data: {
+    type: string;
+    question: string;
+    options?: string;
+    answer: string;
+    lessonId: number;
+  },
+  token: string,
+) {
+  return apiRequest<Exercise>('/exercises', {
+    method: 'POST',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateExercise(
+  id: number,
+  data: Partial<{
+    type: string;
+    question: string;
+    options: string;
+    answer: string;
+    lessonId: number;
+  }>,
+  token: string,
+) {
+  return apiRequest<Exercise>(`/exercises/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteExercise(id: number, token: string) {
+  return apiRequest<{ id: number }>(`/exercises/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
 export type AdminPaymentsFilters = {
   userId?: number;
   status?: PaymentStatus;
@@ -925,6 +1093,44 @@ export function submitReading(id: number, answers: Record<string, string>) {
   });
 }
 
+export interface ReadingPassageInput {
+  title: string;
+  content: string;
+  jlptLevel?: string;
+  source?: string;
+  estimatedMin?: number;
+  sortOrder?: number;
+  questions?: {
+    question: string;
+    answer: string;
+    explanation?: string;
+    options: string[];
+  }[];
+}
+
+export function createReadingPassage(data: ReadingPassageInput, token: string) {
+  return apiRequest<ReadingPassage>('/reading', {
+    method: 'POST',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateReadingPassage(id: number, data: Partial<ReadingPassageInput>, token: string) {
+  return apiRequest<ReadingPassage>(`/reading/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteReadingPassage(id: number, token: string) {
+  return apiRequest<{ ok: boolean }>(`/reading/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
 // ─── Dictation ───────────────────────────────────────────────
 
 export interface DictationVocab {
@@ -1018,6 +1224,27 @@ export function upsertDailyGoals(
     token,
     body: JSON.stringify({ date, items }),
   });
+}
+
+// ─── Daily activity tracking ──────────────────────────────────
+
+export interface TodayActivity {
+  srs: boolean;
+  vocab: boolean;
+  kanji: boolean;
+  exam: boolean;
+}
+
+export function logActivity(kind: 'vocab' | 'kanji') {
+  const date = new Date().toISOString().slice(0, 10);
+  return apiRequest<{ ok: boolean }>('/progress/activity', {
+    method: 'POST',
+    body: JSON.stringify({ kind, date }),
+  });
+}
+
+export function fetchTodayActivity() {
+  return apiRequest<TodayActivity>('/progress/today');
 }
 
 // ─── Subscription ─────────────────────────────────────────────
