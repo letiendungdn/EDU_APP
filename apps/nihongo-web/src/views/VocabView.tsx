@@ -341,6 +341,11 @@ export default function VocabView({
     }, 150);
   };
 
+  const handlePrevRef = useRef(handlePrev);
+  const handleNextRef = useRef(handleNext);
+  handlePrevRef.current = handlePrev;
+  handleNextRef.current = handleNext;
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
@@ -355,15 +360,17 @@ export default function VocabView({
       }
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        handlePrev();
+        e.stopPropagation();
+        handlePrevRef.current();
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
-        handleNext();
+        e.stopPropagation();
+        handleNextRef.current();
       }
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  });
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, []);
 
   const handlePronounce = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -474,10 +481,22 @@ export default function VocabView({
                 onPlay={handlePlayAll}
                 onStop={stopPlayAll}
               />
-              <button type="button" className="btn btn-nav" onClick={handlePrev}>
+              <button
+                type="button"
+                className="btn btn-nav"
+                onClick={handlePrev}
+                aria-keyshortcuts="ArrowLeft"
+                title="Phím ←"
+              >
                 ⬅️ Trước
               </button>
-              <button type="button" className="btn btn-nav" onClick={handleNext}>
+              <button
+                type="button"
+                className="btn btn-nav"
+                onClick={handleNext}
+                aria-keyshortcuts="ArrowRight"
+                title="Phím →"
+              >
                 Sau ➡️
               </button>
             </div>
