@@ -10,8 +10,10 @@ services:
     container_name: edu-redis
     hostname: redis
     restart: unless-stopped
-    ports:
-      - '6379:6379'
+    # Không publish ra host — tránh Docker Desktop (Windows) làm Redis
+    # mất endpoint trên edu-app_default (Networks: {}) sau sleep/restart.
+    expose:
+      - '6379'
     networks:
       default:
         aliases:
