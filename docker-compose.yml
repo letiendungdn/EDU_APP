@@ -1,17 +1,27 @@
 name: edu-app
 
+networks:
+  default:
+    name: edu-app_default
+
 services:
   redis:
     image: redis:7-alpine
     container_name: edu-redis
+    hostname: redis
     restart: unless-stopped
     ports:
       - '6379:6379'
+    networks:
+      default:
+        aliases:
+          - redis
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
       timeout: 3s
       retries: 5
+      start_period: 5s
 
   mongodb:
     image: mongo:7-jammy
