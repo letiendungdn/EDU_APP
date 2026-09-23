@@ -343,8 +343,22 @@ export default function VocabView({
 
   const handlePrevRef = useRef(handlePrev);
   const handleNextRef = useRef(handleNext);
+  const flipCardRef = useRef(() => {});
+  const pronounceRef = useRef(() => {});
   handlePrevRef.current = handlePrev;
   handleNextRef.current = handleNext;
+  flipCardRef.current = () => {
+    setIsFlipped((prev) => {
+      if (!prev && !vocabLoggedRef.current) {
+        vocabLoggedRef.current = true;
+        void logActivity('vocab');
+      }
+      return !prev;
+    });
+  };
+  pronounceRef.current = () => {
+    if (currentVocab?.kana) playAudio(currentVocab.kana);
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -362,10 +376,24 @@ export default function VocabView({
         e.preventDefault();
         e.stopPropagation();
         handlePrevRef.current();
-      } else if (e.key === 'ArrowRight') {
+        return;
+      }
+      if (e.key === 'ArrowRight') {
         e.preventDefault();
         e.stopPropagation();
         handleNextRef.current();
+        return;
+      }
+      // Space / Enter: bỏ qua khi đang focus nút/link (để Enter vẫn bấm được nút)
+      if (target?.closest('button, a, [role="button"]')) return;
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault();
+        e.stopPropagation();
+        flipCardRef.current();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        pronounceRef.current();
       }
     };
     window.addEventListener('keydown', onKey, true);
