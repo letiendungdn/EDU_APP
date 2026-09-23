@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import LessonSelector from '../components/LessonSelector';
 import StrokeOrder from '../components/StrokeOrder';
 import { useLessonsQuery, useVocabRangeQuery, useVocabulariesQuery } from '../hooks/queries';
@@ -155,16 +156,27 @@ function mapPictureVocab(list: Vocabulary[], lessonNumber?: number): PictureVoca
 }
 
 export default function PictureDictionaryView() {
+  const searchParams = useSearchParams();
   const { data: lessons = [] } = useLessonsQuery();
   const maxLesson = lessons[lessons.length - 1]?.lessonNumber ?? 50;
 
+  const initialLesson = useMemo(() => {
+    const raw = searchParams.get('lesson');
+    const n = raw ? Number(raw) : NaN;
+    return Number.isFinite(n) && n > 0 ? Math.floor(n) : 1;
+  }, [searchParams]);
+
   const [scopeMode, setScopeMode] = useState<ScopeMode>('single');
-  const [lesson, setLesson] = useState(1);
+  const [lesson, setLesson] = useState(initialLesson);
   const [lessonFrom, setLessonFrom] = useState(1);
   const [lessonTo, setLessonTo] = useState(50);
   const [picturesOnly, setPicturesOnly] = useState(true);
   const [searchInput, setSearchInput] = useState('');
   const [selected, setSelected] = useState<PictureVocab | null>(null);
+
+  useEffect(() => {
+    if (initialLesson > 0) setLesson(initialLesson);
+  }, [initialLesson]);
 
   const { data: singleLessonVocab = [], isLoading: loadingSingle } = useVocabulariesQuery(lesson);
   const { data: rangeVocab = [], isLoading: loadingRange } = useVocabRangeQuery(

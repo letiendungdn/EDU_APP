@@ -450,7 +450,7 @@ export default function VocabView({
         <Link href="/kanji/quiz?source=minna" className="btn btn-outline">
           TN Kanji (Minna)
         </Link>
-        <Link href="/vocab/picture" className="btn btn-outline">
+        <Link href={`/vocab/picture?lesson=${currentLesson}`} className="btn btn-outline">
           Từ điển tranh
         </Link>
       </div>

@@ -16,6 +16,7 @@ export const NAV_GROUPS: NavGroupConfig[] = [
     items: [
       { path: '/kana', icon: 'あ', label: 'Kana' },
       { path: '/vocab', icon: '単', label: 'Từ vựng' },
+      { path: '/vocab/picture', icon: '🖼️', label: 'Từ điển tranh' },
       { path: '/grammar', icon: '文', label: 'Ngữ pháp' },
       { path: '/kanji', icon: '漢', label: 'Kanji' },
       { path: '/kanji/list', icon: '表', label: 'Bảng Kanji JLPT' },
@@ -58,7 +59,6 @@ export const NAV_GROUPS: NavGroupConfig[] = [
       { path: '/grammar-srs', icon: '文', label: 'SRS ngữ pháp' },
       { path: '/srs', icon: '🧠', label: 'SRS — Thẻ ghi nhớ' },
       { path: '/sentence-practice', icon: '✍️', label: 'Luyện câu AI' },
-      { path: '/vocab/picture', icon: '🖼️', label: 'Từ điển tranh' },
       { path: '/vocab/quiz', icon: '㊒', label: 'TN từ vựng' },
       { path: '/kana/quiz', icon: 'あ', label: 'TN Kana' },
       { path: '/kanji/quiz', icon: '漢', label: 'TN Kanji' },

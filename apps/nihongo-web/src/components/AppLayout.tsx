@@ -18,6 +18,7 @@ const NAV_GROUPS = [
     items: [
       { href: '/kana',      icon: 'あ',  label: 'Kana' },
       { href: '/vocab',     icon: '単',  label: 'Từ vựng' },
+      { href: '/vocab/picture', icon: '🖼️', label: 'Từ điển tranh' },
       { href: '/grammar',   icon: '文',  label: 'Ngữ pháp' },
       { href: '/kanji',     icon: '漢',  label: 'Kanji' },
       { href: '/kanji/list', icon: '表', label: 'Bảng Kanji JLPT' },
@@ -61,7 +62,6 @@ const NAV_GROUPS = [
       { href: '/grammar-srs',       icon: '文',  label: 'SRS ngữ pháp' },
       { href: '/srs',               icon: '🧠', label: 'SRS — Thẻ ghi nhớ' },
       { href: '/sentence-practice', icon: '✍️', label: 'Luyện câu AI' },
-      { href: '/vocab/picture',     icon: '🖼️', label: 'Từ điển tranh' },
       { href: '/vocab/quiz',        icon: '㊒', label: 'TN từ vựng' },
       { href: '/kana/quiz',         icon: 'あ', label: 'TN Kana' },
       { href: '/kanji/quiz',        icon: '漢', label: 'TN Kanji' },
