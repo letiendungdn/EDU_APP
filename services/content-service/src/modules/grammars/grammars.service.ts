@@ -8,6 +8,7 @@ import {
   CreateGrammarDto,
   UpdateGrammarDto,
 } from "@app/contracts";
+import { LEVEL_POOL_LESSON } from "@app/prisma/level-pool";
 
 @Injectable()
 export class GrammarsService {
@@ -49,7 +50,11 @@ export class GrammarsService {
         if (!lesson) return { data: [], total: 0, page, limit };
         where.lessonId = lesson.id;
       }
-      if (jlptLevel) where.jlptLevel = jlptLevel;
+      if (jlptLevel) {
+        where.jlptLevel = jlptLevel;
+        // Kho theo cấp: bỏ bài soạn theo sách (trùng mục JLPT)
+        if (!lessonNumber) where.lesson = LEVEL_POOL_LESSON;
+      }
       if (query) {
         where.OR = [
           { pattern: { contains: query, mode: "insensitive" } },

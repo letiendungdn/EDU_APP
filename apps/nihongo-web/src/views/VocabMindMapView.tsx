@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import JlptMindMapShell from '../components/JlptMindMapShell';
-import { VOCAB_MIND_MAP } from '../data/vocab-mind-map';
+import JlptMindMapShell, { MindMapStatus } from '../components/JlptMindMapShell';
 import { useMindMapLevels } from '../hooks/useMindMapLevels';
 import { useAuth } from '../hooks/useAuth';
 
 export default function VocabMindMapView() {
   const { isAdmin } = useAuth();
-  const { maps, loading } = useMindMapLevels('VOCAB', VOCAB_MIND_MAP);
+  const { maps, loading, error } = useMindMapLevels('VOCAB');
+  if (!maps.length) return <MindMapStatus title="Sơ đồ tư duy từ vựng" loading={loading} error={error} />;
 
   return (
     <JlptMindMapShell

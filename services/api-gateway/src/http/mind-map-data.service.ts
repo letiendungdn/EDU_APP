@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { JlptLevel, MindMapKind } from "@prisma/client";
 import { PrismaService } from "@app/prisma";
+import { LEVEL_POOL_LESSON, levelPoolSql } from "@app/prisma/level-pool";
 
 /**
  * Sơ đồ tư duy sinh từ DỮ LIỆU THẬT (toàn bộ từ vựng / ngữ pháp / kanji mỗi cấp),
@@ -282,7 +283,7 @@ export class MindMapDataService {
                CASE WHEN v."imageUrl" LIKE 'data:%' THEN NULL ELSE v."imageUrl" END AS "imageUrl"
         FROM "Vocabulary" v
         JOIN "Lesson" l ON l.id = v."lessonId"
-        WHERE v."jlptLevel" IS NOT NULL
+        WHERE v."jlptLevel" IS NOT NULL AND ${levelPoolSql("l")}
         ORDER BY l."lessonNumber", v."sortOrder", v.id`;
       return rows.map((r) => ({
         level: r.jlptLevel,
@@ -308,7 +309,7 @@ export class MindMapDataService {
 
     if (kind === "GRAMMAR") {
       const rows = await this.prisma.grammar.findMany({
-        where: { jlptLevel: { not: null } },
+        where: { jlptLevel: { not: null }, lesson: LEVEL_POOL_LESSON },
         select: {
           id: true,
           lessonId: true,
@@ -338,7 +339,7 @@ export class MindMapDataService {
     }
 
     const rows = await this.prisma.kanjiEntry.findMany({
-      where: { jlptLevel: { not: null } },
+      where: { jlptLevel: { not: null }, lesson: LEVEL_POOL_LESSON },
       select: {
         id: true,
         lessonId: true,

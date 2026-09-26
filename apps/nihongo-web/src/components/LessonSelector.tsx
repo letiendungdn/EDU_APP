@@ -71,8 +71,23 @@ export default function LessonSelector({
     const byNumber = <T extends { lessonNumber: number }>(a: T, b: T) =>
       a.lessonNumber - b.lessonNumber;
 
+    // Bài soạn riêng theo sách (Lesson.textbook) → nhóm riêng, không lẫn vào "JLPT N5…"
+    const BOOKS: Array<{ code: string; name: string }> = [
+      { code: 'SOUMATOME', name: 'Sou Matome' },
+      { code: 'SHINKANZEN', name: 'Shinkanzen' },
+      { code: 'TRY', name: 'TRY!' },
+    ];
+    const isBook = (l: { textbook?: string | null }) => BOOKS.some((b) => b.code === l.textbook);
     const minna = lessons.filter((l) => isMinna(l.lessonNumber)).sort(byNumber);
-    const rest = lessons.filter((l) => !isMinna(l.lessonNumber));
+    const rest = lessons.filter((l) => !isMinna(l.lessonNumber) && !isBook(l));
+    const bookGroups = BOOKS.flatMap((b) =>
+      ['N5', 'N4', 'N3', 'N2', 'N1'].map((lv) => ({
+        key: `${b.code}-${lv}`,
+        label: `${b.name} ${lv}`,
+        levels: [lv],
+        items: lessons.filter((l) => l.textbook === b.code && l.jlptLevel === lv).sort(byNumber),
+      })),
+    ).filter((g) => g.items.length > 0);
 
     const order: Array<{ key: string; label: string; levels: string[] }> = [
       { key: 'n5', label: 'JLPT N5', levels: ['N5', ''] },
@@ -96,6 +111,7 @@ export default function LessonSelector({
         ? [{ key: 'minna', label: 'Minna no Nihongo (bài 1–50)', items: minna }]
         : []),
       ...levelGroups,
+      ...bookGroups,
     ];
   }, [lessons]);
 

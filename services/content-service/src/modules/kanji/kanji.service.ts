@@ -6,6 +6,7 @@ import type {
   CreateKanjiEntryDto,
   UpdateKanjiEntryDto,
 } from "@app/contracts";
+import { LEVEL_POOL_LESSON } from "@app/prisma/level-pool";
 
 function parseJlptLevel(value?: string): JlptLevel | undefined {
   if (!value) return undefined;
@@ -103,6 +104,8 @@ export class KanjiService {
       where.lesson = {
         ...(lessonNumber ? { lessonNumber } : {}),
         ...(level ? { jlptLevel: level } : {}),
+        // Bảng kanji theo cấp: bỏ bài soạn theo sách (trùng chữ)
+        ...(level && !lessonNumber ? LEVEL_POOL_LESSON : {}),
       };
     }
 

@@ -23,6 +23,7 @@ import FlashcardJapaneseText from '../components/FlashcardJapaneseText';
 import { getVocabExamples } from '../utils/vocabPatternExample';
 import { logActivity } from '../api';
 import './VocabView.css';
+import { lessonHeading } from '../utils/lessonHeading';
 
 function strokeBoxSize(charCount: number, dense = false): number {
   if (dense) {
@@ -277,11 +278,7 @@ export default function VocabView({
   const currentLessonMeta = lessons.find((l) => l.lessonNumber === currentLesson);
   const lessonId = currentLessonMeta?.id ?? null;
   const expectedCount = currentLessonMeta?._count?.vocabularies ?? null;
-  const currentJlptLevel = currentLessonMeta?.jlptLevel ?? null;
-  const vocabTitle =
-    currentJlptLevel && ['N3', 'N2', 'N1'].includes(currentJlptLevel)
-      ? `Từ vựng JLPT ${currentJlptLevel}`
-      : 'Minna no Nihongo Vocabulary';
+  const vocabTitle = lessonHeading('vocab', currentLessonMeta);
 
   useEffect(() => {
     stopPlayAll();

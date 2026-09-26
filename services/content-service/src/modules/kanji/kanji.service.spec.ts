@@ -1,6 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { PrismaService } from "@app/prisma";
 import { KanjiService } from "./kanji.service";
+import { LEVEL_POOL_LESSON } from "@app/prisma/level-pool";
 
 describe("KanjiService", () => {
   let service: KanjiService;
@@ -41,12 +42,22 @@ describe("KanjiService", () => {
     );
   });
 
-  it("findEntries filters by jlptLevel", async () => {
+  it("findEntries filters by jlptLevel and skips textbook copies", async () => {
     prisma.kanjiEntry.findMany.mockResolvedValue([]);
     await service.findEntries(undefined, undefined, "N5");
     expect(prisma.kanjiEntry.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: { lesson: { jlptLevel: "N5" } },
+        where: { lesson: { jlptLevel: "N5", ...LEVEL_POOL_LESSON } },
+      }),
+    );
+  });
+
+  it("findEntries by lesson number keeps textbook lessons", async () => {
+    prisma.kanjiEntry.findMany.mockResolvedValue([]);
+    await service.findEntries(25101, undefined, "N5");
+    expect(prisma.kanjiEntry.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { lesson: { lessonNumber: 25101, jlptLevel: "N5" } },
       }),
     );
   });

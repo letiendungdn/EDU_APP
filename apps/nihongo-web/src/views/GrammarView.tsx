@@ -35,6 +35,7 @@ import {
   unpinGrammar,
 } from '../utils/grammarSrs';
 import './GrammarView.css';
+import { lessonHeading } from '../utils/lessonHeading';
 
 const AUTO_READ_KEY = 'nihongo-grammar-auto-read';
 
@@ -136,11 +137,7 @@ export default function GrammarView({
   const canEdit = isAdmin && editMode;
   const currentLessonMeta = lessons.find((lesson) => lesson.lessonNumber === currentLesson);
   const lessonId = currentLessonMeta?.id ?? null;
-  const currentJlptLevel = currentLessonMeta?.jlptLevel ?? null;
-  const viewTitle =
-    currentJlptLevel && ['N3', 'N2', 'N1'].includes(currentJlptLevel)
-      ? `Ngữ pháp JLPT ${currentJlptLevel}`
-      : 'Ngữ pháp Minna no Nihongo';
+  const viewTitle = lessonHeading('grammar', currentLessonMeta);
 
   useEffect(() => {
     setAutoRead(readAutoReadPreference());

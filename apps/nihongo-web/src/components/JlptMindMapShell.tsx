@@ -20,9 +20,9 @@ import {
   type JlptMindLevel,
   type JlptMindMapLevel,
 } from '../data/jlpt-mind-map-shared';
-import { JLPT_TEXTBOOK_SERIES, textbooksFor, type JlptTextbookSeries } from '../data/jlpt-textbooks';
+import { booksFor } from '../data/jlpt-textbooks';
+import { useTextbookCatalog } from '../hooks/useTextbookCatalog';
 import { useMindMapData } from '../hooks/useMindMapData';
-import { PLAN_LEVELS } from '../data/textbook-study-plans';
 import '../views/GrammarMindMapView.css';
 
 type MindMapMode = 'topic' | 'data';
@@ -61,6 +61,24 @@ type Props = {
   /** Hiện giáo trình tham khảo (Sou Matome / Shinkanzen / TRY!) cho cấp đang chọn */
   kind?: JlptMindKind;
 };
+
+/** Khi sơ đồ (từ DB) chưa có: đang tải / lỗi / chưa seed. */
+export function MindMapStatus({ title, loading, error }: { title: string; loading: boolean; error: boolean }) {
+  return (
+    <div className="container gmm-view">
+      <header className="gmm-header">
+        <h1 className="view-title gmm-title">{title}</h1>
+      </header>
+      <p className="gmm-level-summary">
+        {loading
+          ? 'Đang tải sơ đồ…'
+          : error
+            ? 'Không tải được sơ đồ — kiểm tra API rồi thử lại.'
+            : 'Chưa có sơ đồ trong DB. Chạy "npm run seed:mind-maps -w @edu/prisma-nihongo" hoặc tạo ở trang admin.'}
+      </p>
+    </div>
+  );
+}
 
 export default function JlptMindMapShell({
   title,
@@ -451,10 +469,6 @@ export default function JlptMindMapShell({
   );
 }
 
-const SERIES_ORDER: JlptTextbookSeries[] = ['MINNA', 'SOUMATOME', 'SHINKANZEN', 'TRY', 'KLL'];
-/** Chỉ hiện khi có sách cho cấp/loại sơ đồ đang xem (KLL chỉ có kanji N5–N3). */
-const OPTIONAL_SERIES: JlptTextbookSeries[] = ['MINNA', 'KLL'];
-
 function TextbookPanel({
   level,
   kind,
@@ -464,7 +478,9 @@ function TextbookPanel({
   kind: JlptMindKind;
   accent: string;
 }) {
-  const books = textbooksFor(level, kind);
+  // Danh mục giáo trình lấy từ DB (TextbookSeries / TextbookBook)
+  const { data: catalog } = useTextbookCatalog();
+  if (!catalog?.series.length) return null;
   return (
     <section
       className="gmm-books glass-panel"
@@ -473,10 +489,11 @@ function TextbookPanel({
     >
       <h2 className="gmm-books__title">Giáo trình tham khảo {level}</h2>
       <div className="gmm-books__grid">
-        {SERIES_ORDER.map((series) => {
-          const meta = JLPT_TEXTBOOK_SERIES[series];
-          const items = books.filter((b) => b.series === series);
-          if (!items.length && OPTIONAL_SERIES.includes(series)) return null;
+        {catalog.series.map((meta) => {
+          const series = meta.code;
+          const items = booksFor(meta, level, kind);
+          // Bộ không có sách nào cho loại sơ đồ này (vd KLL ở ngữ pháp, Minna ở kanji) → ẩn hẳn
+          if (!items.length && !meta.books.some((b) => b.kinds.includes(kind))) return null;
           return (
             <div key={series} className="gmm-books__series">
               <a href={meta.url} target="_blank" rel="noopener noreferrer" className="gmm-books__name">
@@ -503,7 +520,7 @@ function TextbookPanel({
               ) : (
                 <p className="gmm-books__none">Không có sách cấp {level} cho mục này.</p>
               )}
-              {items.length && PLAN_LEVELS[series].includes(level) ? (
+              {items.length && meta.planLevels.includes(level) ? (
                 <Link
                   href={`/textbooks?series=${series.toLowerCase()}&level=${level.toLowerCase()}`}
                   className="btn btn-nav btn-sm gmm-books__plan"

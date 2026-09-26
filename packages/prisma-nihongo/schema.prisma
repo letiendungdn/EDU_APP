@@ -54,12 +54,62 @@ enum JlptSessionStatus {
 // Content
 // ─────────────────────────────────────────────
 
+/// Giáo trình mà bài học thuộc về. null = nội dung JLPT chung của app.
+/// SOUMATOME / SHINKANZEN / TRY là bài soạn riêng theo khung sách → không tính vào kho theo cấp (tránh trùng).
+enum Textbook {
+  MINNA
+  KLL
+  SOUMATOME
+  SHINKANZEN
+  TRY
+}
+
+/// Danh mục bộ giáo trình tham khảo (menu "Giáo trình", trang /textbooks, khung sách ở mind map).
+model TextbookSeries {
+  id         Int            @id @default(autoincrement())
+  code       Textbook       @unique
+  name       String
+  nameJa     String
+  publisher  String
+  url        String
+  blurb      String         @db.Text
+  /// Ký tự hiển thị ở menu
+  icon       String
+  /// Các cấp có lộ trình học trong app
+  planLevels JlptLevel[]
+  /// Regex nhận diện mục của bộ sách trong "File nghe sách" (không phân biệt hoa thường)
+  audioMatch String?
+  sortOrder  Int            @default(0)
+  books      TextbookBook[]
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+}
+
+/// Một cuốn sách của bộ giáo trình theo cấp + kỹ năng.
+model TextbookBook {
+  id        Int            @id @default(autoincrement())
+  seriesId  Int
+  series    TextbookSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  level     JlptLevel
+  title     String
+  note      String?
+  /// Không có link khi không có nơi bán chính thức (vd bản cộng đồng)
+  url       String?
+  kinds     MindMapKind[]
+  sortOrder Int            @default(0)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([seriesId, level, sortOrder])
+}
+
 model Lesson {
   id           Int          @id @default(autoincrement())
   lessonNumber Int          @unique
   title        String?
   description  String?
   jlptLevel    JlptLevel?
+  textbook     Textbook?
   thumbnailUrl String?
   sortOrder    Int          @default(0)
   vocabularies Vocabulary[]
@@ -69,6 +119,7 @@ model Lesson {
   updatedAt    DateTime     @updatedAt
 
   @@index([jlptLevel, sortOrder])
+  @@index([textbook, lessonNumber])
 }
 
 model Vocabulary {
@@ -852,12 +903,14 @@ model KanjiLesson {
   lessonNumber Int          @unique
   title        String?
   jlptLevel    JlptLevel?
+  textbook     Textbook?
   sortOrder    Int          @default(0)
   entries      KanjiEntry[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
   @@index([jlptLevel, sortOrder])
+  @@index([textbook, lessonNumber])
 }
 
 model KanjiEntry {

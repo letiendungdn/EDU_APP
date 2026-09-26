@@ -3,6 +3,10 @@ export interface Lesson {
   lessonNumber: number;
   title: string | null;
   jlptLevel?: string | null;
+  /** Giáo trình: MINNA | KLL | SOUMATOME | SHINKANZEN | TRY (null = nội dung JLPT chung) */
+  textbook?: string | null;
+  /** Bài giáo trình: tên tuần / phần */
+  description?: string | null;
   createdAt?: string;
   updatedAt?: string;
   _count?: {
@@ -59,6 +63,7 @@ export interface KanjiLesson {
   lessonNumber: number;
   title: string | null;
   jlptLevel: string | null;
+  textbook?: string | null;
   sortOrder?: number;
   _count?: { entries: number };
 }

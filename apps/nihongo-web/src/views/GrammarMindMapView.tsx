@@ -1,18 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import JlptMindMapShell from '../components/JlptMindMapShell';
-import { GRAMMAR_MIND_MAP } from '../data/grammar-mind-map';
-import type { JlptMindMapLevel } from '../data/jlpt-mind-map-shared';
+import JlptMindMapShell, { MindMapStatus } from '../components/JlptMindMapShell';
 import { useMindMapLevels } from '../hooks/useMindMapLevels';
 import { useAuth } from '../hooks/useAuth';
 
 export default function GrammarMindMapView() {
   const { isAdmin } = useAuth();
-  const { maps, loading } = useMindMapLevels(
-    'GRAMMAR',
-    GRAMMAR_MIND_MAP as JlptMindMapLevel[],
-  );
+  const { maps, loading, error } = useMindMapLevels('GRAMMAR');
+  if (!maps.length) return <MindMapStatus title="Sơ đồ tư duy ngữ pháp" loading={loading} error={error} />;
 
   return (
     <JlptMindMapShell

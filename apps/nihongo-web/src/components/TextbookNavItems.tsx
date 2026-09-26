@@ -3,16 +3,8 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { JLPT_TEXTBOOK_SERIES, type JlptTextbookSeries } from '@/data/jlpt-textbooks';
-import { PLAN_LEVELS } from '@/data/textbook-study-plans';
-
-const SERIES_NAV: { series: JlptTextbookSeries; icon: string }[] = [
-  { series: 'MINNA', icon: 'み' },
-  { series: 'SOUMATOME', icon: '総' },
-  { series: 'SHINKANZEN', icon: '新' },
-  { series: 'TRY', icon: 'T' },
-  { series: 'KLL', icon: '漢' },
-];
+import type { JlptTextbookSeries } from '@/data/jlpt-textbooks';
+import { useTextbookCatalog } from '@/hooks/useTextbookCatalog';
 
 /** Trang /textbooks mặc định mở Sou Matome khi URL chưa có ?series= */
 const DEFAULT_SERIES: JlptTextbookSeries = 'SOUMATOME';
@@ -24,11 +16,14 @@ function Items({ compact, onClick, series, level }: Props & { series: string | n
   const onTextbooks = pathname === '/textbooks';
   const activeSeries = onTextbooks ? (series?.toUpperCase() ?? DEFAULT_SERIES) : null;
   const activeLevel = level?.toUpperCase() ?? null;
+  // Tên, icon, thứ tự và các cấp có lộ trình đều lấy từ DB (TextbookSeries)
+  const { data: catalog } = useTextbookCatalog();
 
   return (
     <>
-      {SERIES_NAV.map(({ series: s, icon }) => {
-        const meta = JLPT_TEXTBOOK_SERIES[s];
+      {(catalog?.series ?? []).map((meta) => {
+        const s = meta.code;
+        const icon = meta.icon;
         const key = s.toLowerCase();
         const isActive = activeSeries === s;
         return (
@@ -44,7 +39,7 @@ function Items({ compact, onClick, series, level }: Props & { series: string | n
             </Link>
             {!compact && (
               <div className="nav-book__levels" aria-label={`${meta.name} theo cấp`}>
-                {PLAN_LEVELS[s].map((lv) => (
+                {meta.planLevels.map((lv) => (
                   <Link
                     key={lv}
                     href={`/textbooks?series=${key}&level=${lv.toLowerCase()}`}

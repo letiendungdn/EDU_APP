@@ -4,6 +4,7 @@ import type { Cache } from "cache-manager";
 import { PrismaService } from "@app/prisma";
 import { CacheKeys, CacheTTL } from "@app/common";
 import { CreateVocabularyDto, UpdateVocabularyDto } from "@app/contracts";
+import { LEVEL_POOL_LESSON } from "@app/prisma/level-pool";
 
 @Injectable()
 export class VocabulariesService {
@@ -57,7 +58,11 @@ export class VocabulariesService {
         if (!lesson) return { data: [], total: 0, page, limit };
         where.lessonId = lesson.id;
       }
-      if (jlptLevel) where.jlptLevel = jlptLevel;
+      if (jlptLevel) {
+        where.jlptLevel = jlptLevel;
+        // Kho theo cấp: bỏ bài soạn theo sách (trùng mục JLPT)
+        if (!lessonNumber) where.lesson = LEVEL_POOL_LESSON;
+      }
       if (query) {
         where.OR = [
           { kanji: { contains: query, mode: "insensitive" } },

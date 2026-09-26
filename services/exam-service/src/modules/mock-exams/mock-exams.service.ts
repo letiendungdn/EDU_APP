@@ -19,6 +19,7 @@ import type {
 import { PrismaService } from "@app/prisma";
 import type Redis from "ioredis";
 import { randomUUID } from "crypto";
+import { LEVEL_POOL_LESSON } from "@app/prisma/level-pool";
 
 const SESSION_TTL_MS = 3 * 60 * 60 * 1000;
 const sessionKey = (examId: string) => `mock-exam:${examId}`;
@@ -744,7 +745,8 @@ export class MockExamsService {
     // [lessonFrom, lessonTo] của template, nên lọc theo range sẽ bỏ sót phần
     // lớn nội dung N2/N1 đã seed. jlptLevel là nguồn sự thật đáng tin cậy hơn.
     const lessons = await this.prisma.lesson.findMany({
-      where: { jlptLevel },
+      // Bài soạn theo sách lặp lại mục JLPT → bỏ để đề không trùng câu
+      where: { jlptLevel, ...LEVEL_POOL_LESSON },
       select: { id: true, lessonNumber: true },
     });
 
@@ -769,7 +771,7 @@ export class MockExamsService {
     const pickedGrammar = sample(grammarCandidates, cfg.grammarCount);
 
     const kanjiEntries = await this.prisma.kanjiEntry.findMany({
-      where: { lesson: { jlptLevel } },
+      where: { lesson: { jlptLevel, ...LEVEL_POOL_LESSON } },
       include: { lesson: { select: { lessonNumber: true } } },
     });
 

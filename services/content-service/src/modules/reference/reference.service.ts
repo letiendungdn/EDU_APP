@@ -17,6 +17,7 @@ const SLUGS = [
   "home-page",
   "japanese-conversation",
   "japanese-roleplay",
+  "textbooks",
 ] as const;
 
 type ReferenceSlug = (typeof SLUGS)[number];
@@ -74,6 +75,8 @@ export class ReferenceService {
         return this.getJapaneseConversation();
       case "japanese-roleplay":
         return this.getJapaneseRoleplay();
+      case "textbooks":
+        return this.getTextbooks();
       default:
         throw new NotFoundException(`Reference content not found: ${slug}`);
     }
@@ -94,8 +97,37 @@ export class ReferenceService {
       "home-page": "Trang chủ — thống kê & mục học",
       "japanese-conversation": "会話 — 自己紹介 & câu giao tiếp",
       "japanese-roleplay": "会話 — Đóng vai hội thoại",
+      textbooks: "Giáo trình tham khảo (Minna, Sou Matome, Shinkanzen, TRY!, KLL)",
     };
     return titles[slug];
+  }
+
+  /** Danh mục giáo trình: bộ sách + sách theo cấp/kỹ năng (menu Giáo trình, /textbooks, mind map). */
+  private async getTextbooks() {
+    const series = await this.prisma.textbookSeries.findMany({
+      orderBy: { sortOrder: "asc" },
+      include: { books: { orderBy: [{ level: "asc" }, { sortOrder: "asc" }] } },
+    });
+    return {
+      series: series.map((s) => ({
+        code: s.code,
+        name: s.name,
+        nameJa: s.nameJa,
+        publisher: s.publisher,
+        url: s.url,
+        blurb: s.blurb,
+        icon: s.icon,
+        planLevels: s.planLevels,
+        audioMatch: s.audioMatch,
+        books: s.books.map((b) => ({
+          level: b.level,
+          title: b.title,
+          note: b.note ?? undefined,
+          url: b.url ?? undefined,
+          kinds: b.kinds,
+        })),
+      })),
+    };
   }
 
   private async getKanaCharts() {

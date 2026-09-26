@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { shuffle, speechTextFromJapanese } from "@app/common";
 import { PrismaService } from "@app/prisma";
+import { LEVEL_POOL_LESSON } from "@app/prisma/level-pool";
 
 export interface ListeningPlaylistItem {
   id: string;
@@ -26,7 +27,7 @@ export class ListeningService {
     // cấp) — khi biết jlptLevel, lọc theo field đó đáng tin cậy hơn range.
     const lessons = await this.prisma.lesson.findMany({
       where: jlptLevel
-        ? { jlptLevel }
+        ? { jlptLevel, ...LEVEL_POOL_LESSON }
         : { lessonNumber: { gte: lessonFrom, lte: lessonTo } },
       select: { id: true, lessonNumber: true },
       orderBy: { lessonNumber: "asc" },

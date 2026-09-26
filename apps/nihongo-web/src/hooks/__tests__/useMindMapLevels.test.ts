@@ -1,19 +1,24 @@
 import { describe, expect, it } from 'vitest';
-import { mergeWithFallback } from '../useMindMapLevels';
-import type { JlptMindMapLevel } from '../../data/jlpt-mind-map-shared';
+import { apiToView } from '../useMindMapLevels';
+import type { MindMapLevelApi } from '../../api';
 
-const lv = (level: JlptMindMapLevel['level'], title: string): JlptMindMapLevel => ({
+const row = (level: MindMapLevelApi['level']): MindMapLevelApi => ({
+  id: 1,
+  kind: 'GRAMMAR',
   level,
-  title,
+  title: `t ${level}`,
   summary: '',
   accent: '#000',
-  branches: [],
+  sortOrder: 0,
+  branches: [{ id: 'b', label: 'B', patterns: [{ pattern: 'p', meaning: 'm', lessonNumber: 3 }] }],
 });
 
-describe('mergeWithFallback', () => {
-  it('keeps built-in levels the DB has not saved yet', () => {
-    const fallback = (['N5', 'N4', 'N3', 'N2', 'N1'] as const).map((l) => lv(l, `default ${l}`));
-    const merged = mergeWithFallback([lv('N5', 'from db')], fallback);
-    expect(merged.map((m) => m.title)).toEqual(['from db', 'default N4', 'default N3', 'default N2', 'default N1']);
+describe('apiToView', () => {
+  it('orders levels N5 → N1 and keeps branch items', () => {
+    const view = apiToView([row('N1'), row('N5'), row('N3')]);
+    expect(view.map((m) => m.level)).toEqual(['N5', 'N3', 'N1']);
+    expect(view[0].branches[0].patterns[0]).toEqual(
+      expect.objectContaining({ pattern: 'p', meaning: 'm', lessonNumber: 3 }),
+    );
   });
 });

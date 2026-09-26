@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  bulkUpsertMindMaps,
   createMindMap,
   deleteMindMap,
   fetchMindMaps,
@@ -25,11 +24,7 @@ import {
   type JlptMindBranch,
   type JlptMindKind,
   type JlptMindLevel,
-  type JlptMindMapLevel,
 } from '../../data/jlpt-mind-map-shared';
-import { GRAMMAR_MIND_MAP } from '../../data/grammar-mind-map';
-import { VOCAB_MIND_MAP } from '../../data/vocab-mind-map';
-import { KANJI_MIND_MAP } from '../../data/kanji-mind-map';
 import '../../components/admin/AdminComponents.css';
 import '../../views/GrammarMindMapView.css';
 import './AdminPages.css';
@@ -63,34 +58,6 @@ function toInput(row: MindMapLevelApi): MindMapLevelInput {
     sortOrder: row.sortOrder,
     branches: (row.branches ?? []) as MindMapBranchApi[],
   };
-}
-
-function staticDefaults(kind: MindMapKindApi): MindMapLevelInput[] {
-  const source: JlptMindMapLevel[] =
-    kind === 'GRAMMAR' ? GRAMMAR_MIND_MAP : kind === 'VOCAB' ? VOCAB_MIND_MAP : KANJI_MIND_MAP;
-  return source.map((m, i) => ({
-    kind,
-    level: m.level as MindMapLevelCode,
-    title: m.title,
-    summary: m.summary,
-    accent: m.accent,
-    sortOrder: i,
-    branches: m.branches.map((b) => ({
-      id: b.id,
-      label: b.label,
-      labelJa: b.labelJa,
-      hint: b.hint,
-      posX: b.posX,
-      posY: b.posY,
-      patterns: b.patterns.map((p) => ({
-        pattern: p.pattern,
-        meaning: p.meaning,
-        href: p.href,
-        lessonNumber: p.lessonNumber,
-        linkLabel: p.linkLabel,
-      })),
-    })),
-  }));
 }
 
 export default function AdminMindMapsView() {
@@ -249,35 +216,6 @@ export default function AdminMindMapsView() {
     setDirty(true);
   }
 
-  async function handleSeedDefaults() {
-    if (!token) return;
-    if (
-      !window.confirm(
-        `Ghi đè toàn bộ sơ đồ ${kind} bằng dữ liệu mặc định trong code?`,
-      )
-    ) {
-      return;
-    }
-    setBusy(true);
-    try {
-      const levels = staticDefaults(kind);
-      const saved = await bulkUpsertMindMaps(levels, token, kind);
-      setRows(saved);
-      const first = saved.find((r) => r.level === level) ?? saved[0];
-      if (first) {
-        setLevel(first.level);
-        setDraft(toInput(first));
-        setActiveBranchId(first.branches[0]?.id ?? null);
-      }
-      setDirty(false);
-      toast.show(`Đã seed ${saved.length} cấp ${kind}`, 'success');
-    } catch (e) {
-      toast.show(e instanceof Error ? e.message : 'Seed thất bại', 'error');
-    } finally {
-      setBusy(false);
-    }
-  }
-
   function addBranch() {
     if (!draft) return;
     const b = EMPTY_BRANCH(draft.branches.length);
@@ -383,9 +321,6 @@ export default function AdminMindMapsView() {
           ))}
         </div>
         <div className="amm-actions">
-          <button type="button" className="btn btn-outline btn-sm" disabled={busy} onClick={() => void handleSeedDefaults()}>
-            Seed mặc định
-          </button>
           <button type="button" className="btn btn-outline btn-sm" disabled={busy || !dirty} onClick={() => void load()}>
             Huỷ thay đổi
           </button>
@@ -423,10 +358,10 @@ export default function AdminMindMapsView() {
         <p className="amm-status">Đang tải…</p>
       ) : !draft ? (
         <div className="amm-empty glass-panel">
-          <p>Chưa có sơ đồ {kindMeta?.label ?? kind}. Hãy seed mặc định hoặc thêm cấp N5–N1.</p>
-          <button type="button" className="btn btn-primary" onClick={() => void handleSeedDefaults()}>
-            Seed mặc định {kind}
-          </button>
+          <p>
+            Chưa có sơ đồ {kindMeta?.label ?? kind}. Chạy <code>npm run seed:mind-maps -w @edu/prisma-nihongo</code> để nạp
+            sơ đồ mặc định, hoặc thêm cấp N5–N1.
+          </p>
         </div>
       ) : (
         <div className="amm-layout">

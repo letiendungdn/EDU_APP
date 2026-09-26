@@ -1,11 +1,13 @@
 /**
- * Lộ trình học "theo giáo trình" — xếp nội dung CỦA APP (bài ngữ pháp / từ vựng / kanji / đọc hiểu)
- * theo khung của từng bộ sách luyện thi. Không chép nội dung sách (bản quyền NXB);
- * người học dùng sách song song và ghi số trang vào từng buổi.
+ * Lộ trình học "theo giáo trình".
  *
- * - Sou Matome: 6 tuần × 7 ngày, ngày 7 mỗi tuần là ôn tập.
- * - Shinkanzen Master: học sâu theo từng kỹ năng (文法 → 語彙 → 漢字 → 読解 → 聴解 → 模試). Không có N5.
- * - TRY!: ngữ pháp là trục chính, mỗi chương = 1 bài ngữ pháp + từ vựng cùng bài + 1 bài đọc.
+ * - Sou Matome / Shinkanzen / TRY!: bài SOẠN RIÊNG cho từng sách (Lesson.textbook, seed từ
+ *   packages/prisma-nihongo/textbooks). Số bài = base + mã cấp×1000 + phần×100 + bài
+ *   (Sou Matome 2xxxx, Shinkanzen 3xxxx, TRY! 4xxxx) — không lấy bài Minna / bài chung.
+ *   Nội dung do app soạn theo khung sách, không chép sách (bản quyền NXB).
+ *   · Sou Matome: 6 tuần × 6 ngày học + ngày 7 ôn tập.
+ *   · Shinkanzen Master: 文法 (theo nhóm chức năng) → 語彙 (theo chủ đề) → 漢字 → 読解 → 聴解 → 模試. Không có N5.
+ *   · TRY!: các chương ngữ pháp kèm từ vựng, bài đọc và file nghe.
  * - Kanji Look and Learn: 32 課 × 16 chữ; KanjiLesson 1–32 trong app chính là 32 bài của sách.
  *   N2/N1: bản cộng đồng (Duy Triều) — app không có thứ tự bài của bản này, dùng bài kanji N2/N1 của app.
  * - Minna no Nihongo: sơ cấp I = bài 1–25 (N5), sơ cấp II = bài 26–50 (N4) — chính là Lesson 1–50 trong app.
@@ -18,11 +20,20 @@ export type PlanLesson = {
   lessonNumber: number;
   title: string | null;
   jlptLevel?: string | null;
+  /** Giáo trình (Lesson.textbook) */
+  textbook?: string | null;
+  /** Tên tuần / phần của bài giáo trình (Lesson.description) */
+  description?: string | null;
   grammarCount?: number;
   vocabCount?: number;
 };
 
-export type PlanKanjiLesson = { lessonNumber: number; title: string | null; jlptLevel: string | null };
+export type PlanKanjiLesson = {
+  lessonNumber: number;
+  title: string | null;
+  jlptLevel: string | null;
+  textbook?: string | null;
+};
 
 export type PlanReading = { id: number; title: string; jlptLevel: string | null };
 
@@ -57,15 +68,6 @@ export type StudyPlan = {
   unitCount: number;
 };
 
-export const PLAN_LEVELS: Record<JlptTextbookSeries, JlptMindLevel[]> = {
-  SOUMATOME: ['N5', 'N4', 'N3', 'N2', 'N1'],
-  SHINKANZEN: ['N4', 'N3', 'N2', 'N1'],
-  TRY: ['N5', 'N4', 'N3', 'N2', 'N1'],
-  KLL: ['N5', 'N4', 'N3', 'N2', 'N1'],
-  // Trung cấp (N3/N2) chưa có bài trong app → chưa có lộ trình.
-  MINNA: ['N5', 'N4'],
-};
-
 export const MINNA_BOOKS: Record<'N5' | 'N4', { name: string; from: number; to: number }> = {
   N5: { name: '初級I', from: 1, to: 25 },
   N4: { name: '初級II', from: 26, to: 50 },
@@ -78,8 +80,14 @@ export const KLL_PARTS: Record<'N5' | 'N4' | 'N3', { part: number; from: number;
   N3: { part: 3, from: 21, to: 32 },
 };
 
-const SOUMATOME_WEEKS = 6;
-const SOUMATOME_STUDY_DAYS_PER_WEEK = 6;
+/** Sách có bài soạn riêng trong DB */
+export const TEXTBOOK_COPY_SERIES = ['SOUMATOME', 'SHINKANZEN', 'TRY'] as const;
+type CopySeries = (typeof TEXTBOOK_COPY_SERIES)[number];
+
+/** 23204 → { section: 2, unit: 4 } */
+export function parseTextbookNumber(n: number): { section: number; unit: number } {
+  return { section: Math.floor((n % 1000) / 100), unit: n % 100 };
+}
 
 const byNumber = <T extends { lessonNumber: number }>(a: T, b: T) => a.lessonNumber - b.lessonNumber;
 
@@ -126,98 +134,134 @@ export function splitEvenly<T>(items: T[], n: number): T[][] {
   return out;
 }
 
-function levelSlice(src: PlanSource, level: JlptMindLevel) {
-  const lessons = src.lessons.filter((l) => l.jlptLevel === level).sort(byNumber);
-  return {
-    grammarLessons: lessons.filter((l) => (l.grammarCount ?? 0) > 0),
-    vocabLessons: lessons.filter((l) => (l.vocabCount ?? 0) > 0),
-    kanjiLessons: src.kanjiLessons.filter((l) => l.jlptLevel === level).sort(byNumber),
-    readings: src.readings.filter((r) => r.jlptLevel === level),
+type TextbookUnitSource = {
+  lessonNumber: number;
+  section: number;
+  unit: number;
+  sectionTitle: string | null;
+  /** Phần sau "—" trong tiêu đề bài */
+  topic: string | null;
+  lesson?: PlanLesson;
+  kanji?: PlanKanjiLesson;
+};
+
+/** Tên phần cố định khi phần chỉ có bài kanji (KanjiLesson không có description). */
+const FIXED_SECTION_TITLES: Partial<Record<CopySeries, Record<number, string>>> = {
+  SHINKANZEN: { 1: '文法 · Ngữ pháp', 2: '語彙 · Từ vựng', 3: '漢字 · Kanji' },
+};
+
+/** Bài soạn riêng của (sách, cấp): ghép Lesson và KanjiLesson cùng số, nhóm theo phần. */
+function textbookSections(src: PlanSource, series: CopySeries, level: JlptMindLevel) {
+  const byNumber = new Map<number, TextbookUnitSource>();
+  const get = (n: number) => {
+    let u = byNumber.get(n);
+    if (!u) {
+      u = { lessonNumber: n, ...parseTextbookNumber(n), sectionTitle: null, topic: null };
+      byNumber.set(n, u);
+    }
+    return u;
   };
+  const topicOf = (title: string | null) => title?.split(' — ').slice(1).join(' — ').trim() || null;
+  for (const l of src.lessons) {
+    if (l.textbook !== series || l.jlptLevel !== level) continue;
+    const u = get(l.lessonNumber);
+    u.lesson = l;
+    u.sectionTitle = l.description ?? u.sectionTitle;
+    u.topic = topicOf(l.title) ?? u.topic;
+  }
+  for (const k of src.kanjiLessons) {
+    if (k.textbook !== series || k.jlptLevel !== level) continue;
+    const u = get(k.lessonNumber);
+    u.kanji = k;
+    u.topic = u.topic ?? topicOf(k.title);
+  }
+  const sections = new Map<number, TextbookUnitSource[]>();
+  for (const u of [...byNumber.values()].sort((a, b) => a.lessonNumber - b.lessonNumber)) {
+    const list = sections.get(u.section) ?? [];
+    list.push(u);
+    sections.set(u.section, list);
+  }
+  return [...sections.entries()].map(([section, units]) => ({
+    section,
+    title:
+      units.find((u) => u.sectionTitle)?.sectionTitle ?? FIXED_SECTION_TITLES[series]?.[section] ?? `Phần ${section}`,
+    units,
+  }));
+}
+
+function unitTasks(u: TextbookUnitSource): PlanTask[] {
+  const tasks: PlanTask[] = [];
+  const l = u.lesson;
+  if (l && (l.grammarCount ?? 1) > 0) tasks.push({ kind: 'GRAMMAR', label: `Ngữ pháp · ${u.topic ?? `Bài ${l.lessonNumber}`}`, href: `/grammar?lesson=${l.lessonNumber}` });
+  if (l && (l.vocabCount ?? 1) > 0) tasks.push({ kind: 'VOCAB', label: 'Từ vựng', href: `/vocab?lesson=${l.lessonNumber}` });
+  if (u.kanji) tasks.push({ kind: 'KANJI', label: 'Kanji', href: `/kanji?lesson=${u.kanji.lessonNumber}` });
+  if (l) tasks.push({ kind: 'REVIEW', label: 'Bài tập trắc nghiệm', href: `/quiz?lesson=${l.lessonNumber}` });
+  return tasks;
+}
+
+function levelReadings(src: PlanSource, level: JlptMindLevel) {
+  return src.readings.filter((r) => r.jlptLevel === level);
 }
 
 function buildSoumatome(src: PlanSource, level: JlptMindLevel): PlanSection[] {
-  const s = levelSlice(src, level);
-  const totalDays = SOUMATOME_WEEKS * SOUMATOME_STUDY_DAYS_PER_WEEK;
-  const g = splitEvenly(s.grammarLessons, totalDays);
-  const v = splitEvenly(s.vocabLessons, totalDays);
-  const k = splitEvenly(s.kanjiLessons, totalDays);
-  const r = splitEvenly(s.readings, SOUMATOME_WEEKS);
-
-  return Array.from({ length: SOUMATOME_WEEKS }, (_, w) => {
-    const units: PlanUnit[] = [];
-    for (let d = 0; d < SOUMATOME_STUDY_DAYS_PER_WEEK; d++) {
-      const i = w * SOUMATOME_STUDY_DAYS_PER_WEEK + d;
-      const tasks = [...g[i].map(grammarTask), ...v[i].map(vocabTask), ...k[i].map(kanjiTask)];
-      units.push({
-        id: `w${w + 1}d${d + 1}`,
-        title: `Ngày ${d + 1}`,
-        subtitle: `${d + 1}日目`,
-        tasks: tasks.length ? tasks : reviewTasks().slice(0, 1),
-      });
-    }
-    units.push({
-      id: `w${w + 1}d7`,
-      title: 'Ngày 7 · Ôn tập tuần',
-      subtitle: 'まとめ問題',
-      tasks: [
-        ...r[w].map(readingTask),
-        ...(src.audio ?? []).map(audioTask),
-        ...reviewTasks(),
-        ...(w === SOUMATOME_WEEKS - 1 ? [mockExamTask] : []),
-      ],
-    });
-    return { id: `week-${w + 1}`, title: `Tuần ${w + 1}`, titleJa: `第${w + 1}週`, units };
-  });
+  const weeks = textbookSections(src, 'SOUMATOME', level);
+  const readings = splitEvenly(levelReadings(src, level), Math.max(weeks.length, 1));
+  return weeks.map((week, w) => ({
+    id: `week-${week.section}`,
+    title: week.title,
+    titleJa: `第${week.section}週`,
+    units: [
+      ...week.units.map((u) => ({
+        id: `sm${u.lessonNumber}`,
+        title: `Ngày ${u.unit}`,
+        subtitle: u.topic ?? `${u.unit}日目`,
+        tasks: unitTasks(u),
+      })),
+      {
+        id: `week-${week.section}-review`,
+        title: 'Ngày 7 · Ôn tập tuần',
+        subtitle: 'まとめ問題',
+        tasks: [
+          ...(readings[w] ?? []).map(readingTask),
+          ...(src.audio ?? []).map(audioTask),
+          ...reviewTasks(),
+          ...(w === weeks.length - 1 ? [mockExamTask] : []),
+        ],
+      },
+    ],
+  }));
 }
 
 function buildShinkanzen(src: PlanSource, level: JlptMindLevel): PlanSection[] {
-  const s = levelSlice(src, level);
-  const sections: PlanSection[] = [
-    {
-      id: 'bunpou',
-      title: 'Ngữ pháp',
-      titleJa: '文法',
-      units: s.grammarLessons.map((l, i) => ({
-        id: `g${l.lessonNumber}`,
-        title: `Phần ${i + 1}`,
-        subtitle: lessonName(l),
-        tasks: [grammarTask(l)],
+  const parts = textbookSections(src, 'SHINKANZEN', level);
+  if (!parts.length) return [];
+  const skillSections: PlanSection[] = parts.map((part) => {
+    const [titleJa, title] = part.title.split(' · ');
+    return {
+      id: `skill-${part.section}`,
+      title: title ?? part.title,
+      titleJa: title ? titleJa : undefined,
+      units: part.units.map((u) => ({
+        id: `sk${u.lessonNumber}`,
+        title: part.section === 3 ? `Buổi ${u.unit}` : `Phần ${u.unit}`,
+        subtitle: u.topic ?? undefined,
+        tasks: unitTasks(u),
       })),
-    },
-    {
-      id: 'goi',
-      title: 'Từ vựng',
-      titleJa: '語彙',
-      units: s.vocabLessons.map((l, i) => ({
-        id: `v${l.lessonNumber}`,
-        title: `Phần ${i + 1}`,
-        subtitle: lessonName(l),
-        tasks: [vocabTask(l)],
-      })),
-    },
-    {
-      id: 'kanji',
-      title: 'Kanji',
-      titleJa: '漢字',
-      units: s.kanjiLessons.map((l, i) => ({
-        id: `k${l.lessonNumber}`,
-        title: `Buổi ${i + 1}`,
-        subtitle: lessonName(l),
-        tasks: [kanjiTask(l)],
-      })),
-    },
-    {
-      id: 'dokkai',
-      title: 'Đọc hiểu',
-      titleJa: '読解',
-      units: s.readings.map((r, i) => ({
-        id: `r${r.id}`,
-        title: `Bài đọc ${i + 1}`,
-        subtitle: r.title,
-        tasks: [readingTask(r)],
-      })),
-    },
+    };
+  });
+  const readings = levelReadings(src, level);
+  return [
+    ...skillSections,
+    ...(readings.length
+      ? [
+          {
+            id: 'dokkai',
+            title: 'Đọc hiểu',
+            titleJa: '読解',
+            units: readings.map((r, i) => ({ id: `r${r.id}`, title: `Bài đọc ${i + 1}`, subtitle: r.title, tasks: [readingTask(r)] })),
+          },
+        ]
+      : []),
     {
       id: 'choukai',
       title: 'Nghe hiểu',
@@ -241,29 +285,28 @@ function buildShinkanzen(src: PlanSource, level: JlptMindLevel): PlanSection[] {
       units: [{ id: 'mock', title: 'Đề thi thử', tasks: [mockExamTask] }],
     },
   ];
-  return sections.filter((sec) => sec.units.length > 0);
 }
 
 function buildTry(src: PlanSource, level: JlptMindLevel): PlanSection[] {
-  const s = levelSlice(src, level);
-  const vocabByLesson = new Map(s.vocabLessons.map((l) => [l.lessonNumber, l]));
-  const units: PlanUnit[] = s.grammarLessons.map((l, i) => {
-    const vocab = vocabByLesson.get(l.lessonNumber);
-    const reading = s.readings.length ? s.readings[i % s.readings.length] : undefined;
-    return {
-      id: `c${l.lessonNumber}`,
-      title: `Chương ${i + 1}`,
-      subtitle: lessonName(l),
-      tasks: [
-        grammarTask(l),
-        ...(vocab ? [vocabTask(vocab)] : []),
-        ...(reading ? [readingTask(reading)] : []),
-        ...(src.audio ?? []).map(audioTask),
-      ],
-    };
-  });
+  const chapters = textbookSections(src, 'TRY', level).flatMap((s) => s.units);
+  if (!chapters.length) return [];
+  const readings = levelReadings(src, level);
   return [
-    { id: 'chapters', title: 'Các chương', titleJa: '文法から伸ばす', units },
+    {
+      id: 'chapters',
+      title: 'Các chương',
+      titleJa: '文法から伸ばす',
+      units: chapters.map((u, i) => ({
+        id: `try${u.lessonNumber}`,
+        title: `Chương ${u.unit}`,
+        subtitle: u.topic ?? undefined,
+        tasks: [
+          ...unitTasks(u),
+          ...(readings.length ? [readingTask(readings[i % readings.length])] : []),
+          ...(src.audio ?? []).map(audioTask),
+        ],
+      })),
+    },
     {
       id: 'practice',
       title: 'Luyện đề',
@@ -274,7 +317,9 @@ function buildTry(src: PlanSource, level: JlptMindLevel): PlanSection[] {
 }
 
 function buildKllCommunity(src: PlanSource, level: JlptMindLevel): PlanSection[] {
-  const lessons = src.kanjiLessons.filter((l) => l.jlptLevel === level).sort(byNumber);
+  const lessons = src.kanjiLessons
+    .filter((l) => l.jlptLevel === level && !(TEXTBOOK_COPY_SERIES as readonly string[]).includes(l.textbook ?? ''))
+    .sort(byNumber);
   return [
     {
       id: `community-${level}`,
@@ -389,8 +434,17 @@ function buildMinna(src: PlanSource, level: JlptMindLevel): PlanSection[] {
   ];
 }
 
-export function buildStudyPlan(series: JlptTextbookSeries, level: JlptMindLevel, src: PlanSource): StudyPlan | null {
-  if (!PLAN_LEVELS[series].includes(level)) return null;
+/**
+ * @param planLevels các cấp bộ sách có lộ trình (TextbookSeries.planLevels trong DB)
+ * @returns null nếu bộ sách không có lộ trình ở cấp này
+ */
+export function buildStudyPlan(
+  series: JlptTextbookSeries,
+  level: JlptMindLevel,
+  src: PlanSource,
+  planLevels: JlptMindLevel[],
+): StudyPlan | null {
+  if (!planLevels.includes(level)) return null;
   const sections =
     series === 'SOUMATOME'
       ? buildSoumatome(src, level)

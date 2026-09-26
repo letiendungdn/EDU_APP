@@ -1,4 +1,4 @@
-import type { JlptMindMapLevel } from './jlpt-mind-map-shared';
+import type { MindMapLevelData as JlptMindMapLevel } from './types';
 
 /** Sơ đồ tư duy kanji JLPT — nhóm nghĩa + chữ tiêu biểu. */
 export const KANJI_MIND_MAP: JlptMindMapLevel[] = [

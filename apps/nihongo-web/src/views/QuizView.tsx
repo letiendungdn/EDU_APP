@@ -26,8 +26,8 @@ interface QuizScore {
   total: number;
 }
 
-export default function QuizView() {
-  const [currentLesson, setCurrentLesson] = useState(1);
+export default function QuizView({ initialLessonNumber }: { initialLessonNumber?: number } = {}) {
+  const [currentLesson, setCurrentLesson] = useState(initialLessonNumber ?? 1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [fillAnswer, setFillAnswer] = useState('');

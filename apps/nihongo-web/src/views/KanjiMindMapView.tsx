@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import JlptMindMapShell from '../components/JlptMindMapShell';
-import { KANJI_MIND_MAP } from '../data/kanji-mind-map';
+import JlptMindMapShell, { MindMapStatus } from '../components/JlptMindMapShell';
 import { useMindMapLevels } from '../hooks/useMindMapLevels';
 import { useAuth } from '../hooks/useAuth';
 
 export default function KanjiMindMapView() {
   const { isAdmin } = useAuth();
-  const { maps, loading } = useMindMapLevels('KANJI', KANJI_MIND_MAP);
+  const { maps, loading, error } = useMindMapLevels('KANJI');
+  if (!maps.length) return <MindMapStatus title="Sơ đồ tư duy kanji" loading={loading} error={error} />;
 
   return (
     <JlptMindMapShell

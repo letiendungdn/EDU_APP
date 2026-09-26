@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 8f96F3UH4lyJ3zbm6kwQJ27nL46OHHN690AFfriWVFQvTjQtZscgjcqKCHlKcRR
+\restrict CIoGaxP6bXimTCetRHCvMe7yepVvpXJSgTdxo2uycslXpyxadIG7GNUXaMN81b4
 
 -- Dumped from database version 16.14
 -- Dumped by pg_dump version 16.14
@@ -227,6 +227,21 @@ CREATE TYPE public."SubscriptionStatus" AS ENUM (
 
 
 ALTER TYPE public."SubscriptionStatus" OWNER TO nihongo;
+
+--
+-- Name: Textbook; Type: TYPE; Schema: public; Owner: nihongo
+--
+
+CREATE TYPE public."Textbook" AS ENUM (
+    'MINNA',
+    'KLL',
+    'SOUMATOME',
+    'SHINKANZEN',
+    'TRY'
+);
+
+
+ALTER TYPE public."Textbook" OWNER TO nihongo;
 
 --
 -- Name: WebhookEventStatus; Type: TYPE; Schema: public; Owner: nihongo
@@ -2406,7 +2421,8 @@ CREATE TABLE public."KanjiLesson" (
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
     "jlptLevel" public."JlptLevel",
-    "sortOrder" integer DEFAULT 0 NOT NULL
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    textbook public."Textbook"
 );
 
 
@@ -2605,7 +2621,8 @@ CREATE TABLE public."Lesson" (
     description text,
     "jlptLevel" public."JlptLevel",
     "thumbnailUrl" text,
-    "sortOrder" integer DEFAULT 0 NOT NULL
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    textbook public."Textbook"
 );
 
 
@@ -3932,6 +3949,93 @@ ALTER SEQUENCE public."SupportThread_id_seq" OWNED BY public."SupportThread".id;
 
 
 --
+-- Name: TextbookBook; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."TextbookBook" (
+    id integer NOT NULL,
+    "seriesId" integer NOT NULL,
+    level public."JlptLevel" NOT NULL,
+    title text NOT NULL,
+    note text,
+    url text,
+    kinds public."MindMapKind"[],
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."TextbookBook" OWNER TO nihongo;
+
+--
+-- Name: TextbookBook_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."TextbookBook_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."TextbookBook_id_seq" OWNER TO nihongo;
+
+--
+-- Name: TextbookBook_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."TextbookBook_id_seq" OWNED BY public."TextbookBook".id;
+
+
+--
+-- Name: TextbookSeries; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."TextbookSeries" (
+    id integer NOT NULL,
+    code public."Textbook" NOT NULL,
+    name text NOT NULL,
+    "nameJa" text NOT NULL,
+    publisher text NOT NULL,
+    url text NOT NULL,
+    blurb text NOT NULL,
+    icon text NOT NULL,
+    "planLevels" public."JlptLevel"[],
+    "audioMatch" text,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."TextbookSeries" OWNER TO nihongo;
+
+--
+-- Name: TextbookSeries_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."TextbookSeries_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."TextbookSeries_id_seq" OWNER TO nihongo;
+
+--
+-- Name: TextbookSeries_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."TextbookSeries_id_seq" OWNED BY public."TextbookSeries".id;
+
+
+--
 -- Name: User; Type: TABLE; Schema: public; Owner: nihongo
 --
 
@@ -4816,6 +4920,20 @@ ALTER TABLE ONLY public."SupportThread" ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
+-- Name: TextbookBook id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."TextbookBook" ALTER COLUMN id SET DEFAULT nextval('public."TextbookBook_id_seq"'::regclass);
+
+
+--
+-- Name: TextbookSeries id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."TextbookSeries" ALTER COLUMN id SET DEFAULT nextval('public."TextbookSeries_id_seq"'::regclass);
+
+
+--
 -- Name: User id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -5658,6 +5776,22 @@ ALTER TABLE ONLY public."SupportThread"
 
 
 --
+-- Name: TextbookBook TextbookBook_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."TextbookBook"
+    ADD CONSTRAINT "TextbookBook_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: TextbookSeries TextbookSeries_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."TextbookSeries"
+    ADD CONSTRAINT "TextbookSeries_pkey" PRIMARY KEY (id);
+
+
+--
 -- Name: User User_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -6274,6 +6408,13 @@ CREATE UNIQUE INDEX "KanjiLesson_lessonNumber_key" ON public."KanjiLesson" USING
 
 
 --
+-- Name: KanjiLesson_textbook_lessonNumber_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "KanjiLesson_textbook_lessonNumber_idx" ON public."KanjiLesson" USING btree (textbook, "lessonNumber");
+
+
+--
 -- Name: KanjiVocab_kanjiEntryId_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -6334,6 +6475,13 @@ CREATE INDEX "Lesson_jlptLevel_sortOrder_idx" ON public."Lesson" USING btree ("j
 --
 
 CREATE UNIQUE INDEX "Lesson_lessonNumber_key" ON public."Lesson" USING btree ("lessonNumber");
+
+
+--
+-- Name: Lesson_textbook_lessonNumber_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "Lesson_textbook_lessonNumber_idx" ON public."Lesson" USING btree (textbook, "lessonNumber");
 
 
 --
@@ -6726,6 +6874,20 @@ CREATE INDEX "SupportThread_lastMessageAt_idx" ON public."SupportThread" USING b
 --
 
 CREATE UNIQUE INDEX "SupportThread_userId_key" ON public."SupportThread" USING btree ("userId");
+
+
+--
+-- Name: TextbookBook_seriesId_level_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "TextbookBook_seriesId_level_sortOrder_idx" ON public."TextbookBook" USING btree ("seriesId", level, "sortOrder");
+
+
+--
+-- Name: TextbookSeries_code_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "TextbookSeries_code_key" ON public."TextbookSeries" USING btree (code);
 
 
 --
@@ -7395,6 +7557,14 @@ ALTER TABLE ONLY public."SupportThread"
 
 
 --
+-- Name: TextbookBook TextbookBook_seriesId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."TextbookBook"
+    ADD CONSTRAINT "TextbookBook_seriesId_fkey" FOREIGN KEY ("seriesId") REFERENCES public."TextbookSeries"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: VocabSuffixItem VocabSuffixItem_groupId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -7430,5 +7600,5 @@ ALTER TABLE ONLY public."Vocabulary"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 8f96F3UH4lyJ3zbm6kwQJ27nL46OHHN690AFfriWVFQvTjQtZscgjcqKCHlKcRR
+\unrestrict CIoGaxP6bXimTCetRHCvMe7yepVvpXJSgTdxo2uycslXpyxadIG7GNUXaMN81b4
 

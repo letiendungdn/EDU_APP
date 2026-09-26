@@ -1,4 +1,4 @@
-import type { JlptMindMapLevel } from './jlpt-mind-map-shared';
+import type { MindMapLevelData as JlptMindMapLevel } from './types';
 
 /** Sơ đồ tư duy từ vựng JLPT — chủ đề + từ tiêu biểu. */
 export const VOCAB_MIND_MAP: JlptMindMapLevel[] = [

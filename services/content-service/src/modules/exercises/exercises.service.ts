@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@app/prisma";
 import { CreateExerciseDto, UpdateExerciseDto } from "@app/contracts";
+import { LEVEL_POOL_LESSON } from "@app/prisma/level-pool";
 
 type PrismaExerciseType = "MULTIPLE_CHOICE" | "FILL_IN_BLANK" | "LISTENING";
 
@@ -98,7 +99,7 @@ export class ExercisesService {
 
     const where: Record<string, unknown> = {};
     if (lessonId) where.lessonId = lessonId;
-    if (jlptLevel) where.lesson = { jlptLevel };
+    if (jlptLevel) where.lesson = { jlptLevel, ...LEVEL_POOL_LESSON };
     if (query) where.question = { contains: query, mode: "insensitive" };
 
     const p = page ?? 1;

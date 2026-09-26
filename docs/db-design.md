@@ -17,85 +17,52 @@ MongoDB: TTL index 90 ngày trên audit_logs — tự dọn sạch, không cần
 
 ### Sơ đồ quan hệ
 
+Sơ đồ ER đầy đủ (107 bảng, chia 8 phân hệ, kèm cột/khóa) nằm ở **[db-erd.md](db-erd.md)** — tự sinh từ
+`schema.prisma`: `npm run erd -w @edu/prisma-nihongo` (chạy lại mỗi khi đổi schema).
+
+Tổng quan liên kết giữa các phân hệ (mũi tên: bảng cha → bảng con, quan hệ 1–n):
+
+```mermaid
+flowchart LR
+  subgraph CONTENT[Nội dung học]
+    Lesson --> Vocabulary & Grammar & Exercise & ReadingPassage
+    Grammar --> Example
+    Exercise --> ExerciseOption
+    KanjiLesson --> KanjiEntry --> KanjiVocab
+    Vocabulary -.-> VocabularyKanjiLink -.-> KanjiEntry
+    TextbookSeries --> TextbookBook
+    MindMapLevel
+  end
+  subgraph USER[Người dùng]
+    User
+  end
+  subgraph PROGRESS[Tiến độ học]
+    SrsCard & ExamResult & StudySession & DailyGoal & ReadingAttempt & DictationAttempt
+  end
+  subgraph PAY[Thanh toán & coach]
+    Subscription & CoachProfile & CoachingSession & Payment & Payout
+  end
+  subgraph COMM[Giao tiếp]
+    ChatMessage & Notification & SupportThread & LearnerChatRoom
+  end
+  subgraph JLPT[JLPT]
+    JlptExamSession & JlptRoadmapLevel & MockExamTemplate
+  end
+  subgraph STATIC[Tham chiếu & trang tĩnh]
+    Kana[Kana / đếm số / phát âm / katakana] & Pages[Trang chủ / giao tiếp / nghe / audio sách / banner]
+  end
+  USER --> PROGRESS
+  ReadingPassage --> ReadingAttempt
+  Vocabulary --> DictationAttempt
+  USER --> PAY
+  USER --> COMM
+  CoachProfile --> CoachingSession
 ```
-┌────────────────────────────────────────────────────────────────┐
-│ CONTENT                                                         │
-│                                                                 │
-│  Lesson ──< Vocabulary ──< DictationAttempt                    │
-│         ──< Grammar ──< Example                                 │
-│         ──< Exercise ──< ExerciseOption (isCorrect Boolean)    │
-│                                                                 │
-│  KanjiLesson ──< KanjiEntry ──< KanjiVocab                    │
-│  KanaSection ──< KanaCell                                      │
-│  CounterCategory ──< CounterItem                               │
-│  PronunciationRulesMeta (singleton)                            │
-│  PronunciationRuleTip[]                                        │
-│  PronunciationRuleSection ──< PronunciationRulePoint          │
-│                           ──< PronunciationRuleExample         │
-└────────────────────────────────────────────────────────────────┘
-┌────────────────────────────────────────────────────────────────┐
-│ JLPT                                                            │
-│                                                                 │
-│  JlptOrganizer (singleton id=1)                                │
-│  JlptExamFeeInfo (singleton id=1)                              │
-│  JlptExamBriefing (singleton id=1)                             │
-│  JlptExamSession[]  JlptExamVenue[]  JlptExamDaySlot[]        │
-│                                                                 │
-│  JlptRoadmapLevel ──< JlptRoadmapExamSection                  │
-│                   ──< JlptRoadmapMaterial                      │
-│                   ──< JlptRoadmapPhase ──< JlptRoadmapTask    │
-│  StudyTip[]  JlptRoadmapMeta (singleton id=1)                 │
-└────────────────────────────────────────────────────────────────┘
-┌────────────────────────────────────────────────────────────────┐
-│ STATIC CONTENT                                                  │
-│                                                                 │
-│  ListeningConfig (singleton)                                   │
-│  PodcastResource[]  ListeningPreset[]                         │
-│  (Quy tắc phát âm: xem CONTENT block trên)                    │
-└────────────────────────────────────────────────────────────────┘
-┌────────────────────────────────────────────────────────────────┐
-│ USER & PROGRESS                                                 │
-│                                                                 │
-│  User ──< SrsCard (contentType + contentId → Vocabulary/Grammar/Kanji)
-│       ──< ExamResult ──< ExamSectionResult                    │
-│       ──< ListeningLog                                         │
-│       ──< StudySession                                         │
-│       ──1 StudyStreak                                          │
-│       ──< DailyNote                                            │
-│       ──< DailyGoal ──< DailyGoalItem                        │
-│       ──< RefreshToken                                         │
-│                                                                 │
-│  ReadingPassage ──< ReadingQuestion ──< ReadingQuestionOption  │
-│                 ──< ReadingAttempt                             │
-│  DictationAttempt (userId nullable = guest mode)               │
-└────────────────────────────────────────────────────────────────┘
-┌────────────────────────────────────────────────────────────────┐
-│ PAYMENT & MARKETPLACE                                           │
-│                                                                 │
-│  SubscriptionPlanConfig[]                                      │
-│                                                                 │
-│  User ──1 Subscription ──< Payment                            │
-│       ──1 CoachProfile ──< CoachAvailability                  │
-│                        ──< CoachingSession ──1 Payment        │
-│                        ──< CoachReview                        │
-│                        ──< Payout                             │
-│                                                                 │
-│  CoachingSession ──1 CoachReview                              │
-│                  ──1 Payment (sessionId unique)               │
-│                  ──< ChatMessage                              │
-│                                                                 │
-│  WebhookEvent[] (idempotency log)                             │
-└────────────────────────────────────────────────────────────────┘
-┌────────────────────────────────────────────────────────────────┐
-│ CHAT & NOTIFICATIONS (REST — xem cursor-chat.md, sql/chat-schema.sql) │
-│                                                                 │
-│  User ──< Notification                                         │
-│  User ──1 SupportThread ──< SupportMessage                    │
-│  User ──< LearnerChatMember ──> LearnerChatRoom              │
-│                              ──< LearnerChatMessage            │
-│  CoachingSession ──< ChatMessage  (chưa có UI)                 │
-└────────────────────────────────────────────────────────────────┘
-```
+
+- `Lesson.textbook` (enum `Textbook`: MINNA/KLL/SOUMATOME/SHINKANZEN/TRY) tách bài theo giáo trình; bài giáo trình đánh số
+  `base + cấp×1000 + phần×100 + bài` (SM 20000, SK 30000, TRY 40000) và bị loại khỏi truy vấn "theo cấp" (`@app/prisma/level-pool`).
+- `TextbookSeries`/`TextbookBook`: danh mục giáo trình tham khảo (menu, lộ trình học) — seed `seed:textbook-catalog`.
+- `MindMapLevel`: sơ đồ tư duy chủ đề (kind × level), nhánh lưu JSON — seed `seed:mind-maps`, sửa ở trang admin.
 
 ### Chi tiết bảng quan trọng
 
@@ -344,47 +311,25 @@ PATCH /daily-goal/:id/items/:itemId chỉ UPDATE 1 row thay vì ghi lại cả m
 
 ### Enums (nihongo DB)
 
+Danh sách đầy đủ 17 enum (tự sinh): xem [db-erd.md#enum](db-erd.md#enum). Hai enum mới nhất:
+
 ```
-Role:              USER | TEACHER | ADMIN
-JlptLevel:         N5 | N4 | N3 | N2 | N1
-ExerciseType:      MULTIPLE_CHOICE | FILL_IN_BLANK | LISTENING
-ContentType:       VOCABULARY | GRAMMAR | KANJI
-KanaScript:        HIRAGANA | KATAKANA
-JlptSessionStatus: REGISTRATION_OPEN | REGISTRATION_CLOSED | UPCOMING | PAST
-SubscriptionStatus: ACTIVE | PAST_DUE | CANCELED | TRIALING | PAUSED
-SubscriptionPlan:  FREE | BASIC | PRO | PRO_ANNUAL
-PaymentStatus:     PENDING | SUCCEEDED | FAILED | REFUNDED | PARTIALLY_REFUNDED
-SessionStatus:     PENDING | CONFIRMED | IN_PROGRESS | COMPLETED | CANCELED | NO_SHOW
-PayoutStatus:      PENDING | PROCESSING | PAID | FAILED
-WebhookEventStatus: RECEIVED | PROCESSED | FAILED | IGNORED
-NotificationType: PAYMENT_SUCCESS | PAYMENT_FAILED | SESSION_CONFIRMED | SESSION_CANCELED
-                  | SESSION_REMINDER | COACH_MESSAGE | SUPPORT_MESSAGE | GROUP_MESSAGE | SYSTEM
-LearnerChatRoomType:    DIRECT | GROUP
-LearnerChatMemberRole:  MEMBER | ADMIN
+Textbook:     MINNA | KLL | SOUMATOME | SHINKANZEN | TRY      (Lesson.textbook, KanjiLesson.textbook)
+MindMapKind:  GRAMMAR | VOCAB | KANJI                         (MindMapLevel.kind, TextbookBook.kinds[])
 ```
 
 ### Migration history (nihongo)
 
+Migrations đã được gộp (squash) thành một baseline ngày 2026-09-26 — project học tập, không có production.
+Các migration cũ trước đó được giữ trong `packages/prisma-nihongo/migrations-archive/` (chỉ để tham khảo, Prisma không chạy).
+
 | Tên | Thay đổi chính |
 |-----|----------------|
-| `20260624_init_postgres` | Schema ban đầu: Lesson, Vocabulary, Grammar, Exercise |
-| `20260624_add_kanji` | KanjiLesson, KanjiEntry, KanjiVocab |
-| `20260624_add_user_auth` | User, bcrypt password |
-| `20260624_phase2_progress` | SrsCard (SM-2), ExamResult, ExamSectionResult |
-| `20260625_v2_redesign` | JlptLevel enum, JLPT tables, KanaSection, CounterCategory |
-| `20260625_vocab_sort_order` | Vocabulary.sortOrder |
-| `20260625_reading_dictation` | ReadingPassage, ReadingQuestion, DictationAttempt |
-| `20260626_daily_notes` | DailyNote |
-| `20260626_daily_goals` | DailyGoal (items Json — deprecated) |
-| `20260627_vocab_image_url` | Vocabulary.imageUrl |
-| `20260627_v3_redesign` | **Major**: DailyGoalItem table, SrsCard normalize (xóa snapshot fields), StudyStreak, sortOrder trên tất cả lists, composite indexes, ExerciseOption.isCorrect, DictationAttempt FK |
-| `20260627_refresh_token` | RefreshToken table, TEACHER role |
-| `20260627_payment_marketplace` | **Major**: Subscription, CoachProfile, CoachingSession, Payment, Payout, WebhookEvent, CoachReview, SubscriptionPlanConfig |
-| `seed-plans.ts` | Seed 4 SubscriptionPlanConfig rows + update stripePriceId từ Stripe API |
-| `20260627120000_add_chat_notification` | ChatMessage, Notification, NotificationType enum |
-| `20260627210000_add_support_chat` | SupportThread, SupportMessage + SUPPORT_MESSAGE enum |
-| `20260627220000_add_learner_group_chat` | LearnerChatRoom, LearnerChatMember, LearnerChatMessage + GROUP_MESSAGE enum |
-| `20260628140000_pronunciation_rules` | PronunciationRulesMeta, PronunciationRuleTip, PronunciationRuleSection, PronunciationRulePoint, PronunciationRuleExample — seed `seed:pronunciation-rules` / `nihongo-content-seed.sql` |
+| `20260926130000_baseline` | Toàn bộ schema tại thời điểm squash (user, nội dung, JLPT, thanh toán, chat, email, mind map…) |
+| `20260926140000_textbook_lessons` | Enum `Textbook`; cột `Lesson.textbook`, `KanjiLesson.textbook` |
+| `20260926160000_textbook_catalog` | Bảng `TextbookSeries`, `TextbookBook` (danh mục giáo trình) |
+
+Seed dữ liệu: `seed.ts` gọi lần lượt các seed con (`seed:textbooks`, `seed:textbook-catalog`, `seed:mind-maps`, `seed-plans.ts`…).
 
 ---
 

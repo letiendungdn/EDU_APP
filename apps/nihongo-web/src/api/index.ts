@@ -616,6 +616,11 @@ export function fetchBookAudioFiles() {
   return fetchReference<BookAudioPayload>('book-audio-files');
 }
 
+/** Danh mục giáo trình (Minna, Sou Matome, Shinkanzen, TRY!, KLL) — bảng TextbookSeries / TextbookBook */
+export function fetchTextbookCatalog() {
+  return fetchReference<import('../data/jlpt-textbooks').TextbookCatalog>('textbooks');
+}
+
 export function fetchJlptRoadmap() {
   return fetchReference<JlptRoadmapPayload>('jlpt-roadmap');
 }

@@ -1,18 +1,52 @@
 import { describe, expect, it } from 'vitest';
-import { buildStudyPlan, splitEvenly, type PlanSource } from '../textbook-study-plans';
+import { buildStudyPlan as build, parseTextbookNumber, splitEvenly, type PlanSource } from '../textbook-study-plans';
+import type { JlptMindLevel } from '../jlpt-mind-map-shared';
+import type { JlptTextbookSeries } from '../jlpt-textbooks';
+
+/** Cấp có lộ trình — trước nằm cứng trong code, nay lấy từ TextbookSeries.planLevels (DB). */
+const LEVELS: Record<JlptTextbookSeries, JlptMindLevel[]> = {
+  SOUMATOME: ['N5', 'N4', 'N3', 'N2', 'N1'],
+  SHINKANZEN: ['N4', 'N3', 'N2', 'N1'],
+  TRY: ['N5', 'N4', 'N3', 'N2', 'N1'],
+  KLL: ['N5', 'N4', 'N3', 'N2', 'N1'],
+  MINNA: ['N5', 'N4'],
+};
+const buildStudyPlan = (series: JlptTextbookSeries, level: JlptMindLevel, src: PlanSource) =>
+  build(series, level, src, LEVELS[series]);
+
+/** Bài soạn riêng theo số của seed: base + cấp×1000 + phần×100 + bài */
+const tb = (textbook: string, n: number, description: string, topic: string, level = 'N3') => ({
+  lessonNumber: n,
+  title: `${textbook} ${level} · … — ${topic}`,
+  jlptLevel: level,
+  textbook,
+  description,
+  grammarCount: 2,
+  vocabCount: 10,
+});
 
 const src: PlanSource = {
   lessons: [
-    ...Array.from({ length: 10 }, (_, i) => ({
-      lessonNumber: 301 + i,
-      title: `N3 · Bài ${i + 1}`,
-      jlptLevel: 'N3',
-      grammarCount: 5,
-      vocabCount: i < 4 ? 20 : 0,
-    })),
-    { lessonNumber: 1, title: null, jlptLevel: 'N5', grammarCount: 3, vocabCount: 30 },
+    // Sou Matome N3: 2 tuần × 2 ngày
+    tb('SOUMATOME', 23101, 'Tuần 1 · Gia đình（家族）', '〜ように'),
+    tb('SOUMATOME', 23102, 'Tuần 1 · Gia đình（家族）', '〜ために'),
+    tb('SOUMATOME', 23201, 'Tuần 2 · Công việc（仕事）', '〜ばかり'),
+    tb('SOUMATOME', 23202, 'Tuần 2 · Công việc（仕事）', '〜ところ'),
+    // Shinkanzen N3: 文法 + 語彙
+    tb('SHINKANZEN', 33101, '文法 · Ngữ pháp', 'Thời điểm'),
+    { ...tb('SHINKANZEN', 33201, '語彙 · Từ vựng', 'Gia đình'), grammarCount: 0 },
+    // TRY! N3: 2 chương
+    tb('TRY', 43101, 'Các chương · 文法から伸ばす', 'Chương 1: Thời điểm'),
+    tb('TRY', 43102, 'Các chương · 文法から伸ばす', 'Chương 2: Lý do'),
+    // Nội dung KHÔNG được lẫn vào lộ trình sách
+    { lessonNumber: 30, title: 'Minna 30', jlptLevel: 'N4', textbook: 'MINNA', grammarCount: 3, vocabCount: 30 },
+    { lessonNumber: 301, title: 'N3 · Bài 1', jlptLevel: 'N3', textbook: null, grammarCount: 12, vocabCount: 20 },
   ],
-  kanjiLessons: [{ lessonNumber: 21, title: 'Kanji N3-1', jlptLevel: 'N3' }],
+  kanjiLessons: [
+    { lessonNumber: 23101, title: 'SM kanji', jlptLevel: 'N3', textbook: 'SOUMATOME' },
+    { lessonNumber: 33301, title: 'SK kanji — 家族', jlptLevel: 'N3', textbook: 'SHINKANZEN' },
+    { lessonNumber: 21, title: 'KLL 21', jlptLevel: 'N3', textbook: 'KLL' },
+  ],
   readings: [{ id: 7, title: 'Đọc N3', jlptLevel: 'N3' }],
 };
 
@@ -26,31 +60,49 @@ describe('splitEvenly', () => {
   });
 });
 
-describe('buildStudyPlan', () => {
-  it('Sou Matome = 6 weeks × 7 days, every N3 lesson used once, day 7 is review', () => {
-    const plan = buildStudyPlan('SOUMATOME', 'N3', src)!;
-    expect(plan.sections).toHaveLength(6);
-    expect(plan.sections.every((s) => s.units.length === 7)).toBe(true);
-    const grammar = allTasks(plan).filter((t) => t.kind === 'GRAMMAR').map((t) => t.href);
-    expect(grammar).toHaveLength(10);
-    expect(new Set(grammar).size).toBe(10);
-    expect(grammar).not.toContain('/grammar?lesson=1');
-    expect(plan.sections[0].units[6].tasks.some((t) => t.kind === 'REVIEW')).toBe(true);
+describe('buildStudyPlan (bài soạn riêng theo sách)', () => {
+  it('parses textbook lesson numbers', () => {
+    expect(parseTextbookNumber(23204)).toEqual({ section: 2, unit: 4 });
+    expect(parseTextbookNumber(43112)).toEqual({ section: 1, unit: 12 });
   });
 
-  it('Shinkanzen has no N5 and groups by skill', () => {
+  it('Sou Matome: weeks from the book lessons, day 7 review, kanji of the same day', () => {
+    const plan = buildStudyPlan('SOUMATOME', 'N3', src)!;
+    expect(plan.sections.map((s) => s.title)).toEqual(['Tuần 1 · Gia đình（家族）', 'Tuần 2 · Công việc（仕事）']);
+    expect(plan.sections[0].units.map((u) => u.title)).toEqual(['Ngày 1', 'Ngày 2', 'Ngày 7 · Ôn tập tuần']);
+    expect(plan.sections[0].units[0].subtitle).toBe('〜ように');
+    expect(plan.sections[0].units[0].tasks.map((t) => t.href)).toEqual([
+      '/grammar?lesson=23101',
+      '/vocab?lesson=23101',
+      '/kanji?lesson=23101',
+      '/quiz?lesson=23101',
+    ]);
+  });
+
+  it('never mixes in Minna or the general JLPT lessons', () => {
+    for (const series of ['SOUMATOME', 'SHINKANZEN', 'TRY'] as const) {
+      const hrefs = allTasks(buildStudyPlan(series, 'N3', src)).map((t) => t.href);
+      expect(hrefs.some((h) => /lesson=(30|301|21)$/.test(h))).toBe(false);
+    }
+  });
+
+  it('Shinkanzen groups by skill and has no N5', () => {
     expect(buildStudyPlan('SHINKANZEN', 'N5', src)).toBeNull();
     const plan = buildStudyPlan('SHINKANZEN', 'N3', src)!;
-    expect(plan.sections.map((s) => s.id)).toEqual(['bunpou', 'goi', 'kanji', 'dokkai', 'choukai', 'moshi']);
-    expect(plan.sections[1].units).toHaveLength(4);
-    expect(plan.sections[2].units[0].tasks[0].href).toBe('/kanji?lesson=21');
+    expect(plan.sections.map((s) => s.titleJa ?? s.title)).toEqual(['文法', '語彙', '漢字', '読解', '聴解', '模擬試験']);
+    expect(plan.sections[1].units[0].tasks.map((t) => t.kind)).toEqual(['VOCAB', 'REVIEW']);
+    expect(plan.sections[2].units[0].tasks.map((t) => t.href)).toEqual(['/kanji?lesson=33301']);
   });
 
-  it('TRY! chapters pair grammar with same-lesson vocab and a reading', () => {
+  it('TRY! chapters come from TRY lessons', () => {
     const plan = buildStudyPlan('TRY', 'N3', src)!;
-    const first = plan.sections[0].units[0];
-    expect(first.tasks.map((t) => t.href)).toEqual(['/grammar?lesson=301', '/vocab?lesson=301', '/reading/7']);
-    expect(plan.sections[0].units[9].tasks.map((t) => t.kind)).toEqual(['GRAMMAR', 'READING']);
+    expect(plan.sections[0].units.map((u) => u.subtitle)).toEqual(['Chương 1: Thời điểm', 'Chương 2: Lý do']);
+    expect(plan.sections[0].units[0].tasks[0].href).toBe('/grammar?lesson=43101');
+  });
+
+  it('empty when the book has no lessons for that level yet', () => {
+    expect(buildStudyPlan('SOUMATOME', 'N1', src)!.sections).toEqual([]);
+    expect(buildStudyPlan('TRY', 'N1', src)!.sections).toEqual([]);
   });
 });
 
@@ -87,15 +139,14 @@ describe('Kanji Look and Learn plan', () => {
 describe('book audio in plans', () => {
   const audio = [{ id: 'n3-try-n3-41', title: 'Try N3', href: '/book-audio?level=N3&item=n3-try-n3-41' }];
   const withAudio: PlanSource = { ...src, audio };
-  const hrefs = (plan: ReturnType<typeof buildStudyPlan>) => allTasks(plan).map((t) => t.href);
 
   it('adds the audio to TRY! chapters, Shinkanzen 聴解 and Sou Matome review days', () => {
     expect(buildStudyPlan('TRY', 'N3', withAudio)!.sections[0].units[0].tasks.at(-1)!.href).toBe(audio[0].href);
     const sk = buildStudyPlan('SHINKANZEN', 'N3', withAudio)!;
     expect(sk.sections.find((s) => s.id === 'choukai')!.units[0].tasks[0].href).toBe(audio[0].href);
     const sm = buildStudyPlan('SOUMATOME', 'N3', withAudio)!;
-    expect(sm.sections.every((w) => w.units[6].tasks.some((t) => t.href === audio[0].href))).toBe(true);
-    expect(hrefs(buildStudyPlan('TRY', 'N3', src))).not.toContain(audio[0].href);
+    expect(sm.sections.every((w) => w.units.at(-1)!.tasks.some((t) => t.href === audio[0].href))).toBe(true);
+    expect(allTasks(buildStudyPlan('TRY', 'N3', src)).map((t) => t.href)).not.toContain(audio[0].href);
   });
 });
 
