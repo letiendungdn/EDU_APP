@@ -13,7 +13,7 @@
     "seed:textbook-catalog": "ts-node seed-textbook-catalog.ts",
     "seed:mind-maps": "ts-node seed-mind-maps.ts",
     "textbooks:check": "tsx textbooks/check.ts",
-    "erd": "tsx scripts/gen-erd.ts",
+    "erd": "ts-node scripts/gen-erd.ts",
     "seed:jlpt-tags": "ts-node seed-jlpt-tags.ts",
     "seed:jlpt-expand": "ts-node seed-jlpt-expand.ts",
     "seed:jlpt-exercises": "ts-node seed-jlpt-exercises.ts",

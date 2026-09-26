@@ -18,7 +18,7 @@ MongoDB: TTL index 90 ngày trên audit_logs — tự dọn sạch, không cần
 ### Sơ đồ quan hệ
 
 Sơ đồ ER đầy đủ (107 bảng, chia 8 phân hệ, kèm cột/khóa) nằm ở **[db-erd.md](db-erd.md)** — tự sinh từ
-`schema.prisma`: `npm run erd -w @edu/prisma-nihongo` (chạy lại mỗi khi đổi schema).
+`schema.prisma`: `npm run db:erd` ở root (chạy lại mỗi khi đổi schema).
 
 Tổng quan liên kết giữa các phân hệ (mũi tên: bảng cha → bảng con, quan hệ 1–n):
 
@@ -337,48 +337,32 @@ Seed dữ liệu: `seed.ts` gọi lần lượt các seed con (`seed:textbooks`,
 
 ### Sơ đồ quan hệ
 
+Sơ đồ ER đầy đủ (23 bảng, 3 phân hệ, kèm cột/khóa): **[db-erd-english.md](db-erd-english.md)** — tự sinh cùng lệnh `npm run db:erd`.
+
+Tổng quan (mũi tên: bảng cha → bảng con, quan hệ 1–n):
+
+```mermaid
+flowchart LR
+  subgraph CONTENT[Từ vựng & ngữ pháp]
+    VocabTopic --> Vocabulary
+    GrammarTopic --> GrammarLesson --> GrammarExample & GrammarExercise
+    GrammarExercise --> GrammarExOption
+  end
+  subgraph SKILLS[Đọc & nghe]
+    ReadingPassage --> ReadingQuestion --> ReadingOption
+    ListeningTrack --> ListeningQuestion --> ListeningOption
+  end
+  subgraph USER[Người dùng & tiến độ]
+    User --> SrsCard & StudySession & StudyStreak & DailyNote & DailyGoal
+    DailyGoal --> DailyGoalItem
+  end
+  ReadingPassage --> ReadingAttempt
+  ListeningTrack --> ListeningAttempt
+  Vocabulary --> DictationAttempt
+  User -. "userId null = khách" .-> ReadingAttempt & ListeningAttempt & DictationAttempt
 ```
-┌────────────────────────────────────────────────────────────────┐
-│ VOCABULARY                                                      │
-│                                                                 │
-│  VocabTopic ──< Vocabulary ──< DictationAttempt               │
-│                                                                 │
-│  SrsCard (contentType=VOCABULARY, contentId=Vocabulary.id)    │
-│          (không có FK trực tiếp — polymorphic qua contentId)   │
-└────────────────────────────────────────────────────────────────┘
-┌────────────────────────────────────────────────────────────────┐
-│ GRAMMAR                                                         │
-│                                                                 │
-│  GrammarTopic ──< GrammarLesson ──< GrammarExample            │
-│                                ──< GrammarExercise ──< GrammarExOption (isCorrect)
-│                                                                 │
-│  SrsCard (contentType=GRAMMAR, contentId=GrammarLesson.id)    │
-└────────────────────────────────────────────────────────────────┘
-┌────────────────────────────────────────────────────────────────┐
-│ READING                                                         │
-│                                                                 │
-│  ReadingPassage ──< ReadingQuestion ──< ReadingOption         │
-│                 ──< ReadingAttempt                            │
-└────────────────────────────────────────────────────────────────┘
-┌────────────────────────────────────────────────────────────────┐
-│ LISTENING                                                       │
-│                                                                 │
-│  ListeningTrack ──< ListeningQuestion ──< ListeningOption     │
-│                 ──< ListeningAttempt                          │
-└────────────────────────────────────────────────────────────────┘
-┌────────────────────────────────────────────────────────────────┐
-│ USER & PROGRESS                                                 │
-│                                                                 │
-│  User ──< SrsCard                                             │
-│       ──< ReadingAttempt (nullable userId = guest mode)       │
-│       ──< ListeningAttempt (nullable userId = guest mode)     │
-│       ──< DictationAttempt (nullable userId = guest mode)     │
-│       ──< StudySession                                        │
-│       ──1 StudyStreak                                         │
-│       ──< DailyNote                                           │
-│       ──< DailyGoal ──< DailyGoalItem                       │
-└────────────────────────────────────────────────────────────────┘
-```
+
+- `SrsCard` không có FK tới nội dung — đa hình qua `contentType` (VOCABULARY/GRAMMAR) + `contentId`.
 
 ### Điểm khác biệt so với nihongo DB
 

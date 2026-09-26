@@ -97,7 +97,8 @@ edu_app/
 ├── docs/
 │   ├── system-design.md       # Kiến trúc chi tiết, request flows
 │   ├── db-design.md           # Thiết kế DB, schema reference, backup
-│   ├── db-erd.md              # Sơ đồ ER Mermaid (tự sinh từ schema.prisma)
+│   ├── db-erd.md              # Sơ đồ ER Mermaid DB nihongo (tự sinh)
+│   ├── db-erd-english.md      # Sơ đồ ER Mermaid DB english_learning (tự sinh)
 │   ├── run-local.md           # Hướng dẫn chạy local
 │   ├── google-oauth-setup.md  # Cấu hình Google Sign-In
 │   ├── cursor-everfit-prep.md # Cursor prompt: Payment + Marketplace
@@ -201,12 +202,14 @@ Dump vào `infra/backups/` — xem [infra/backups/README.md](infra/backups/READM
 ### Sơ đồ DB (ERD)
 
 ```powershell
-npm run erd -w @edu/prisma-nihongo
+npm run db:erd
 ```
 
-Đọc `packages/prisma-nihongo/schema.prisma` → ghi lại [docs/db-erd.md](docs/db-erd.md) (Mermaid, chia theo phân hệ).
+Đọc schema Prisma của cả 2 DB → ghi lại [docs/db-erd.md](docs/db-erd.md) (nihongo) và [docs/db-erd-english.md](docs/db-erd-english.md)
+(english_learning), Mermaid chia theo phân hệ. Mô hình khái niệm cho báo cáo: mục B.3 trong
+[docs/bao-cao-phan-tich-thiet-ke.md](docs/bao-cao-phan-tich-thiet-ke.md).
 **Chạy lại mỗi khi đổi schema** (sau khi thêm migration). Bảng mới chưa xếp phân hệ sẽ bị cảnh báo và vào mục "Khác" —
-thêm tên bảng vào `DOMAINS` trong `packages/prisma-nihongo/scripts/gen-erd.ts`.
+thêm tên bảng vào `NIHONGO_DOMAINS` / `ENGLISH_DOMAINS` trong `packages/prisma-nihongo/scripts/gen-erd.ts`.
 
 ## Environment Variables
 
@@ -250,7 +253,8 @@ npm test -- --coverage -w @edu/nihongo-services
 | [docs/dev-tools-connect.md](docs/dev-tools-connect.md) | pgAdmin / Redis Insight / Mongo / port map |
 | [docs/system-design.md](docs/system-design.md) | Kiến trúc, request flows, auth |
 | [docs/db-design.md](docs/db-design.md) | Thiết kế DB, schema reference, backup |
-| [docs/db-erd.md](docs/db-erd.md) | Sơ đồ ER đầy đủ (Mermaid, 8 phân hệ) — tự sinh, đừng sửa tay |
+| [docs/db-erd.md](docs/db-erd.md) | Sơ đồ ER đầy đủ DB nihongo (Mermaid, 8 phân hệ) — tự sinh, đừng sửa tay |
+| [docs/db-erd-english.md](docs/db-erd-english.md) | Sơ đồ ER đầy đủ DB english_learning — tự sinh, đừng sửa tay |
 | [docs/run-local.md](docs/run-local.md) | Hướng dẫn chạy local từng bước |
 | [docs/docker.md](docs/docker.md) | Full stack Docker (~14 container) |
 | [docs/learn-docker.md](docs/learn-docker.md) | Học Docker trên stack EDU APP |

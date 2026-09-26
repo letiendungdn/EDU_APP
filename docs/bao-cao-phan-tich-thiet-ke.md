@@ -266,6 +266,9 @@ flowchart LR
 
 ## B.3. Mô hình thực thể–kết hợp (ERD — Entity Relationship Diagram)
 
+> Các sơ đồ dưới đây là **mô hình khái niệm** (rút gọn, chỉ thực thể & thuộc tính chính). Sơ đồ vật lý đầy đủ — mọi bảng, cột, khóa —
+> được sinh tự động từ Prisma schema: [db-erd.md](./db-erd.md) (nihongo, 107 bảng) và [db-erd-english.md](./db-erd-english.md) (english_learning).
+
 ### B.3.1. ERD tổng quan (lõi nghiệp vụ)
 
 ```mermaid
@@ -275,7 +278,7 @@ erDiagram
   USER ||--o{ EXAM_RESULT : "làm"
   USER ||--o| SUBSCRIPTION : "mua"
   USER ||--o| COACH_PROFILE : "là coach"
-  USER ||--o{ COACHING_SESSION_L : "học viên đặt"
+  USER ||--o{ COACHING_SESSION : "học viên đặt"
   COACH_PROFILE ||--o{ COACHING_SESSION : "dạy"
   COACHING_SESSION ||--o| PAYMENT : "thanh toán"
   SUBSCRIPTION ||--o{ PAYMENT : "billing"
@@ -288,6 +291,7 @@ erDiagram
   GRAMMAR ||--o{ EXAMPLE : "ví dụ"
   EXERCISE ||--o{ EXERCISE_OPTION : "đáp án"
   KANJI_LESSON ||--o{ KANJI_ENTRY : "chứa"
+  TEXTBOOK_SERIES ||--o{ TEXTBOOK_BOOK : "gồm"
 
   USER {
     int id PK
@@ -299,6 +303,8 @@ erDiagram
     int id PK
     int lessonNumber UK
     string title
+    string jlptLevel "N5..N1"
+    string textbook "MINNA|KLL|SOUMATOME|SHINKANZEN|TRY"
   }
   VOCABULARY {
     int id PK
@@ -364,6 +370,16 @@ erDiagram
   READING_PASSAGE ||--o{ READING_ATTEMPT : of
   USER ||--o{ DICTATION_ATTEMPT : "có thể null = guest"
   VOCABULARY ||--o{ DICTATION_ATTEMPT : targets
+  KANJI_LESSON ||--o{ KANJI_ENTRY : has
+  KANJI_ENTRY ||--o{ KANJI_VOCAB : "từ ví dụ"
+  VOCABULARY ||--o{ VOCABULARY_KANJI_LINK : "chứa kanji"
+  KANJI_ENTRY ||--o{ VOCABULARY_KANJI_LINK : "xuất hiện trong"
+  TEXTBOOK_SERIES ||--o{ TEXTBOOK_BOOK : "gồm sách N5–N1"
+  MIND_MAP_LEVEL {
+    string kind "GRAMMAR|VOCAB|KANJI"
+    string level "N5..N1"
+    json branches "nhánh chủ đề"
+  }
 ```
 
 ### B.3.3. ERD phân hệ thanh toán & coaching

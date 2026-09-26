@@ -1,7 +1,7 @@
 # Sơ đồ ER — DB nihongo
 
-> **Tự sinh** từ `packages/prisma-nihongo/schema.prisma` bởi `npm run erd -w @edu/prisma-nihongo`.
-> Đừng sửa tay — sửa schema (hoặc cách chia phân hệ trong `scripts/gen-erd.ts`) rồi chạy lại.
+> **Tự sinh** từ `packages/prisma-nihongo/schema.prisma` bởi `npm run db:erd`.
+> Đừng sửa tay — sửa schema (hoặc cách chia phân hệ trong `packages/prisma-nihongo/scripts/gen-erd.ts`) rồi chạy lại.
 
 **107 bảng · 17 enum · 76 quan hệ khóa ngoại.**
 Ký hiệu: `PK` khóa chính · `FK` khóa ngoại · `UK` duy nhất · `"null"` cho phép null · `_list` mảng (Postgres array).

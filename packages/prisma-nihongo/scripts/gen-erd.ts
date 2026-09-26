@@ -1,6 +1,7 @@
 /**
- * Sinh sơ đồ ER (Mermaid) cho DB nihongo từ schema.prisma → docs/db-erd.md
- *   npm run erd -w @edu/prisma-nihongo
+ * Sinh sơ đồ ER (Mermaid) từ schema Prisma của từng DB:
+ *   nihongo → docs/db-erd.md · english_learning → docs/db-erd-english.md
+ *   npm run db:erd            (ở root; = npm run erd -w @edu/prisma-nihongo)
  * Mỗi phân hệ một sơ đồ; bảng thuộc phân hệ khác chỉ hiện tên (không kèm cột).
  */
 import fs from 'node:fs';
@@ -9,11 +10,13 @@ import path from 'node:path';
 type Field = { name: string; type: string; optional: boolean; list: boolean; attrs: string };
 type Model = { name: string; fields: Field[]; doc?: string };
 
-const SCHEMA = path.join(__dirname, '..', 'schema.prisma');
-const OUT = path.join(__dirname, '..', '..', '..', 'docs', 'db-erd.md');
+type Domain = { id: string; title: string; note: string; models: string[] };
+type DbConfig = { name: string; schema: string; out: string; domains: Domain[] };
+
+const ROOT = path.join(__dirname, '..', '..', '..');
 
 /** Phân hệ → bảng (thứ tự = thứ tự sơ đồ). Bảng mới chưa xếp sẽ vào "Khác" và in cảnh báo. */
-const DOMAINS: Array<{ id: string; title: string; note: string; models: string[] }> = [
+const NIHONGO_DOMAINS: Domain[] = [
   {
     id: 'content',
     title: 'Nội dung học',
@@ -97,6 +100,47 @@ const DOMAINS: Array<{ id: string; title: string; note: string; models: string[]
   },
 ];
 
+const ENGLISH_DOMAINS: Domain[] = [
+  {
+    id: 'vocab-grammar',
+    title: 'Từ vựng & ngữ pháp',
+    note: 'Chủ đề từ vựng (CEFR A1–C2), bài ngữ pháp kèm ví dụ và bài tập.',
+    models: [
+      'VocabTopic', 'Vocabulary', 'GrammarTopic', 'GrammarLesson', 'GrammarExample', 'GrammarExercise', 'GrammarExOption',
+    ],
+  },
+  {
+    id: 'reading-listening',
+    title: 'Đọc & nghe',
+    note: 'Bài đọc, bài nghe và câu hỏi trắc nghiệm.',
+    models: ['ReadingPassage', 'ReadingQuestion', 'ReadingOption', 'ListeningTrack', 'ListeningQuestion', 'ListeningOption'],
+  },
+  {
+    id: 'user-progress',
+    title: 'Người dùng & tiến độ',
+    note: 'Tài khoản, SRS, lượt làm bài (userId null = khách), phiên học, streak, nhật ký, mục tiêu ngày.',
+    models: [
+      'User', 'SrsCard', 'ReadingAttempt', 'ListeningAttempt', 'DictationAttempt',
+      'StudySession', 'StudyStreak', 'DailyNote', 'DailyGoal', 'DailyGoalItem',
+    ],
+  },
+];
+
+const DBS: DbConfig[] = [
+  {
+    name: 'nihongo',
+    schema: 'packages/prisma-nihongo/schema.prisma',
+    out: 'docs/db-erd.md',
+    domains: NIHONGO_DOMAINS,
+  },
+  {
+    name: 'english_learning',
+    schema: 'packages/prisma-english/schema.prisma',
+    out: 'docs/db-erd-english.md',
+    domains: ENGLISH_DOMAINS,
+  },
+];
+
 function parseSchema(src: string) {
   const models: Model[] = [];
   const enums: Array<{ name: string; values: string[] }> = [];
@@ -141,8 +185,9 @@ function attrType(f: Field, enumNames: Set<string>): string {
   return f.list ? `${base}_list` : base;
 }
 
-function build() {
-  const { models, enums } = parseSchema(fs.readFileSync(SCHEMA, 'utf8'));
+function build({ name, schema, out: outRel, domains: DOMAINS }: DbConfig) {
+  const OUT = path.join(ROOT, outRel);
+  const { models, enums } = parseSchema(fs.readFileSync(path.join(ROOT, schema), 'utf8'));
   const modelNames = new Set(models.map((m) => m.name));
   const enumNames = new Set(enums.map((e) => e.name));
   const byName = new Map(models.map((m) => [m.name, m]));
@@ -153,7 +198,7 @@ function build() {
   const other = models.map((m) => m.name).filter((n) => !assigned.has(n));
   if (other.length) console.warn(`⚠ Bảng chưa xếp phân hệ (đưa vào "Khác"): ${other.join(', ')}`);
   const domains = other.length
-    ? [...DOMAINS, { id: 'other', title: 'Khác', note: 'Bảng chưa được xếp phân hệ trong scripts/gen-erd.ts.', models: other }]
+    ? [...DOMAINS, { id: 'other', title: 'Khác', note: 'Bảng chưa được xếp phân hệ trong packages/prisma-nihongo/scripts/gen-erd.ts.', models: other }]
     : DOMAINS;
 
   /** Quan hệ: bảng con (giữ FK) → bảng cha */
@@ -230,10 +275,10 @@ function build() {
     .join('\n');
 
   const out = [
-    '# Sơ đồ ER — DB nihongo',
+    `# Sơ đồ ER — DB ${name}`,
     '',
-    '> **Tự sinh** từ `packages/prisma-nihongo/schema.prisma` bởi `npm run erd -w @edu/prisma-nihongo`.',
-    '> Đừng sửa tay — sửa schema (hoặc cách chia phân hệ trong `scripts/gen-erd.ts`) rồi chạy lại.',
+    `> **Tự sinh** từ \`${schema}\` bởi \`npm run db:erd\`.`,
+    '> Đừng sửa tay — sửa schema (hoặc cách chia phân hệ trong `packages/prisma-nihongo/scripts/gen-erd.ts`) rồi chạy lại.',
     '',
     `**${models.length} bảng · ${enums.length} enum · ${rels.length} quan hệ khóa ngoại.**`,
     'Ký hiệu: `PK` khóa chính · `FK` khóa ngoại · `UK` duy nhất · `"null"` cho phép null · `_list` mảng (Postgres array).',
@@ -253,7 +298,7 @@ function build() {
   ].join('\n');
 
   fs.writeFileSync(OUT, out);
-  console.log(`Đã ghi ${path.relative(process.cwd(), OUT)}: ${models.length} bảng, ${enums.length} enum, ${rels.length} quan hệ, ${domains.length} sơ đồ.`);
+  console.log(`[${name}] Đã ghi ${outRel}: ${models.length} bảng, ${enums.length} enum, ${rels.length} quan hệ, ${domains.length} sơ đồ.`);
 }
 
-build();
+DBS.forEach(build);

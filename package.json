@@ -34,6 +34,7 @@
     "stripe:listen": "stripe.cmd listen --forward-to localhost:3000/api/webhooks/stripe",
     "seed:vocab-images": "npm run seed:vocab-images -w @edu/nihongo-services",
     "prisma:generate": "npm run generate -w @edu/prisma-nihongo",
+    "db:erd": "npm run erd -w @edu/prisma-nihongo",
     "db:backup": "powershell -NoProfile -ExecutionPolicy Bypass -File infra/backups/backup.ps1",
     "db:export-content": "powershell -NoProfile -ExecutionPolicy Bypass -File infra/postgres/export-content-seed.ps1",
     "media:download": "node packages/vocab-images/scripts/download-media.mjs",
