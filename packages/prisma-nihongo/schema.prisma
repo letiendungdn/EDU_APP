@@ -72,7 +72,7 @@ model Lesson {
 }
 
 model Vocabulary {
-  id            Int                @id @default(autoincrement())
+  id            Int                   @id @default(autoincrement())
   kanji         String?
   kana          String
   romaji        String
@@ -87,12 +87,14 @@ model Vocabulary {
   exampleKana   String?
   exampleVi     String?
   frequencyRank Int?
-  sortOrder     Int                @default(0)
+  sortOrder     Int                   @default(0)
   lessonId      Int
-  lesson        Lesson             @relation(fields: [lessonId], references: [id])
+  lesson        Lesson                @relation(fields: [lessonId], references: [id])
   dictations    DictationAttempt[]
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
+  kanjiVocabs   KanjiVocab[]
+  kanjiLinks    VocabularyKanjiLink[]
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
 
   @@index([lessonId, sortOrder])
   @@index([jlptLevel])
@@ -246,16 +248,16 @@ model CountryRegion {
 }
 
 model CountryNameItem {
-  id         Int           @id @default(autoincrement())
-  regionId   Int
-  region     CountryRegion @relation(fields: [regionId], references: [id], onDelete: Cascade)
-  nameJa     String
-  kana       String
-  romaji     String
-  meaningVi  String
+  id          Int           @id @default(autoincrement())
+  regionId    Int
+  region      CountryRegion @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  nameJa      String
+  kana        String
+  romaji      String
+  meaningVi   String
   /// ISO 3166-1 alpha-2 (hoặc mã đặc biệt như UN/EU cho vùng)
   countryCode String
-  sortOrder  Int           @default(0)
+  sortOrder   Int           @default(0)
 
   @@index([regionId, sortOrder])
 }
@@ -360,13 +362,13 @@ model ConversationIntroLine {
 }
 
 model ConversationIntroSlot {
-  id        Int                         @id @default(autoincrement())
+  id        Int                        @id @default(autoincrement())
   slot      String
   question  String
-  sortOrder Int                         @default(0)
+  sortOrder Int                        @default(0)
   examples  ConversationIntroExample[]
-  createdAt DateTime                    @default(now())
-  updatedAt DateTime                    @updatedAt
+  createdAt DateTime                   @default(now())
+  updatedAt DateTime                   @updatedAt
 
   @@index([sortOrder])
 }
@@ -388,30 +390,30 @@ model ConversationIntroExample {
 }
 
 model ConversationPhraseGroup {
-  id        Int                       @id @default(autoincrement())
-  slug      String                    @unique
+  id        Int                      @id @default(autoincrement())
+  slug      String                   @unique
   label     String
   hint      String
-  sortOrder Int                       @default(0)
+  sortOrder Int                      @default(0)
   items     ConversationPhraseItem[]
-  createdAt DateTime                  @default(now())
-  updatedAt DateTime                  @updatedAt
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
 
   @@index([sortOrder])
 }
 
 model ConversationPhraseItem {
-  id        Int                      @id @default(autoincrement())
+  id        Int                     @id @default(autoincrement())
   groupId   Int
-  group     ConversationPhraseGroup  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  group     ConversationPhraseGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
   ja        String
   kana      String
   romaji    String
   vi        String
   note      String?
-  sortOrder Int                      @default(0)
-  createdAt DateTime                 @default(now())
-  updatedAt DateTime                 @updatedAt
+  sortOrder Int                     @default(0)
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
 
   @@index([groupId, sortOrder])
 }
@@ -470,41 +472,41 @@ model PronunciationRuleTip {
 }
 
 model PronunciationRuleSection {
-  id        Int                       @id @default(autoincrement())
-  slug      String                    @unique
+  id        Int                        @id @default(autoincrement())
+  slug      String                     @unique
   title     String
   summary   String
-  sortOrder Int                       @default(0)
+  sortOrder Int                        @default(0)
   points    PronunciationRulePoint[]
   examples  PronunciationRuleExample[]
-  createdAt DateTime                  @default(now())
-  updatedAt DateTime                  @updatedAt
+  createdAt DateTime                   @default(now())
+  updatedAt DateTime                   @updatedAt
 
   @@index([sortOrder])
 }
 
 model PronunciationRulePoint {
-  id          Int                    @id @default(autoincrement())
+  id          Int                      @id @default(autoincrement())
   sectionId   Int
   section     PronunciationRuleSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   label       String?
   japanese    String?
   romaji      String?
   explanation String
-  sortOrder   Int                    @default(0)
+  sortOrder   Int                      @default(0)
 
   @@index([sectionId, sortOrder])
 }
 
 model PronunciationRuleExample {
-  id        Int                    @id @default(autoincrement())
+  id        Int                      @id @default(autoincrement())
   sectionId Int
   section   PronunciationRuleSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   japanese  String
   romaji    String
   meaning   String
   note      String?
-  sortOrder Int                    @default(0)
+  sortOrder Int                      @default(0)
 
   @@index([sectionId, sortOrder])
 }
@@ -626,21 +628,21 @@ model BookAudioMeta {
 }
 
 model BookAudioItem {
-  id          Int      @id @default(autoincrement())
-  externalKey String   @unique
+  id          Int                   @id @default(autoincrement())
+  externalKey String                @unique
   level       String
   title       String
   url         String
   note        String?
   listNo      Int?
-  sortOrder   Int      @default(0)
+  sortOrder   Int                   @default(0)
   driveId     String?
   driveKind   String?
   folderId    Int?
   folder      BookAudioDriveFolder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
   files       BookAudioFile[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
 
   @@index([level, sortOrder])
   @@index([folderId])
@@ -648,16 +650,16 @@ model BookAudioItem {
 }
 
 model BookAudioDriveFolder {
-  id           Int              @id @default(autoincrement())
-  driveId      String           @unique
+  id           Int             @id @default(autoincrement())
+  driveId      String          @unique
   title        String?
   localPath    String?
-  fileCount    Int              @default(0)
+  fileCount    Int             @default(0)
   downloadedAt DateTime?
   items        BookAudioItem[]
   files        BookAudioFile[]
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 }
 
 model BookAudioFile {
@@ -761,26 +763,26 @@ model StudyTip {
 }
 
 model JlptRoadmapLevel {
-  id           Int                      @id @default(autoincrement())
-  externalKey  String                   @unique
-  label        String
-  badge        String
-  color        String
-  duration     String
-  vocabTarget    String
-  kanjiTarget    String
-  grammarTarget  String
-  vocabIncrement String                   @default("")
-  kanjiIncrement String                   @default("")
-  grammarIncrement String                 @default("")
-  passScore      String
-  summary      String
-  sortOrder    Int                      @default(0)
-  examSections JlptRoadmapExamSection[]
-  materials    JlptRoadmapMaterial[]
-  phases       JlptRoadmapPhase[]
-  createdAt    DateTime                 @default(now())
-  updatedAt    DateTime                 @updatedAt
+  id               Int                      @id @default(autoincrement())
+  externalKey      String                   @unique
+  label            String
+  badge            String
+  color            String
+  duration         String
+  vocabTarget      String
+  kanjiTarget      String
+  grammarTarget    String                   @default("")
+  vocabIncrement   String                   @default("")
+  kanjiIncrement   String                   @default("")
+  grammarIncrement String                   @default("")
+  passScore        String
+  summary          String
+  sortOrder        Int                      @default(0)
+  examSections     JlptRoadmapExamSection[]
+  materials        JlptRoadmapMaterial[]
+  phases           JlptRoadmapPhase[]
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
 }
 
 model JlptRoadmapExamSection {
@@ -859,7 +861,7 @@ model KanjiLesson {
 }
 
 model KanjiEntry {
-  id           Int          @id @default(autoincrement())
+  id           Int                   @id @default(autoincrement())
   character    String
   hanViet      String?
   onyomi       String?
@@ -873,12 +875,13 @@ model KanjiEntry {
   strokeCount  Int?
   frequency    Int?
   grade        Int?
-  sortOrder    Int          @default(0)
+  sortOrder    Int                   @default(0)
   lessonId     Int
-  lesson       KanjiLesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lesson       KanjiLesson           @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   vocabularies KanjiVocab[]
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  vocabLinks   VocabularyKanjiLink[]
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
 
   @@index([lessonId, sortOrder])
   @@index([character])
@@ -886,18 +889,36 @@ model KanjiEntry {
 }
 
 model KanjiVocab {
-  id           Int        @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   word         String
   reading      String
   meaningVi    String
   exampleJa    String?
   exampleKana  String?
   exampleVi    String?
-  sortOrder    Int        @default(0)
+  sortOrder    Int         @default(0)
   kanjiEntryId Int
-  kanjiEntry   KanjiEntry @relation(fields: [kanjiEntryId], references: [id], onDelete: Cascade)
+  kanjiEntry   KanjiEntry  @relation(fields: [kanjiEntryId], references: [id], onDelete: Cascade)
+  /// Từ vựng Minna/JLPT tương ứng (nếu khớp) — dữ liệu có sẵn trong DB, trước đây nằm ngoài schema.
+  vocabularyId Int?
+  vocabulary   Vocabulary? @relation(fields: [vocabularyId], references: [id], onDelete: SetNull)
 
   @@index([kanjiEntryId, sortOrder])
+  @@index([vocabularyId])
+}
+
+/// Liên kết từ vựng ↔ kanji (từ chứa chữ kanji nào). Bảng có sẵn trong DB (~2.5k dòng),
+/// trước đây tạo bằng db push nên nằm ngoài schema — giữ lại, không xóa.
+model VocabularyKanjiLink {
+  id           Int        @id @default(autoincrement())
+  vocabularyId Int
+  kanjiEntryId Int
+  createdAt    DateTime   @default(now())
+  vocabulary   Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+  kanjiEntry   KanjiEntry @relation(fields: [kanjiEntryId], references: [id], onDelete: Cascade)
+
+  @@unique([vocabularyId, kanjiEntryId])
+  @@index([kanjiEntryId])
 }
 
 // ─────────────────────────────────────────────
@@ -905,50 +926,50 @@ model KanjiVocab {
 // ─────────────────────────────────────────────
 
 model User {
-  id               Int            @id @default(autoincrement())
-  email            String         @unique
+  id               Int        @id @default(autoincrement())
+  email            String     @unique
   passwordHash     String?
-  googleId         String?        @unique
-  keycloakId       String?        @unique
-  role             Role           @default(USER)
+  googleId         String?    @unique
+  keycloakId       String?    @unique
+  role             Role       @default(USER)
   name             String?
   avatarUrl        String?
-  nativeLanguage   String?        @default("vi")
+  nativeLanguage   String?    @default("vi")
   targetJlptLevel  JlptLevel?
-  studyGoalMinutes Int?           @default(30)
+  studyGoalMinutes Int?       @default(30)
   lastActiveAt     DateTime?
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
 
   emailVerifiedAt DateTime?
   emailBounced    Boolean   @default(false)
 
-  srsCards       SrsCard[]
-  pushTokens     PushDeviceToken[]
+  srsCards                SrsCard[]
+  pushTokens              PushDeviceToken[]
   emailVerificationTokens EmailVerificationToken[]
-  emailPrefs     EmailPrefs?
-  examResults    ExamResult[]
-  listeningLogs  ListeningLog[]
-  studySessions  StudySession[]
-  studyStreak    StudyStreak?
-  dailyNotes     DailyNote[]
-  dailyGoals     DailyGoal[]
-  dailyActivities DailyActivity[]
-  refreshTokens  RefreshToken[]
-  passwordResetTokens PasswordResetToken[]
-  subscription   Subscription?
-  coachProfile   CoachProfile?
-  learnerSessions CoachingSession[] @relation("LearnerSessions")
-  payments       Payment[]
-  reviewsGiven   CoachReview[]
-  sentMessages   ChatMessage[]  @relation("SentMessages")
-  notifications  Notification[]
-  supportThread  SupportThread?
-  supportMessages SupportMessage[] @relation("SupportMessages")
-  createdLearnerChats LearnerChatRoom[]   @relation("CreatedLearnerChats")
-  learnerChatMembers  LearnerChatMember[]
-  learnerChatMessages LearnerChatMessage[] @relation("LearnerChatMessages")
-  liveSessions        LiveSession[]
+  emailPrefs              EmailPrefs?
+  examResults             ExamResult[]
+  listeningLogs           ListeningLog[]
+  studySessions           StudySession[]
+  studyStreak             StudyStreak?
+  dailyNotes              DailyNote[]
+  dailyGoals              DailyGoal[]
+  dailyActivities         DailyActivity[]
+  refreshTokens           RefreshToken[]
+  passwordResetTokens     PasswordResetToken[]
+  subscription            Subscription?
+  coachProfile            CoachProfile?
+  learnerSessions         CoachingSession[]        @relation("LearnerSessions")
+  payments                Payment[]
+  reviewsGiven            CoachReview[]
+  sentMessages            ChatMessage[]            @relation("SentMessages")
+  notifications           Notification[]
+  supportThread           SupportThread?
+  supportMessages         SupportMessage[]         @relation("SupportMessages")
+  createdLearnerChats     LearnerChatRoom[]        @relation("CreatedLearnerChats")
+  learnerChatMembers      LearnerChatMember[]
+  learnerChatMessages     LearnerChatMessage[]     @relation("LearnerChatMessages")
+  liveSessions            LiveSession[]
 
   @@index([role])
 }
@@ -1062,29 +1083,29 @@ model ExamSectionResult {
 
 /// Cấu hình đề thi thử JLPT — admin quản lý qua /mock-exam.
 model MockExamTemplate {
-  id                     Int      @id @default(autoincrement())
-  slug                   String   @unique
+  id                     Int                @id @default(autoincrement())
+  slug                   String             @unique
   level                  String
   title                  String
-  description            String   @default("")
+  description            String             @default("")
   /// GENERATED = rút ngẫu nhiên từ bài học; CUSTOM = câu hỏi tự soạn
-  sourceMode             String   @default("GENERATED")
+  sourceMode             String             @default("GENERATED")
   durationMinutes        Int
-  lessonFrom             Int      @default(1)
-  lessonTo               Int      @default(1)
-  kanjiLessonFrom        Int      @default(1)
-  kanjiLessonTo          Int      @default(1)
-  vocabCount             Int      @default(12)
-  grammarCount           Int      @default(10)
-  kanjiCount             Int      @default(5)
-  listeningWordCount     Int      @default(4)
-  listeningSentenceCount Int      @default(4)
-  passThreshold          Int      @default(65)
-  scope                  String   @default("")
-  isPublished            Boolean  @default(true)
-  sortOrder              Int      @default(0)
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
+  lessonFrom             Int                @default(1)
+  lessonTo               Int                @default(1)
+  kanjiLessonFrom        Int                @default(1)
+  kanjiLessonTo          Int                @default(1)
+  vocabCount             Int                @default(12)
+  grammarCount           Int                @default(10)
+  kanjiCount             Int                @default(5)
+  listeningWordCount     Int                @default(4)
+  listeningSentenceCount Int                @default(4)
+  passThreshold          Int                @default(65)
+  scope                  String             @default("")
+  isPublished            Boolean            @default(true)
+  sortOrder              Int                @default(0)
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
   questions              MockExamQuestion[]
 
   @@index([level, sortOrder])
@@ -1092,9 +1113,9 @@ model MockExamTemplate {
 }
 
 model MockExamQuestion {
-  id            Int      @id @default(autoincrement())
+  id            Int                      @id @default(autoincrement())
   templateId    Int
-  template      MockExamTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  template      MockExamTemplate         @relation(fields: [templateId], references: [id], onDelete: Cascade)
   /// vocab | grammar | kanji | listening
   sectionId     String
   /// multiple_choice | fill_in_blank | listening
@@ -1104,21 +1125,21 @@ model MockExamQuestion {
   imageUrl      String?
   audioText     String?
   audioUrl      String?
-  sortOrder     Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  sortOrder     Int                      @default(0)
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
   options       MockExamQuestionOption[]
 
   @@index([templateId, sortOrder])
 }
 
 model MockExamQuestionOption {
-  id         Int      @id @default(autoincrement())
+  id         Int              @id @default(autoincrement())
   questionId Int
   question   MockExamQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
   text       String
   imageUrl   String?
-  sortOrder  Int      @default(0)
+  sortOrder  Int              @default(0)
 
   @@index([questionId, sortOrder])
 }
@@ -1158,7 +1179,7 @@ model StudyStreak {
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   currentStreak Int      @default(0)
   longestStreak Int      @default(0)
-  lastStudyDate String?  // YYYY-MM-DD
+  lastStudyDate String? // YYYY-MM-DD
   updatedAt     DateTime @updatedAt
 }
 
@@ -1167,8 +1188,8 @@ model DailyActivity {
   id        Int      @id @default(autoincrement())
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date      String   // YYYY-MM-DD
-  kind      String   // 'vocab' | 'kanji'
+  date      String // YYYY-MM-DD
+  kind      String // 'vocab' | 'kanji'
   count     Int      @default(1)
   updatedAt DateTime @updatedAt
 
@@ -1258,7 +1279,7 @@ model DailyNote {
   id        Int      @id @default(autoincrement())
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date      String   // YYYY-MM-DD
+  date      String // YYYY-MM-DD
   content   String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1272,7 +1293,7 @@ model DailyGoal {
   id        Int             @id @default(autoincrement())
   userId    Int
   user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date      String          // YYYY-MM-DD
+  date      String // YYYY-MM-DD
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
   items     DailyGoalItem[]
@@ -1387,29 +1408,29 @@ model Subscription {
 // ─────────────────────────────────────────────
 
 model CoachProfile {
-  id              Int         @id @default(autoincrement())
-  userId          Int         @unique
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bio             String?     @db.Text
+  id              Int                 @id @default(autoincrement())
+  userId          Int                 @unique
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio             String?             @db.Text
   languages       String[]
   specializations String[]
   hourlyRateUsd   Int
-  currency        String      @default("USD")
-  timezone        String      @default("Asia/Ho_Chi_Minh")
-  isActive        Boolean     @default(false)
-  isVerified      Boolean     @default(false)
+  currency        String              @default("USD")
+  timezone        String              @default("Asia/Ho_Chi_Minh")
+  isActive        Boolean             @default(false)
+  isVerified      Boolean             @default(false)
   featuredUntil   DateTime?
-  totalSessions   Int         @default(0)
+  totalSessions   Int                 @default(0)
   avgRating       Float?
-  reviewCount     Int         @default(0)
-  stripeAccountId String?     @unique
-  payoutEnabled   Boolean     @default(false)
+  reviewCount     Int                 @default(0)
+  stripeAccountId String?             @unique
+  payoutEnabled   Boolean             @default(false)
   availability    CoachAvailability[]
   sessions        CoachingSession[]
   reviews         CoachReview[]
   payouts         Payout[]
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
 
   @@index([isActive, avgRating])
   @@index([isActive, hourlyRateUsd])
@@ -1433,25 +1454,25 @@ model CoachAvailability {
 // ─────────────────────────────────────────────
 
 model CoachingSession {
-  id                 Int            @id @default(autoincrement())
+  id                 Int           @id @default(autoincrement())
   learnerId          Int
-  learner            User           @relation("LearnerSessions", fields: [learnerId], references: [id])
+  learner            User          @relation("LearnerSessions", fields: [learnerId], references: [id])
   coachId            Int
-  coach              CoachProfile   @relation(fields: [coachId], references: [id])
-  status             SessionStatus  @default(PENDING)
+  coach              CoachProfile  @relation(fields: [coachId], references: [id])
+  status             SessionStatus @default(PENDING)
   scheduledAt        DateTime
-  durationMin        Int            @default(60)
+  durationMin        Int           @default(60)
   topic              String?
-  notes              String?        @db.Text
+  notes              String?       @db.Text
   priceUsdCents      Int
-  platformFeePercent Int            @default(20)
+  platformFeePercent Int           @default(20)
   payment            Payment?
   review             CoachReview?
   canceledAt         DateTime?
   canceledBy         String?
   cancelReason       String?
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
   messages           ChatMessage[]
 
   @@index([learnerId, scheduledAt])
@@ -1639,16 +1660,16 @@ model SupportMessage {
 }
 
 model LearnerChatRoom {
-  id            Int                   @id @default(autoincrement())
+  id            Int                  @id @default(autoincrement())
   name          String?
-  type          LearnerChatRoomType     @default(GROUP)
+  type          LearnerChatRoomType  @default(GROUP)
   createdById   Int
-  createdBy     User                    @relation("CreatedLearnerChats", fields: [createdById], references: [id])
+  createdBy     User                 @relation("CreatedLearnerChats", fields: [createdById], references: [id])
   members       LearnerChatMember[]
   messages      LearnerChatMessage[]
-  lastMessageAt DateTime                @default(now())
-  createdAt     DateTime                @default(now())
-  updatedAt     DateTime                @updatedAt
+  lastMessageAt DateTime             @default(now())
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
 
   @@index([lastMessageAt])
   @@index([type])
@@ -1657,11 +1678,11 @@ model LearnerChatRoom {
 model LearnerChatMember {
   id       Int                   @id @default(autoincrement())
   roomId   Int
-  room     LearnerChatRoom        @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  room     LearnerChatRoom       @relation(fields: [roomId], references: [id], onDelete: Cascade)
   userId   Int
-  user     User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role     LearnerChatMemberRole  @default(MEMBER)
-  joinedAt DateTime               @default(now())
+  user     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     LearnerChatMemberRole @default(MEMBER)
+  joinedAt DateTime              @default(now())
 
   @@unique([roomId, userId])
   @@index([userId])
@@ -1778,4 +1799,31 @@ model PageBanner {
   imageData String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// JLPT mind maps (grammar / vocab / kanji)
+// ─────────────────────────────────────────────
+
+enum MindMapKind {
+  GRAMMAR
+  VOCAB
+  KANJI
+}
+
+model MindMapLevel {
+  id        Int         @id @default(autoincrement())
+  kind      MindMapKind
+  level     JlptLevel
+  title     String
+  summary   String      @db.Text
+  accent    String      @default("#3b82f6")
+  /// [{ id, label, labelJa?, hint?, posX?, posY?, patterns: [{ pattern, meaning, href?, lessonNumber?, linkLabel? }] }]
+  branches  Json
+  sortOrder Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([kind, level])
+  @@index([kind, sortOrder])
 }

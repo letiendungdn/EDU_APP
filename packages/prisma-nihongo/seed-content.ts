@@ -43,12 +43,26 @@ async function clearContentTables(prisma: PrismaClient) {
   await prisma.lesson.deleteMany();
 }
 
+/** Database + user đích lấy từ DATABASE_URL — trước đây hard-code "nihongo" nên seed luôn ghi vào DB chính. */
+function targetDb(): { database: string; user: string } {
+  const url = process.env.DATABASE_URL;
+  if (!url) return { database: 'nihongo', user: 'nihongo' };
+  const parsed = new URL(url);
+  return {
+    database: decodeURIComponent(parsed.pathname.replace(/^\//, '')) || 'nihongo',
+    user: decodeURIComponent(parsed.username) || 'nihongo',
+  };
+}
+
 function runSqlFile(filePath: string) {
   const container = process.env.POSTGRES_CONTAINER ?? 'edu-postgres-nihongo';
   const sql = fs.readFileSync(filePath, 'utf8');
+  const { database, user } = targetDb();
+  // --single-transaction: lỗi giữa chừng thì rollback hết (dump có DISABLE TRIGGER, không được để dở).
+  const psqlArgs = '-v ON_ERROR_STOP=1 --single-transaction';
 
   try {
-    execSync(`docker exec -i ${container} psql -U nihongo nihongo -v ON_ERROR_STOP=1`, {
+    execSync(`docker exec -i ${container} psql -U ${user} -d ${database} ${psqlArgs}`, {
       input: sql,
       stdio: ['pipe', 'inherit', 'inherit'],
       maxBuffer: 64 * 1024 * 1024,
@@ -57,13 +71,38 @@ function runSqlFile(filePath: string) {
   } catch {
     const url = process.env.DATABASE_URL;
     if (!url) throw new Error('Không chạy được docker psql và thiếu DATABASE_URL');
-    execSync('psql -v ON_ERROR_STOP=1', {
+    execSync(`psql ${psqlArgs}`, {
       input: sql,
       env: { ...process.env, PGDATABASE: url },
       stdio: ['pipe', 'inherit', 'inherit'],
       maxBuffer: 64 * 1024 * 1024,
     });
   }
+}
+
+/**
+ * Dump chèn id cố định; setval trong dump có thể cũ hơn dữ liệu (vd Vocabulary: seq 29660, max id 29675)
+ * → các seed sau bị trùng khóa chính. Đặt lại mọi sequence của cột "id" = max(id) thực tế.
+ */
+async function resyncIdSequences(prisma: PrismaClient) {
+  await prisma.$executeRawUnsafe(`
+    DO $$
+    DECLARE r record;
+    BEGIN
+      FOR r IN
+        SELECT table_name AS tbl,
+               pg_get_serial_sequence(format('public.%I', table_name), 'id') AS seq
+        FROM information_schema.columns
+        WHERE table_schema = 'public' AND column_name = 'id'
+          AND column_default LIKE 'nextval(%'
+      LOOP
+        EXECUTE format(
+          'SELECT setval(%L, COALESCE((SELECT max(id) FROM public.%I), 1), (SELECT max(id) FROM public.%I) IS NOT NULL)',
+          r.seq, r.tbl, r.tbl
+        );
+      END LOOP;
+    END $$;
+  `);
 }
 
 export async function seedContent(prisma: PrismaClient) {
@@ -91,6 +130,7 @@ export async function seedContent(prisma: PrismaClient) {
 
   console.log('Import nội dung học từ SQL...');
   runSqlFile(SQL_PATH);
+  await resyncIdSequences(prisma);
 
   const [lessons, vocab, kanji] = await Promise.all([
     prisma.lesson.count(),

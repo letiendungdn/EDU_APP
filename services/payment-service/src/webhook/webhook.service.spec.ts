@@ -4,6 +4,9 @@ import { PaymentStatus, SubscriptionStatus } from "@prisma/client";
 import Stripe from "stripe";
 import { PrismaService } from "@app/prisma";
 import { StripeService } from "../stripe/stripe.service";
+import { RefundService } from "../refund/refund.service";
+import { KafkaProducerService } from "../kafka/kafka-producer.service";
+import { NotificationService } from "../../../api-gateway/src/realtime/notification.service";
 import { WebhookService } from "./webhook.service";
 
 describe("WebhookService", () => {
@@ -15,7 +18,7 @@ describe("WebhookService", () => {
       update: jest.Mock;
       updateMany: jest.Mock;
     };
-    subscription: { updateMany: jest.Mock };
+    subscription: { updateMany: jest.Mock; findFirst: jest.Mock };
     payment: { updateMany: jest.Mock; findMany: jest.Mock };
   };
   let stripe: { constructWebhookEvent: jest.Mock };
@@ -33,7 +36,7 @@ describe("WebhookService", () => {
         update: jest.fn(),
         updateMany: jest.fn(),
       },
-      subscription: { updateMany: jest.fn() },
+      subscription: { updateMany: jest.fn(), findFirst: jest.fn().mockResolvedValue(null) },
       payment: { updateMany: jest.fn(), findMany: jest.fn() },
     };
     stripe = { constructWebhookEvent: jest.fn() };
@@ -43,6 +46,9 @@ describe("WebhookService", () => {
         WebhookService,
         { provide: PrismaService, useValue: prisma },
         { provide: StripeService, useValue: stripe },
+        { provide: RefundService, useValue: { refundByChargeId: jest.fn() } },
+        { provide: KafkaProducerService, useValue: { emit: jest.fn(), send: jest.fn() } },
+        { provide: NotificationService, useValue: { notifyUser: jest.fn(), create: jest.fn() } },
       ],
     }).compile();
 
@@ -65,7 +71,7 @@ describe("WebhookService", () => {
       const event = {
         id: "evt_processed",
         type: "payment_intent.succeeded",
-      } as Stripe.Event;
+      } as unknown as Stripe.Event;
       stripe.constructWebhookEvent.mockReturnValue(event);
       prisma.webhookEvent.findUnique.mockResolvedValue({ status: "PROCESSED" });
 
@@ -88,7 +94,7 @@ describe("WebhookService", () => {
             canceled_at: null,
           },
         },
-      } as Stripe.Event;
+      } as unknown as Stripe.Event;
 
       stripe.constructWebhookEvent.mockReturnValue(event);
       prisma.webhookEvent.findUnique.mockResolvedValue(null);
@@ -117,7 +123,7 @@ describe("WebhookService", () => {
         data: {
           object: { id: "pi_ok", latest_charge: "ch_ok" },
         },
-      } as Stripe.Event;
+      } as unknown as Stripe.Event;
 
       stripe.constructWebhookEvent.mockReturnValue(event);
       prisma.webhookEvent.findUnique.mockResolvedValue(null);
@@ -139,7 +145,7 @@ describe("WebhookService", () => {
         id: "evt_fail",
         type: "payment_intent.succeeded",
         data: { object: { id: "pi_fail" } },
-      } as Stripe.Event;
+      } as unknown as Stripe.Event;
 
       stripe.constructWebhookEvent.mockReturnValue(event);
       prisma.webhookEvent.findUnique.mockResolvedValue(null);
@@ -167,7 +173,7 @@ describe("WebhookService", () => {
         service as unknown as {
           handleSubscriptionChange: (s: Stripe.Subscription) => Promise<void>;
         }
-      ).handleSubscriptionChange(sub as Stripe.Subscription);
+      ).handleSubscriptionChange(sub as unknown as Stripe.Subscription);
 
     it("maps 'active' status to ACTIVE", async () => {
       prisma.subscription.updateMany.mockResolvedValue({ count: 1 });
@@ -179,7 +185,7 @@ describe("WebhookService", () => {
         current_period_end: 1_700_086_400,
         cancel_at_period_end: false,
         canceled_at: null,
-      } as Stripe.Subscription);
+      } as unknown as Partial<Stripe.Subscription>);
 
       expect(prisma.subscription.updateMany).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -198,7 +204,7 @@ describe("WebhookService", () => {
         current_period_end: 1_700_086_400,
         cancel_at_period_end: false,
         canceled_at: null,
-      } as Stripe.Subscription);
+      } as unknown as Partial<Stripe.Subscription>);
 
       expect(prisma.subscription.updateMany).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -219,7 +225,7 @@ describe("WebhookService", () => {
         current_period_end: 1_700_086_400,
         cancel_at_period_end: true,
         canceled_at: 1_700_050_000,
-      } as Stripe.Subscription);
+      } as unknown as Partial<Stripe.Subscription>);
 
       expect(prisma.subscription.updateMany).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -241,7 +247,7 @@ describe("WebhookService", () => {
         current_period_end: periodEnd,
         cancel_at_period_end: false,
         canceled_at: null,
-      } as Stripe.Subscription);
+      } as unknown as Partial<Stripe.Subscription>);
 
       expect(prisma.subscription.updateMany).toHaveBeenCalledWith(
         expect.objectContaining({

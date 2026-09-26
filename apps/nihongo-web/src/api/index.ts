@@ -309,6 +309,14 @@ export function fetchRomajiConversion(romaji: string) {
   });
 }
 
+export function fetchVocabularyById(id: number) {
+  return apiRequest<Vocabulary>(`/vocabularies/${id}`);
+}
+
+export function fetchKanjiEntryById(id: number) {
+  return apiRequest<KanjiEntry>(`/kanji/${id}`);
+}
+
 export function fetchKanjiByJlpt(jlptLevel: string) {
   return apiRequest<KanjiEntry[]>(`/kanji?jlptLevel=${encodeURIComponent(jlptLevel)}`);
 }
@@ -1128,6 +1136,117 @@ export function deleteReadingPassage(id: number, token: string) {
   return apiRequest<{ ok: boolean }>(`/reading/${id}`, {
     method: 'DELETE',
     token,
+  });
+}
+
+// ─── Mind maps ───────────────────────────────────────────────
+
+export type MindMapKindApi = 'GRAMMAR' | 'VOCAB' | 'KANJI';
+export type MindMapLevelCode = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
+
+export interface MindMapItemApi {
+  pattern: string;
+  meaning: string;
+  href?: string;
+  lessonNumber?: number;
+  linkLabel?: string;
+  /** Chế độ "Toàn bộ dữ liệu": id bản ghi gốc + bài chứa nó */
+  id?: number;
+  lessonId?: number;
+  /** Chuỗi đọc bằng loa */
+  speak?: string[];
+  imageUrl?: string;
+  /** Có ảnh nhưng là data URL (không gửi kèm) — tải khi cần */
+  hasImage?: boolean;
+}
+
+export interface MindMapBranchApi {
+  id: string;
+  label: string;
+  labelJa?: string;
+  hint?: string;
+  posX?: number;
+  posY?: number;
+  patterns: MindMapItemApi[];
+}
+
+export interface MindMapLevelApi {
+  id: number;
+  kind: MindMapKindApi;
+  level: MindMapLevelCode;
+  title: string;
+  summary: string;
+  accent: string;
+  sortOrder: number;
+  branches: MindMapBranchApi[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface MindMapLevelInput {
+  kind: MindMapKindApi;
+  level: MindMapLevelCode;
+  title: string;
+  summary: string;
+  accent?: string;
+  sortOrder?: number;
+  branches: MindMapBranchApi[];
+}
+
+export function fetchMindMaps(kind?: MindMapKindApi) {
+  const q = kind ? `?kind=${kind}` : '';
+  return apiRequest<MindMapLevelApi[]>(`/mind-maps${q}`);
+}
+
+export interface MindMapDataLevelApi {
+  kind: MindMapKindApi;
+  level: MindMapLevelCode;
+  total: number;
+  groupedBy: 'partOfSpeech' | 'lesson';
+  branches: MindMapBranchApi[];
+}
+
+/** Sơ đồ sinh từ toàn bộ dữ liệu (mỗi cấp ≤ 8 nhánh, liệt kê hết từ / mẫu / chữ). */
+export function fetchMindMapData(kind: MindMapKindApi) {
+  return apiRequest<MindMapDataLevelApi[]>(`/mind-maps/data?kind=${kind}`);
+}
+
+export function fetchMindMap(id: number) {
+  return apiRequest<MindMapLevelApi>(`/mind-maps/${id}`);
+}
+
+export function createMindMap(data: MindMapLevelInput, token: string) {
+  return apiRequest<MindMapLevelApi>('/mind-maps', {
+    method: 'POST',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateMindMap(id: number, data: Partial<MindMapLevelInput>, token: string) {
+  return apiRequest<MindMapLevelApi>(`/mind-maps/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteMindMap(id: number, token: string) {
+  return apiRequest<{ ok: boolean }>(`/mind-maps/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
+export function bulkUpsertMindMaps(
+  levels: MindMapLevelInput[],
+  token: string,
+  replaceKind?: MindMapKindApi,
+) {
+  return apiRequest<MindMapLevelApi[]>('/mind-maps/bulk-upsert', {
+    method: 'POST',
+    token,
+    body: JSON.stringify({ levels, replaceKind }),
   });
 }
 

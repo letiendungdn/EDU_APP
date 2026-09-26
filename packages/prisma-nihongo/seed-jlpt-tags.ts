@@ -5,7 +5,7 @@
  *   npm run seed:jlpt-tags -w @edu/prisma-nihongo
  */
 import { PrismaClient } from './generated/client';
-import { minnaJlptForLesson } from './jlpt-targets';
+import { kllJlptForLesson, minnaJlptForLesson } from './jlpt-targets';
 
 export async function seedJlptTags(prisma: PrismaClient) {
   let lessonUpdates = 0;
@@ -50,7 +50,7 @@ export async function seedJlptTags(prisma: PrismaClient) {
   });
 
   for (const kl of kanjiLessons) {
-    const level = minnaJlptForLesson(kl.lessonNumber);
+    const level = kllJlptForLesson(kl.lessonNumber);
     if (!level) continue;
 
     if (kl.jlptLevel !== level) {

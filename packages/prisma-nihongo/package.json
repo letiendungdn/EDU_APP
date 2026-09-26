@@ -8,6 +8,7 @@
     "migrate:dev": "prisma migrate dev",
     "seed": "ts-node seed.ts",
     "seed:jlpt-content": "ts-node seed-jlpt-content.ts",
+    "seed:book-audio-official": "ts-node seed-book-audio-official.ts",
     "seed:jlpt-tags": "ts-node seed-jlpt-tags.ts",
     "seed:jlpt-expand": "ts-node seed-jlpt-expand.ts",
     "seed:jlpt-exercises": "ts-node seed-jlpt-exercises.ts",

@@ -1,3 +1,4 @@
+import { Reflector } from "@nestjs/core";
 import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication, ValidationPipe } from "@nestjs/common";
 import request from "supertest";
@@ -16,7 +17,7 @@ describe("API Gateway E2E", () => {
     app.useGlobalPipes(
       new ValidationPipe({ whitelist: true, transform: true }),
     );
-    app.useGlobalInterceptors(new ResponseInterceptor());
+    app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)));
     app.useGlobalFilters(new AllExceptionsFilter());
     await app.init();
   });
@@ -69,9 +70,9 @@ describe("API Gateway E2E", () => {
           expect(res.body.success).toBe(false);
         }));
 
-    it("GET /api/auth/me with valid token returns user", () => {
+    it("GET /api/auth/me with valid token returns user", async () => {
       if (!token) return;
-      return request(app.getHttpServer())
+      await request(app.getHttpServer())
         .get("/api/auth/me")
         .set("Authorization", `Bearer ${token}`)
         .expect(200)

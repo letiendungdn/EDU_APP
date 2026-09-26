@@ -74,7 +74,7 @@ describe("GrammarsService", () => {
     ]);
 
     const result = await service.findAll(2);
-    expect(result.data[0].pattern).toBe("は");
+    expect((result.data as Array<{ pattern: string }>)[0].pattern).toBe("は");
   });
 
   it("findOne includes examples", async () => {

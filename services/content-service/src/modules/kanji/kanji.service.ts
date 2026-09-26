@@ -180,6 +180,7 @@ export class KanjiService {
         hanViet: dto.hanViet?.trim() || null,
         onyomi: dto.onyomi?.trim() || null,
         kunyomi: dto.kunyomi?.trim() || null,
+        imageUrl: dto.imageUrl?.trim() || null,
         jlptLevel: level,
         sortOrder,
         lessonId: lesson.id,
@@ -214,6 +215,9 @@ export class KanjiService {
           : {}),
         ...(dto.kunyomi !== undefined
           ? { kunyomi: dto.kunyomi?.trim() || null }
+          : {}),
+        ...(dto.imageUrl !== undefined
+          ? { imageUrl: dto.imageUrl?.trim() || null }
           : {}),
         ...(dto.jlptLevel !== undefined ? { jlptLevel: dto.jlptLevel ?? null } : {}),
         ...(dto.sortOrder != null ? { sortOrder: dto.sortOrder } : {}),

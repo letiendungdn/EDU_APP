@@ -25,17 +25,32 @@ export const JLPT_GRAMMAR_CUMULATIVE: Record<'N5' | 'N4' | 'N3' | 'N2' | 'N1', n
   N1: 650,
 };
 
-/** Minna no Nihongo: gán jlptLevel theo số bài (1–50). */
-export const MINNA_LESSON_JLPT: Array<{ from: number; to: number; level: 'N5' | 'N4' | 'N3' | 'N2' }> = [
+type Band = { from: number; to: number; level: 'N5' | 'N4' | 'N3' | 'N2' };
+
+/**
+ * Minna no Nihongo: sơ cấp I (bài 1–25) ≈ N5, sơ cấp II (bài 26–50) ≈ N4.
+ * (Trước 2026-09-26 bảng này dùng nhầm cách chia của Kanji Look and Learn → bài 21–50 bị gắn N3/N2.)
+ */
+export const MINNA_LESSON_JLPT: Band[] = [
+  { from: 1, to: 25, level: 'N5' },
+  { from: 26, to: 50, level: 'N4' },
+];
+
+/** Kanji Look and Learn (KanjiLesson 1–32): Part 1 = N5, Part 2 = N4, Part 3 = N3. */
+export const KLL_LESSON_JLPT: Band[] = [
   { from: 1, to: 10, level: 'N5' },
   { from: 11, to: 20, level: 'N4' },
   { from: 21, to: 32, level: 'N3' },
-  { from: 33, to: 50, level: 'N2' },
 ];
 
+function levelFor(bands: Band[], lessonNumber: number) {
+  return bands.find((b) => lessonNumber >= b.from && lessonNumber <= b.to)?.level ?? null;
+}
+
+export function kllJlptForLesson(lessonNumber: number): 'N5' | 'N4' | 'N3' | null {
+  return levelFor(KLL_LESSON_JLPT, lessonNumber) as 'N5' | 'N4' | 'N3' | null;
+}
+
 export function minnaJlptForLesson(lessonNumber: number): 'N5' | 'N4' | 'N3' | 'N2' | null {
-  for (const band of MINNA_LESSON_JLPT) {
-    if (lessonNumber >= band.from && lessonNumber <= band.to) return band.level;
-  }
-  return null;
+  return levelFor(MINNA_LESSON_JLPT, lessonNumber);
 }

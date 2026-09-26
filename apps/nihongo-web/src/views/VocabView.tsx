@@ -453,6 +453,9 @@ export default function VocabView({
         <Link href={`/vocab/picture?lesson=${currentLesson}`} className="btn btn-outline">
           Từ điển tranh
         </Link>
+        <Link href="/vocab/mindmap" className="btn btn-outline">
+          Sơ đồ tư duy
+        </Link>
       </div>
 
       <LessonSelector

@@ -119,6 +119,7 @@ export interface CreateKanjiEntryInput {
   kunyomi?: string;
   jlptLevel?: string;
   sortOrder?: number;
+  imageUrl?: string | null;
 }
 
 export interface UpdateKanjiEntryInput {
@@ -130,6 +131,7 @@ export interface UpdateKanjiEntryInput {
   kunyomi?: string;
   jlptLevel?: string;
   sortOrder?: number;
+  imageUrl?: string | null;
 }
 
 export interface ListeningPlaylistItem {

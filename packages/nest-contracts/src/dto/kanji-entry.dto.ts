@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsString,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 
 const JLPT_LEVELS = ['N5', 'N4', 'N3', 'N2', 'N1'] as const;
@@ -51,6 +52,12 @@ export class CreateKanjiEntryDto {
   @Type(() => Number)
   @IsInt()
   sortOrder?: number;
+
+  @ApiPropertyOptional({ description: 'Ảnh minh họa (URL hoặc data URL); null để xóa ảnh' })
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null && v !== undefined)
+  @IsString()
+  imageUrl?: string | null;
 }
 
 export class UpdateKanjiEntryDto extends PartialType(CreateKanjiEntryDto) {}

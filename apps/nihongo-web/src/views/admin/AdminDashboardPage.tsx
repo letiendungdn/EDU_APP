@@ -6,6 +6,7 @@ import { getAdminResourceMeta } from '../../config/adminResources';
 import './AdminPages.css';
 
 const QUICK_ACTIONS = [
+  { href: '/admin/mind-maps', icon: '🗺', label: 'Sơ đồ tư duy', desc: 'Thêm / sửa / xoá / kéo thả nhánh N5–N1' },
   { href: '/admin/flashcard-editor', icon: '🃏', label: 'Flashcard Editor', desc: 'Thiết kế flashcard trực quan' },
   { href: '/admin/worksheet', icon: '📄', label: 'Worksheet Generator', desc: 'Tạo bài tập in ấn A4' },
   { href: '/admin/certificate', icon: '🏆', label: 'Certificate Generator', desc: 'Cấp chứng chỉ hàng loạt' },

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useBookAudioFilesQuery } from '../hooks/queries';
 import type { BookAudioItem } from '../types/reference';
 import './BookAudioView.css';
@@ -16,13 +16,18 @@ function isPlayable(path: string): boolean {
   return /\.(mp3|wma|wav|m4a|ogg|flac|aac)$/i.test(path);
 }
 
-function BookAudioRow({ item }: { item: BookAudioItem }) {
-  const [open, setOpen] = useState(false);
+function BookAudioRow({ item, focused = false }: { item: BookAudioItem; focused?: boolean }) {
+  const [open, setOpen] = useState(focused);
+  const rowRef = useRef<HTMLLIElement>(null);
   const files = item.localFiles ?? [];
   const hasLocal = files.length > 0;
 
+  useEffect(() => {
+    if (focused) rowRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [focused]);
+
   return (
-    <li className="book-audio-item">
+    <li ref={rowRef} id={`audio-${item.id}`} className={`book-audio-item${focused ? ' is-focused' : ''}`}>
       <div className="book-audio-item-top">
         <div className="book-audio-item-main">
           {item.no != null && <span className="book-audio-no">{item.no}</span>}
@@ -77,10 +82,13 @@ function BookAudioRow({ item }: { item: BookAudioItem }) {
   );
 }
 
-export default function BookAudioView() {
+export default function BookAudioView({
+  initialLevel,
+  focusItemId,
+}: { initialLevel?: string; focusItemId?: string } = {}) {
   const { data, isLoading, error } = useBookAudioFilesQuery();
   const sections = useMemo(() => data?.sections ?? [], [data?.sections]);
-  const [activeLevel, setActiveLevel] = useState('');
+  const [activeLevel, setActiveLevel] = useState(initialLevel ?? '');
 
   const resolvedLevel = activeLevel || sections[0]?.level || '';
   const section = useMemo(
@@ -147,7 +155,7 @@ export default function BookAudioView() {
         <h3 className="book-audio-section-title">{section.label}</h3>
         <ul className="book-audio-items">
           {section.items.map((item) => (
-            <BookAudioRow key={item.id} item={item} />
+            <BookAudioRow key={item.id} item={item} focused={item.id === focusItemId} />
           ))}
         </ul>
       </section>

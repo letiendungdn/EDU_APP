@@ -22,6 +22,7 @@ export class AdminService {
       kanjiEntries,
       reading,
       mockExams,
+      mindMaps,
       users,
       examResults,
     ] = await Promise.all([
@@ -33,6 +34,7 @@ export class AdminService {
       this.prisma.kanjiEntry.count(),
       this.prisma.readingPassage.count(),
       this.prisma.mockExamTemplate.count(),
+      this.prisma.mindMapLevel.count(),
       this.prisma.user.count(),
       this.prisma.examResult.count(),
     ]);
@@ -60,6 +62,7 @@ export class AdminService {
         kanjiEntries,
         reading,
         mockExams,
+        mindMaps,
         users,
         examResults,
       },

@@ -867,6 +867,33 @@ textarea::placeholder { color: var(--text-muted); }
 
 .nav-item.active .nav-item__icon { color: var(--primary-color); }
 
+/* Nhóm Giáo trình: sách + nút cấp */
+.nav-book__levels {
+  display: flex;
+  gap: 0.2rem;
+  padding: 0.1rem 0.5rem 0.35rem 2rem;
+}
+.nav-book__level {
+  padding: 0.05rem 0.3rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255 255 255 / 0.12);
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: rgba(255 255 255 / 0.45);
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.nav-book__level:hover {
+  color: rgba(255 255 255 / 0.9);
+  border-color: rgba(255 255 255 / 0.3);
+}
+.nav-book__level.active {
+  background: rgba(239 68 68 / 0.2);
+  border-color: rgba(239 68 68 / 0.6);
+  color: #fca5a5;
+}
+
 .nav-item__icon {
   width: 20px;
   text-align: center;

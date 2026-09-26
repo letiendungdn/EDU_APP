@@ -23,6 +23,7 @@ import AdminKanjiByLessonView from './AdminKanjiByLessonView';
 import AdminKanjiLessonsView from './AdminKanjiLessonsView';
 import AdminReadingView from './AdminReadingView';
 import AdminMockExamsView from './AdminMockExamsView';
+import AdminMindMapsView from './AdminMindMapsView';
 import {
   ADMIN_CONTENT_RESOURCES,
   getAdminResourceMeta,
@@ -586,6 +587,9 @@ export default function AdminContentResourcePage() {
         <AdminMockExamsView />
       </PanelShell>
     );
+  }
+  if (resource === 'mindMaps') {
+    return <AdminMindMapsView />;
   }
 
   return (

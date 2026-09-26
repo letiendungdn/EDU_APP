@@ -23,6 +23,7 @@ export const ADMIN_CONTENT_RESOURCES: AdminResourceMeta[] = [
   { key: 'kanjiEntries', title: 'Kanji', icon: '📌', href: '/admin/content/kanjiEntries', hint: 'Chọn bài kanji → danh sách chữ (thêm / sửa / xoá).' },
   { key: 'reading', title: 'Đọc hiểu', icon: '📰', href: '/admin/content/reading', hint: 'Thêm / sửa / xoá bài đọc hiểu N5-N1 kèm câu hỏi.' },
   { key: 'mockExams', title: 'Đề thi thử', icon: '🎯', href: '/admin/content/mockExams', hint: 'Quản lý template + câu hỏi đề thi thử.' },
+  { key: 'mindMaps', title: 'Sơ đồ tư duy', icon: '🗺', href: '/admin/mind-maps', hint: 'Thêm / sửa / xoá / kéo thả nhánh sơ đồ ngữ pháp · từ vựng · kanji.' },
   { key: 'users', title: 'Users', icon: '👤', href: '/admin/content/users', hint: 'Đổi role USER / TEACHER / ADMIN.' },
   { key: 'examResults', title: 'Exam results', icon: '📊', href: '/admin/content/examResults', hint: 'Xem và xoá kết quả thi thử.' },
 ];

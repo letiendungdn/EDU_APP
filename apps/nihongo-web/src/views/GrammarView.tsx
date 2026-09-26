@@ -502,6 +502,8 @@ export default function GrammarView({
             <h2 className="view-title grammar-view-title">{viewTitle}</h2>
             <p className="grammar-lesson-summary">
               <Link href="/grammar-srs">Ôn mẫu đã ghim</Link>
+              {' · '}
+              <Link href="/grammar/mindmap">Sơ đồ tư duy N5–N1</Link>
             </p>
 
             <LessonSelector

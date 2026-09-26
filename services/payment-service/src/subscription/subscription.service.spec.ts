@@ -3,6 +3,8 @@ import { BadRequestException } from "@nestjs/common";
 import { SubscriptionPlan, SubscriptionStatus } from "@prisma/client";
 import { PrismaService } from "@app/prisma";
 import { StripeService } from "../stripe/stripe.service";
+import { RefundService } from "../refund/refund.service";
+import { PaymentMethodService } from "../payment-method/payment-method.service";
 import { SubscriptionService } from "./subscription.service";
 
 describe("SubscriptionService", () => {
@@ -48,6 +50,8 @@ describe("SubscriptionService", () => {
         SubscriptionService,
         { provide: PrismaService, useValue: prisma },
         { provide: StripeService, useValue: stripe },
+        { provide: RefundService, useValue: { refundPayment: jest.fn() } },
+        { provide: PaymentMethodService, useValue: { assertUserOwnsCard: jest.fn() } },
       ],
     }).compile();
 
@@ -142,6 +146,7 @@ describe("SubscriptionService", () => {
       stripe.createCustomer.mockResolvedValue({ id: "cus_1" });
       stripe.createSubscription.mockResolvedValue({
         id: "sub_1",
+        status: "trialing",
         current_period_start: 1_700_000_000,
         current_period_end: 1_700_259_200,
         latest_invoice: {

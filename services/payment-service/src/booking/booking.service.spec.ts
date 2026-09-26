@@ -3,10 +3,12 @@ import { BadRequestException, ConflictException } from "@nestjs/common";
 import { PaymentStatus, SessionStatus } from "@prisma/client";
 import { PrismaService } from "@app/prisma";
 import { StripeService } from "../stripe/stripe.service";
+import { RefundService } from "../refund/refund.service";
 import { BookingService } from "./booking.service";
 
 describe("BookingService", () => {
   let service: BookingService;
+  let refundService: { refundPayment: jest.Mock };
   let prisma: {
     coachProfile: { findUniqueOrThrow: jest.Mock };
     coachingSession: {
@@ -45,12 +47,14 @@ describe("BookingService", () => {
       createPaymentIntent: jest.fn(),
       refundPayment: jest.fn(),
     };
+    refundService = { refundPayment: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BookingService,
         { provide: PrismaService, useValue: prisma },
         { provide: StripeService, useValue: stripe },
+        { provide: RefundService, useValue: refundService },
       ],
     }).compile();
 
@@ -224,12 +228,13 @@ describe("BookingService", () => {
     it("throws BadRequestException when session is already COMPLETED", async () => {
       prisma.coachingSession.findUniqueOrThrow.mockResolvedValue({
         id: 1,
+        learnerId,
         status: SessionStatus.COMPLETED,
         scheduledAt: new Date("2026-08-01T10:00:00.000Z"),
         payment: null,
       });
 
-      await expect(service.cancelSession(1, "user:10")).rejects.toThrow(
+      await expect(service.cancelSession(1, learnerId)).rejects.toThrow(
         BadRequestException,
       );
     });
@@ -239,6 +244,7 @@ describe("BookingService", () => {
 
       prisma.coachingSession.findUniqueOrThrow.mockResolvedValue({
         id: 2,
+        learnerId,
         status: SessionStatus.CONFIRMED,
         scheduledAt: futureDate,
         payment: {
@@ -247,17 +253,16 @@ describe("BookingService", () => {
           status: PaymentStatus.SUCCEEDED,
         },
       });
-      stripe.refundPayment.mockResolvedValue({});
-      prisma.payment.update.mockResolvedValue({});
+      refundService.refundPayment.mockResolvedValue({ amountCents: 5000 });
       prisma.coachingSession.update.mockResolvedValue({});
 
-      await service.cancelSession(2, "user:10", "changed plans");
+      const result = await service.cancelSession(2, learnerId, "changed plans");
 
-      expect(stripe.refundPayment).toHaveBeenCalledWith("ch_refund");
-      expect(prisma.payment.update).toHaveBeenCalledWith({
-        where: { id: 50 },
-        data: expect.objectContaining({ status: PaymentStatus.REFUNDED }),
-      });
+      expect(refundService.refundPayment).toHaveBeenCalledWith(
+        50,
+        expect.objectContaining({ requestedByUserId: learnerId, reason: "changed plans" }),
+      );
+      expect(result).toEqual(expect.objectContaining({ refunded: true, refundAmountCents: 5000 }));
     });
 
     it("does not refund when canceling within 24h of session", async () => {
@@ -265,6 +270,7 @@ describe("BookingService", () => {
 
       prisma.coachingSession.findUniqueOrThrow.mockResolvedValue({
         id: 3,
+        learnerId,
         status: SessionStatus.CONFIRMED,
         scheduledAt: soonDate,
         payment: {
@@ -275,22 +281,23 @@ describe("BookingService", () => {
       });
       prisma.coachingSession.update.mockResolvedValue({});
 
-      await service.cancelSession(3, "user:10");
+      const result = await service.cancelSession(3, learnerId);
 
-      expect(stripe.refundPayment).not.toHaveBeenCalled();
-      expect(prisma.payment.update).not.toHaveBeenCalled();
+      expect(refundService.refundPayment).not.toHaveBeenCalled();
+      expect(result.refunded).toBe(false);
     });
 
     it("updates session status to CANCELED", async () => {
       prisma.coachingSession.findUniqueOrThrow.mockResolvedValue({
         id: 4,
+        learnerId,
         status: SessionStatus.PENDING,
         scheduledAt: new Date(Date.now() + 72 * 3_600_000),
         payment: null,
       });
       prisma.coachingSession.update.mockResolvedValue({});
 
-      await service.cancelSession(4, "user:10", "no longer needed");
+      await service.cancelSession(4, learnerId, "no longer needed");
 
       expect(prisma.coachingSession.update).toHaveBeenCalledWith({
         where: { id: 4 },

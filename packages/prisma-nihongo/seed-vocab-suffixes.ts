@@ -2,12 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { PrismaClient, type PrismaClient as PrismaClientType } from './generated/client';
 
-const SEED_SQL = path.join(
-  __dirname,
-  'migrations',
-  '20260815120000_vocab_suffixes',
-  'seed.sql',
-);
+const SEED_SQL = path.join(__dirname, 'seed-data', 'vocab-suffixes.sql');
 
 export async function seedVocabSuffixes(prisma: PrismaClientType) {
   const groupCount = await prisma.vocabSuffixGroup.count();

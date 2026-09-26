@@ -39,6 +39,9 @@ import { LiveController } from "./live.controller";
 import { LiveService } from "./live.service";
 import { BannersController } from "./banners.controller";
 import { BannersService } from "./banners.service";
+import { MindMapsController } from "./mind-maps.controller";
+import { MindMapsService } from "./mind-maps.service";
+import { MindMapDataService } from "./mind-map-data.service";
 
 const httpImports: Array<Type | DynamicModule> = [
   PaymentModule,
@@ -78,6 +81,7 @@ const httpImports: Array<Type | DynamicModule> = [
     KanaRomajiController,
     LiveController,
     BannersController,
+    MindMapsController,
   ],
   providers: [
     JlptScheduleService,
@@ -87,6 +91,8 @@ const httpImports: Array<Type | DynamicModule> = [
     KanaRomajiService,
     LiveService,
     BannersService,
+    MindMapsService,
+    MindMapDataService,
   ],
 })
 export class HttpModule {}

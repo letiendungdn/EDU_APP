@@ -379,14 +379,18 @@ function KanjiEntryAdminForm({
   );
 }
 
-export default function KanjiListView() {
+export default function KanjiListView({
+  initialLevel,
+}: {
+  initialLevel?: ViewLevel;
+} = {}) {
   const { isAdmin, token } = useAuth();
   const queryClient = useQueryClient();
   const { data: lessons = [], isLoading: loadingLessons } = useKanjiLessonsQuery();
   const summary = useMemo(() => buildJlptSummary(lessons), [lessons]);
   const totalKanji = useMemo(() => summary.reduce((sum, item) => sum + item.count, 0), [summary]);
 
-  const [activeLevel, setActiveLevel] = useState<ViewLevel>('ALL');
+  const [activeLevel, setActiveLevel] = useState<ViewLevel>(initialLevel ?? 'ALL');
   const [searchInput, setSearchInput] = useState('');
   const [displayMode, setDisplayMode] = useState<DisplayMode>('grid');
   const [selectedEntry, setSelectedEntry] = useState<KanjiEntry | null>(null);
@@ -396,6 +400,10 @@ export default function KanjiListView() {
   const [formState, setFormState] = useState<
     null | { mode: 'create' } | { mode: 'edit'; entry: KanjiEntry }
   >(null);
+
+  useEffect(() => {
+    if (initialLevel) setActiveLevel(initialLevel);
+  }, [initialLevel]);
 
   const canEdit = isAdmin && editMode;
 
@@ -479,6 +487,7 @@ export default function KanjiListView() {
         </p>
         <div className="kanji-list-links">
           <Link href="/kanji">← Flashcard theo bài</Link>
+          <Link href="/kanji/mindmap">Sơ đồ tư duy</Link>
           <Link href="/kanji/quiz">Quiz kanji →</Link>
         </div>
         {isAdmin && (

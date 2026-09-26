@@ -68,9 +68,10 @@ describe("ProgressService", () => {
           {
             kana: "あ",
             lessonNumber: 1,
-            kanji: null,
             meaning: "a",
-            lastReviewedAt: null,
+            wrongCount: 0,
+            reviewStreak: 0,
+            mastered: false,
           },
         ],
       };

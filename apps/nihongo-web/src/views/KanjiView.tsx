@@ -17,8 +17,8 @@ import { getKanjiReadingGroups, getKanjiSpeakItems } from '../utils/kanjiSpeak';
 import type { KanjiEntry, KanjiLesson } from '../types/api';
 import './VocabView.css';
 
-export default function KanjiView() {
-  const [currentLesson, setCurrentLesson] = useState(1);
+export default function KanjiView({ initialLessonNumber }: { initialLessonNumber?: number } = {}) {
+  const [currentLesson, setCurrentLesson] = useState(initialLessonNumber ?? 1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -29,6 +29,12 @@ export default function KanjiView() {
   const { data: lessonKanji = [], isLoading: loading } = useKanjiEntriesQuery(currentLesson);
   const { data: searchResults = [], isFetching: searching } = useKanjiSearchQuery(searchQuery);
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
+
+  useEffect(() => {
+    if (initialLessonNumber != null && initialLessonNumber > 0) {
+      setCurrentLesson(initialLessonNumber);
+    }
+  }, [initialLessonNumber]);
 
   useEffect(() => {
     if (lessons.length > 0 && !lessons.some((l) => l.lessonNumber === currentLesson)) {

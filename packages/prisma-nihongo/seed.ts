@@ -9,6 +9,7 @@ import { seedPronunciationRules } from './seed-pronunciation-rules';
 import { seedEnglishKatakana } from './seed-english-katakana';
 import { seedKanaRomaji } from './seed-kana-romaji';
 import { seedBookAudio } from './seed-book-audio';
+import { seedBookAudioOfficial } from './seed-book-audio-official';
 import { seedSubscriptionPlans } from './seed-plans';
 import { seedCountryNames } from './seed-country-names';
 import { seedVocabSuffixes } from './seed-vocab-suffixes';
@@ -36,6 +37,7 @@ async function main() {
   await seedEnglishKatakana(prisma);
   await seedKanaRomaji(prisma);
   await seedBookAudio(prisma);
+  await seedBookAudioOfficial(prisma);
   await seedSubscriptionPlans(prisma);
   await seedCountryNames(prisma);
   await seedVocabSuffixes(prisma);

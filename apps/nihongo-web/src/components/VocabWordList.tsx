@@ -6,14 +6,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
   createVocabulary,
   deleteVocabulary,
-  getPresignedUploadUrl,
   reorderVocabularies,
   updateVocabulary,
 } from '../api';
 import { queryKeys } from '../api/query-keys';
 import { useAuth } from '../hooks/useAuth';
 import type { Vocabulary } from '../types/api';
-import { readVocabImageFile } from '../utils/vocabImageUpload';
+import { uploadContentImage } from '../utils/vocabImageUpload';
 import ImageLightbox from './ImageLightbox';
 
 type Draft = {
@@ -40,25 +39,7 @@ function matchesVocabSearch(vocab: Vocabulary, query: string): boolean {
   return haystack.includes(query);
 }
 
-async function uploadVocabImage(token: string, file: File): Promise<string> {
-  // Ưu tiên S3 nếu cấu hình; không được thì lưu data URL (giống banner)
-  try {
-    const { url, publicUrl } = await getPresignedUploadUrl(
-      token,
-      file.type || 'image/jpeg',
-      'vocab',
-    );
-    const put = await fetch(url, {
-      method: 'PUT',
-      body: file,
-      headers: { 'Content-Type': file.type || 'image/jpeg' },
-    });
-    if (put.ok) return publicUrl;
-  } catch {
-    // fall through
-  }
-  return readVocabImageFile(file);
-}
+const uploadVocabImage = (token: string, file: File) => uploadContentImage(token, file, 'vocab');
 
 type Props = {
   lessonNumber: number;

@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { type ReactNode } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { ADMIN_CONTENT_RESOURCES } from '@/config/adminResources';
+import { AdminToastProvider } from '@/components/admin/AdminToast';
 
 type NavItem = {
   href: string;
@@ -69,6 +70,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   }
 
   return (
+    <AdminToastProvider>
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-color)' }}>
       {/* Sidebar */}
       <aside style={{
@@ -154,5 +156,6 @@ export default function AdminShell({ children }: { children: ReactNode }) {
         {children}
       </main>
     </div>
+    </AdminToastProvider>
   );
 }

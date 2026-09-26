@@ -1,7 +1,7 @@
 -- Vocab suffixes seed (from former apps/nihongo-web/src/data/vocab-suffixes.json + extra groups):
---   packages/prisma-nihongo/migrations/20260815120000_vocab_suffixes/seed.sql
+--   packages/prisma-nihongo/seed-data/vocab-suffixes.sql
 -- Columns forms/pos/labelJa:
---   packages/prisma-nihongo/migrations/20260826190000_vocab_suffix_forms_pos/migration.sql
+--   packages/prisma-nihongo/migrations-archive/20260826190000_vocab_suffix_forms_pos/migration.sql
 -- Re-apply:
 --   psql "$DATABASE_URL" -f .../20260826190000_vocab_suffix_forms_pos/migration.sql
 --   psql "$DATABASE_URL" -f .../20260815120000_vocab_suffixes/seed.sql

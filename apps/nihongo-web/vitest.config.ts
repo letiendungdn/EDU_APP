@@ -1,9 +1,12 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
 import path from 'path';
 
-const appNodeModules = path.resolve(__dirname, 'node_modules');
 const rootNodeModules = path.resolve(__dirname, '../../node_modules');
+// npm workspaces có thể hoist react lên node_modules gốc — dùng nơi thực sự có react.
+const localNodeModules = path.resolve(__dirname, 'node_modules');
+const appNodeModules = fs.existsSync(path.join(localNodeModules, 'react')) ? localNodeModules : rootNodeModules;
 
 export default defineConfig({
   plugins: [react()],

@@ -1,3 +1,24 @@
+import { getPresignedUploadUrl } from '../api';
+
+/**
+ * Upload ảnh nội dung (từ vựng, kanji…): ưu tiên S3 nếu cấu hình,
+ * không được thì nén thành data URL (giống banner).
+ */
+export async function uploadContentImage(token: string, file: File, folder = 'vocab'): Promise<string> {
+  try {
+    const { url, publicUrl } = await getPresignedUploadUrl(token, file.type || 'image/jpeg', folder);
+    const put = await fetch(url, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': file.type || 'image/jpeg' },
+    });
+    if (put.ok) return publicUrl;
+  } catch {
+    // fall through
+  }
+  return readVocabImageFile(file);
+}
+
 /** Đọc + nén ảnh vocab (nhỏ hơn banner) để lưu imageUrl. */
 export async function readVocabImageFile(file: File): Promise<string> {
   if (!file.type.startsWith('image/')) {

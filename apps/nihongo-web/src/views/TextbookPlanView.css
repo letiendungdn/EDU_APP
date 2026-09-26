@@ -1,0 +1,250 @@
+.tbp-view {
+  max-width: 1100px;
+  padding-bottom: 2.5rem;
+}
+
+.tbp-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.tbp-header h1 {
+  margin: 0 0 0.35rem;
+}
+
+.tbp-subtitle {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  max-width: 40rem;
+}
+
+.tbp-series {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.tbp-series__tab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tbp-series__tab span {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.tbp-series__tab.is-active {
+  border-color: var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color) 12%, var(--surface-color));
+}
+
+.tbp-levels {
+  display: flex;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+}
+
+.tbp-level {
+  min-width: 3.2rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-primary);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tbp-level.is-active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+}
+
+.tbp-level:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tbp-intro {
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.25rem;
+}
+
+.tbp-intro p {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.tbp-intro a {
+  color: var(--primary-color);
+}
+
+.tbp-muted {
+  color: var(--text-muted);
+}
+
+.tbp-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.tbp-progress__bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-hover);
+  overflow: hidden;
+}
+
+.tbp-progress__bar span {
+  display: block;
+  height: 100%;
+  background: var(--primary-color);
+  transition: width 0.2s ease;
+}
+
+.tbp-section h2 {
+  font-size: 1.15rem;
+  margin: 1.25rem 0 0.6rem;
+}
+
+.tbp-section h2 span {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.tbp-units {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.7rem;
+}
+
+.tbp-unit {
+  padding: 0.75rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.tbp-unit.is-done {
+  opacity: 0.65;
+}
+
+.tbp-unit__head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  cursor: pointer;
+}
+
+.tbp-unit__title {
+  font-weight: 700;
+}
+
+.tbp-unit__sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.tbp-tasks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.86rem;
+}
+
+.tbp-tasks a {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.tbp-tasks a:hover {
+  color: var(--primary-color);
+}
+
+.tbp-task__icon {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--surface-hover);
+  font-size: 0.78rem;
+}
+
+.tbp-note {
+  width: 100%;
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+.tbp-empty,
+.tbp-footnote {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.tbp-footnote {
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 1100px) {
+  .tbp-series {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .tbp-series {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .tbp-series {
+    grid-template-columns: 1fr;
+  }
+}

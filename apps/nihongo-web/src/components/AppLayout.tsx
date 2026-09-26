@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import AuthHeader from '@/components/AuthHeader';
+import TextbookNavItems from '@/components/TextbookNavItems';
 import EnglishAppSwitcher from '@/components/EnglishAppSwitcher';
 import PageBannerControl from '@/components/PageBannerControl';
 import { useTheme } from '@/lib/theme';
@@ -18,15 +19,25 @@ const NAV_GROUPS = [
     items: [
       { href: '/kana',      icon: 'あ',  label: 'Kana' },
       { href: '/vocab',     icon: '単',  label: 'Từ vựng' },
+      { href: '/vocab/mindmap', icon: '🗺', label: 'Sơ đồ từ vựng' },
       { href: '/vocab/picture', icon: '🖼️', label: 'Từ điển tranh' },
       { href: '/grammar',   icon: '文',  label: 'Ngữ pháp' },
+      { href: '/grammar/mindmap', icon: '🗺', label: 'Sơ đồ ngữ pháp' },
       { href: '/kanji',     icon: '漢',  label: 'Kanji' },
+      { href: '/kanji/mindmap', icon: '🗺', label: 'Sơ đồ kanji' },
       { href: '/kanji/list', icon: '表', label: 'Bảng Kanji JLPT' },
       { href: '/strokes',   icon: '筆',  label: 'Tra nét viết' },
       { href: '/counters',  icon: '①',  label: 'Đếm số' },
       { href: '/suffixes',     icon: '語',  label: 'Hậu tố' },
       { href: '/word-classes', icon: '品',  label: 'Loại từ' },
       { href: '/countries',    icon: '🌐', label: 'Quốc gia' },
+    ],
+  },
+  {
+    // Mục sách render riêng (TextbookNavItems) — ở đây chỉ còn link chung của nhóm.
+    label: 'Giáo trình',
+    items: [
+      { href: '/book-audio', icon: '🎧', label: 'File nghe sách' },
     ],
   },
   {
@@ -46,7 +57,6 @@ const NAV_GROUPS = [
       { href: '/conversation',    icon: '話', label: 'Giao tiếp · 自己紹介' },
       { href: '/listening-types', icon: '耳', label: 'Dạng nghe JLPT' },
       { href: '/roleplay',        icon: '🗣', label: 'Đóng vai' },
-      { href: '/book-audio',      icon: '📻', label: 'File nghe sách' },
       { href: '/reading',         icon: '📰', label: 'Đọc hiểu' },
       { href: '/dictation',       icon: '✍️', label: 'Nghe chép' },
       { href: '/notes',           icon: '📝', label: 'Ghi chú ngày' },
@@ -324,6 +334,9 @@ export default function MainLayout({ children }: { children: ReactNode }) {
                   {group.label}
                   <span className="nav-group__chevron" aria-hidden>▾</span>
                 </button>
+                {!groupClosed && group.label === 'Giáo trình' && (
+                  <TextbookNavItems compact={collapsed} onClick={close} />
+                )}
                 {!groupClosed && group.items.map((item) => (
                   <NavItem
                     key={item.href}

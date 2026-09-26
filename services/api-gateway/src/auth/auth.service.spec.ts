@@ -9,6 +9,8 @@ import { MailService } from "@app/common";
 import { AuthService } from "./auth.service";
 
 jest.mock("bcryptjs");
+// jose chỉ có bản ESM — Jest (CommonJS) không parse được; test này không dùng OIDC.
+jest.mock("jose", () => ({ createRemoteJWKSet: jest.fn(), jwtVerify: jest.fn() }));
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -23,6 +25,7 @@ describe("AuthService", () => {
       update: jest.Mock;
       updateMany: jest.Mock;
     };
+    emailVerificationToken: { create: jest.Mock };
   };
   let jwtService: { signAsync: jest.Mock };
 
@@ -35,6 +38,7 @@ describe("AuthService", () => {
         update: jest.fn(),
         updateMany: jest.fn(),
       },
+      emailVerificationToken: { create: jest.fn().mockResolvedValue({}) },
     };
     jwtService = {
       signAsync: jest.fn().mockResolvedValue("mock-access-token"),
@@ -54,7 +58,9 @@ describe("AuthService", () => {
           useValue: {
             sendWelcomeSafe: jest.fn().mockResolvedValue(undefined),
             sendPasswordReset: jest.fn().mockResolvedValue(undefined),
+            sendEmailVerificationSafe: jest.fn().mockResolvedValue(undefined),
             resetTokenTtlMinutes: 30,
+            verifyTokenTtlMinutes: 60,
           },
         },
       ],

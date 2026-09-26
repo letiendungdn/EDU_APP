@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict tIKD59d38Jc922H2Gbe3OZV7JuBQTN5GYLodj55YvzLTTejqn3AOtbEEMek18sY
+\restrict 8f96F3UH4lyJ3zbm6kwQJ27nL46OHHN690AFfriWVFQvTjQtZscgjcqKCHlKcRR
 
 -- Dumped from database version 16.14
 -- Dumped by pg_dump version 16.14
@@ -108,6 +108,19 @@ CREATE TYPE public."LearnerChatRoomType" AS ENUM (
 
 
 ALTER TYPE public."LearnerChatRoomType" OWNER TO nihongo;
+
+--
+-- Name: MindMapKind; Type: TYPE; Schema: public; Owner: nihongo
+--
+
+CREATE TYPE public."MindMapKind" AS ENUM (
+    'GRAMMAR',
+    'VOCAB',
+    'KANJI'
+);
+
+
+ALTER TYPE public."MindMapKind" OWNER TO nihongo;
 
 --
 -- Name: NotificationType; Type: TYPE; Schema: public; Owner: nihongo
@@ -2752,6 +2765,48 @@ ALTER SEQUENCE public."LiveSession_id_seq" OWNED BY public."LiveSession".id;
 
 
 --
+-- Name: MindMapLevel; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."MindMapLevel" (
+    id integer NOT NULL,
+    kind public."MindMapKind" NOT NULL,
+    level public."JlptLevel" NOT NULL,
+    title text NOT NULL,
+    summary text NOT NULL,
+    accent text DEFAULT '#3b82f6'::text NOT NULL,
+    branches jsonb NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."MindMapLevel" OWNER TO nihongo;
+
+--
+-- Name: MindMapLevel_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."MindMapLevel_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."MindMapLevel_id_seq" OWNER TO nihongo;
+
+--
+-- Name: MindMapLevel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."MindMapLevel_id_seq" OWNED BY public."MindMapLevel".id;
+
+
+--
 -- Name: MockExamQuestion; Type: TABLE; Schema: public; Owner: nihongo
 --
 
@@ -4572,6 +4627,13 @@ ALTER TABLE ONLY public."LiveSession" ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: MindMapLevel id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."MindMapLevel" ALTER COLUMN id SET DEFAULT nextval('public."MindMapLevel_id_seq"'::regclass);
+
+
+--
 -- Name: MockExamQuestion id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -5345,6 +5407,14 @@ ALTER TABLE ONLY public."ListeningPreset"
 
 ALTER TABLE ONLY public."LiveSession"
     ADD CONSTRAINT "LiveSession_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: MindMapLevel MindMapLevel_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."MindMapLevel"
+    ADD CONSTRAINT "MindMapLevel_pkey" PRIMARY KEY (id);
 
 
 --
@@ -6299,6 +6369,20 @@ CREATE UNIQUE INDEX "LiveSession_roomName_key" ON public."LiveSession" USING btr
 --
 
 CREATE INDEX "LiveSession_status_idx" ON public."LiveSession" USING btree (status);
+
+
+--
+-- Name: MindMapLevel_kind_level_key; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE UNIQUE INDEX "MindMapLevel_kind_level_key" ON public."MindMapLevel" USING btree (kind, level);
+
+
+--
+-- Name: MindMapLevel_kind_sortOrder_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "MindMapLevel_kind_sortOrder_idx" ON public."MindMapLevel" USING btree (kind, "sortOrder");
 
 
 --
@@ -7346,5 +7430,5 @@ ALTER TABLE ONLY public."Vocabulary"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict tIKD59d38Jc922H2Gbe3OZV7JuBQTN5GYLodj55YvzLTTejqn3AOtbEEMek18sY
+\unrestrict 8f96F3UH4lyJ3zbm6kwQJ27nL46OHHN690AFfriWVFQvTjQtZscgjcqKCHlKcRR
 
