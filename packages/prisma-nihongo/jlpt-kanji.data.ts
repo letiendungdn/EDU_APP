@@ -7,7 +7,8 @@ export type JlptKanjiLevel = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 
 export type JlptKanjiEntry = {
   character: string;
-  hanViet: string;
+  /** Bỏ trống với chữ do Nhật tạo (国字) — không có âm Hán-Việt */
+  hanViet?: string;
   onyomi?: string;
   kunyomi?: string;
   meaningVi: string;

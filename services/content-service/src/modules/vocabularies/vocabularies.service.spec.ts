@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { PrismaService } from "@app/prisma";
-import { VocabulariesService } from "./vocabularies.service";
+import { VocabulariesService, rankVocabSearch } from "./vocabularies.service";
 
 describe("VocabulariesService", () => {
   let service: VocabulariesService;
@@ -106,5 +106,38 @@ describe("VocabulariesService", () => {
     await service.reorder(9, [2, 1]);
 
     expect(prisma.$transaction).toHaveBeenCalled();
+  });
+});
+
+describe("rankVocabSearch", () => {
+  const v = (id: number, kanji: string | null, kana: string, romaji: string, meaning: string) => ({
+    id,
+    kanji,
+    kana,
+    romaji,
+    meaning,
+  });
+
+  it("puts the exact word before phrases that contain it", () => {
+    const ranked = rankVocabSearch(
+      [
+        v(1, "お願いします。", "おねがいします。", "onegaishimasu", "xin nhờ"),
+        v(2, "また 今度 お願いします。", "また こんど おねがいします。", "mata kondo", "hẹn lần sau"),
+        v(3, "願い", "ねがい", "negai", "ước nguyện, lời thỉnh cầu"),
+      ],
+      "願い",
+    );
+    expect(ranked.map((x) => x.id)).toEqual([3, 1, 2]);
+  });
+
+  it("matches a Vietnamese meaning exactly within a comma-separated list", () => {
+    const ranked = rankVocabSearch(
+      [
+        v(1, "一生懸命", "いっしょうけんめい", "isshoukenmei", "cố gắng hết sức"),
+        v(2, "頑張る", "がんばる", "ganbaru", "nỗ lực, cố gắng"),
+      ],
+      "cố gắng",
+    );
+    expect(ranked[0].id).toBe(2);
   });
 });

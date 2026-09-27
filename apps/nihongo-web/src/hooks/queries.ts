@@ -37,6 +37,7 @@ import {
   fetchKanjiEntriesRange,
   fetchKanjiLessons,
   fetchKanjiSearch,
+  searchVocabularies,
   fetchKanjiByJlpt,
   fetchVocabulariesRange,
   fetchListeningPlaylist,
@@ -71,6 +72,7 @@ export const queryKeys = {
   kanjiEntries: (lesson: number) => ['kanji', lesson] as const,
   kanjiRange: (from: number, to: number) => ['kanji', 'range', from, to] as const,
   kanjiSearch: (query: string) => ['kanji-search', query] as const,
+  vocabSearch: (query: string) => ['vocab-search', query] as const,
   kanjiByJlpt: (level: string) => ['kanji-jlpt', level] as const,
   vocabRange: (from: number, to: number) => domainQueryKeys.vocab.byRange(from, to),
   listeningPlaylist: (from: number, to: number, level?: string) =>
@@ -154,6 +156,15 @@ export function useKanjiSearchQuery(query: string) {
   return useQuery({
     queryKey: queryKeys.kanjiSearch(query),
     queryFn: () => fetchKanjiSearch(query),
+    enabled: query.trim().length > 0,
+    staleTime: STALE_5M,
+  });
+}
+
+export function useVocabSearchQuery(query: string) {
+  return useQuery({
+    queryKey: queryKeys.vocabSearch(query),
+    queryFn: () => searchVocabularies(query),
     enabled: query.trim().length > 0,
     staleTime: STALE_5M,
   });

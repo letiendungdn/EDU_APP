@@ -19,3 +19,13 @@ export function lessonHeading(kind: 'grammar' | 'vocab', lesson: Lesson | undefi
   if (lesson.textbook === 'MINNA' || lesson.lessonNumber <= 50) return `${what} Minna no Nihongo`;
   return `${what} JLPT ${level}`.trim();
 }
+
+/** Nhãn ngắn cho biết một từ nằm ở bài nào (kết quả tra từ). Tiêu đề bài sách/JLPT đã có tên sách. */
+export function lessonShortLabel(lesson: {
+  lessonNumber: number;
+  title?: string | null;
+  textbook?: string | null;
+}): string {
+  if (lesson.textbook === 'MINNA') return `Minna · Bài ${lesson.lessonNumber}`;
+  return lesson.title?.trim() || `Bài ${lesson.lessonNumber}`;
+}

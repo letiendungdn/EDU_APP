@@ -1,5 +1,6 @@
 /** Pattern banks for generate-jlpt-grammar-gap-fill.ts — 238 rows total */
-type Row = [string, string, string, string?, string, string, string, string, string, string];
+/** [pattern, meaning, formality, explanation (undefined = không có), jp1, romaji1, vi1, jp2, romaji2, vi2] */
+export type Row = [string, string, string, string | undefined, string, string, string, string, string, string];
 
 export const N5_ROWS: Row[] = [
   ['N は N です', 'A là B', 'polite', 'Cấu trúc cơ bản nhất để giới thiệu danh từ.', '私は学生です。', 'Watashi wa gakusei desu.', 'Tôi là học sinh.', 'これは本です。', 'Kore wa hon desu.', 'Đây là quyển sách.'],
@@ -9,14 +10,14 @@ export const N5_ROWS: Row[] = [
   ['V(ます) + ませんか', '~ cùng không?', 'polite', 'Mời rủ lịch sự.', 'コーヒーを飲みませんか。', 'Kōhī o nomimasen ka.', 'Uống cà phê cùng không?', '映画を見ませんか。', 'Eiga o mimasen ka.', 'Xem phim cùng không?'],
   ['V(て) + ください', 'hãy ~ (yêu cầu)', 'polite', undefined, 'ここに座ってください。', 'Koko ni suwatte kudasai.', 'Hãy ngồi ở đây.', 'もう一度言ってください。', 'Mō ichido itte kudasai.', 'Hãy nói lại lần nữa.'],
   ['V(て) + います', 'đang ~', 'polite', undefined, '今、勉強しています。', 'Ima, benkyō shite imasu.', 'Bây giờ tôi đang học.', '雨が降っています。', 'Ame ga futte imasu.', 'Trời đang mưa.'],
-  ['V(て) + から', 'vì ~ nên ~', 'neutral', undefined, '勉強してから、寝ます。', 'Benkyō shite kara, nemasu.', 'Học xong rồi tôi đi ngủ.', '食べてから、出かけます。', 'Tabete kara, dekakemasu.', 'Ăn xong rồi tôi ra ngoài.'],
+  ['V(て) + から', 'sau khi ~ rồi ~', 'neutral', undefined, '勉強してから、寝ます。', 'Benkyō shite kara, nemasu.', 'Học xong rồi tôi đi ngủ.', '食べてから、出かけます。', 'Tabete kara, dekakemasu.', 'Ăn xong rồi tôi ra ngoài.'],
   ['V(て) + もいいですか', 'tôi ~ được không?', 'polite', undefined, '写真を撮ってもいいですか。', 'Shashin o totte mo ii desu ka.', 'Tôi chụp ảnh được không?', 'ここに入ってもいいですか。', 'Koko ni haitte mo ii desu ka.', 'Tôi vào đây được không?'],
   ['V(て) + はいけません', 'không được ~', 'polite', undefined, 'ここでタバコを吸ってはいけません。', 'Koko de tabako o sutte wa ikemasen.', 'Không được hút thuốc ở đây.', '走ってはいけません。', 'Hashitte wa ikemasen.', 'Không được chạy.'],
   ['V(ない) + でください', 'đừng ~', 'polite', undefined, '心配しないでください。', 'Shinpai shinaide kudasai.', 'Đừng lo.', '触らないでください。', 'Sawaranaide kudasai.', 'Đừng chạm vào.'],
   ['V(たい) + です', 'muốn ~', 'polite', undefined, '日本に行きたいです。', 'Nihon ni ikitai desu.', 'Tôi muốn đi Nhật.', '寿司が食べたいです。', 'Sushi ga tabetai desu.', 'Tôi muốn ăn sushi.'],
   ['V(ます) + たい + んです', 'muốn ~ (giải thích)', 'polite', undefined, '早く帰りたいんです。', 'Hayaku kaeritain desu.', 'Tôi muốn về sớm (vì lý do nào đó).', 'もっと勉強したいんです。', 'Motto benkyō shitain desu.', 'Tôi muốn học thêm.'],
   ['V(辞書形) + ことができます', 'có thể ~', 'polite', undefined, '日本語を話すことができます。', 'Nihongo o hanasu koto ga dekimasu.', 'Tôi có thể nói tiếng Nhật.', '泳ぐことができます。', 'Oyogu koto ga dekimasu.', 'Tôi có thể bơi.'],
-  ['V(辞書形) + 必要があります', 'cần phải ~', 'formal', undefined, 'パスポートが必要があります。', 'Pasupōto ga hitsuyō desu.', 'Cần có hộ chiếu.', '予約する必要があります。', 'Yoyaku suru hitsuyō ga arimasu.', 'Cần phải đặt trước.'],
+  ['V(辞書形) + 必要があります', 'cần phải ~', 'formal', undefined, '毎日運動する必要があります。', 'Mainichi undō suru hitsuyō ga arimasu.', 'Cần phải vận động mỗi ngày.', '予約する必要があります。', 'Yoyaku suru hitsuyō ga arimasu.', 'Cần phải đặt trước.'],
   ['V(なければ) + なりません', 'phải ~', 'formal', undefined, '明日早く起きなければなりません。', 'Ashita hayaku okinakereba narimasen.', 'Ngày mai tôi phải dậy sớm.', '宿題をしなければなりません。', 'Shukudai o shinakereba narimasen.', 'Phải làm bài tập.'],
   ['V(なくても) + いい', 'không ~ cũng được', 'neutral', undefined, '今日は来なくてもいいです。', 'Kyō wa konakute mo ii desu.', 'Hôm nay không đến cũng được.', '食べなくてもいいです。', 'Tabenakute mo ii desu.', 'Không ăn cũng được.'],
   ['A(い) + く / A(な) + に + なります', 'trở nên ~', 'polite', undefined, '日本語が上手になりました。', 'Nihongo ga jōzu ni narimashita.', 'Tiếng Nhật giỏi hơn rồi.', '寒くなりました。', 'Samuku narimashita.', 'Trời lạnh hơn rồi.'],

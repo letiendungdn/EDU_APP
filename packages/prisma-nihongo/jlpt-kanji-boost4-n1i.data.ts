@@ -135,6 +135,7 @@ export const JLPT_KANJI_BOOST4_N1_I: JlptKanjiLesson[] = [
       { character: '黙', hanViet: 'MẶC', onyomi: 'もく, ぼく', kunyomi: 'だま-る, もだ-す', meaningVi: 'im lặng', strokeCount: 15 },
       { character: '黛', hanViet: 'ĐẠI', onyomi: 'たい', kunyomi: 'まゆずみ', meaningVi: 'màu chì vẽ mày; mày ngài', strokeCount: 16 },
       { character: '鼓', hanViet: 'CỔ', onyomi: 'こ', kunyomi: 'つづみ', meaningVi: 'cái trống', strokeCount: 13 },
+      { character: '枠', kunyomi: 'わく', meaningVi: 'khung, viền; giới hạn, phạm vi (chữ do Nhật tạo, không có âm Hán-Việt)', strokeCount: 8 },
     ],
   },
 ];

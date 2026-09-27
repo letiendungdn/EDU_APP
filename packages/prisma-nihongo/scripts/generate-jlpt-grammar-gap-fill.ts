@@ -7,8 +7,7 @@ import * as path from 'path';
 import type { JlptGrammarItem, JlptGrammarLevel, JlptGrammarUnit } from '../jlpt-grammar.data';
 
 type Level = JlptGrammarLevel;
-/** [pattern, meaning, formality, explanation?, jp1, romaji1, vi1, jp2, romaji2, vi2] */
-type Row = [string, string, string, string?, string, string, string, string, string, string];
+import type { Row } from './jlpt-grammar-gap-fill-banks';
 
 function item(r: Row): JlptGrammarItem {
   const [pattern, meaning, formalityLevel, explanation, jp1, ro1, vi1, jp2, ro2, vi2] = r;

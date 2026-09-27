@@ -77,7 +77,7 @@ export const JLPT_GRAMMAR_GAP_FILL: JlptGrammarUnit[] = [
       },
       {
         pattern: "V(て) + から",
-        meaning: "vì ~ nên ~",
+        meaning: "sau khi ~ rồi ~",
         formalityLevel: "neutral",
         examples: [
           { jp: "勉強してから、寝ます。", romaji: "Benkyō shite kara, nemasu.", vi: "Học xong rồi tôi đi ngủ." },
@@ -151,7 +151,7 @@ export const JLPT_GRAMMAR_GAP_FILL: JlptGrammarUnit[] = [
         meaning: "cần phải ~",
         formalityLevel: "formal",
         examples: [
-          { jp: "パスポートが必要があります。", romaji: "Pasupōto ga hitsuyō desu.", vi: "Cần có hộ chiếu." },
+          { jp: "毎日運動する必要があります。", romaji: "Mainichi undō suru hitsuyō ga arimasu.", vi: "Cần phải vận động mỗi ngày." },
           { jp: "予約する必要があります。", romaji: "Yoyaku suru hitsuyō ga arimasu.", vi: "Cần phải đặt trước." },
         ],
       },

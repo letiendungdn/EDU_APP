@@ -1,6 +1,7 @@
 import { PrismaClient } from './generated/client';
 import { seedContent } from './seed-content';
 import { seedJlptContent } from './seed-jlpt-content';
+import { seedJlptExpand } from './seed-jlpt-expand';
 import { seedJlptExercises } from './seed-jlpt-exercises';
 import { seedJlptReadingExpand } from './seed-jlpt-reading-expand';
 import { seedListeningPresetsExpand } from './seed-listening-presets-expand';
@@ -29,6 +30,7 @@ const prisma = new PrismaClient();
 async function main() {
   await seedContent(prisma);
   await seedJlptContent(prisma);
+  await seedJlptExpand(prisma);
   await seedJlptExercises(prisma);
   await seedJlptReadingExpand(prisma);
   await seedListeningPresetsExpand(prisma);

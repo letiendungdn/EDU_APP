@@ -6,6 +6,40 @@ import { CacheKeys, CacheTTL } from "@app/common";
 import { CreateVocabularyDto, UpdateVocabularyDto } from "@app/contracts";
 import { LEVEL_POOL_LESSON } from "@app/prisma/level-pool";
 
+/** Số ứng viên tối đa lấy về để xếp hạng khi tra từ. */
+const SEARCH_POOL = 500;
+
+type SearchableVocab = {
+  id: number;
+  kanji: string | null;
+  kana: string;
+  romaji: string;
+  meaning: string;
+};
+
+/**
+ * Xếp kết quả tra từ: khớp đúng cả từ → bắt đầu bằng từ khóa → chứa từ khóa;
+ * cùng mức thì từ ngắn hơn (từ đơn trước cụm/câu) rồi theo id.
+ */
+export function rankVocabSearch<T extends SearchableVocab>(items: T[], query: string): T[] {
+  const q = query.trim().toLowerCase();
+  const tier = (v: T) => {
+    const words = [v.kanji, v.kana, v.romaji].filter(Boolean).map((w) => w!.toLowerCase());
+    const meanings = v.meaning
+      .toLowerCase()
+      .split(/[,;、，/]/)
+      .map((m) => m.trim());
+    if (words.includes(q) || meanings.includes(q)) return 0;
+    if (words.some((w) => w.startsWith(q)) || meanings.some((m) => m.startsWith(q))) return 1;
+    return 2;
+  };
+  const len = (v: T) => (v.kanji || v.kana).length;
+  return items
+    .map((v) => ({ v, t: tier(v), l: len(v) }))
+    .sort((a, b) => a.t - b.t || a.l - b.l || a.v.id - b.v.id)
+    .map((x) => x.v);
+}
+
 @Injectable()
 export class VocabulariesService {
   constructor(
@@ -41,6 +75,41 @@ export class VocabulariesService {
     return vocab;
   }
 
+  /**
+   * Tra từ trên mọi bài (kanji / kana / romaji / nghĩa), xếp theo độ khớp.
+   * Lấy thêm riêng các từ khớp chính xác để không bị lọt khi truy vấn quá rộng.
+   */
+  private async search(
+    base: Record<string, unknown>,
+    query: string,
+    page: number,
+    limit: number,
+  ) {
+    const fields = ["kanji", "kana", "romaji", "meaning"] as const;
+    const match = (op: "contains" | "equals") => ({
+      ...base,
+      OR: fields.map((f) => ({ [f]: { [op]: query, mode: "insensitive" } })),
+    });
+    const include = {
+      // Kết quả tra từ cần biết từ nằm ở bài nào để mở đúng bài
+      lesson: { select: { lessonNumber: true, title: true, jlptLevel: true, textbook: true } },
+    };
+    const [exact, candidates, total] = await this.prisma.$transaction([
+      this.prisma.vocabulary.findMany({ where: match("equals"), include, take: SEARCH_POOL }),
+      this.prisma.vocabulary.findMany({
+        where: match("contains"),
+        include,
+        orderBy: { id: "asc" },
+        take: SEARCH_POOL,
+      }),
+      this.prisma.vocabulary.count({ where: match("contains") }),
+    ]);
+    const byId = new Map([...exact, ...candidates].map((v) => [v.id, v]));
+    const ranked = rankVocabSearch([...byId.values()], query);
+    const data = ranked.slice((page - 1) * limit, page * limit);
+    return { data, total, page, limit };
+  }
+
   async findAll(
     lessonNumber?: number,
     page = 1,
@@ -63,13 +132,7 @@ export class VocabulariesService {
         // Kho theo cấp: bỏ bài soạn theo sách (trùng mục JLPT)
         if (!lessonNumber) where.lesson = LEVEL_POOL_LESSON;
       }
-      if (query) {
-        where.OR = [
-          { kanji: { contains: query, mode: "insensitive" } },
-          { kana: { contains: query, mode: "insensitive" } },
-          { meaning: { contains: query, mode: "insensitive" } },
-        ];
-      }
+      if (query) return this.search(where, query, page, limit);
       const [data, total] = await this.prisma.$transaction([
         this.prisma.vocabulary.findMany({
           where,

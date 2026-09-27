@@ -163,6 +163,18 @@ export async function seedTextbooks(prisma: PrismaClientType) {
   const force = process.env.FORCE_TEXTBOOK_SEED === '1';
   const total = { units: 0, vocab: 0, grammar: 0, kanji: 0, exercises: 0 };
 
+  // Gắn giáo trình cho nội dung nạp từ nihongo-content-seed.sql (Minna bài 1–50, KLL bài 1–32).
+  // Migration textbook_lessons cũng UPDATE như vậy, nhưng trên DB mới nó chạy lúc bảng còn trống.
+  const minna = await prisma.lesson.updateMany({
+    where: { lessonNumber: { gte: 1, lte: 50 }, textbook: null },
+    data: { textbook: 'MINNA' },
+  });
+  const kll = await prisma.kanjiLesson.updateMany({
+    where: { lessonNumber: { gte: 1, lte: 32 }, textbook: null },
+    data: { textbook: 'KLL' },
+  });
+  if (minna.count || kll.count) console.log(`Textbooks: gắn MINNA ${minna.count} bài, KLL ${kll.count} bài kanji.`);
+
   for (const cat of TEXTBOOK_CATALOGS) {
     const pools = {
       meanings: cat.topics.flatMap((t) => t.words.map((w) => w[2])),

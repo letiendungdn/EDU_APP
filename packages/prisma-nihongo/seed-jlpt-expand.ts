@@ -19,6 +19,7 @@ import { JLPT_KANJI_BOOST4_N1_F } from './jlpt-kanji-boost4-n1f.data';
 import { JLPT_KANJI_BOOST4_N1_G } from './jlpt-kanji-boost4-n1g.data';
 import { JLPT_KANJI_BOOST4_N1_H } from './jlpt-kanji-boost4-n1h.data';
 import { JLPT_KANJI_BOOST4_N1_I } from './jlpt-kanji-boost4-n1i.data';
+import { JLPT_KANJI_MISSING } from './jlpt-kanji-missing.data';
 import { JLPT_VOCAB_EXPAND } from './jlpt-vocab-expand.data';
 import { JLPT_VOCAB_GAP_TOPUP } from './jlpt-vocab-gap-topup.data';
 import { JLPT_VOCAB_REVIEW_BOOST } from './jlpt-vocab-review-boost.data';
@@ -197,6 +198,7 @@ export async function seedJlptExpand(prisma: PrismaClientType) {
     ...JLPT_KANJI_BOOST4_N1_G,
     ...JLPT_KANJI_BOOST4_N1_H,
     ...JLPT_KANJI_BOOST4_N1_I,
+    ...JLPT_KANJI_MISSING,
   ]) {
     const entries = dedupeBy(kl.entries, (e) => e.character);
     const lesson = await prisma.kanjiLesson.upsert({

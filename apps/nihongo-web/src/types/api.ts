@@ -32,6 +32,16 @@ export interface Vocabulary {
   exampleVi?: string | null;
 }
 
+/** Kết quả tra từ vựng (GET /vocabularies?q=) — kèm bài chứa từ để mở đúng bài. */
+export interface VocabularySearchHit extends Vocabulary {
+  lesson?: {
+    lessonNumber: number;
+    title: string | null;
+    jlptLevel: string | null;
+    textbook: string | null;
+  };
+}
+
 export interface GrammarExample {
   id: number;
   jp: string;

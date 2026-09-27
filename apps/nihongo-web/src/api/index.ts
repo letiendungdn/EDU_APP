@@ -29,6 +29,7 @@ import type {
   SavedCard,
   UpdateProfileInput,
   Vocabulary,
+  VocabularySearchHit,
 } from '../types/api';
 import type {
   DailyListeningPayload,
@@ -84,6 +85,14 @@ export function fetchVocabularies(lessonNumber: number) {
   return fetchPaginatedAll<Vocabulary>((page, limit) =>
     `/vocabularies?lessonNumber=${lessonNumber}&page=${page}&limit=${limit}`,
   );
+}
+
+/** Tra từ vựng trên mọi bài: khớp kanji, kana, romaji hoặc nghĩa. */
+export async function searchVocabularies(query: string, limit = 50) {
+  const res = await apiRequest<PaginatedResponse<VocabularySearchHit>>(
+    `/vocabularies?q=${encodeURIComponent(query)}&limit=${limit}`,
+  );
+  return { hits: res?.data ?? [], total: res?.total ?? 0 };
 }
 
 export type CreateVocabularyInput = {
