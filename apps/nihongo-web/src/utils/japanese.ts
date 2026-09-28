@@ -153,3 +153,46 @@ export function shouldShowKanaStroke(
   const kanaStroke = getStrokeText(kana);
   return Boolean(kanjiStroke && kanaStroke && kanjiStroke !== kanaStroke);
 }
+
+function isKanjiChar(char: string): boolean {
+  const code = char.charCodeAt(0);
+  return (code >= 0x4e00 && code <= 0x9fff) || (code >= 0x3400 && code <= 0x4dbf);
+}
+
+/** Các chữ kanji trong từ, theo thứ tự, mỗi chữ một lần (vd さくら大学／富士大学 → 大学富士). */
+export function uniqueKanji(text: string | null | undefined): string {
+  if (!text) return '';
+  return [...new Set([...text].filter(isKanjiChar))].join('');
+}
+
+export type FlashcardStrokeRow = { label?: string; text: string };
+
+/**
+ * Chọn phần cần vẽ nét ở mặt sau thẻ từ vựng sao cho luôn gọn:
+ * - có kanji → chỉ vẽ các chữ kanji (không vẽ lại kana xen giữa, không lặp chữ);
+ *   thêm hàng kana khi cách đọc ngắn (≤ `shortKana` chữ), vd 私 + わたし;
+ * - không có kanji → vẽ kana.
+ * `size` là cạnh ô mỗi chữ để mọi chữ nằm vừa một hàng trong `width` px.
+ */
+export function flashcardStrokePlan(
+  kanji: string | null | undefined,
+  kana: string,
+  { width = 540, minSize = 56, maxSize = 150, shortKana = 4 } = {},
+): { rows: FlashcardStrokeRow[]; size: number } {
+  const kanjiChars = uniqueKanji(kanji);
+  const kanaChars = getStrokeText(kana);
+  const rows: FlashcardStrokeRow[] = [];
+  if (kanjiChars) {
+    rows.push({ label: 'Kanji', text: kanjiChars });
+    const kanaLen = [...kanaChars].length;
+    if (kanaLen > 0 && kanaLen <= shortKana && kanaChars !== kanjiChars) {
+      rows.push({ label: 'Kana', text: kanaChars });
+    }
+  } else if (kanaChars) {
+    rows.push({ text: kanaChars });
+  }
+  // Hàng kanji và kana đứng cạnh nhau → chia bề ngang cho tổng số chữ (+1 ô cho khoảng cách)
+  const slots = rows.reduce((sum, row) => sum + [...row.text].length, 0) + (rows.length > 1 ? 1 : 0);
+  const size = Math.max(minSize, Math.min(maxSize, Math.floor(width / Math.max(slots, 1))));
+  return { rows, size };
+}

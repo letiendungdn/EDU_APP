@@ -2398,15 +2398,16 @@
   gap: 0.55rem;
 }
 
-.vocab-view--study .flashcard-front .vocab-kanji {
+/* Chỉ thu nhỏ từ ngắn (tier mặc định) — từ/cụm dài đã có cỡ riêng theo tier md/lg/xl */
+.vocab-view--study .flashcard-text-dual:not([class*='flashcard-text-dual--tier-']) .vocab-kanji {
   font-size: clamp(3.25rem, 6.5vw, 4.75rem);
 }
 
-.vocab-view--study .flashcard-front .vocab-kana {
+.vocab-view--study .flashcard-text-dual:not([class*='flashcard-text-dual--tier-']) .vocab-kana {
   font-size: clamp(1.75rem, 4vw, 2.6rem);
 }
 
-.vocab-view--study .flashcard-text-dual {
+.vocab-view--study .flashcard-text-dual:not([class*='flashcard-text-dual--tier-']) {
   gap: 1.5rem 2.5rem;
 }
 
@@ -2454,5 +2455,134 @@
   .vocab-view--study .lesson-selector .select-input {
     max-width: none;
     flex: 1;
+  }
+}
+
+/* ── Trang Từ vựng: hiệu ứng 3D cho thẻ ─────────────────────────── */
+.vocab-view--study .flashcard-container {
+  position: relative;
+  isolation: isolate;
+  perspective: 1400px;
+  /* chừa chỗ cho 2 lớp thẻ xếp chồng phía sau */
+  padding-bottom: 20px;
+}
+
+/* 2 lớp "bộ bài" nằm sau thẻ đang học */
+.vocab-view--study .flashcard-container::before,
+.vocab-view--study .flashcard-container::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 20px;
+  border-radius: 1.5rem;
+  /* thu nhỏ quanh mép dưới → lớp sau ló ra bên dưới thẻ */
+  transform-origin: 50% 100%;
+  background: var(--surface-color);
+  border: 1px solid rgba(0 0 0 / 0.06);
+  pointer-events: none;
+}
+
+.vocab-view--study .flashcard-container::before {
+  transform: translateY(10px) scale(0.96);
+  opacity: 0.85;
+  box-shadow: 0 6px 14px rgba(0 0 0 / 0.08);
+  z-index: 0;
+}
+
+.vocab-view--study .flashcard-container::after {
+  transform: translateY(20px) scale(0.92);
+  opacity: 0.6;
+  box-shadow: 0 6px 14px rgba(0 0 0 / 0.06);
+  z-index: -1;
+}
+
+.vocab-view--study .flashcard {
+  z-index: 1;
+  transition:
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.3s ease;
+}
+
+/* Mặt thẻ: bóng nhiều lớp + viền sáng phía trên → nổi khỏi trang */
+.vocab-view--study .flashcard-face {
+  border: 1px solid rgba(255 255 255 / 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255 255 255 / 0.12),
+    0 1px 2px rgba(0 0 0 / 0.2),
+    0 8px 18px rgba(0 0 0 / 0.22),
+    0 28px 56px -12px rgba(0 0 0 / 0.35);
+}
+
+[data-theme='light'] .vocab-view--study .flashcard-face {
+  border-color: rgba(0 0 0 / 0.06);
+  background-image: linear-gradient(180deg, #ffffff 0%, #fbfaf8 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255 255 255 / 0.9),
+    0 1px 2px rgba(28 25 23 / 0.06),
+    0 10px 22px rgba(28 25 23 / 0.08),
+    0 30px 60px -16px rgba(28 25 23 / 0.2);
+}
+
+[data-theme='light'] .vocab-view--study .flashcard-container::before,
+[data-theme='light'] .vocab-view--study .flashcard-container::after {
+  background: #ffffff;
+}
+
+/* Rê chuột: thẻ nhấc lên và nghiêng nhẹ */
+@media (hover: hover) {
+  .vocab-view--study .flashcard:hover {
+    transform: translateY(-4px) rotateX(3deg);
+  }
+
+  .vocab-view--study .flashcard.flipped:hover {
+    transform: translateY(-4px) rotateX(3deg) rotateY(180deg);
+  }
+}
+
+/* Nút điều khiển kiểu "phím bấm": có đế, nhấn thì lún xuống */
+.vocab-playbar__controls .btn {
+  box-shadow:
+    0 3px 0 rgba(0 0 0 / 0.18),
+    0 6px 12px rgba(0 0 0 / 0.1);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.vocab-playbar__controls .btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 0 rgba(0 0 0 / 0.18),
+    0 8px 16px rgba(0 0 0 / 0.12);
+}
+
+.vocab-playbar__controls .btn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 rgba(0 0 0 / 0.18),
+    0 2px 4px rgba(0 0 0 / 0.1);
+}
+
+/* Danh sách từ cũng nổi nhẹ cho đồng bộ */
+.vocab-view--study .vocab-word-list {
+  box-shadow:
+    0 1px 2px rgba(0 0 0 / 0.05),
+    0 12px 28px -8px rgba(0 0 0 / 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vocab-view--study .flashcard,
+  .vocab-playbar__controls .btn {
+    transition: none;
+  }
+
+  .vocab-view--study .flashcard:hover {
+    transform: none;
+  }
+
+  .vocab-view--study .flashcard.flipped:hover {
+    transform: rotateY(180deg);
   }
 }

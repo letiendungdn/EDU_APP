@@ -12,10 +12,8 @@ import { useLessonsQuery, useVocabulariesQuery, useVocabSearchQuery } from '../h
 import StrokeOrder from '../components/StrokeOrder';
 import VocabPicture from '../components/VocabPicture';
 import {
-  getStrokeText,
-  parseOptionalBracketSegments,
+  flashcardStrokePlan,
   parseReadingVariants,
-  shouldShowKanaStroke,
   flashcardTextTier,
   hasOptionalBracketParts,
 } from '../utils/japanese';
@@ -26,222 +24,45 @@ import './VocabView.css';
 import { lessonHeading, lessonShortLabel } from '../utils/lessonHeading';
 import type { VocabularySearchHit } from '../types/api';
 
-function strokeBoxSize(charCount: number, dense = false): number {
-  if (dense) {
-    if (charCount <= 1) return 165;
-    if (charCount <= 2) return 135;
-    if (charCount <= 4) return 112;
-    return 92;
-  }
-  // Nhỏ vừa đủ để cả mặt sau (nét viết + cách đọc + ví dụ) nằm trong một màn hình
-  if (charCount <= 1) return 150;
-  if (charCount <= 2) return 124;
-  if (charCount <= 4) return 104;
-  return 88;
-}
-
-function flashcardPhraseStrokeScale(totalChars: number): number {
-  if (totalChars <= 6) return 1;
-  if (totalChars <= 10) return 0.76;
-  if (totalChars <= 14) return 0.62;
-  return 0.52;
-}
-
-function flashcardSegmentStrokeSize(
-  charCount: number,
-  optional: boolean,
-  totalChars: number,
-): number {
-  const base = strokeBoxSize(charCount, true);
-  const scaled = Math.round(base * flashcardPhraseStrokeScale(totalChars));
-  return optional ? Math.max(30, Math.round(scaled * 0.52)) : Math.max(36, scaled);
-}
-
-function FlashcardStroke({
-  text,
-  label,
-  dense = false,
-  onCharClick,
-}: {
-  text: string;
-  label?: string;
-  dense?: boolean;
-  onCharClick: (char: string) => void;
-}) {
-  const hasOptional = hasOptionalBracketParts(text);
-
-  if (hasOptional) {
-    const segments = parseOptionalBracketSegments(text);
-    const totalChars = segments.reduce(
-      (sum, segment) => sum + [...getStrokeText(segment.text)].length,
-      0,
-    );
-
-    return (
-      <div
-        className="flashcard-stroke-block flashcard-stroke-block--optional-mix"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {label ? <p className="flashcard-stroke-label">{label}</p> : null}
-        <div className="flashcard-stroke-segments">
-          {segments.map((segment, index) => {
-            const strokeText = getStrokeText(segment.text);
-            if (!strokeText) {
-              if (!segment.text.trim()) return null;
-              return (
-                <span key={index} className="flashcard-stroke-punct">
-                  {segment.text}
-                </span>
-              );
-            }
-
-            const size = flashcardSegmentStrokeSize(
-              [...strokeText].length,
-              segment.optional,
-              totalChars,
-            );
-
-            if (segment.optional) {
-              return (
-                <span key={index} className="flashcard-stroke-optional-wrap">
-                  <span className="flashcard-jp-bracket">{segment.openBracket ?? '['}</span>
-                  <StrokeOrder
-                    text={segment.text}
-                    width={size}
-                    height={size}
-                    compact
-                    onCharClick={onCharClick}
-                  />
-                  <span className="flashcard-jp-bracket">{segment.closeBracket ?? ']'}</span>
-                </span>
-              );
-            }
-
-            return (
-              <span key={index} className="flashcard-stroke-core-wrap">
-                <StrokeOrder
-                  text={segment.text}
-                  width={size}
-                  height={size}
-                  compact
-                  onCharClick={onCharClick}
-                />
-              </span>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
-  const strokeText = getStrokeText(text);
-  if (!strokeText) return null;
-  const size = strokeBoxSize([...strokeText].length, dense);
-
-  return (
-    <div className="flashcard-stroke-block" onClick={(e) => e.stopPropagation()}>
-      {label ? <p className="flashcard-stroke-label">{label}</p> : null}
-      <StrokeOrder
-        text={text}
-        width={size}
-        height={size}
-        compact
-        onCharClick={onCharClick}
-      />
-    </div>
-  );
-}
-
+/**
+ * Nét viết ở mặt sau thẻ: chỉ các chữ kanji (thêm kana khi cách đọc ngắn),
+ * cỡ ô tính theo bề ngang thẻ để luôn nằm gọn một hàng — từ/cụm dài không đẩy thẻ xuống.
+ */
 function FlashcardReadingStrokes({
   kanji,
   kana,
-  romaji,
   onCharClick,
 }: {
   kanji: string | null;
   kana: string;
-  romaji: string;
   onCharClick: (char: string) => void;
 }) {
-  const showDual = shouldShowKanaStroke(kanji, kana);
-  const hasOptionalStrokes =
-    hasOptionalBracketParts(kanji) || hasOptionalBracketParts(kana);
-  const showDualOnBack = showDual && !hasOptionalStrokes;
-  const kanaVariants = parseReadingVariants(kana, romaji);
-  const kanjiVariants = kanji ? parseReadingVariants(kanji, romaji) : [];
-  const pairCount = showDual
-    ? Math.max(kanjiVariants.length, kanaVariants.length, 1)
-    : kanaVariants.length;
+  const hostRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(540);
 
-  if (pairCount > 1) {
-    return (
-      <div className="flashcard-reading-pairs">
-        {Array.from({ length: pairCount }, (_, index) => {
-          const kanjiVariant = kanjiVariants[index];
-          const kanaVariant = kanaVariants[index];
-          const pairLabel = kanaVariant?.label ?? kanjiVariant?.label;
+  useEffect(() => {
+    const el = hostRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const observer = new ResizeObserver(([entry]) => {
+      const next = Math.floor(entry.contentRect.width);
+      if (next > 0) setWidth(next);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
-          return (
-            <div key={index} className="flashcard-reading-pair">
-              {pairLabel ? (
-                <p className="flashcard-reading-pair-label">{pairLabel}</p>
-              ) : null}
-              <div className="flashcard-reading-pair-strokes">
-                {showDual && kanjiVariant ? (
-                  <FlashcardStroke
-                    text={kanjiVariant.text}
-                    label="Kanji"
-                    dense
-                    onCharClick={onCharClick}
-                  />
-                ) : null}
-                {kanaVariant ? (
-                  <FlashcardStroke
-                    text={kanaVariant.text}
-                    label={showDual ? 'Kana' : undefined}
-                    dense
-                    onCharClick={onCharClick}
-                  />
-                ) : null}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  if (showDualOnBack) {
-    return (
-      <div className="flashcard-stroke-dual">
-        <FlashcardStroke
-          text={kanji!}
-          label="Kanji"
-          onCharClick={onCharClick}
-        />
-        <FlashcardStroke
-          text={kana}
-          label="Kana"
-          onCharClick={onCharClick}
-        />
-      </div>
-    );
-  }
-
-  if (hasOptionalStrokes) {
-    return (
-      <FlashcardStroke
-        text={kanji || kana}
-        onCharClick={onCharClick}
-      />
-    );
-  }
+  // Chừa chỗ cho lề giữa các ô chữ (StrokeOrder compact: 8px mỗi chữ)
+  const { rows, size } = flashcardStrokePlan(kanji, kana, { width: Math.min(width, 640) * 0.9 });
 
   return (
-    <FlashcardStroke
-      text={kanji || kana}
-      onCharClick={onCharClick}
-    />
+    <div ref={hostRef} className="flashcard-stroke-dual" onClick={(e) => e.stopPropagation()}>
+      {rows.map((row) => (
+        <div key={row.label ?? 'kana'} className="flashcard-stroke-block">
+          {row.label && rows.length > 1 ? <p className="flashcard-stroke-label">{row.label}</p> : null}
+          <StrokeOrder text={row.text} width={size} height={size} compact onCharClick={onCharClick} />
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -750,7 +571,6 @@ export default function VocabView({
                   <FlashcardReadingStrokes
                     kanji={currentVocab.kanji}
                     kana={currentVocab.kana}
-                    romaji={currentVocab.romaji}
                     onCharClick={handleStrokeCharClick}
                   />
                   <div className="flashcard-back-meta">
