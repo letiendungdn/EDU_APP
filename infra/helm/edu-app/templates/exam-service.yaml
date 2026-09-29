@@ -56,6 +56,8 @@ spec:
                 secretKeyRef:
                   name: {{ include "edu-app.secretName" . }}
                   key: DATABASE_URL_NIHONGO
+            - name: KAFKA_BROKERS
+              value: {{ .Values.config.KAFKA_BROKERS | quote }}
           resources:
             {{- toYaml .Values.resources.examService | nindent 12 }}
           livenessProbe:

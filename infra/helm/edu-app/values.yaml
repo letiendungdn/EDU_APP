@@ -34,6 +34,10 @@ redis:
   enabled: true
   image: redis:7-alpine
 
+kafka:
+  enabled: true
+  image: apache/kafka:3.8.1
+
 config:
   NODE_ENV: production
   PORT: "3000"
@@ -45,6 +49,7 @@ config:
   CONTENT_GRPC_PORT: "50051"
   EXAM_GRPC_PORT: "50052"
   REDIS_URL: redis://redis:6379
+  KAFKA_BROKERS: kafka:9092
   API_URL: http://api-gateway:3000
   NEXT_PUBLIC_ENGLISH_APP_URL: https://english.example.com
   NEXT_PUBLIC_NIHONGO_APP_URL: https://nihongo.example.com
@@ -98,6 +103,9 @@ resources:
   redis:
     requests: { cpu: 50m, memory: 64Mi }
     limits: { cpu: 200m, memory: 128Mi }
+  kafka:
+    requests: { cpu: 200m, memory: 512Mi }
+    limits: { cpu: "1", memory: 1Gi }
   postgres:
     requests: { cpu: 250m, memory: 256Mi }
     limits: { cpu: "1", memory: 512Mi }

@@ -63,6 +63,8 @@ spec:
                 secretKeyRef:
                   name: edu-app-secrets
                   key: DATABASE_URL_NIHONGO
+            - name: KAFKA_BROKERS
+              value: kafka:9092
           resources:
             requests:
               cpu: 100m
