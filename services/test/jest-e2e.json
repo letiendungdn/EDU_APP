@@ -1,6 +1,6 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "rootDir": "..",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
@@ -12,6 +12,12 @@
     "^@app/prisma$": "<rootDir>/../packages/nest-prisma/src",
     "^@app/prisma/(.*)$": "<rootDir>/../packages/nest-prisma/src/$1",
     "^@app/contracts$": "<rootDir>/../packages/nest-contracts/src",
-    "^@app/contracts/(.*)$": "<rootDir>/../packages/nest-contracts/src/$1"
+    "^@app/contracts/(.*)$": "<rootDir>/../packages/nest-contracts/src/$1",
+    "^@app/prisma-english$": "<rootDir>/../packages/nest-prisma-english/src",
+    "^@app/prisma-english/(.*)$": "<rootDir>/../packages/nest-prisma-english/src/$1",
+    "^@edu/prisma-english/client$": "<rootDir>/../packages/prisma-english/generated/client",
+    "^@edu/prisma-english/client/(.*)$": "<rootDir>/../packages/prisma-english/generated/client/$1",
+    "^@prisma/client$": "<rootDir>/../packages/prisma-nihongo/generated/client",
+    "^@prisma/client/(.*)$": "<rootDir>/../packages/prisma-nihongo/generated/client/$1"
   }
 }
