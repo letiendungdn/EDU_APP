@@ -18,6 +18,7 @@
     "^@app/prisma-english/(.*)$": "<rootDir>/../packages/nest-prisma-english/src/$1",
     "^@edu/prisma-english/client$": "<rootDir>/../packages/prisma-english/generated/client",
     "^@edu/prisma-english/client/(.*)$": "<rootDir>/../packages/prisma-english/generated/client/$1",
+    "^@edu/vocab-images$": "<rootDir>/../packages/vocab-images/src",
     "^@prisma/client$": "<rootDir>/../packages/prisma-nihongo/generated/client",
     "^@prisma/client/(.*)$": "<rootDir>/../packages/prisma-nihongo/generated/client/$1"
   }
