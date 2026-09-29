@@ -67,7 +67,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
       - run: npm run lint -w @edu/nihongo-services
-      - run: npm test -- --coverage -w @edu/nihongo-services
+      - run: npm test -w @edu/nihongo-services -- --coverage
         env:
           DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
           REDIS_URL: redis://localhost:6379
