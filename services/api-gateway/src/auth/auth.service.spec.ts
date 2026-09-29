@@ -5,7 +5,7 @@ import { ConflictException, UnauthorizedException } from "@nestjs/common";
 import { Role } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 import { PrismaService } from "@app/prisma";
-import { MailService } from "@app/common";
+import { MailService } from "@app/common/mail/mail.service";
 import { AuthService } from "./auth.service";
 
 jest.mock("bcryptjs");

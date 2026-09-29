@@ -3,3 +3,7 @@ jest.mock("jose", () => ({
   createRemoteJWKSet: jest.fn(),
   jwtVerify: jest.fn(),
 }));
+
+// Jest 30 từ chối require module mới trong beforeAll. Nạp gRPC lúc setup để Nest dùng cache.
+require("@grpc/grpc-js");
+require("@grpc/proto-loader");

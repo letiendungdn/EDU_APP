@@ -15,7 +15,7 @@ import * as bcrypt from "bcryptjs";
 import { OAuth2Client } from "google-auth-library";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { createHash, randomBytes } from "crypto";
-import { MailService } from "@app/common";
+import { MailService } from "@app/common/mail/mail.service";
 import { verifyUnsubscribeToken } from "@app/common";
 import { PrismaService } from "@app/prisma";
 import { GoogleAuthDto } from "./dto/google-auth.dto";

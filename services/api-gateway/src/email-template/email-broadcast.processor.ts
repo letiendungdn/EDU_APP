@@ -2,7 +2,7 @@ import { Processor, WorkerHost } from "@nestjs/bullmq";
 import { Inject, Logger, forwardRef } from "@nestjs/common";
 import { Job } from "bullmq";
 import { PrismaService } from "@app/prisma";
-import { MAIL_PORT, type MailPort } from "@app/common";
+import { MAIL_PORT, type MailPort } from "@app/common/mail/mail.port";
 import { ConfigService } from "@nestjs/config";
 import { EmailTemplateService } from "./email-template.service";
 import { TEMPLATE_SAMPLE_VARS } from "./email-template.defaults";
