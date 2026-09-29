@@ -1,7 +1,12 @@
 ﻿# Dependencies
 node_modules/
 
-# Client secrets JSON (env files are tracked intentionally for this hobby repo)
+# Local env (secrets). Mẫu biến nằm ở *.env.example và .env.docker.example
+.env
+services/.env
+apps/nihongo-web/.env
+
+# Client secrets JSON
 **/client_secret*.json
 !**/client_secret.example.json
 
