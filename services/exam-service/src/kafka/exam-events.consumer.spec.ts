@@ -1,5 +1,6 @@
 process.env.EXAM_CONSUMER_RETRY_DELAY_MS = "0";
 
+import { Logger } from "@nestjs/common";
 import type { EachMessagePayload } from "kafkajs";
 import { EXAM_SUBMITTED_DLQ, ExamEventsConsumer } from "./exam-events.consumer";
 
@@ -18,6 +19,14 @@ function setup(handle: jest.Mock) {
 }
 
 describe("ExamEventsConsumer.onMessage", () => {
+  beforeAll(() => {
+    jest.spyOn(Logger.prototype, "error").mockImplementation(() => undefined);
+  });
+
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
+
   it("xử lý thành công → không đụng DLQ", async () => {
     const handle = jest.fn().mockResolvedValue(true);
     const { consumer, producer } = setup(handle);
