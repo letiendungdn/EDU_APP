@@ -79,6 +79,7 @@ jobs:
           DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
           REDIS_URL: redis://localhost:6379
           JWT_SECRET: test-secret
+          STRIPE_SECRET_KEY: sk_test_ci
           CONTENT_GRPC_URL: localhost:50051
           EXAM_GRPC_URL: localhost:50052
       - run: npm run build:all -w @edu/nihongo-services
