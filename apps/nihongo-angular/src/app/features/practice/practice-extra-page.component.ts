@@ -1,4 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { buildHomophoneGroups } from '../../core/utils/homophones';
@@ -11,16 +17,30 @@ import {
   unpinGrammar,
   type GrammarSrsCard,
 } from '../../core/utils/grammarSrs';
-import { JLPT_LISTENING_ITEMS, JLPT_LISTENING_TYPES, type JlptListeningType } from '../../core/data/jlpt-listening';
-import type { JapaneseRoleplayPayload, RoleplayScene } from '../../core/models/reference.models';
+import {
+  JLPT_LISTENING_ITEMS,
+  JLPT_LISTENING_TYPES,
+  type JlptListeningType,
+} from '../../core/data/jlpt-listening';
+import type {
+  JapaneseRoleplayPayload,
+  RoleplayScene,
+} from '../../core/models/reference.models';
 
-type ExtraTab = 'homophones' | 'keigo' | 'radicals' | 'grammar-srs' | 'listening' | 'roleplay';
+type ExtraTab =
+  | 'homophones'
+  | 'keigo'
+  | 'radicals'
+  | 'grammar-srs'
+  | 'listening'
+  | 'roleplay';
 
 @Component({
   selector: 'app-practice-extra-page',
   standalone: true,
   imports: [RouterLink],
   styleUrl: './drills.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './practice-extra-page.component.html',
 })
 export class PracticeExtraPageComponent {
@@ -43,8 +63,15 @@ export class PracticeExtraPageComponent {
   readonly keigoLevels = KEIGO_LEVELS;
   readonly keigoOptions = computed(() => {
     const answer = this.keigoAnswer();
-    const pool = [...new Set(KEIGO_ITEMS.flatMap((row) => [row.sonkei, row.kenjō, row.plain]))];
-    const rest = pool.filter((p) => p !== answer).sort(() => Math.random() - 0.5).slice(0, 3);
+    const pool = [
+      ...new Set(
+        KEIGO_ITEMS.flatMap((row) => [row.sonkei, row.kenjō, row.plain])
+      ),
+    ];
+    const rest = pool
+      .filter((p) => p !== answer)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
     return [answer, ...rest].sort(() => Math.random() - 0.5);
   });
 
@@ -61,7 +88,9 @@ export class PracticeExtraPageComponent {
   });
 
   readonly grammarCards = signal<GrammarSrsCard[]>(loadGrammarSrs());
-  readonly grammarDue = computed(() => this.grammarCards().filter((c) => c.due <= Date.now()));
+  readonly grammarDue = computed(() =>
+    this.grammarCards().filter((c) => c.due <= Date.now())
+  );
   readonly grammarFlipped = signal(false);
   readonly grammarCurrent = computed(() => this.grammarDue()[0] ?? null);
 
@@ -72,9 +101,11 @@ export class PracticeExtraPageComponent {
   readonly listenBank = computed(() =>
     this.listenKind() === 'all'
       ? JLPT_LISTENING_ITEMS
-      : JLPT_LISTENING_ITEMS.filter((i) => i.type === this.listenKind()),
+      : JLPT_LISTENING_ITEMS.filter((i) => i.type === this.listenKind())
   );
-  readonly listenCurrent = computed(() => this.listenBank()[this.listenIndex()]);
+  readonly listenCurrent = computed(
+    () => this.listenBank()[this.listenIndex()]
+  );
 
   readonly sceneId = signal('');
   readonly roleplayLoading = signal(true);
@@ -104,11 +135,13 @@ export class PracticeExtraPageComponent {
       this.groups.set(buildHomophoneGroups(rows));
       this.vocabLoading.set(false);
     });
-    void this.api.getJapaneseRoleplay().then((data: JapaneseRoleplayPayload) => {
-      this.scenes.set(data.scenes);
-      this.sceneId.set(data.scenes[0]?.id ?? '');
-      this.roleplayLoading.set(false);
-    });
+    void this.api
+      .getJapaneseRoleplay()
+      .then((data: JapaneseRoleplayPayload) => {
+        this.scenes.set(data.scenes);
+        this.sceneId.set(data.scenes[0]?.id ?? '');
+        this.roleplayLoading.set(false);
+      });
   }
 
   setTab(tab: ExtraTab): void {
@@ -169,7 +202,9 @@ export class PracticeExtraPageComponent {
 
   listenNext(): void {
     this.listenPicked.set(null);
-    this.listenIndex.update((i) => (i + 1) % Math.max(this.listenBank().length, 1));
+    this.listenIndex.update(
+      (i) => (i + 1) % Math.max(this.listenBank().length, 1)
+    );
   }
 
   setScene(id: string): void {

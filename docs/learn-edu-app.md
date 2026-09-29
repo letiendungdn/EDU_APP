@@ -16,32 +16,42 @@ Lộ trình dành cho người học **2 giờ/ngày, 5 ngày/tuần, trong 10 t
 
 ---
 
+
+
 ## Bản đồ codebase cần thuộc
 
-| Khu vực | Vai trò | Đọc đầu tiên |
-|---------|---------|--------------|
-| `apps/nihongo-web` | Web Next.js tiếng Nhật | routes/views, API client |
-| `apps/nihongo-mobile` | React Native / Expo | `app/`, repository, config |
-| `apps/nihongo-android` | Kotlin + Compose | presentation/domain/data |
-| `apps/nihongo_flutter` | Flutter | presentation/domain/data |
-| `services/api-gateway` | HTTP entry, auth, admin, external APIs | `app.module.ts`, controllers |
-| `services/content-service` | Lesson/vocab/grammar/kanji | `content.module.ts`, services |
-| `services/exam-service` | SRS, mock exam, progress | `exam.module.ts`, services |
-| `services/payment-service` | Stripe, subscription, coaching | Stripe + marketplace modules |
-| `packages/nest-common` | Guard, cache, Redis, audit, mail | `src/index.ts` |
-| `packages/nest-contracts` | gRPC/protobuf contracts | proto + DTO |
-| `packages/prisma-nihongo` | Schema/migrations | `schema.prisma` |
-| `infra` | Docker/K8s/Nginx/monitoring/backup | `docker-compose.yml`, `infra/nginx` |
+
+| Khu vực                    | Vai trò                                | Đọc đầu tiên                        |
+| -------------------------- | -------------------------------------- | ----------------------------------- |
+| `apps/nihongo-web`         | Web Next.js tiếng Nhật                 | routes/views, API client            |
+| `apps/nihongo-mobile`      | React Native / Expo                    | `app/`, repository, config          |
+| `apps/nihongo-android`     | Kotlin + Compose                       | presentation/domain/data            |
+| `apps/nihongo_flutter`     | Flutter                                | presentation/domain/data            |
+| `services/api-gateway`     | HTTP entry, auth, admin, external APIs | `app.module.ts`, controllers        |
+| `services/content-service` | Lesson/vocab/grammar/kanji             | `content.module.ts`, services       |
+| `services/exam-service`    | SRS, mock exam, progress               | `exam.module.ts`, services          |
+| `services/payment-service` | Stripe, subscription, coaching         | Stripe + marketplace modules        |
+| `packages/nest-common`     | Guard, cache, Redis, audit, mail       | `src/index.ts`                      |
+| `packages/nest-contracts`  | gRPC/protobuf contracts                | proto + DTO                         |
+| `packages/prisma-nihongo`  | Schema/migrations                      | `schema.prisma`                     |
+| `infra`                    | Docker/K8s/Nginx/monitoring/backup     | `docker-compose.yml`, `infra/nginx` |
+
 
 ---
 
+
+
 # Giai đoạn 0 — Chuẩn bị (1–2 ngày)
+
+
 
 ## Mục tiêu
 
 - Chạy được full Nihongo stack.
 - Đăng nhập bằng tài khoản demo.
 - Biết xem log, health và database.
+
+
 
 ## Thực hành
 
@@ -65,7 +75,11 @@ Tài khoản: xem [accounts.md](./accounts.md). Cách chạy chi tiết: [run-lo
 
 ---
 
+
+
 # Tuần 1 — Kiến trúc tổng thể và luồng request
+
+
 
 ## Học
 
@@ -74,12 +88,16 @@ Tài khoản: xem [accounts.md](./accounts.md). Cách chạy chi tiết: [run-lo
 - PostgreSQL, Redis, MongoDB, Kafka dùng cho việc gì.
 - Hướng cấu trúc: BFD/DFD/ERD; hướng đối tượng: Use Case/UML.
 
+
+
 ## Đọc theo thứ tự
 
 1. `README.md`
 2. [nginx.md](./nginx.md)
 3. [system-design.md](./system-design.md)
 4. [bao-cao-phan-tich-thiet-ke.md](./bao-cao-phan-tich-thiet-ke.md)
+
+
 
 ## Bài thực hành
 
@@ -89,6 +107,8 @@ Theo request `GET /api/vocabularies?lessonNumber=1` và ghi lại:
 Client → Nginx → api-gateway → gRPC → content-service → Redis → PostgreSQL
 ```
 
+
+
 ## Sản phẩm tuần
 
 - Một sơ đồ request flow tự vẽ.
@@ -96,7 +116,11 @@ Client → Nginx → api-gateway → gRPC → content-service → Redis → Post
 
 ---
 
+
+
 # Tuần 2 — TypeScript, Node.js và NestJS
+
+
 
 ## Học
 
@@ -106,6 +130,8 @@ Client → Nginx → api-gateway → gRPC → content-service → Redis → Post
 - Middleware, Guard, Pipe, Interceptor, Exception Filter.
 - REST DTO validation và Swagger.
 
+
+
 ## Code cần đọc
 
 - `services/api-gateway/src/app.module.ts`
@@ -113,11 +139,15 @@ Client → Nginx → api-gateway → gRPC → content-service → Redis → Post
 - `packages/nest-common/src/audit/audit.interceptor.ts`
 - `packages/nest-common/src/auth/`
 
+
+
 ## Bài thực hành
 
 - Thêm một endpoint health/info đơn giản.
 - Viết DTO có validation.
 - Viết unit test cho service vừa thêm.
+
+
 
 ## Hoàn thành khi
 
@@ -127,7 +157,11 @@ Client → Nginx → api-gateway → gRPC → content-service → Redis → Post
 
 ---
 
+
+
 # Tuần 3 — PostgreSQL, Prisma và mô hình dữ liệu
+
+
 
 ## Học
 
@@ -136,12 +170,16 @@ Client → Nginx → api-gateway → gRPC → content-service → Redis → Post
 - Prisma model, relation, migration, query.
 - ERD các phân hệ Content, Progress, Payment.
 
+
+
 ## Code cần đọc
 
 - `packages/prisma-nihongo/schema.prisma`
 - `Lesson`, `Vocabulary`, `User`, `SrsCard`
 - `Subscription`, `CoachingSession`, `Payment`
 - [db-design.md](./db-design.md)
+
+
 
 ## Bài thực hành
 
@@ -154,6 +192,8 @@ npx prisma studio --schema packages/prisma-nihongo/schema.prisma
 - Giải thích index `(userId, nextReviewAt)` của SRS.
 - Tạo migration nhỏ trên DB thử nghiệm, sau đó rollback bằng backup.
 
+
+
 ## Hoàn thành khi
 
 - Đọc được ERD và ánh xạ sang Prisma.
@@ -162,7 +202,11 @@ npx prisma studio --schema packages/prisma-nihongo/schema.prisma
 
 ---
 
+
+
 # Tuần 4 — Microservices, gRPC, Redis và Kafka
+
+
 
 ## Học
 
@@ -171,11 +215,15 @@ npx prisma studio --schema packages/prisma-nihongo/schema.prisma
 - Cache-aside, TTL, invalidation.
 - Kafka producer/consumer, at-least-once, idempotency.
 
+
+
 ## Luồng cần đọc
 
 1. Lessons/vocab: gateway → content-service.
 2. Mock exam: gateway → exam-service → Redis.
 3. Payment event: payment-service → Kafka.
+
+
 
 ## Bài thực hành
 
@@ -183,6 +231,8 @@ npx prisma studio --schema packages/prisma-nihongo/schema.prisma
 - Gọi API hai lần và quan sát cache hit/miss.
 - Sửa cache key vocab để chứa `page` và `limit`, thêm test.
 - Mô tả cách tránh xử lý Kafka event hai lần.
+
+
 
 ## Hoàn thành khi
 
@@ -192,7 +242,11 @@ npx prisma studio --schema packages/prisma-nihongo/schema.prisma
 
 ---
 
+
+
 # Tuần 5 — Auth, bảo mật và audit
+
+
 
 ## Học
 
@@ -202,6 +256,8 @@ npx prisma studio --schema packages/prisma-nihongo/schema.prisma
 - Rate limit, CORS, Helmet, secret management.
 - Audit log MongoDB TTL 90 ngày.
 
+
+
 ## Đọc
 
 - [keycloak-setup.md](./keycloak-setup.md)
@@ -209,12 +265,16 @@ npx prisma studio --schema packages/prisma-nihongo/schema.prisma
 - [mongodb.md](./mongodb.md)
 - Auth controller/service, guards và role decorators.
 
+
+
 ## Bài thực hành
 
 - Login email rồi xem access/refresh flow.
 - Login Keycloak và giải thích vì sao gateway cấp JWT local.
 - Thử endpoint admin bằng USER, xác nhận nhận 403.
 - Xem audit gần nhất trong `audit_logs`.
+
+
 
 ## Hoàn thành khi
 
@@ -224,7 +284,11 @@ npx prisma studio --schema packages/prisma-nihongo/schema.prisma
 
 ---
 
+
+
 # Tuần 6 — Frontend Web (Next.js)
+
+
 
 ## Học
 
@@ -232,6 +296,8 @@ npx prisma studio --schema packages/prisma-nihongo/schema.prisma
 - State, form, API client, auth state.
 - Loading/error/empty state.
 - Responsive UI và accessibility.
+
+
 
 ## Luồng thực hành
 
@@ -242,6 +308,8 @@ Chọn **một màn hình** (Vocab hoặc SRS):
 3. Thêm loading skeleton và error retry.
 4. Viết component test.
 
+
+
 ## Hoàn thành khi
 
 - Tự thêm được một trang gọi API.
@@ -250,41 +318,53 @@ Chọn **một màn hình** (Vocab hoặc SRS):
 
 ---
 
+
+
 # Tuần 7 — Mobile: chọn một stack chính
 
 > Tuần này chỉ **chọn 1 stack**. Nếu muốn đi sâu mobile (offline, camera, LiveKit, test), làm thêm **Phụ lục M** bên dưới (thêm 3–4 tuần) thay vì nhồi cả bốn app trong 7 ngày.
 
+
+
 ## 7.0. Chọn stack (ngày 1)
 
-| Nền tảng của bạn | Chọn | Folder |
-|------------------|------|--------|
-| Biết React / TypeScript | **Expo / React Native** | `apps/nihongo-mobile` |
-| Muốn Android native | **Kotlin + Compose** | `apps/nihongo-android` |
-| Muốn cross-platform typed | **Flutter + Riverpod** | `apps/nihongo_flutter` |
-| Có macOS, theo iOS | **SwiftUI** | `apps/nihongo-ios` |
+
+| Nền tảng của bạn          | Chọn                    | Folder                 |
+| ------------------------- | ----------------------- | ---------------------- |
+| Biết React / TypeScript   | **Expo / React Native** | `apps/nihongo-mobile`  |
+| Muốn Android native       | **Kotlin + Compose**    | `apps/nihongo-android` |
+| Muốn cross-platform typed | **Flutter + Riverpod**  | `apps/nihongo_flutter` |
+| Có macOS, theo iOS        | **SwiftUI**             | `apps/nihongo-ios`     |
+
 
 Chạy app: [run-mobile.md](./run-mobile.md). Backend phải lên (`npm run docker:up:nihongo` hoặc hybrid theo [run-local.md](./run-local.md)).
 
 ### API base URL — nhớ thuộc
 
-| Môi trường | Base URL thường dùng |
-|------------|----------------------|
+
+| Môi trường       | Base URL thường dùng                                               |
+| ---------------- | ------------------------------------------------------------------ |
 | Android emulator | `http://10.0.2.2:8080/api/` (qua nginx) hoặc `:3000/api` (gateway) |
-| iOS simulator | `http://localhost:3000/api` |
-| Máy thật | IP LAN máy host, cùng Wi‑Fi |
+| iOS simulator    | `http://localhost:3000/api`                                        |
+| Máy thật         | IP LAN máy host, cùng Wi‑Fi                                        |
+
+
+
 
 ## 7.1. Kiến thức chung mọi stack (ngày 1–2)
 
 Học **một lần**, áp dụng cho app đã chọn:
 
-| Chủ đề | Việc cần làm |
-|--------|--------------|
-| Kiến trúc lớp | Vẽ `presentation → domain → data` của app mình |
-| Offline-first | Vocab đọc từ local DB; sync khi có mạng |
-| Auth token | Secure storage (Keychain / Keystore / SecureStore / flutter_secure_storage) |
-| Network | Monitor online/offline; queue sync `pending` |
-| SRS | Đọc thuật toán SM-2 local; chạy unit test |
-| Camera translate | OCR on-device → `POST /api/translate` → overlay |
+
+| Chủ đề           | Việc cần làm                                                                |
+| ---------------- | --------------------------------------------------------------------------- |
+| Kiến trúc lớp    | Vẽ `presentation → domain → data` của app mình                              |
+| Offline-first    | Vocab đọc từ local DB; sync khi có mạng                                     |
+| Auth token       | Secure storage (Keychain / Keystore / SecureStore / flutter_secure_storage) |
+| Network          | Monitor online/offline; queue sync `pending`                                |
+| SRS              | Đọc thuật toán SM-2 local; chạy unit test                                   |
+| Camera translate | OCR on-device → `POST /api/translate` → overlay                             |
+
 
 **Đọc chung:** [interview-mobile.md](./interview-mobile.md), [learn-ml-mobile.md](./learn-ml-mobile.md) (OCR/ML Kit).
 
@@ -301,16 +381,22 @@ cd apps\nihongo-android; .\gradlew.bat testDebugUnitTest
 cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 ```
 
+
+
 ## 7.2. Lộ trình theo stack (ngày 2–5)
+
+
 
 ### A. Expo / React Native (`nihongo-mobile`)
 
-| Ngày | Học | File / lệnh |
-|------|-----|-------------|
-| 2 | Expo Router, `app.json` extra (apiBaseUrl, Keycloak) | `app/`, `src/config/` |
-| 3 | SQLite + repository + sync | `src/data/` |
-| 4 | Login JWT / Keycloak; SRS screen | `app/srs.tsx`, `src/utils/srs.ts` |
-| 5 | Camera + ML Kit + overlay map | `src/utils/overlay.ts`, màn camera |
+
+| Ngày | Học                                                  | File / lệnh                        |
+| ---- | ---------------------------------------------------- | ---------------------------------- |
+| 2    | Expo Router, `app.json` extra (apiBaseUrl, Keycloak) | `app/`, `src/config/`              |
+| 3    | SQLite + repository + sync                           | `src/data/`                        |
+| 4    | Login JWT / Keycloak; SRS screen                     | `app/srs.tsx`, `src/utils/srs.ts`  |
+| 5    | Camera + ML Kit + overlay map                        | `src/utils/overlay.ts`, màn camera |
+
 
 **Đọc thêm:** [roadmap-react-native.md](./roadmap-react-native.md)
 
@@ -318,14 +404,18 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 
 ---
 
+
+
 ### B. Android Kotlin (`nihongo-android`)
 
-| Ngày | Học | File / lệnh |
-|------|-----|-------------|
-| 2 | Compose navigation, Hilt DI | `presentation/`, `di/` |
-| 3 | Room DAO + repository | `data/local/`, `data/repository/` |
-| 4 | ViewModel + Flow; SRS | `SrsViewModel`, `SrsAlgorithm` |
-| 5 | CameraX + ML Kit Japanese | `presentation/camera/` |
+
+| Ngày | Học                         | File / lệnh                       |
+| ---- | --------------------------- | --------------------------------- |
+| 2    | Compose navigation, Hilt DI | `presentation/`, `di/`            |
+| 3    | Room DAO + repository       | `data/local/`, `data/repository/` |
+| 4    | ViewModel + Flow; SRS       | `SrsViewModel`, `SrsAlgorithm`    |
+| 5    | CameraX + ML Kit Japanese   | `presentation/camera/`            |
+
 
 **Đọc thêm:** [learn-android-kotlin.md](./learn-android-kotlin.md) (lộ trình học tuần + bài tập), [roadmap-android.md](./roadmap-android.md), [cursor-android-offline.md](./cursor-android-offline.md)
 
@@ -333,14 +423,18 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 
 ---
 
+
+
 ### C. Flutter (`nihongo_flutter`)
 
-| Ngày | Học | File / lệnh |
-|------|-----|-------------|
-| 2 | go_router, Riverpod providers | `lib/presentation/`, `providers.dart` |
-| 3 | Drift DB + repository | `lib/data/local/`, `lib/data/repository/` |
-| 4 | Use case SRS; sync status | `lib/domain/`, `lib/utils/srs_algorithm.dart` |
-| 5 | camera + google_mlkit | màn translate |
+
+| Ngày | Học                           | File / lệnh                                   |
+| ---- | ----------------------------- | --------------------------------------------- |
+| 2    | go_router, Riverpod providers | `lib/presentation/`, `providers.dart`         |
+| 3    | Drift DB + repository         | `lib/data/local/`, `lib/data/repository/`     |
+| 4    | Use case SRS; sync status     | `lib/domain/`, `lib/utils/srs_algorithm.dart` |
+| 5    | camera + google_mlkit         | màn translate                                 |
+
 
 **Đọc thêm:** [roadmap-flutter.md](./roadmap-flutter.md), [cursor-flutter-offline.md](./cursor-flutter-offline.md)
 
@@ -348,14 +442,18 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 
 ---
 
+
+
 ### D. iOS SwiftUI (`nihongo-ios`) — cần macOS
 
-| Ngày | Học | File / lệnh |
-|------|-----|-------------|
-| 2 | XcodeGen → mở project | `xcodegen generate` |
-| 3 | SwiftUI + MVVM | `Presentation/` |
-| 4 | Local store + API | `Data/`, `Core/APIConfig.swift` |
-| 5 | SRS algorithm + XCTest | `Core/SRSAlgorithm.swift`, `NihongoEDUTests/` |
+
+| Ngày | Học                    | File / lệnh                                   |
+| ---- | ---------------------- | --------------------------------------------- |
+| 2    | XcodeGen → mở project  | `xcodegen generate`                           |
+| 3    | SwiftUI + MVVM         | `Presentation/`                               |
+| 4    | Local store + API      | `Data/`, `Core/APIConfig.swift`               |
+| 5    | SRS algorithm + XCTest | `Core/SRSAlgorithm.swift`, `NihongoEDUTests/` |
+
 
 **Đọc thêm:** [roadmap-swift.md](./roadmap-swift.md)
 
@@ -370,18 +468,26 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 - [ ] Chạy được unit test SM-2 của stack đã chọn.
 - [ ] Theo được 1 luồng: UI → repository → API/local DB.
 
+
+
 ## 7.4. So sánh nhanh 4 app (đọc để đối chiếu, không code cả 4)
 
-| | Expo | Android | Flutter | iOS |
-|--|------|---------|---------|-----|
-| Local DB | expo-sqlite | Room | Drift | (local / Core Data pattern trong app) |
-| State | hooks | ViewModel + Flow | Riverpod | Observable / ViewModel |
-| Camera OCR | expo-camera + ML Kit | CameraX + ML Kit | camera + ML Kit | (tùy implement) |
-| Unit test | Vitest (`srs`, `overlay`) | JUnit (`SrsAlgorithmTest`) | `flutter_test` | XCTest |
+
+|            | Expo                      | Android                    | Flutter         | iOS                                   |
+| ---------- | ------------------------- | -------------------------- | --------------- | ------------------------------------- |
+| Local DB   | expo-sqlite               | Room                       | Drift           | (local / Core Data pattern trong app) |
+| State      | hooks                     | ViewModel + Flow           | Riverpod        | Observable / ViewModel                |
+| Camera OCR | expo-camera + ML Kit      | CameraX + ML Kit           | camera + ML Kit | (tùy implement)                       |
+| Unit test  | Vitest (`srs`, `overlay`) | JUnit (`SrsAlgorithmTest`) | `flutter_test`  | XCTest                                |
+
 
 ---
 
+
+
 # Tuần 8 — Stripe, Coaching, Email và Realtime
+
+
 
 ## Học
 
@@ -391,11 +497,15 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 - Brevo transactional/broadcast email.
 - LiveKit token/room, signaling, presence Redis.
 
+
+
 ## Đọc
 
 - `services/payment-service`
 - [brevo-mail.md](./brevo-mail.md)
 - Tài liệu video/chat trong `docs/`
+
+
 
 ## Bài thực hành
 
@@ -403,6 +513,8 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 - Theo event `invoice.paid` tới DB.
 - Mô phỏng webhook gửi lặp và kiểm tra idempotency.
 - Vẽ state machine CoachingSession.
+
+
 
 ## Hoàn thành khi
 
@@ -412,7 +524,11 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 
 ---
 
+
+
 # Tuần 9 — Infra, Docker, quan sát và vận hành
+
+
 
 ## Học
 
@@ -422,6 +538,8 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 - Kubernetes Deployment/Service/Ingress/ConfigMap/Secret/HPA.
 - Prometheus, Grafana, Jaeger; backup/restore.
 
+
+
 ## Đọc
 
 - `docker-compose.yml`
@@ -429,12 +547,16 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 - `infra/k8s/`, `infra/helm/`, `infra/terraform/`
 - [docker.md](./docker.md)
 
+
+
 ## Bài thực hành
 
 - Rebuild một service.
 - Gây lỗi gateway rồi đọc log tìm nguyên nhân.
 - Chạy k6 smoke/load test.
 - Backup DB và kiểm tra kích thước dump.
+
+
 
 ## Hoàn thành khi
 
@@ -444,7 +566,11 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 
 ---
 
+
+
 # Tuần 10 — Testing, system design và capstone
+
+
 
 ## Học
 
@@ -453,6 +579,8 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 - Load test; metrics, log, trace.
 - Trade-off monolith/microservice, consistency/availability.
 
+
+
 ## Capstone — chọn một
 
 1. **SRS:** thêm filter content type + test + analytics.
@@ -460,6 +588,8 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 3. **Coaching:** khóa chống double-booking + concurrency test.
 4. **Mobile:** offline review queue + retry/backoff.
 5. **Admin:** dashboard audit/payment có phân trang.
+
+
 
 ## Definition of Done
 
@@ -473,6 +603,8 @@ cd apps\nihongo_flutter; flutter test test/srs_algorithm_test.dart
 
 ---
 
+
+
 # Phụ lục M — Lộ trình Mobile chuyên sâu (+3–4 tuần)
 
 Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuần 7). Vẫn chỉ **một stack chính**; stack khác chỉ đọc để so sánh.
@@ -483,15 +615,19 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 - Đã hoàn thành Tuần 7 checklist (app chạy + offline vocab + SM-2 test).
 - Đã đọc [run-mobile.md](./run-mobile.md).
 
+
+
 ## M1 — Offline-first & sync (1 tuần)
 
-| Ngày | Việc |
-|------|------|
-| 1 | Vẽ sơ đồ: fetch remote → map entity → upsert local → UI đọc local |
-| 2 | Theo `syncStatus`: `synced` / `pending` / `conflict` |
-| 3 | Tắt mạng: review SRS ghi local queue; bật mạng: flush queue |
-| 4 | Xử lý conflict (last-write / server-win — ghi rõ policy app đang dùng) |
-| 5 | Viết unit/integration test cho sync helper hoặc repository (mock API) |
+
+| Ngày | Việc                                                                   |
+| ---- | ---------------------------------------------------------------------- |
+| 1    | Vẽ sơ đồ: fetch remote → map entity → upsert local → UI đọc local      |
+| 2    | Theo `syncStatus`: `synced` / `pending` / `conflict`                   |
+| 3    | Tắt mạng: review SRS ghi local queue; bật mạng: flush queue            |
+| 4    | Xử lý conflict (last-write / server-win — ghi rõ policy app đang dùng) |
+| 5    | Viết unit/integration test cho sync helper hoặc repository (mock API)  |
+
 
 **Đọc:** [cursor-android-offline.md](./cursor-android-offline.md) hoặc [cursor-flutter-offline.md](./cursor-flutter-offline.md) (tùy stack).
 
@@ -499,24 +635,28 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 
 ## M2 — Auth mobile & bảo mật token (3–4 ngày)
 
-| Việc | Chi tiết |
-|------|----------|
-| Secure storage | Không lưu JWT plain SharedPreferences / AsyncStorage thường |
-| Refresh | Hết access → refresh; 401 → logout sạch |
-| Keycloak / AppAuth | Redirect URI scheme (`com.edu.nihongo:/…`) |
-| Deep link | So sánh Expo scheme `nihongo://` vs Android/iOS |
+
+| Việc               | Chi tiết                                                    |
+| ------------------ | ----------------------------------------------------------- |
+| Secure storage     | Không lưu JWT plain SharedPreferences / AsyncStorage thường |
+| Refresh            | Hết access → refresh; 401 → logout sạch                     |
+| Keycloak / AppAuth | Redirect URI scheme (`com.edu.nihongo:/…`)                  |
+| Deep link          | So sánh Expo scheme `nihongo://` vs Android/iOS             |
+
 
 **Đầu ra:** login → kill app → mở lại vẫn còn session (hoặc refresh đúng).
 
 ## M3 — Camera OCR + translate + overlay (1 tuần)
 
-| Ngày | Việc |
-|------|------|
-| 1 | Quyền camera; preview stream |
-| 2 | ML Kit Japanese OCR → text + bounding box |
-| 3 | Gọi `/api/translate`; debounce ~1 frame/s |
-| 4 | Map tọa độ ảnh → view (cover scale + offset) — xem test `overlay` Expo |
-| 5 | Edge cases: nghiêng máy, text nhỏ, offline (chỉ OCR, không dịch) |
+
+| Ngày | Việc                                                                   |
+| ---- | ---------------------------------------------------------------------- |
+| 1    | Quyền camera; preview stream                                           |
+| 2    | ML Kit Japanese OCR → text + bounding box                              |
+| 3    | Gọi `/api/translate`; debounce ~1 frame/s                              |
+| 4    | Map tọa độ ảnh → view (cover scale + offset) — xem test `overlay` Expo |
+| 5    | Edge cases: nghiêng máy, text nhỏ, offline (chỉ OCR, không dịch)       |
+
 
 **Đọc:** [learn-ml-mobile.md](./learn-ml-mobile.md)
 
@@ -532,12 +672,14 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 
 ## M5 — Testing & chất lượng mobile (3–4 ngày)
 
-| Loại | Việc |
-|------|------|
-| Unit | SM-2, mapper, overlay (đã có skeleton) |
-| Widget / UI | 1 smoke màn Home hoặc Vocab |
-| Repository | Mock API + fake DB |
-| Manual QA | Online/offline, rotate, permission deny |
+
+| Loại        | Việc                                    |
+| ----------- | --------------------------------------- |
+| Unit        | SM-2, mapper, overlay (đã có skeleton)  |
+| Widget / UI | 1 smoke màn Home hoặc Vocab             |
+| Repository  | Mock API + fake DB                      |
+| Manual QA   | Online/offline, rotate, permission deny |
+
 
 **Đầu ra:** CI local: một lệnh test xanh cho stack đã chọn.
 
@@ -548,29 +690,39 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 3. Màn analytics streak đọc từ local + sync.
 4. Cờ feature: đổi API base URL trong debug settings.
 
+
+
 ## Roadmap stack dài hạn (sau phụ lục)
 
-| Stack | File |
-|-------|------|
-| React Native | [roadmap-react-native.md](./roadmap-react-native.md) |
-| Android | [learn-android-kotlin.md](./learn-android-kotlin.md) · [roadmap-android.md](./roadmap-android.md) |
-| Flutter | [roadmap-flutter.md](./roadmap-flutter.md) |
-| Swift | [roadmap-swift.md](./roadmap-swift.md) |
-| Angular (web) | [roadmap-angular.md](./roadmap-angular.md) |
-| ReactJS (web) | [roadmap-reactjs.md](./roadmap-reactjs.md) |
-| Senior mobile | [learn-mobile-senior.md](./learn-mobile-senior.md) |
+
+| Stack         | File                                                                                              |
+| ------------- | ------------------------------------------------------------------------------------------------- |
+| React Native  | [roadmap-react-native.md](./roadmap-react-native.md)                                              |
+| Android       | [learn-android-kotlin.md](./learn-android-kotlin.md) · [roadmap-android.md](./roadmap-android.md) |
+| Flutter       | [roadmap-flutter.md](./roadmap-flutter.md)                                                        |
+| Swift         | [roadmap-swift.md](./roadmap-swift.md)                                                            |
+| Angular (web) | [roadmap-angular.md](./roadmap-angular.md)                                                        |
+| ReactJS (web) | [roadmap-reactjs.md](./roadmap-reactjs.md)                                                        |
+| Senior mobile | [learn-mobile-senior.md](./learn-mobile-senior.md)                                                |
+
 
 ---
 
+
+
 # Nhịp học mỗi ngày (2 giờ)
 
-| Thời gian | Hoạt động |
-|-----------|-----------|
-| 15 phút | Đọc mục tiêu + ôn lại request flow |
-| 35 phút | Đọc code có chủ đích |
-| 50 phút | Chạy/debug/sửa một việc nhỏ |
-| 15 phút | Viết note hoặc sơ đồ |
-| 5 phút | Commit/checkpoint cá nhân (chỉ commit khi phù hợp) |
+
+| Thời gian | Hoạt động                                          |
+| --------- | -------------------------------------------------- |
+| 15 phút   | Đọc mục tiêu + ôn lại request flow                 |
+| 35 phút   | Đọc code có chủ đích                               |
+| 50 phút   | Chạy/debug/sửa một việc nhỏ                        |
+| 15 phút   | Viết note hoặc sơ đồ                               |
+| 5 phút    | Commit/checkpoint cá nhân (chỉ commit khi phù hợp) |
+
+
+
 
 ## Checklist cuối mỗi tuần
 
@@ -581,6 +733,8 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 - [ ] Tôi ghi lại 5 câu hỏi phỏng vấn và tự trả lời.
 
 ---
+
+
 
 # Thứ tự tài liệu nên đọc
 
@@ -596,6 +750,8 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 10. [learn-kafka.md](./learn-kafka.md)
 11. [interview-questions.md](./interview-questions.md) + [interview-mobile.md](./interview-mobile.md)
 
+
+
 # Sau 10 tuần phải làm được
 
 - Chạy và debug full stack.
@@ -605,3 +761,4 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 - Giải thích auth, payment webhook, SRS, audit và state machine.
 - Đọc log/metric/trace để tìm lỗi.
 - Trình bày kiến trúc bằng BFD/DFD/ERD/UML và bảo vệ trade-off.
+

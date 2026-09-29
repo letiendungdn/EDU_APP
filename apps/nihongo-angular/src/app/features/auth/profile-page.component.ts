@@ -1,4 +1,10 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -12,6 +18,7 @@ const JLPT_LEVELS = ['', 'N5', 'N4', 'N3', 'N2', 'N1'] as const;
   selector: 'app-profile-page',
   standalone: true,
   imports: [FormsModule, RouterLink, PaymentMethodsComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './profile-page.component.html',
 })
 export class ProfilePageComponent {
@@ -43,7 +50,9 @@ export class ProfilePageComponent {
     });
 
     if (!this.auth.isAuthenticated()) {
-      void this.router.navigate(['/login'], { queryParams: { redirect: '/profile' } });
+      void this.router.navigate(['/login'], {
+        queryParams: { redirect: '/profile' },
+      });
     }
   }
 
@@ -74,7 +83,9 @@ export class ProfilePageComponent {
       await this.auth.updateProfile(data);
       this.success.set('Đã cập nhật thông tin');
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Cập nhật thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Cập nhật thất bại'
+      );
     } finally {
       this.loading.set(false);
     }

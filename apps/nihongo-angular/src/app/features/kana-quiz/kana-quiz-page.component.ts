@@ -1,4 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import type { KanaChartsPayload } from '../../core/models/reference.models';
@@ -26,6 +32,7 @@ const SECTION_OPTIONS = [
   standalone: true,
   imports: [RouterLink],
   templateUrl: './kana-quiz-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './kana-quiz-page.component.scss',
 })
 export class KanaQuizPageComponent {
@@ -51,14 +58,18 @@ export class KanaQuizPageComponent {
     return kanaSourcesFromCharts(
       this.charts(),
       this.script(),
-      ids.length ? ids : 'all',
+      ids.length ? ids : 'all'
     );
   });
 
   readonly scopeLabel = computed(() => {
     const script = this.script();
     const scriptLabel =
-      script === 'both' ? 'Hira + Kata' : script === 'hiragana' ? 'Hiragana' : 'Katakana';
+      script === 'both'
+        ? 'Hira + Kata'
+        : script === 'hiragana'
+        ? 'Hiragana'
+        : 'Katakana';
     const ids = this.sectionIds();
     const sectionLabel =
       ids.length === SECTION_OPTIONS.length || ids.length === 0

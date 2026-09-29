@@ -1,5 +1,11 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, computed, effect, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import {
@@ -38,6 +44,7 @@ const EXAMPLES: Record<SpeechLang, readonly string[]> = {
   standalone: true,
   imports: [FormsModule, DecimalPipe],
   templateUrl: './text-to-speech-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './text-to-speech-page.component.scss',
 })
 export class TextToSpeechPageComponent {
@@ -54,7 +61,9 @@ export class TextToSpeechPageComponent {
   readonly trimmed = computed(() => this.text().trim());
   readonly charCount = computed(() => this.text().length);
   readonly overLimit = computed(() => this.charCount() > MAX_CHARS);
-  readonly canPlay = computed(() => this.trimmed().length > 0 && !this.overLimit());
+  readonly canPlay = computed(
+    () => this.trimmed().length > 0 && !this.overLimit()
+  );
 
   readonly speakLabel = computed(() => {
     if (this.lang() === 'vi-VN') return 'HoaiMy (server)';
@@ -87,7 +96,7 @@ export class TextToSpeechPageComponent {
       this.lookupTimer = setTimeout(() => {
         void this.api.fetchKanaRomajiLookup(query).then(
           (result) => this.reading.set(result),
-          () => this.reading.set(null),
+          () => this.reading.set(null)
         );
       }, 350);
     });
@@ -124,11 +133,15 @@ export class TextToSpeechPageComponent {
       .map((part) => part.replace(/\s+/g, ' ').trim())
       .filter(Boolean);
 
-    void playSpeechSequence(paragraphs.length ? paragraphs : [this.trimmed()], this.lang(), {
-      rate: this.rate(),
-      forceServer: this.forceServer(),
-      pauseMs: 600,
-    }).finally(() => this.playing.set(false));
+    void playSpeechSequence(
+      paragraphs.length ? paragraphs : [this.trimmed()],
+      this.lang(),
+      {
+        rate: this.rate(),
+        forceServer: this.forceServer(),
+        pauseMs: 600,
+      }
+    ).finally(() => this.playing.set(false));
   }
 
   stop(): void {

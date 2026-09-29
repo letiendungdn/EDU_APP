@@ -1,0 +1,63 @@
+# Cảnh báo cho api-gateway — báo TRIỆU CHỨNG người dùng thấy, không báo nguyên nhân (xem docs/learn-observability.md mục 5).
+# Mỗi alert có runbook: làm gì khi nó kêu (docs/learn-incident-postmortem.md mục 4).
+# Kiểm tra cú pháp: docker exec edu-prometheus promtool check rules /etc/prometheus/alerts.yml
+groups:
+  - name: edu-api-gateway
+    rules:
+      - alert: ApiGatewayTargetDown
+        expr: up{job="api-gateway"} == 0
+        for: 2m
+        labels:
+          severity: page
+        annotations:
+          summary: "Prometheus không lấy được metric api-gateway ({{ $labels.instance }})"
+          description: "Gateway chết, sai port, hoặc /metrics bị chặn (từng xảy ra: 401 do JwtAuthGuard)."
+          runbook: "docs/learn-incident-postmortem.md#runbook-prometheus-target-api-gateway-down"
+
+      - alert: ApiHighErrorRate
+        # Tỷ lệ 5xx trên toàn bộ request trong 5 phút; chỉ xét khi có đủ traffic (> 0.1 req/s)
+        expr: |
+          (
+            sum(rate(http_requests_total{status=~"5.."}[5m]))
+            / sum(rate(http_requests_total[5m]))
+          ) > 0.02
+          and sum(rate(http_requests_total[5m])) > 0.1
+        for: 5m
+        labels:
+          severity: page
+        annotations:
+          summary: "api-gateway trả 5xx > 2% ({{ $value | humanizePercentage }})"
+          description: "Người dùng đang gặp lỗi. Có deploy trong 30 phút qua → rollback trước, điều tra sau."
+          runbook: "docs/learn-incident-postmortem.md#runbook-api-5xx"
+
+      - alert: ApiHighLatencyP95
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{route!="unmatched"}[5m]))) > 1
+          and sum(rate(http_request_duration_seconds_count[5m])) > 0.1
+        for: 10m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "p95 api-gateway > 1s ({{ $value | humanizeDuration }})"
+          description: "Xem Jaeger (span dài nhất) và dashboard 'API Gateway — RED' theo route."
+          runbook: "docs/learn-performance-k6.md#4-tìm-nút-thắt-tải-đi-qua-những-đâu"
+
+      - alert: ApiGatewayRestarting
+        # process_start_time_seconds đổi = process khởi động lại (crash loop, OOMKilled)
+        expr: changes(process_start_time_seconds{job="api-gateway"}[15m]) > 2
+        labels:
+          severity: page
+        annotations:
+          summary: "api-gateway khởi động lại {{ $value }} lần trong 15 phút"
+          description: "Kiểm tra log lúc khởi động (thiếu JWT_SECRET → không khởi động ở production) và OOMKilled."
+          runbook: "docs/learn-kubernetes.md#8-gỡ-lỗi-pod--bảng-tra"
+
+      - alert: ApiEventLoopBlocked
+        expr: nodejs_eventloop_lag_p99_seconds{job="api-gateway"} > 0.5
+        for: 5m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "Event loop api-gateway bị chặn (p99 lag {{ $value | humanizeDuration }})"
+          description: "Có code đồng bộ nặng (JSON lớn, regex, bcrypt) chặn mọi request. Profile CPU theo learn-performance-k6 mục 5."
+          runbook: "docs/learn-performance-k6.md#5-profile-node-khi-cpu-là-nút-thắt"

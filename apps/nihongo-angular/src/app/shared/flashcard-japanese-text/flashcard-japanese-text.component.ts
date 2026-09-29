@@ -1,4 +1,9 @@
-import { Component, computed, input } from '@angular/core';
+import {
+  Component,
+  computed,
+  input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   hasOptionalBracketParts,
   parseOptionalBracketSegments,
@@ -7,6 +12,7 @@ import {
 @Component({
   selector: 'app-flashcard-japanese-text',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <span
       [attr.class]="
@@ -15,17 +21,19 @@ import {
         (extraClass() ? ' ' + extraClass() : '')
       "
     >
-      @for (segment of segments(); track $index) {
-        @if (segment.optional) {
-          <span class="flashcard-jp-optional">
-            <span class="flashcard-jp-bracket">{{ segment.openBracket ?? '[' }}</span>
-            {{ segment.text }}
-            <span class="flashcard-jp-bracket">{{ segment.closeBracket ?? ']' }}</span>
-          </span>
-        } @else {
-          <span class="flashcard-jp-core">{{ segment.text }}</span>
-        }
-      }
+      @for (segment of segments(); track $index) { @if (segment.optional) {
+      <span class="flashcard-jp-optional">
+        <span class="flashcard-jp-bracket">{{
+          segment.openBracket ?? '['
+        }}</span>
+        {{ segment.text }}
+        <span class="flashcard-jp-bracket">{{
+          segment.closeBracket ?? ']'
+        }}</span>
+      </span>
+      } @else {
+      <span class="flashcard-jp-core">{{ segment.text }}</span>
+      } }
     </span>
   `,
 })

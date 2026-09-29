@@ -1,10 +1,20 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
 import { resolvePictureVocabImage } from '../../core/utils/vocab-image.util';
-import { flashcardTextTier, hasOptionalBracketParts } from '../../core/utils/japanese.util';
+import {
+  flashcardTextTier,
+  hasOptionalBracketParts,
+} from '../../core/utils/japanese.util';
 import { getVocabExamples } from '../../core/utils/vocab-pattern-example';
 import { FlashcardJapaneseTextComponent } from '../../shared/flashcard-japanese-text/flashcard-japanese-text.component';
 import { LessonSelectorComponent } from '../../shared/lesson-selector/lesson-selector.component';
@@ -30,6 +40,7 @@ function matchesVocabSearch(vocab: Vocabulary, query: string): boolean {
     FlashcardJapaneseTextComponent,
   ],
   templateUrl: './vocab-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './vocab-page.component.scss',
 })
 export class VocabPageComponent {
@@ -101,7 +112,9 @@ export class VocabPageComponent {
   });
 
   constructor() {
-    void this.api.getLessons({ has: 'vocab' }).then((data) => this.lessons.set(data));
+    void this.api
+      .getLessons({ has: 'vocab' })
+      .then((data) => this.lessons.set(data));
 
     effect(() => {
       const n = this.lesson();

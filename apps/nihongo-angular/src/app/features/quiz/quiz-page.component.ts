@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import {
@@ -16,6 +23,7 @@ type QuizResult = 'correct' | 'wrong' | null;
   standalone: true,
   imports: [LessonSelectorComponent, RouterLink],
   templateUrl: './quiz-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './quiz-page.component.scss',
 })
 export class QuizPageComponent {
@@ -91,10 +99,12 @@ export class QuizPageComponent {
     const ex = this.current();
     if (!ex || this.result() !== null) return;
 
-    const userAnswer = ex.type === 'fill_in_blank' ? this.fillAnswer() : this.selectedAnswer();
+    const userAnswer =
+      ex.type === 'fill_in_blank' ? this.fillAnswer() : this.selectedAnswer();
     if (!userAnswer.trim()) return;
 
-    const isCorrect = this.normalizeAnswer(ex.answer) === this.normalizeAnswer(userAnswer);
+    const isCorrect =
+      this.normalizeAnswer(ex.answer) === this.normalizeAnswer(userAnswer);
     this.result.set(isCorrect ? 'correct' : 'wrong');
     this.scoreCorrect.update((c) => c + (isCorrect ? 1 : 0));
     this.scoreTotal.update((t) => t + 1);

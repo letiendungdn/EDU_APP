@@ -1,4 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
@@ -17,6 +22,7 @@ function formatMoney(cents: number, currency: string): string {
   standalone: true,
   imports: [RouterLink],
   templateUrl: './payments-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './payments-page.component.scss',
 })
 export class PaymentsPageComponent {
@@ -53,7 +59,9 @@ export class PaymentsPageComponent {
       this.payments.set(rows);
       this.subscription.set(subscription);
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Không tải được lịch sử');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Không tải được lịch sử'
+      );
     } finally {
       this.loading.set(false);
     }
@@ -88,11 +96,14 @@ export class PaymentsPageComponent {
   canRefund(payment: PaymentRecord): boolean {
     if (payment.status !== 'SUCCEEDED') return false;
     if (payment.subscription) {
-      const days = (Date.now() - new Date(payment.createdAt).getTime()) / 86_400_000;
+      const days =
+        (Date.now() - new Date(payment.createdAt).getTime()) / 86_400_000;
       return days <= SUBSCRIPTION_REFUND_DAYS;
     }
     if (payment.session) {
-      const hours = (new Date(payment.session.scheduledAt).getTime() - Date.now()) / 3_600_000;
+      const hours =
+        (new Date(payment.session.scheduledAt).getTime() - Date.now()) /
+        3_600_000;
       return hours > 24 && payment.session.status !== 'CANCELED';
     }
     return false;
@@ -100,7 +111,7 @@ export class PaymentsPageComponent {
 
   canRefundSubscription(): boolean {
     const latest = this.payments().find(
-      (payment) => payment.subscription && payment.status === 'SUCCEEDED',
+      (payment) => payment.subscription && payment.status === 'SUCCEEDED'
     );
     return !!latest && this.canRefund(latest);
   }
@@ -113,11 +124,17 @@ export class PaymentsPageComponent {
     this.error.set('');
     this.success.set('');
     try {
-      const result = await this.api.requestPaymentRefund(token, payment.id, reason);
+      const result = await this.api.requestPaymentRefund(
+        token,
+        payment.id,
+        reason
+      );
       this.success.set(result.message);
       await this.load();
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Hoàn tiền thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Hoàn tiền thất bại'
+      );
     } finally {
       this.refundingId.set(null);
     }
@@ -125,7 +142,11 @@ export class PaymentsPageComponent {
 
   async refundSubscription(): Promise<void> {
     const token = this.auth.token();
-    if (!token || !window.confirm('Hoàn tiền gói trong 7 ngày và hủy gói ngay?')) return;
+    if (
+      !token ||
+      !window.confirm('Hoàn tiền gói trong 7 ngày và hủy gói ngay?')
+    )
+      return;
     const reason = window.prompt('Lý do hoàn tiền (tuỳ chọn):') ?? undefined;
     this.subscriptionAction.set('refund');
     this.error.set('');
@@ -135,7 +156,9 @@ export class PaymentsPageComponent {
       this.success.set(result.message);
       await this.load();
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Hoàn tiền thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Hoàn tiền thất bại'
+      );
     } finally {
       this.subscriptionAction.set(null);
     }
@@ -143,7 +166,8 @@ export class PaymentsPageComponent {
 
   async cancelSubscription(): Promise<void> {
     const token = this.auth.token();
-    if (!token || !window.confirm('Hủy subscription vào cuối kỳ hiện tại?')) return;
+    if (!token || !window.confirm('Hủy subscription vào cuối kỳ hiện tại?'))
+      return;
     this.subscriptionAction.set('cancel');
     this.error.set('');
     this.success.set('');
@@ -152,7 +176,9 @@ export class PaymentsPageComponent {
       this.success.set(result.message);
       await this.load();
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Hủy subscription thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Hủy subscription thất bại'
+      );
     } finally {
       this.subscriptionAction.set(null);
     }

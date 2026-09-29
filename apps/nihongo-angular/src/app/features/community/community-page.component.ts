@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -18,6 +24,7 @@ const POLL_MS = 5000;
   standalone: true,
   imports: [FormsModule, DatePipe, RouterLink],
   templateUrl: './community-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './community-page.component.scss',
 })
 export class CommunityPageComponent {
@@ -69,7 +76,9 @@ export class CommunityPageComponent {
         this.selectRoom(list[0].id);
       }
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Không tải được phòng chat');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Không tải được phòng chat'
+      );
     } finally {
       this.loading.set(false);
     }
@@ -92,7 +101,10 @@ export class CommunityPageComponent {
       this.searchResults.set([]);
       return;
     }
-    this.searchTimer = setTimeout(() => void this.searchUsers(value.trim()), 300);
+    this.searchTimer = setTimeout(
+      () => void this.searchUsers(value.trim()),
+      300
+    );
   }
 
   private async searchUsers(query: string): Promise<void> {
@@ -118,7 +130,9 @@ export class CommunityPageComponent {
 
   toggleMember(userId: number): void {
     this.pickedMembers.update((ids) =>
-      ids.includes(userId) ? ids.filter((id) => id !== userId) : [...ids, userId],
+      ids.includes(userId)
+        ? ids.filter((id) => id !== userId)
+        : [...ids, userId]
     );
   }
 
@@ -128,7 +142,11 @@ export class CommunityPageComponent {
     if (!token || !name || !this.pickedMembers().length) return;
     this.creatingGroup.set(true);
     try {
-      const result = await this.api.createCommunityGroup(token, name, this.pickedMembers());
+      const result = await this.api.createCommunityGroup(
+        token,
+        name,
+        this.pickedMembers()
+      );
       await this.loadRooms();
       this.selectRoom(result.id);
       this.showGroupModal.set(false);
@@ -141,7 +159,9 @@ export class CommunityPageComponent {
 
   roomPreview(room: CommunityRoomSummary): string {
     if (!room.lastMessage) return 'Chưa có tin nhắn';
-    return typeof room.lastMessage === 'string' ? room.lastMessage : room.lastMessage.content;
+    return typeof room.lastMessage === 'string'
+      ? room.lastMessage
+      : room.lastMessage.content;
   }
 
   callPath(userId: number): string {
@@ -152,7 +172,9 @@ export class CommunityPageComponent {
   }
 
   directPeer(): CommunityChatUser | undefined {
-    const room = this.rooms().find((entry) => entry.id === this.selectedRoomId());
+    const room = this.rooms().find(
+      (entry) => entry.id === this.selectedRoomId()
+    );
     if (room?.type !== 'DIRECT') return undefined;
     return room.members?.find((member) => member.id !== this.auth.user()?.id);
   }
@@ -191,7 +213,9 @@ export class CommunityPageComponent {
       await this.api.sendCommunityMessage(token, roomId, text);
       await this.refreshRoom();
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Gửi tin nhắn thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Gửi tin nhắn thất bại'
+      );
       this.draft = text;
     } finally {
       this.sending.set(false);

@@ -1,5 +1,17 @@
-import { Component, ElementRef, Input, ViewChild, inject, signal } from '@angular/core';
-import { loadStripe, type Stripe, type StripeElements } from '@stripe/stripe-js';
+import {
+  Component,
+  ElementRef,
+  Input,
+  ViewChild,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import {
+  loadStripe,
+  type Stripe,
+  type StripeElements,
+} from '@stripe/stripe-js';
 import { ApiService } from '../../core/services/api.service';
 import { ApiError } from '../../core/http/api-client';
 import type { SavedCard } from '../../core/models/api.models';
@@ -7,6 +19,7 @@ import type { SavedCard } from '../../core/models/api.models';
 @Component({
   selector: 'app-payment-methods',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './payment-methods.component.html',
 })
 export class PaymentMethodsComponent {
@@ -50,10 +63,16 @@ export class PaymentMethodsComponent {
       }
       this.stripe = await loadStripe(key);
       if (!this.stripe) throw new Error('Stripe chưa cấu hình');
-      this.elements = this.stripe.elements({ clientSecret: result.clientSecret });
-      this.elements.create('payment', { layout: 'accordion' }).mount(this.cardElement!.nativeElement);
+      this.elements = this.stripe.elements({
+        clientSecret: result.clientSecret,
+      });
+      this.elements
+        .create('payment', { layout: 'accordion' })
+        .mount(this.cardElement!.nativeElement);
     } catch (err) {
-      this.error.set(err instanceof Error ? err.message : 'Không mở được form thẻ');
+      this.error.set(
+        err instanceof Error ? err.message : 'Không mở được form thẻ'
+      );
       this.adding.set(false);
     } finally {
       this.setupLoading.set(false);
@@ -97,7 +116,9 @@ export class PaymentMethodsComponent {
       this.success.set(result.message);
       await this.loadCards();
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Cập nhật thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Cập nhật thất bại'
+      );
     } finally {
       this.actionId.set(null);
     }
@@ -112,7 +133,9 @@ export class PaymentMethodsComponent {
       this.success.set('Đã xóa thẻ');
       await this.loadCards();
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Xóa thẻ thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Xóa thẻ thất bại'
+      );
     } finally {
       this.actionId.set(null);
     }
@@ -123,7 +146,9 @@ export class PaymentMethodsComponent {
     try {
       this.cards.set(await this.api.getPaymentMethods(this.token));
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Không tải được thẻ');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Không tải được thẻ'
+      );
     } finally {
       this.loading.set(false);
     }

@@ -1,4 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import type {
@@ -26,6 +32,7 @@ function shuffle<T>(list: T[]): T[] {
   standalone: true,
   imports: [RouterLink],
   styleUrl: './drills.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './conversation-page.component.html',
 })
 export class ConversationPageComponent {
@@ -65,14 +72,18 @@ export class ConversationPageComponent {
   });
 
   constructor() {
-    void this.api.getJapaneseConversation().then((data: JapaneseConversationPayload) => {
-      this.script.set(data.introScript);
-      this.slots.set(data.introSlots);
-      this.groups.set(data.phraseGroups);
-      this.groupId.set(data.phraseGroups[0]?.id ?? '');
-      this.quizDeck.set(shuffle(data.phraseGroups.flatMap((g) => g.items)).slice(0, 16));
-      this.loading.set(false);
-    });
+    void this.api
+      .getJapaneseConversation()
+      .then((data: JapaneseConversationPayload) => {
+        this.script.set(data.introScript);
+        this.slots.set(data.introSlots);
+        this.groups.set(data.phraseGroups);
+        this.groupId.set(data.phraseGroups[0]?.id ?? '');
+        this.quizDeck.set(
+          shuffle(data.phraseGroups.flatMap((g) => g.items)).slice(0, 16)
+        );
+        this.loading.set(false);
+      });
   }
 
   setMode(mode: Mode): void {
@@ -122,7 +133,10 @@ export class ConversationPageComponent {
     const q = this.currentQ();
     if (!q || this.picked()) return;
     this.picked.set(opt);
-    this.score.update((s) => ({ ok: s.ok + (opt === q.ja ? 1 : 0), n: s.n + 1 }));
+    this.score.update((s) => ({
+      ok: s.ok + (opt === q.ja ? 1 : 0),
+      n: s.n + 1,
+    }));
   }
 
   nextQ(): void {

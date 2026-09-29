@@ -1,4 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
@@ -16,6 +21,7 @@ function fmtSeconds(s: number): string {
   standalone: true,
   imports: [RouterLink],
   templateUrl: './analytics-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './analytics-page.component.scss',
 })
 export class AnalyticsPageComponent {
@@ -44,14 +50,19 @@ export class AnalyticsPageComponent {
       .getAnalytics(token)
       .then((res) => this.data.set(res))
       .catch((err) => {
-        this.error.set(err instanceof ApiError ? err.message : 'Không tải được dữ liệu');
+        this.error.set(
+          err instanceof ApiError ? err.message : 'Không tải được dữ liệu'
+        );
       })
       .finally(() => this.loading.set(false));
   }
 
   heatmapCells(): { date: string; seconds: number; color: string }[] {
     const map = new Map(
-      (this.data()?.studySessions ?? []).map((entry) => [entry.date.slice(0, 10), entry.seconds]),
+      (this.data()?.studySessions ?? []).map((entry) => [
+        entry.date.slice(0, 10),
+        entry.seconds,
+      ])
     );
     const today = new Date();
     return Array.from({ length: 365 }, (_, index) => {
@@ -68,7 +79,7 @@ export class AnalyticsPageComponent {
       (this.data()?.studySessions ?? []).slice(-30).map((entry) => ({
         date: entry.date,
         seconds: entry.seconds,
-      })),
+      }))
     );
   }
 
@@ -81,7 +92,10 @@ export class AnalyticsPageComponent {
     if (!exams.length) return '';
     const denominator = Math.max(exams.length - 1, 1);
     return exams
-      .map((exam, index) => `${(index / denominator) * 100},${100 - Math.min(exam.percent, 100)}`)
+      .map(
+        (exam, index) =>
+          `${(index / denominator) * 100},${100 - Math.min(exam.percent, 100)}`
+      )
       .join(' ');
   }
 

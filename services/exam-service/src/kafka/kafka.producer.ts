@@ -7,15 +7,23 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { Kafka, Producer } from "kafkajs";
 
+export type KafkaMessage = { key?: string | null; value: string };
+
+/**
+ * Producer tự kết nối lại: Kafka chưa sẵn sàng lúc service khởi động KHÔNG còn làm
+ * mọi event về sau bị bỏ (trước đây producer = null vĩnh viễn). `send` ném lỗi khi thất bại —
+ * người gọi (OutboxRelayService) quyết định thử lại, không nuốt lỗi.
+ */
 @Injectable()
 export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(KafkaProducerService.name);
-  private producer: Producer | null = null;
+  private readonly producer: Producer;
+  private readonly brokers: string[];
+  private connected = false;
+  private connecting: Promise<void> | null = null;
 
-  constructor(private readonly configService: ConfigService) {}
-
-  async onModuleInit() {
-    const brokers = (
+  constructor(private readonly configService: ConfigService) {
+    this.brokers = (
       this.configService.get<string>("kafka.brokers") ??
       process.env.KAFKA_BROKERS ??
       "localhost:9092"
@@ -23,33 +31,47 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
 
     const kafka = new Kafka({
       clientId: "exam-service",
-      brokers,
+      brokers: this.brokers,
+      retry: { initialRetryTime: 300, retries: 3 },
     });
-
     this.producer = kafka.producer();
+    this.producer.on(this.producer.events.DISCONNECT, () => {
+      this.connected = false;
+    });
+  }
+
+  async onModuleInit() {
     try {
-      await this.producer.connect();
-      this.logger.log(`Kafka producer connected to ${brokers.join(", ")}`);
+      await this.ensureConnected();
     } catch (error) {
+      // Không chặn service khởi động: outbox giữ event, relay kết nối lại ở lần gửi sau
       this.logger.warn(
-        `Kafka producer connection failed — events will be skipped: ${String(error)}`,
+        `Kafka chưa sẵn sàng (${this.brokers.join(", ")}) — event nằm chờ trong outbox: ${String(error)}`,
       );
-      this.producer = null;
     }
   }
 
   async onModuleDestroy() {
-    if (this.producer) {
-      await this.producer.disconnect();
-    }
+    if (this.connected) await this.producer.disconnect();
   }
 
-  async emit(topic: string, payload: Record<string, unknown>) {
-    if (!this.producer) return;
+  async send(topic: string, messages: KafkaMessage[]): Promise<void> {
+    await this.ensureConnected();
+    await this.producer.send({ topic, messages });
+  }
 
-    await this.producer.send({
-      topic,
-      messages: [{ value: JSON.stringify(payload) }],
-    });
+  private async ensureConnected(): Promise<void> {
+    if (this.connected) return;
+    // Nhiều lời gọi cùng lúc dùng chung một lần kết nối
+    this.connecting ??= this.producer
+      .connect()
+      .then(() => {
+        this.connected = true;
+        this.logger.log(`Kafka producer connected to ${this.brokers.join(", ")}`);
+      })
+      .finally(() => {
+        this.connecting = null;
+      });
+    await this.connecting;
   }
 }

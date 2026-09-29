@@ -1,4 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
@@ -9,6 +14,7 @@ import { ApiError } from '../../core/http/api-client';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './admin-import-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin-import-page.component.scss',
 })
 export class AdminImportPageComponent {
@@ -29,12 +35,20 @@ export class AdminImportPageComponent {
     this.result.set('');
 
     try {
-      const res = await this.api.adminImportVocab(token, this.lessonNumber, this.text);
+      const res = await this.api.adminImportVocab(
+        token,
+        this.lessonNumber,
+        this.text
+      );
       this.result.set(
-        `Đã import ${res.count} từ${res.skipped ? `, bỏ qua ${res.skipped} dòng lỗi` : ''}.`,
+        `Đã import ${res.count} từ${
+          res.skipped ? `, bỏ qua ${res.skipped} dòng lỗi` : ''
+        }.`
       );
     } catch (err) {
-      this.result.set(err instanceof ApiError ? err.message : 'Import thất bại');
+      this.result.set(
+        err instanceof ApiError ? err.message : 'Import thất bại'
+      );
     } finally {
       this.loading.set(false);
     }

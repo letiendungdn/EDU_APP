@@ -226,7 +226,7 @@ services:
       CONTENT_GRPC_URL: content-service:50051
       EXAM_GRPC_URL: exam-service:50052
       DATABASE_URL: postgresql://nihongo:${POSTGRES_PASSWORD:-nihongo}@postgres-nihongo:5432/nihongo
-      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET chua dat - xem .env (api-gateway khong chay voi secret mac dinh)}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
       KEYCLOAK_URL: ${KEYCLOAK_URL:-http://keycloak:8080}
       KEYCLOAK_ISSUER: ${KEYCLOAK_ISSUER:-http://auth.localhost:8080/realms/edu-app}
@@ -296,7 +296,7 @@ services:
       - '3002:3002'
     environment:
       PORT: 3002
-      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET chua dat - xem .env (api-gateway khong chay voi secret mac dinh)}
       REDIS_URL: redis://redis:6379
       CORS_ORIGIN: ${SIGNALING_CORS_ORIGIN:-http://localhost:8080,http://localhost:5173,http://nihongo.localhost:8080}
     depends_on:
@@ -391,6 +391,7 @@ services:
       - '9090:9090'
     volumes:
       - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infra/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
     depends_on:
       - api-gateway
 
@@ -405,8 +406,34 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
     depends_on:
       - prometheus
+
+  # Nhận alert từ Prometheus → gửi email (letiendungdt@gmail.com). Xem infra/alertmanager/README.md
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    container_name: edu-alertmanager
+    restart: unless-stopped
+    ports:
+      - '9093:9093'
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      # Mặc định gửi vào Mailpit (local); gửi thật: ALERTMANAGER_CONFIG=./infra/alertmanager/alertmanager.smtp.yml
+      - ${ALERTMANAGER_CONFIG:-./infra/alertmanager/alertmanager.local.yml}:/etc/alertmanager/alertmanager.yml:ro
+      - ./infra/alertmanager/secrets:/etc/alertmanager/secrets:ro
+    depends_on:
+      - mailpit
+
+  # Hộp thư giả cho dev: bắt mọi mail SMTP, xem ở http://localhost:8025 (không gửi ra Internet)
+  mailpit:
+    image: axllent/mailpit:v1.20
+    container_name: edu-mailpit
+    restart: unless-stopped
+    ports:
+      - '8025:8025'
 
 volumes:
   # Giữ data từ stack cũ `nihongo-app` (chỉ DB tiếng Nhật)

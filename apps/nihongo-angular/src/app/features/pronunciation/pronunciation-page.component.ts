@@ -1,4 +1,10 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
 import { LessonSelectorComponent } from '../../shared/lesson-selector/lesson-selector.component';
@@ -9,6 +15,7 @@ import type { Lesson, Vocabulary } from '../../core/models/api.models';
   standalone: true,
   imports: [LessonSelectorComponent],
   templateUrl: './pronunciation-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pronunciation-page.component.scss',
 })
 export class PronunciationPageComponent {

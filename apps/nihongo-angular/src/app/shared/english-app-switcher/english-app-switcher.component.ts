@@ -1,4 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 interface AppFeaturesResponse {
   english: { enabled: boolean; url: string };
@@ -7,9 +12,12 @@ interface AppFeaturesResponse {
 @Component({
   selector: 'app-english-app-switcher',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (englishUrl()) {
-      <a [href]="englishUrl()!" class="nav-link app-switcher" title="English">🇬🇧 <span class="app-switcher__label">English</span></a>
+    <a [href]="englishUrl()!" class="nav-link app-switcher" title="English"
+      >🇬🇧 <span class="app-switcher__label">English</span></a
+    >
     }
   `,
 })

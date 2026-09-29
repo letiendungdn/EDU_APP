@@ -5,6 +5,10 @@ node_modules/
 **/client_secret*.json
 !**/client_secret.example.json
 
+# SMTP key cho Alertmanager gửi mail thật (infra/alertmanager/README.md)
+infra/alertmanager/secrets/*
+!infra/alertmanager/secrets/.gitkeep
+
 # Test coverage
 coverage/
 

@@ -61,7 +61,7 @@ const NIHONGO_DOMAINS: Domain[] = [
       'RoleplayScene', 'RoleplayLine',
       'ListeningConfig', 'PodcastResource', 'ListeningPreset',
       'BookAudioMeta', 'BookAudioItem', 'BookAudioDriveFolder', 'BookAudioFile',
-      'PageBanner',
+      'PageBanner', 'FeatureFlag',
     ],
   },
   {
@@ -73,10 +73,11 @@ const NIHONGO_DOMAINS: Domain[] = [
   {
     id: 'progress',
     title: 'Tiến độ học',
-    note: 'SRS, kết quả thi, nghe, phiên học, streak, nhật ký, mục tiêu ngày.',
+    note: 'SRS, kết quả thi, nghe, phiên học, streak, nhật ký, mục tiêu ngày; outbox event nộp bài (Kafka).',
     models: [
       'SrsCard', 'ExamResult', 'ExamSectionResult', 'ListeningLog', 'StudySession', 'StudyStreak', 'DailyActivity',
       'ReadingAttempt', 'DictationAttempt', 'DailyNote', 'DailyGoal', 'DailyGoalItem',
+      'OutboxEvent', 'ProcessedEvent',
     ],
   },
   {

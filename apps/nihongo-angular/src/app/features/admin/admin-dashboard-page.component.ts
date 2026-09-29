@@ -1,4 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
 import { ApiError } from '../../core/http/api-client';
@@ -12,6 +17,7 @@ function formatRevenue(cents: number): string {
   selector: 'app-admin-dashboard-page',
   standalone: true,
   templateUrl: './admin-dashboard-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin-dashboard-page.component.scss',
 })
 export class AdminDashboardPageComponent {
@@ -41,7 +47,9 @@ export class AdminDashboardPageComponent {
       const data = await this.api.getAdminStats(token);
       this.stats.set(data);
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Không tải được thống kê');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Không tải được thống kê'
+      );
     } finally {
       this.loading.set(false);
     }

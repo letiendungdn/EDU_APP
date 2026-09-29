@@ -240,7 +240,6 @@ model KanaCell {
   romaji    String      @default("")
 
   @@unique([sectionId, rowIndex, colIndex])
-  @@index([sectionId])
 }
 
 /// Tra cứu kana → romaji (dùng cho dịch nhanh, TTS overlay)
@@ -1209,7 +1208,6 @@ model ListeningLog {
   updatedAt  DateTime @updatedAt
 
   @@unique([userId, date])
-  @@index([userId, date])
 }
 
 model StudySession {
@@ -1222,7 +1220,6 @@ model StudySession {
   createdAt     DateTime @default(now())
 
   @@unique([userId, date])
-  @@index([userId, date])
 }
 
 // Streak tách riêng để tránh recompute từ StudySession mỗi lần hiển thị
@@ -1247,7 +1244,6 @@ model DailyActivity {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, date, kind])
-  @@index([userId, date])
 }
 
 // ─────────────────────────────────────────────
@@ -1338,7 +1334,6 @@ model DailyNote {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, date])
-  @@index([userId, date])
 }
 
 // Thay items Json bằng bảng riêng để query và update từng item
@@ -1352,7 +1347,6 @@ model DailyGoal {
   items     DailyGoalItem[]
 
   @@unique([userId, date])
-  @@index([userId, date])
 }
 
 model DailyGoalItem {
@@ -1592,6 +1586,40 @@ model Payout {
 // ─────────────────────────────────────────────
 // Webhook Events (idempotency)
 // ─────────────────────────────────────────────
+
+/// Transactional outbox: event ghi CÙNG transaction với dữ liệu nghiệp vụ,
+/// relay (exam-service) đẩy lên Kafka rồi đánh dấu publishedAt. Không mất event khi Kafka lỗi.
+model OutboxEvent {
+  id          Int       @id @default(autoincrement())
+  topic       String
+  /// Kafka message key (vd userId) — cùng key → cùng partition → giữ thứ tự
+  key         String?
+  payload     Json
+  attempts    Int       @default(0)
+  lastError   String?
+  createdAt   DateTime  @default(now())
+  publishedAt DateTime?
+
+  @@index([publishedAt, id])
+}
+
+/// Consumer idempotent: mỗi (eventId, consumer) chỉ xử lý một lần — outbox/Kafka giao "ít nhất một lần".
+model ProcessedEvent {
+  eventId     String
+  consumer    String
+  processedAt DateTime @default(now())
+
+  @@id([eventId, consumer])
+}
+
+/// Feature flag: bật/tắt tính năng không cần deploy. roles rỗng = mọi người (kể cả khách); có giá trị = chỉ các vai trò đó.
+model FeatureFlag {
+  key         String   @id
+  description String?
+  enabled     Boolean  @default(false)
+  roles       Role[]
+  updatedAt   DateTime @updatedAt
+}
 
 model WebhookEvent {
   id           Int                @id @default(autoincrement())

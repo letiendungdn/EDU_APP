@@ -9,6 +9,7 @@ import { LoggerModule } from "nestjs-pino";
 import {
   PrometheusModule,
   makeCounterProvider,
+  makeHistogramProvider,
 } from "@willsoto/nestjs-prometheus";
 import {
   AuditInterceptor,
@@ -34,6 +35,7 @@ import { WebhooksModule } from "./webhooks/webhooks.module";
 import { MailSchedulerModule } from "./mail-scheduler/mail-scheduler.module";
 import { EmailTemplateModule } from "./email-template/email-template.module";
 import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
+import { MetricsController } from "./metrics/metrics.controller";
 
 @Module({
   imports: [
@@ -59,6 +61,7 @@ import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
     LoggerModule.forRoot(pinoConfig),
     PrometheusModule.register({
       path: "/metrics",
+      controller: MetricsController,
       defaultMetrics: { enabled: true },
     }),
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 120 }]),
@@ -85,7 +88,13 @@ import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
     makeCounterProvider({
       name: "http_requests_total",
       help: "Total number of HTTP requests",
-      labelNames: ["method", "path", "status"],
+      labelNames: ["method", "route", "status"],
+    }),
+    makeHistogramProvider({
+      name: "http_request_duration_seconds",
+      help: "HTTP request latency in seconds",
+      labelNames: ["method", "route", "status"],
+      buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
     }),
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: ThrottlerGuard },

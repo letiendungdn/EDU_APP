@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -21,6 +28,7 @@ function wordKey(w: MistakeWord): string {
   standalone: true,
   imports: [RouterLink],
   templateUrl: './vocab-review-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './vocab-review-page.component.scss',
 })
 export class VocabReviewPageComponent {
@@ -61,7 +69,9 @@ export class VocabReviewPageComponent {
     effect(() => {
       const token = this.auth.token();
       if (!token || !this.auth.authReady()) return;
-      void this.api.getReviewProgress(token).then((items) => this.mergeServerProgress(items));
+      void this.api
+        .getReviewProgress(token)
+        .then((items) => this.mergeServerProgress(items));
     });
   }
 

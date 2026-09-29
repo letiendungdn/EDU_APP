@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
@@ -13,6 +19,7 @@ const POLL_MS = 5000;
   standalone: true,
   imports: [FormsModule, DatePipe],
   templateUrl: './support-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './support-page.component.scss',
 })
 export class SupportPageComponent {
@@ -50,7 +57,9 @@ export class SupportPageComponent {
       this.messages.set(res.messages);
       this.error.set('');
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Không tải được hội thoại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Không tải được hội thoại'
+      );
     } finally {
       if (showLoading) this.loading.set(false);
     }
@@ -68,7 +77,9 @@ export class SupportPageComponent {
       await this.api.sendSupportMessage(token, text);
       await this.refresh(false);
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Gửi tin nhắn thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Gửi tin nhắn thất bại'
+      );
       this.draft = text;
     } finally {
       this.sending.set(false);

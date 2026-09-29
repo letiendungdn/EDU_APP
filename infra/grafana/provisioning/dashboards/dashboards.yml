@@ -1,0 +1,11 @@
+apiVersion: 1
+
+# Nạp mọi dashboard JSON trong infra/grafana/dashboards (mount vào /var/lib/grafana/dashboards)
+providers:
+  - name: edu-app
+    folder: EDU APP
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false
+    options:
+      path: /var/lib/grafana/dashboards

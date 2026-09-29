@@ -1,0 +1,35 @@
+# Chạy `prisma migrate deploy` TRƯỚC khi cập nhật Deployment (xem .github/workflows/deploy.yml).
+# Không nằm trong infra/k8s/*.yaml để vòng `kubectl apply` thường không chạy lại nó.
+# __IMAGE_TAG__ / __JOB_SUFFIX__ được thay bằng git sha lúc deploy → mỗi lần deploy một Job mới.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prisma-migrate-__JOB_SUFFIX__
+  namespace: edu-app
+  labels:
+    app: prisma-migrate
+    app.kubernetes.io/part-of: edu-platform
+spec:
+  backoffLimit: 0 # migration lỗi thì dừng hẳn, không thử lại mù quáng
+  activeDeadlineSeconds: 600
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: prisma-migrate
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: migrate
+          image: ghcr.io/letiendungdn/edu_app/migrator:__IMAGE_TAG__
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: edu-app-secrets
+                  key: DATABASE_URL_NIHONGO
+          resources:
+            requests: { cpu: 50m, memory: 128Mi }
+            limits: { cpu: 500m, memory: 256Mi }

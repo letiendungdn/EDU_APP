@@ -24,6 +24,8 @@ async function bootstrap() {
     },
   );
   app.useGlobalFilters(new RpcHttpExceptionFilter());
+  // SIGTERM (K8s rolling update) → đóng gRPC server, Prisma, Kafka gọn gàng
+  app.enableShutdownHooks();
   await app.listen();
   const logger = new Logger("Bootstrap");
   logger.log(`Exam service listening on gRPC :${port}`);

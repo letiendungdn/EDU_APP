@@ -43,7 +43,13 @@ export class PushService implements OnModuleDestroy {
     });
   }
 
-  async unregisterToken(token: string): Promise<void> {
+  /** Chỉ xoá token của chính user đang đăng nhập — không cho gỡ thiết bị của người khác (IDOR). */
+  async unregisterToken(token: string, userId: number): Promise<void> {
+    await this.prisma.pushDeviceToken.deleteMany({ where: { token, userId } });
+  }
+
+  /** Nội bộ: APNs báo token không còn hợp lệ → xoá bất kể chủ (không gọi từ API). */
+  private async removeInvalidToken(token: string): Promise<void> {
     await this.prisma.pushDeviceToken.deleteMany({ where: { token } });
   }
 
@@ -81,7 +87,7 @@ export class PushService implements OnModuleDestroy {
       );
       const reason = failure.response?.reason;
       if (reason === "BadDeviceToken" || reason === "Unregistered") {
-        await this.unregisterToken(failure.device);
+        await this.removeInvalidToken(failure.device);
       }
     }
   }

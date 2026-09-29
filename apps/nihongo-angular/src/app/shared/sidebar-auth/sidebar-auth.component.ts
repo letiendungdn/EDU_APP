@@ -1,4 +1,9 @@
-import { Component, Input, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -6,33 +11,36 @@ import { AuthService } from '../../core/services/auth.service';
   selector: 'app-sidebar-auth',
   standalone: true,
   imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
-    @if (!auth.isAuthenticated() || !auth.user()) {
-      @if (!hideOnLogin) {
-        <div class="auth-header auth-header--guest">
-          <a routerLink="/login" class="btn btn-primary btn-sm auth-header-cta" title="Đăng nhập / Đăng ký">
-            Đăng nhập / Đăng ký
-          </a>
-        </div>
-      }
-    } @else {
-      <div class="auth-header">
-        <a routerLink="/profile" class="auth-user-chip" title="Hồ sơ cá nhân">
-          @if (auth.user()?.avatarUrl) {
-            <img [src]="auth.user()!.avatarUrl!" alt="" class="auth-avatar" />
-          } @else {
-            <span class="auth-avatar">{{ initials() }}</span>
-          }
-          <span class="auth-user-name">{{ label() }}</span>
-        </a>
-        @if (auth.isAdmin()) {
-          <a routerLink="/admin" class="btn btn-outline btn-sm">Admin</a>
+    @if (!auth.isAuthenticated() || !auth.user()) { @if (!hideOnLogin) {
+    <div class="auth-header auth-header--guest">
+      <a
+        routerLink="/login"
+        class="btn btn-primary btn-sm auth-header-cta"
+        title="Đăng nhập / Đăng ký"
+      >
+        Đăng nhập / Đăng ký
+      </a>
+    </div>
+    } } @else {
+    <div class="auth-header">
+      <a routerLink="/profile" class="auth-user-chip" title="Hồ sơ cá nhân">
+        @if (auth.user()?.avatarUrl) {
+        <img [src]="auth.user()!.avatarUrl!" alt="" class="auth-avatar" />
+        } @else {
+        <span class="auth-avatar">{{ initials() }}</span>
         }
-        <a routerLink="/support" class="btn btn-outline btn-sm">Hỗ trợ</a>
-        <button type="button" class="btn btn-outline btn-sm" (click)="logout()">
-          Đăng xuất
-        </button>
-      </div>
+        <span class="auth-user-name">{{ label() }}</span>
+      </a>
+      @if (auth.isAdmin()) {
+      <a routerLink="/admin" class="btn btn-outline btn-sm">Admin</a>
+      }
+      <a routerLink="/support" class="btn btn-outline btn-sm">Hỗ trợ</a>
+      <button type="button" class="btn btn-outline btn-sm" (click)="logout()">
+        Đăng xuất
+      </button>
+    </div>
     }
   `,
 })

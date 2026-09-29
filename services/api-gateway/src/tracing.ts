@@ -6,6 +6,8 @@ if (process.env.OTEL_SDK_DISABLED === "true") {
   // Local/dev: skip OTLP when collector is down
 } else {
   const sdk = new NodeSDK({
+    // Tên service trong Jaeger (không có → "unknown_service:node"); SERVICE_NAME đặt trong docker-compose / K8s
+    serviceName: process.env.OTEL_SERVICE_NAME ?? process.env.SERVICE_NAME,
     traceExporter: new OTLPTraceExporter({
       url:
         process.env.OTEL_EXPORTER_OTLP_ENDPOINT ??

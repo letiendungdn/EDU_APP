@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict wlV4dH5jLpmF7nWFycfFcERTM19v1F3BjycjgEMIMW0reMP9SpJD0CmSSQ9SDxe
+\restrict oECs9264QObG6Vjp0DlAmPHhiRNoaCzEdojra29LGJfdZUTNOFm9INpqapG1pF3
 
 -- Dumped from database version 16.14
 -- Dumped by pg_dump version 16.14
@@ -1696,6 +1696,21 @@ ALTER SEQUENCE public."Exercise_id_seq" OWNED BY public."Exercise".id;
 
 
 --
+-- Name: FeatureFlag; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."FeatureFlag" (
+    key text NOT NULL,
+    description text,
+    enabled boolean DEFAULT false NOT NULL,
+    roles public."Role"[],
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."FeatureFlag" OWNER TO nihongo;
+
+--
 -- Name: Grammar; Type: TABLE; Schema: public; Owner: nihongo
 --
 
@@ -2999,6 +3014,46 @@ ALTER SEQUENCE public."Notification_id_seq" OWNED BY public."Notification".id;
 
 
 --
+-- Name: OutboxEvent; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."OutboxEvent" (
+    id integer NOT NULL,
+    topic text NOT NULL,
+    key text,
+    payload jsonb NOT NULL,
+    attempts integer DEFAULT 0 NOT NULL,
+    "lastError" text,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "publishedAt" timestamp(3) without time zone
+);
+
+
+ALTER TABLE public."OutboxEvent" OWNER TO nihongo;
+
+--
+-- Name: OutboxEvent_id_seq; Type: SEQUENCE; Schema: public; Owner: nihongo
+--
+
+CREATE SEQUENCE public."OutboxEvent_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."OutboxEvent_id_seq" OWNER TO nihongo;
+
+--
+-- Name: OutboxEvent_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nihongo
+--
+
+ALTER SEQUENCE public."OutboxEvent_id_seq" OWNED BY public."OutboxEvent".id;
+
+
+--
 -- Name: PageBanner; Type: TABLE; Schema: public; Owner: nihongo
 --
 
@@ -3187,6 +3242,19 @@ ALTER SEQUENCE public."PodcastResource_id_seq" OWNER TO nihongo;
 
 ALTER SEQUENCE public."PodcastResource_id_seq" OWNED BY public."PodcastResource".id;
 
+
+--
+-- Name: ProcessedEvent; Type: TABLE; Schema: public; Owner: nihongo
+--
+
+CREATE TABLE public."ProcessedEvent" (
+    "eventId" text NOT NULL,
+    consumer text NOT NULL,
+    "processedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public."ProcessedEvent" OWNER TO nihongo;
 
 --
 -- Name: PronunciationRuleExample; Type: TABLE; Schema: public; Owner: nihongo
@@ -4766,6 +4834,13 @@ ALTER TABLE ONLY public."Notification" ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
+-- Name: OutboxEvent id; Type: DEFAULT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."OutboxEvent" ALTER COLUMN id SET DEFAULT nextval('public."OutboxEvent_id_seq"'::regclass);
+
+
+--
 -- Name: PageBanner id; Type: DEFAULT; Schema: public; Owner: nihongo
 --
 
@@ -5280,6 +5355,14 @@ ALTER TABLE ONLY public."Exercise"
 
 
 --
+-- Name: FeatureFlag FeatureFlag_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."FeatureFlag"
+    ADD CONSTRAINT "FeatureFlag_pkey" PRIMARY KEY (key);
+
+
+--
 -- Name: Grammar Grammar_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -5568,6 +5651,14 @@ ALTER TABLE ONLY public."Notification"
 
 
 --
+-- Name: OutboxEvent OutboxEvent_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."OutboxEvent"
+    ADD CONSTRAINT "OutboxEvent_pkey" PRIMARY KEY (id);
+
+
+--
 -- Name: PageBanner PageBanner_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
 --
 
@@ -5605,6 +5696,14 @@ ALTER TABLE ONLY public."Payout"
 
 ALTER TABLE ONLY public."PodcastResource"
     ADD CONSTRAINT "PodcastResource_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: ProcessedEvent ProcessedEvent_pkey; Type: CONSTRAINT; Schema: public; Owner: nihongo
+--
+
+ALTER TABLE ONLY public."ProcessedEvent"
+    ADD CONSTRAINT "ProcessedEvent_pkey" PRIMARY KEY ("eventId", consumer);
 
 
 --
@@ -6051,13 +6150,6 @@ CREATE INDEX "CountryRegion_sortOrder_idx" ON public."CountryRegion" USING btree
 
 
 --
--- Name: DailyActivity_userId_date_idx; Type: INDEX; Schema: public; Owner: nihongo
---
-
-CREATE INDEX "DailyActivity_userId_date_idx" ON public."DailyActivity" USING btree ("userId", date);
-
-
---
 -- Name: DailyActivity_userId_date_kind_key; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -6072,24 +6164,10 @@ CREATE INDEX "DailyGoalItem_goalId_sortOrder_idx" ON public."DailyGoalItem" USIN
 
 
 --
--- Name: DailyGoal_userId_date_idx; Type: INDEX; Schema: public; Owner: nihongo
---
-
-CREATE INDEX "DailyGoal_userId_date_idx" ON public."DailyGoal" USING btree ("userId", date);
-
-
---
 -- Name: DailyGoal_userId_date_key; Type: INDEX; Schema: public; Owner: nihongo
 --
 
 CREATE UNIQUE INDEX "DailyGoal_userId_date_key" ON public."DailyGoal" USING btree ("userId", date);
-
-
---
--- Name: DailyNote_userId_date_idx; Type: INDEX; Schema: public; Owner: nihongo
---
-
-CREATE INDEX "DailyNote_userId_date_idx" ON public."DailyNote" USING btree ("userId", date);
 
 
 --
@@ -6338,13 +6416,6 @@ CREATE INDEX "JlptRoadmapTask_phaseId_sortOrder_idx" ON public."JlptRoadmapTask"
 
 
 --
--- Name: KanaCell_sectionId_idx; Type: INDEX; Schema: public; Owner: nihongo
---
-
-CREATE INDEX "KanaCell_sectionId_idx" ON public."KanaCell" USING btree ("sectionId");
-
-
---
 -- Name: KanaCell_sectionId_rowIndex_colIndex_key; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -6485,13 +6556,6 @@ CREATE INDEX "Lesson_textbook_lessonNumber_idx" ON public."Lesson" USING btree (
 
 
 --
--- Name: ListeningLog_userId_date_idx; Type: INDEX; Schema: public; Owner: nihongo
---
-
-CREATE INDEX "ListeningLog_userId_date_idx" ON public."ListeningLog" USING btree ("userId", date);
-
-
---
 -- Name: ListeningPreset_externalKey_key; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -6573,6 +6637,13 @@ CREATE UNIQUE INDEX "MockExamTemplate_slug_key" ON public."MockExamTemplate" USI
 --
 
 CREATE INDEX "Notification_userId_readAt_createdAt_idx" ON public."Notification" USING btree ("userId", "readAt", "createdAt");
+
+
+--
+-- Name: OutboxEvent_publishedAt_id_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "OutboxEvent_publishedAt_id_idx" ON public."OutboxEvent" USING btree ("publishedAt", id);
 
 
 --
@@ -6797,13 +6868,6 @@ CREATE INDEX "SrsCard_userId_contentType_mastered_idx" ON public."SrsCard" USING
 --
 
 CREATE INDEX "SrsCard_userId_nextReviewAt_idx" ON public."SrsCard" USING btree ("userId", "nextReviewAt");
-
-
---
--- Name: StudySession_userId_date_idx; Type: INDEX; Schema: public; Owner: nihongo
---
-
-CREATE INDEX "StudySession_userId_date_idx" ON public."StudySession" USING btree ("userId", date);
 
 
 --
@@ -7600,5 +7664,5 @@ ALTER TABLE ONLY public."Vocabulary"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict wlV4dH5jLpmF7nWFycfFcERTM19v1F3BjycjgEMIMW0reMP9SpJD0CmSSQ9SDxe
+\unrestrict oECs9264QObG6Vjp0DlAmPHhiRNoaCzEdojra29LGJfdZUTNOFm9INpqapG1pF3
 

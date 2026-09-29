@@ -1,4 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
@@ -15,6 +20,7 @@ function formatMoney(cents: number, currency: string): string {
   standalone: true,
   imports: [DatePipe],
   templateUrl: './admin-payments-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin-payments-page.component.scss',
 })
 export class AdminPaymentsPageComponent {
@@ -46,7 +52,9 @@ export class AdminPaymentsPageComponent {
       this.payments.set(res.data);
       this.total.set(res.total);
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Không tải được thanh toán');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Không tải được thanh toán'
+      );
     } finally {
       this.loading.set(false);
     }

@@ -4,6 +4,7 @@ import {
   ViewChild,
   inject,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ApiService } from '../../core/services/api.service';
 import type { SentencePracticeFeedback } from '../../core/models/api.models';
@@ -29,6 +30,7 @@ const STARTERS = [
   selector: 'app-sentence-practice-page',
   standalone: true,
   templateUrl: './sentence-practice-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sentence-practice-page.component.scss',
 })
 export class SentencePracticePageComponent {
@@ -96,16 +98,21 @@ export class SentencePracticePageComponent {
   }
 
   hasCorrection(entry: HistoryEntry): boolean {
-    return !!entry.feedback.corrected && entry.feedback.corrected !== entry.sentence;
+    return (
+      !!entry.feedback.corrected && entry.feedback.corrected !== entry.sentence
+    );
   }
 
   formatTime(date: Date): string {
-    return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 
   setEntryOpen(entryId: number, open: boolean): void {
     this.history.update((items) =>
-      items.map((item) => (item.id === entryId ? { ...item, open } : item)),
+      items.map((item) => (item.id === entryId ? { ...item, open } : item))
     );
   }
 

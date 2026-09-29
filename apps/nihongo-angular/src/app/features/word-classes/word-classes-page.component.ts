@@ -1,5 +1,11 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -11,7 +17,10 @@ import {
   type MinnaWordClass,
   type WordClassTabId,
 } from '../../core/utils/minna-word-class';
-import type { Lesson, VocabularyWithLesson } from '../../core/models/api.models';
+import type {
+  Lesson,
+  VocabularyWithLesson,
+} from '../../core/models/api.models';
 
 type ClassifiedWord = VocabularyWithLesson & {
   wordClass: MinnaWordClass;
@@ -28,14 +37,24 @@ type Draft = {
 
 const HINTS: Record<WordClassTabId, string> = {
   noun: 'Danh từ (名詞) — người, đồ vật, chỗ, thời gian. Nhiều từ Minna hết い vẫn là danh từ: 学生・世界・先生.',
-  'i-adj': 'Tính từ い (い形容詞) — chia trực tiếp: 高い → 高くない / 高かった. Bấm thẻ để nghe.',
-  'na-adj': 'Tính từ な (な形容詞) — trong sách ghi ［な］: 静かな町, きれいな花. Trước です không thêm な.',
+  'i-adj':
+    'Tính từ い (い形容詞) — chia trực tiếp: 高い → 高くない / 高かった. Bấm thẻ để nghe.',
+  'na-adj':
+    'Tính từ な (な形容詞) — trong sách ghi ［な］: 静かな町, きれいな花. Trước です không thêm な.',
   verb: 'Động từ Minna học ở dạng ます (丁寧形). 食べます・行きます・結婚します đều vào nhóm này.',
-  other: 'Câu chào, phó từ, hậu tố đếm (～回・－歳), mẫu ～さん… — không xếp vào danh / tính / động từ.',
+  other:
+    'Câu chào, phó từ, hậu tố đếm (～回・－歳), mẫu ～さん… — không xếp vào danh / tính / động từ.',
 };
 
 function emptyDraft(partOfSpeech: MinnaWordClass, lessonId: number): Draft {
-  return { kanji: '', kana: '', romaji: '', meaning: '', lessonId, partOfSpeech };
+  return {
+    kanji: '',
+    kana: '',
+    romaji: '',
+    meaning: '',
+    lessonId,
+    partOfSpeech,
+  };
 }
 
 @Component({
@@ -43,6 +62,7 @@ function emptyDraft(partOfSpeech: MinnaWordClass, lessonId: number): Draft {
   standalone: true,
   imports: [RouterLink, NgTemplateOutlet],
   templateUrl: './word-classes-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './word-classes-page.component.scss',
 })
 export class WordClassesPageComponent {
@@ -64,7 +84,9 @@ export class WordClassesPageComponent {
 
   readonly canEdit = computed(() => this.auth.isAdmin() && this.editMode());
   readonly lessonOptions = computed(() =>
-    this.lessons().filter((lesson) => lesson.lessonNumber >= 1 && lesson.lessonNumber <= 50),
+    this.lessons().filter(
+      (lesson) => lesson.lessonNumber >= 1 && lesson.lessonNumber <= 50
+    )
   );
 
   readonly counts = computed(() => {
@@ -85,7 +107,13 @@ export class WordClassesPageComponent {
     return this.classified().filter((item) => {
       if (item.wordClass !== active) return false;
       if (!q) return true;
-      return [item.kanji, item.kana, item.romaji, item.meaning, `bài ${item.lessonNumber}`]
+      return [
+        item.kanji,
+        item.kana,
+        item.romaji,
+        item.meaning,
+        `bài ${item.lessonNumber}`,
+      ]
         .filter(Boolean)
         .join(' ')
         .toLowerCase()
@@ -97,13 +125,16 @@ export class WordClassesPageComponent {
   readonly classLabel = computed(() => wordClassLabel(this.activeId()));
 
   constructor() {
-    void Promise.all([this.api.getVocabulariesRange(1, 50), this.api.getLessons()]).then(
-      ([list, lessons]) => {
-        this.classified.set(list.map((entry) => ({ ...entry, wordClass: classifyMinnaWord(entry) })));
-        this.lessons.set(lessons);
-        this.loading.set(false);
-      },
-    );
+    void Promise.all([
+      this.api.getVocabulariesRange(1, 50),
+      this.api.getLessons(),
+    ]).then(([list, lessons]) => {
+      this.classified.set(
+        list.map((entry) => ({ ...entry, wordClass: classifyMinnaWord(entry) }))
+      );
+      this.lessons.set(lessons);
+      this.loading.set(false);
+    });
   }
 
   setTab(id: WordClassTabId): void {
@@ -131,7 +162,9 @@ export class WordClassesPageComponent {
     this.editingId.set(null);
     this.adding.update((on) => {
       if (on) return false;
-      this.draft.set(emptyDraft(this.activeId(), this.lessonOptions()[0]?.id ?? 0));
+      this.draft.set(
+        emptyDraft(this.activeId(), this.lessonOptions()[0]?.id ?? 0)
+      );
       this.error.set(null);
       return true;
     });
@@ -178,7 +211,8 @@ export class WordClassesPageComponent {
         partOfSpeech: next.partOfSpeech,
       });
       this.editingId.set(null);
-      if (next.partOfSpeech !== this.activeId()) this.activeId.set(next.partOfSpeech);
+      if (next.partOfSpeech !== this.activeId())
+        this.activeId.set(next.partOfSpeech);
       await this.reload();
     } catch (e) {
       this.error.set(e instanceof Error ? e.message : 'Không lưu được');
@@ -204,7 +238,8 @@ export class WordClassesPageComponent {
         ...(next.kanji ? { kanji: next.kanji } : {}),
       });
       this.adding.set(false);
-      if (next.partOfSpeech !== this.activeId()) this.activeId.set(next.partOfSpeech);
+      if (next.partOfSpeech !== this.activeId())
+        this.activeId.set(next.partOfSpeech);
       await this.reload();
     } catch (e) {
       this.error.set(e instanceof Error ? e.message : 'Không thêm được');
@@ -216,7 +251,8 @@ export class WordClassesPageComponent {
   async handleDelete(id: number): Promise<void> {
     const token = this.auth.token();
     if (!token) return;
-    if (!window.confirm('Xóa từ này? Từ cũng mất ở trang Từ vựng / flashcard.')) return;
+    if (!window.confirm('Xóa từ này? Từ cũng mất ở trang Từ vựng / flashcard.'))
+      return;
     this.busy.set(true);
     this.error.set(null);
     try {
@@ -249,6 +285,8 @@ export class WordClassesPageComponent {
 
   private async reload(): Promise<void> {
     const list = await this.api.getVocabulariesRange(1, 50);
-    this.classified.set(list.map((entry) => ({ ...entry, wordClass: classifyMinnaWord(entry) })));
+    this.classified.set(
+      list.map((entry) => ({ ...entry, wordClass: classifyMinnaWord(entry) }))
+    );
   }
 }

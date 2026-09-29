@@ -1,12 +1,22 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
-import type { HomeFeatureSection, HomeStat } from '../../core/models/reference.models';
+import type {
+  HomeFeatureSection,
+  HomeStat,
+} from '../../core/models/reference.models';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
   imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './home-page.component.html',
 })
 export class HomePageComponent implements OnInit {

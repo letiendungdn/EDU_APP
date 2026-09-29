@@ -24,7 +24,7 @@ spec:
                 port:
                   number: 3000
           - path: /health
-            pathType: Exact
+            pathType: Prefix
             backend:
               service:
                 name: api-gateway

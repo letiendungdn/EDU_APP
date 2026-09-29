@@ -1,4 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
 import { StrokeOrderComponent } from '../../shared/stroke-order/stroke-order.component';
@@ -22,7 +28,7 @@ export interface KanaPairSection {
 
 function pairKanaSections(
   hiragana: KanaSection[],
-  katakana: KanaSection[],
+  katakana: KanaSection[]
 ): KanaPairSection[] {
   return hiragana.map((hs, sectionIndex) => {
     const ks = katakana.find((s) => s.id === hs.id) ?? katakana[sectionIndex];
@@ -39,7 +45,7 @@ function pairKanaSections(
             katakana: kata?.kana ?? '',
             romaji: cell.romaji || kata?.romaji || '',
           };
-        }),
+        })
       ),
     };
   });
@@ -50,6 +56,7 @@ function pairKanaSections(
   standalone: true,
   imports: [StrokeOrderComponent],
   templateUrl: './kana-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './kana-page.component.scss',
 })
 export class KanaPageComponent {
@@ -66,12 +73,12 @@ export class KanaPageComponent {
     this.activeTab() === 'hiragana'
       ? this.hiraganaSections()
       : this.activeTab() === 'katakana'
-        ? this.katakanaSections()
-        : [],
+      ? this.katakanaSections()
+      : []
   );
 
   readonly pairedSections = computed(() =>
-    pairKanaSections(this.hiraganaSections(), this.katakanaSections()),
+    pairKanaSections(this.hiraganaSections(), this.katakanaSections())
   );
 
   constructor() {
@@ -108,6 +115,8 @@ export class KanaPageComponent {
 
   pairCellSelected(cell: KanaPairCell): boolean {
     const selected = this.selectedKana();
-    return !!selected && (selected === cell.hiragana || selected === cell.katakana);
+    return (
+      !!selected && (selected === cell.hiragana || selected === cell.katakana)
+    );
   }
 }

@@ -1,8 +1,18 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese, playSpeechSequence } from '../../core/utils/speech.util';
-import { getKanjiReadingGroups, getKanjiSpeakItems } from '../../core/utils/kanji-speak';
+import {
+  getKanjiReadingGroups,
+  getKanjiSpeakItems,
+} from '../../core/utils/kanji-speak';
 import { StrokeOrderComponent } from '../../shared/stroke-order/stroke-order.component';
 import type { KanjiEntry, KanjiLesson } from '../../core/models/api.models';
 
@@ -11,6 +21,7 @@ import type { KanjiEntry, KanjiLesson } from '../../core/models/api.models';
   standalone: true,
   imports: [RouterLink, StrokeOrderComponent],
   templateUrl: './kanji-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './kanji-page.component.scss',
 })
 export class KanjiPageComponent {
@@ -35,10 +46,12 @@ export class KanjiPageComponent {
   });
 
   readonly currentLessonMeta = computed(() =>
-    this.kanjiLessons().find((l) => l.lessonNumber === this.lesson()),
+    this.kanjiLessons().find((l) => l.lessonNumber === this.lesson())
   );
 
-  readonly isSearchActive = computed(() => this.searchQuery().trim().length > 0);
+  readonly isSearchActive = computed(
+    () => this.searchQuery().trim().length > 0
+  );
 
   readonly readingGroups = computed(() => {
     const k = this.current();
@@ -48,7 +61,10 @@ export class KanjiPageComponent {
   constructor() {
     void this.api.getKanjiLessons().then((lessons) => {
       this.kanjiLessons.set(lessons);
-      if (lessons.length && !lessons.some((l) => l.lessonNumber === this.lesson())) {
+      if (
+        lessons.length &&
+        !lessons.some((l) => l.lessonNumber === this.lesson())
+      ) {
         this.lesson.set(lessons[0].lessonNumber);
       }
     });

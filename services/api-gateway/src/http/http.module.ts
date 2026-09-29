@@ -42,6 +42,8 @@ import { BannersService } from "./banners.service";
 import { MindMapsController } from "./mind-maps.controller";
 import { MindMapsService } from "./mind-maps.service";
 import { MindMapDataService } from "./mind-map-data.service";
+import { FeatureFlagsController } from "./feature-flags/feature-flags.controller";
+import { FeatureFlagsService } from "./feature-flags/feature-flags.service";
 
 const httpImports: Array<Type | DynamicModule> = [
   PaymentModule,
@@ -52,6 +54,7 @@ const httpImports: Array<Type | DynamicModule> = [
 @Module({
   imports: httpImports,
   controllers: [
+    FeatureFlagsController,
     LessonsController,
     VocabulariesController,
     GrammarsController,
@@ -84,6 +87,7 @@ const httpImports: Array<Type | DynamicModule> = [
     MindMapsController,
   ],
   providers: [
+    FeatureFlagsService,
     JlptScheduleService,
     UploadService,
     TtsService,

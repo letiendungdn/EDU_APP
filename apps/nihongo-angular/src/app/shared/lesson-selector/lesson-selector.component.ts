@@ -1,4 +1,9 @@
-import { Component, Input, output } from '@angular/core';
+import {
+  Component,
+  Input,
+  output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import type { Lesson } from '../../core/models/api.models';
 
 export type LessonCountKind = 'vocab' | 'grammar' | 'none';
@@ -7,6 +12,7 @@ export type LessonCountKind = 'vocab' | 'grammar' | 'none';
   selector: 'app-lesson-selector',
   standalone: true,
   templateUrl: './lesson-selector.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './lesson-selector.component.scss',
 })
 export class LessonSelectorComponent {

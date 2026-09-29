@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 @Component({
@@ -6,6 +6,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './call-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './call-page.component.scss',
 })
 export class CallPageComponent {

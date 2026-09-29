@@ -1,5 +1,12 @@
 import { NgStyle } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import type {
@@ -16,7 +23,9 @@ type ScheduleAccordionKey = 'venues' | 'examday' | 'fees';
 
 function loadProgress(): ProgressRecord {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') as ProgressRecord;
+    return JSON.parse(
+      localStorage.getItem(STORAGE_KEY) || '{}'
+    ) as ProgressRecord;
   } catch {
     return {};
   }
@@ -27,6 +36,7 @@ function loadProgress(): ProgressRecord {
   standalone: true,
   imports: [RouterLink, NgStyle],
   templateUrl: './jlpt-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './jlpt-page.component.scss',
 })
 export class JlptPageComponent {
@@ -50,8 +60,8 @@ export class JlptPageComponent {
     return list.find((l) => l.id === this.activeId()) ?? list[0] ?? null;
   });
 
-  readonly allTaskIds = computed(() =>
-    this.level()?.phases.flatMap((p) => p.tasks.map((t) => t.id)) ?? [],
+  readonly allTaskIds = computed(
+    () => this.level()?.phases.flatMap((p) => p.tasks.map((t) => t.id)) ?? []
   );
 
   readonly progressPct = computed(() => {
@@ -62,15 +72,21 @@ export class JlptPageComponent {
   });
 
   constructor() {
-    void Promise.all([this.api.getJlptRoadmap(), this.api.getJlptDaNangScheduleStatic()]).then(
-      ([roadmap, schedule]: [JlptRoadmapPayload, JlptDaNangSchedulePayload]) => {
+    void Promise.all([
+      this.api.getJlptRoadmap(),
+      this.api.getJlptDaNangScheduleStatic(),
+    ]).then(
+      ([roadmap, schedule]: [
+        JlptRoadmapPayload,
+        JlptDaNangSchedulePayload
+      ]) => {
         this.levels.set(roadmap.levels);
         this.studyTips.set(roadmap.studyTips);
         this.examScheduleNote.set(roadmap.examScheduleNote);
         this.staticSchedule.set(schedule);
         this.activeId.set(roadmap.levels[0]?.id ?? 'n5');
         this.loading.set(false);
-      },
+      }
     );
 
     effect(() => {

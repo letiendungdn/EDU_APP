@@ -1,4 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import type { MockExamTemplate } from '../../core/models/api.models';
@@ -8,6 +13,7 @@ import type { MockExamTemplate } from '../../core/models/api.models';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './mock-exam-list-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mock-exam-list-page.component.scss',
 })
 export class MockExamListPageComponent {

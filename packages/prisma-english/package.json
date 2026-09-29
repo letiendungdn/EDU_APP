@@ -14,8 +14,8 @@
     "seed": "ts-node seed.ts"
   },
   "devDependencies": {
-    "@prisma/client": "6.4.1",
-    "prisma": "6.4.1",
+    "@prisma/client": "6.19.3",
+    "prisma": "6.19.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },

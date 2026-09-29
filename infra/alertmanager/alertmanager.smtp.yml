@@ -1,0 +1,31 @@
+# Alertmanager — gửi mail THẬT tới letiendungdt@gmail.com qua SMTP relay của Brevo (project đã dùng Brevo để gửi mail).
+# Cần SMTP key của Brevo (Brevo → SMTP & API → SMTP, KHÁC với BREVO_API_KEY) lưu ở file secret, KHÔNG commit:
+#   infra/alertmanager/secrets/smtp_password   (thư mục secrets/ đã nằm trong .gitignore)
+# Bật: đặt ALERTMANAGER_CONFIG=./infra/alertmanager/alertmanager.smtp.yml trong .env rồi `docker compose up -d alertmanager`.
+# Dùng Gmail thay Brevo: smtp_smarthost smtp.gmail.com:587, auth_username = địa chỉ Gmail, password = App Password.
+global:
+  smtp_smarthost: smtp-relay.brevo.com:587
+  smtp_from: "EDU APP Alerts <alerts@your-verified-domain.example>" # phải là sender đã xác minh trong Brevo
+  smtp_auth_username: your-brevo-smtp-login@example.com # Brevo → SMTP & API → SMTP → Login
+  smtp_auth_password_file: /etc/alertmanager/secrets/smtp_password
+  smtp_require_tls: true
+  resolve_timeout: 5m
+
+route:
+  receiver: owner-email
+  group_by: [alertname]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+receivers:
+  - name: owner-email
+    email_configs:
+      - to: letiendungdt@gmail.com
+        send_resolved: true
+        headers:
+          Subject: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }} ×{{ .Alerts.Firing | len }}{{ end }}] EDU APP — {{ .CommonLabels.alertname }}'
+
+inhibit_rules:
+  - source_matchers: [alertname="ApiGatewayTargetDown"]
+    target_matchers: [alertname=~"ApiHighErrorRate|ApiHighLatencyP95|ApiEventLoopBlocked"]

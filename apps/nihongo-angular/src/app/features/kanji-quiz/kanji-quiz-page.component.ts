@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import type {
@@ -42,6 +49,7 @@ const MINNA_RANGE_PRESETS = [
   standalone: true,
   imports: [RouterLink],
   templateUrl: './kanji-quiz-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './kanji-quiz-page.component.scss',
 })
 export class KanjiQuizPageComponent {
@@ -58,7 +66,9 @@ export class KanjiQuizPageComponent {
   readonly kanjiLessons = signal<KanjiLesson[]>([]);
   readonly minnaLessons = signal<Lesson[]>([]);
   readonly singleKanji = signal<KanjiEntry[]>([]);
-  readonly rangeKanji = signal<Array<KanjiEntry & { lessonNumber: number }>>([]);
+  readonly rangeKanji = signal<Array<KanjiEntry & { lessonNumber: number }>>(
+    []
+  );
   readonly singleVocab = signal<Vocabulary[]>([]);
   readonly rangeVocab = signal<VocabularyWithLesson[]>([]);
   readonly loading = signal(false);
@@ -71,22 +81,23 @@ export class KanjiQuizPageComponent {
   readonly finished = signal(false);
 
   readonly lessons = computed(() =>
-    this.poolSource() === 'minna' ? this.minnaLessons() : this.kanjiLessons(),
+    this.poolSource() === 'minna' ? this.minnaLessons() : this.kanjiLessons()
   );
   readonly maxLesson = computed(
     () =>
       this.lessons()[this.lessons().length - 1]?.lessonNumber ??
-      (this.poolSource() === 'minna' ? 50 : 10),
+      (this.poolSource() === 'minna' ? 50 : 10)
   );
   readonly lessonOptions = computed(() =>
     this.lessons()
       .map((l) => l.lessonNumber)
-      .filter((n) => n > 0),
+      .filter((n) => n > 0)
   );
   readonly rangePresets = computed(() =>
-    (this.poolSource() === 'minna' ? MINNA_RANGE_PRESETS : KANJI_RANGE_PRESETS).filter(
-      (preset) => preset.to <= this.maxLesson(),
-    ),
+    (this.poolSource() === 'minna'
+      ? MINNA_RANGE_PRESETS
+      : KANJI_RANGE_PRESETS
+    ).filter((preset) => preset.to <= this.maxLesson())
   );
   readonly pool = computed((): KanjiQuizSource[] => {
     if (this.poolSource() === 'minna') {
@@ -112,11 +123,14 @@ export class KanjiQuizPageComponent {
   });
   readonly rangeLabel = computed(() =>
     this.scopeMode() === 'range'
-      ? `Bài ${Math.min(this.lessonFrom(), this.lessonTo())}–${Math.max(this.lessonFrom(), this.lessonTo())}`
-      : `Bài ${this.lesson()}`,
+      ? `Bài ${Math.min(this.lessonFrom(), this.lessonTo())}–${Math.max(
+          this.lessonFrom(),
+          this.lessonTo()
+        )}`
+      : `Bài ${this.lesson()}`
   );
   readonly sourceLabel = computed(() =>
-    this.poolSource() === 'minna' ? 'Minna (từ có kanji)' : 'Bài kanji',
+    this.poolSource() === 'minna' ? 'Minna (từ có kanji)' : 'Bài kanji'
   );
   readonly current = computed(() => this.questions()[this.index()] ?? null);
   readonly modeLabel = computed(() => {

@@ -1,4 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
@@ -15,6 +20,7 @@ import type {
   standalone: true,
   imports: [RouterLink],
   templateUrl: './pricing-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pricing-page.component.scss',
 })
 export class PricingPageComponent {
@@ -29,7 +35,9 @@ export class PricingPageComponent {
   readonly payments = signal<PaymentRecord[]>([]);
   readonly actionLoading = signal<'refund' | 'cancel' | null>(null);
   readonly success = signal(
-    this.route.snapshot.queryParamMap.get('success') ? 'Thanh toán thành công. Gói đang được kích hoạt.' : '',
+    this.route.snapshot.queryParamMap.get('success')
+      ? 'Thanh toán thành công. Gói đang được kích hoạt.'
+      : ''
   );
 
   constructor() {
@@ -50,7 +58,9 @@ export class PricingPageComponent {
         this.payments.set(payments);
       }
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Không tải được gói');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Không tải được gói'
+      );
     } finally {
       this.loading.set(false);
     }
@@ -60,22 +70,25 @@ export class PricingPageComponent {
     const subscription = this.currentSubscription();
     if (!subscription) return '';
     return (
-      this.plans().find((plan) => plan.plan === subscription.plan)?.displayName ??
-      subscription.plan
+      this.plans().find((plan) => plan.plan === subscription.plan)
+        ?.displayName ?? subscription.plan
     );
   }
 
   canRefund(): boolean {
     const latest = this.payments().find(
-      (payment) => payment.subscription && payment.status === 'SUCCEEDED',
+      (payment) => payment.subscription && payment.status === 'SUCCEEDED'
     );
     if (!latest) return false;
-    return (Date.now() - new Date(latest.createdAt).getTime()) / 86_400_000 <= 7;
+    return (
+      (Date.now() - new Date(latest.createdAt).getTime()) / 86_400_000 <= 7
+    );
   }
 
   async refundSubscription(): Promise<void> {
     const token = this.auth.token();
-    if (!token || !window.confirm('Trả hàng, hoàn tiền và hủy gói ngay?')) return;
+    if (!token || !window.confirm('Trả hàng, hoàn tiền và hủy gói ngay?'))
+      return;
     const reason = window.prompt('Lý do (tuỳ chọn):') ?? undefined;
     this.actionLoading.set('refund');
     this.error.set('');
@@ -84,7 +97,9 @@ export class PricingPageComponent {
       this.success.set(result.message);
       await this.reloadSubscription(token);
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Hoàn tiền thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Hoàn tiền thất bại'
+      );
     } finally {
       this.actionLoading.set(null);
     }
@@ -100,7 +115,9 @@ export class PricingPageComponent {
       this.success.set(result.message);
       await this.reloadSubscription(token);
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Hủy gói thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Hủy gói thất bại'
+      );
     } finally {
       this.actionLoading.set(null);
     }
