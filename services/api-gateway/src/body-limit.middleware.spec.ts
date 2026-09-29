@@ -8,26 +8,37 @@ import {
 function run(path: string, contentLength?: number) {
   const req = {
     path,
-    headers: contentLength == null ? {} : { "content-length": String(contentLength) },
+    headers:
+      contentLength == null ? {} : { "content-length": String(contentLength) },
   } as unknown as Request;
-  const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+  const status = jest.fn().mockReturnThis();
+  const json = jest.fn();
+  const res = { status, json } as unknown as Response;
   const next = jest.fn() as NextFunction;
   bodyLimitMiddleware(req, res, next);
-  return { res, next };
+  return { status, next };
 }
 
 describe("bodyLimitMiddleware", () => {
   it("chặn body > 1 MB ở route công khai (vd đăng nhập) bằng 413", () => {
-    const { res, next } = run("/api/auth/login", DEFAULT_BODY_LIMIT_BYTES + 1);
-    expect(res.status).toHaveBeenCalledWith(413);
+    const { status, next } = run(
+      "/api/auth/login",
+      DEFAULT_BODY_LIMIT_BYTES + 1,
+    );
+    expect(status).toHaveBeenCalledWith(413);
     expect(next).not.toHaveBeenCalled();
   });
 
   it("cho body lớn ở route soạn nội dung (banner, sơ đồ tư duy, từ vựng)", () => {
-    for (const path of ["/api/banners/home", "/api/mind-maps/3", "/api/vocabularies/10", "/api/kanji/5"]) {
-      const { res, next } = run(path, 5 * 1024 * 1024);
+    for (const path of [
+      "/api/banners/home",
+      "/api/mind-maps/3",
+      "/api/vocabularies/10",
+      "/api/kanji/5",
+    ]) {
+      const { status, next } = run(path, 5 * 1024 * 1024);
       expect(next).toHaveBeenCalled();
-      expect(res.status).not.toHaveBeenCalled();
+      expect(status).not.toHaveBeenCalled();
     }
   });
 
