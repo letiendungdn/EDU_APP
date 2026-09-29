@@ -11,15 +11,13 @@ import {
   makeCounterProvider,
   makeHistogramProvider,
 } from "@willsoto/nestjs-prometheus";
-import {
-  AuditInterceptor,
-  AuditModule,
-  configuration,
-  JwtAuthGuard,
-  MailModule,
-  pinoConfig,
-  RedisModule,
-} from "@app/common";
+import { AuditInterceptor } from "@app/common/audit/audit.interceptor";
+import { AuditModule } from "@app/common/audit/audit.module";
+import configuration from "@app/common/config/configuration";
+import { JwtAuthGuard } from "@app/common/auth/jwt-auth.guard";
+import { MailModule } from "@app/common/mail/mail.module";
+import { pinoConfig } from "@app/common/logger/pino.config";
+import { RedisModule } from "@app/common/redis/redis.module";
 import { PrismaModule } from "@app/prisma";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";

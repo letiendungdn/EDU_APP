@@ -25,7 +25,7 @@ import { UploadService } from "./upload/upload.service";
 import { PaymentModule } from "../../../payment-service/src/payment.module";
 import { EnglishModule } from "../../../english-service/src/english.module";
 import { RealtimeModule } from "../realtime/realtime.module";
-import { isEnglishEnabled } from "@app/common";
+import { isEnglishEnabled } from "@app/common/config/english-enabled";
 import { NotificationController } from "./notification.controller";
 import { SupportController } from "./support.controller";
 import { CommunityController } from "./community.controller";
