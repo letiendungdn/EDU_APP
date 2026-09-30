@@ -27,7 +27,9 @@ const INTERVAL_MS = 1000;
  * - Có thể gửi trùng (gửi xong nhưng chết trước khi commit) → consumer phải idempotent theo payload.eventId.
  */
 @Injectable()
-export class OutboxRelayService implements OnApplicationBootstrap, OnModuleDestroy {
+export class OutboxRelayService
+  implements OnApplicationBootstrap, OnModuleDestroy
+{
   private readonly logger = new Logger(OutboxRelayService.name);
   private timer: NodeJS.Timeout | null = null;
   private running = false;
@@ -78,7 +80,10 @@ export class OutboxRelayService implements OnApplicationBootstrap, OnModuleDestr
           try {
             await this.kafka.send(
               topic,
-              group.map((r) => ({ key: r.key, value: JSON.stringify(r.payload) })),
+              group.map((r) => ({
+                key: r.key,
+                value: JSON.stringify(r.payload),
+              })),
             );
             await tx.outboxEvent.updateMany({
               where: { id: { in: ids } },
@@ -88,9 +93,14 @@ export class OutboxRelayService implements OnApplicationBootstrap, OnModuleDestr
           } catch (error) {
             await tx.outboxEvent.updateMany({
               where: { id: { in: ids } },
-              data: { attempts: { increment: 1 }, lastError: String(error).slice(0, 1000) },
+              data: {
+                attempts: { increment: 1 },
+                lastError: String(error).slice(0, 1000),
+              },
             });
-            this.logger.warn(`Gửi ${group.length} event "${topic}" thất bại, sẽ thử lại: ${String(error)}`);
+            this.logger.warn(
+              `Gửi ${group.length} event "${topic}" thất bại, sẽ thử lại: ${String(error)}`,
+            );
           }
         }
         return published;
