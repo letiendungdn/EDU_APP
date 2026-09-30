@@ -3,6 +3,7 @@
   "rootDir": "..",
   "testEnvironment": "node",
   "testTimeout": 30000,
+  "forceExit": true,
   "testRegex": ".e2e-spec.ts$",
   "setupFiles": ["<rootDir>/test/jest-e2e-setup.ts"],
   "transform": {

@@ -5,7 +5,7 @@ process.env.STRIPE_SECRET_KEY ??= "sk_test_ci";
 process.env.GEMINI_API_KEY ??= "test-key";
 // Client English trong repo được generate trên Windows — CI (Linux) không có query engine đó.
 process.env.ENGLISH_ENABLED ??= "false";
-process.env.MONGODB_ENABLED ??= "false";
+process.env.MONGODB_ENABLED = "off";
 
 // jose chỉ có bản ESM — Jest (CommonJS) không parse được. E2E đăng ký/đăng nhập dùng JWT local, không gọi OIDC.
 jest.mock("jose", () => ({

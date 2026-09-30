@@ -36,7 +36,9 @@ import { EmailTemplateModule } from "./email-template/email-template.module";
 import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
 import { MetricsController } from "./metrics/metrics.controller";
 
-const mongoEnabled = process.env.MONGODB_ENABLED !== "false";
+const mongoEnabled = !["false", "0", "off"].includes(
+  process.env.MONGODB_ENABLED ?? "",
+);
 
 class NoopAuditService {
   log(): Promise<void> {

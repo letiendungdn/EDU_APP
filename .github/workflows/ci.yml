@@ -74,6 +74,30 @@ jobs:
           JWT_SECRET: test-secret
           CONTENT_GRPC_URL: localhost:50051
           EXAM_GRPC_URL: localhost:50052
+      - name: Seed mock exam templates
+        run: npm run seed:mock-exam-templates -w @edu/prisma-nihongo
+        env:
+          DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
+      - name: Start content and exam gRPC
+        working-directory: services
+        run: |
+          node -r tsconfig-paths/register -r ts-node/register content-service/src/main.ts > /tmp/content-grpc.log 2>&1 &
+          node -r tsconfig-paths/register -r ts-node/register exam-service/src/main.ts > /tmp/exam-grpc.log 2>&1 &
+          for i in $(seq 1 40); do
+            if grep -q "Content service listening" /tmp/content-grpc.log && grep -q "Exam service listening" /tmp/exam-grpc.log; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "----- content -----"; cat /tmp/content-grpc.log
+          echo "----- exam -----"; cat /tmp/exam-grpc.log
+          exit 1
+        env:
+          DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test-secret
+          EXAM_CONSUMER_DISABLED: "true"
+          OTEL_SDK_DISABLED: "true"
       - run: npm run test:e2e -w @edu/nihongo-services
         env:
           DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
@@ -81,7 +105,7 @@ jobs:
           JWT_SECRET: test-secret
           STRIPE_SECRET_KEY: sk_test_ci
           GEMINI_API_KEY: test-key
-          MONGODB_ENABLED: "false"
+          MONGODB_ENABLED: "off"
           ENGLISH_ENABLED: "false"
           CONTENT_GRPC_URL: localhost:50051
           EXAM_GRPC_URL: localhost:50052
