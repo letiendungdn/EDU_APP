@@ -1,10 +1,19 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
 import { ApiError } from '../../core/http/api-client';
-import type { AdminSupportThreadSummary, SupportMessage } from '../../core/models/api.models';
+import type {
+  AdminSupportThreadSummary,
+  SupportMessage,
+} from '../../core/models/api.models';
 
 const POLL_MS = 5000;
 
@@ -13,6 +22,7 @@ const POLL_MS = 5000;
   standalone: true,
   imports: [FormsModule, DatePipe],
   templateUrl: './admin-messages-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin-messages-page.component.scss',
 })
 export class AdminMessagesPageComponent {
@@ -26,7 +36,9 @@ export class AdminMessagesPageComponent {
   readonly threads = signal<AdminSupportThreadSummary[]>([]);
   readonly selectedThreadId = signal<number | null>(null);
   readonly messages = signal<SupportMessage[]>([]);
-  readonly activeUser = signal<{ email: string; name: string | null } | null>(null);
+  readonly activeUser = signal<{ email: string; name: string | null } | null>(
+    null
+  );
 
   draft = '';
   private pollId: ReturnType<typeof setInterval> | null = null;
@@ -53,7 +65,9 @@ export class AdminMessagesPageComponent {
         this.selectThread(list[0]);
       }
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Không tải được hội thoại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Không tải được hội thoại'
+      );
     } finally {
       this.loading.set(false);
     }
@@ -94,7 +108,9 @@ export class AdminMessagesPageComponent {
       await this.refreshThread();
       await this.loadThreads();
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Gửi tin nhắn thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Gửi tin nhắn thất bại'
+      );
       this.draft = text;
     } finally {
       this.sending.set(false);

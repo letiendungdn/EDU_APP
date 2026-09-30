@@ -1,4 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
@@ -13,6 +19,7 @@ import type {
   standalone: true,
   imports: [RouterLink],
   templateUrl: './suffixes-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './suffixes-page.component.scss',
 })
 export class SuffixesPageComponent {
@@ -39,11 +46,13 @@ export class SuffixesPageComponent {
   });
 
   constructor() {
-    void this.api.getJapaneseVocabSuffixes().then((data: JapaneseVocabSuffixesPayload) => {
-      this.groups.set(data.groups);
-      this.activeId.set(data.groups[0]?.id ?? '');
-      this.loading.set(false);
-    });
+    void this.api
+      .getJapaneseVocabSuffixes()
+      .then((data: JapaneseVocabSuffixesPayload) => {
+        this.groups.set(data.groups);
+        this.activeId.set(data.groups[0]?.id ?? '');
+        this.loading.set(false);
+      });
   }
 
   setCategory(id: string): void {

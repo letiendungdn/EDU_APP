@@ -47,8 +47,11 @@ describe("MockExamsService", () => {
     }),
   };
 
-  const mockPrisma = {
+  const mockPrisma: Record<string, unknown> = {
     examResult: { create: jest.fn().mockResolvedValue({ id: 1 }) },
+    outboxEvent: { create: jest.fn().mockResolvedValue({ id: 1 }) },
+    // submit() ghi ExamResult + OutboxEvent trong một transaction — mock chạy callback với chính mockPrisma
+    $transaction: jest.fn((fn: (tx: unknown) => unknown) => fn(mockPrisma)),
     mockExamTemplate: {
       findMany: jest.fn().mockResolvedValue([]),
       findUnique: jest.fn().mockResolvedValue(null),
@@ -132,6 +135,20 @@ describe("MockExamsService", () => {
       const result = await service.submit("exam-1", { q1: "A", q2: "B" });
       expect(result.passThreshold).toBe(60);
       expect(result.passed).toBe(true);
+    });
+
+    it("ghi event outbox trong cùng transaction với kết quả thi", async () => {
+      const outbox = mockPrisma.outboxEvent as { create: jest.Mock };
+      outbox.create.mockClear();
+      await service.submit("exam-1", { q1: "A", q2: "B" }, 7);
+      expect(mockPrisma.$transaction).toHaveBeenCalled();
+      expect(outbox.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          topic: "edu.exam.submitted",
+          key: "7",
+          payload: expect.objectContaining({ eventId: "exam-result-1", userId: 7, percent: 100 }),
+        }),
+      });
     });
   });
 

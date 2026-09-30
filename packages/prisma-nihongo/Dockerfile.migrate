@@ -1,0 +1,12 @@
+# Image chỉ để chạy `prisma migrate deploy` trước mỗi lần deploy (Job K8s infra/k8s/jobs/prisma-migrate.job.yaml).
+# Tách khỏi image service: pod service không tự migrate khi khởi động (5 pod = 5 lần migrate cùng lúc).
+FROM node:22-alpine
+# Prisma engine trên Alpine cần OpenSSL
+RUN apk add --no-cache openssl
+WORKDIR /migrate
+# Cùng phiên bản với packages/prisma-nihongo/package.json
+RUN npm install --global prisma@6.19.3 && npm cache clean --force
+COPY packages/prisma-nihongo/schema.prisma ./schema.prisma
+COPY packages/prisma-nihongo/migrations ./migrations
+# DATABASE_URL lấy từ Secret của K8s
+CMD ["prisma", "migrate", "deploy", "--schema", "schema.prisma"]

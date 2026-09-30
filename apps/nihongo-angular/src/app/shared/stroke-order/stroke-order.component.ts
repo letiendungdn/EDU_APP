@@ -9,6 +9,7 @@ import {
   input,
   output,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { getStrokeText } from '../../core/utils/japanese.util';
 import { renderStrokeOrder } from '../../core/utils/stroke-order.util';
@@ -17,13 +18,21 @@ import { renderStrokeOrder } from '../../core/utils/stroke-order.util';
   selector: 'app-stroke-order',
   standalone: true,
   template: `
-    <div class="stroke-order-wrapper" [class.stroke-order-wrapper--compact]="compact()">
-      <div #container class="stroke-order-container" title="Nhấn vào chữ để xem lại nét vẽ"></div>
+    <div
+      class="stroke-order-wrapper"
+      [class.stroke-order-wrapper--compact]="compact()"
+    >
+      <div
+        #container
+        class="stroke-order-container"
+        title="Nhấn vào chữ để xem lại nét vẽ"
+      ></div>
       @if (writableText() && !compact()) {
-        <p class="stroke-hint">(Nhấn vào chữ để xem lại)</p>
+      <p class="stroke-hint">(Nhấn vào chữ để xem lại)</p>
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './stroke-order.component.scss',
 })
 export class StrokeOrderComponent implements AfterViewInit, OnDestroy {
@@ -33,7 +42,8 @@ export class StrokeOrderComponent implements AfterViewInit, OnDestroy {
   readonly compact = input(false);
   readonly charClick = output<string>();
 
-  @ViewChild('container', { static: true }) private containerRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('container', { static: true })
+  private containerRef!: ElementRef<HTMLDivElement>;
 
   readonly writableText = computed(() => getStrokeText(this.text()));
 
@@ -58,7 +68,11 @@ export class StrokeOrderComponent implements AfterViewInit, OnDestroy {
     this.renderToken += 1;
   }
 
-  private async render(text: string, width: number, height: number): Promise<void> {
+  private async render(
+    text: string,
+    width: number,
+    height: number
+  ): Promise<void> {
     const token = ++this.renderToken;
     const container = this.containerRef?.nativeElement;
     if (!container) return;

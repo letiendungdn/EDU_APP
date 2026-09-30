@@ -1,4 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
 import type {
@@ -10,6 +15,7 @@ import type {
   selector: 'app-english-katakana-page',
   standalone: true,
   templateUrl: './english-katakana-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './english-katakana-page.component.scss',
 })
 export class EnglishKatakanaPageComponent {

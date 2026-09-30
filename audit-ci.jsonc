@@ -1,0 +1,11 @@
+{
+  // CI chặn khi có lỗ hổng HIGH hoặc CRITICAL trong dependency production (npm audit --omit=dev).
+  // Đã về 0 high / 0 critical sau khi nâng Angular 22, Prisma 6.19, fabric 7, OpenTelemetry 0.222
+  // — xem docs/learn-security-backend.md mục 10. Mức moderate chỉ theo dõi, không chặn.
+  // Cần ngoại lệ thì thêm GHSA id vào allowlist KÈM lý do và điều kiện gỡ.
+  "$schema": "https://github.com/IBM/audit-ci/raw/main/docs/schema.json",
+  "high": true,
+  "skip-dev": true,
+  "report-type": "summary",
+  "allowlist": []
+}

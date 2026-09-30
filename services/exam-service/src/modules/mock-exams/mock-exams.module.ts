@@ -4,7 +4,6 @@ import { MockExamsService } from "./mock-exams.service";
 import { SubmitExamHandler } from "./commands/submit-exam.handler";
 import { GetExamHandler } from "./queries/get-exam.handler";
 import { GetResultsHandler } from "./queries/get-results.handler";
-import { ExamSubmittedHandler } from "./events/exam-submitted.handler";
 
 @Module({
   imports: [CqrsModule],
@@ -13,7 +12,6 @@ import { ExamSubmittedHandler } from "./events/exam-submitted.handler";
     SubmitExamHandler,
     GetExamHandler,
     GetResultsHandler,
-    ExamSubmittedHandler,
   ],
   exports: [MockExamsService],
 })

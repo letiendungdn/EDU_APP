@@ -123,7 +123,7 @@ docker compose up -d postgres redis mongodb kafka zookeeper
 npm run prisma:generate
 
 # Restore DB có sẵn trong repo (khuyên dùng)
-Get-Content infra\backups\nihongo_20260928_221618.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content infra\backups\nihongo_20260929_223305.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 
 # Hoặc DB trống: migrate + seed — xem docs/run-local.md
 ```
@@ -174,7 +174,7 @@ Swagger UI: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
 **Restore từ backup** (nhanh nhất — file trong `infra/backups/`):
 
 ```powershell
-Get-Content infra\backups\nihongo_20260928_221618.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content infra\backups\nihongo_20260929_223305.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 ```
 
 **Hoặc DB trống** — migrate + seed:
@@ -258,6 +258,19 @@ npm test -- --coverage -w @edu/nihongo-services
 | [docs/run-local.md](docs/run-local.md) | Hướng dẫn chạy local từng bước |
 | [docs/docker.md](docs/docker.md) | Full stack Docker (~14 container) |
 | [docs/learn-docker.md](docs/learn-docker.md) | Học Docker trên stack EDU APP |
+| [docs/learn-observability.md](docs/learn-observability.md) | Log / metric / trace, RED, SLO, alert, health check — soát Prometheus/Jaeger của project |
+| [docs/learn-security-backend.md](docs/learn-security-backend.md) | OWASP API Top 10 trên code api-gateway: IDOR, JWT, CORS, rate limit, injection |
+| [docs/learn-reliability-patterns.md](docs/learn-reliability-patterns.md) | Outbox, timeout, retry, idempotent consumer, circuit breaker, saga — luồng nộp bài → Kafka |
+| [docs/learn-release-cicd.md](docs/learn-release-cicd.md) | CI/CD, migrate khi deploy, expand–contract, canary, feature flag, rollback |
+| [docs/learn-performance-k6.md](docs/learn-performance-k6.md) | Load test k6, đọc kết quả, tìm nút thắt, capacity planning |
+| [docs/learn-kubernetes.md](docs/learn-kubernetes.md) | Kubernetes qua `infra/k8s` + Helm: probe, HPA, rolling update, gỡ lỗi pod |
+| [docs/learn-adr-design-docs.md](docs/learn-adr-design-docs.md) · [docs/adr/](docs/adr) | Viết ADR & design doc; 5 ADR thật của project |
+| [docs/learn-incident-postmortem.md](docs/learn-incident-postmortem.md) | Xử lý sự cố, runbook, postmortem không đổ lỗi (có postmortem thật) |
+| [docs/learn-sql.md](docs/learn-sql.md) | Học SQL (PostgreSQL) trên DB thật của project: SELECT → JOIN → CTE → window → UPSERT → JSONB |
+| [docs/learn-db-design.md](docs/learn-db-design.md) | Phân tích & thiết kế CSDL: yêu cầu → ERD → chuẩn hoá → ràng buộc → index → migration |
+| [docs/learn-localstack.md](docs/learn-localstack.md) | Học LocalStack: giả lập S3/SQS/SES, nối luồng upload presigned URL |
+| [docs/learn-aws.md](docs/learn-aws.md) | Học AWS: S3 (đang dùng), ECS Fargate, RDS, SQS/SNS, VPC, IAM role, chi phí |
+| [docs/learn-google-cloud.md](docs/learn-google-cloud.md) | Học Google Cloud: chuyển stack sang Cloud Run, Cloud SQL, GCS, Pub/Sub, GKE |
 | [docs/roadmap-angular.md](docs/roadmap-angular.md) | Lộ trình học Angular |
 | [docs/roadmap-reactjs.md](docs/roadmap-reactjs.md) | Lộ trình học ReactJS/Next |
 | [docs/learn-edu-app.md](docs/learn-edu-app.md) | Lộ trình 10 tuần học và làm chủ codebase |

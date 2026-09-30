@@ -3,7 +3,7 @@
 > **Tự sinh** từ `packages/prisma-nihongo/schema.prisma` bởi `npm run db:erd`.
 > Đừng sửa tay — sửa schema (hoặc cách chia phân hệ trong `packages/prisma-nihongo/scripts/gen-erd.ts`) rồi chạy lại.
 
-**107 bảng · 17 enum · 76 quan hệ khóa ngoại.**
+**110 bảng · 17 enum · 76 quan hệ khóa ngoại.**
 Ký hiệu: `PK` khóa chính · `FK` khóa ngoại · `UK` duy nhất · `"null"` cho phép null · `_list` mảng (Postgres array).
 Bảng thu gọn (`→ xem phân hệ khác`) thuộc phân hệ khác, chỉ vẽ để thấy liên kết.
 
@@ -12,9 +12,9 @@ Bảng thu gọn (`→ xem phân hệ khác`) thuộc phân hệ khác, chỉ v�
 - [Nội dung học](#nội-dung-học) — 16 bảng
 - [JLPT: lịch thi, lộ trình, thi thử](#jlpt-lịch-thi-lộ-trình-thi-thử) — 16 bảng
 - [Tham chiếu ngôn ngữ](#tham-chiếu-ngôn-ngữ) — 20 bảng
-- [Trang & nội dung tĩnh](#trang--nội-dung-tĩnh) — 18 bảng
+- [Trang & nội dung tĩnh](#trang--nội-dung-tĩnh) — 19 bảng
 - [Người dùng & xác thực](#người-dùng--xác-thực) — 6 bảng
-- [Tiến độ học](#tiến-độ-học) — 12 bảng
+- [Tiến độ học](#tiến-độ-học) — 14 bảng
 - [Thanh toán & marketplace coach](#thanh-toán--marketplace-coach) — 9 bảng
 - [Giao tiếp & thông báo](#giao-tiếp--thông-báo) — 10 bảng
 
@@ -623,7 +623,7 @@ erDiagram
 
 ## Trang & nội dung tĩnh
 
-Trang chủ, giao tiếp/đóng vai, nghe mỗi ngày, file nghe sách, banner. (18 bảng)
+Trang chủ, giao tiếp/đóng vai, nghe mỗi ngày, file nghe sách, banner. (19 bảng)
 
 ```mermaid
 erDiagram
@@ -803,6 +803,13 @@ erDiagram
     datetime createdAt
     datetime updatedAt
   }
+  FeatureFlag {
+    string key PK
+    string description "null"
+    bool enabled
+    Role_list roles
+    datetime updatedAt
+  }
   HomeFeatureSection ||--}o HomeFeatureItem : section
   ConversationIntroSlot ||--}o ConversationIntroExample : slot
   ConversationPhraseGroup ||--}o ConversationPhraseItem : group
@@ -813,6 +820,7 @@ erDiagram
 ```
 
 - **BookAudioMeta** — File nghe / link sách (Mailee Books & tương tự)
+- **FeatureFlag** — Feature flag: bật/tắt tính năng không cần deploy. roles rỗng = mọi người (kể cả khách); có giá trị = chỉ các vai trò đó.
 
 ## Người dùng & xác thực
 
@@ -971,7 +979,7 @@ erDiagram
 
 ## Tiến độ học
 
-SRS, kết quả thi, nghe, phiên học, streak, nhật ký, mục tiêu ngày. (12 bảng; liên kết ngoài: `ReadingPassage`, `User`, `Vocabulary`)
+SRS, kết quả thi, nghe, phiên học, streak, nhật ký, mục tiêu ngày; outbox event nộp bài (Kafka). (14 bảng; liên kết ngoài: `ReadingPassage`, `User`, `Vocabulary`)
 
 ```mermaid
 erDiagram
@@ -1085,6 +1093,21 @@ erDiagram
     bool done
     int sortOrder
   }
+  OutboxEvent {
+    int id PK
+    string topic
+    string key "null"
+    json payload
+    int attempts
+    string lastError "null"
+    datetime createdAt
+    datetime publishedAt "null"
+  }
+  ProcessedEvent {
+    string eventId
+    string consumer
+    datetime processedAt
+  }
   ReadingPassage {
     string ref "→ xem phân hệ khác"
   }
@@ -1107,6 +1130,9 @@ erDiagram
   User ||--}o DailyGoal : user
   DailyGoal ||--}o DailyGoalItem : goal
 ```
+
+- **OutboxEvent** — Transactional outbox: event ghi CÙNG transaction với dữ liệu nghiệp vụ, relay (exam-service) đẩy lên Kafka rồi đánh dấu publishedAt. Không mất event khi Kafka lỗi.
+- **ProcessedEvent** — Consumer idempotent: mỗi (eventId, consumer) chỉ xử lý một lần — outbox/Kafka giao "ít nhất một lần".
 
 ## Thanh toán & marketplace coach
 

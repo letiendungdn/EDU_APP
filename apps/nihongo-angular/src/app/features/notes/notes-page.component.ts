@@ -1,9 +1,18 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
 import { ApiError } from '../../core/http/api-client';
-import type { DailyGoalItemRow, DailyNoteRow } from '../../core/models/api.models';
+import type {
+  DailyGoalItemRow,
+  DailyNoteRow,
+} from '../../core/models/api.models';
 
 function todayKey(): string {
   return new Date().toISOString().slice(0, 10);
@@ -14,6 +23,7 @@ function todayKey(): string {
   standalone: true,
   imports: [FormsModule],
   templateUrl: './notes-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './notes-page.component.scss',
 })
 export class NotesPageComponent {
@@ -113,7 +123,9 @@ export class NotesPageComponent {
       });
       this.saveMessage.set('Đã lưu');
     } catch (err) {
-      this.saveMessage.set(err instanceof ApiError ? err.message : 'Lỗi lưu ghi chú');
+      this.saveMessage.set(
+        err instanceof ApiError ? err.message : 'Lỗi lưu ghi chú'
+      );
     } finally {
       this.saving.set(false);
     }
@@ -122,7 +134,9 @@ export class NotesPageComponent {
   toggleGoal(goalId: string): void {
     const token = this.auth.token();
     const date = this.selectedDate();
-    const next = this.goals().map((g) => (g.id === goalId ? { ...g, done: !g.done } : g));
+    const next = this.goals().map((g) =>
+      g.id === goalId ? { ...g, done: !g.done } : g
+    );
     this.goals.set(next);
     if (!token) return;
     void this.api.upsertDailyGoals(token, date, next);
@@ -154,7 +168,11 @@ export class NotesPageComponent {
   }
 
   noteDates(): string[] {
-    const dates = new Set(this.notes().filter((n) => n.content.trim()).map((n) => n.date));
+    const dates = new Set(
+      this.notes()
+        .filter((n) => n.content.trim())
+        .map((n) => n.date)
+    );
     dates.add(this.selectedDate());
     return [...dates].sort((a, b) => b.localeCompare(a));
   }

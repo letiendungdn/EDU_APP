@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { playJapanese } from '../../core/utils/speech.util';
 import {
@@ -15,6 +22,7 @@ type ReviewFilter = 'all' | 'wrong' | 'correct';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './mock-exam-answers-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mock-exam-answers-page.component.scss',
 })
 export class MockExamAnswersPageComponent implements OnInit {
@@ -28,8 +36,10 @@ export class MockExamAnswersPageComponent implements OnInit {
   readonly filteredReview = computed((): MockExamReviewItem[] => {
     const res = this.result();
     if (!res) return [];
-    if (this.filter() === 'wrong') return res.review.filter((r) => !r.isCorrect);
-    if (this.filter() === 'correct') return res.review.filter((r) => r.isCorrect);
+    if (this.filter() === 'wrong')
+      return res.review.filter((r) => !r.isCorrect);
+    if (this.filter() === 'correct')
+      return res.review.filter((r) => r.isCorrect);
     return res.review;
   });
 

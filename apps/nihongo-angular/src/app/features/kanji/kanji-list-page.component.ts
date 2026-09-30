@@ -1,10 +1,21 @@
 import { LowerCasePipe } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
 import { getKanjiSpeakItems } from '../../core/utils/kanji-speak';
-import type { JlptLevel, KanjiEntry, KanjiLesson } from '../../core/models/api.models';
+import type {
+  JlptLevel,
+  KanjiEntry,
+  KanjiLesson,
+} from '../../core/models/api.models';
 import { JLPT_LEVELS } from '../../core/models/api.models';
 
 type ViewLevel = JlptLevel | 'ALL';
@@ -18,9 +29,10 @@ interface JlptSummary {
 }
 
 function buildJlptSummary(lessons: KanjiLesson[]): JlptSummary[] {
-  const buckets = new Map<JlptLevel, { count: number; lessonNumbers: number[] }>(
-    JLPT_LEVELS.map((level) => [level, { count: 0, lessonNumbers: [] }]),
-  );
+  const buckets = new Map<
+    JlptLevel,
+    { count: number; lessonNumbers: number[] }
+  >(JLPT_LEVELS.map((level) => [level, { count: 0, lessonNumbers: [] }]));
 
   for (const lesson of lessons) {
     const level = lesson.jlptLevel as JlptLevel | null;
@@ -36,7 +48,10 @@ function buildJlptSummary(lessons: KanjiLesson[]): JlptSummary[] {
     let hint: string;
     if (count === 0) hint = 'Chưa có dữ liệu';
     else if (lessonNumbers.length === 1) hint = `Bài ${lessonNumbers[0]}`;
-    else hint = `Bài ${lessonNumbers[0]}–${lessonNumbers[lessonNumbers.length - 1]}`;
+    else
+      hint = `Bài ${lessonNumbers[0]}–${
+        lessonNumbers[lessonNumbers.length - 1]
+      }`;
     return { level, count, hint, hasData: count > 0 };
   });
 }
@@ -52,7 +67,9 @@ function matchesSearch(entry: KanjiEntry, query: string): boolean {
     entry.meaningVi,
     entry.jlptLevel,
     entry.lesson?.jlptLevel,
-    entry.lesson?.lessonNumber != null ? `bài ${entry.lesson.lessonNumber}` : '',
+    entry.lesson?.lessonNumber != null
+      ? `bài ${entry.lesson.lessonNumber}`
+      : '',
   ]
     .filter(Boolean)
     .join(' ')
@@ -69,6 +86,7 @@ function getEntryJlpt(entry: KanjiEntry): string {
   standalone: true,
   imports: [RouterLink, LowerCasePipe],
   templateUrl: './kanji-list-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './kanji-list-page.component.scss',
 })
 export class KanjiListPageComponent {
@@ -91,19 +109,25 @@ export class KanjiListPageComponent {
   readonly loadingAll = signal(false);
 
   readonly summary = computed(() => buildJlptSummary(this.lessons()));
-  readonly totalKanji = computed(() => this.summary().reduce((sum, item) => sum + item.count, 0));
+  readonly totalKanji = computed(() =>
+    this.summary().reduce((sum, item) => sum + item.count, 0)
+  );
   readonly isAllView = computed(() => this.activeLevel() === 'ALL');
 
   readonly allEntries = computed(() =>
-    JLPT_LEVELS.flatMap((level) => this.entriesCache()[level] ?? []),
+    JLPT_LEVELS.flatMap((level) => this.entriesCache()[level] ?? [])
   );
 
   readonly currentEntries = computed(() =>
-    this.isAllView() ? this.allEntries() : (this.entriesCache()[this.activeLevel() as JlptLevel] ?? []),
+    this.isAllView()
+      ? this.allEntries()
+      : this.entriesCache()[this.activeLevel() as JlptLevel] ?? []
   );
 
   readonly filteredEntries = computed(() =>
-    this.currentEntries().filter((entry) => matchesSearch(entry, this.searchInput())),
+    this.currentEntries().filter((entry) =>
+      matchesSearch(entry, this.searchInput())
+    )
   );
 
   readonly activeMeta = computed(() => {
@@ -116,7 +140,10 @@ export class KanjiListPageComponent {
         hasData: total > 0,
       };
     }
-    return this.summary().find((item) => item.level === this.activeLevel()) ?? this.summary()[0];
+    return (
+      this.summary().find((item) => item.level === this.activeLevel()) ??
+      this.summary()[0]
+    );
   });
 
   constructor() {
@@ -148,7 +175,9 @@ export class KanjiListPageComponent {
   }
 
   entryTitle(entry: KanjiEntry): string {
-    return [entry.hanViet, entry.onyomi, entry.kunyomi, entry.meaningVi].filter(Boolean).join(' · ');
+    return [entry.hanViet, entry.onyomi, entry.kunyomi, entry.meaningVi]
+      .filter(Boolean)
+      .join(' · ');
   }
 
   onSearch(event: Event): void {
@@ -164,12 +193,16 @@ export class KanjiListPageComponent {
   }
 
   private async loadAllLevels(): Promise<void> {
-    const missing = JLPT_LEVELS.filter((level) => (this.entriesCache()[level] ?? []).length === 0);
+    const missing = JLPT_LEVELS.filter(
+      (level) => (this.entriesCache()[level] ?? []).length === 0
+    );
     if (missing.length === 0) return;
 
     this.loadingAll.set(true);
     try {
-      const results = await Promise.all(missing.map((level) => this.api.getKanjiByJlpt(level)));
+      const results = await Promise.all(
+        missing.map((level) => this.api.getKanjiByJlpt(level))
+      );
       this.entriesCache.update((cache) => {
         const next = { ...cache };
         missing.forEach((level, index) => {

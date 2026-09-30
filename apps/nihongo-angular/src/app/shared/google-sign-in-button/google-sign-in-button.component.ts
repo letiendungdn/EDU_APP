@@ -8,6 +8,7 @@ import {
   ViewChild,
   inject,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiError } from '../../core/http/api-client';
@@ -18,7 +19,10 @@ declare global {
       accounts: {
         id: {
           initialize: (config: Record<string, unknown>) => void;
-          renderButton: (parent: HTMLElement, config: Record<string, unknown>) => void;
+          renderButton: (
+            parent: HTMLElement,
+            config: Record<string, unknown>
+          ) => void;
         };
       };
     };
@@ -28,17 +32,18 @@ declare global {
 @Component({
   selector: 'app-google-sign-in-button',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (clientId()) {
-      <div class="auth-google-wrap">
-        <div #buttonHost></div>
-      </div>
+    <div class="auth-google-wrap">
+      <div #buttonHost></div>
+    </div>
     } @else {
-      <p class="auth-google-hint">
-        <strong>Đăng ký bằng Gmail</strong> chưa bật. Thêm
-        <code>&lt;meta name="google-signin-client_id" content="..."&gt;</code>
-        vào <code>index.html</code> hoặc dùng email + mật khẩu bên dưới.
-      </p>
+    <p class="auth-google-hint">
+      <strong>Đăng ký bằng Gmail</strong> chưa bật. Thêm
+      <code>&lt;meta name="google-signin-client_id" content="..."&gt;</code>
+      vào <code>index.html</code> hoặc dùng email + mật khẩu bên dưới.
+    </p>
     }
   `,
 })
@@ -68,7 +73,9 @@ export class GoogleSignInButtonComponent implements AfterViewInit {
       const existing = document.querySelector('script[data-google-gsi]');
       if (existing) {
         existing.addEventListener('load', () => resolve());
-        existing.addEventListener('error', () => reject(new Error('Google script failed')));
+        existing.addEventListener('error', () =>
+          reject(new Error('Google script failed'))
+        );
         return;
       }
 
@@ -119,8 +126,8 @@ export class GoogleSignInButtonComponent implements AfterViewInit {
         err instanceof ApiError
           ? err.message
           : err instanceof Error
-            ? err.message
-            : 'Google đăng nhập thất bại',
+          ? err.message
+          : 'Google đăng nhập thất bại'
       );
     }
   }

@@ -4,6 +4,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Role } from "@prisma/client";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { PrismaService } from "@app/prisma";
+import { resolveJwtSecret } from "./jwt-secret";
 
 export interface JwtPayload {
   sub: number;
@@ -20,8 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey:
-        configService.get<string>("jwt.secret") ?? "change-me-in-production",
+      secretOrKey: resolveJwtSecret(configService),
     });
   }
 

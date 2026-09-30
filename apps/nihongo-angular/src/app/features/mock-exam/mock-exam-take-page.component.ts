@@ -1,4 +1,12 @@
-import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
@@ -16,6 +24,7 @@ import {
   standalone: true,
   imports: [RouterLink],
   templateUrl: './mock-exam-take-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mock-exam-take-page.component.scss',
 })
 export class MockExamTakePageComponent implements OnDestroy {
@@ -41,8 +50,8 @@ export class MockExamTakePageComponent implements OnDestroy {
     const qs = this.questions();
     return qs[this.currentIndex()] ?? null;
   });
-  readonly answeredCount = computed(() =>
-    Object.values(this.answers()).filter((a) => a?.trim()).length,
+  readonly answeredCount = computed(
+    () => Object.values(this.answers()).filter((a) => a?.trim()).length
   );
   readonly isLowTime = computed(() => this.timeLeft() <= 300);
 
@@ -143,7 +152,9 @@ export class MockExamTakePageComponent implements OnDestroy {
   }
 
   nextQuestion(): void {
-    this.currentIndex.update((i) => Math.min(this.questions().length - 1, i + 1));
+    this.currentIndex.update((i) =>
+      Math.min(this.questions().length - 1, i + 1)
+    );
   }
 
   async doSubmit(): Promise<void> {
@@ -154,12 +165,17 @@ export class MockExamTakePageComponent implements OnDestroy {
     this.stopTimer();
 
     try {
-      const data = await this.api.submitMockExam(session.examId, this.answers());
+      const data = await this.api.submitMockExam(
+        session.examId,
+        this.answers()
+      );
       const result = parseMockExamResult(data);
       saveMockExamResult(result);
       await this.router.navigate(['/mock-exam', this.level(), 'answers']);
     } catch {
-      this.error.set('Nộp bài thất bại. Phiên thi có thể đã hết hạn — hãy làm đề mới.');
+      this.error.set(
+        'Nộp bài thất bại. Phiên thi có thể đã hết hạn — hãy làm đề mới.'
+      );
       this.submitted = false;
     } finally {
       this.submitting.set(false);

@@ -1,20 +1,32 @@
 name: Deploy
 
+# Chỉ deploy khi workflow CI trên main đã XANH (trước đây deploy chạy song song với CI → test đỏ vẫn lên production).
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
   IMAGE_PREFIX: ghcr.io/letiendungdn/edu_app
+  # Commit đã qua CI (workflow_run) hoặc commit hiện tại (chạy tay). Image gắn đúng tag này.
+  DEPLOY_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
 
 permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 jobs:
   build-and-push:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -30,8 +42,12 @@ jobs:
             dockerfile: apps/nihongo-web/Dockerfile
           - name: english-web
             dockerfile: apps/english-web/Dockerfile
+          - name: migrator
+            dockerfile: packages/prisma-nihongo/Dockerfile.migrate
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.DEPLOY_SHA }} # build đúng commit CI đã kiểm tra
 
       - uses: docker/setup-buildx-action@v3
 
@@ -48,17 +64,18 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_PREFIX }}/${{ matrix.name }}:latest
-            ${{ env.IMAGE_PREFIX }}/${{ matrix.name }}:${{ github.sha }}
+            ${{ env.IMAGE_PREFIX }}/${{ matrix.name }}:${{ env.DEPLOY_SHA }}
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
 
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     environment: production
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.DEPLOY_SHA }}
 
       - name: Setup kubectl
         uses: azure/setup-kubectl@v4
@@ -90,17 +107,49 @@ jobs:
             --docker-password=${{ secrets.GITHUB_TOKEN }} \
             --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Deploy workloads
+      # Postgres/Redis phải có trước khi migrate (lần deploy đầu tiên)
+      - name: Apply data stores
+        run: |
+          kubectl apply -f infra/k8s/postgres-init-configmap.yaml -f infra/k8s/postgres.yaml -f infra/k8s/redis.yaml
+          kubectl rollout status statefulset/postgres -n edu-app --timeout=300s
+
+      # Migration TRƯỚC khi đổi code: lỗi → dừng deploy, pod đang chạy không bị đụng tới
+      - name: Migrate database
+        run: |
+          JOB_SUFFIX="${DEPLOY_SHA:0:12}"
+          sed -e "s/__IMAGE_TAG__/${DEPLOY_SHA}/" -e "s/__JOB_SUFFIX__/${JOB_SUFFIX}/" \
+            infra/k8s/jobs/prisma-migrate.job.yaml | kubectl apply -f -
+          if ! kubectl wait --for=condition=complete "job/prisma-migrate-${JOB_SUFFIX}" -n edu-app --timeout=600s; then
+            kubectl logs "job/prisma-migrate-${JOB_SUFFIX}" -n edu-app || true
+            exit 1
+          fi
+          kubectl logs "job/prisma-migrate-${JOB_SUFFIX}" -n edu-app
+
+      # Image đổi sang tag bất biến :<sha> ngay khi apply → mỗi deploy là một revision rollout thật
+      # (:latest cũ làm `kubectl apply` báo unchanged, pod vẫn chạy code cũ).
+      - name: Deploy workloads (pinned to commit sha)
         run: |
           for f in infra/k8s/*.yaml; do
             case "$(basename "$f")" in
               secret.yaml|secrets.yaml.example) continue ;;
             esac
-            kubectl apply -f "$f"
+            sed "s#\(${IMAGE_PREFIX}/[a-z-]*\):latest#\1:${DEPLOY_SHA}#g" "$f" | kubectl apply -f -
           done
 
-      - name: Wait for api-gateway rollout
-        run: kubectl rollout status deployment/api-gateway -n edu-app --timeout=300s
+      - name: Wait for rollouts (rollback on failure)
+        run: |
+          for d in api-gateway content-service exam-service nihongo-web english-web; do
+            if ! kubectl rollout status "deployment/$d" -n edu-app --timeout=300s; then
+              echo "::error::Rollout $d thất bại — rollback"
+              kubectl rollout undo "deployment/$d" -n edu-app
+              exit 1
+            fi
+          done
+
+      - name: Smoke test (readiness)
+        run: |
+          kubectl run "smoke-${DEPLOY_SHA:0:12}" -n edu-app --rm -i --restart=Never --image=curlimages/curl:8.10.1 -- \
+            curl -fsS --retry 5 --retry-delay 3 http://api-gateway:3000/health/ready
 
   deploy-ssh-fallback:
     needs: deploy
@@ -118,4 +167,5 @@ jobs:
             cd /opt/edu_app
             git pull origin main
             docker compose pull && docker compose up -d --remove-orphans
-            sleep 10 && curl -f http://localhost/api/health || exit 1
+            # Route health là /health (không có tiền tố /api — /api/health trả 404)
+            sleep 10 && curl -f http://localhost/health || exit 1

@@ -49,6 +49,8 @@ spec:
             - configMapRef:
                 name: {{ include "edu-app.configMapName" . }}
           env:
+            - name: SERVICE_NAME # tên service trong log (pino) và trace (Jaeger)
+              value: content-service
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:

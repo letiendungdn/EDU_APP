@@ -1,4 +1,10 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
 import { LessonSelectorComponent } from '../../shared/lesson-selector/lesson-selector.component';
@@ -13,6 +19,7 @@ function normalizeAnswer(value: string): string {
   standalone: true,
   imports: [LessonSelectorComponent],
   templateUrl: './dictation-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dictation-page.component.scss',
 })
 export class DictationPageComponent {

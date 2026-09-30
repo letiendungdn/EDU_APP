@@ -1,7 +1,16 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
-import { collectKanjiWords, readingChoices } from '../../core/utils/kanjiInWord';
+import {
+  collectKanjiWords,
+  readingChoices,
+} from '../../core/utils/kanjiInWord';
 import { playJapanese } from '../../core/utils/speech.util';
 import type { KanjiEntry } from '../../core/models/api.models';
 
@@ -10,36 +19,76 @@ import type { KanjiEntry } from '../../core/models/api.models';
   standalone: true,
   imports: [RouterLink],
   styleUrl: './drills.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="container drill-view">
       <header class="drill-header">
         <h2 class="view-title">Kanji đọc trong từ</h2>
-        <p class="drill-subtitle">Chọn cách đọc đúng của chữ trong từ đó. <a routerLink="/practice">Tất cả bài luyện</a></p>
+        <p class="drill-subtitle">
+          Chọn cách đọc đúng của chữ trong từ đó.
+          <a routerLink="/practice">Tất cả bài luyện</a>
+        </p>
       </header>
       <div class="drill-toolbar">
-        <button type="button" class="tab-btn" [class.active]="level() === 'N5'" (click)="setLevel('N5')">N5</button>
-        <button type="button" class="tab-btn" [class.active]="level() === 'N4'" (click)="setLevel('N4')">N4</button>
+        <button
+          type="button"
+          class="tab-btn"
+          [class.active]="level() === 'N5'"
+          (click)="setLevel('N5')"
+        >
+          N5
+        </button>
+        <button
+          type="button"
+          class="tab-btn"
+          [class.active]="level() === 'N4'"
+          (click)="setLevel('N4')"
+        >
+          N4
+        </button>
       </div>
       @if (loading()) {
-        <p>Đang tải kanji...</p>
+      <p>Đang tải kanji...</p>
       } @else if (!current()) {
-        <p>Chưa có từ vựng gắn kanji.</p>
+      <p>Chưa có từ vựng gắn kanji.</p>
       } @else {
-        <p class="drill-score">{{ index() + 1 }}/{{ bank().length }} · đúng {{ score().ok }}/{{ score().n || 0 }}</p>
-        <div class="drill-card">
-          <p class="drill-meta">{{ current()!.meaningVi }}</p>
-          <p class="drill-prompt japanese-text">{{ current()!.word }}</p>
-          <p class="drill-meta">Chữ {{ current()!.character }} trong từ này đọc thế nào?</p>
-          <div class="drill-options">
-            @for (opt of options(); track opt) {
-              <button type="button" class="drill-option japanese-text{{ optionClass(opt) }}" [disabled]="picked() != null" (click)="grade(opt)">{{ opt }}</button>
-            }
-          </div>
-          @if (picked()) {
-            <button type="button" class="btn btn-outline btn-sm" style="margin-top: 12px" (click)="speak()">Nghe</button>
+      <p class="drill-score">
+        {{ index() + 1 }}/{{ bank().length }} · đúng {{ score().ok }}/{{
+          score().n || 0
+        }}
+      </p>
+      <div class="drill-card">
+        <p class="drill-meta">{{ current()!.meaningVi }}</p>
+        <p class="drill-prompt japanese-text">{{ current()!.word }}</p>
+        <p class="drill-meta">
+          Chữ {{ current()!.character }} trong từ này đọc thế nào?
+        </p>
+        <div class="drill-options">
+          @for (opt of options(); track opt) {
+          <button
+            type="button"
+            class="drill-option japanese-text{{ optionClass(opt) }}"
+            [disabled]="picked() != null"
+            (click)="grade(opt)"
+          >
+            {{ opt }}
+          </button>
           }
         </div>
-        <button type="button" class="btn btn-nav" (click)="next()">Câu tiếp</button>
+        @if (picked()) {
+        <button
+          type="button"
+          class="btn btn-outline btn-sm"
+          style="margin-top: 12px"
+          (click)="speak()"
+        >
+          Nghe
+        </button>
+        }
+      </div>
+      <button type="button" class="btn btn-nav" (click)="next()">
+        Câu tiếp
+      </button>
       }
     </div>
   `,
@@ -59,7 +108,9 @@ export class KanjiReadingsPageComponent {
     const current = this.current();
     return current ? readingChoices(current, this.bank()) : [];
   });
-  readonly answer = computed(() => this.current()?.reading.replace(/-/g, '') ?? '');
+  readonly answer = computed(
+    () => this.current()?.reading.replace(/-/g, '') ?? ''
+  );
 
   constructor() {
     void this.load('N5');
@@ -76,7 +127,10 @@ export class KanjiReadingsPageComponent {
     const current = this.current();
     if (!current || this.picked()) return;
     this.picked.set(opt);
-    this.score.update((s) => ({ ok: s.ok + (opt === this.answer() ? 1 : 0), n: s.n + 1 }));
+    this.score.update((s) => ({
+      ok: s.ok + (opt === this.answer() ? 1 : 0),
+      n: s.n + 1,
+    }));
   }
 
   next(): void {

@@ -4,13 +4,18 @@ import {
   OnInit,
   inject,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { playJapanese } from '../../core/utils/speech.util';
 import { normalizeTypedJp } from '../../core/utils/conjugate';
-import type { SrsDueCard, SrsReviewResult, SrsStats } from '../../core/models/api.models';
+import type {
+  SrsDueCard,
+  SrsReviewResult,
+  SrsStats,
+} from '../../core/models/api.models';
 
 type Phase = 'loading' | 'needs-auth' | 'stats' | 'review' | 'done';
 type SrsMode = 'jp-vi' | 'vi-jp' | 'listen-type';
@@ -46,7 +51,7 @@ function previewInterval(
   quality: number,
   ef: number,
   interval: number,
-  reps: number,
+  reps: number
 ): string {
   const q = quality;
   const newEf = Math.max(1.3, ef + 0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
@@ -66,6 +71,7 @@ function previewInterval(
   standalone: true,
   imports: [RouterLink],
   templateUrl: './srs-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './srs-page.component.scss',
 })
 export class SrsPageComponent implements OnInit {
@@ -112,7 +118,8 @@ export class SrsPageComponent implements OnInit {
       return;
     }
     if (this.mode() === 'listen-type' && !this.typedChecked()) return;
-    if ((!this.flipped() && this.mode() !== 'listen-type') || this.submitting()) return;
+    if ((!this.flipped() && this.mode() !== 'listen-type') || this.submitting())
+      return;
     const rating = RATINGS.find((r) => r.key === event.key);
     if (rating) void this.rate(rating.quality);
   }
@@ -225,7 +232,8 @@ export class SrsPageComponent implements OnInit {
     if (!card) return false;
     return (
       normalizeTypedJp(this.typed()) === normalizeTypedJp(card.kana) ||
-      (!!card.kanji && normalizeTypedJp(this.typed()) === normalizeTypedJp(card.kanji))
+      (!!card.kanji &&
+        normalizeTypedJp(this.typed()) === normalizeTypedJp(card.kanji))
     );
   }
 

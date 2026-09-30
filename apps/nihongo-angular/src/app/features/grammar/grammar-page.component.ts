@@ -1,5 +1,12 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -13,7 +20,11 @@ import {
   grammarExampleSpeechText,
 } from '../../core/utils/grammar-example.util';
 import { playSpeech } from '../../core/utils/speech.util';
-import { isGrammarPinned, pinGrammar, unpinGrammar } from '../../core/utils/grammarSrs';
+import {
+  isGrammarPinned,
+  pinGrammar,
+  unpinGrammar,
+} from '../../core/utils/grammarSrs';
 import { LessonSelectorComponent } from '../../shared/lesson-selector/lesson-selector.component';
 import { FuriganaTextComponent } from '../../shared/furigana-text/furigana-text.component';
 import type { Grammar, Lesson } from '../../core/models/api.models';
@@ -31,14 +42,25 @@ function emptyExample(): ExampleDraft {
 }
 
 function emptyDraft(): GrammarDraft {
-  return { pattern: '', meaning: '', explanation: '', examples: [emptyExample()] };
+  return {
+    pattern: '',
+    meaning: '',
+    explanation: '',
+    examples: [emptyExample()],
+  };
 }
 
 @Component({
   selector: 'app-grammar-page',
   standalone: true,
-  imports: [LessonSelectorComponent, NgTemplateOutlet, FuriganaTextComponent, RouterLink],
+  imports: [
+    LessonSelectorComponent,
+    NgTemplateOutlet,
+    FuriganaTextComponent,
+    RouterLink,
+  ],
   templateUrl: './grammar-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './grammar-page.component.scss',
 })
 export class GrammarPageComponent {
@@ -60,7 +82,9 @@ export class GrammarPageComponent {
   readonly hasData = computed(() => this.grammars().length > 0);
   readonly canEdit = computed(() => this.auth.isAdmin() && this.editMode());
   readonly lessonId = computed(
-    () => this.lessons().find((item) => item.lessonNumber === this.lesson())?.id ?? null,
+    () =>
+      this.lessons().find((item) => item.lessonNumber === this.lesson())?.id ??
+      null
   );
 
   readonly parseExplanation = parseGrammarExplanation;
@@ -69,7 +93,9 @@ export class GrammarPageComponent {
   readonly exampleRomaji = grammarExampleRomaji;
 
   constructor() {
-    void this.api.getLessons({ has: 'grammar' }).then((data) => this.lessons.set(data));
+    void this.api
+      .getLessons({ has: 'grammar' })
+      .then((data) => this.lessons.set(data));
 
     effect(() => {
       const n = this.lesson();
@@ -152,7 +178,7 @@ export class GrammarPageComponent {
     this.draft.update((current) => ({
       ...current,
       examples: current.examples.map((example, i) =>
-        i === index ? { ...example, ...partial } : example,
+        i === index ? { ...example, ...partial } : example
       ),
     }));
   }

@@ -26,8 +26,8 @@ export type MindMapBranchInput = {
 };
 
 export type MindMapLevelInput = {
-  kind: MindMapKind | string;
-  level: JlptLevel | string;
+  kind: string;
+  level: string;
   title: string;
   summary: string;
   accent?: string;
@@ -51,7 +51,9 @@ function parseLevel(value: string): JlptLevel {
   return upper as JlptLevel;
 }
 
-function sanitizeBranches(branches: MindMapBranchInput[]): Prisma.InputJsonValue {
+function sanitizeBranches(
+  branches: MindMapBranchInput[],
+): Prisma.InputJsonValue {
   if (!Array.isArray(branches)) {
     throw new BadRequestException("branches phải là mảng");
   }
@@ -78,7 +80,7 @@ function sanitizeBranches(branches: MindMapBranchInput[]): Prisma.InputJsonValue
         linkLabel: p.linkLabel?.trim() || undefined,
       })),
     };
-  }) as unknown as Prisma.InputJsonValue;
+  });
 }
 
 @Injectable()
@@ -129,7 +131,9 @@ export class MindMapsService {
     return this.prisma.mindMapLevel.update({
       where: { id },
       data: {
-        ...(dto.kind !== undefined ? { kind: parseKind(String(dto.kind)) } : {}),
+        ...(dto.kind !== undefined
+          ? { kind: parseKind(String(dto.kind)) }
+          : {}),
         ...(dto.level !== undefined
           ? { level: parseLevel(String(dto.level)) }
           : {}),

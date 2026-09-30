@@ -1,4 +1,10 @@
-import { Component, computed, OnDestroy, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  OnDestroy,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
   createSpeechRecognition,
@@ -12,6 +18,7 @@ import {
   standalone: true,
   imports: [RouterLink],
   templateUrl: './speech-to-text-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './speech-to-text-page.component.scss',
 })
 export class SpeechToTextPageComponent implements OnDestroy {
@@ -44,7 +51,9 @@ export class SpeechToTextPageComponent implements OnDestroy {
 
   start(): void {
     if (!this.supported) {
-      this.error.set('Trình duyệt không hỗ trợ nhận dạng giọng nói. Hãy dùng Chrome hoặc Edge.');
+      this.error.set(
+        'Trình duyệt không hỗ trợ nhận dạng giọng nói. Hãy dùng Chrome hoặc Edge.'
+      );
       return;
     }
 
@@ -52,7 +61,8 @@ export class SpeechToTextPageComponent implements OnDestroy {
     this.controller?.abort();
 
     this.controller = createSpeechRecognition(this.lang(), {
-      onFinal: (text) => this.transcript.update((prev) => `${prev}${text}`.trimStart()),
+      onFinal: (text) =>
+        this.transcript.update((prev) => `${prev}${text}`.trimStart()),
       onInterim: (text) => this.interim.set(text),
       onError: (message) => this.error.set(message),
       onListeningChange: (value) => this.listening.set(value),

@@ -87,6 +87,12 @@ export function fetchVocabularies(lessonNumber: number) {
   );
 }
 
+/** Feature flag đang bật cho người xem (gửi token nếu có để nhận cờ theo vai trò). */
+export async function fetchFeatureFlags(token?: string | null): Promise<string[]> {
+  const res = await apiRequest<{ enabled: string[] }>('/feature-flags', { token: token ?? undefined });
+  return res?.enabled ?? [];
+}
+
 /** Tra từ vựng trên mọi bài: khớp kanji, kana, romaji hoặc nghĩa. */
 export async function searchVocabularies(query: string, limit = 50) {
   const res = await apiRequest<PaginatedResponse<VocabularySearchHit>>(

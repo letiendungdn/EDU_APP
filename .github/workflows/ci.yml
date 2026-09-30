@@ -5,6 +5,35 @@ on:
   pull_request:
 
 jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # gitleaks cần lịch sử để quét đúng khoảng commit
+      # Quét secret trong các commit MỚI của push/PR (lịch sử cũ đã soát; ngoại lệ có lý do trong .gitleaks.toml)
+      - name: Secret scan (gitleaks)
+        env:
+          BEFORE: ${{ github.event.before }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [ -n "$BASE_REF" ]; then
+            git fetch --no-tags origin "$BASE_REF"
+            RANGE="origin/${BASE_REF}..HEAD"
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$BEFORE" 2>/dev/null; then
+            RANGE="${BEFORE}..HEAD"
+          else
+            RANGE="HEAD~1..HEAD"
+          fi
+          echo "Quét khoảng commit: $RANGE"
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.30.1             git /repo --config /repo/.gitleaks.toml --log-opts="$RANGE" --redact --no-banner --exit-code 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # Chặn khi có lỗ hổng HIGH/CRITICAL ở dependency production (ngoại lệ có lý do trong audit-ci.jsonc)
+      - name: Dependency audit (high+ blocks)
+        run: npx --yes audit-ci@7 --config audit-ci.jsonc
+
   backend:
     runs-on: ubuntu-latest
     services:
@@ -38,18 +67,46 @@ jobs:
         env:
           DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
       - run: npm run lint -w @edu/nihongo-services
-      - run: npm test -- --coverage -w @edu/nihongo-services
+      - run: npm test -w @edu/nihongo-services -- --coverage
         env:
           DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
           REDIS_URL: redis://localhost:6379
           JWT_SECRET: test-secret
           CONTENT_GRPC_URL: localhost:50051
           EXAM_GRPC_URL: localhost:50052
+      - name: Seed mock exam templates
+        run: npm run seed:mock-exam-templates -w @edu/prisma-nihongo
+        env:
+          DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
+      - name: Start content and exam gRPC
+        working-directory: services
+        run: |
+          node -r tsconfig-paths/register -r ts-node/register content-service/src/main.ts > /tmp/content-grpc.log 2>&1 &
+          node -r tsconfig-paths/register -r ts-node/register exam-service/src/main.ts > /tmp/exam-grpc.log 2>&1 &
+          for i in $(seq 1 40); do
+            if grep -q "Content service listening" /tmp/content-grpc.log && grep -q "Exam service listening" /tmp/exam-grpc.log; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "----- content -----"; cat /tmp/content-grpc.log
+          echo "----- exam -----"; cat /tmp/exam-grpc.log
+          exit 1
+        env:
+          DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test-secret
+          EXAM_CONSUMER_DISABLED: "true"
+          OTEL_SDK_DISABLED: "true"
       - run: npm run test:e2e -w @edu/nihongo-services
         env:
           DATABASE_URL: postgresql://nihongo:nihongo@localhost:5432/nihongo
           REDIS_URL: redis://localhost:6379
           JWT_SECRET: test-secret
+          STRIPE_SECRET_KEY: sk_test_ci
+          GEMINI_API_KEY: test-key
+          MONGODB_ENABLED: "off"
+          ENGLISH_ENABLED: "false"
           CONTENT_GRPC_URL: localhost:50051
           EXAM_GRPC_URL: localhost:50052
       - run: npm run build:all -w @edu/nihongo-services

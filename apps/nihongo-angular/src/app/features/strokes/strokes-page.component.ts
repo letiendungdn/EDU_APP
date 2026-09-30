@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { StrokeOrderComponent } from '../../shared/stroke-order/stroke-order.component';
 import { ApiService } from '../../core/services/api.service';
 import {
@@ -11,7 +18,15 @@ import {
 } from '../../core/utils/japanese.util';
 import { playJapanese } from '../../core/utils/speech.util';
 
-const EXAMPLES = ['私', '医者', 'watashi', 'arigatou', 'よろしく', '［どうぞ］よろしく', '日本語'] as const;
+const EXAMPLES = [
+  '私',
+  '医者',
+  'watashi',
+  'arigatou',
+  'よろしく',
+  '［どうぞ］よろしく',
+  '日本語',
+] as const;
 
 type RomajiForm = 'kana' | 'kanji';
 
@@ -31,11 +46,25 @@ interface RomajiConversion {
   options: Array<{ kind: RomajiForm; text: string }>;
 }
 
-function lookupStrokeSize(charCount: number, totalChars: number, optional = false): number {
+function lookupStrokeSize(
+  charCount: number,
+  totalChars: number,
+  optional = false
+): number {
   const denseBase =
-    charCount <= 1 ? 120 : charCount <= 2 ? 96 : charCount <= 4 ? 78 : charCount <= 8 ? 64 : 52;
+    charCount <= 1
+      ? 120
+      : charCount <= 2
+      ? 96
+      : charCount <= 4
+      ? 78
+      : charCount <= 8
+      ? 64
+      : 52;
   const scaled = Math.round(denseBase * flashcardPhraseStrokeScale(totalChars));
-  return optional ? Math.max(32, Math.round(scaled * 0.55)) : Math.max(36, scaled);
+  return optional
+    ? Math.max(32, Math.round(scaled * 0.55))
+    : Math.max(36, scaled);
 }
 
 @Component({
@@ -43,6 +72,7 @@ function lookupStrokeSize(charCount: number, totalChars: number, optional = fals
   standalone: true,
   imports: [StrokeOrderComponent],
   templateUrl: './strokes-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './strokes-page.component.scss',
 })
 export class StrokesPageComponent {
@@ -62,21 +92,26 @@ export class StrokesPageComponent {
     if (!this.isRomaji()) return this.input();
     const conversion = this.romajiConversion();
     if (!conversion?.kana) return '';
-    if (this.romajiForm() === 'kanji' && conversion.kanji) return conversion.kanji;
+    if (this.romajiForm() === 'kanji' && conversion.kanji)
+      return conversion.kanji;
     return conversion.kana;
   });
 
   readonly strokeText = computed(() => getStrokeText(this.effectiveText()));
-  readonly hasOptional = computed(() => hasOptionalBracketParts(this.effectiveText()));
-  readonly segments = computed(() => parseOptionalBracketSegments(this.effectiveText()));
+  readonly hasOptional = computed(() =>
+    hasOptionalBracketParts(this.effectiveText())
+  );
+  readonly segments = computed(() =>
+    parseOptionalBracketSegments(this.effectiveText())
+  );
   readonly totalChars = computed(() =>
     this.segments().reduce(
       (sum, segment) => sum + [...getStrokeText(segment.text)].length,
-      0,
-    ),
+      0
+    )
   );
   readonly singleSize = computed(() =>
-    lookupStrokeSize(this.totalChars() || 1, this.totalChars() || 1),
+    lookupStrokeSize(this.totalChars() || 1, this.totalChars() || 1)
   );
   readonly displayKanji = computed(() => {
     const lookup = this.reading();
@@ -84,9 +119,11 @@ export class StrokesPageComponent {
     return lookup.kanji;
   });
   readonly showRomajiToggle = computed(
-    () => this.isRomaji() && (this.romajiConversion()?.options.length ?? 0) > 1,
+    () => this.isRomaji() && (this.romajiConversion()?.options.length ?? 0) > 1
   );
-  readonly previewText = computed(() => this.effectiveText().trim() || this.input().trim());
+  readonly previewText = computed(
+    () => this.effectiveText().trim() || this.input().trim()
+  );
 
   constructor() {
     effect((onCleanup) => {

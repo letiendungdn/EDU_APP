@@ -25,7 +25,7 @@ import { UploadService } from "./upload/upload.service";
 import { PaymentModule } from "../../../payment-service/src/payment.module";
 import { EnglishModule } from "../../../english-service/src/english.module";
 import { RealtimeModule } from "../realtime/realtime.module";
-import { isEnglishEnabled } from "@app/common";
+import { isEnglishEnabled } from "@app/common/config/english-enabled";
 import { NotificationController } from "./notification.controller";
 import { SupportController } from "./support.controller";
 import { CommunityController } from "./community.controller";
@@ -42,6 +42,8 @@ import { BannersService } from "./banners.service";
 import { MindMapsController } from "./mind-maps.controller";
 import { MindMapsService } from "./mind-maps.service";
 import { MindMapDataService } from "./mind-map-data.service";
+import { FeatureFlagsController } from "./feature-flags/feature-flags.controller";
+import { FeatureFlagsService } from "./feature-flags/feature-flags.service";
 
 const httpImports: Array<Type | DynamicModule> = [
   PaymentModule,
@@ -52,6 +54,7 @@ const httpImports: Array<Type | DynamicModule> = [
 @Module({
   imports: httpImports,
   controllers: [
+    FeatureFlagsController,
     LessonsController,
     VocabulariesController,
     GrammarsController,
@@ -84,6 +87,7 @@ const httpImports: Array<Type | DynamicModule> = [
     MindMapsController,
   ],
   providers: [
+    FeatureFlagsService,
     JlptScheduleService,
     UploadService,
     TtsService,

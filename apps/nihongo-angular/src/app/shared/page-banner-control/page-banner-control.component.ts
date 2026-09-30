@@ -1,12 +1,21 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { PageBannerService } from '../../core/services/page-banner.service';
-import { readBannerImageFile, type BannerScope } from '../../core/utils/page-banner.util';
+import {
+  readBannerImageFile,
+  type BannerScope,
+} from '../../core/utils/page-banner.util';
 
 @Component({
   selector: 'app-page-banner-control',
   standalone: true,
   templateUrl: './page-banner-control.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './page-banner-control.component.scss',
 })
 export class PageBannerControlComponent {

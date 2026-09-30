@@ -20,6 +20,7 @@ data:
   CONTENT_GRPC_PORT: "50051"
   EXAM_GRPC_PORT: "50052"
   REDIS_URL: redis://redis:6379
+  KAFKA_BROKERS: kafka:9092
 
   # nihongo-web
   API_URL: http://api-gateway:3000

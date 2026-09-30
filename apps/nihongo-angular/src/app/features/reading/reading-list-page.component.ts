@@ -1,13 +1,24 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
-import { JLPT_LEVELS, type JlptLevel, type ReadingPassageSummary } from '../../core/models/api.models';
+import {
+  JLPT_LEVELS,
+  type JlptLevel,
+  type ReadingPassageSummary,
+} from '../../core/models/api.models';
 
 @Component({
   selector: 'app-reading-list-page',
   standalone: true,
   imports: [RouterLink],
   templateUrl: './reading-list-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './reading-list-page.component.scss',
 })
 export class ReadingListPageComponent {

@@ -16,6 +16,7 @@ import type {
   UpdateMockExamQuestionDto,
   UpdateMockExamTemplateDto,
 } from "@app/contracts";
+import { KafkaTopics } from "@app/contracts";
 import { PrismaService } from "@app/prisma";
 import type Redis from "ioredis";
 import { randomUUID } from "crypto";
@@ -1009,7 +1010,11 @@ export class MockExamsService {
       }
     }
 
-    const examResult = await this.prisma.examResult.create({
+    // Kết quả thi + event "đã nộp bài" ghi CÙNG một transaction (transactional outbox):
+    // không còn trường hợp lưu điểm xong mà event bị mất vì Kafka lỗi / service chết giữa chừng.
+    // OutboxRelayService đẩy event lên Kafka sau.
+    const examResult = await this.prisma.$transaction(async (tx) => {
+      const created = await tx.examResult.create({
       data: {
         userId: userId ?? null,
         examId,
@@ -1031,6 +1036,26 @@ export class MockExamsService {
           })),
         },
       },
+    });
+      await tx.outboxEvent.create({
+        data: {
+          topic: KafkaTopics.EXAM_SUBMITTED,
+          key: userId ? String(userId) : null,
+          payload: {
+            eventId: `exam-result-${created.id}`,
+            examResultId: created.id,
+            examId,
+            userId: userId ?? null,
+            level: session.level,
+            percent,
+            passed,
+            correctCount,
+            total,
+            submittedAt: submittedAt.toISOString(),
+          },
+        },
+      });
+      return created;
     });
 
     if (userId) {

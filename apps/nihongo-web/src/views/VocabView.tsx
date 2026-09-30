@@ -8,7 +8,7 @@ import PlayAllButton from '../components/PlayAllButton';
 import VocabWordList from '../components/VocabWordList';
 import { usePlayAll } from '../hooks/usePlayAll';
 import { useAuth } from '../hooks/useAuth';
-import { useLessonsQuery, useVocabulariesQuery, useVocabSearchQuery } from '../hooks/queries';
+import { useFeatureFlag, useLessonsQuery, useVocabulariesQuery, useVocabSearchQuery } from '../hooks/queries';
 import StrokeOrder from '../components/StrokeOrder';
 import VocabPicture from '../components/VocabPicture';
 import {
@@ -93,7 +93,9 @@ export default function VocabView({
   const { isAdmin } = useAuth();
   const { data: lessons = [] } = useLessonsQuery();
   const { data: lessonVocab = [], isLoading: loading } = useVocabulariesQuery(currentLesson);
-  const { data: search, isFetching: searching } = useVocabSearchQuery(searchQuery);
+  // Ô tra từ trên mọi bài bật/tắt bằng feature flag (admin: PATCH /api/admin/feature-flags/vocab-search-all-lessons)
+  const searchAllLessonsOn = useFeatureFlag('vocab-search-all-lessons');
+  const { data: search, isFetching: searching } = useVocabSearchQuery(searchAllLessonsOn ? searchQuery : '');
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
 
   useEffect(() => {
@@ -318,6 +320,7 @@ export default function VocabView({
       </div>
 
       <div className="vocab-toolbar">
+        {searchAllLessonsOn ? (
         <div className="vocab-search">
           <form className="vocab-search__form" onSubmit={handleSearchSubmit} role="search">
             <input
@@ -389,6 +392,7 @@ export default function VocabView({
             </div>
           )}
         </div>
+        ) : null}
 
         <LessonSelector
           id="lesson-select"

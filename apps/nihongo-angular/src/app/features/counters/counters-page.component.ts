@@ -1,15 +1,25 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ApiService } from '../../core/services/api.service';
 import { counterHintBullets } from '../../core/utils/counter-hint.util';
 import { buildCounterSentenceQuestions } from '../../core/utils/counterSentences';
 import { playJapanese } from '../../core/utils/speech.util';
-import type { CounterCategory, JapaneseCountersPayload } from '../../core/models/reference.models';
+import type {
+  CounterCategory,
+  JapaneseCountersPayload,
+} from '../../core/models/reference.models';
 
 @Component({
   selector: 'app-counters-page',
   standalone: true,
   imports: [],
   templateUrl: './counters-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './counters-page.component.scss',
 })
 export class CountersPageComponent {
@@ -41,11 +51,13 @@ export class CountersPageComponent {
   readonly currentQ = computed(() => this.questions()[this.qIndex()] ?? null);
 
   constructor() {
-    void this.api.getJapaneseCounters().then((data: JapaneseCountersPayload) => {
-      this.categories.set(data.categories);
-      this.activeId.set(data.categories[0]?.id ?? '');
-      this.loading.set(false);
-    });
+    void this.api
+      .getJapaneseCounters()
+      .then((data: JapaneseCountersPayload) => {
+        this.categories.set(data.categories);
+        this.activeId.set(data.categories[0]?.id ?? '');
+        this.loading.set(false);
+      });
   }
 
   setCategory(id: string): void {
@@ -59,7 +71,10 @@ export class CountersPageComponent {
     const q = this.currentQ();
     if (!q || this.picked()) return;
     this.picked.set(opt);
-    this.score.update((s) => ({ ok: s.ok + (opt === q.answer ? 1 : 0), n: s.n + 1 }));
+    this.score.update((s) => ({
+      ok: s.ok + (opt === q.answer ? 1 : 0),
+      n: s.n + 1,
+    }));
   }
 
   nextQ(): void {

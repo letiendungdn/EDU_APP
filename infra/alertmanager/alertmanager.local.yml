@@ -1,0 +1,28 @@
+# Alertmanager — môi trường LOCAL: gửi mail vào Mailpit (http://localhost:8025) để kiểm tra luồng cảnh báo,
+# không gửi ra Internet. Gửi thật: dùng alertmanager.smtp.yml (xem infra/alertmanager/README.md).
+global:
+  smtp_smarthost: mailpit:1025
+  smtp_from: "EDU APP Alerts <alerts@edu.local>"
+  smtp_require_tls: false
+  resolve_timeout: 5m
+
+route:
+  receiver: owner-email
+  # Gom các alert cùng tên vào một mail; mail đầu sau 30s, cập nhật mỗi 5 phút, nhắc lại mỗi 4 giờ nếu vẫn còn
+  group_by: [alertname]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+receivers:
+  - name: owner-email
+    email_configs:
+      - to: letiendungdt@gmail.com
+        send_resolved: true # gửi thêm mail khi sự cố đã hết
+        headers:
+          Subject: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }} ×{{ .Alerts.Firing | len }}{{ end }}] EDU APP — {{ .CommonLabels.alertname }}'
+
+# Đang có ApiGatewayTargetDown (gateway chết) thì các alert khác của gateway là hệ quả — không gửi thêm mail
+inhibit_rules:
+  - source_matchers: [alertname="ApiGatewayTargetDown"]
+    target_matchers: [alertname=~"ApiHighErrorRate|ApiHighLatencyP95|ApiEventLoopBlocked"]

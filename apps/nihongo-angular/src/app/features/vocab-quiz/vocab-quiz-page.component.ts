@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { addMistakeWord } from '../../core/utils/mistake-vocab.util';
@@ -10,7 +17,11 @@ import {
 } from '../../core/utils/vocab-quiz';
 import { getVocabExamples } from '../../core/utils/vocab-pattern-example';
 import { LessonSelectorComponent } from '../../shared/lesson-selector/lesson-selector.component';
-import type { Lesson, Vocabulary, VocabularyWithLesson } from '../../core/models/api.models';
+import type {
+  Lesson,
+  Vocabulary,
+  VocabularyWithLesson,
+} from '../../core/models/api.models';
 
 type ScopeMode = 'single' | 'range';
 type QuizResult = 'correct' | 'wrong' | null;
@@ -29,6 +40,7 @@ const RANGE_PRESETS = [
   standalone: true,
   imports: [LessonSelectorComponent, RouterLink],
   templateUrl: './vocab-quiz-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './vocab-quiz-page.component.scss',
 })
 export class VocabQuizPageComponent {
@@ -54,12 +66,12 @@ export class VocabQuizPageComponent {
   readonly finished = signal(false);
 
   readonly maxLesson = computed(
-    () => this.lessons()[this.lessons().length - 1]?.lessonNumber ?? 50,
+    () => this.lessons()[this.lessons().length - 1]?.lessonNumber ?? 50
   );
   readonly lessonOptions = computed(() =>
     this.lessons()
       .map((l) => l.lessonNumber)
-      .filter((n) => n > 0),
+      .filter((n) => n > 0)
   );
   readonly pool = computed(() => {
     if (this.scopeMode() === 'single') {
@@ -70,8 +82,11 @@ export class VocabQuizPageComponent {
   });
   readonly rangeLabel = computed(() =>
     this.scopeMode() === 'range'
-      ? `Bài ${Math.min(this.lessonFrom(), this.lessonTo())}–${Math.max(this.lessonFrom(), this.lessonTo())}`
-      : `Bài ${this.lesson()}`,
+      ? `Bài ${Math.min(this.lessonFrom(), this.lessonTo())}–${Math.max(
+          this.lessonFrom(),
+          this.lessonTo()
+        )}`
+      : `Bài ${this.lesson()}`
   );
   readonly current = computed(() => this.questions()[this.index()] ?? null);
   readonly patternExamples = computed(() => {
@@ -86,7 +101,7 @@ export class VocabQuizPageComponent {
     });
   });
   readonly visiblePresets = computed(() =>
-    this.presets.filter((preset) => preset.to <= this.maxLesson()),
+    this.presets.filter((preset) => preset.to <= this.maxLesson())
   );
 
   constructor() {

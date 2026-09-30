@@ -4,9 +4,16 @@ import {
   PLATFORM_ID,
   inject,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { NgStyle, isPlatformBrowser } from '@angular/common';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import {
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { NAV_GROUPS } from '../core/config/nav-groups';
 import { PageBannerService } from '../core/services/page-banner.service';
 import { ThemeService } from '../core/services/theme.service';
@@ -30,6 +37,7 @@ const NAV_GROUPS_COLLAPSED_KEY = 'nihongo-nav-groups-collapsed';
     SidebarAuthComponent,
   ],
   templateUrl: './main-layout.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './main-layout.component.scss',
 })
 export class MainLayoutComponent {
@@ -96,7 +104,9 @@ export class MainLayoutComponent {
 
   private restoreSidebarPrefs(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    this.sidebarCollapsed.set(localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1');
+    this.sidebarCollapsed.set(
+      localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1'
+    );
     try {
       const raw = localStorage.getItem(NAV_GROUPS_COLLAPSED_KEY);
       if (!raw) return;

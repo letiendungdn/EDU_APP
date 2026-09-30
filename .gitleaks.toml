@@ -1,0 +1,22 @@
+# Quét secret bằng gitleaks (CI: .github/workflows/ci.yml job "security").
+# Giữ toàn bộ rule mặc định; chỉ bỏ qua các trường hợp ĐÃ BIẾT và đã chấp nhận — mỗi dòng phải có lý do.
+title = "edu_app gitleaks"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Rủi ro đã biết, đã ghi lại"
+paths = [
+  # Backup DB commit vào repo (ADR-0005): dump chứa client_secret/idempotency_key của Stripe (test mode)
+  # và hash mật khẩu. Repo BẮT BUỘC private. Xem docs/adr/0005-commit-db-backups-to-repo.md
+  '''^infra/backups/.*\.sql$''',
+  # .env và services/.env đã bỏ theo dõi. Allowlist giữ vì lịch sử git vẫn chứa secret cũ.
+  '''^\.env$''',
+  '''^services/\.env$''',
+  '''^apps/nihongo-web/\.env$''',
+  # Giá trị mặc định cho môi trường dev (mật khẩu DB Keycloak local); production lấy từ biến môi trường / Secret
+  '''^docker-compose\.yml$''',
+  # Build output không commit
+  '''(^|/)\.next/''',
+]

@@ -1,8 +1,19 @@
-import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
 import type { ListeningPlaylistItem } from '../../core/models/api.models';
-import type { DailyListeningPayload, ListeningPreset } from '../../core/models/reference.models';
+import type {
+  DailyListeningPayload,
+  ListeningPreset,
+} from '../../core/models/reference.models';
 
 const DEFAULT_GOAL_MINUTES = 15;
 
@@ -10,6 +21,7 @@ const DEFAULT_GOAL_MINUTES = 15;
   selector: 'app-daily-listening-page',
   standalone: true,
   templateUrl: './daily-listening-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './daily-listening-page.component.scss',
 })
 export class DailyListeningPageComponent implements OnDestroy {
@@ -50,16 +62,20 @@ export class DailyListeningPageComponent implements OnDestroy {
     return goal ? Math.min(100, Math.round((this.elapsed() / goal) * 100)) : 0;
   });
 
-  readonly goalReached = computed(() => this.elapsed() >= this.goalMinutes() * 60);
+  readonly goalReached = computed(
+    () => this.elapsed() >= this.goalMinutes() * 60
+  );
 
   constructor() {
-    void this.api.getDailyListeningConfig().then((cfg: DailyListeningPayload) => {
-      this.goalMinutes.set(cfg.goalMinutes ?? DEFAULT_GOAL_MINUTES);
-      this.presets.set(cfg.presets ?? []);
-      const defaultPreset = cfg.presets?.[2] ?? cfg.presets?.[0];
-      if (defaultPreset) this.presetId.set(defaultPreset.id);
-      this.configLoading.set(false);
-    });
+    void this.api
+      .getDailyListeningConfig()
+      .then((cfg: DailyListeningPayload) => {
+        this.goalMinutes.set(cfg.goalMinutes ?? DEFAULT_GOAL_MINUTES);
+        this.presets.set(cfg.presets ?? []);
+        const defaultPreset = cfg.presets?.[2] ?? cfg.presets?.[0];
+        if (defaultPreset) this.presetId.set(defaultPreset.id);
+        this.configLoading.set(false);
+      });
 
     effect(() => {
       const preset = this.resolvedPreset();

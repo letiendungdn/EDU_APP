@@ -1,11 +1,21 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ApiService } from '../../core/services/api.service';
-import type { BookAudioItem, BookAudioPayload } from '../../core/models/reference.models';
+import type {
+  BookAudioItem,
+  BookAudioPayload,
+} from '../../core/models/reference.models';
 
 @Component({
   selector: 'app-book-audio-page',
   standalone: true,
   templateUrl: './book-audio-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './book-audio-page.component.scss',
 })
 export class BookAudioPageComponent {
@@ -27,9 +37,10 @@ export class BookAudioPageComponent {
 
   readonly totalLocal = computed(() =>
     this.sections().reduce(
-      (sum, s) => sum + s.items.reduce((n, i) => n + (i.localFiles?.length ?? 0), 0),
-      0,
-    ),
+      (sum, s) =>
+        sum + s.items.reduce((n, i) => n + (i.localFiles?.length ?? 0), 0),
+      0
+    )
   );
 
   constructor() {

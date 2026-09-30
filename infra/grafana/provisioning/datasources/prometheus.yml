@@ -1,7 +1,13 @@
 apiVersion: 1
 
+# Tạo lại datasource để gắn uid cố định (bản cũ được provision không có uid)
+deleteDatasources:
+  - name: Prometheus
+    orgId: 1
+
 datasources:
   - name: Prometheus
+    uid: prometheus # dashboard trong provisioning/dashboards tham chiếu uid này
     type: prometheus
     access: proxy
     url: http://prometheus:9090

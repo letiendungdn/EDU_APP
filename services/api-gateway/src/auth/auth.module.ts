@@ -6,6 +6,7 @@ import { SlidingWindowRateLimitGuard } from "@app/common";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { JwtStrategy } from "./jwt.strategy";
+import { resolveJwtSecret } from "./jwt-secret";
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { JwtStrategy } from "./jwt.strategy";
       global: true,
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        secret: config.get<string>("jwt.secret") ?? "change-me-in-production",
+        secret: resolveJwtSecret(config),
         signOptions: {
           expiresIn: (config.get<string>("jwt.expiresIn") ??
             "15m") as `${number}m`,

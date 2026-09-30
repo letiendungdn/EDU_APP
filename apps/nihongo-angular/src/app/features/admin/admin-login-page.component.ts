@@ -1,4 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -9,6 +14,7 @@ import { ApiError } from '../../core/http/api-client';
   standalone: true,
   imports: [FormsModule, RouterLink],
   templateUrl: './admin-login-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin-login-page.component.scss',
 })
 export class AdminLoginPageComponent {
@@ -39,7 +45,9 @@ export class AdminLoginPageComponent {
       await this.auth.loginAdmin(this.email.trim(), this.password);
       await this.router.navigateByUrl(this.redirectUrl);
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Đăng nhập thất bại');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Đăng nhập thất bại'
+      );
     } finally {
       this.loading.set(false);
     }

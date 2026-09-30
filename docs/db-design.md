@@ -328,6 +328,8 @@ Các migration cũ trước đó được giữ trong `packages/prisma-nihongo/m
 | `20260926130000_baseline` | Toàn bộ schema tại thời điểm squash (user, nội dung, JLPT, thanh toán, chat, email, mind map…) |
 | `20260926140000_textbook_lessons` | Enum `Textbook`; cột `Lesson.textbook`, `KanjiLesson.textbook` |
 | `20260926160000_textbook_catalog` | Bảng `TextbookSeries`, `TextbookBook` (danh mục giáo trình) |
+| `20260929120000_outbox_drop_redundant_indexes` | Bảng `OutboxEvent` (transactional outbox, ADR-0006); xoá 6 index trùng với UNIQUE |
+| `20260929180000_processed_event_feature_flag` | `ProcessedEvent` (consumer idempotent), `FeatureFlag` + cờ mặc định `vocab-search-all-lessons` |
 
 Seed dữ liệu: `seed.ts` gọi lần lượt các seed con (`seed:textbooks`, `seed:textbook-catalog`, `seed:mind-maps`, `seed-plans.ts`…).
 

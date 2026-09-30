@@ -1,4 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { playJapanese } from '../../core/utils/speech.util';
@@ -31,9 +37,13 @@ function buildItems(rows: VocabularyWithLesson[]): Item[] {
     if (!result) continue;
     const asked = pickAsked();
     const answer = result.forms[asked];
-    const distractors = CONJ_FORMS.map((f) => result.forms[f.id]).filter((f) => f !== answer);
+    const distractors = CONJ_FORMS.map((f) => result.forms[f.id]).filter(
+      (f) => f !== answer
+    );
     const extra = items.map((i) => i.answer).filter((a) => a !== answer);
-    const options = [answer, ...distractors, ...extra].filter((v, i, arr) => arr.indexOf(v) === i).slice(0, 4);
+    const options = [answer, ...distractors, ...extra]
+      .filter((v, i, arr) => arr.indexOf(v) === i)
+      .slice(0, 4);
     for (let i = options.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
       [options[i], options[j]] = [options[j], options[i]];
@@ -55,6 +65,7 @@ function buildItems(rows: VocabularyWithLesson[]): Item[] {
   standalone: true,
   imports: [RouterLink],
   styleUrl: './drills.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './conjugation-page.component.html',
 })
 export class ConjugationPageComponent {
@@ -69,7 +80,7 @@ export class ConjugationPageComponent {
 
   readonly current = computed(() => this.deck()[this.index()]);
   readonly askedLabel = computed(
-    () => CONJ_FORMS.find((f) => f.id === this.current()?.asked)?.label ?? '',
+    () => CONJ_FORMS.find((f) => f.id === this.current()?.asked)?.label ?? ''
   );
 
   constructor() {

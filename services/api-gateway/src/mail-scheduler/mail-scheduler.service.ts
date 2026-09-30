@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron } from "@nestjs/schedule";
 import { PrismaService } from "@app/prisma";
-import { MailService } from "@app/common";
+import { MailService } from "@app/common/mail/mail.service";
 
 const MILESTONE_DAYS = [7, 30, 100];
 

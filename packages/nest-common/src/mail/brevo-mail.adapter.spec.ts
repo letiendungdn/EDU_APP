@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BrevoMailAdapter } from './brevo-mail.adapter';
 
@@ -56,6 +57,7 @@ describe('BrevoMailAdapter', () => {
   });
 
   it('throws when Brevo returns error', async () => {
+    jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
     global.fetch = jest.fn().mockResolvedValue({
       ok: false,
       status: 401,

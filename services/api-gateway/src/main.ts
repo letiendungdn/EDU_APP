@@ -11,14 +11,19 @@ import helmet from "helmet";
 import { Logger as PinoLogger } from "nestjs-pino";
 import { AllExceptionsFilter, ResponseInterceptor } from "@app/common";
 import { AppModule } from "./app.module";
+import { bodyLimitMiddleware } from "./body-limit.middleware";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
     rawBody: true,
   });
-  // Banner upload gửi ảnh base64 — nới limit JSON body
+  // Chặn body > 1 MB theo Content-Length TRƯỚC khi parse, trừ route soạn nội dung (xem body-limit.middleware.ts)
+  app.use(bodyLimitMiddleware);
+  // Route soạn nội dung gửi ảnh data URL — parser cho phép tới 8 MB
   app.useBodyParser("json", { limit: "8mb" });
+  // SIGTERM (K8s rolling update) → đóng server, Prisma, Kafka gọn gàng thay vì cắt ngang request
+  app.enableShutdownHooks();
   app.useLogger(app.get(PinoLogger));
   const configService = app.get(ConfigService);
   const logger = new Logger("Bootstrap");
@@ -39,15 +44,18 @@ async function bootstrap() {
   );
 
   const allowedOrigins = configService.get<string[]>("cors.origins") ?? [];
+  const isProduction = process.env.NODE_ENV === "production";
   app.enableCors({
     origin: (origin, callback) => {
       // Allow requests with no origin (mobile apps, curl, Postman)
       if (!origin) return callback(null, true);
-      // Allow any localhost port for local development
-      if (/^http:\/\/localhost(:\d+)?$/.test(origin))
+      // Mọi cổng localhost chỉ được phép khi dev — production chỉ dùng danh sách cors.origins
+      if (!isProduction && /^http:\/\/localhost(:\d+)?$/.test(origin))
         return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
-      callback(new Error(`CORS: origin ${origin} not allowed`));
+      // Origin lạ: không gắn header CORS → trình duyệt tự chặn. Không ném lỗi (trước đây thành 500,
+      // làm bẩn log lỗi và metric 5xx vì một request hoàn toàn bình thường từ trang khác).
+      callback(null, false);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

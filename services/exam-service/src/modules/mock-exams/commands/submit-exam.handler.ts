@@ -17,6 +17,8 @@ export class SubmitExamHandler implements ICommandHandler<SubmitExamCommand> {
       command.userId,
     );
 
+    // Sự kiện trong tiến trình (CQRS). Event Kafka "edu.exam.submitted" KHÔNG gửi ở đây nữa —
+    // nó được ghi vào OutboxEvent cùng transaction trong submit() và OutboxRelayService đẩy lên Kafka.
     this.eventBus.publish(
       new ExamSubmittedEvent({
         examId: result.examId,

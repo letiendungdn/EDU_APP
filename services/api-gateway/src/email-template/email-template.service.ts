@@ -14,8 +14,8 @@ import {
   type MailAttachment,
   type MailPort,
   type MailTemplateStore,
-} from "@app/common";
-import { MailService } from "@app/common";
+} from "@app/common/mail/mail.port";
+import { MailService } from "@app/common/mail/mail.service";
 import {
   EMAIL_TEMPLATE_DEFAULTS,
   TEMPLATE_SAMPLE_VARS,

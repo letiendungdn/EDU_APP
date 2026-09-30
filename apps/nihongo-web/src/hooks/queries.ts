@@ -38,6 +38,7 @@ import {
   fetchKanjiLessons,
   fetchKanjiSearch,
   searchVocabularies,
+  fetchFeatureFlags,
   fetchKanjiByJlpt,
   fetchVocabulariesRange,
   fetchListeningPlaylist,
@@ -73,6 +74,7 @@ export const queryKeys = {
   kanjiRange: (from: number, to: number) => ['kanji', 'range', from, to] as const,
   kanjiSearch: (query: string) => ['kanji-search', query] as const,
   vocabSearch: (query: string) => ['vocab-search', query] as const,
+  featureFlags: (withToken: boolean) => ['feature-flags', withToken] as const,
   kanjiByJlpt: (level: string) => ['kanji-jlpt', level] as const,
   vocabRange: (from: number, to: number) => domainQueryKeys.vocab.byRange(from, to),
   listeningPlaylist: (from: number, to: number, level?: string) =>
@@ -159,6 +161,21 @@ export function useKanjiSearchQuery(query: string) {
     enabled: query.trim().length > 0,
     staleTime: STALE_5M,
   });
+}
+
+/**
+ * Feature flag bật/tắt từ admin (bảng FeatureFlag) — không cần deploy.
+ * Lỗi mạng / đang tải → coi như TẮT (tính năng mới không lộ ra khi chưa chắc chắn).
+ */
+export function useFeatureFlag(key: string): boolean {
+  const token = getStoredToken();
+  const { data } = useQuery({
+    queryKey: queryKeys.featureFlags(!!token),
+    queryFn: () => fetchFeatureFlags(token),
+    staleTime: 60_000,
+    retry: false,
+  });
+  return data?.includes(key) ?? false;
 }
 
 export function useVocabSearchQuery(query: string) {

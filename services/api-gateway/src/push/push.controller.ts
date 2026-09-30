@@ -38,7 +38,10 @@ export class PushController {
   @Delete("unregister")
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: "Remove device token on logout" })
-  async unregister(@Body() dto: UnregisterDeviceDto) {
-    await this.push.unregisterToken(dto.token);
+  async unregister(
+    @Req() req: { user: AuthUserPayload },
+    @Body() dto: UnregisterDeviceDto,
+  ) {
+    await this.push.unregisterToken(dto.token, req.user.id);
   }
 }

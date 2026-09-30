@@ -1,13 +1,24 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
-import type { ReadingPassage, ReadingResult } from '../../core/models/api.models';
+import type {
+  ReadingPassage,
+  ReadingResult,
+} from '../../core/models/api.models';
 
 @Component({
   selector: 'app-reading-detail-page',
   standalone: true,
   imports: [RouterLink],
   templateUrl: './reading-detail-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './reading-detail-page.component.scss',
 })
 export class ReadingDetailPageComponent {
@@ -20,7 +31,9 @@ export class ReadingDetailPageComponent {
   readonly result = signal<ReadingResult | null>(null);
   readonly answers = signal<Record<string, string>>({});
 
-  readonly passageId = computed(() => Number(this.route.snapshot.paramMap.get('id')));
+  readonly passageId = computed(() =>
+    Number(this.route.snapshot.paramMap.get('id'))
+  );
 
   readonly allAnswered = computed(() => {
     const p = this.passage();

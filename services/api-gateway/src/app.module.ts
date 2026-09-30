@@ -9,16 +9,16 @@ import { LoggerModule } from "nestjs-pino";
 import {
   PrometheusModule,
   makeCounterProvider,
+  makeHistogramProvider,
 } from "@willsoto/nestjs-prometheus";
-import {
-  AuditInterceptor,
-  AuditModule,
-  configuration,
-  JwtAuthGuard,
-  MailModule,
-  pinoConfig,
-  RedisModule,
-} from "@app/common";
+import { AuditInterceptor } from "@app/common/audit/audit.interceptor";
+import { AuditModule } from "@app/common/audit/audit.module";
+import { AuditService } from "@app/common/audit/audit.service";
+import configuration from "@app/common/config/configuration";
+import { JwtAuthGuard } from "@app/common/auth/jwt-auth.guard";
+import { MailModule } from "@app/common/mail/mail.module";
+import { pinoConfig } from "@app/common/logger/pino.config";
+import { RedisModule } from "@app/common/redis/redis.module";
 import { PrismaModule } from "@app/prisma";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -34,6 +34,23 @@ import { WebhooksModule } from "./webhooks/webhooks.module";
 import { MailSchedulerModule } from "./mail-scheduler/mail-scheduler.module";
 import { EmailTemplateModule } from "./email-template/email-template.module";
 import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
+import { MetricsController } from "./metrics/metrics.controller";
+
+const mongoEnabled = !["false", "0", "off"].includes(
+  process.env.MONGODB_ENABLED ?? "",
+);
+
+class NoopAuditService {
+  log(): Promise<void> {
+    return Promise.resolve();
+  }
+  findByUser(): Promise<never[]> {
+    return Promise.resolve([]);
+  }
+  getStats(): Promise<never[]> {
+    return Promise.resolve([]);
+  }
+}
 
 @Module({
   imports: [
@@ -46,25 +63,30 @@ import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
         },
       }),
     }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        uri:
-          config.get<string>("mongodb.url") ??
-          process.env.MONGODB_URL ??
-          "mongodb://localhost:27017/nihongo_audit",
-      }),
-    }),
+    ...(mongoEnabled
+      ? [
+          MongooseModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => ({
+              uri:
+                config.get<string>("mongodb.url") ??
+                process.env.MONGODB_URL ??
+                "mongodb://localhost:27017/nihongo_audit",
+            }),
+          }),
+        ]
+      : []),
     LoggerModule.forRoot(pinoConfig),
     PrometheusModule.register({
       path: "/metrics",
+      controller: MetricsController,
       defaultMetrics: { enabled: true },
     }),
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 120 }]),
     ScheduleModule.forRoot(),
     RedisModule,
-    AuditModule,
+    ...(mongoEnabled ? [AuditModule] : []),
     MailModule,
     MicroservicesModule,
     PrismaModule,
@@ -85,11 +107,20 @@ import { HttpMetricsInterceptor } from "./metrics/http-metrics.interceptor";
     makeCounterProvider({
       name: "http_requests_total",
       help: "Total number of HTTP requests",
-      labelNames: ["method", "path", "status"],
+      labelNames: ["method", "route", "status"],
+    }),
+    makeHistogramProvider({
+      name: "http_request_duration_seconds",
+      help: "HTTP request latency in seconds",
+      labelNames: ["method", "route", "status"],
+      buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
     }),
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_INTERCEPTOR, useClass: HttpMetricsInterceptor },
+    ...(mongoEnabled
+      ? []
+      : [{ provide: AuditService, useClass: NoopAuditService }]),
     { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
   ],
 })

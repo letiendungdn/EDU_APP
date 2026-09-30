@@ -1,23 +1,25 @@
-import { Component, Input } from '@angular/core';
-import { renderFuriganaParts, stripParenFurigana } from '../../core/utils/furiganaDisplay';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import {
+  renderFuriganaParts,
+  stripParenFurigana,
+} from '../../core/utils/furiganaDisplay';
 
 type FuriPart = { kanji: string; reading?: string } | { text: string };
 
 @Component({
   selector: 'app-furigana-text',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (!show) {
-      <span>{{ stripped }}</span>
+    <span>{{ stripped }}</span>
+    } @else { @for (part of parts; track $index) { @if (rubyOf(part); as ruby) {
+    <ruby
+      >{{ ruby.kanji }}<rt>{{ ruby.reading }}</rt></ruby
+    >
     } @else {
-      @for (part of parts; track $index) {
-        @if (rubyOf(part); as ruby) {
-          <ruby>{{ ruby.kanji }}<rt>{{ ruby.reading }}</rt></ruby>
-        } @else {
-          <span>{{ textOf(part) }}</span>
-        }
-      }
-    }
+    <span>{{ textOf(part) }}</span>
+    } } }
   `,
 })
 export class FuriganaTextComponent {
@@ -33,7 +35,8 @@ export class FuriganaTextComponent {
   }
 
   rubyOf(part: FuriPart): { kanji: string; reading: string } | null {
-    if ('reading' in part && part.reading) return { kanji: part.kanji, reading: part.reading };
+    if ('reading' in part && part.reading)
+      return { kanji: part.kanji, reading: part.reading };
     return null;
   }
 

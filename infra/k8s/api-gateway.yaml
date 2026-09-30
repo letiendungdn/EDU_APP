@@ -24,7 +24,13 @@ metadata:
     app: api-gateway
     app.kubernetes.io/part-of: edu-platform
 spec:
-  replicas: 2
+  # Rolling update không gián đoạn: pod mới phải Ready trước khi gỡ pod cũ
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  # Không đặt replicas: HPA (api-gateway-hpa.yaml) quyết định số pod — apply lại không ép về 2
   selector:
     matchLabels:
       app: api-gateway
@@ -35,6 +41,8 @@ spec:
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
+      # SIGTERM → app đóng gọn (enableShutdownHooks); preStop chờ Service/Ingress gỡ pod khỏi danh sách
+      terminationGracePeriodSeconds: 30
       containers:
         - name: api-gateway
           image: ghcr.io/letiendungdn/edu_app/api-gateway:latest
@@ -46,6 +54,8 @@ spec:
             - configMapRef:
                 name: edu-app-config
           env:
+            - name: SERVICE_NAME # tên service trong log (pino) và trace (Jaeger)
+              value: api-gateway
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
@@ -68,9 +78,13 @@ spec:
             limits:
               cpu: 500m
               memory: 512Mi
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 5"]
           livenessProbe:
             httpGet:
-              path: /health
+              path: /health/live
               port: 3000
             initialDelaySeconds: 20
             periodSeconds: 15
@@ -78,7 +92,7 @@ spec:
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /health
+              path: /health/ready
               port: 3000
             initialDelaySeconds: 10
             periodSeconds: 5

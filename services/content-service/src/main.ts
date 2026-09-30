@@ -22,6 +22,8 @@ async function bootstrap() {
       },
     },
   );
+  // SIGTERM (K8s rolling update) → đóng gRPC server, Prisma, Kafka gọn gàng
+  app.enableShutdownHooks();
   await app.listen();
   const logger = new Logger("Bootstrap");
   logger.log(`Content service listening on gRPC :${port}`);

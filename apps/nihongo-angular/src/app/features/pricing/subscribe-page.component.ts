@@ -1,6 +1,18 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  ViewChild,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { loadStripe, type Stripe, type StripeElements } from '@stripe/stripe-js';
+import {
+  loadStripe,
+  type Stripe,
+  type StripeElements,
+} from '@stripe/stripe-js';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
 import { ApiError } from '../../core/http/api-client';
@@ -15,6 +27,7 @@ import type {
   standalone: true,
   imports: [RouterLink],
   templateUrl: './subscribe-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './subscribe-page.component.scss',
 })
 export class SubscribePageComponent implements AfterViewInit {
@@ -33,12 +46,14 @@ export class SubscribePageComponent implements AfterViewInit {
   readonly processing = signal(false);
   readonly stripeConfigured = signal(true);
 
-  readonly plan = (this.route.snapshot.queryParamMap.get('plan') ?? 'PRO') as SubscriptionPlan;
+  readonly plan = (this.route.snapshot.queryParamMap.get('plan') ??
+    'PRO') as SubscriptionPlan;
   private stripe: Stripe | null = null;
   private elements: StripeElements | null = null;
   private viewReady = false;
 
-  @ViewChild('paymentElement') private paymentElement?: ElementRef<HTMLDivElement>;
+  @ViewChild('paymentElement')
+  private paymentElement?: ElementRef<HTMLDivElement>;
 
   constructor() {
     void this.initCheckout();
@@ -70,7 +85,9 @@ export class SubscribePageComponent implements AfterViewInit {
       await this.loadCards(token);
       await this.mountStripeElement();
     } catch (err) {
-      this.error.set(err instanceof ApiError ? err.message : 'Không thể khởi tạo thanh toán');
+      this.error.set(
+        err instanceof ApiError ? err.message : 'Không thể khởi tạo thanh toán'
+      );
     } finally {
       this.loading.set(false);
     }
@@ -174,7 +191,9 @@ export class SubscribePageComponent implements AfterViewInit {
 
       await this.router.navigate(['/pricing'], { queryParams: { success: 1 } });
     } catch (err) {
-      this.error.set(err instanceof Error ? err.message : 'Thanh toán thất bại');
+      this.error.set(
+        err instanceof Error ? err.message : 'Thanh toán thất bại'
+      );
     } finally {
       this.processing.set(false);
     }
