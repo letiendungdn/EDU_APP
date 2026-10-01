@@ -8,6 +8,8 @@ import { useJapaneseCountryNamesQuery } from '../hooks/queries';
 import { playAudio } from '../utils/speech';
 import { countryFlagEmoji } from '../utils/countryFlag';
 import StrokeOrder from '../components/StrokeOrder';
+import CountryPeopleTable from '../components/CountryPeopleTable';
+import { COUNTRY_PEOPLE_LANGUAGES, matchesCountryPeople, personOf } from '../data/country-people-language';
 import './CountriesView.css';
 
 function CountryPopup({
@@ -63,6 +65,9 @@ function matchesCountry(item: CountryNameItem, query: string): boolean {
   return haystack.includes(query);
 }
 
+/** Tab bảng 国・人・語 — dữ liệu soạn sẵn ở frontend, không lấy từ API. */
+const PEOPLE_TAB = 'kuni-hito-go';
+
 export default function CountriesView() {
   const { data, isLoading } = useJapaneseCountryNamesQuery();
   const regions = data?.regions ?? [];
@@ -72,6 +77,7 @@ export default function CountriesView() {
   const { isPlayingAll, startPlayAll, stopPlayAll } = usePlayAll();
 
   const resolvedActiveId = activeId || regions[0]?.id || '';
+  const isPeopleTab = resolvedActiveId === PEOPLE_TAB;
   const category = regions.find((c) => c.id === resolvedActiveId) ?? regions[0];
 
   const items = useMemo(() => {
@@ -81,7 +87,19 @@ export default function CountriesView() {
     return source.filter((item) => matchesCountry(item, q));
   }, [category, searchQuery]);
 
+  const peopleRows = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return q ? COUNTRY_PEOPLE_LANGUAGES.filter((c) => matchesCountryPeople(c, q)) : COUNTRY_PEOPLE_LANGUAGES;
+  }, [searchQuery]);
+
+  const count = isPeopleTab ? peopleRows.length : items.length;
+
   const handlePlayAll = () => {
+    if (isPeopleTab) {
+      // Đọc theo hàng: nước → người → ngôn ngữ
+      startPlayAll(peopleRows.flatMap((c) => [c.kana, personOf(c).kana, ...c.languages.map((l) => l.kana)]));
+      return;
+    }
     startPlayAll(items.map((item) => item.kana));
   };
 
@@ -116,6 +134,16 @@ export default function CountriesView() {
               {cat.label}
             </button>
           ))}
+          <button
+            type="button"
+            className={`tab-btn ${isPeopleTab ? 'active' : ''}`}
+            onClick={() => {
+              stopPlayAll();
+              setActiveId(PEOPLE_TAB);
+            }}
+          >
+            国・人・語
+          </button>
         </div>
 
         <label className="countries-search">
@@ -132,6 +160,22 @@ export default function CountriesView() {
 
       <div className="countries-panel">
         <div className="countries-hint-box">
+          {isPeopleTab ? (
+            <ul className="countries-hint-list">
+              <li>
+                Người: tên nước + 「人（じん）」 — ベトナム人. Ngôn ngữ: tên nước + 「語（ご）」 — ベトナム語.
+              </li>
+              <li>
+                <strong>In đậm</strong> = ngoại lệ: アメリカ・イギリス → <strong>英語</strong>, ブラジル → <strong>ポルトガル語</strong>, メキシコ → <strong>スペイン語</strong>.
+              </li>
+              <li>
+                「人」 đọc <strong>じん</strong> khi chỉ quốc tịch, <strong>にん</strong> khi đếm (三人), <strong>ひと</strong> khi đứng một mình.
+              </li>
+              <li>
+                お国はどちらですか。・何人（なにじん）ですか。・何語（なにご）が話せますか。
+              </li>
+            </ul>
+          ) : (
           <ul className="countries-hint-list">
             <li>
               Người Nhật thường nói 「〜の人」 cho dân tộc (例: ベトナムの人 = người Việt).
@@ -143,20 +187,27 @@ export default function CountriesView() {
               Quốc gia mình: 「私はベトナム人です」 / 「ベトナムから来ました」.
             </li>
           </ul>
+          )}
         </div>
 
         <div className="countries-toolbar">
-          <span className="countries-count">{items.length} mục</span>
+          <span className="countries-count">{count} mục</span>
           <PlayAllButton
             isPlaying={isPlayingAll}
             onPlay={handlePlayAll}
             onStop={stopPlayAll}
             label="Phát tất cả"
-            disabled={items.length === 0}
+            disabled={count === 0}
           />
         </div>
 
-        {items.length === 0 ? (
+        {isPeopleTab ? (
+          peopleRows.length === 0 ? (
+            <p className="countries-empty">Không tìm thấy quốc gia phù hợp.</p>
+          ) : (
+            <CountryPeopleTable rows={peopleRows} />
+          )
+        ) : items.length === 0 ? (
           <p className="countries-empty">Không tìm thấy quốc gia phù hợp.</p>
         ) : (
           <div className="countries-grid">
