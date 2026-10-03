@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
-\restrict oECs9264QObG6Vjp0DlAmPHhiRNoaCzEdojra29LGJfdZUTNOFm9INpqapG1pF3
+\restrict G7F2iI9Z1QAntTy3NdcFlBICkAXEiIxhG25NJ8ffbSG5dbKruffrfQTDcH7tHJR
 
--- Dumped from database version 16.14
--- Dumped by pg_dump version 16.14
+-- Dumped from database version 16.15
+-- Dumped by pg_dump version 16.15
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -6150,6 +6150,13 @@ CREATE INDEX "CountryRegion_sortOrder_idx" ON public."CountryRegion" USING btree
 
 
 --
+-- Name: DailyActivity_userId_date_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "DailyActivity_userId_date_idx" ON public."DailyActivity" USING btree ("userId", date);
+
+
+--
 -- Name: DailyActivity_userId_date_kind_key; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -6164,10 +6171,24 @@ CREATE INDEX "DailyGoalItem_goalId_sortOrder_idx" ON public."DailyGoalItem" USIN
 
 
 --
+-- Name: DailyGoal_userId_date_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "DailyGoal_userId_date_idx" ON public."DailyGoal" USING btree ("userId", date);
+
+
+--
 -- Name: DailyGoal_userId_date_key; Type: INDEX; Schema: public; Owner: nihongo
 --
 
 CREATE UNIQUE INDEX "DailyGoal_userId_date_key" ON public."DailyGoal" USING btree ("userId", date);
+
+
+--
+-- Name: DailyNote_userId_date_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "DailyNote_userId_date_idx" ON public."DailyNote" USING btree ("userId", date);
 
 
 --
@@ -6416,6 +6437,13 @@ CREATE INDEX "JlptRoadmapTask_phaseId_sortOrder_idx" ON public."JlptRoadmapTask"
 
 
 --
+-- Name: KanaCell_sectionId_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "KanaCell_sectionId_idx" ON public."KanaCell" USING btree ("sectionId");
+
+
+--
 -- Name: KanaCell_sectionId_rowIndex_colIndex_key; Type: INDEX; Schema: public; Owner: nihongo
 --
 
@@ -6553,6 +6581,13 @@ CREATE UNIQUE INDEX "Lesson_lessonNumber_key" ON public."Lesson" USING btree ("l
 --
 
 CREATE INDEX "Lesson_textbook_lessonNumber_idx" ON public."Lesson" USING btree (textbook, "lessonNumber");
+
+
+--
+-- Name: ListeningLog_userId_date_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "ListeningLog_userId_date_idx" ON public."ListeningLog" USING btree ("userId", date);
 
 
 --
@@ -6868,6 +6903,13 @@ CREATE INDEX "SrsCard_userId_contentType_mastered_idx" ON public."SrsCard" USING
 --
 
 CREATE INDEX "SrsCard_userId_nextReviewAt_idx" ON public."SrsCard" USING btree ("userId", "nextReviewAt");
+
+
+--
+-- Name: StudySession_userId_date_idx; Type: INDEX; Schema: public; Owner: nihongo
+--
+
+CREATE INDEX "StudySession_userId_date_idx" ON public."StudySession" USING btree ("userId", date);
 
 
 --
@@ -7664,5 +7706,5 @@ ALTER TABLE ONLY public."Vocabulary"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict oECs9264QObG6Vjp0DlAmPHhiRNoaCzEdojra29LGJfdZUTNOFm9INpqapG1pF3
+\unrestrict G7F2iI9Z1QAntTy3NdcFlBICkAXEiIxhG25NJ8ffbSG5dbKruffrfQTDcH7tHJR
 
