@@ -4,11 +4,14 @@ COPY package.json package-lock.json ./
 COPY packages/vocab-images ./packages/vocab-images
 COPY apps/english-web ./apps/english-web
 RUN npm ci
+RUN apk add --no-cache libc6-compat
+RUN npm run build -w @edu/vocab-images
 WORKDIR /app/apps/english-web
 ENV API_URL=http://api-gateway:3000
 RUN npm run build
 
 FROM node:22-alpine AS runner
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3001

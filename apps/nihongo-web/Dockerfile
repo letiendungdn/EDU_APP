@@ -4,6 +4,8 @@ COPY package.json package-lock.json ./
 COPY packages/vocab-images ./packages/vocab-images
 COPY apps/nihongo-web ./apps/nihongo-web
 RUN npm ci
+RUN apk add --no-cache libc6-compat
+RUN npm run build -w @edu/vocab-images
 WORKDIR /app/apps/nihongo-web
 # Next.js type validator resolves ../../app/* — symlink for src/app layout in monorepo
 RUN ln -sf src/app app
@@ -23,6 +25,7 @@ ENV NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 RUN npm run build
 
 FROM node:22-alpine AS runner
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=5173

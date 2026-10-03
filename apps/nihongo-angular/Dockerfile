@@ -5,6 +5,7 @@ COPY packages/vocab-images ./packages/vocab-images
 COPY apps/nihongo-web/public/media ./apps/nihongo-angular/public/media
 COPY apps/nihongo-angular ./apps/nihongo-angular
 RUN npm ci
+RUN npm run build -w @edu/vocab-images
 WORKDIR /app/apps/nihongo-angular
 ARG GOOGLE_CLIENT_ID=
 ARG STRIPE_PUBLISHABLE_KEY=
