@@ -464,6 +464,74 @@ export default function KanjiListView({
     }
   }
 
+  const navRef = useRef({
+    entries: filteredEntries,
+    selectedId: null as number | null,
+    popupOpen: false,
+  });
+  navRef.current = {
+    entries: filteredEntries,
+    selectedId: selectedEntry?.id ?? null,
+    popupOpen: popupEntry != null,
+  };
+
+  const showEntry = useCallback((entry: KanjiEntry, openPopup: boolean) => {
+    setSelectedEntry(entry);
+    if (openPopup) setPopupEntry(entry);
+    playAudio(getPrimaryReading(entry));
+    if (!kanjiLoggedRef.current) {
+      kanjiLoggedRef.current = true;
+      void logActivity('kanji');
+    }
+    requestAnimationFrame(() => {
+      document
+        .querySelector(`[data-kanji-id="${entry.id}"]`)
+        ?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT' ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+
+      const { entries, selectedId, popupOpen } = navRef.current;
+      if (!entries.length) return;
+
+      if (
+        e.key === 'ArrowRight' ||
+        e.key === 'ArrowDown' ||
+        e.key === 'ArrowLeft' ||
+        e.key === 'ArrowUp'
+      ) {
+        e.preventDefault();
+        const delta = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1;
+        const index = entries.findIndex((item) => item.id === selectedId);
+        const nextIndex = index < 0 ? (delta > 0 ? 0 : entries.length - 1) : index + delta;
+        if (nextIndex < 0 || nextIndex >= entries.length) return;
+        showEntry(entries[nextIndex], popupOpen);
+        return;
+      }
+
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault();
+        const current = entries.find((item) => item.id === selectedId);
+        if (current) playAudio(getPrimaryReading(current));
+      }
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [showEntry]);
+
   function handleSaved() {
     setFormState(null);
     invalidateKanji();
@@ -623,6 +691,7 @@ export default function KanjiListView({
           </span>
           <span>
             Hiển thị <strong>{filteredEntries.length}</strong> / {entries.length} kanji
+            {' · '}← → đổi chữ và nghe · Space nghe lại
           </span>
         </div>
       )}
@@ -649,6 +718,7 @@ export default function KanjiListView({
                     key={entry.id}
                     type="button"
                     role="listitem"
+                    data-kanji-id={entry.id}
                     className={`kanji-cell ${selectedEntry?.id === entry.id ? 'selected' : ''} ${
                       isAllView ? `level-${jlpt.toLowerCase()}` : ''
                     }`}
@@ -737,7 +807,11 @@ export default function KanjiListView({
             </thead>
             <tbody>
               {filteredEntries.map((entry, index) => (
-                <tr key={entry.id}>
+                <tr
+                  key={entry.id}
+                  data-kanji-id={entry.id}
+                  className={selectedEntry?.id === entry.id ? 'selected' : undefined}
+                >
                   <td>{index + 1}</td>
                   {isAllView && (
                     <td className={`kanji-list-jlpt level-${getEntryJlpt(entry).toLowerCase()}`}>

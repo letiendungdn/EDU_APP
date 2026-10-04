@@ -167,6 +167,12 @@
   background: rgba(99, 102, 241, 0.08);
 }
 
+.kanji-list-table tbody tr.selected {
+  background: color-mix(in srgb, var(--primary-color) 14%, transparent);
+  outline: 2px solid var(--primary-color);
+  outline-offset: -2px;
+}
+
 .kanji-list-table tbody tr:last-child td {
   border-bottom: none;
 }
