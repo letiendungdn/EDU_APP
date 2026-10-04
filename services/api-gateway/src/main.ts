@@ -13,6 +13,17 @@ import { AllExceptionsFilter, ResponseInterceptor } from "@app/common";
 import { AppModule } from "./app.module";
 import { bodyLimitMiddleware } from "./body-limit.middleware";
 
+// Khi Docker Desktop khởi động lại, gateway có thể lên trước khi Postgres/Kafka hồi phục xong và treo
+// ở bước init mà không chết → không bao giờ mở cổng 3000, nginx trả 502 mãi. Quá hạn thì thoát để
+// restart policy (unless-stopped) khởi động lại khi các dịch vụ phụ thuộc đã sẵn sàng.
+const STARTUP_TIMEOUT_MS = Number(process.env.STARTUP_TIMEOUT_MS ?? 180_000);
+const startupWatchdog = setTimeout(() => {
+  console.error(
+    `API Gateway chưa mở cổng sau ${STARTUP_TIMEOUT_MS / 1000}s — thoát để Docker khởi động lại`,
+  );
+  process.exit(1);
+}, STARTUP_TIMEOUT_MS);
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
@@ -86,8 +97,12 @@ async function bootstrap() {
 
   const port = configService.get<number>("port") ?? 3000;
   await app.listen(port);
+  clearTimeout(startupWatchdog);
   logger.log(`API Gateway: http://localhost:${port}`);
   logger.log(`Swagger: http://localhost:${port}/api/docs`);
 }
 
-void bootstrap();
+bootstrap().catch((err) => {
+  console.error("API Gateway khởi động thất bại", err);
+  process.exit(1);
+});
