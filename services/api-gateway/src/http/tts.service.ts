@@ -1,3 +1,4 @@
+import "./edge-tts-ws-patch";
 import { Injectable, Logger } from "@nestjs/common";
 import { EdgeTTS } from "edge-tts-universal";
 
