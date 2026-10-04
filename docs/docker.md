@@ -356,7 +356,7 @@ Snapshot trong repo (cập nhật gần nhất):
 npm run db:backup
 
 # Restore Nihongo
-Get-Content infra\backups\nihongo_20261003_214703.sql |
+Get-Content infra\backups\nihongo_20261004_211325.sql |
   docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 ```
 
@@ -391,7 +391,7 @@ docker volume create nihongo-app_postgres_data
 npm run docker:up:nihongo
 
 # Đợi postgres healthy rồi restore
-Get-Content infra\backups\nihongo_20261003_214703.sql |
+Get-Content infra\backups\nihongo_20261004_211325.sql |
   docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 ```
 

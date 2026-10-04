@@ -1,8 +1,8 @@
-﻿--
+--
 -- PostgreSQL database dump
 --
 
-\restrict G7F2iI9Z1QAntTy3NdcFlBICkAXEiIxhG25NJ8ffbSG5dbKruffrfQTDcH7tHJR
+\restrict jrFzCOPy0JrPgvFrAb6Nxb7BbctkHk6Vv0kNyIaIuCVV55uKUDFxRZRYGNN0doT
 
 -- Dumped from database version 16.15
 -- Dumped by pg_dump version 16.15
@@ -7706,5 +7706,5 @@ ALTER TABLE ONLY public."Vocabulary"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict G7F2iI9Z1QAntTy3NdcFlBICkAXEiIxhG25NJ8ffbSG5dbKruffrfQTDcH7tHJR
+\unrestrict jrFzCOPy0JrPgvFrAb6Nxb7BbctkHk6Vv0kNyIaIuCVV55uKUDFxRZRYGNN0doT
 
