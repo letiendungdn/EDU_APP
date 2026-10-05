@@ -301,10 +301,10 @@ docker exec edu-postgres-nihongo rm -f /tmp/backup.sql
 
 ```powershell
 # SAI — PowerShell mã hoá lại file trước khi đưa vào psql → chữ Việt/Nhật thành "?"
-Get-Content infra\backups\nihongo_20261004_211325.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+Get-Content infra\backups\nihongo_20261005_214346.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
 
 # ĐÚNG
-docker cp infra\backups\nihongo_20261004_211325.sql edu-postgres-nihongo:/tmp/restore.sql
+docker cp infra\backups\nihongo_20261005_214346.sql edu-postgres-nihongo:/tmp/restore.sql
 docker exec edu-postgres-nihongo psql -U nihongo -d nihongo -f /tmp/restore.sql
 ```
 
@@ -321,7 +321,7 @@ MSYS_NO_PATHCONV=1 docker exec edu-postgres-nihongo psql -U nihongo -d nihongo -
 export MSYS_NO_PATHCONV=1
 P="docker exec -i edu-postgres-nihongo psql -U nihongo -v ON_ERROR_STOP=1 -q"
 $P -d nihongo -c "CREATE DATABASE seedtest"
-grep -v -E '^\\(un)?restrict' infra/backups/nihongo_schema_20261004_211325.sql | $P -d seedtest
+grep -v -E '^\\(un)?restrict' infra/backups/nihongo_schema_20261005_214346.sql | $P -d seedtest
 grep -v -E '^\\(un)?restrict' infra/postgres/nihongo-content-seed.sql            | $P -d seedtest
 $P -d seedtest -c 'select count(*) from "Vocabulary"'
 $P -d nihongo -c "DROP DATABASE seedtest"

@@ -86,7 +86,7 @@ Kiểm tra: `docker ps --filter "name=edu-"`
 **Cách A — Restore backup có sẵn trong repo (khuyên dùng)**
 
 ```powershell
-docker cp infra\backups\nihongo_20261004_211325.sql edu-postgres-nihongo:/tmp/restore.sql
+docker cp infra\backups\nihongo_20261005_214346.sql edu-postgres-nihongo:/tmp/restore.sql
 docker exec edu-postgres-nihongo psql -U nihongo -d nihongo -f /tmp/restore.sql
 ```
 

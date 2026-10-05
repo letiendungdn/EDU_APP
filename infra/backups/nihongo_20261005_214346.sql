@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict lRCpXmL0RCRnB3SUmqcEHswuSrYsLDdVCsWSIXCHTWc5e65rhFxHVggAwezcHvu
+\restrict t7psEhHJqs36Sbw5vqxjL1iSncv2chl0cpbfvOLMie3P5VHSd8YE9Jw8jvjn1ya
 
 -- Dumped from database version 16.15
 -- Dumped by pg_dump version 16.15
@@ -5677,7 +5677,9 @@ COPY public."DailyActivity" (id, "userId", date, kind, count, "updatedAt") FROM 
 55	1	2026-09-27	kanji	1	2026-09-27 16:46:30.352
 54	1	2026-09-27	vocab	2	2026-09-27 17:23:24.218
 57	1	2026-09-28	vocab	9	2026-09-28 15:11:50.499
-66	1	2026-10-04	vocab	1	2026-10-04 13:55:09.213
+66	1	2026-10-04	vocab	2	2026-10-04 16:06:59.404
+68	1	2026-10-05	vocab	5	2026-10-05 13:10:16.415
+73	1	2026-10-05	kanji	1	2026-10-05 14:36:46.914
 \.
 
 
@@ -6045,440 +6047,8 @@ COPY public."ExamSectionResult" (id, "examResultId", section, correct, total, pe
 --
 
 COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrder") FROM stdin;
-14087	ここはじむしょです。	Koko wa jimusho desu	\N	Chỗ này là văn phòng. Khi hỏi	5297	\N	0
-14088	しょくどうはどこですか。	Shokudō wa doko desuka	\N	Nhà ăn ở đâu?	5298	\N	0
-14089	あそこです。	Asoko desu	\N	Nhà ăn ở chỗ kia N１( người hoặc vật )	5298	\N	0
-14090	) です。	N1 ở N2	\N	田中さんはどこですか。 Tanakasan wa doko desuka. Anh Tanaka ở đâu? …きょうしつです。 Kyōshitsu desu. Ở trong lớp học.	5298	\N	0
-14091	にほんごのほんはどちらですか。	Nihongo no hon wa dochira desuka	\N	Quyển sách tiếng nhật ở đâu? …そちらです。 Sochira desu. Ở phía đó.	5299	\N	0
-14092	これはどこのえんぴつですか。	Kore wa doko no enpitsu desuka	\N	Đây là bút chì của nước nào?	5302	\N	0
-14093	ベトナムのえんぴつです。	Betonamu desu	\N	Bút chì của Việt Nam 4.2.	5302	\N	0
-14094	それはなんのしんぶんですか。	Sore wa nan no shinbun desuka	\N	Đó là tờ báo gì?	5302	\N	0
-14095	これはでんわのしんぶんです。	Kore wa denwa no shinbun desu	\N	Đó là tờ báo về điện thoại	5302	\N	0
-14096	これはえいごのしんぶんです。	Kore wa eigo no shinbun desu	\N	Đó là tờ báo tiếng anh.	5302	\N	0
-14097	このほんはいくらですか。	Konohon wa ikura desuka	\N	Quyển sách này giá bao nhiêu? ３０円です. 30 en desu. 30 Yên.	5303	\N	0
-14098	８時３０分(8時半)です。	Bây giờ là 8:30 (8 rưỡi)	\N	Chú ý: ～じはん ：Sử dụng khi nói giờ rưỡi.	5304	\N	0
-14099	今日は何曜日ですか。		\N	\N	5305	\N	0
-14100	日曜日です。		\N	\N	5305	\N	0
-14101	あしたは何曜日ですか。		\N	\N	5305	\N	0
-14102	月曜日です。		\N	\N	5305	\N	0
-14103	まい日１１じにねます。		\N	\N	5306	\N	0
-14104	まいばんべんきょうします。	Ma iban be n kyō shimasu	\N	Hàng tối tôi đều học bài.	5307	\N	0
-14105	あしたべんきょうしません。	Ashita be n kyōshimasen	\N	Ngày mai tôi sẽ không học bài.	5307	\N	0
-14106	きのう べんきょうしました。	Kinō be n kyō shimashita	\N	Hôm qua tôi đã học bài.	5307	\N	0
-14107	おととい べんきょうしませんでした。	Ototoi be n kyōshimasendeshita	\N	Ngày kia tôi đã không học bài.	5307	\N	0
-14108	私は１２じにたべます。	Watashi wa 12ji ni tabemasu	\N	Tôi ăn vào lúc 12 giờ.	5308	\N	0
-14109	土曜日（に）べんきょうしません。	Doyōbi (ni) be n kyōshimasen	\N	Thứ 7 tôi thường không học bài.	5308	\N	0
-14110	きょうは何日ですか。	Kyō wa nan nichi desuka	\N	Hôm nay là mùng mấy? １２日です。 Jūni nichi desu. Là ngày	5310	\N	0
-14111	あしたがっこうへなんでいきますか。	Ashita gakkō e nan de ikimasuka	\N	Ngày mai bạn đến trường bằng gì vậy?	5312	\N	0
-14112	バスでいきます。	Basu de ikimasu	\N	Tôi đi bằng xe buýt.	5312	\N	0
-14113	あるいていきます。	Aruite ikimasu	\N	Tôi đi bộ. Chú ý: Trường hợp muốn nói là “đi bộ” thì dùng	5312	\N	0
-14114	だれとこうえんへいきましたか。	Dare to kōen e ikimashitaka	\N	Bạn đã đi công viên với ai vậy?	5313	\N	0
-14115	ともだちといきました。	Tomodachi to ikimashita	\N	Tôi đi cùng với bạn.	5313	\N	0
-14116	ひとりでくにへかえりました。	Hitori de kuni e kaerimashita	\N	Tôi đã về nước một mình.	5313	\N	0
-14117	みずをのみます。	Mizu wo nomimasu	\N	Tôi uống nước	5314	\N	0
-14118	ほんをよみました。	Hon wo yomimashita	\N	Tôi đã đọc sách. • Chú ý: +	5314	\N	0
-14119	) 私はにくをたべます。やさいもたべます。	Watashi wa niku wo tabemasu	\N	Yasai mo tabemasu. Tôi ăn thịt. Tôi cũng ăn cả rau.	5314	\N	0
-14120	あしたなにもしません。	Ashita nani mo shimasen	\N	Ngày mai tôi không làm gì cả.	5315	\N	0
-14121	スーパでかいました。	Sūpa de kaimashita	\N	Tôi đã mua ở siêu thị.	5316	\N	0
-14122	いっしょにこうえんへいきませんか。	Issho ni kōen e ikimasenka	\N	Cùng đi công viên nhé!	5317	\N	0
-14123	ええ、いいですね。	Ee, iidesune	\N	Vâng tốt quá! (Ý hay đấy)	5317	\N	0
-14124	はじめましょう。	Hajimemashō	\N	Nào, chúng ta bắt đầu nào!	5318	\N	0
-14125	なんでかきますか。	Nan de kakimasuka	\N	Bạn viết bằng gì?	5320	\N	0
-14126	えんぴつでかきます。	Enpitsu de kakimasu	\N	Tôi viết bằng bút chì	5320	\N	0
-14127	なんでごはんをたべますか。	Nan de gohan wo tabemasuka	\N	Bạn ăn cơm bằng gì?	5320	\N	0
-14128	はしでたべます。	Hashi de tabemasu	\N	Tôi ăn bằng đũa.	5320	\N	0
-14129	にほんごではなします。	Nihongo de hanashimasu	\N	Tôi nói chuyện bằng tiếng Nhật .	5320	\N	0
-14130	」はにほんごでなんですか。		\N	\N	5321	\N	0
-14131	「ありがとう」です。		\N	\N	5321	\N	0
-14132	「おやすみなさい」えいごでなんですか。		\N	\N	5321	\N	0
-14133	」です。		\N	\N	5321	\N	0
-14134	だれに　てがみを　かきますか。	Dare ni tegami wo kakimasuka	\N	Bạn viết thư cho ai vậy?	5322	\N	0
-14135	友達に　かきます。	Tomodachi ni kakimasu	\N	Tôi viết cho bạn.	5322	\N	0
-14136	だれに　にほんごを　ならいましたか。	Dare ni nihongo wo naraimashitaka	\N	Bạn đã học tiếng nhật từ ai vậy?	5323	\N	0
-14137	いとながせんせいに　ならいました。	Itonaga sensei ni naraimashita	\N	Tôi đã học từ cô Itonaga.	5323	\N	0
-14138	だれから　お金を　かりましたか。	Dare kara okane wo karimashitaka	\N	Bạn đã vay tiền từ đâu?	5323	\N	0
-14139	銀行から　借りました。	Ginkō kara karimashita	\N	Tôi đã vay tiền từ ngân hàng.	5323	\N	0
-14140	もうニュースをみましたか。	Mō nyūsu wo mimashitaka	\N	Bạn đã xem thời sự rồi à?	5324	\N	0
-14141	はい、もうみました。	Hai, mōmimashita	\N	Vâng, tôi đã xem rồi.	5324	\N	0
-14142	いいえ、まだです。	Iie, madadesu	\N	Không, tôi vẫn chưa xem.	5324	\N	0
-14143	あの人はハンサムです。	Anohito wa hansamu desu	\N	Người kia đẹp trai.	5326	\N	0
-14144	このかばんはどうですか。	Kono kaban wa dō desuka	\N	Cái cặp này như thế nào?	5326	\N	0
-14145	たかいです。	Takaidesu	\N	Cái cặp đó đắt.	5326	\N	0
-14146	田中さんどんな人ですか。	Tanakasan wa donna hito desuka	\N	Anh Tanaka là người như thế nào?	5327	\N	0
-14147	親切な人です。	Shinsetsu na hito desu	\N	Anh ý là người tốt bụng	5327	\N	0
-14148	富士山はどんな山ですか。	Fujisan wa donna yama desuka	\N	Núi Phú Sĩ là núi như thế nào?	5327	\N	0
-14149	高い山です。	Takai yama desu	\N	Là núi cao.	5327	\N	0
-14150	日本語は 難しいですか。	Nihongo wa muzukashī desuka	\N	Tiếng Nhật khó phải không? …いいえ、あまり難しくないです。 Iie, amari muzukashiknai desu. Không, không khó lắm.	5328	\N	0
-14151	このでんわはべんりですが、たかいです。	Kono denwa wa benri desu ga takaidesu	\N	Điện thoại này thuận tiện nhưng đắt.	5329	\N	0
-14152	この部屋はきれいです。そして、広いです。	Kono heya wa kirei desu	\N	Soshite, hiroi desu. Phòng này đẹp và rộng.	5330	\N	0
-14153	田中さんのほんはどれですか。	Tanakasan no hon wa dore desuka	\N	Sách của anh Tanaka là quyển nào?	5331	\N	0
-14154	白いのです。	Shiroi no desu	\N	Là quyển màu trắng.	5331	\N	0
-14155	私は あたらしい かばんが あります。	Watashi wa atarashi kaban ga arimasu	\N	Tôi có cái cặp mới.	5332	\N	0
-14156	私の友達は 豚肉が きらいです。	Watashi no tomodachi wa butaniku ga kiraidesu	\N	Bạn tôi không thích thịt lợn.	5332	\N	0
-14157	私は 日本語が へたです。	Watashi wa nihongo ga hetadesu	\N	Tôi không giỏi (kém) tiếng Nhật.	5332	\N	0
-14158	どんな　飲み物が　好きですか。	Donna nomimono ga sukidesuka	\N	Bạn thích đồ uống nào?	5333	\N	0
-14159	ジュースが　好きです。	Jūsu ga sukidesu	\N	Tôi thích nước hoa quả.	5333	\N	0
-14160	日本語が だいたい わかります。	Nihongo ga daitai wakarimasu	\N	Tôi biết tiếng Nhật cũng đại khái thôi.	5334	\N	0
-14161	ぶんぽうが あまり わかりません。	Bunpō ga amari wakarimasen	\N	Tôi không biết nhiều ngữ pháp lắm. Thong Nhat	5334	\N	0
-14162	公園で きが たくさん あります。	Thống Nhất kōen de ki ga takusan arimasu	\N	Ở công viên Thống Nhất có rất nhiều cây.	5334	\N	0
-14163	きょうは すこし 寒いです。	Kyō wa sukoshi samuidesu	\N	Hôm nay hơi lạnh	5334	\N	0
-14164	どうして日本語をべんきょうしますか。	Dōshite nihongo　wo benkyō shimasu ka	\N	Tại sao bạn nói tiếng Nhật?	5335	\N	0
-14165	日本の文化がすきですから。	Nihon no bunka ga sukidesu kara	\N	Bởi vì tôi thích văn hóa Nhật.	5335	\N	0
-14166	あしたは 休みます。	Ashita wa yasumimasu	\N	Ngày mai tôi sẽ nghỉ làm …どうしてですか。 Dōshite desuka. Tại sao thế?	5335	\N	0
-14167	いそがしですから。	Isogashidesu kara	\N	Vì tôi có việc bận.	5335	\N	0
-14168	私は あたらしいでんわ が あります。	Watashi wa atarashii denwa ga arimasu	\N	Tôi có điện thoại mới.	5336	\N	0
-14169	いもうとが います。	Imouto ga imasu	\N	Tôi có em gái.	5336	\N	0
-14170	庭に 何が ありますか。	Niwa ni nani ga arimasuka	\N	Ngoài sân có gì thế?	5337	\N	0
-14171	さくらの木が あります。	Sakura ni ki ga arimasu	\N	Có cây hoa anh đào.	5337	\N	0
-14172	教室に 何が いますか。	Kyōshitsu ni nani ga kimasuka	\N	Trong lớp học có ai vậy?	5337	\N	0
-14173	ゆきさんが います。	Yukisan ga imasu	\N	Có bạn Yuki	5337	\N	0
-14174	田中さんは 事務所に います。	Tanakasan wa jimusho ni imasu	\N	Bạn Tanaka ở văn phòng.	5338	\N	0
-14175	電話は かばんに あります。	Denwa wa kaban ni arimasu	\N	Điện thoại ở trong cặp. Hoang Thanh	5338	\N	0
-14176	はどこにありますか。	Hoang Thanh wa doko ni arimasuka	\N	Hoàng Thành ở đâu?	5338	\N	0
-14177	ハノイです。	Hanoi desu	\N	Ở Hà Nội. Chú ý:	5338	\N	0
-14178	つくえのうえに はなが あります。	Tsukue no ue ni hana ga arimasu	\N	Trên bàn có hoa.	5339	\N	0
-14179	えきのまえに としょかんが あります。	Eki no mae ni toshokan ga arimasu	\N	Trước nhà ga có thư viện.	5339	\N	0
-14180	公園の近くで 友達と 会います。	Kouen no chikaku de tomodachi to aimasu	\N	Tôi gặp bạn ở gần công viên.	5339	\N	0
-14181	つくえのうえに ほん や ペンが あります。	Tsukue no ue ni hon ya pen ga arimasu	\N	Trên bàn có sách, bút …	5340	\N	0
-14182	私のかばんの中に でんわ や さいふが あります。	Watashi no kaban no naka ni denwa ya saifu ga arimasu	\N	Trong cặp sách của tôi có điện thoại, ví ,…	5340	\N	0
-14183	かばんをいくつかいましたか。	Kaban wo ikutsu kaimashitaka	\N	Bạn đã mua mấy cái cặp?	5341	\N	0
-14184	ふたつかいました。	Futatsu kaimashita	\N	Tôi đã mua 2 cái. １００円の切手を１枚ください。 Hyaku en no kitte wo ichimai kudasai. Lấy cho tôi 1 cái tem 100 yên.	5341	\N	0
-14185	家族は何人ですか。	Kazoku wa nannin desuka	\N	Nhà bạn có bao nhiêu người. ３人です。 San nin desu. Nhà tôi có 3 người. １週間に何回にほんごをならいますか。 Isshūkan ni nankai nihongo wo naraimasuka. Mỗi tuần bạn học tiếng nhật mấy lần? ３かいです。 San kai desu. Tôi học 3 lần.	5341	\N	0
-14186	あなたはどのくらい日本語をべんきょうしましたか。	Anata wa donokurai nihongo wo benkyōshimashitaka	\N	Bạn đã học tiếng Nhật bao lâu rồi? ３か月べんきょうしました。 Sankagetsu benkyōshimashita. Tôi đã học khoảng 3 tháng rồi.	5342	\N	0
-14187	あなたはうちからがっこうまでバイクでどのくらいかかりますか。	Anata wa uchi kara gakkō made baiku de donokurai kakarimasuka	\N	Bạn đi từ nhà đến trường bằng xe máy mất bao lâu? ３０分かかります。 Sanjuppun kakarimasu. Mất khoảng 30 phút.	5342	\N	0
-14188	昨日は雨じゃありませんでした。	Kinō wa ame ja arimasendeshita	\N	Hôm qua không mưa.	5343	\N	0
-14189	先週、私はひまでした。	Senshū, watashi wa himadeshita	\N	Tuần trước tôi rảnh.	5343	\N	0
-14190	きのうはさむかったです。	Kinō wa samukattadesu	\N	Hôm qua trời lạnh.	5344	\N	0
-14191	おととい、パンはおいしくなかったです。	Ototoi, pan wa oishikunakattadesu	\N	Hôm kia, bánh mì không ngon.	5344	\N	0
-14192	このかばんは そこかば よりきれいです。	Kono kaban wa soko kaba yori kireidesu	\N	Túi này đẹp hơn túi kia.	5345	\N	0
-14193	日本語と 英語と どちらが すきですか。	Nihongo to eigo to dochira ga sukidesu ka	\N	Tiếng Nhật và tiếng Anh, bạn thích tiếng nào hơn?	5346	\N	0
-14194	日本語の ほうが すきです。	Nihongo no hō ga sukidesu	\N	Tôi thích tiếng Nhật hơn.	5346	\N	0
-14195	本と 映画と どちらが おもしろいですか。	Hon to eiga to dochira ga omoshiroidesu ka	\N	Sách và phim cái nào thú vị hơn?	5346	\N	0
-14196	どちらも おもしろいです。	Dochira mo omoshiroidesu	\N	Cả 2 đều thú vị.	5346	\N	0
-14197	ベトナムで どこが いちばん きれいですか。	Betonamu de doko ga ichiban kireidesu ka	\N	Ở Việt Nam, nơi nào đẹp nhất?	5347	\N	0
-14198	ハノイが いちばん きれいです。	Hanoi ga ichiban kireidesu	\N	Hà Nội là nơi đẹp nhất.	5347	\N	0
-14199	日本料理の中で 何がいちばん好 きですか。	Nihonryōri no naka de nani ga ichiban sukidesu ka	\N	Trong các món ăn của Nhật Bản, bạn thích món nào nhất.	5347	\N	0
-14200	たこやきがいちばん好 きです。	Takoyaki ga ichiban sukidesu	\N	Tôi thích nhất món takoyaki.	5347	\N	0
-14201	あなたは何がほしいですか。	Anata wa nani ga hoshiidesuka	\N	Bạn muốn có cái gì?	5348	\N	0
-14202	電話がほしいです。	Denwa ga hoshiidesu	\N	Tôi muốn có điện thoại	5348	\N	0
-14203	どんなうちがほしいですか。	Donna uchi ga hoshii desuka	\N	Bạn muốn một ngôi nhà như thế nào?	5348	\N	0
-14204	広いうちがほしいです。	Hiroi uchi ga hoshii desu	\N	Tôi muốn một ngôi nhà rộng.	5348	\N	0
-14205	明日、あなたは何をしたいですか。	Ashita anata wa nani wo shitai desuka	\N	Ngày mai bạn muốn làm gì?	5349	\N	0
-14206	えいがをみたいです。	Eiga wo mitaidesu	\N	Tôi muốn xem phim.	5349	\N	0
-14207	何をかいたいですか。	Nani wo kaitaidesuka	\N	Bạn muốn mua gì?	5349	\N	0
-14208	花をかいたいです。	Hana wo kaitaidesu	\N	Tôi muốn mua hoa.	5349	\N	0
-14209	つりをしたくないです。	Tsuri wo shitakunaidesu	\N	Tôi không muốn câu cá.	5349	\N	0
-14210	図書館へなにをしにいきますか。	Toshokan e nani wo shi ni ikimasuka	\N	Bạn đến thư viện để làm gì?	5350	\N	0
-14211	へ本をかりにいきます。	Hon wo kari ni ikimasu	\N	Tôi đến để mượn sách.	5350	\N	0
-14212	レストランへにほんりょうりをたべにいきます。	Resutoran e nihon ryouri wo tabe ni ikimasu	\N	Tôi đến nhà hàng để ăn món ăn Nhật.	5350	\N	0
-14213	夏休みはどこか（へ）行きますか。	Natsu yasumi wa dokoka (e) ikimasuka	\N	Nghỉ hè bạn có đi đâu không?	5351	\N	0
-14214	はい。いきます。	Hai	\N	Ikimasu. Có, tôi có đi.	5351	\N	0
-14215	暑いですから、何か（を）飲みたいです。	Atsui desu kara, nanika (wo) nomitaidesu	\N	Vì trời nóng nên tôi muốn uống cái gì đó.	5351	\N	0
-14216	ちょっと待ってください。	Chotto matte kudasai	\N	Vui lòng/Xin hãy chờ một chút.	5354	\N	0
-14217	ほんをとってくだし。	Hon wo totte kudashi	\N	Vui lòng/Xin hãy lấy cho tôi quyển sách.	5354	\N	0
-14218	今あなたは何をしていますか。	Ima anata wa nani o shite imasu ka	\N	Bây giờ bạn đang làm gì vậy?	5355	\N	0
-14219	私は映画をみています。	Watashi wa eiga o mite imasu	\N	Tôi đang xem phim.	5355	\N	0
-14220	彼はあそんでいます。	Kare wa asonde imasu	\N	Anh ấy đang đi chơi.	5355	\N	0
-14221	地図をかきましょうか。	Chizu o kakimashou ka	\N	Tôi vẽ bản đồ cho bạn nhé!	5356	\N	0
-14222	ええ、おねがいします。	E e, onegaishimasu	\N	Vâng, bạn giúp tôi nhé!	5356	\N	0
-14223	電気をけしましょうか。	Denki wo keshimashouka	\N	Tôi tắt đèn giúp bạn nhé!	5356	\N	0
-14224	ここでたばこをすってはいけません。	Koko de tabako wo sutte wa ikemasen	\N	Ở đây không được hút thuốc.	5358	\N	0
-14225	ここでサッカをしてもいいですか。	Koko de sakka o shite mo īdesuka	\N	Tôi hút thuốc ở đây có được không?	5358	\N	0
-14226	私はハノイにすんでいます。	Watashi wa Hanoi ni sunde imasu	\N	Tôi sống ở Hà Nội	5359	\N	0
-14227	私はリンさんの電話番をしっています。	Watashi wa Rinsan no denwaban wo shitte imasu	\N	Tôi biết số điện thoại của Linh. 3.2. Biểu thị những tập quán, thói quen, những hành động được lặp đi lặp lại trong thời gian dài. • Ví dụ:	5359	\N	0
-14228	私はぼうえき大学で勉強しています。	Watashi wa bō eki daigaku de benkyō shite imasu	\N	Tôi học ở trường Đại học Ngoại thương	5359	\N	0
-14229	センターでにほんごをならっています。	Watashi wa Mina sentā de ni hon go o naratte imasu	\N	Tôi học tiếng Nhật ở Trung tâm Mina.	5359	\N	0
-14230	うちへかえってから、ごはんをつくります。	Uchi e kaette kara, gohan wo tsukurimasu	\N	Sau khi về nhà, tôi đun cơm.	5361	\N	0
-14231	勉強してから、映画をみました。	Benkyōshite kara, eiga wo mimashita	\N	Sau khi học bài, tôi đã xem phim.	5361	\N	0
-14232	彼はあたまがいいです。	Kare wa atama ga īdesu	\N	Anh ấy thông minh.	5362	\N	0
-14233	リンさんはかみがみじかいです。	Rinsan wa kami ga mijikaidesu	\N	Linh có mái tóc ngắn.	5362	\N	0
-14234	田中さんは元気で、親切です。	Tanakasan wa genkide, shinsetsudesu	\N	Anh Tanaka khỏe mạnh và tốt bụng.	5363	\N	0
-14235	山田さんは２５歳で、独身です。	Yamadasan wa 25 sai de, dokushindesu	\N	Anh Yamada 25 tuổi và đang độc thân.	5363	\N	0
-14236	大学までどうやっていきますか。	Daigaku made dō yatte ikimasu ka	\N	Đến trường bạn đi như thế nào? …バス乗り場まで 5分ぐらいあるいて、２０番のバスに乗って、大学前でおります。 Basu noriba made 5pun gurai aruite, 20 ban no basu ni notte, daigaku mae de orimasu. …Tôi đi bộ khoảng 5 phút đến bến xe bus, lên xe số 16 và xuống ở đằng trước trường.	5364	\N	0
-14237	マイさんはどの人ですか。	Maisan wa dono hito desuka	\N	Mai là bạn nào?	5365	\N	0
-14238	あの髪が短くて、背がたかい人です。	Ano kami ga mijikakute, se ga takai hitodesu	\N	… Là người tóc ngắn và dáng cao.	5365	\N	0
-14239	ここにじどうしゃを止まらないでください。	Koko ni jidōsha wo tomaranaide kudasai	\N	Xin đừng đỗ xe ở đây.	5367	\N	0
-14240	ここでしゃしんをとらないでください。	Koko de shashin wo toranaide kudasai	\N	Xin đừng chụp ảnh ở đây.	5367	\N	0
-14241	早くうちへかえらなければなりません。	Hayaku uchi e kaeranakereba narimasen	\N	Tôi phải về nhà sớm.	5368	\N	0
-14242	病気ですから、薬をのまなければなりません。	Byōkidesukara, kusuri wo nomanakereba narimasen	\N	Vì ốm nên tôi phải uống thuốc.	5368	\N	0
 15283	家に帰ったら、誰もいなかった。	Ie ni kaettara, dare mo inakatta.	\N	Về đến nhà thì chẳng có ai.	5818	\N	1
-14243	毎日いくつもんだいをしますか。	Mainichi ikutsu mondai wo shimasu ka	\N	Mỗi ngày, bạn phải làm mấy bài tập? １０もんだいをしなければなりません。 10 mondai wo shinakereba narimasen. Tôi phải làm 10 bài.	5368	\N	0
-14244	名前をかかなくてもいいです。	Namae wo kakanakute mo īdesu	\N	Không cần điền tên cũng được.	5369	\N	0
-14245	あしたはとしょかんへこなくてもいいです。	Ashita wa toshokan e konakute mo iidesu	\N	Ngày mai không cần đến thư viện cũng được.	5369	\N	0
-14246	ここで靴をぬがなくてもいいですか。	Koko de kutsu wo nuga nakute mo īdesu ka	\N	Ở đây không cởi giày ra được không.	5369	\N	0
-14247	ここに 荷物を 置かないでください。	Koko ni nimotsu wo okanaide kudasai	\N	Đừng để hành lý ở đây. →	5370	\N	0
-14248	荷物は ここに 置かないでください。	Nimotsu wa koko ni okanaide kudasai	\N	Hành lý thì xin đừng để ở đây	5370	\N	0
-14249	外でたばこをすってください。	Soto de tabako wo sutte kudasai	\N	Vui lòng hút thuốc ở bên ngoài. →	5370	\N	0
-14250	たばこは外ですってください。	Tabako wa soto de sutte kudasai	\N	Thuốc thì hãy hút ở bên ngoài.	5370	\N	0
-14251	レポートはいつまでに出さなければなりませんか。	Repōto wa itsu made ni dasanakereba narimasen ka	\N	Báo cáo phải nộp chậm nhất khi nào?	5371	\N	0
-14252	木曜日までに出してください。	Mokuyōbi made ni dashite kudasai	\N	Nộp chậm nhất là thứ 5.	5371	\N	0
-14253	会議は ５時(じ)までに 終(お)わります。	Kaigi wa 5 ji made ni owarimasu	\N	Cuộc họp sẽ kết thúc trước 5 giờ.	5371	\N	0
-14254	日本語ができます。	Nihongo ga dekimasu	\N	Tôi biết tiếng Nhật/ có thể nói tiếng Nhật.	5373	\N	0
-14255	リンさんはピアノができます。	Rinsan wa piano ga dekimasu	\N	Linh biết/ có thể chơi piano.	5373	\N	0
-14256	絵をかくことができます。	E wo kakukoto ga dekimasu	\N	Tôi biết/ có thể vẽ tranh (Năng lực)	5373	\N	0
-14257	カードで払(はら)うことが できます。	Kādo de haraukoto ga dekimasu	\N	Có thể thanh toán/ trả tiền bằng thẻ. (Khả năng)	5373	\N	0
-14258	あなたの趣味は何ですか。	Anata no shumi wa nandesuka	\N	Sở thích của bạn là gì?	5374	\N	0
-14259	りょこうです。	Ryokōdesu	\N	Là đi du lịch.	5374	\N	0
-14260	うたをうたうことです。	Uta o utaukoto desu	\N	Là ca hát.	5374	\N	0
-14261	いつこの薬をのみますか。	Itsu kono kusuri wo nomimasuka	\N	Uống thuốc này khi nào?	5375	\N	0
-14262	ねるまえにのみます。	Neru mae ni nomimasu	\N	Uống trước khi ngủ.	5375	\N	0
-14263	会議の前に、レポートを準備しました。	Kaigi no mae ni, repōto wo junbi shimashita	\N	Trước cuộc họp, tôi đã chuẩn bị báo cáo. ３月前に、フエへ来ました。 San tsuki mae ni, fue e kimashita. 3 tháng trước, tôi đã đến Huế.	5375	\N	0
-14264	バスが なかなか 来(き)ません。	Basu ga nakanaka kimasen	\N	Xe buýt mãi mà không thấy tới	5376	\N	0
-14265	ハノイでなかなか雪を見ることができません。	Hanoi de nakanaka yuki wo mirukoto ga dekimasen	\N	Ở Hà Nội, mãi mà tôi không nhìn thấy tuyết.	5376	\N	0
-14266	ぜひにほんへいきたいです。	Zehi Nihon e ikitaidesu	\N	Tôi rất muốn đi Nhật Bản (nhất định sẽ đi)	5377	\N	0
-14267	ぜひ遊びに来てください。	Zehi asobi ni kite kudasai	\N	Bạn nhất định phải đến nhà tôi chơi đấy nhé!	5377	\N	0
-14268	あなたはにほんへいったことがありますか。	Anata wa nihon e itta koto ga arimasuka	\N	Bạn đã bao giờ đến Nhật Bản chưa?	5379	\N	0
-14269	おさけをのんだことがありますか。	Osake wo nonda koto ga arimasuka	\N	Bạn đã bao giờ uống rượu chưa?	5379	\N	0
-14270	はい。あります。はい、２回あります。	Hai	\N	Arimasu. Hai, 2-kai arimasu. Có, đã từng / Có, đã 2 lần.	5379	\N	0
-14271	私はすもうをみたことがありません。	Watashi wa sumō wo mita koto ga arimasen	\N	Tôi chưa bao giờ xem vật Sumo.	5379	\N	0
-14272	日曜日そうじしたり、せんたくしたりします。	Nichiyōbi sōjishitari, sentakushitari shimasu	\N	Chủ nhật, lúc thì tôi hút bụi, lúc thì tôi giặt quần áo.	5380	\N	0
-14273	きのう、公園を散歩したり、レストランでたべたりしました。	Kinō, kōen wo sanposhitari, resutoran de tabetari shimashita	\N	Hôm qua lúc thì tôi đi dạo ở công viên, lúc thì ăn ở nhà hàng.	5380	\N	0
-14274	毎晩音楽を聞いたり、幹事を書いたりします。	Maiban ongaku wo kiitari, kanji wo kaitari shimasu	\N	Mỗi tối, lúc thì tôi nghe nhạc, lúc thì viết kanji.	5380	\N	0
-14275	私は２１さいになりました。	Watashi wa 21 sai ni narimashita	\N	Tôi đã được 21 tuổi.	5381	\N	0
-14276	毎日日本語をべんきょうしましたから、日本語が上手になります。	Mainichi nihongo wo benkyō shimashitakara, nihongo ga jōzu ni narimasu	\N	Vì mỗi ngày tôi đều học tiếng Nhật nên tôi trở nên giỏi tiếng Nhật.	5381	\N	0
-14277	今日、かばんはやすくなります。	Kyō, kaban wa yasuku narimasu	\N	Hôm nay túi xách trở nên rẻ hơn.	5381	\N	0
-14278	ううん、暇ではない。		\N	\N	5382	\N	0
-14279	ううん、暇じゃない。		\N	\N	5382	\N	0
-14280	3)このりんご「は」おいしいですね。		\N	\N	5382	\N	0
-14281	うん、持って「い」る。		\N	\N	5382	\N	0
-14282	ううん、持って「い」ない。		\N	\N	5382	\N	0
-14283	漢字はむずかしいと思います。	Kanji wa muzukashī to omoimasu	\N	Tôi nghĩ chữ Hán khó.	5383	\N	0
-14284	けいたい電話は便利だと思います。	Keitai denwa wa benrida to omoimasu	\N	Tôi nghĩ điện thoại di động tiện lợi.	5383	\N	0
-14285	あした雨がふらないと思います。	Ashita ame ga furanai to omoimasu	\N	Tôi nghĩ ngày mai trời sẽ không mưa.	5383	\N	0
-14286	田中さんは時間の使い方が上手だと思います。	Tanakasan wa jikan no tsukaikata ga jōzuda to omoimasu	\N	Tôi nghĩ anh Tanaka rất giỏi sử dụng thời gian.	5383	\N	0
-14287	彼女は 日本人だと 思います。	Kanojo wa nihonjinda to omoimasu	\N	Tôi nghĩ cô ấy là người Nhật Bản. Chú ý: (1) Khi nói câu phủ định, có 2 cách thể hiện:	5383	\N	0
-14288	日本語のテストは どうですか。	Nihongo no tesuto wa dōdesu ka	\N	Bài kiểm tra tiếng Nhật thế nào? …	5383	\N	0
-14289	むずかしくないと 思います。	Muzukashikunaito omoimasu	\N	Tôi nghĩ là không khó. …	5383	\N	0
-14290	むずかしいと 思いません。	Muzukashī to omoimasen	\N	Tôi không nghĩ là khó. (2) Cách nói ngắn khi đồng ý hay không đồng ý với quan điểm của ai đó: A:	5383	\N	0
-14291	ファクスは 便利ですね。	Fakusu wa benri desu ne	\N	Máy fax thuận tiện thật đấy nhỉ! B:	5383	\N	0
-14292	私も そう思います。	Watashi mo sō omoimasu	\N	Tôi cũng nghĩ như vậy C:	5383	\N	0
-14293	思いません。	Watashi wa sō [wa] omoimasen	\N	Tôi thì không nghĩ là như vậy (3) Câu hỏi: khi muốn hỏi quan điểm của ai đó về 1 vấn đề nào đó, ta dùng mẫu câu ～に	5383	\N	0
-14294	新しい空港に ついて どう思いますか。	Atarashī kūkō ni tsuite dō omoimasu ka	\N	Bạn nghĩ thế nào về sân bay mới? …きれいですが、ちょっと交通が	5383	\N	0
-15844	ご飯を食べます。	Gohan o tabemasu.	\N	Tôi ăn cơm.	6099	\N	0
-14295	食べる前に「いただきます」と 言います。	Taberu maeni [itadakimasu] to iimasu	\N	Trước khi ăn thì nói “ Mời anh/chị dùng”.	5384	\N	0
-14296	ミラーさんは「来週 東京へ 出張 します」と 言いました。	Mirā-san wa [raishū Tōkyō e shutchōshimasu] to iimashita	\N	Ông Miler đã nói rằng “Tuần sau tôi sẽ đi công tác Tokyo”. – Trích dẫn gián tiếp: sử dụng thể thông thường trước trợ từ	5384	\N	0
-14297	田中さんはおかねが足らないと言いました。	Tanaka-san wa okane ga taranai to iimashita	\N	Anh Tanaka đã nói rằng anh ý không có đủ tiền.	5384	\N	0
-14298	田中さんは会議は大変だと言いました。	Tanaka-san wa kaigi wa taihenda to iimashita	\N	Anh Tanaka đã nói rằng cuộc họp vất vả.	5384	\N	0
-14299	山田さんは来月ベトナムへいくと言いました。	Yamada-san wa raigetsu Betonamu e iku to iimashita	\N	Anh Yamada đã nói là tháng sau sẽ đến Việt Nam.	5384	\N	0
-14300	ハイさんはこの食べ物がおいしいと言いました。	Hai-san wa kono tabemono ga oishī to iimashita	\N	Hải đã nói rằng món ăn này ngon.	5384	\N	0
-14301	ええ、行きます。	Ee, ikimasu	\N	Ừ, đi chứ.	5385	\N	0
-14302	ええ、とてもしんせつです。	Ee, totemo shinsetsudesu	\N	Ừ, rất thân thiện.	5385	\N	0
-14303	ハイさんは日本語の先生でしょう。	Hai-san wa nihongo no senseideshou	\N	Anh Hải là giáo viên tiếng Nhật nhỉ?	5385	\N	0
-14304	神戸(こうべ)で 大(おお)きい 地(じ)震(しん)が ありました。	Kōbe de ōkī jishin ga arimashita	\N	Ở Kobe đã (có) xảy ra trận động đất lớn.	5386	\N	0
-14305	明日、雪ちゃんのうちでパーティーがあります。	Ashita, yuki-chan no uchi de pātī ga arimasu	\N	Ngày mai, ở nhà Mai sẽ tổ chức tiệc.	5386	\N	0
-14306	ミラーさんは ケーキを 作(つく)りました。	Mirā-san wa kēki wo tsukurimashita	\N	Ông Miller đã làm bánh ngọt. →	5388	\N	0
-14307	これは ミラーさんが 作(つく)ったケーキです。	Kore wa mirā-san ga tsukutta kēkidesu	\N	Đây là cái bánh ngọt ông Miller đã làm.	5388	\N	0
-14308	ハイさんがうまれたところはハノイです。	Hai-san ga umareta tokoro wa Hanoidesu	\N	Nơi mà anh Hải đã sinh ra là Hà Nội.	5388	\N	0
-14309	これは女の人がよむざっしです。	Kore wa onnanohito ga yomu zasshidesu	\N	Đây là tạp chí mà phụ nữ thường đọc.	5388	\N	0
-14310	新聞を読むとき、めがねをかけます。	Shinbun wo yomu toki, megane wo kakemasu	\N	Tôi đeo kính khi đọc báo.	5389	\N	0
-14311	出かけるとき、「いってまいります」と言います。	Dekakeru toki “itte mairimasu” to iimasu	\N	Khi ra ngoài thì nói là “Tôi đi đây”.	5389	\N	0
-14312	こないとき、私にれんらくしてください。	Konai toki, watashi ni renrakushite kudasai	\N	Khi bạn không đến thì hãy liên lạc với tôi.	5389	\N	0
-14313	ひまなとき、映画をみます。	Himana toki, eiga wo mimasu	\N	Khi rảnh rỗi thì tôi xem phim ２７歳のとき、けっこんしました。 27 sai no toki, kekkonshimashita. Khi tôi 27 tuổi, tôi đã kết hôn.	5389	\N	0
-14314	東京へ行くとき、このかばんを 買いました。	Tōkyō e iku toki, kono kaban wo kaimashita	\N	Tôi đã mua chiếc cặp này khi đi Tokyo。（Chiếc cặp này được mua trên đường đi đến Tokyo）	5390	\N	0
-14315	東京へ行ったとき、このかばんを 買いました。	Tōkyō e itta toki, kono kaban wo kaimashita	\N	Tôi đã mua chiếc cặp này khi đi Tokyo. (Chiếc cặp này được mua sau khi đã đến Tokyo ）	5390	\N	0
-14316	でかけるとき、電気を消してください。	Dekakeru toki, denki wo keshite kudasai	\N	Khi ra khỏi nhà, phải tắt điện.	5390	\N	0
-14317	でたとき、ドアをしめてください。	Deta toki, doa wo shimete kudasai	\N	Khi ra khỏi nhà, phải đóng cửa.	5390	\N	0
-14318	このボタンを 押すと、お釣りが 出ます。	Kono botan wo osu to, otsuri ga demasu	\N	Nếu bấm nút này thì tiền thừa sẽ chạy ra.	5391	\N	0
-14319	これを 回すと、音が 大きく なります。	Kore wo mawasu to, on ga ōkiku narimasu	\N	Nếu vặn cái này thì tiếng sẽ to lên.	5391	\N	0
-14320	右へ 曲がると、郵便局が あります。	Migi e magaru to, yūbinkyoku ga arimasu	\N	Nếu rẽ phải thì sẽ có một cái bưu điện.	5391	\N	0
-14321	日本語が 分からないと、困りますよ。	Nihongo ga wakaranai to, komarimasu yo	\N	Nếu không biết tiếng Nhật thì sẽ khó khăn đấy.	5391	\N	0
-14322	もっと がんばらないと、合格できません。	Motto ganbaranai to, gōkaku dekimasen	\N	Nếu không cố gắng hơn nữa thì sẽ không thể đỗ được	5391	\N	0
-14323	音(おん)が 小(ちい)さいです。	On ga chīsaidesu	\N	Tiếng nhỏ.	5392	\N	0
-14324	天気(てんき)が 明(あか)るくなりました。	Tenki ga akaru ku narimashita	\N	Thời tiết trở nên quang đãng.	5392	\N	0
-14325	この ボタンを 押(お)すと、切符(きっぷ)が 出(で)ます。	Kono botan wo osu to, kippu ga demasu	\N	Nếu bấm nút này thì vé sẽ ra.	5392	\N	0
-14326	橋(はし)を 渡(わた)ります。	Hashi wo watarimasu	\N	Đi qua cầu.	5393	\N	0
-14327	公園(こうえん)を 散歩(さんぽ)します。	Kōen wo sanposhimasu	\N	Đi dạo trong công viên.	5393	\N	0
-14328	交差点(こうさてん)を 右(みぎ)へ 曲(ま)がります。	Kōsaten wo migi e magarimasu	\N	Rẽ phải ở ngã tư.	5393	\N	0
-14329	私は 佐(さ)藤(とう)さんに 花(はな)を あげました。	Watashi wa Satō-san ni hana wo agemashita	\N	Tôi đã tặng hoa cho chị Sato.	5394	\N	0
-14330	佐藤(さとう)さんは キムさんに プレゼントを あげました。	Satō-san wa Kimu-san ni purezento wo agemashita	\N	Chị Sato đã tặng quà cho bạn Kim.	5394	\N	0
-14331	佐藤(さとう)さんは 私に クリスマスカードを くれました。	Satō-san wa watashi ni kurisumasukādo wo kuremashita	\N	Sato đã tặng tôi một tấm thiếp Giáng Sinh. =&gt;	5394	\N	0
-14332	佐藤(さとう)さんは 妹(いもうと) に お菓子(かし)を くれました。	Satō-san wa imōto ni okashi wo kuremashita	\N	Sato đã tặng kẹo cho em gái tôi.	5394	\N	0
-14333	私はおじいさんに道を教えてあげました。	Watashi wa ojīsan ni michi wo oshiete agemashita	\N	Tôi đã chỉ đường cho ông.	5395	\N	0
-14334	私は雪ちゃんに日本語の本をかしてあげました。	Watashi wa yuki-chan ni nihongo no hon wo kashite agemashita	\N	Tôi đã cho bạn Yuki mượn quyển sách tiếng Nhật.	5395	\N	0
-14335	私はおばあさんに手紙をよんであげました。	Watashi wa obāsan ni tegami wo yonde agemashita	\N	Tôi đã đọc thư cho bà.	5395	\N	0
-14336	私は田中さんに日本語を教えてもらいました。	Watashi wa Tanaka-san ni nihongo o oshiete moraimashita	\N	Tôi được anh Tanaka dạy cho tiếng Nhật.	5396	\N	0
-14337	私はハイさんに引っ越しをてつだってもらいました。	Watashi wa Hai-san ni hikkoshi wo tetsudatte moraimashita	\N	Tôi được anh Hải giúp chuyển nhà.	5396	\N	0
-14338	私は友達にケーキをつくってもらいました。	Watashi wa tomodachi ni kekī wo tsukutte moraimashita	\N	Tôi được bạn làm tặng bánh.	5396	\N	0
-14339	私は雪ちゃんに傘を貸してもらいました。	Watashi wa Yuki-chan ni kasa wo kashite moraimashita	\N	Tôi được Yuki cho mượn ô.	5397	\N	0
-14340	雪ちゃんは(私に)傘を貸してくれました。	Yuki-chan wa (watashi ni) kasa wo kashite kuremashita	\N	Yuki đã cho tôi mượn ô.	5397	\N	0
-14341	家内は（私に）子供の写真を 送ってくれました。	Kanai wa (watashi ni) kodomo no shashin wo okutte kuremashita	\N	Vợ tôi gửi ảnh mấy đứa con (cho tôi).	5397	\N	0
-14342	加藤さんは（私に）宿題を 出してくれました。	Katō san wa (watashi ni) shukudai wo dashite kuremashita	\N	Bạn Kato đã nộp bài tập (giúp tôi).	5397	\N	0
-14343	だれに日本語を教えてもらいましたか。	Dare ni nihongo wo oshiete moraimashita ka	\N	Bạn được ai dạy cho tiếng Nhật?	5397	\N	0
-14344	糸永先生に教えてもらいました。	Itonaga sensei ni oshiete moraimashita	\N	Tôi được cô Itonaga dạy.	5397	\N	0
-14345	だれがお金を払ってくれましたか。	Dare ga okane o haratte kuremashita ka	\N	Ai đã trả tiền cho bạn?	5397	\N	0
-14346	雪ちゃんが払ってくれました。	Yuki-chan ga haratte kuremashita	\N	Bạn Yuki đã trả tiền cho tôi.	5397	\N	0
-14347	家へ 帰ったら、すぐ シャワーを 浴びます。	Uchi e kaettara, sugu shawā wo abimasu	\N	Về nhà là tôi đi tắm ngay.	5399	\N	0
-14348	何時ごろ 見学に 行きますか。	Nanji goro kengaku ni ikimasu	\N	Khoảng mấy giờ thì đi tham quan? …昼ごはんを	5399	\N	0
-14349	食べたら、すぐ 行きます。	Hiru gohan wo tabetara, sugu ikimasu	\N	Sau khi ăn cơm trưa xong là đi ngay.	5399	\N	0
-14350	スイッチを 入れても、機械が 動きません。	Suitchi wo irete mo, kikai ga ugokimasen	\N	Dù đã bật công tắc nhưng máy vẫn không chạy.	5400	\N	0
-14351	高くても、このラジカセを 買いたいです。		\N	\N	5400	\N	0
-14352	静かでも、寝ることが できません。		\N	\N	5400	\N	0
-14353	日曜日でも、仕事を します。		\N	\N	5400	\N	0
-14354	もし １億円あったら、いろいろな国を 旅行したいです。	Moshi ichi oku en attara, iroirona kuni wo ryokōshitaidesu	\N	Giả sử, nếu có 100 triệu yên tôi muốn đi du lịch thật nhiều nước.	5401	\N	0
-14355	いくら 考えても、分かりません。	Ikura kangaetemo, wakarimasen	\N	Mặc dù có suy nghĩ bao nhiêu đi chăng nữa cũng chẳng hiểu được.	5401	\N	0
-14356	いくら安くても、いらないものを買わないほうがいいです。	Ikura yasukute mo, iranai mono wo kawanai hō ga īdesu	\N	Dù có rẻ thế nào thì đồ không cần thiết không nên mua thì tốt hơn.	5401	\N	0
-14360	渡辺さんは ときどき 大阪べんを 使いますね。大阪に 住んでいたんですか。	Watanabe san wa tokidoki Ōsaka ben wo tsukaimasu ne	\N	Ōsaka ni sundeitandesu ka. Anh watanabe thỉnh thoảng dùng tiếng Osaka nhỉ. Anh đã sống ở Osaka à? …ええ、１５歳まで	5403	\N	0
-14361	大阪に 住んでいました。	E e, 15-sai made Ōsaka ni sunde imashita	\N	Vâng, tôi đã sống ở Osaka đến năm 15 tuổi. 1.1.2. Khi người nói hỏi về thông tin mà anh ấy nghe hoặc nhìn thấy. Ví dụ:	5403	\N	0
-14362	日本で 買いました。	Nihon de kaimashita	\N	Tôi mua ở Nhật Bản. 1.1.3. Khi người nói muốn nghe giải thích nguyên nhân, lý do của sự việc mà anh ấy nghe hoặc nhìn thấy. Ví dụ:	5403	\N	0
-14363	どうして 遅れたんですか。	Dōshite okuretandesu ka	\N	Tai sao anh lại đến muộn thế? * Chú ý: Đôi khi ～んですか biểu thị sự ngạc nhiên, mối nghi ngờ hay sự tò mò sâu sắc. Tuy nhiên, nếu không dùng đúng thì có thể làm tổn thương người nghe. Vì thế nên cẩn thận khi dùng.	5403	\N	0
-14364	社長、帰らないんですか。	Shachō kaeranaindesu ka	\N	Anh không về sao, giám đốc? ( Biểu hiện này có hàm ý trách móc, dễ dẫn đến thất lễ) -&gt;	5403	\N	0
-14365	社長、帰りませんか。	Shachō kaerimasen ka	\N	Anh không về sao, giám đốc? 1.2. Trong câu trần thuật: 「～んです。」 Biểu hiện này thường dùng trong những trường hợp sau: 1.2.1. Khi trả lời câu hỏi tại sao (phía sau không còn	5403	\N	0
-14366	どうして 遅れたんですか。	Dōshite okuretandesu ka	\N	Tai sao anh lại đến muộn? …バスが	5403	\N	0
-14367	来なかったんです。	Basu ga konakattandesu	\N	Tại vì xe buýt không đến. 1.2.2. Khi người nói trình bày thêm nguyên nhân, lý do. (phía sau không còn	5403	\N	0
-14368	毎朝、新聞を 読みますか。	Mai asa, shinbun wo yomimasu ka	\N	Hàng sáng anh có đọc báo không? …いいえ。時間が	5403	\N	0
-14369	写真はいつですか？ しゃしんはいつですか？	Bao giờ thì xong ảnh vậy? -午後５時ぐらいできます ごご５じぐらいできます Khoảng 5 giờ chiều thì xong	\N	-わたしは宿題ができました	5407	\N	0
-14370	私は 毎朝 コーヒーを 飲みながら 新聞を 読みます。	Watashi wa mai asa shinbun wo yomimasu	\N	Hàng sáng tôi vừa uống cà phê vừa đọc báo.	5408	\N	0
-14371	彼は テレビを 飲みながら ご飯を 食べています。	Kare wa terebi wo in minagara gohan wo tabeteimasu	\N	Anh ấy đang vừa ăn cơm vừa xem tivi.	5408	\N	0
-14372	学生の時、アルバイトをしながら 大学で 勉強しました。	Gakusei no toki, arubaito wo shinagara daigaku de benkyōshimashita	\N	Hồi học sinh, tôi vừa làm thêm vừa đi học.	5408	\N	0
-14373	彼は 働きながら 大学に 通っています。	Kare wa hatarakinagara daigaku ni kayotte imasu	\N	Anh ấy vừa đi làm vừa đi học đại học.	5408	\N	0
-14374	日本語で 手紙を 書いたんですが、見て いただけませんか。	Nihongo de tegami wo kaitandesuga, mite itadakemasenka	\N	Tôi đã viết 1 bức thư bằng’ tiếng Nhật, anh/chị xem giúp tôi được không ạ?	5409	\N	0
 15530	今さら後悔したところで、どうにもならない。	Imasara kōkai shita tokoro de, dō ni mo naranai.	\N	Giờ có hối hận thì cũng chẳng thay đổi được gì.	5942	\N	0
-14375	コピー機の 使い方が 分からないんですが、教えて いただけませんか。	Kopī　ki no　tsukai　kata ga wakaranaindesuga, oshiete itadakemasen ka	\N	Tôi không biết cách sử dụng máy photo, anh/chị chỉ giúp tôi được không ạ?	5409	\N	0
-14376	図書館へ行きたいんですが、地図を書いていただけませんか。	Toshokan e ikitai ndesuga, chizu wo kaite itadakemasen ka	\N	Tôi muốn đến thư viện, anh/chị vẽ cho tôi bản đồ được không ạ? 2.2. ～んですが、V	5409	\N	0
-14377	日本語を 勉強したいんですが、どうしたら いいですか。	Nihongo wo benkyōshitaindesuga, dōshitara īdesu ka	\N	Tôi muốn học tiếng Nhật, vậy thì nên làm thế nào nhỉ? …Mina	5409	\N	0
-14378	センターで 勉強したら いいと思います。	Mina sentā de benkyōshitara ī to omoimasu	\N	Tôi nghĩ anh nên học tiếng Nhật ở Trung tâm Mina.	5409	\N	0
-14379	試験の予定を 知りたいんですが、だれに 聞いたら いいですか。	Shiken no yotei wo shiritaindesuga, dare ni kiitara īdesu ka	\N	Tôi muốn biết kế hoạch thi, vậy tôi nên hỏi ai bây giờ? …試験部の Nga	5409	\N	0
-14380	さんに 聞いて ください。	Shikenbu no Nga-san ni kiite kudasai	\N	Anh/chị hãy hỏi chị Nga phòng khảo thí.	5409	\N	0
-14381	ミラーさんは 親切だし、頭もいいし、それに ハンサムです。	Mirā-san wa shinsetsu dashi, atama mo īshi, soreni hansamudesu	\N	Anh Miller vừa tốt bụng, vừa thông minh, hơn nữa lại đẹp trai.	5410	\N	0
-14382	ミラーさんは ピアノも 弾けるし、ダンスも できるし、それに 歌も 歌えます。	Mirā-san wa piano mo hikerushi, dansu mo dekirushi, soreni uta mo utaemasu	\N	Anh Miller vừa chơi được piano, vừa có thể khiêu vũ, hơn nữa cũng có thể hát. 3.2. ～し、～し、（それで）～: vì… và vì… nên… • Cách dùng: cũng được dùng khi trình bày hơn một lý do hoặc nguyên nhân. • Ví dụ:	5410	\N	0
-14383	きょうは 雨だし、お金もないし、（それで） 出かけません。	Kyō wa amedashi, okane mo naishi, (sorede) dekakemasen	\N	Hôm nay trời vừa mưa, hơn nữa không tiền nên tôi không đi ra ngoài.	5410	\N	0
-14384	この店は 食べ物も おいしいし、値段も 安いし、（それで） 人が 多いです。	Kono mise wa tabe mono mo oishīshi, nedan mo yasuishi,(sorede) hito ga ōidesu	\N	Cửa hàng này đồ ăn ngon, hơn nữa giá lại rẻ nên rất đông người. 3.3. ～し、～し、～から: vì…, và vì… (ngoài ra còn có các nguyên nhân khác) • Cách dùng: dùng để trả lời cho câu hỏi tại sao. Với ngụ ý: ngoài những nguyên nhân người ta nêu ra còn có thể có nhiều nguyên nhân khác nữa. • Ví dụ:	5410	\N	0
-14385	どうして この会社に 入ったんですか。	Dōshite kono kaisha ni haitta ndesu ka	\N	Tại sao bạn lại vào công ty này làm việc?	5410	\N	0
-14386	残業も ないし、ボーナスも 多いですから。	Zangyō mo naishi, bōnasu mo ō idesukara	\N	Vì không phải làm thêm giờ, và tiền thưởng lại nhiều.	5410	\N	0
-14387	図書館へ行きたいんですが、どのバスに乗ったらいいですか。	Toshokan e ikitai ndesuga, dono basu ni nottara īdesu ka	\N	Tôi muốn đến thư viện, vậy tôi nên lên xe bus nào?	5410	\N	0
-14388	まどが 閉まっています。	Mado ga shima tte imasu	\N	Cửa sổ đóng (-&gt; cửa sổ đang trong trạng thái đóng, có thể là do gió hoặc ai đó làm nó đóng lại)	5411	\N	0
-14389	いすが 壊れています。	Isu ga kowarete imasu	\N	Cái ghế bị hỏng (-&gt; cái ghế đang trong trạng thái hỏng, có thể là do ai đó làm hỏng)	5411	\N	0
-14390	ふくろが 破れています。	Fuku ro ga yaburete imasu	\N	Cái túi bị rách (-&gt; cái túi đang trong trạng thái rách, có thể là do vướng vào đâu đó hoặc ai đó làm rách)	5411	\N	0
-14391	窓のガラスが 割れていますから、危ないです。	Mado no garasu ga warete imasukara, abunaidesu	\N	Kính cửa sổ bị vỡ nên rất nguy hiểm. (-&gt; kính cửa sổ đang trong trạng thái vỡ, có thể là do ai đó ném đá… làm vỡ) • Chú ý: Khi diễn tả trạng thái xảy ra trong quá khứ, chúng ta dùng Vていました	5411	\N	0
-14392	今朝道が 込んでいました。	Kesa michi ga konde imashita	\N	Sáng nay đường đông nghịt. 1.2. N	5411	\N	0
-14393	このいすは 壊れています。	Kono isu wa kowarete imasu	\N	Cái ghế này thì bị hỏng rồi	5411	\N	0
-14394	その皿は 割れています。	Sono sara wa warete imasu	\N	Cái đĩa đó thì vỡ rồi	5411	\N	0
-14395	あの皿は 汚れていますから、洗ってください。	Ano sara wa yogorete imasukara, aratte kudasai	\N	Cái đĩa kia thì bẩn quá, đem đi rửa đi.	5411	\N	0
-14396	宿題は もう やってしまいました。	Shukudai wa mō yatte shimaimashita	\N	Bài tập thì tôi đã làm hết rồi.	5412	\N	0
-14397	お酒を 全部飲んでしまいました。	Osake wo zenbu nonde shimaimashita	\N	Tôi đã uống hết rượu rồi. b. Vていしまいます : Sẽ hoàn thành, sẽ xong (1 hành động trong tương lai) • Cách dùng: dùng để diễn tả sự hoàn thành của hành động trong tương lai. • Ví dụ:	5412	\N	0
-14398	明日までに レポートを 書いてしまいます。	Ashita made ni repōto wo kaite shimaimasu	\N	Đến ngày mai tôi sẽ viết xong báo cáo. 2.2. Vてしまいました: (làm gì) mất rồi • Cách dùng: dùng để biểu thị sự hối tiếc, tâm trạng biết lỗi của người nói trong một tình huống xấu. • Ví dụ:	5412	\N	0
-14399	パスポートを 無くしてしまいました。	Pasupōto wo nakushite shimaimashita	\N	Tôi làm mất hộ chiếu mất rồi.	5412	\N	0
-14400	電車に かばんを 忘れてしまいました。	Densha ni kaban wo wasurete shimaimashita	\N	Tôi để quên cặp trên xe điện mất rồi.	5412	\N	0
-14401	スーパーで 財布を 落としてしまいました。	Sūpā de saifu wo oto shite shimaimashita	\N	Tôi đánh rơi ví tại siêu thị mất rồi.	5412	\N	0
-14402	壁に 地図が はってあります。	Kabe ni chizu ga hatte arimasu	\N	Trên tường có dán bản đồ. (hàm ý là một ai đó đã dán bản đồ lên tường nhằm một mục đích nào đó và kết quả là trên tường hiện có bản đồ)	5413	\N	0
-14403	教室に テレビが 置いてあります。	Kyōshitsu ni terebi ga oite arimasu	\N	Trong lớp học có đặt tivi. (hàm ý là một ai đó đã để cái tivi vào trong lớp học nhằm một mục đích nào đó và kết quả là trong lớp hiện có 1 cái tivi)	5413	\N	0
-14404	これは私の本です。名前が書いてありますから。	Kore wa watashi no hon desu	\N	Namae ga kaite arimasukara. Đây là quyển sách của tôi. Vì có ghi tên mà. (hàm ý là tôi đã ghi tên mình vào quyển sách nhằm mục đích không lẫn với của người khác và kết quả là trong quyển sách hiện có tên của tôi) 1.2. N２は N１に V	5413	\N	0
-14405	地図は どこですか。	Chizu wa dokodesu ka	\N	Bản đồ ở đâu vậy? B：地図は	5413	\N	0
-14406	壁に 張ってあります。	Chizu wa kabe ni watte arimasu	\N	Bản đồ có dán ở trên tường.	5413	\N	0
-14407	パスポートは 引き出しの中に しまってあります。	Pasupōto wa hikidashi no naka ni shimatte arimasu	\N	Hộ chiếu được cất ở trong ngăn kéo	5413	\N	0
-14408	旅行の まえに、切符を 買っておきます。	Ryokō no mae ni, kippu wo katte okimasu	\N	Trước khi đi du lịch tôi sẽ mua vé trước.	5414	\N	0
-14409	パーティの まえに、部屋を 掃除しておきます。	Pāti no mae ni,heya wo sōjishite okimasu	\N	Trước bước tiệc, tôi sẽ dọn dẹp phòng trước.	5414	\N	0
-14410	パーティの まえに、料理を 作っておいたほうがいいです。	Pāti no mae ni, ryōri wo tsukutte oita hō ga īdesu	\N	Trước bước tiệc, bạn nên chuẩn bị các món ăn trước. 2.2. （～たら、）～V	5414	\N	0
-14411	授業が 終わったら、電気を 消しておきます。	Jugyō ga owattara, denki wokeshite okimasu	\N	Khi kết thúc giờ học thì sẽ tắt điện.	5414	\N	0
-14412	パーティーが 終わったら、部屋を 片付けておきます。	Pātī ga owattara, heya wo ka tazukete okimasu	\N	Khi bữa tiệc kết thúc thì sẽ dọn phòng.	5414	\N	0
-14413	（１） 週 末は デパートで 買い物しよう と思っています。	Tôi dự định đi mua sắm vào cuối tuần	\N	（２）	5415	\N	0
-14414	今から 銀行へ 行こう と思っています。	Tôi dự định đi đến ngân hàng bây giờ	\N	Chú ý : 「~とおもっています」 cũng được dùng để chỉ dự định của người thứ ba	5415	\N	0
-14415	来年結婚する つもりです。	Năm tới tôi dự định sẽ kết hôn	\N	明日からは	5415	\N	0
-14416	たばこを 吸わない つもりです。	Tôi định từ ngày mai sẽ không hút thuốc	\N	Chú ý: so với mẫu câu V thể ý chí	5415	\N	0
-14417	明日は 雨が 降るでしょう。	Có lẽ ngày mai trời sẽ mưa	\N	大雨ですから、タワポンさんは	5417	\N	0
-14418	彼は 道を よく 知っていますから、たぶん 大丈夫でしょう。	Anh ấy biết đường rất rõ nên có lẽ sẽ ổn thôi	\N	あしたの	5417	\N	0
-14419	午後から 雪が 降る かもしれません。	Tuyết có thể sẽ rơi vào buổi chiều cũng nên	\N	約束の時間に	5418	\N	0
-14420	間に合わない かもしれません。	Chúng ta có lẽ sẽ không kịp giờ hẹn cũng không biết chừng	\N	山田さんは	5418	\N	0
-14421	まだ 来ていませんね。 病気かもしれません。	Anh Yamada vẫn chưa đến nhỉ	\N	Có lẽ là ốm cũng nên	5418	\N	0
-14422	駅まで ３０分で 行けますか。		\N	\N	5419	\N	0
-14423	３万円で ビデオが 買えますか。		\N	\N	5419	\N	0
-14424	早く寝ろ。	Hãy ngủ sớm	\N	②	5421	\N	0
-14425	もっと勉 強しろ。	Phải học nhiều hơn	\N	③	5421	\N	0
-14426	遅れるな。	Không được đến muộn	\N	b) Giữa bạn bè thân thiết với nhau. Trong trường hợp này,	5421	\N	0
-14427	逃げろ。	Chạy đi	\N	②	5421	\N	0
-14428	スイッチをきれ。	Tắt công tắc điện đi	\N	③	5421	\N	0
-14429	エレベーターを使うな。	Không được dùng cầu thang máy	\N	Ví dụ: ①	5421	\N	0
-14430	頑張 が ん ば れ。	Cố lên	\N	②	5421	\N	0
-14431	走れ。	Chạy đi	\N	③	5421	\N	0
-14432	負けるな。	Không được thua	\N	Ví dụ: ①	5421	\N	0
-14433	止まれ。	Dừng lại	\N	②	5421	\N	0
-14434	勉 強しなさい。	Hãy học đi	\N	②	5422	\N	0
-14435	ちょっと て つ だってくれ。	Hãy giúp tôi một chút	\N	②	5423	\N	0
-14436	ちょっと はさみを かして。	Cho tôi mượn cái kéo một chút	\N	~と読みます =&gt; Đọc là… ~と書いてあります =&gt; Viết là… Ví dụ: ①	5423	\N	0
-14437	1) この 説明書を よめば、 使い方が わかります。	Nếu đọc sách hướng dẫn này sẽ hiểu được cách sử dụng	\N	2)	5432	\N	0
-14438	カタログを 見なければ、 値段が わかりません。	Nếu không xem cuốn catalogue thì không biết được giá	\N	3)	5432	\N	0
-14439	やすければ、この 車を 買います。	Nếu rẻ sẽ mua chiếc ô tô này	\N	4)	5432	\N	0
-14440	日曜日は ひまなら、 広島へ 行きます。	Nếu chủ nhật rỗi, tôi sẽ đi Hiroshima	\N	5)	5432	\N	0
-14441	雨なら、うちで テレビを 見ます。	Nếu trời mưa sẽ ở nhà xem tivi	\N	Chú ý: khác với 「~と」, vế sau của thể điều kiện loại này có thể là những mẫu câu diễn đạt ý chí, mong muốn như: 「~Vてください」、「Vましょう」、「Vたいです」 1)	5432	\N	0
-14442	何か 意見が あれば、 どうぞ 言ってください。	Nếu có ý kiến gì, xin hãy phát biểu	\N	2)	5432	\N	0
-14443	3) この洗濯機は 音が 静かなら、 買いたいです。	Nếu tiếng động của cái máy giặt này êm thì tôi muốn mua	\N	3.2. Với 「なら」thì có thêm cách sử dụng nữa, với ý: giới hạn đề tài, câu chuyện được đề cập đến (chỉ trong phạm vi nội dung được nói đến thôi) 1) A: 「ワープロが	5432	\N	0
-14444	1) 新聞が 読めるように、漢字を 勉 強します。		\N	\N	5433	\N	0
-14445	2) みんなが わかるように、大きな 声で 言います。		\N	\N	5433	\N	0
-14446	3) 風を ひかないように、セーターを 着ます。		\N	\N	5433	\N	0
-14447	1) 日本語が 話せるように なりました。	Tôi đã có thể nói được tiếng Nhật	\N	2)	5434	\N	0
-14448	はじめは 日本料理が あまり 食べられませんでしたが、 今は 何でも 食べられるように なりました。	Lúc đầu tôi không thể ăn được đồ Nhật nhiều lắm nhưng bây giờ có thể ăn được mọi thứ	\N	Chú ý: ☞ Động từ V	5434	\N	0
-14449	今年の 夏は かなり 暑いですね。		\N	\N	5436	\N	0
-14450	課長は 私を ほめました。	Giám đốc khen tôi	\N	Bị động:	5437	\N	0
-14451	課長は 私を しかりました。	Giám đốc mắng tôi	\N	Bị động:	5437	\N	0
-14452	あの ビールは 30 年まえに たてられました。	Tòa nhà kia được xây dựng 30 năm trước đây	\N	Chú ý: Khi sự vật không được đặc biệt nhấn mạnh như chủ đề của câu thì	5439	\N	0
-14453	500 台 自動車が 生産されています。		\N	\N	5440	\N	0
-14454	) 二人に 一人は 大学へ 行きます。		\N	\N	5440	\N	0
-14455	(1 ) 私は 花が 好きです。	Tôi thích hoa	\N	(Đã học) (1’)	5442	\N	0
-14456	私は 花を育てるのが すきです。	Tôi thích việc trồng hoa	\N	(2)	5442	\N	0
-14457	) あの人は タイプを うつのが はやいです。	Người đó làm việc đánh máy thì nhanh	\N	Các tính từ thường được sử dụng trong mẫu câu này gồm:	5442	\N	0
-14458	) 電話をかけるのを 忘れました。	Tôi đã quên mất việc gọi điện thoại	\N	(2 )	5443	\N	0
-14459	あの人の 名前を 忘れました。	Tôi đã quên mất tên của người kia	\N	(2&#8242;)	5443	\N	0
-14460	が。 先週 木村さんは 結婚しました。	Tuần trước chị Kimura đã kết hôn	\N	先週	5443	\N	0
-14461	いいえ、しりませんでした。	Ví dụ (1) sử dụng しりません vì người nghe chưa biết thông tin, và không nhận được thông tin gì từ câu hỏi	\N	Còn ở Ví dụ (2) sử dụng	5443	\N	0
-14462	(1) 娘は 北海道の 小さい町で 生まれました。	Con gái tôi được sinh ra tại một thành phố nhỏ ở Hokkaido	\N	-&gt;	5443	\N	0
-14463	娘が 生まれたのは 北海道の 小さい町です。	Nơi con gái tôi được sinh ra là một thành phố nhỏ ở Hokkaido	\N	(2) 12	5443	\N	0
-14464	月は 1 年で 一番 忙しいです。	Tháng 12 là tháng bận nhất trong một năm	\N	-&gt;  1	5443	\N	0
-14465	(1) リーさんは 日本語を 話すことが できます。		\N	\N	5444	\N	0
-14466	） (2) 私のしゅみは 映画を 見ることです。		\N	\N	5444	\N	0
-14467	私のしゅみは 映画を 見るのです。		\N	\N	5444	\N	0
-14468	） (3) 日本料理を 食べたことが あります。		\N	\N	5444	\N	0
-14469	日本料理を 食べたのが あります。		\N	\N	5444	\N	0
-14470	じこで 電車が とまりました。	Tai nạn khiến xe điện ngừng chạy	\N	ゆきで	5447	\N	0
-14471	新幹線が 遅れました。	Tuyết rơi khiến tàu Shinkansen bị trễ	\N	病気で	5447	\N	0
-14472	) 山の高さは どうやって はかるか、知っていますか。		\N	\N	5452	\N	0
-14473	わたしは 社 長に とけいを いただきます。	Tôi nhận được cái đồng hồ từ giám đốc	\N	わたしは	5453	\N	0
-14474	先生に プレゼントを いただきました。	Tôi đã nhận được một món quà từ thầy/cô giáo	\N	わたしは	5453	\N	0
-14475	社 長は わたしに とけいを くださいます。	Giám đốc cho tôi cái đồng hồ	\N	先生は	5454	\N	0
-14476	わたしに ボールペンを くださいます。	Cô giáo cho tôi cái bút bi	\N	母は	5454	\N	0
-14477	わたしは 弟に さいふを やります。	Tôi cho em trai cái ví	\N	わたしは	5455	\N	0
-14478	わたしは 花に 水を やります。	Tôi tưới nước cho hoa	\N	Chú ý: Cùng là hành động cho, tặng nhưng trong trường hợp người nói muốn thể hiện sự thái độ tôn kính với người nhận là người có địa vị, tuổi tác cao hơn thì dùng「さしあげます」	5455	\N	0
-14479	わたしは 社長に ネクタイ を さしあげます。	Tôi biếu ông giám đốc chiếc cà vạt	\N	Giống	5455	\N	0
-14480	私は 鈴木さんに 日本語を 教えて いただきました。	Tôi được cô Suzuki dạy cho tiếng Nhật	\N	私は	5455	\N	0
-14481	中村さんに 本社へ 連れて 行って いただきました。	Tôi được anh Nakamura dẫn đến trụ sở công ty 4.2	\N	~は(が) ~を V	5455	\N	0
-14482	会社の人は( 私に)この機械の使い方を 教えてく ださいました。	Người trong công ty đã dạy (cho tôi) cách sử dụng của chiếc máy này	\N	4.3.  ~に ~を V	5455	\N	0
-14483	私は 娘に おもちゃを 買ってやりました。	Tôi mua đồ chơi cho con gái	\N	私は	5455	\N	0
-14484	おとうとに 誕生日のパーティーを 準備して やりました。	Tôi đã chuẩn bị cho em trai bữa tiệc sinh nhật	\N	わたしは	5455	\N	0
-14485	犬を 散歩に 連れて 行って やります。	Tôi dắt chó đi dạo	\N	Chú ý: – Cũng giống như 「V	5455	\N	0
-14486	とけいか ラジカセを 買ってやりたいです。	Tôi muốn mua đồng hồ hay đài casset cho nó	\N	Trường hợp này「お子さん」(con của người khác) nên người hỏi cũng phải dùng cách nói lịch sự là 「~V	5455	\N	0
-14487	毎日雨が降ったために、 橋が 壊れた。	Cây cầu bị hỏng do ngày nào trời cũng mưa 1.2	\N	Mẫu câu N	5456	\N	0
-14488	るために」) 健康のために、たばこを やめた。	Tôi bỏ thuốc lá (để) cho khỏe	\N	発表の	5456	\N	0
-14489	台風のために、木が 倒れた。	Cây đổ tại (vì) bão	\N	家族のために、一生懸命働かなければなりません。 Tôi phải cố làm việc hết sức vì gia đình.	5456	\N	0
-14490	奥さんのために、 新しいバイクを買うつもりです。	Tôi định mua 1 chiếc xe máy mới vì/cho vợ	\N	V	5456	\N	0
-14491	このはさみは 紙を 切るのに 使います。	Cái kéo này dùng để cắt giấy	\N	②この	5456	\N	0
-14492	ミキサーは 何に 使うんですか。	Cái máy trộn này dùng để làm gì thế?	\N	…原	5456	\N	0
-14493	料を まぜるのに 使います。	Dùng để trộn nguyên liệu	\N	b) （N	5456	\N	0
-14494	この辞書は 漢字を調べるのに 便利です。	Cuốn từ điển này rất tiện cho việc tra chữ Hán	\N	この本は	5456	\N	0
-14495	日本のことを知るのに 役に立ちます。	Quyển sách này có ích cho việc tìm hiểu NB	\N	c) （N	5456	\N	0
-14496	この時計は 直すのに １週間 かかります。	Cái đồng hồ này phải mất 1 tuần để sửa	\N	1/ Chúng ta đã từng gặp trợ từ 「に」 thể hiện mục đích trong những bài trước như: ①	5456	\N	0
-14497	今晩雨が 降るでしょう。	Có lẽ tối nay trời mưa	\N	(Người nói có thể nghe thông tin qua đài, báo..rồi nói)	5458	\N	0
-14498	今晩雨が 降りそうです。	Có vẻ tối nay trời mưa	\N	(Người nói quan sát thấy trời âm u rồi nói)	5458	\N	0
-14499	ちょっと たばこを 買って来ます。	Tôi đi mua thuốc lá một chút (rồi về)	\N	ちょっと	5459	\N	0
-14500	教 室に 時計を 忘れたので、ちょっと 取って来ます。	Vì quên đồng hồ ở lớp học nên tôi sẽ đi lấy	\N	Chú ý: Địa điểm đi đến và thực hiện hành động ở đó được thể hiện bằng trợ từ 「で」. Tuy nhiên, khi địa điểm đó là nơi lấy đi (hoặc di chuyển) một vật thì ta dùng trợ từ 「から」.	5459	\N	0
-14501	スーパーで 牛 乳を 買って来ます。	Tôi đi đến mua sữa ở siêu thị	\N	台	5459	\N	0
-14502	所から コップを 取って来ます。	Tôi đi lấy cốc từ nhà bếp	\N	Sự khác nhau giữa  「(場所)へVに行く」  「(場所)でVて来る」	5459	\N	0
-14503	) 髪を 短くします。	Tôi sẽ cắt tóc	\N	(làm cho tóc ngắn)	5461	\N	0
-15845	手紙を書きます。	Tegami o kakimasu.	\N	Tôi viết thư.	6099	\N	1
-14504	今 勉強しているところですから、あとで 行きます。	Vì bây giờ tôi đang học bài, nên tôi sẽ đi sau	\N	A:	5465	\N	0
-14505	すみません。今 コピーしているところですから、もう少し 待ってください。	Xin lỗi	\N	Vì bây giờ đang phôtô nên hãy chờ thêm chút nữa. 1.3. Mẫu câu V	5465	\N	0
-14506	はい、たった今 出たところです。	Vâng, vừa mới đi	\N	良子さんは	5465	\N	0
-14507	たった今 うちへ 帰ったところです。	Yoshiko vừa trở về nhà	\N	A:	5465	\N	0
-14508	はい、たった今 着いたところだ。	Vâng, tôi vừa đến	\N	– Tất cả các mẫu câu ～ところです đều mang ý tả lại trạng thái tại 1 thời điểm 1 cách đơn thuần. Ví dụ:	5465	\N	0
-14509	山田さんと山本さんは ３か月まえに 結婚したばかりです。	Cô Yamada và anh Yamamoto vừa kết hôn 3 tháng trước	\N	田中さんは ３週間まえに	5466	\N	0
-14510	ベトナムへ 来たばかりです。	Anh Tanaka vừa đến Việt Nam 3 tuần trước	\N	このカメラは	5466	\N	0
-14511	」 さっき 食べたばかりですから、まだ おなかが いっぱいです。	Bởi vì vừa ăn nên tôi vẫn còn no	\N	ペンキを	5466	\N	0
-14512	」 この時計は 買ったばかりなのに、 もう壊れてしまいました。	Cái đồng hồ này vừa mới mua vậy mà đã hỏng mất rồi	\N	きのう	5466	\N	0
-14513	雨が 降りそうです。	Có vẻ như trời sắp mưa	\N	②	5467	\N	0
-14514	雨が 降るそうです。	Tôi nghe nói là trời sẽ mưa	\N	Thể ý chí（しよう） , cấm đoán（するな） , mệnh lệnh（しろ） , suy đoán（するでしょう） , nhờ vả（してください、しないでください） . Ngoài ra, các mẫu câu khác đều có thể kết hợp được với mẫu câu này. （ × ）	5467	\N	0
-14515	(1)部長は 加藤さんを 大阪へ 出 張させます。	Trưởng phòng sai anh Kato đi công tác Osaka	\N	(Trưởng phòng là chủ thể của câu nhưng người thực hiện hành động đi công tác Osaka là anh Kato) (2)	5469	\N	0
-14516	私は 娘を 自由に 遊ばせました。	Tôi để cho con gái chơi tự do	\N	(Tôi là chủ thể của câu nhưng đối tượng thực hiện hành động chơi là con gái tôi) 2.2. Trường hợp #1: đối với “tha động từ” (他動詞) Câu trúc: ~に ~を V(さ)せる Cách dùng: biến đổi tha động từ sang thể 「使役(しえき)」 để tạo ra 1 động từ mới mang nghĩa sai khiến, mệnh lệnh yêu cầu ai đó làm gì. Trong kiểu câu này, người thực hiệnhành động, động tác sẽ đi với trợ từ 「に」, còn tân ngữ (đối tượng tác động của động từ) vẫn được xác định bởi trợ từ 「を」. – Kiểu câu này còn được gọi tên là kiểu câu 「に-使役文」(câu sai khiến với trợ từ	5469	\N	0
-14517	(5)先生は 生徒に まどを 開けさせました。	Giáo viên sai (bảo) sinh viên mở cửa sổ	\N	(6)	5469	\N	0
-14518	「を」 先生は 学生を 歩かせた。 先生は 学生に 山道を 歩かせた。	b	\N	Trường hợp 2: Những động từ như「答える、しゃべる、言う、質問する、反対する、発言する」 là những tự động từ thực hiện hành vi có hướng đến 1 đối tượng nào đó nhưng có nhiều khi dùng trợ từ 「に」 thay cho trợ từ「を」	5469	\N	0
-14519	・彼に 答えさせた。 ・山田くんに 言わせよう。	C	\N	Mẫu câu	5469	\N	0
 15270	後ろの人にも聞こえるように、大きい声で話してください。	Ushiro no hito ni mo kikoeru yō ni, ōkii koe de hanashite kudasai.	\N	Hãy nói to để người phía sau cũng nghe được.	5812	\N	0
 15271	忘れないように、手帳に書いておきます。	Wasurenai yō ni, techō ni kaite okimasu.	\N	Tôi ghi vào sổ tay để khỏi quên.	5812	\N	1
 15272	毎日野菜を食べるようにしています。	Mainichi yasai o taberu yō ni shite imasu.	\N	Tôi đang cố gắng ngày nào cũng ăn rau.	5813	\N	0
@@ -6499,36 +6069,13 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15288	来月から日本語を習うことにしました。	Raigetsu kara nihongo o narau koto ni shimashita.	\N	Tôi quyết định từ tháng sau sẽ học tiếng Nhật.	5821	\N	0
 15289	4月に大阪へ転勤することになりました。	Shi-gatsu ni Ōsaka e tenkin suru koto ni narimashita.	\N	Tháng 4 tôi được chuyển công tác đến Osaka.	5821	\N	1
 15290	日本に来たばかりで、まだ何もわかりません。	Nihon ni kita bakari de, mada nani mo wakarimasen.	\N	Tôi vừa mới đến Nhật nên chưa biết gì cả.	5822	\N	0
-14520	８じから（１１じまで）べんきょうします.	8-Ji kara (11ji made) benkyō shimasu	\N	\N	5309	\N	0
-14521	のみます -&gt; のんで: đọc		\N	\N	5353	\N	0
-14522	よびます -&gt; よんで: gọi		\N	\N	5353	\N	0
-14523	しにます -&gt; しんで: chết		\N	\N	5353	\N	0
-14524	• Vい/り/ち ます－＞ Vって		\N	\N	5353	\N	0
-14525	Ví dụ: かいます -&gt; かって: mua		\N	\N	5353	\N	0
-14526	とります -&gt; とって: lấy		\N	\N	5353	\N	0
-14527	まちます -&gt; まって: đợi		\N	\N	5353	\N	0
-14528	* いきます－＞いって: đi		\N	\N	5353	\N	0
-14529	• Vします－＞ Vして (はなします -&gt; はなして : nói chuyện)	(2) Nhóm 2	\N	\N	5353	\N	0
-14530	• V (e) ます－＞ V (e)て		\N	\N	5353	\N	0
-14531	Ví dụ: 食べます -&gt;食べて: ăn		\N	\N	5353	\N	0
-14532	ねます -&gt; ねて: ngủ		\N	\N	5353	\N	0
-14533	• V (i)ます－＞ V (i)て		\N	\N	5353	\N	0
-14534	Ví dụ: みます -&gt; みて: xem		\N	\N	5353	\N	0
-14535	おきます -&gt; おきて : thức dậy	(3) Nhóm 3	\N	\N	5353	\N	0
-14536	します －＞ して ( べんきょうします -&gt; べんきょうして: học)		\N	\N	5353	\N	0
-14537	きます －＞ きて : đến		\N	\N	5353	\N	0
-14538	1.		\N	\N	5470	\N	0
-14539	わたしは たなかです。	watashi wa tanaka desu。	\N	Tôi là Tanaka.	3672	\N	0
-14540	わたしは 学生 がくせいです。	watashi wa gakusei desu。	\N	Tôi là sinh viên.	3672	\N	1
 15558	彼は来月、新しい部署に就く。	Kare wa raigetsu, atarashii busho ni tsuku.	\N	Tháng sau anh ấy nhậm chức ở phòng ban mới.	5956	\N	0
-15559	社長に就いて、経営方針が変わった。	Shachō ni tsuite, keiei hōshin ga kawatta.	\N	Kể từ khi lên chức giám đốc, phương châm kinh doanh đã thay đổi.	5956	\N	1
 15560	入社後、営業部に配属された。	Nyūsha go, eigyōbu ni haizoku sareta.	\N	Sau khi vào công ty, tôi được phân về phòng kinh doanh.	5957	\N	0
 15561	彼女は海外支店に配属されることになった。	Kanojo wa kaigai shiten ni haizoku sareru koto ni natta.	\N	Cô ấy sẽ được phân công sang chi nhánh nước ngoài.	5957	\N	1
 15562	最終判断は委員会に委ねられた。	Saishū handan wa iinkai ni yudanerareta.	\N	Quyết định cuối cùng được giao cho ủy ban.	5958	\N	0
 15563	子供の将来は本人に委ねるべきだ。	Kodomo no shōrai wa honnin ni yudaneru beki da.	\N	Tương lai con cái nên để bản thân quyết định.	5958	\N	1
 15564	彼は親の援助に頼らず、学費を稼いだ。	Kare wa oya no enjo ni tayorazu, gakuhi o kaseida.	\N	Anh ấy kiếm học phí mà không dựa vào sự giúp đỡ của bố mẹ.	5959	\N	0
 15565	彼女は頼りになる先輩だ。	Kanojo wa tayori ni naru senpai da.	\N	Cô ấy là senpai đáng tin cậy.	5959	\N	1
-15566	企業は即戦力を求めている。	Kigyō wa sokusenryoku o motomeru.	\N	Doanh nghiệp đang tìm người có thể làm ngay.	5960	\N	0
 15567	彼は理解を求めたが、得られなかった。	Kare wa rikai o motometa ga, erarenakatta.	\N	Anh ấy mong được thấu hiểu nhưng không được.	5960	\N	1
 15568	この地域には十分な水が供給されていない。	Kono chiiki ni wa jūbun na mizu ga kyōkyū sarete inai.	\N	Khu vực này không được cung cấp đủ nước.	5961	\N	0
 15569	電力会社が都市部に電気を供給する。	Denryoku gaisha ga toshibu ni denki o kyōkyū suru.	\N	Công ty điện lực cung cấp điện cho khu đô thị.	5961	\N	1
@@ -6547,13 +6094,7 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15582	この国の輸出の半分を車が占めている。	Kono kuni no yushutsu no hanbun o kuruma ga shimete iru.	\N	Ô tô chiếm một nửa xuất khẩu của nước này.	5968	\N	0
 15583	若者が人口の三割を占める。	Wakamono ga jinkō no sanwari o shimeru.	\N	Giới trẻ chiếm ba phần mười dân số.	5968	\N	1
 15584	調査によると、満足度は80％だった。	Chōsa ni yoru to, manzokudo wa hachijū pāsento datta.	\N	Theo khảo sát, mức hài lòng là 80%.	5969	\N	0
-15585	データを統計して報告書を作成した。	Dēta o tōkei shite hōkokusho o sakusei shita.	\N	Đã thống kê dữ liệu và lập báo cáo.	5969	\N	1
-15586	平和のもとで子供たちが育つ。	Heiwa no moto de kodomotachi ga sodatsu.	\N	Trẻ em lớn lên trong hòa bình.	5970	\N	0
-15587	新しい制度の下で、手続きが簡略化された。	Atarashii seido no shita de, tetsuzuki ga kanryaku ka sareta.	\N	Dưới thể chế mới, thủ tục được đơn giản hóa.	5970	\N	1
 15588	乱開発は生態系を危険にさらす。	Rankaihatsu wa seitaikei o kiken ni sarasu.	\N	Khai thác bừa bãi đặt hệ sinh thái vào nguy hiểm.	5971	\N	0
-15589	その行為は国民の安全を危険にさらした。	Sono kōi wa kokumin no anzen o kiken ni sarasu.	\N	Hành vi đó đặt an toàn của dân vào nguy hiểm.	5971	\N	1
-15846	この字が読めます。	Kono ji ga yomemasu.	\N	Đọc được chữ này.	6100	\N	0
-14541	ラオさんは エンジニアでは（じゃ）ありません。	rao san wa enjiniadeha（ja）arimasen。	\N	Anh Rao không phải là kỹ sư.	3673	\N	0
 15590	新商品がテレビで宣伝されている。	Shin shōhin ga terebi de senden sarete iru.	\N	Sản phẩm mới đang được quảng cáo trên TV.	5972	\N	0
 15591	彼は自分の本を宣伝するために講演した。	Kare wa jibun no hon o senden suru tame ni kōen shita.	\N	Anh ấy thuyết trình để quảng bá cuốn sách của mình.	5972	\N	1
 15592	結果は来週公表される予定だ。	Kekka wa raishū kōhyō sareru yotei da.	\N	Kết quả dự kiến được công bố tuần sau.	5973	\N	0
@@ -6564,7 +6105,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15597	計画の内容がメディアに漏れた。	Keikaku no naiyō ga media ni moreta.	\N	Nội dung kế hoạch bị lộ ra truyền thông.	5975	\N	1
 15598	記者が不正を暴露した。	Kisha ga fusei o bakuro shita.	\N	Phóng viên vạch trần hành vi gian lận.	5976	\N	0
 15599	スキャンダルが暴露され、辞任を余儀なくされた。	Sukyandaru ga bakuro sare, jinin o yoginaku sareta.	\N	Vụ bê bối bị phơi bày, buộc phải từ chức.	5976	\N	1
-15600	環境問題について論じ合った。	Kankyō mondai ni tsuite ronjatta.	\N	Chúng tôi đã bàn luận về vấn đề môi trường.	5977	\N	0
 15601	彼の論文は教育制度について論じている。	Kare no ronbun wa kyōiku seido ni tsuite ronjite iru.	\N	Luận văn của anh ấy bàn về chế độ giáo dục.	5977	\N	1
 15602	その政策は野党から批判された。	Sono seisaku wa yatō kara hihan sareta.	\N	Chính sách đó bị phe đối lập phê phán.	5978	\N	0
 15603	彼は自分の行動を後から批判した。	Kare wa jibun no kōdō o ato kara hihan shita.	\N	Sau đó anh ấy phê phán hành động của chính mình.	5978	\N	1
@@ -6574,10 +6114,7 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15607	その行為は法律に反する。	Sono kōi wa hōritsu ni hansuru.	\N	Hành vi đó trái với pháp luật.	5980	\N	1
 15608	被害者が加害者を訴えた。	Higaisha ga kagaisha o uttaeta.	\N	Nạn nhân đã kiện người gây hại.	5981	\N	0
 15609	検察は彼を起訴した。	Kensatsu wa kare o kiso shita.	\N	Viện kiểm sát đã truy tố anh ta.	5981	\N	1
-15610	事件は最高裁で裁判された。	Jiken wa saikōsai de saiban sareta.	\N	Vụ án được xét xử ở Tòa án Tối cao.	5982	\N	0
-15611	彼は不正を裁判で争った。	Kare wa fusei o saiban de arasotta.	\N	Anh ấy tranh tụng vụ gian lận tại tòa.	5982	\N	1
 15612	被告の無罪が証明された。	Hikoku no muzai ga shōmei sareta.	\N	Sự vô tội của bị cáo đã được chứng minh.	5983	\N	0
-15613	科学的方法で仮説を証明する。	Kagaku teki hōhō de kasetsu o shōmei suru.	\N	Chứng minh giả thuyết bằng phương pháp khoa học.	5983	\N	1
 15614	弁護士が依頼人を弁護した。	Bengoshi ga irainin o bengo shita.	\N	Luật sư đã biện hộ cho thân chủ.	5984	\N	0
 15615	彼は自分の考えを熱心に弁護した。	Kare wa jibun no kangae o nesshin ni bengo shita.	\N	Anh ấy nhiệt tình bảo vệ quan điểm của mình.	5984	\N	1
 15616	会社は被害者に損害を補償した。	Kaisha wa higaisha ni songai o hoshō shita.	\N	Công ty bồi thường thiệt hại cho nạn nhân.	5985	\N	0
@@ -6589,81 +6126,47 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15622	この本は文学に分類される。	Kono hon wa bungaku ni bunrui sareru.	\N	Cuốn sách này được phân loại vào văn học.	5988	\N	0
 15623	商品は三つのカテゴリーに区分される。	Shōhin wa mittsu no kategorī ni kubun sareru.	\N	Sản phẩm được chia thành ba danh mục.	5988	\N	1
 15624	この地域の特徴として、雪が多い。	Kono chiiki no tokuchō to shite, yuki ga ōi.	\N	Đặc trưng của vùng này là tuyết nhiều.	5989	\N	0
-15625	彼の話し方は特徴的だ。	Kare no hanashikata wa tokuchō teki da.	\N	Cách nói chuyện của anh ấy rất đặc trưng.	5989	\N	1
-15626	この仕事は部長に相当する。	Kono shigoto wa buchō ni sōtō suru.	\N	Công việc này tương đương trưởng phòng.	5990	\N	0
-15627	日本の高校は12年生に相当する。	Nihon no kōkō wa jūni gakunen ni sōtō suru.	\N	Trung học Nhật tương đương lớp 12.	5990	\N	1
-15628	見え方は人によって異なる。	Miekata wa hito ni yotte koto naru.	\N	Cách nhìn khác nhau tùy người.	5991	\N	0
-15629	制度は国により異なる。	Seido wa kuni ni yori koto naru.	\N	Thể chế khác nhau tùy quốc gia.	5991	\N	1
 15630	資料を整理してから会議に出た。	Shiryō o seiri shite kara kaigi ni deta.	\N	Sắp xếp tài liệu rồi mới đi họp.	5992	\N	0
 15631	部屋が整理されて気持ちがいい。	Heya ga seiri sarete kimochi ga ii.	\N	Phòng được dọn gọn nên thấy thoải mái.	5992	\N	1
 15632	生活習慣を改める必要がある。	Seikatsu shūkan o aratameru hitsuyō ga aru.	\N	Cần thay đổi thói quen sinh hoạt.	5993	\N	0
-15633	改めてお礼を申し上げます。	Aratame te orei o mōshiagemasu.	\N	Xin được một lần nữa cảm ơn.	5993	\N	1
 15959	彼のせいで失敗した。	Kare no sei de shippai shita.	\N	Vì anh ấy mà thất bại.	6156	\N	1
 15634	社会の構造が変化している。	Shakai no kōzō ga henka shite iru.	\N	Cấu trúc xã hội đang thay đổi.	5994	\N	0
 15635	この建物は独特の構造をしている。	Kono tatemono wa dokutoku no kōzō o shite iru.	\N	Tòa nhà này có cấu trúc độc đáo.	5994	\N	1
-15636	二人は価値観を共通としている。	Futari wa kachikan o kyōtsū to shite iru.	\N	Hai người có chung quan niệm giá trị.	5995	\N	0
 15637	これらの言語は語源が共通している。	Korera no gengo wa gogen ga kyōtsū shite iru.	\N	Các ngôn ngữ này có chung nguồn gốc từ.	5995	\N	1
-15638	台風のため、出発を余儀なくされた。	Taifū no tame, shuppatsu o yoginaku sareta.	\N	Vì bão nên buộc phải hoãn khởi hành.	5996	\N	0
 15639	経営不振により、リストラを余儀なくされた。	Keiei fushin ni yori, risutora o yoginaku sareta.	\N	Do kinh doanh suy thoái buộc phải cắt giảm nhân sự.	5996	\N	1
 15640	彼の努力は称賛に足る。	Kare no doryoku wa shōsan ni taru.	\N	Nỗ lực của anh ấy đáng được ca ngợi.	5997	\N	0
-14579	マイさんは ベトナムじ んですか。	mai san wa betonamu jin desuka。	\N	Bạn Mai là người Việt Nam phải không?	3674	\N	0
-14580	…はい、ベトナムじ んです。…	…hai、betonamuji ndesu。…	\N	Đúng, (bạn ấy) là người Việt Nam.	3674	\N	1
-14581	ミラさんは 学生ですか。	gakusei	\N	\N	3674	\N	2
-14582	ミラさんは がくせいですか。	mirasanha gakuseidesuka。	\N	Bạn Mira là học sinh phải không?	3674	\N	3
-14583	…いいえ、学生ではありません。	gakusei	\N	\N	3674	\N	4
-14584	…いいえ、がくせいではありません	…iie、gakuseidehaarimasen。	\N	…Không, (bạn ấy) không phải là học sinh.	3674	\N	5
-14585	…(あの人は) 山田さんです。 …(あの人は) やまださんです。	(ano hito wa) yamada san desu.	\N	(Kia là) anh/chị Yamada.	3674	\N	6
 15641	その証拠は信用に足りない。	Sono shōko wa shinyō ni tarinai.	\N	Bằng chứng đó không đáng tin.	5997	\N	1
 15642	今の技術をもってしても、解決は難しい。	Ima no gijutsu o motte shite mo, kaiketsu wa muzukashii.	\N	Dù có công nghệ hiện tại cũng khó giải quyết.	5998	\N	0
 15643	全力をもってしても、及ばなかった。	Zenryoku o motte shite mo, oyobanakatta.	\N	Dù dốc toàn lực cũng không sánh kịp.	5998	\N	1
 15644	締め切りが迫っている。	Shimekiri ga sematte iru.	\N	Hạn chót đang cận kề.	5999	\N	0
-15645	生活苦に迫られた。	Seikatsuku ni semarareta.	\N	Bị ép buộc bởi khó khăn sinh hoạt.	5999	\N	1
-15646	努力を余すところなく準備した。	Doryoku o amasu tokoro naku junbi shita.	\N	Chuẩn bị hết sức không chừa nỗ lực nào.	6000	\N	0
-15647	説明の機会を余すところなく与えた。	Setsumei no kikai o amasu tokoro naku ataeta.	\N	Đã cho cơ hội giải thích đầy đủ.	6000	\N	1
 15648	余剰金を設備投資に充てる。	Yojōkin o setsubi tōshi ni ateru.	\N	Dành tiền dư cho đầu tư thiết bị.	6001	\N	0
 15649	寄付金は被災地の復興に充当される。	Kifukin wa hisaichi no fukkō ni jūtō sareru.	\N	Tiền quyên góp được dùng cho tái thiết vùng thiên tai.	6001	\N	1
-15650	この地域は医療資源に乏しい。	Kono chiiki wa iryō shigen ni toboshi.	\N	Vùng này thiếu nguồn lực y tế.	6002	\N	0
-15651	彼の説明は具体性に乏しかった。	Kare no setsumei wa gutaisei ni toboshi katta.	\N	Lời giải thích của anh ấy thiếu tính cụ thể.	6002	\N	1
 15652	時間を余して観光も楽しんだ。	Jikan o amashite kankō mo tanoshinda.	\N	Còn dư thời gian nên cũng đi tham quan.	6003	\N	0
-15653	予算に余裕を余す。	Yosan ni yoyū o amasu.	\N	Dư dả ngân sách.	6003	\N	1
 15654	消費者から見れば、値段が重要だ。	Shōhisha kara mireba, nedan ga jūyō da.	\N	Xét từ phía người tiêu dùng, giá cả quan trọng.	6004	\N	0
 15655	歴史から見ると、繰り返されている。	Rekishi kara miru to, kurikaesarete iru.	\N	Nhìn từ lịch sử thì điều này lặp lại.	6004	\N	1
 15656	事実に基づいて判断する。	Jijitsu ni motozuite handan suru.	\N	Phán đoán dựa trên sự thật.	6005	\N	0
 15657	法律に基づき、処分が下された。	Hōritsu ni motozuki, shobun ga kudasareta.	\N	Dựa trên pháp luật, hình phạt được ban hành.	6005	\N	1
-15658	現状を踏まえて、計画を修正した。	Genjō o fumae te, keikaku o shūsei shita.	\N	Căn cứ hiện trạng, đã sửa kế hoạch.	6006	\N	0
 15659	前回の結果を踏まえ、対策を練る。	Zenkai no kekka o fumae, taisaku o neru.	\N	Căn cứ kết quả lần trước, lập biện pháp.	6006	\N	1
-15660	成長を前提に、人員を増やす。	Seichō o zentei to shite, jin'in o fuyasu.	\N	Lấy tăng trưởng làm tiền đề, tăng nhân sự.	6007	\N	0
 15661	双方の合意を前提に交渉する。	Sōhō no gōi o zentei ni kōshō suru.	\N	Đàm phán trên tiền đề hai bên đồng ý.	6007	\N	1
 15662	現場の実情に即した対応が必要だ。	Genba no jitsujō ni sokushita taiō ga hitsuyō da.	\N	Cần ứng phó phù hợp thực tế hiện trường.	6008	\N	0
 15663	時代に即して制度を見直す。	Jidai ni sokushite seido o minaosu.	\N	Xem xét lại thể chế cho phù hợp thời đại.	6008	\N	1
 15664	各方面を総合すれば、計画は実行可能だ。	Kaku hōmen o sōgō sureba, keikaku wa jikkō kanō da.	\N	Tổng hợp các mặt thì kế hoạch khả thi.	6009	\N	0
 15665	データを総合すると、傾向が見えてくる。	Dēta o sōgō suru to, keikō ga miete kuru.	\N	Tổng hợp dữ liệu thì thấy xu hướng.	6009	\N	1
-15666	彼の表情から、不安を推察した。	Kare no hyōjō kara, fuan o suisoku shita.	\N	Từ biểu cảm anh ấy, tôi suy đoán sự lo lắng.	6010	\N	0
-15667	背景には政治的理由が推察される。	Haikei ni wa seiji teki riyū ga suisoku sareru.	\N	Có thể suy đoán phía sau là lý do chính trị.	6010	\N	1
 15668	将来を見据えて、スキルを身につける。	Shōrai o misuete, sukiru o mi ni tsukeru.	\N	Hướng tới tương lai, trau dồi kỹ năng.	6011	\N	0
 15669	彼は常に目標を見据えている。	Kare wa tsune ni mokuhyō o misuete iru.	\N	Anh ấy luôn hướng về mục tiêu.	6011	\N	1
 15670	この国では自然を尊ぶ。	Kono kuni de wa shizen o tōtobu.	\N	Ở đất nước này người ta tôn trọng thiên nhiên.	6012	\N	0
 15671	伝統を尊ぶ考え方。	Dentō o tōtobu kangaekata.	\N	Quan niệm tôn trọng truyền thống.	6012	\N	1
 15672	誠意をもって対応した。	Seii o motte taiō shita.	\N	Đã ứng xử với thành ý.	6013	\N	0
 15673	誠意をもってお詫び申し上げます。	Seii o motte owabi mōshiagemasu.	\N	Xin được xin lỗi chân thành.	6013	\N	1
-15674	彼は無関心を装った。	Kare wa mukanshin o yosoō ta.	\N	Anh ấy giả vờ không quan tâm.	6014	\N	0
-15675	知らないふりを装う。	Shiranai furi o yosoū.	\N	Giả vờ không biết.	6014	\N	1
 15676	信念に背く行為は許されない。	Shinnen ni somuku kōi wa yurusarenai.	\N	Hành vi phản bội niềm tin không được tha thứ.	6015	\N	0
 15677	期待に背いた結果になった。	Kitai ni somuita kekka ni natta.	\N	Kết quả đã phụ lòng kỳ vọng.	6015	\N	1
-15678	危険を顧みず、前進した。	Kiken o kae mirazu, zenshin shita.	\N	Bất chấp nguy hiểm, tiến lên.	6016	\N	0
 15679	周囲の目を顧みない。	Shūi no me o kaeriminai.	\N	Không màng ánh mắt xung quanh.	6016	\N	1
-14586	わたしは ベトナム人です。 わたしは ベトナムじ んです。	watashi wa betonamu jin desu.	\N	Tôi là người Việt Nam.	3675	\N	0
-14587	タンさんも ベトナム人です。 タンさんも ベトナムじ んです。	tan san wa betonamu jin desu.	\N	Anh Tân cũng là người Việt Nam.	3675	\N	1
 15680	多数派に同調する必要はない。	Tasūha ni dōchō suru hitsuyō wa nai.	\N	Không cần đồng điệu với đa số.	6017	\N	0
 15681	世論に同調した政策。	Yoron ni dōchō shita seisaku.	\N	Chính sách theo dư luận.	6017	\N	1
-15682	従来の方法とは異なるアプローチ。	Jūrai no hōhō to wa koto naru apurōchi.	\N	Cách tiếp cận khác với phương pháp truyền thống.	6018	\N	0
 15683	見た目を異にしているが、中身は同じだ。	Mitame o koto ni shite iru ga, nakami wa onaji da.	\N	Bề ngoài khác nhưng bên trong giống nhau.	6018	\N	1
-15684	本日を以て、退任いたします。	Honjitsu o motte, tainin itashimasu.	\N	Kể từ hôm nay, tôi xin từ nhiệm.	6019	\N	0
-15685	実力を以て評価される。	Jitsuryoku o motte hyōka sareru.	\N	Được đánh giá bằng năng lực thực.	6019	\N	1
 15686	長い歳月を経て、再会した。	Nagai saigetsu o hete, saikai shita.	\N	Sau nhiều năm tháng, chúng tôi gặp lại.	6020	\N	0
 15687	議論を経て、結論に達した。	Giron o hete, ketsuron ni tasshita.	\N	Qua tranh luận, đã đi đến kết luận.	6020	\N	1
 15688	入学以来、一度も欠席していない。	Nyūgaku irai, ichido mo kesseki shite inai.	\N	Kể từ khi nhập học chưa vắng lần nào.	6021	\N	0
-15689	改革以後、状況が改善した。	Kaisei ikō, jōkyō ga kaizen shita.	\N	Sau cải cách, tình hình được cải thiện.	6021	\N	1
 15690	悩んだ末に、転職を決意した。	Nayanda sue ni, tenshoku o ketsui shita.	\N	Sau khi băn khoăn, quyết định chuyển việc.	6022	\N	0
 15691	長い議論の末、案が可決された。	Nagai giron no sue, an ga kaketsu sareta.	\N	Sau tranh luận dài, đề án được thông qua.	6022	\N	1
 15692	会議に先立ち、資料を配布した。	Kaigi ni sakidachi, shiryō o haifu shita.	\N	Trước cuộc họp, đã phát tài liệu.	6023	\N	0
@@ -6674,112 +6177,31 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15697	即時の報告が求められる。	Sokuji no hōkoku ga motomerareru.	\N	Yêu cầu báo cáo tức thì.	6025	\N	1
 15698	その問題の根底にあるのは貧困だ。	Sono mondai no kontei ni aru no wa hinkon da.	\N	Nằm ở gốc rễ vấn đề đó là nghèo đói.	6026	\N	0
 15699	不信感が根底にある。	Fushinkan ga kontei ni aru.	\N	Sự không tin tưởng nằm ở gốc rễ.	6026	\N	1
-15700	現在の設備もってしては、需要に応えられない。	Genzai no setsubi motte shite wa, juyō ni kotaerarenai.	\N	Với thiết bị hiện tại không đáp ứng được nhu cầu.	6027	\N	0
-15701	科学の力もってしても、すべては解明できない。	Kagaku no chikara motte shite mo, subete wa kaimei dekinai.	\N	Dù có sức mạnh khoa học cũng không giải thích hết được.	6027	\N	1
 15702	政権が覆された。	Seiken ga kutsugaesareta.	\N	Chính quyền bị lật đổ.	6028	\N	0
-15703	雪が山を覆っている。	Yuki ga yama o ootte iru.	\N	Tuyết phủ kín núi.	6028	\N	1
 15704	温泉に浸って疲れを癒す。	Onsen ni hitatte tsukare o iyasu.	\N	Ngâm mình trong suối nước nóng để xả mệt.	6029	\N	0
 15705	研究に浸っている。	Kenkyū ni hitatte iru.	\N	Đang đắm chìm nghiên cứu.	6029	\N	1
-15706	彼は現地の文化に溶け込んだ。	Kare wa genchi no bunka ni tokekomu.	\N	Anh ấy hòa nhập văn hóa địa phương.	6030	\N	0
 15707	新入生がクラスに溶け込むのに時間がかかる。	Shinnyūsei ga kurasu ni tokekomu no ni jikan ga kakaru.	\N	Tân sinh viên mất thời gian hòa nhập lớp.	6030	\N	1
 15708	技術により水が純化される。	Gijutsu ni yori mizu ga junka sareru.	\N	Nhờ công nghệ nước được tinh lọc.	6031	\N	0
 15709	思想を純化しようとする試み。	Shisō o junka shiyō to suru kokoromi.	\N	Nỗ lực tinh luyện tư tưởng.	6031	\N	1
-15710	この地方は雨に乏しい。	Kono chihō wa ame ni toboshi.	\N	Vùng này khan hiếm mưa.	6032	\N	0
-15711	経験乏しい新人。	Keiken toboshi shinjinin.	\N	Nhân viên mới thiếu kinh nghiệm.	6032	\N	1
 15712	予算が膨張した。	Yosan ga bōchō shita.	\N	Ngân sách phình to.	6033	\N	0
-15713	期待を膨らませてしまった。	Kitai o fukuramasete shimatta.	\N	Đã làm kỳ vọng phình to.	6033	\N	1
 15714	緻密な計画を立てた。	Chimitsu na keikaku o tateta.	\N	Đã lập kế hoạch tỉ mỉ.	6034	\N	0
 15715	データを緻密に分析する。	Dēta o chimitsu ni bunseki suru.	\N	Phân tích dữ liệu chặt chẽ.	6034	\N	1
-15716	彼のスピーチをもって、式は終わった。	Kare no supīchi o motte, shiki wa owatta.	\N	Bài phát biểu của anh ấy kết thúc buổi lễ.	6035	\N	0
-15717	これをもって、本日の会議を終了します。	Kore o motte, honjitsu no kaigi o shūryō shimasu.	\N	Với điều này, xin kết thúc cuộc họp hôm nay.	6035	\N	1
-15847	一人で料理ができます。	Hitori de ryōri ga dekimasu.	\N	Có thể nấu ăn một mình.	6100	\N	1
-15718	私は学生です。	Watashi wa gakusei desu.	\N	Tôi là học sinh.	6036	\N	0
-14589	わたしは Ha Noi大学 だいがくの学生です。	watashi wa ha noi daigaku no gakusei desu.	\N	Tôi là sinh viên trường Đại học Hà Nội.	3676	\N	0
-14590	わたしは 20さいです。	watashi wa nijuusai desu. (hoặc watashi wa hatachi desu khi nói về 20 tuổi)	\N	Tôi 20 tuổi.	3678	\N	0
-14591	お子さんは なんさいですか。	okosan wa nansai desu ka.	\N	Con bạn mấy tuổi?	3678	\N	1
-15719	これは本です。	Kore wa hon desu.	\N	Đây là quyển sách.	6036	\N	1
-15720	彼は先生じゃありません。	Kare wa sensei ja arimasen.	\N	Anh ấy không phải giáo viên.	6037	\N	0
-15721	それは私の傘じゃありません。	Sore wa watashi no kasa ja arimasen.	\N	Đó không phải ô của tôi.	6037	\N	1
-15724	一緒に行きましょう。	Issho ni ikimashō.	\N	Hãy cùng đi.	6039	\N	0
-15725	休みましょう。	Yasumimashō.	\N	Hãy nghỉ đi.	6039	\N	1
-15726	コーヒーを飲みませんか。	Kōhī o nomimasen ka.	\N	Uống cà phê cùng không?	6040	\N	0
-15727	映画を見ませんか。	Eiga o mimasen ka.	\N	Xem phim cùng không?	6040	\N	1
-15728	ここに座ってください。	Koko ni suwatte kudasai.	\N	Hãy ngồi ở đây.	6041	\N	0
-15729	もう一度言ってください。	Mō ichido itte kudasai.	\N	Hãy nói lại lần nữa.	6041	\N	1
-15730	今、勉強しています。	Ima, benkyō shite imasu.	\N	Bây giờ tôi đang học.	6042	\N	0
-15731	雨が降っています。	Ame ga futte imasu.	\N	Trời đang mưa.	6042	\N	1
-15732	勉強してから、寝ます。	Benkyō shite kara, nemasu.	\N	Học xong rồi tôi đi ngủ.	6043	\N	0
-15733	食べてから、出かけます。	Tabete kara, dekakemasu.	\N	Ăn xong rồi tôi ra ngoài.	6043	\N	1
-15734	写真を撮ってもいいですか。	Shashin o totte mo ii desu ka.	\N	Tôi chụp ảnh được không?	6044	\N	0
-15735	ここに入ってもいいですか。	Koko ni haitte mo ii desu ka.	\N	Tôi vào đây được không?	6044	\N	1
-15736	ここでタバコを吸ってはいけません。	Koko de tabako o sutte wa ikemasen.	\N	Không được hút thuốc ở đây.	6045	\N	0
-15737	走ってはいけません。	Hashitte wa ikemasen.	\N	Không được chạy.	6045	\N	1
-15738	心配しないでください。	Shinpai shinaide kudasai.	\N	Đừng lo.	6046	\N	0
-15739	触らないでください。	Sawaranaide kudasai.	\N	Đừng chạm vào.	6046	\N	1
-15740	日本に行きたいです。	Nihon ni ikitai desu.	\N	Tôi muốn đi Nhật.	6047	\N	0
-15741	寿司が食べたいです。	Sushi ga tabetai desu.	\N	Tôi muốn ăn sushi.	6047	\N	1
 15742	早く帰りたいんです。	Hayaku kaeritain desu.	\N	Tôi muốn về sớm (vì lý do nào đó).	6048	\N	0
 15743	もっと勉強したいんです。	Motto benkyō shitain desu.	\N	Tôi muốn học thêm.	6048	\N	1
-15744	日本語を話すことができます。	Nihongo o hanasu koto ga dekimasu.	\N	Tôi có thể nói tiếng Nhật.	6049	\N	0
-15745	泳ぐことができます。	Oyogu koto ga dekimasu.	\N	Tôi có thể bơi.	6049	\N	1
 15747	予約する必要があります。	Yoyaku suru hitsuyō ga arimasu.	\N	Cần phải đặt trước.	6050	\N	1
-15748	明日早く起きなければなりません。	Ashita hayaku okinakereba narimasen.	\N	Ngày mai tôi phải dậy sớm.	6051	\N	0
-15749	宿題をしなければなりません。	Shukudai o shinakereba narimasen.	\N	Phải làm bài tập.	6051	\N	1
-15750	今日は来なくてもいいです。	Kyō wa konakute mo ii desu.	\N	Hôm nay không đến cũng được.	6052	\N	0
-15751	食べなくてもいいです。	Tabenakute mo ii desu.	\N	Không ăn cũng được.	6052	\N	1
-15752	日本語が上手になりました。	Nihongo ga jōzu ni narimashita.	\N	Tiếng Nhật giỏi hơn rồi.	6053	\N	0
-15753	寒くなりました。	Samuku narimashita.	\N	Trời lạnh hơn rồi.	6053	\N	1
-15754	寝る前に歯を磨きます。	Neru mae ni ha o migakimasu.	\N	Trước khi ngủ tôi đánh răng.	6054	\N	0
-15755	出かける前に鍵を確認します。	Dekakeru mae ni kagi o kakunin shimasu.	\N	Trước khi ra ngoài tôi kiểm tra chìa khóa.	6054	\N	1
 15756	ご飯を食べた後で、散歩します。	Gohan o tabeta ato de, sanpo shimasu.	\N	Sau khi ăn cơm tôi đi dạo.	6055	\N	0
 15757	仕事が終わった後で、飲みに行きます。	Shigoto ga owatta ato de, nomi ni ikimasu.	\N	Sau khi tan làm tôi đi uống.	6055	\N	1
-15758	日本に行く時、カメラを持っていきます。	Nihon ni iku toki, kamera o motte ikimasu.	\N	Khi đi Nhật tôi mang máy ảnh.	6056	\N	0
-15759	困った時、先生に聞きます。	Komatta toki, sensei ni kikimasu.	\N	Khi gặp khó khăn tôi hỏi thầy.	6056	\N	1
-15760	休日は本を読んだり、映画を見たりします。	Kyūjitsu wa hon o yondari, eiga o mitari shimasu.	\N	Ngày nghỉ tôi vừa đọc sách vừa xem phim.	6057	\N	0
-15761	歌ったり、踊ったりしました。	Utattari, odottari shimashita.	\N	Vừa hát vừa nhảy.	6057	\N	1
 15762	音楽を聞くのが好きです。	Ongaku o kiku no ga suki desu.	\N	Tôi thích nghe nhạc.	6058	\N	0
 15763	旅行するのが好きです。	Ryokō suru no ga suki desu.	\N	Tôi thích đi du lịch.	6058	\N	1
 15764	早起きするのは大変です。	Hayaoki suru no wa taihen desu.	\N	Dậy sớm thì vất vả.	6059	\N	0
 15765	日本語を勉強するのは楽しいです。	Nihongo o benkyō suru no wa tanoshii desu.	\N	Học tiếng Nhật thì vui.	6059	\N	1
-15766	猫が好きです。	Neko ga suki desu.	\N	Tôi thích mèo.	6060	\N	0
-15767	野菜が嫌いです。	Yasai ga kirai desu.	\N	Tôi ghét rau.	6060	\N	1
-15768	彼女は歌が上手です。	Kanojo wa uta ga jōzu desu.	\N	Cô ấy hát hay.	6061	\N	0
-15769	私は料理が下手です。	Watashi wa ryōri ga heta desu.	\N	Tôi nấu ăn dở.	6061	\N	1
-15770	新しいパソコンが欲しいです。	Atarashii pasokon ga hoshii desu.	\N	Tôi muốn có máy tính mới.	6062	\N	0
-15771	時間が欲しいです。	Jikan ga hoshii desu.	\N	Tôi muốn có thời gian.	6062	\N	1
-15772	机の上に本があります。	Tsukue no ue ni hon ga arimasu.	\N	Trên bàn có sách.	6063	\N	0
-15773	お金がありません。	Okane ga arimasen.	\N	Không có tiền.	6063	\N	1
 15746	毎日運動する必要があります。	Mainichi undō suru hitsuyō ga arimasu.	\N	Cần phải vận động mỗi ngày.	6050	\N	0
-15774	公園に子供がいます。	Kōen ni kodomo ga imasu.	\N	Trong công viên có trẻ em.	6064	\N	0
-15775	教室に誰もいません。	Kyōshitsu ni dare mo imasen.	\N	Trong lớp không có ai.	6064	\N	1
-15776	ゆっくり話してください。	Yukkuri hanashite kudasai.	\N	Hãy nói chậm.	6065	\N	0
-15777	早く起きました。	Hayaku okimashita.	\N	Dậy sớm.	6065	\N	1
-15778	この問題は難しくないです。	Kono mondai wa muzukashikunai desu.	\N	Bài này không khó.	6066	\N	0
-15779	彼は親切じゃないです。	Kare wa shinsetsu ja nai desu.	\N	Anh ấy không thân thiện.	6066	\N	1
-15780	昨日は暑かったです。	Kinō wa atsukatta desu.	\N	Hôm qua nóng.	6067	\N	0
-15781	子供の時、元気だった。	Kodomo no toki, genki datta.	\N	Hồi nhỏ tôi khỏe.	6067	\N	1
-15782	電車で行きます。	Densha de ikimasu.	\N	Tôi đi bằng tàu điện.	6068	\N	0
-15783	レストランで食べます。	Resutoran de tabemasu.	\N	Tôi ăn ở nhà hàng.	6068	\N	1
-15784	九時から五時まで働きます。	Kuji kara goji made hatarakimasu.	\N	Làm việc từ 9 đến 5 giờ.	6069	\N	0
-15785	東京から大阪まで行きます。	Tōkyō kara Ōsaka made ikimasu.	\N	Đi từ Tokyo đến Osaka.	6069	\N	1
-15786	一時間ぐらいかかります。	Ichijikan gurai kakarimasu.	\N	Mất khoảng một tiếng.	6070	\N	0
-15787	三人くらい来ました。	Sannin kurai kimashita.	\N	Có khoảng ba người đến.	6070	\N	1
 15788	千円しかありません。	Sen en shika arimasen.	\N	Chỉ có nghìn yên.	6071	\N	0
 15789	一人しか来ませんでした。	Hitori shika kimasen deshita.	\N	Chỉ có một người đến.	6071	\N	1
-15790	水だけ飲みます。	Mizu dake nomimasu.	\N	Tôi chỉ uống nước.	6072	\N	0
-15791	彼だけ知っています。	Kare dake shitte imasu.	\N	Chỉ anh ấy biết.	6072	\N	1
-15792	りんごやバナナなどを買いました。	Ringo ya banana nado o kaimashita.	\N	Tôi mua táo, chuối v.v.	6073	\N	0
-15793	東京や大阪などに行きました。	Tōkyō ya Ōsaka nado ni ikimashita.	\N	Tôi đã đi Tokyo, Osaka v.v.	6073	\N	1
 15794	日本の文化について勉強しています。	Nihon no bunka ni tsuite benkyō shite imasu.	\N	Tôi đang học về văn hóa Nhật.	6074	\N	0
 15795	この問題について話しましょう。	Kono mondai ni tsuite hanashimashō.	\N	Hãy nói về vấn đề này.	6074	\N	1
-15796	天気予報によると、明日は雨です。	Tenki yohō ni yoru to, ashita wa ame desu.	\N	Theo dự báo thời tiết, mai mưa.	6075	\N	0
-15797	新聞によると、事件が起きた。	Shinbun ni yoru to, jiken ga okita.	\N	Theo báo, đã xảy ra sự việc.	6075	\N	1
 15798	富士山という山が有名です。	Fujisan to iu yama ga yūmei desu.	\N	Núi tên là Fuji nổi tiếng.	6076	\N	0
 15799	田中さんという人に会いました。	Tanaka-san to iu hito ni aimashita.	\N	Tôi gặp người tên Tanaka.	6076	\N	1
-15800	明日は晴れると思います。	Ashita wa hareru to omoimasu.	\N	Tôi nghĩ mai trời nắng.	6077	\N	0
-15801	彼は来ないと思います。	Kare wa konai to omoimasu.	\N	Tôi nghĩ anh ấy không đến.	6077	\N	1
-15802	先生は勉強しなさいと言いました。	Sensei wa benkyō shinasai to iimashita.	\N	Thầy bảo hãy học.	6078	\N	0
-15803	彼女は行きたいと言いました。	Kanojo wa ikitai to iimashita.	\N	Cô ấy nói muốn đi.	6078	\N	1
 15804	明日は雪が降るそうです。	Ashita wa yuki ga furu sō desu.	\N	Nghe nói mai có tuyết.	6079	\N	0
 15805	彼は結婚したそうです。	Kare wa kekkon shita sō desu.	\N	Nghe nói anh ấy đã kết hôn.	6079	\N	1
 15806	雨が降りそうです。	Ame ga furisō desu.	\N	Trông có vẻ sắp mưa.	6080	\N	0
@@ -6793,12 +6215,9 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15811	雨が降るみたいです。	Ame ga furu mitai desu.	\N	Dường như sắp mưa.	6082	\N	1
 15812	早く起きれば、間に合います。	Hayaku okireba, maniaimasu.	\N	Nếu dậy sớm thì kịp.	6083	\N	0
 15813	安ければ、買います。	Yasukereba, kaimasu.	\N	Nếu rẻ thì mua.	6083	\N	1
-15814	何回説明しても、わかりません。	Nankai setsumei shite mo, wakarimasen.	\N	Dù giải thích bao lần cũng không hiểu.	6084	\N	0
-15815	雨が降っても、行きます。	Ame ga futte mo, ikimasu.	\N	Dù mưa cũng đi.	6084	\N	1
 15820	一度やってみてください。	Ichido yatte mite kudasai.	\N	Hãy thử làm một lần.	6087	\N	0
 15821	この料理を食べてみました。	Kono ryōri o tabete mimashita.	\N	Tôi đã thử ăn món này.	6087	\N	1
-15822	友達に本を貸してあげました。	Tomodachi ni hon o kashite agemashita.	\N	Tôi cho bạn mượn sách.	6088	\N	0
-15823	母が料理を作ってくれました。	Haha ga ryōri o tsukutte kuremashita.	\N	Mẹ nấu ăn cho tôi.	6088	\N	1
+15777	早く起きました。	Hayaku okimashita.	\N	Tôi đã dậy sớm.	6065	\N	1
 15824	来年、留学しようと思っています。	Rainen, ryūgaku shiyō to omotte imasu.	\N	Tôi định đi du học năm sau.	6089	\N	0
 15825	週末は海に行こうと思っています。	Shūmatsu wa umi ni ikō to omotte imasu.	\N	Cuối tuần tôi định đi biển.	6089	\N	1
 15826	毎日運動することにしました。	Mainichi undō suru koto ni shimashita.	\N	Tôi quyết định tập thể dục mỗi ngày.	6090	\N	0
@@ -6963,8 +6382,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15451	口論のあげく、彼は部屋を出て行った。	Kōron no ageku, kare wa heya o dete itta.	\N	Sau một hồi cãi vã, anh ta bỏ ra khỏi phòng.	5902	\N	1
 15452	よく考えた末に、留学を決めた。	Yoku kangaeta sue ni, ryūgaku o kimeta.	\N	Sau khi suy nghĩ kỹ, tôi quyết định đi du học.	5903	\N	0
 15453	長い交渉の末、契約が成立した。	Nagai kōshō no sue, keiyaku ga seiritsu shita.	\N	Sau đàm phán dài, hợp đồng đã được ký kết.	5903	\N	1
-15454	そんなことは起こり得ない。	Sonna koto wa okori enai.	\N	Chuyện như thế không thể xảy ra.	5904	\N	0
-15455	誰にでも間違いはあり得る。	Dare ni demo machigai wa ari uru.	\N	Ai cũng có thể mắc lỗi.	5904	\N	1
 15456	あんな店には二度と行くまい。	Anna mise ni wa nido to iku mai.	\N	Tôi sẽ không bao giờ đến quán đó nữa.	5905	\N	0
 15457	彼はもう来ないのではあるまいか。	Kare wa mō konai no de wa aru mai ka.	\N	Chẳng lẽ anh ấy sẽ không đến nữa sao?	5905	\N	1
 15458	この薬は頭痛のみならず、肩こりにも効く。	Kono kusuri wa zutsū nomi narazu, katakori ni mo kiku.	\N	Thuốc này không chỉ trị đau đầu mà còn trị mỏi vai.	5906	\N	0
@@ -7015,7 +6432,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15503	たとえ子どもであれ、責任は取るべきだ。	Tatoe kodomo de are, sekinin wa toru beki da.	\N	Cho dù là trẻ con thì cũng phải chịu trách nhiệm.	5928	\N	1
 15504	君が信じようが信じまいが、これは事実だ。	Kimi ga shinjiyō ga shinjimai ga, kore wa jijitsu da.	\N	Cậu tin hay không thì đây vẫn là sự thật.	5929	\N	0
 15505	雨が降ろうが、試合は行われる。	Ame ga furō ga, shiai wa okonawareru.	\N	Dù có mưa thì trận đấu vẫn diễn ra.	5929	\N	1
-11763	3) ミラーさんは IMCのしゃいんですか。		\N	Mira là nhân viên công ty IMC phải không? … はい、IMCのしゃいんです。 (Không dùng : IMCのです) … Vâng, (anh ấy) là nhân viên công ty IMC.	3682	\N	0
 15506	結果いかんによっては、計画を見直す必要がある。	Kekka ikan ni yotte wa, keikaku o minaosu hitsuyō ga aru.	\N	Tùy vào kết quả mà có thể phải xem lại kế hoạch.	5930	\N	0
 15507	理由のいかんにかかわらず、遅刻は認めない。	Riyū no ikan ni kakawarazu, chikoku wa mitomenai.	\N	Bất kể lý do gì, đi muộn là không chấp nhận.	5930	\N	1
 15508	条件によっては、引き受けないものでもない。	Jōken ni yotte wa, hikiukenai mono demo nai.	\N	Tùy điều kiện, cũng không phải là không nhận.	5931	\N	0
@@ -7040,20 +6456,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15527	味といい量といい、この店は満足だ。	Aji to ii ryō to ii, kono mise wa manzoku da.	\N	Cả vị lẫn lượng, quán này tôi đều hài lòng.	5940	\N	1
 15528	一度ならまだしも、三度も遅刻するとは。	Ichido nara madashimo, sando mo chikoku suru to wa.	\N	Một lần thì còn được, đằng này muộn tận ba lần.	5941	\N	0
 15529	子どもならまだしも、大人がそんなことを言うなんて。	Kodomo nara madashimo, otona ga sonna koto o iu nante.	\N	Trẻ con thì còn được, người lớn mà nói thế à.	5941	\N	1
-11748	わたしは たなかです。		\N	Tôi là Tanaka.	3677	\N	0
-11749	あのかたは きむらさんです。		\N	Vị kia là Kimura.	3677	\N	0
-11752	これは 本ですか。 これは ほ んですか。Đây là quyển sách à? …いいえ、それはノートです。 …		\N	Không, đó là quyển vở.	3679	\N	0
-11753	あれは じどうしゃです。		\N	Kia là cái ô tô.	3679	\N	0
-11754	2) この		\N	N／その N／あの N	3679	\N	0
-11755	あの人は 山田さんです。 あのひ とは やまださんです。		\N	Người kia là anh Yamada.	3679	\N	0
-11756	この		\N	N/その N/あの N?	3679	\N	0
-11757	1) これは なんですか。		\N	Đây là cái gì? …それは いすです。 … Đó là cái ghế.	3679	\N	0
-11758	2) このひとは だれですか。		\N	Người này là ai? …そのひとは 田中(たなか)さんです。 … Người đó là anh Tanaka.	3679	\N	0
-11759	1) これは えんぴつですか。		\N	Đây là cái bút chì phải không? …はい、えんぴつです。 …Vâng, đó là cái bút chì. Hoặc …はい、そうです。 …Vâng, đúng vậy. 2) それは テレホンカードですか。 Đó là cái th ẻ điện thoại phải không? …いいえ、テレホンカードではありません。 …Không, không phải cái thẻ điện thoại. Hoặc …いいえ、そうではありません。 …Không, không phải thế.	3680	\N	0
-11760	これは わたしの ほんです。		\N	Đây là quyển sách của tôi.	3682	\N	0
-11761	1) あれは だれのかばんですか。		\N	Kia là cái cặp của ai? … わたしのです。 … Là của tôi.	3682	\N	0
-11762	2) そのつくえは ラオさんのですか。		\N	Cái bàn đó là của Rao phải không? … いいえ、ラオさんのではありません。 … Không, không phải của Rao.	3682	\N	0
-11764	A: このかさは あなたのですか。		\N	Cái ô này là của bạn à? B: いいえ、タンさんのです。 …Không, của anh Tân. A: そうですか。 À, ra vậy.	3683	\N	0
 15531	一人で悩んだところで、解決しない。	Hitori de nayanda tokoro de, kaiketsu shinai.	\N	Một mình ôm phiền muộn thì cũng không giải quyết được.	5942	\N	1
 15532	出張にかこつけて、観光を楽しんだ。	Shutchō ni kakotsukete, kankō o tanoshinda.	\N	Mượn cớ đi công tác để đi chơi.	5943	\N	0
 15533	病気にかこつけて、集まりを欠席した。	Byōki ni kakotsukete, atsumari o kesseki shita.	\N	Viện cớ ốm để vắng mặt buổi họp mặt.	5943	\N	1
@@ -7069,8 +6471,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15543	周囲の批判をものともせず、彼は信念を貫いた。	Shūi no hihan o mono to mo sezu, kare wa shinnen o tsuranuita.	\N	Bất chấp chỉ trích xung quanh, anh giữ vững niềm tin.	5948	\N	1
 15544	経験の有無を問わず、応募できます。	Keiken no umu o towazu, ōbo dekimasu.	\N	Có kinh nghiệm hay không đều có thể ứng tuyển.	5949	\N	0
 15545	理由のいかんによらず、返金はできません。	Riyū no ikan ni yorazu, henkin wa dekimasen.	\N	Bất kể lý do gì cũng không hoàn tiền.	5949	\N	1
-15546	冗談はさておき、本題に入りましょう。	Jōdan wa sate oki, hondai ni hairimashō.	\N	Đùa vậy đủ rồi, ta vào vấn đề chính nào.	5950	\N	0
-15547	結果はさておき、よく頑張ったと思う。	Kekka wa sate oki, yoku ganbatta to omou.	\N	Kết quả tạm gác lại, tôi thấy cậu đã rất cố gắng.	5950	\N	1
 15548	彼の思い切った決断ぶりに感心した。	Kare no omoikitta ketsudan buri ni kanshin shita.	\N	Tôi khâm phục cách anh ấy ra quyết định dứt khoát.	5951	\N	0
 15549	十年ぶりに故郷に帰った。	Jū-nen buri ni kokyō ni kaetta.	\N	Sau 10 năm tôi mới về quê.	5951	\N	1
 15550	遺族の悲しみは想像にかたくない。	Izoku no kanashimi wa sōzō ni katakunai.	\N	Không khó để hình dung nỗi đau của thân nhân.	5952	\N	0
@@ -7097,67 +6497,28 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15841	この方法が正しいかどうか確認します。	Kono hōhō ga tadashii ka dō ka kakunin shimasu.	\N	Kiểm tra xem cách này đúng không.	6097	\N	1
 15842	先生がお話しになりました。	Sensei ga ohanashi ni narimashita.	\N	Thầy đã nói (kính ngữ).	6098	\N	0
 15843	社長がお見えになりました。	Shachō ga omie ni narimashita.	\N	Giám đốc đã đến (kính ngữ).	6098	\N	1
-15848	弟にケーキを食べられました。	Otōto ni kēki o taberaremashita.	\N	Bánh bị em ăn mất.	6101	\N	0
-15849	この本は多くの人に読まれています。	Kono hon wa ōku no hito ni yomarete imasu.	\N	Sách này được nhiều người đọc.	6101	\N	1
-15850	母は子供に野菜を食べさせます。	Haha wa kodomo ni yasai o tabesasemasu.	\N	Mẹ bắt con ăn rau.	6102	\N	0
-15851	先生は学生に本を読ませました。	Sensei wa gakusei ni hon o yomasemashita.	\N	Thầy cho học sinh đọc sách.	6102	\N	1
 15852	上司に残業させられました。	Jōshi ni zangyō saseraremashita.	\N	Bị sếp bắt làm thêm giờ.	6103	\N	0
 15853	毎日、運動させられています。	Mainichi, undō saserarete imasu.	\N	Mỗi ngày bị bắt tập thể dục.	6103	\N	1
-15854	窓が開いています。	Mado ga aite imasu.	\N	Cửa sổ đang mở.	6104	\N	0
-15855	結婚しています。	Kekkon shite imasu.	\N	Đã kết hôn (trạng thái).	6104	\N	1
 15858	だんだん暖かくなってきました。	Dandan atatakaku natte kimashita.	\N	Dần ấm lên.	6106	\N	0
 15859	これから忙しくなっていきます。	Kore kara isogashiku natte ikimasu.	\N	Từ giờ sẽ bận dần.	6106	\N	1
-15860	大切な物をなくしてしまいました。	Taisetsu na mono o nakushite shimaimashita.	\N	Lỡ làm mất đồ quan trọng.	6107	\N	0
-15861	寝坊してしまいました。	Nebō shite shimaimashita.	\N	Lỡ ngủ quên.	6107	\N	1
-15862	会議の資料をコピーしておきました。	Kaigi no shiryō o kopī shite okimashita.	\N	Đã photocopy tài liệu họp sẵn.	6108	\N	0
-15863	明日の弁当を作っておきます。	Ashita no bentō o tsukutte okimasu.	\N	Làm cơm hộp ngày mai sẵn.	6108	\N	1
-15864	着てみてもいいですか。	Kite mite mo ii desu ka.	\N	Thử mặc được không?	6109	\N	0
-15865	このソフトを使ってみました。	Kono sofuto o tsukatte mimashita.	\N	Tôi đã thử dùng phần mềm này.	6109	\N	1
 15866	この書類に署名してください。	Kono shorui ni shomei shite kudasai.	\N	Hãy ký vào giấy tờ này.	6110	\N	0
 15867	もう少し待ってください。	Mō sukoshi matte kudasai.	\N	Hãy đợi thêm chút.	6110	\N	1
-15868	無理をしないほうがいいです。	Muri o shinai hō ga ii desu.	\N	Không nên gượng.	6111	\N	0
-15869	夜遅く食べないほうがいい。	Yoru osoku tabenai hō ga ii.	\N	Không nên ăn khuya.	6111	\N	1
 15870	富士山に登ったことがあります。	Fujisan ni nobotta koto ga arimasu.	\N	Tôi đã từng leo Fuji.	6112	\N	0
 15871	一度も行ったことがない。	Ichido mo itta koto ga nai.	\N	Chưa từng đi lần nào.	6112	\N	1
 15872	もっと勉強すればよかった。	Motto benkyō sureba yokatta.	\N	Đáng lẽ nên học nhiều hơn.	6113	\N	0
 15873	傘を持って行けばよかった。	Kasa o motte ikeba yokatta.	\N	Đáng lẽ nên mang ô.	6113	\N	1
-15874	今、着いたところです。	Ima, tsuita tokoro desu.	\N	Vừa mới đến.	6114	\N	0
-15875	ご飯を食べたところです。	Gohan o tabeta tokoro desu.	\N	Vừa ăn cơm xong.	6114	\N	1
-15876	今から出かけるところです。	Ima kara dekakeru tokoro desu.	\N	Sắp ra ngoài.	6115	\N	0
-15877	会議が始まるところです。	Kaigi ga hajimaru tokoro desu.	\N	Họp sắp bắt đầu.	6115	\N	1
-15878	今、料理をしているところです。	Ima, ryōri o shite iru tokoro desu.	\N	Đang nấu ăn.	6116	\N	0
-15879	レポートを書いているところです。	Repōto o kaite iru tokoro desu.	\N	Đang viết báo cáo.	6116	\N	1
-15880	彼はもう着いたはずです。	Kare wa mō tsuita hazu desu.	\N	Anh ấy chắc đã đến rồi.	6117	\N	0
-15881	この薬は効くはずだ。	Kono kusuri wa kiku hazu da.	\N	Thuốc này chắc có tác dụng.	6117	\N	1
 15882	約束は守るべきだ。	Yakusoku wa mamoru beki da.	\N	Nên giữ lời hứa.	6118	\N	0
 15883	もっと環境を考えるべきです。	Motto kankyō o kangaeru beki desu.	\N	Nên quan tâm môi trường hơn.	6118	\N	1
-15884	明日は雨かもしれません。	Ashita wa ame kamoshiremasen.	\N	Mai có thể mưa.	6119	\N	0
-15885	彼は知らないかもしれない。	Kare wa shiranai kamoshirenai.	\N	Anh ấy có thể không biết.	6119	\N	1
 15886	嫌いなわけではありません。	Kirai na wake dewa arimasen.	\N	Không hẳn là ghét.	6120	\N	0
 15887	行きたくないわけではない。	Ikitakunai wake dewa nai.	\N	Không phải là không muốn đi.	6120	\N	1
 15888	そんなことがあるわけがない。	Sonna koto ga aru wake ga nai.	\N	Không thể có chuyện đó.	6121	\N	0
 15889	彼が嘘をつくわけがない。	Kare ga uso o tsuku wake ga nai.	\N	Anh ấy không thể nói dối.	6121	\N	1
-15890	雨なので、出かけません。	Ame na node, dekakemasen.	\N	Vì mưa nên không ra ngoài.	6122	\N	0
-15891	忙しいから、行けません。	Isogashii kara, ikemasen.	\N	Vì bận nên không đi được.	6122	\N	1
-15892	勉強したのに、試験に落ちた。	Benkyō shita noni, shiken ni ochita.	\N	Mặc dù học mà vẫn trượt.	6123	\N	0
-15893	約束したのに、来なかった。	Yakusoku shita noni, konakatta.	\N	Mặc dù hứa mà không đến.	6123	\N	1
 15894	高いけれど、買いました。	Takai keredo, kaimashita.	\N	Tuy đắt nhưng đã mua.	6124	\N	0
 15895	行きたいけど、時間がない。	Ikitai kedo, jikan ga nai.	\N	Muốn đi nhưng không có thời gian.	6124	\N	1
-15896	この店は安いし、おいしいし、人気です。	Kono mise wa yasui shi, oishii shi, ninki desu.	\N	Quán vừa rẻ vừa ngon nên nổi tiếng.	6125	\N	0
-15897	時間もないし、お金もない。	Jikan mo nai shi, okane mo nai.	\N	Không có thời gian lẫn tiền.	6125	\N	1
-15898	行くなら、早く行ったほうがいい。	Iku nara, hayaku itta hō ga ii.	\N	Nếu đi thì nên đi sớm.	6126	\N	0
-15899	日本語なら、少し話せます。	Nihongo nara, sukoshi hanasemasu.	\N	Nếu là tiếng Nhật thì nói được chút.	6126	\N	1
 15900	暇だったら、手伝ってください。	Hima dattara, tetsudatte kudasai.	\N	Nếu rảnh hãy giúp.	6127	\N	0
 15901	着いたら、電話してください。	Tsuitara, denwa shite kudasai.	\N	Khi đến hãy gọi điện.	6127	\N	1
 15902	何を言っても、聞いてくれない。	Nani o itte mo, kiite kurenai.	\N	Dù nói gì cũng không nghe.	6128	\N	0
 15903	何回行っても、覚えられない。	Nankai itte mo, oboerarenai.	\N	Dù đi bao lần cũng không nhớ.	6128	\N	1
-15904	聞けばいいです。	Kikeba ii desu.	\N	Cứ hỏi là được.	6129	\N	0
-15905	早く寝ればいい。	Hayaku nereba ii.	\N	Ngủ sớm là được.	6129	\N	1
-15906	もっと早く来ればよかった。	Motto hayaku kureba yokatta.	\N	Đến sớm hơn thì tốt rồi.	6130	\N	0
-15907	予約すればよかった。	Yoyaku sureba yokatta.	\N	Đặt trước thì tốt rồi.	6130	\N	1
-15908	この服は大きすぎます。	Kono fuku wa ōkisugimasu.	\N	Quần áo này quá rộng.	6131	\N	0
-15909	食べすぎました。	Tabesugimashita.	\N	Ăn quá nhiều.	6131	\N	1
-15910	急に雨が降り出した。	Kyuu ni ame ga furidashita.	\N	Đột nhiên trời bắt đầu mưa.	6132	\N	0
 15911	子供が泣き出した。	Kodomo ga nakidashita.	\N	Đứa trẻ bắt đầu khóc.	6132	\N	1
 15912	三時間走り続けました。	Sanjikan hashiritsuzukemashita.	\N	Chạy liên tục ba tiếng.	6133	\N	0
 15913	勉強し続けてください。	Benkyō shitsuzukete kudasai.	\N	Hãy tiếp tục học.	6133	\N	1
@@ -7166,15 +6527,11 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15916	本を読み切りました。	Hon o yomikirimashita.	\N	Đọc hết sách.	6135	\N	0
 15917	使い切ってください。	Tsukaikitte kudasai.	\N	Hãy dùng hết.	6135	\N	1
 15918	食べ切れませんでした。	Tabekiremasen deshita.	\N	Không ăn hết được.	6136	\N	0
-15919	一人では運べ切れない。	Hitori dewa hakobekirenai.	\N	Một mình không vác hết được.	6136	\N	1
 15922	お客様に対して丁寧に対応します。	Okyakusama ni taishite teinei ni taiō shimasu.	\N	Đối xử lịch sự với khách.	6138	\N	0
 15923	子供に対して厳しすぎる。	Kodomo ni taishite kibishisugiru.	\N	Quá nghiêm với trẻ.	6138	\N	1
 15924	私にとって家族が一番大切です。	Watashi ni totte kazoku ga ichiban taisetsu desu.	\N	Đối với tôi gia đình quan trọng nhất.	6139	\N	0
 15925	彼にとっては問題ない。	Kare ni totte wa mondai nai.	\N	Đối với anh ấy không sao.	6139	\N	1
-15928	この小説は村上春樹によって書かれた。	Kono shōsetsu wa Murakami Haruki ni yotte kakareta.	\N	Tiểu thuyết này được viết bởi Murakami.	6141	\N	0
-15929	新しい制度が導入された。	Atarashii seido ga dōnyū sareta.	\N	Hệ thống mới đã được đưa vào.	6141	\N	1
 15930	環境問題について考えましょう。	Kankyō mondai ni tsuite kangaemashō.	\N	Hãy suy nghĩ về vấn đề môi trường.	6142	\N	0
-15931	詳しく説明してください。	Kuwashiku setsumei shite kudasai.	\N	Hãy giải thích chi tiết.	6142	\N	1
 15932	この件に関して質問があります。	Kono ken ni kanshite shitsumon ga arimasu.	\N	Có câu hỏi liên quan việc này.	6143	\N	0
 15933	契約に関して相談したい。	Keiyaku ni kanshite sōdan shitai.	\N	Muốn trao đổi về hợp đồng.	6143	\N	1
 15934	バスの代わりに、電車で行きます。	Basu no kawari ni, densha de ikimasu.	\N	Thay vì xe buýt đi bằng tàu.	6144	\N	0
@@ -7183,8 +6540,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15937	準備ができ次第、始めます。	Junbi ga dekishidai, hajimemasu.	\N	Chuẩn bị xong sẽ bắt đầu.	6145	\N	1
 15938	この料理の作り方を教えてください。	Kono ryōri no tsukurikata o oshiete kudasai.	\N	Hãy dạy cách nấu món này.	6146	\N	0
 15939	使い方がわかりません。	Tsukaikata ga wakarimasen.	\N	Không biết cách dùng.	6146	\N	1
-15940	このペンは書きやすい。	Kono pen wa kakiyasui.	\N	Bút này dễ viết.	6147	\N	0
-15941	信じにくい話だ。	Shinj inikui hanashi da.	\N	Chuyện khó tin.	6147	\N	1
 15942	子供が公園に行きたがっています。	Kodomo ga kōen ni ikitagatte imasu.	\N	Con muốn đi công viên.	6148	\N	0
 15943	彼女は新しい服を買いたがっている。	Kanojo wa atarashii fuku o kaitagatte iru.	\N	Cô ấy muốn mua quần áo mới.	6148	\N	1
 15944	雨は降りそうにない。	Ame wa furisō ni nai.	\N	Không có vẻ sẽ mưa.	6149	\N	0
@@ -7194,7 +6549,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15948	ゲームをやりまくった。	Gēmu o yarimakutta.	\N	Chơi game suốt.	6151	\N	0
 15949	文句を言いまくる。	Monku o iimakuru.	\N	Cằn nhằn suốt.	6151	\N	1
 15950	食事の最中に電話が鳴った。	Shokuji no saichū ni denwa ga natta.	\N	Ngay lúc đang ăn chuông reo.	6152	\N	0
-15951	出かける最中に雨が降った。	Dekakeru saichū ni ame ga futta.	\N	Lúc sắp ra ngoài thì mưa.	6152	\N	1
 15952	若いうちに、たくさん旅行したほうがいい。	Wakai uchi ni, takusan ryokō shita hō ga ii.	\N	Nên đi du lịch nhiều khi còn trẻ.	6153	\N	0
 15953	明るいうちに帰りましょう。	Akarui uchi ni kaerimashō.	\N	Về khi còn sáng.	6153	\N	1
 15954	シャワーを浴びているあいだに、配達が来た。	Shawā o abite iru aida ni, haitatsu ga kita.	\N	Lúc đang tắm thì giao hàng đến.	6154	\N	0
@@ -7204,55 +6558,22 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 15958	寝坊したせいで、遅刻した。	Nebō shita sei de, chikoku shita.	\N	Vì ngủ quên mà đi trễ.	6156	\N	0
 15960	知っているくせに、教えてくれない。	Shitte iru kuse ni, oshiete kurenai.	\N	Biết mà không chịu dạy.	6157	\N	0
 15961	約束したくせに、来ない。	Yakusoku shita kuse ni, konai.	\N	Hứa rồi mà không đến.	6157	\N	1
-15962	忘れないようにメモしました。	Wasurenai yō ni memo shimashita.	\N	Ghi chú để khỏi quên.	6158	\N	0
-15963	後ろの人にも聞こえるように話した。	Ushiro no hito ni mo kikoeru yō ni hanashita.	\N	Nói to để người sau nghe được.	6158	\N	1
-15964	毎日運動するようにしています。	Mainichi undō suru yō ni shite imasu.	\N	Tôi cố tập thể dục mỗi ngày.	6159	\N	0
-15965	日本語が話せるようになりました。	Nihongo ga hanaseru yō ni narimashita.	\N	Giờ nói được tiếng Nhật.	6159	\N	1
-15966	健康のために野菜を食べる。	Kenkō no tame ni yasai o taberu.	\N	Ăn rau vì sức khỏe.	6160	\N	0
-15967	留学するために貯金している。	Ryūgaku suru tame ni chokin shite iru.	\N	Đang tiết kiệm để du học.	6160	\N	1
-15968	友達のおかげで助かった。	Tomodachi no okage de tasukatta.	\N	Nhờ bạn mà được cứu.	6161	\N	0
-15969	天気が良かったおかげで、楽しめた。	Tenki ga yokakatta okage de, tanoshimeta.	\N	Nhờ trời đẹp mà chơi vui.	6161	\N	1
-15970	道が込んでいたせいで遅れた。	Michi ga konde ita sei de okureta.	\N	Vì đường tắc nên trễ.	6162	\N	0
-15971	不注意のせいで事故が起きた。	Fuchūi no sei de jiko ga okita.	\N	Vì bất cẩn mà xảy ra tai nạn.	6162	\N	1
-15972	考えれば考えるほど混乱する。	Kangaereba kangaeru hodo konran suru.	\N	Càng nghĩ càng rối.	6163	\N	0
-15973	練習すればするほど上手になる。	Renshū sureba suru hodo jōzu ni naru.	\N	Càng luyện càng giỏi.	6163	\N	1
-15974	もっと時間があればいいのに。	Motto jikan ga areba ii noni.	\N	Đáng lẽ có thêm thời gian thì tốt.	6164	\N	0
-15975	雨が降らなければいいのに。	Ame ga furanakereba ii noni.	\N	Đáng lẽ không mưa thì tốt.	6164	\N	1
-15976	忙しいもの、行けないんです。	Isogashii mono, ikenain desu.	\N	Vì bận nên không đi được.	6165	\N	0
-15977	子供だもの、仕方ない。	Kodomo da mono, shikata nai.	\N	Vì còn trẻ nên không sao.	6165	\N	1
-15978	子供は元気なものだ。	Kodomo wa genki na mono da.	\N	Trẻ con đương nhiên khỏe.	6166	\N	0
 15979	昔はよくこの店に来たものだ。	Mukashi wa yoku kono mise ni kita mono da.	\N	Ngày xưa hay ghé quán này.	6166	\N	1
 15980	人の悪口を言うものではない。	Hito no waruguchi o iu mono dewa nai.	\N	Không nên nói xấu người khác.	6167	\N	0
 15981	そんなに無理をするものではありません。	Sonna ni muri o suru mono dewa arimasen.	\N	Không nên gượng như vậy.	6167	\N	1
-15982	そんなこと、信じるものか。	Sonna koto, shinjiru mono ka.	\N	Sao tôi tin chuyện đó được.	6168	\N	0
-15983	負けるもんか。	Makeru mon ka.	\N	Sao tôi thua được.	6168	\N	1
 15984	もっと睡眠をとることだ。	Motto suimin o toru koto da.	\N	Nên ngủ đủ.	6169	\N	0
 15985	一度専門家に相談することだ。	Ichido senmonka ni sōdan suru koto da.	\N	Nên hỏi chuyên gia một lần.	6169	\N	1
-15986	どれほど嬉しかったことか。	Dore hodo ureshikatta koto ka.	\N	Biết bao tôi vui!	6170	\N	0
-15987	何度困ったことか。	Nando komatta koto ka.	\N	Biết bao lần khó xử!	6170	\N	1
 15988	心配することはありません。	Shinpai suru koto wa arimasen.	\N	Không cần lo.	6171	\N	0
 15989	そんなに怒ることはない。	Sonna ni okoru koto wa nai.	\N	Không cần tức như vậy.	6171	\N	1
-15990	謝ったからといって許されたことにはならない。	Ayamatta kara to itte yurushita koto ni wa naranai.	\N	Xin lỗi chưa chắc đã được tha.	6172	\N	0
-15991	書いたから完成したことにはならない。	Kaita kara kansei shita koto ni wa naranai.	\N	Viết xong chưa chắc đã hoàn thành.	6172	\N	1
-15992	彼が来ないわけだ、知らせていなかった。	Kare ga konai wake da, shirasete inakatta.	\N	Hèn chi anh ấy không đến, không báo mà.	6173	\N	0
-15993	なるほど、そういうわけですね。	Naruhodo, sō iu wake desu ne.	\N	Ra vậy, thế là hợp lý.	6173	\N	1
-15994	そんな高いものは買えるわけがない。	Sonna takai mono wa kaeru wake ga nai.	\N	Không thể mua đồ đắt như vậy.	6174	\N	0
 15995	彼が嘘をつくわけがない。	Kare ga uso o tsuku wake ga nai.	\N	Anh ấy không thể nói dối.	6174	\N	1
-15996	約束を破るわけにはいかない。	Yakusoku o yaburu wake ni wa ikanai.	\N	Không thể phá lời hứa.	6175	\N	0
-15997	ここで諦めるわけにはいかない。	Koko de akirameru wake ni wa ikanai.	\N	Không thể bỏ cuộc ở đây.	6175	\N	1
 15998	行きたくないわけではない。	Ikitakunai wake dewa nai.	\N	Không phải là không muốn đi.	6176	\N	0
 15999	反対するわけではありません。	Hantai suru wake dewa arimasen.	\N	Không hẳn là phản đối.	6176	\N	1
 16000	高いからといって美味しいとは限らない。	Takai kara to itte oishii to wa kagiranai.	\N	Đắt chưa chắc ngon.	6177	\N	0
 16001	努力すれば必ず成功するとは限らない。	Doryoku sureba kanarazu seikō suru to wa kagiranai.	\N	Cố gắng chưa chắc thành công.	6177	\N	1
-16002	物価は上がる一方だ。	Bukka wa agaru ippō da.	\N	Giá cả càng ngày càng tăng.	6178	\N	0
-16003	状況は悪くなる一方だ。	Jōkyō wa waruku naru ippō da.	\N	Tình hình càng ngày càng xấu.	6178	\N	1
-16004	都市化が進む一方で、過疎化も進んでいる。	Toshika ga susumu ippō de, kasoka mo susunde iru.	\N	Đô thị hóa tiến triển, đồng thời cũng có làng bị bỏ hoang.	6179	\N	0
 16005	便利な一方で、ストレスも増えた。	Benri na ippō de, sutoresu mo fueta.	\N	Tiện lợi nhưng stress cũng tăng.	6179	\N	1
 16006	会議の最中に停電した。	Kaigi no saichū ni teiden shita.	\N	Giữa cuộc họp mất điện.	6180	\N	0
 16007	食事の最中に知らせが来た。	Shokuji no saichū ni shirase ga kita.	\N	Đang ăn thì có tin.	6180	\N	1
 16008	お越しいただいた際に、資料をお渡しします。	Okoshi itadaita sai ni, shiryō o owatashi shimasu.	\N	Khi quý vị đến tôi sẽ giao tài liệu.	6181	\N	0
-16009	海外に行く際には、保険に入ってください。	Kaigai ni iku sai ni wa, hoken ni hatte kudasai.	\N	Khi đi nước ngoài hãy mua bảo hiểm.	6181	\N	1
-16010	忘れないうちに書き留めておこう。	Wasurenai uchi ni kakitomete okō.	\N	Ghi lại trước khi quên.	6182	\N	0
 16011	明るいうちに帰ろう。	Akarui uchi ni kaerō.	\N	Về khi còn sáng.	6182	\N	1
 16012	この歌を聞くたびに、故郷を思い出す。	Kono uta o kiku tabi ni, kokyō o omoidasu.	\N	Mỗi lần nghe bài này nhớ quê.	6183	\N	0
 16013	会うたびに元気そうだ。	Au tabi ni genki sō da.	\N	Mỗi lần gặp trông đều khỏe.	6183	\N	1
@@ -7260,174 +6581,69 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 16015	書きかけのレポートを仕上げた。	Kakikake no repōto o shiageta.	\N	Hoàn thành báo cáo viết dở.	6184	\N	1
 16016	そんな高い山、登りっこない。	Sonna takai yama, noborikkonai.	\N	Núi cao thế không leo nổi.	6185	\N	0
 16017	勝てっこない。	Kattekkonai.	\N	Không thể thắng.	6185	\N	1
-16018	想像し得る範囲内だ。	Sōzō shieru han'i nai da.	\N	Trong phạm vi có thể tưởng tượng.	6186	\N	0
-16019	そんなことは起こり得ない。	Sonna koto wa okori enai.	\N	Chuyện đó không thể xảy ra.	6186	\N	1
-16020	そのご提案はお受けしかねます。	Sono goteian wa oukeshi kanemasu.	\N	Khó mà chấp nhận đề xuất đó.	6187	\N	0
 16021	賛成しかねる点もある。	Sansei shikaneru ten mo aru.	\N	Cũng có điểm khó đồng ý.	6187	\N	1
 16022	このままでは事故を起こしかねない。	Kono mama dewa jiko o okoshikanenai.	\N	Cứ thế này có thể gây tai nạn.	6188	\N	0
-16023	信頼を失いかねない。	Shinrai o ushinikanenai.	\N	Có thể mất lòng tin.	6188	\N	1
 16024	全部食べきった。	Zenbu tabekitta.	\N	Ăn hết sạch.	6189	\N	0
 16025	信じきれない。	Shinjikirenai.	\N	Không thể tin hết.	6189	\N	1
-16026	使い切れない量だ。	Tsukaikirenai ryō da.	\N	Lượng không dùng hết.	6190	\N	0
-16027	読み切れない本がある。	Yomikirenai hon ga aru.	\N	Có sách không đọc hết.	6190	\N	1
-16028	彼は最後まで戦い抜いた。	Kare wa saigo made tatakainukita.	\N	Anh ấy chiến đấu đến cùng.	6191	\N	0
 16029	考え抜いて決めた。	Kangaenuite kimeta.	\N	Suy nghĩ kỹ rồi quyết định.	6191	\N	1
 16030	助け合いましょう。	Tasukeaimashō.	\N	Hãy giúp nhau.	6192	\N	0
-16031	意見が食い違っている。	Iken ga kuchigatte iru.	\N	Ý kiến bất đồng.	6192	\N	1
 16032	書き直す時間がない。	Kakinaosu jikan ga nai.	\N	Không có thời gian viết lại.	6193	\N	0
 16033	やり直したい。	Yarinaoshitai.	\N	Muốn làm lại.	6193	\N	1
-16034	最後まで走り通した。	Saigo made hashiritsūshita.	\N	Chạy suốt đến cuối.	6194	\N	0
-16035	彼は言い通すタイプだ。	Kare wa iitsūsu taipu da.	\N	Anh ấy kiểu cứ khăng khăng nói cho bằng được.	6194	\N	1
-16036	力を尽くす。	Chikara o tsukusu.	\N	Dốc hết sức.	6195	\N	0
-16037	知恵を尽くしても解決しなかった。	Chie o tsukushitemo kaiketsu shinakatta.	\N	Dù hết mực suy nghĩ vẫn không giải quyết được.	6195	\N	1
 16038	雨が降り始めた。	Ame ga furihajimeta.	\N	Trời bắt đầu mưa.	6196	\N	0
 16039	彼女は泣き始めた。	Kanojo wa nakihajimeta.	\N	Cô ấy bắt đầu khóc.	6196	\N	1
-16040	彼は知っているに違いない。	Kare wa shitte iru ni chigainai.	\N	Anh ấy chắc chắn biết.	6197	\N	0
-16041	成功するに違いない。	Seikō suru ni chigainai.	\N	Chắc chắn sẽ thành công.	6197	\N	1
-16042	そんなの勝つに決まってる。	Sonna no katsu ni kimatteru.	\N	Thế đó chắc thắng.	6198	\N	0
 16043	彼が来ないに決まっている。	Kare ga konai ni kimatte iru.	\N	Chắc chắn anh ấy không đến.	6198	\N	1
 16044	安いものが悪いとも限らない。	Yasui mono ga warui to mo kagiranai.	\N	Đồ rẻ chưa chắc xấu.	6199	\N	0
 16045	経験があれば成功するとも限らない。	Keiken ga areba seikō suru to mo kagiranai.	\N	Có kinh nghiệm chưa chắc thành công.	6199	\N	1
-16046	やってみないものでもない。	Yatte minai mono demo nai.	\N	Thử thì cũng không phải là không được.	6200	\N	0
-16047	彼なら解決できないものでもない。	Kare nara kaiketsu dekinai mono demo nai.	\N	Anh ấy không phải không giải quyết được.	6200	\N	1
-16050	押し付けられて、断る始末だ。	Oshitsukerarete, kotowaru shimatsu da.	\N	Bị ép cuối cùng phải từ chối.	6202	\N	0
-16051	忘れて、遅刻する始末だった。	Wasurete, chikoku suru shimatsu datta.	\N	Quên nên cuối cùng đi trễ.	6202	\N	1
 16052	見ただけで判断するのは早計だ。	Mita dake de handan suru no wa sōkei da.	\N	Chỉ nhìn mà phán đoán là vội.	6203	\N	0
 16053	待っているだけでは解決しない。	Matte iru dake dewa kaiketsu shinai.	\N	Chỉ chờ thì không giải quyết được.	6203	\N	1
-16054	議論は結論に至った。	Giron wa ketsuron ni itaru.	\N	Cuộc thảo luận đã đi đến kết luận.	6204	\N	0
-16055	努力の末、成功に至った。	Doryoku no sue, seikō ni itatta.	\N	Sau nỗ lực đã đạt thành công.	6204	\N	1
 16056	準備から実行に至るまで、すべて確認した。	Junbi kara jikkō ni itaru made, subete kakunin shita.	\N	Từ chuẩn bị đến thực hiện đều đã kiểm tra.	6205	\N	0
-16057	細部に至るまで配慮されている。	Saisbu ni itaru made hairyo sarete iru.	\N	Được chu đáo đến từng chi tiết.	6205	\N	1
-16058	事件が起きて初めて問題に至った。	Jiken ga okitе hajimete mondai ni itatte.	\N	Mãi khi sự việc xảy ra mới thành vấn đề.	6206	\N	0
-16059	長い議論の末に、ようやく決定に至った。	Nagai giron no sue ni, yōyaku kettei ni itatta.	\N	Sau tranh luận lâu cuối cùng mới quyết định.	6206	\N	1
-16060	会議に先立ち、資料を配布した。	Kaigi ni sakidachi, shiryō o haifu shita.	\N	Trước cuộc họp đã phát tài liệu.	6207	\N	0
-16061	出発に先立ち、点検を行った。	Shuppatsu ni sakidachi, tenken o okonatta.	\N	Trước khi khởi hành đã kiểm tra.	6207	\N	1
 16062	開店に際して、セールを行う。	Kaiten ni saishite, sēru o okonau.	\N	Nhân dịp khai trương sẽ giảm giá.	6208	\N	0
 16063	卒業に際して、感謝の言葉を述べた。	Sotsugyō ni saishite, kansha no kotoba o nobeta.	\N	Nhân dịp tốt nghiệp đã bày tỏ lòng biết ơn.	6208	\N	1
-16064	現状に即して計画を修正する。	Genjō ni sokushite keikaku o shūsei suru.	\N	Sửa kế hoạch cho phù hợp hiện trạng.	6209	\N	0
-16065	時代に即した教育が必要だ。	Jidai ni sokushita kyōiku ga hitsuyō da.	\N	Cần giáo dục phù hợp thời đại.	6209	\N	1
 16066	方針に沿って進める。	Hōshin ni sotte susumeru.	\N	Tiến hành theo phương châm.	6210	\N	0
+16023	信頼を失いかねない。	Shinrai o ushinaikanenai.	\N	Có thể mất lòng tin.	6188	\N	1
 16067	川に沿って道が続いている。	Kawa ni sotte michi ga tsuzuite iru.	\N	Đường chạy dọc theo sông.	6210	\N	1
-16068	事実に基づいて判断する。	Jijitsu ni motozuite handan suru.	\N	Phán đoán dựa trên sự thật.	6211	\N	0
-16069	法律に基づいて処分された。	Hōritsu ni motozuite shobun sareta.	\N	Bị xử lý theo luật.	6211	\N	1
 16070	経済成長に伴って、生活水準も上がった。	Keizai seichō ni tomonatte, seikatsu suijun mo agatta.	\N	Cùng tăng trưởng kinh tế, mức sống cũng lên.	6212	\N	0
 16071	制度変更に伴い、手続きも変わる。	Seido henkō ni tomonai, tetsuzuki mo kawaru.	\N	Theo thay đổi chế độ, thủ tục cũng đổi.	6212	\N	1
-16072	現実に即した解決策が必要だ。	Genjitsu ni sokushita kaiketsusaku ga hitsuyō da.	\N	Cần giải pháp phù hợp thực tế.	6213	\N	0
-16073	需要に即した商品開発を行う。	Juyō ni sokushita shōhin kaihatsu o okonau.	\N	Phát triển sản phẩm theo nhu cầu.	6213	\N	1
-16074	本日をもって、退職いたします。	Honjitsu o motte, taishoku itashimasu.	\N	Kể từ hôm nay tôi nghỉ việc.	6214	\N	0
-16075	これをもって会議を終了します。	Kore o motte kaigi o shūryō shimasu.	\N	Như vậy xin kết thúc cuộc họp.	6214	\N	1
-16076	誠意を以て対応する。	Seii o motte taiō suru.	\N	Đối ứng bằng thành ý.	6215	\N	0
-16077	実力を以て評価される。	Jitsuryoku o motte hyōka sareru.	\N	Được đánh giá bằng năng lực.	6215	\N	1
-16078	その光景には驚きを禁じ得ない。	Sono kōkei ni wa kyōki o kinjienai.	\N	Không thể không ngạc nhiên trước cảnh đó.	6216	\N	0
 16079	同情を禁じ得ない状況だ。	Dōjō o kinjienai jōkyō da.	\N	Tình huống không thể không thương cảm.	6216	\N	1
-16080	台風で延期を余儀なくされた。	Taifū de enki o yoginaku sareta.	\N	Vì bão buộc phải hoãn.	6217	\N	0
-16081	経営難で閉店を余儀なくされた。	Keiei nan de heiten o yoginaku sareta.	\N	Vì khó kinh doanh buộc phải đóng cửa.	6217	\N	1
-16082	世間の批判をよそに、彼は進めた。	Seken no hihan o yoso ni, kare wa susumeta.	\N	Bất chấp chỉ trích dư luận anh ấy vẫn tiến.	6218	\N	0
-16083	不安の声をよそに、計画は続行された。	Fuan no koe o yoso ni, keikaku wa zokkō sareta.	\N	Bất chấp lo ngại kế hoạch vẫn tiếp tục.	6218	\N	1
-16084	この仕事をおいて、他に適任者はいない。	Kono shigoto o oite, hoka ni tekininsha wa inai.	\N	Ngoài anh ấy không ai hợp việc này.	6219	\N	0
-16085	彼をおいて、代表は務まらない。	Kare o oite, daihyō wa matomaranai.	\N	Không ai đại diện bằng anh ấy.	6219	\N	1
 16086	東京公演を皮切りに、全国ツアーが始まる。	Tōkyō kōen o kawakiri ni, zenkoku tsuā ga hajimaru.	\N	Bắt đầu từ Tokyo, tour toàn quốc khởi động.	6220	\N	0
 16087	この商品を皮切りに、新ラインを展開する。	Kono shōhin o kawakiri ni, shin rain o tenkai suru.	\N	Bắt đầu từ sản phẩm này mở rộng dòng mới.	6220	\N	1
-16088	転職を機に、新しいスキルを学んだ。	Tenshoku o ki ni, atarashii sukiru o mananda.	\N	Nhân chuyển việc học kỹ năng mới.	6221	\N	0
-16089	引っ越しを機に、生活習慣を見直した。	Hikkoshi o ki ni, seikatsu shūkan o minaoshita.	\N	Nhân chuyển nhà xem lại thói quen.	6221	\N	1
 16090	事故を契機に、安全対策が強化された。	Jiko o keiki ni, anzen taisaku ga kyōka sareta.	\N	Nhân tai nạn biện pháp an toàn được tăng cường.	6222	\N	0
 16091	出産を契機に、仕事の見直しをした。	Shussan o keiki ni, shigoto no minaoshi o shita.	\N	Nhân sinh con xem lại công việc.	6222	\N	1
-16092	調査結果を踏まえて、方針を決めた。	Chōsa kekka o fumae te, hōshin o kimeta.	\N	Dựa kết quả khảo sát quyết phương châm.	6223	\N	0
-16093	過去の失敗を踏まえ、計画を立てる。	Kako no shippai o fumae, keikaku o tateru.	\N	Cân nhắc thất bại quá khứ lập kế hoạch.	6223	\N	1
-16094	危険を顧みず、前進した。	Kiken o kaerimizu, zenshin shita.	\N	Không màng nguy hiểm tiến lên.	6224	\N	0
-16095	批判を顧みず、信念を貫いた。	Hihan o kaerimizu, shinnen o tsuranuita.	\N	Không màng chỉ trích giữ vững niềm tin.	6224	\N	1
-16096	困難をものともせず、研究を続けた。	Konnan o mono tomo sezu, kenkyū o tsuzuketa.	\N	Coi khó khăn như không, tiếp tục nghiên cứu.	6225	\N	0
-16097	反対をものともせず、改革を進めた。	Hantai o mono tomo sezu, kaikaku o susumeta.	\N	Coi phản đối như không, tiến hành cải cách.	6225	\N	1
-16098	損失をものとせず、再投資した。	Sonshitsu o mono to sezu, saitōshi shita.	\N	Không màng thiệt hại đầu tư lại.	6226	\N	0
-16099	失敗をものとせず、挑戦し続ける。	Shippai o mono to sezu, chōsen shitsuzukeru.	\N	Không coi thất bại là vấn đề, tiếp tục thử.	6226	\N	1
-16100	その態度は失礼極まりない。	Sono taido wa shitsurei gokumarinaki.	\N	Thái độ đó cực kỳ thất lễ.	6227	\N	0
-16101	危険極まりない行為だ。	Kiken gokumarinaki kōi da.	\N	Hành vi cực kỳ nguy hiểm.	6227	\N	1
 16102	再会できて嬉しい限りだ。	Saikai dekite ureshii kagiri da.	\N	Gặp lại được vô cùng vui.	6228	\N	0
-16103	期待外れで残念限りだ。	Kitai hazure de zannen kagiri da.	\N	Không như mong đợi, tiếc vô cùng.	6228	\N	1
-16106	努力の結果、成功した始末である。	Doryoku no kekka, seikō shita shimatsu de aru.	\N	Kết quả nỗ lực rốt cuộc thành công.	6230	\N	0
-16107	議論の末、妥協に至った始末だ。	Giron no sue, dakyō ni itatta shimatsu da.	\N	Sau tranh luận rốt cuộc thỏa hiệp.	6230	\N	1
 16108	立入禁止。関係者以外入るべからず。	Tachiiri kinshi. Kankeisha igai hairu bekarazu.	\N	Cấm vào. Người không liên quan không được vào.	6231	\N	0
 16109	他人を見下すべからず。	Tajin o mikudasu bekarazu.	\N	Không được coi thường người khác.	6231	\N	1
 16110	成功すべく、日夜努力している。	Seikō subeku, nichiya doryoku shite iru.	\N	Để thành công ngày đêm nỗ lực.	6232	\N	0
 16111	問題を解決すべく、調査を開始した。	Mondai o kaiketsu subeku, chōsa o kaishi shita.	\N	Để giải quyết vấn đề bắt đầu điều tra.	6232	\N	1
 16112	許すべからざる行為だ。	Yurusu bekarazaru kōi da.	\N	Hành vi không thể tha thứ.	6233	\N	0
-16113	避けるべからざる選択だ。	Sakeru bekarazaru sentaku da.	\N	Lựa chọn không thể tránh.	6233	\N	1
-16114	教師にあるまじき発言だ。	Kyōshi ni arumajiki hatsugen da.	\N	Phát ngôn không xứng giáo viên.	6234	\N	0
-16115	人として許すまじき行為だ。	Hito to shite yurusu majiki kōi da.	\N	Hành vi con người không thể tha.	6234	\N	1
-16116	感謝せざるを得ない。	Kansha sezaru o enai.	\N	Không thể không biết ơn.	6235	\N	0
-16117	認めざるを得ない結果だ。	Mitomezaru o enai kekka da.	\N	Kết quả buộc phải thừa nhận.	6235	\N	1
 16118	値上げせざるを得ない状況だ。	Neage sezaru o enai jōkyō da.	\N	Tình huống buộc phải tăng giá.	6236	\N	0
 16119	認めざるを得ない。	Mitomezaru o enai.	\N	Buộc phải thừa nhận.	6236	\N	1
-16120	笑わないではいられなかった。	Warawanaide wa irarenakatta.	\N	Không thể không cười.	6237	\N	0
-16121	心配しないではいられない。	Shinpai shinaide wa irarenai.	\N	Không thể không lo.	6237	\N	1
-16122	感動せずにはいられなかった。	Kandō sezu ni wa irarenakatta.	\N	Không thể không xúc động.	6238	\N	0
-16123	同情せずにはいられない。	Dōjō sezu ni wa irarenai.	\N	Không thể không thương cảm.	6238	\N	1
 16124	会いたくてたまらない。	Aitakute tamaranai.	\N	Nhớ muốn gặp không chịu nổi.	6239	\N	0
 16125	暑くてたまらない。	Atsukute tamaranai.	\N	Nóng không chịu nổi.	6239	\N	1
 16126	結果が気になってならない。	Kekka ga ki ni natte naranai.	\N	Rất lo kết quả.	6240	\N	0
-16127	彼の安否が心配でならない。	Kare no anpi ga shinpai de naranai.	\N	Lo lắng an toàn anh ấy không yên.	6240	\N	1
 16128	眠くて仕方がない。	Nemukute shikata ga nai.	\N	Buồn ngủ vô cùng.	6241	\N	0
 16129	嬉しくて仕方がない。	Ureshikute shikata ga nai.	\N	Vui vô cùng.	6241	\N	1
 16130	努力すれば成功して当然だ。	Doryoku sureba seikō shite tōzen da.	\N	Cố gắng thì thành công là đương nhiên.	6242	\N	0
 16131	約束を破れば、信用を失って当然だ。	Yakusoku o yabureba, shinyō o ushinatte tōzen da.	\N	Phá lời hứa mất lòng tin là đương nhiên.	6242	\N	1
-16132	違反すれば罰せられて当然である。	Ihan sureba basserarete tōzen de aru.	\N	Vi phạm bị phạt là đương nhiên.	6243	\N	0
-16133	結果が出るまで待つのが当然である。	Kekka ga deru made matsu no ga tōzen de aru.	\N	Đợi đến khi có kết quả là đương nhiên.	6243	\N	1
-16134	成功は努力の結果として当然の帰結だ。	Seikō wa doryoku no kekka to shite tōzen no kiketsu da.	\N	Thành công là kết cục đương nhiên của nỗ lực.	6244	\N	0
-16135	彼の昇進は実力相応で当然のことだ。	Kare no shōshin wa jitsuryoku sōō de tōzen no koto da.	\N	Thăng tiến anh ấy xứng năng lực là đương nhiên.	6244	\N	1
-16136	その説明では納得して当然を得ない。	Sono setsumei dewa nattoku shite tōzen o enai.	\N	Giải thích đó không thể coi là đương nhiên mà chấp nhận.	6245	\N	0
-16137	突然の辞任は当然を得ない。	Totsuzen no jinin wa tōzen o enai.	\N	Từ chức đột ngột không thể coi là đương nhiên.	6245	\N	1
 16138	結婚してからというもの、生活が変わった。	Kekkon shite kara to iu mono, seikatsu ga kawatta.	\N	Kể từ khi cưới cuộc sống thay đổi.	6246	\N	0
-16139	引っ越してからというもの、会えなくなった。	Hikkoshi shite kara to iu mono, aenaku natta.	\N	Kể từ chuyển nhà không gặp được.	6246	\N	1
 16140	留学して以来、考え方が変わった。	Ryūgaku shite irai, kangaekata ga kawatta.	\N	Kể từ du học cách nghĩ thay đổi.	6247	\N	0
-16141	事故に遭って以来、慎重になった。	Jiko ni atatte irai, shinchō ni natta.	\N	Kể từ tai nạn trở nên thận trọng.	6247	\N	1
 16142	確認してからでないと、進められない。	Kakunin shite kara denai to, susumerarenai.	\N	Phải xác nhận trước mới tiến hành được.	6248	\N	0
 16143	許可を得てからでないと、使用できない。	Kyoka o ete kara denai to, shiyō dekinai.	\N	Phải được phép trước mới dùng được.	6248	\N	1
-16144	経験してからこそ、理解できる。	Keiken shite kara koso, rikai dekiru.	\N	Chính vì trải nghiệm mới hiểu được.	6249	\N	0
-16145	失敗してからこそ、成長できる。	Shippai shite kara koso, seichō dekiru.	\N	Chính vì thất bại mới trưởng thành.	6249	\N	1
 16146	健康があってこそ、幸せだ。	Kenkō ga atte koso, shiawase da.	\N	Chỉ khi có sức khỏe mới hạnh phúc.	6250	\N	0
 16147	努力してこそ、成果が出る。	Doryoku shite koso, seika ga deru.	\N	Chỉ khi nỗ lực mới có thành quả.	6250	\N	1
-16148	食べては寝られない。	Tabete wa nerarenai.	\N	Ăn rồi không ngủ được.	6251	\N	0
 16149	そんなことを言っては、誤解される。	Sonna koto o itte wa, gokai sareru.	\N	Nói vậy sẽ bị hiểu lầm.	6251	\N	1
-16150	悲しんでいてはいられない。	Kanashinde ite wa irarenai.	\N	Không thể cứ buồn mãi.	6252	\N	0
-16151	待っていてはいられない。	Matte ite wa irarenai.	\N	Không thể cứ chờ mãi.	6252	\N	1
 16152	約束を破ってはならない。	Yakusoku o yabutte wa naranai.	\N	Không được phá lời hứa.	6253	\N	0
 16153	人を見下してはならない。	Hito o mikudashite wa naranai.	\N	Không được coi thường người khác.	6253	\N	1
-16154	借金してまで買う必要はない。	Shakkin shite made kau hitsuyō wa nai.	\N	Không cần vay nợ mà mua.	6254	\N	0
-16155	嘘をついてまで守りたいものはない。	Uso o tsuite made mamoritai mono wa nai.	\N	Không có gì đáng nói dối mà bảo vệ.	6254	\N	1
-16156	会ってでも謝りたい。	Aitte demo ayamaritai.	\N	Dù gặp cũng muốn xin lỗi.	6255	\N	0
-16157	借りてでも実現させる。	Karite demo jitsugen saseru.	\N	Dù vay cũng thực hiện.	6255	\N	1
-16158	待っていては始まらない。	Matte ite wa hajimaranai.	\N	Chỉ chờ thì không ổn.	6256	\N	0
-16159	言うだけでは始まらない。	Iu dake dewa hajimaranai.	\N	Chỉ nói thì không đủ.	6256	\N	1
 16160	謝って済むことではない。	Ayamatte sumu koto dewa nai.	\N	Không phải xin lỗi là xong.	6257	\N	0
 16161	説明して済む問題ではない。	Setsumei shite sumu mondai dewa nai.	\N	Không phải giải thích là giải quyết được.	6257	\N	1
 16162	メールして済ませた。	Mēru shite sumaseta.	\N	Nhắn mail là xong.	6258	\N	0
 16163	謝れば済む話だ。	Ayamareba sumu hanashi da.	\N	Xin lỗi là xong chuyện.	6258	\N	1
-16164	早めに予約したに越したことはない。	Hayame ni yoyaku shita ni koshita koto wa nai.	\N	Đặt sớm không gì hơn.	6259	\N	0
-16165	健康に越したものはない。	Kenkō ni koshita mono wa nai.	\N	Không gì hơn sức khỏe.	6259	\N	1
 16166	成功は努力の結果にほかならない。	Seikō wa doryoku no kekka ni hoka naranai.	\N	Thành công không gì khác ngoài kết quả nỗ lực.	6260	\N	0
 16167	それは偶然にほかならない。	Sore wa gūzen ni hoka naranai.	\N	Đó không gì khác ngoài ngẫu nhiên.	6260	\N	1
-16168	原因は怠慢に他ならない。	Genin wa taiman ni hoka naranai.	\N	Nguyên nhân chính là sự lơ đãng.	6261	\N	0
-16169	目的は平和の実現に他ならない。	Mokuteki wa heiwa no jitsugen ni hoka naranai.	\N	Mục đích chính là hiện thực hòa bình.	6261	\N	1
 16170	噂にすぎない。	Uwasa ni suginai.	\N	Chỉ là tin đồn.	6262	\N	0
 16171	彼の意見は参考程度にすぎない。	Kare no iken wa sankō teido ni suginai.	\N	Ý kiến anh ấy chỉ mang tính tham khảo.	6262	\N	1
-16172	始まりに過ぎない。	Hajimari ni suginai.	\N	Chỉ mới là khởi đầu.	6263	\N	0
-16173	それは一例に過ぎない。	Sore wa ichirei ni suginai.	\N	Đó chỉ là một ví dụ.	6263	\N	1
-16174	彼の勝利に相違ない。	Kare no shōri ni sōi nai.	\N	Chắc chắn anh ấy thắng.	6264	\N	0
 16175	計画通りに進んでいるに相違ない。	Keikaku dōri ni susunde iru ni sōi nai.	\N	Chắc chắn đang tiến đúng kế hoạch.	6264	\N	1
-16180	専門家にして初めて理解できる。	Senmonka ni shite hajimete rikai dekiru.	\N	Ở mức chuyên gia mới hiểu được.	6267	\N	0
-16181	現代にして必要不可欠だ。	Gendai ni shite hitsuyō fukaketsu da.	\N	Ở thời hiện đại là không thể thiếu.	6267	\N	1
-16182	失敗にして初めて学べる。	Shippai ni shite hajimete manaberu.	\N	Chỉ khi thất bại mới học được.	6268	\N	0
-16183	大人にして初めて分かる。	Otona ni shite hajimete wakaru.	\N	Lớn rồi mới hiểu.	6268	\N	1
-16184	行くにしても、準備が必要だ。	Iku ni shite mo, junbi ga hitsuyō da.	\N	Dù đi cũng cần chuẩn bị.	6269	\N	0
-16185	高いにしても、買う価値がある。	Takai ni shite mo, kau kachi ga aru.	\N	Dù đắt cũng đáng mua.	6269	\N	1
 16186	行くにせよ行かないにせよ、連絡してほしい。	Iku ni seyo ikanai ni seyo, renraku shite hoshii.	\N	Dù đi hay không hãy liên lạc.	6270	\N	0
 16187	賛成にしろ反対にしろ、意見を聞きたい。	Sansei ni shiro hantai ni shiro, iken o kikitai.	\N	Dù đồng ý hay phản đối tôi muốn nghe ý kiến.	6270	\N	1
-16188	今さら後悔したところで遅い。	Ima sara kōkai shita tokoro de osui.	\N	Giờ hối hận cũng muộn.	6271	\N	0
-16189	待ったところで来ない。	Mattatokoro de konai.	\N	Chờ cũng không đến.	6271	\N	1
-16190	言ったところで信じられない。	Itta tokoro de shinjirarenai.	\N	Dù nói cũng không tin.	6272	\N	0
-16191	待ったところで来ない。	Mattatokoro de konai.	\N	Chờ cũng không đến.	6272	\N	1
-16192	調べたところが、新しい事実が判明した。	Shirabeta tokoro ga, atarashii jijitsu ga hanmei shita.	\N	Đã điều tra nhưng phát hiện sự thật mới.	6273	\N	0
-16193	会ったところが、印象が良かった。	Atta tokoro ga, inshō ga yokakatta.	\N	Gặp rồi nhưng ấn tượng tốt.	6273	\N	1
 16214	わたしは がくせいです。	watashi wa gakusei desu.	\N	Tôi là học sinh.	6284	\N	0
 16215	これは にほんごの ほんです。	kore wa nihongo no hon desu.	\N	Đây là sách tiếng Nhật.	6284	\N	1
 16216	わたしは せんせいじゃありません。	watashi wa sensei ja arimasen.	\N	Tôi không phải là giáo viên.	6285	\N	0
@@ -7746,6 +6962,7 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 16528	ともだちが わたしに ほんを くれました。	tomodachi ga watashi ni hon o kuremashita.	\N	Bạn tôi đã cho tôi cuốn sách.	6441	\N	0
 16529	わたしは あねに とけいを もらいました。	watashi wa ane ni tokei o moraimashita.	\N	Tôi nhận được đồng hồ từ chị gái.	6441	\N	1
 16530	いもうとに えほんを よんで あげました。	imouto ni ehon o yonde agemashita.	\N	Tôi đọc truyện tranh cho em gái.	6442	\N	0
+19005	りんごを 4つ 買いました。	Ringo o yottsu kaimashita.	\N	Tôi đã mua 4 quả táo.	7681	\N	0
 16531	おばあさんの にもつを もって あげました。	obaasan no nimotsu o motte agemashita.	\N	Tôi xách đồ giúp bà cụ.	6442	\N	1
 16532	どうりょうが しごとを てつだって くれました。	douryou ga shigoto o tetsudatte kuremashita.	\N	Đồng nghiệp đã giúp tôi làm việc.	6443	\N	0
 16533	ははが べんとうを つくって くれます。	haha ga bentou o tsukutte kuremasu.	\N	Mẹ làm cơm hộp cho tôi.	6443	\N	1
@@ -7757,7 +6974,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 16539	あした もう いちど きて くださいませんか。	ashita mou ichido kite kudasaimasen ka.	\N	Mai anh đến thêm một lần được không?	6446	\N	1
 16540	わたしは せんせいに ほめられました。	watashi wa sensei ni homeraremashita.	\N	Tôi được thầy khen.	6447	\N	0
 16541	おとうとに ケーキを たべられました。	otouto ni keeki o taberaremashita.	\N	Tôi bị em trai ăn mất bánh.	6447	\N	1
-16542	この おてらは 600ねんまえに たてられました。	kono otera wa roppyakunen mae ni tateraremashita.	\N	Ngôi chùa này được xây 600 năm trước.	6448	\N	0
 16543	「源氏物語」は むらさきしきぶに よって かかれました。	"genji monogatari" wa murasaki shikibu ni yotte kakaremashita.	\N	"Truyện Genji" được viết bởi Murasaki Shikibu.	6448	\N	1
 16544	ははは おとうとに へやを そうじさせました。	haha wa otouto ni heya o souji sasemashita.	\N	Mẹ bắt em trai dọn phòng.	6449	\N	0
 16545	こどもを こうえんで あそばせました。	kodomo o kouen de asobasemashita.	\N	Tôi cho con chơi ở công viên.	6449	\N	1
@@ -7894,7 +7110,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 16677	あした もう いちど きて くださいませんか。	ashita mou ichido kite kudasaimasen ka.	\N	Mai anh đến thêm một lần được không?	6515	\N	1
 16678	わたしは せんせいに ほめられました。	watashi wa sensei ni homeraremashita.	\N	Tôi được thầy khen.	6516	\N	0
 16679	おとうとに ケーキを たべられました。	otouto ni keeki o taberaremashita.	\N	Tôi bị em trai ăn mất bánh.	6516	\N	1
-16680	この おてらは 600ねんまえに たてられました。	kono otera wa roppyakunen mae ni tateraremashita.	\N	Ngôi chùa này được xây 600 năm trước.	6517	\N	0
 16681	「源氏物語」は むらさきしきぶに よって かかれました。	"genji monogatari" wa murasaki shikibu ni yotte kakaremashita.	\N	"Truyện Genji" được viết bởi Murasaki Shikibu.	6517	\N	1
 16682	ははは おとうとに へやを そうじさせました。	haha wa otouto ni heya o souji sasemashita.	\N	Mẹ bắt em trai dọn phòng.	6518	\N	0
 16683	こどもを こうえんで あそばせました。	kodomo o kouen de asobasemashita.	\N	Tôi cho con chơi ở công viên.	6518	\N	1
@@ -8032,7 +7247,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 16815	あした もう いちど きて くださいませんか。	ashita mou ichido kite kudasaimasen ka.	\N	Mai anh đến thêm một lần được không?	6584	\N	1
 16816	わたしは せんせいに ほめられました。	watashi wa sensei ni homeraremashita.	\N	Tôi được thầy khen.	6585	\N	0
 16817	おとうとに ケーキを たべられました。	otouto ni keeki o taberaremashita.	\N	Tôi bị em trai ăn mất bánh.	6585	\N	1
-16818	この おてらは 600ねんまえに たてられました。	kono otera wa roppyakunen mae ni tateraremashita.	\N	Ngôi chùa này được xây 600 năm trước.	6586	\N	0
 16819	「源氏物語」は むらさきしきぶに よって かかれました。	"genji monogatari" wa murasaki shikibu ni yotte kakaremashita.	\N	"Truyện Genji" được viết bởi Murasaki Shikibu.	6586	\N	1
 16820	ははは おとうとに へやを そうじさせました。	haha wa otouto ni heya o souji sasemashita.	\N	Mẹ bắt em trai dọn phòng.	6587	\N	0
 16821	こどもを こうえんで あそばせました。	kodomo o kouen de asobasemashita.	\N	Tôi cho con chơi ở công viên.	6587	\N	1
@@ -8217,7 +7431,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 16999	さいきん つかれぎみだ。	saikin tsukaregimi da.	\N	Dạo này hơi mệt mỏi.	6676	\N	1
 17000	でんきを つけっぱなしで ねて しまった。	denki o tsukeppanashi de nete shimatta.	\N	Tôi ngủ quên mà để đèn bật suốt.	6677	\N	0
 17001	きょうは いちにちじゅう たちっぱなしだった。	kyou wa ichinichijuu tachippanashi datta.	\N	Hôm nay đứng suốt cả ngày.	6677	\N	1
-17002	さいきん わかものが しんぶんを よまなく なった。	saikin wakamono ga shinbun o yomanaku natta.	\N	Gần đây người trẻ không còn đọc báo nữa.	6678	\N	0
 18425	あせ まみれで はたらいた。	ase mamire de hataraita.	\N	Làm việc mồ hôi nhễ nhại.	7389	\N	1
 17003	スマホで なんでも できる ように なった。	sumaho de nandemo dekiru you ni natta.	\N	Giờ đây có thể làm mọi thứ bằng điện thoại.	6678	\N	1
 17004	ねようと した とき、でんわが なった。	neyou to shita toki, denwa ga natta.	\N	Khi định đi ngủ thì điện thoại reo.	6679	\N	0
@@ -8343,6 +7556,7 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 17415	いきたくないよ。つかれて いるもん。	ikitakunai yo. tsukarete iru mon.	\N	Không muốn đi đâu. Mệt mà.	6884	\N	1
 17124	じっさいに やって みない ことには、わからない。	jissai ni yatte minai koto ni wa, wakaranai.	\N	Không làm thử thì không biết được.	6739	\N	0
 17125	おかねが ない ことには、なにも はじめられない。	okane ga nai koto ni wa, nani mo hajimerarenai.	\N	Không có tiền thì chẳng bắt đầu được gì.	6739	\N	1
+19089	25歳に なりました。	Nijūgo-sai ni narimashita.	\N	Tôi đã 25 tuổi.	7723	\N	2
 17126	あめが ふっても ふらなくても、いきます。	ame ga futtemo furanakutemo, ikimasu.	\N	Dù mưa hay không, tôi vẫn đi.	6740	\N	0
 17127	すきでも すきじゃなくても、たべなさい。	suki demo suki ja nakutemo, tabenasai.	\N	Thích hay không thì cũng ăn đi.	6740	\N	1
 17128	なきたい ほど つかれた。	nakitai hodo tsukareta.	\N	Mệt đến mức muốn khóc.	6741	\N	0
@@ -8399,7 +7613,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 17179	さいきん つかれぎみだ。	saikin tsukaregimi da.	\N	Dạo này hơi mệt mỏi.	6766	\N	1
 17180	でんきを つけっぱなしで ねて しまった。	denki o tsukeppanashi de nete shimatta.	\N	Tôi ngủ quên mà để đèn bật suốt.	6767	\N	0
 17181	きょうは いちにちじゅう たちっぱなしだった。	kyou wa ichinichijuu tachippanashi datta.	\N	Hôm nay đứng suốt cả ngày.	6767	\N	1
-17182	さいきん わかものが しんぶんを よまなく なった。	saikin wakamono ga shinbun o yomanaku natta.	\N	Gần đây người trẻ không còn đọc báo nữa.	6768	\N	0
 17183	スマホで なんでも できる ように なった。	sumaho de nandemo dekiru you ni natta.	\N	Giờ đây có thể làm mọi thứ bằng điện thoại.	6768	\N	1
 17184	ねようと した とき、でんわが なった。	neyou to shita toki, denwa ga natta.	\N	Khi định đi ngủ thì điện thoại reo.	6769	\N	0
 17185	ドアを あけようと したが、あかなかった。	doa o akeyou to shita ga, akanakatta.	\N	Tôi định mở cửa nhưng không mở được.	6769	\N	1
@@ -8580,7 +7793,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 17359	さいきん つかれぎみだ。	saikin tsukaregimi da.	\N	Dạo này hơi mệt mỏi.	6856	\N	1
 17360	でんきを つけっぱなしで ねて しまった。	denki o tsukeppanashi de nete shimatta.	\N	Tôi ngủ quên mà để đèn bật suốt.	6857	\N	0
 17361	きょうは いちにちじゅう たちっぱなしだった。	kyou wa ichinichijuu tachippanashi datta.	\N	Hôm nay đứng suốt cả ngày.	6857	\N	1
-17362	さいきん わかものが しんぶんを よまなく なった。	saikin wakamono ga shinbun o yomanaku natta.	\N	Gần đây người trẻ không còn đọc báo nữa.	6858	\N	0
 17363	スマホで なんでも できる ように なった。	sumaho de nandemo dekiru you ni natta.	\N	Giờ đây có thể làm mọi thứ bằng điện thoại.	6858	\N	1
 17364	ねようと した とき、でんわが なった。	neyou to shita toki, denwa ga natta.	\N	Khi định đi ngủ thì điện thoại reo.	6859	\N	0
 17365	ドアを あけようと したが、あかなかった。	doa o akeyou to shita ga, akanakatta.	\N	Tôi định mở cửa nhưng không mở được.	6859	\N	1
@@ -8635,6 +7847,7 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 17414	だって、しらなかったんだもの。	datte, shiranakatta n da mono.	\N	Vì em không biết mà.	6884	\N	0
 17417	こどもの ころ、よく この かわで あそんだ ものだ。	kodomo no koro, yoku kono kawa de asonda mono da.	\N	Hồi nhỏ tôi hay chơi ở con sông này.	6885	\N	1
 17418	かぜを なおしたいなら、よく ねる ことだ。	kaze o naoshitai nara, yoku neru koto da.	\N	Muốn khỏi cảm thì nên ngủ nhiều.	6886	\N	0
+19090	あした 東京へ 行く。	Ashita Tōkyō e iku.	\N	Mai tớ đi Tokyo.	7724	\N	0
 17419	じょうずに なりたければ、まいにち れんしゅうする ことだ。	jouzu ni naritakereba, mainichi renshuu suru koto da.	\N	Muốn giỏi thì nên luyện tập hằng ngày.	6886	\N	1
 17420	おかえりの さいは、わすれものに ごちゅういください。	okaeri no sai wa, wasuremono ni gochuui kudasai.	\N	Khi ra về, xin chú ý đừng để quên đồ.	6887	\N	0
 17421	にほんへ いった さいに、ふじさんに のぼった。	nihon e itta sai ni, fujisan ni nobotta.	\N	Nhân dịp sang Nhật, tôi đã leo núi Phú Sĩ.	6887	\N	1
@@ -8766,7 +7979,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 17547	おやの きたいに はんして、かれは だいがくを やめた。	oya no kitai ni hanshite, kare wa daigaku o yameta.	\N	Trái với kỳ vọng của bố mẹ, anh ấy bỏ đại học.	6950	\N	1
 17548	やすむ どころか、ねる じかんも ない。	yasumu dokoroka, neru jikan mo nai.	\N	Nói gì đến nghỉ, đến thời gian ngủ cũng không có.	6951	\N	0
 17549	くすりを のんだが、よく なる どころか わるく なった。	kusuri o nonda ga, yoku naru dokoroka waruku natta.	\N	Uống thuốc rồi mà chẳng đỡ, trái lại còn tệ hơn.	6951	\N	1
-17550	きょうは すずしい と いうより さむい。	kyou wa suzushii to iu yori samui.	\N	Hôm nay nói mát thì đúng hơn là lạnh.	6952	\N	0
 17551	かれは ともだち と いうより かぞくの ような ものだ。	kare wa tomodachi to iu yori kazoku no you na mono da.	\N	Anh ấy giống gia đình hơn là bạn bè.	6952	\N	1
 17552	いまさら あやまった ところで、ゆるして もらえないだろう。	imasara ayamatta tokoro de, yurushite moraenai darou.	\N	Bây giờ có xin lỗi thì cũng chẳng được tha thứ.	6953	\N	0
 17553	いくら いった ところで、かれは きかない。	ikura itta tokoro de, kare wa kikanai.	\N	Có nói bao nhiêu thì anh ta cũng không nghe.	6953	\N	1
@@ -8790,6 +8002,7 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 17571	なつは つめたい ビールに かぎる。	natsu wa tsumetai biiru ni kagiru.	\N	Mùa hè thì bia lạnh là nhất.	6962	\N	1
 17572	じぶんで やって こそ、ほんとうに わかる。	jibun de yatte koso, hontou ni wakaru.	\N	Chỉ khi tự làm mới thật sự hiểu.	6963	\N	0
 17573	たがいに たすけあって こそ、なかまだ。	tagai ni tasukeatte koso, nakama da.	\N	Có giúp đỡ nhau mới là đồng đội.	6963	\N	1
+19091	毎日 忙しい。	Mainichi isogashii.	\N	Ngày nào cũng bận.	7724	\N	1
 17574	いそがしくて、しょくじを する じかん さえ ない。	isogashikute, shokuji o suru jikan sae nai.	\N	Bận đến mức ngay cả thời gian ăn cũng không có.	6964	\N	0
 17575	この かんじは せんせい すら よめなかった。	kono kanji wa sensei sura yomenakatta.	\N	Chữ Hán này ngay cả thầy cũng không đọc được.	6964	\N	1
 17576	かれが けっこんする なんて、しんじられない。	kare ga kekkon suru nante, shinjirarenai.	\N	Anh ta mà kết hôn ư, không thể tin nổi.	6965	\N	0
@@ -8905,6 +8118,7 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 17686	ねぶそくの せいか、あたまが いたい。	nebusoku no sei ka, atama ga itai.	\N	Có lẽ do thiếu ngủ nên đau đầu.	7020	\N	0
 17687	としの せいか、つかれやすく なった。	toshi no sei ka, tsukareyasuku natta.	\N	Có lẽ do tuổi tác nên dễ mệt hơn.	7020	\N	1
 17688	この はしは かたちが にじに にて いる ことから、にじばしと よばれて いる。	kono hashi wa katachi ga niji ni nite iru koto kara, nijibashi to yobarete iru.	\N	Cây cầu có hình giống cầu vồng nên được gọi là cầu Cầu Vồng.	7021	\N	0
+19092	きのう 雨だった。	Kinō ame datta.	\N	Hôm qua trời mưa.	7724	\N	2
 17689	あしあとが ある ことから、だれかが はいったと わかった。	ashiato ga aru koto kara, dareka ga haitta to wakatta.	\N	Từ dấu chân, biết là có người đã vào.	7021	\N	1
 17690	ひとりで さんにんぶん はたらいて いる わけだから、つかれるのも とうぜんだ。	hitori de sanninbun hataraite iru wake da kara, tsukareru no mo touzen da.	\N	Một mình làm việc của ba người thì mệt là đương nhiên.	7022	\N	0
 17691	もう きめた わけだから、まよう ひつようは ない。	mou kimeta wake da kara, mayou hitsuyou wa nai.	\N	Đã quyết rồi thì không cần đắn đo.	7022	\N	1
@@ -8952,7 +8166,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 17733	おやの きたいに はんして、かれは だいがくを やめた。	oya no kitai ni hanshite, kare wa daigaku o yameta.	\N	Trái với kỳ vọng của bố mẹ, anh ấy bỏ đại học.	7043	\N	1
 17734	やすむ どころか、ねる じかんも ない。	yasumu dokoroka, neru jikan mo nai.	\N	Nói gì đến nghỉ, đến thời gian ngủ cũng không có.	7044	\N	0
 17735	くすりを のんだが、よく なる どころか わるく なった。	kusuri o nonda ga, yoku naru dokoroka waruku natta.	\N	Uống thuốc rồi mà chẳng đỡ, trái lại còn tệ hơn.	7044	\N	1
-17736	きょうは すずしい と いうより さむい。	kyou wa suzushii to iu yori samui.	\N	Hôm nay nói mát thì đúng hơn là lạnh.	7045	\N	0
 17737	かれは ともだち と いうより かぞくの ような ものだ。	kare wa tomodachi to iu yori kazoku no you na mono da.	\N	Anh ấy giống gia đình hơn là bạn bè.	7045	\N	1
 17738	いまさら あやまった ところで、ゆるして もらえないだろう。	imasara ayamatta tokoro de, yurushite moraenai darou.	\N	Bây giờ có xin lỗi thì cũng chẳng được tha thứ.	7046	\N	0
 17739	いくら いった ところで、かれは きかない。	ikura itta tokoro de, kare wa kikanai.	\N	Có nói bao nhiêu thì anh ta cũng không nghe.	7046	\N	1
@@ -9137,7 +8350,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 17919	おやの きたいに はんして、かれは だいがくを やめた。	oya no kitai ni hanshite, kare wa daigaku o yameta.	\N	Trái với kỳ vọng của bố mẹ, anh ấy bỏ đại học.	7136	\N	1
 17920	やすむ どころか、ねる じかんも ない。	yasumu dokoroka, neru jikan mo nai.	\N	Nói gì đến nghỉ, đến thời gian ngủ cũng không có.	7137	\N	0
 17921	くすりを のんだが、よく なる どころか わるく なった。	kusuri o nonda ga, yoku naru dokoroka waruku natta.	\N	Uống thuốc rồi mà chẳng đỡ, trái lại còn tệ hơn.	7137	\N	1
-17922	きょうは すずしい と いうより さむい。	kyou wa suzushii to iu yori samui.	\N	Hôm nay nói mát thì đúng hơn là lạnh.	7138	\N	0
 17923	かれは ともだち と いうより かぞくの ような ものだ。	kare wa tomodachi to iu yori kazoku no you na mono da.	\N	Anh ấy giống gia đình hơn là bạn bè.	7138	\N	1
 17924	いまさら あやまった ところで、ゆるして もらえないだろう。	imasara ayamatta tokoro de, yurushite moraenai darou.	\N	Bây giờ có xin lỗi thì cũng chẳng được tha thứ.	7139	\N	0
 17925	いくら いった ところで、かれは きかない。	ikura itta tokoro de, kare wa kikanai.	\N	Có nói bao nhiêu thì anh ta cũng không nghe.	7139	\N	1
@@ -9248,8 +8460,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 18029	この ばしょを しられたが さいご、にげられない。	kono basho o shirareta ga saigo, nigerarenai.	\N	Một khi bị biết chỗ này thì không trốn được.	7191	\N	1
 18030	かんがえ ように よっては、しっぱいも いい けいけんだ。	kangae you ni yotte wa, shippai mo ii keiken da.	\N	Tùy cách nghĩ, thất bại cũng là kinh nghiệm tốt.	7192	\N	0
 18031	この ことばは とり ように よっては しつれいに きこえる。	kono kotoba wa tori you ni yotte wa shitsurei ni kikoeru.	\N	Tùy cách hiểu, câu này nghe có vẻ vô lễ.	7192	\N	1
-18032	あいじょう なくしては、こそだては できない。	aijou nakushite wa, kosodate wa dekinai.	\N	Không có tình yêu thì không thể nuôi dạy con.	7193	\N	0
-18033	どりょく なくしては、せいこうは ない。	doryoku nakushite wa, seikou wa nai.	\N	Không có nỗ lực thì không có thành công.	7193	\N	1
 18034	かれの はなしが ほんとう と すれば、けいかくを みなおす ひつようが ある。	kare no hanashi ga hontou to sureba, keikaku o minaosu hitsuyou ga aru.	\N	Nếu lời anh ấy là thật thì cần xem lại kế hoạch.	7194	\N	0
 18035	いま しゅっぱつする と すれば、ゆうがたには つく。	ima shuppatsu suru to sureba, yuugata ni wa tsuku.	\N	Nếu xuất phát bây giờ thì chiều tối sẽ đến.	7194	\N	1
 18036	せんもんか と いえども、まちがえる ことは ある。	senmonka to iedomo, machigaeru koto wa aru.	\N	Dù là chuyên gia cũng có lúc sai.	7195	\N	0
@@ -9410,8 +8620,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 18191	この ばしょを しられたが さいご、にげられない。	kono basho o shirareta ga saigo, nigerarenai.	\N	Một khi bị biết chỗ này thì không trốn được.	7272	\N	1
 18192	かんがえ ように よっては、しっぱいも いい けいけんだ。	kangae you ni yotte wa, shippai mo ii keiken da.	\N	Tùy cách nghĩ, thất bại cũng là kinh nghiệm tốt.	7273	\N	0
 18193	この ことばは とり ように よっては しつれいに きこえる。	kono kotoba wa tori you ni yotte wa shitsurei ni kikoeru.	\N	Tùy cách hiểu, câu này nghe có vẻ vô lễ.	7273	\N	1
-18194	あいじょう なくしては、こそだては できない。	aijou nakushite wa, kosodate wa dekinai.	\N	Không có tình yêu thì không thể nuôi dạy con.	7274	\N	0
-18195	どりょく なくしては、せいこうは ない。	doryoku nakushite wa, seikou wa nai.	\N	Không có nỗ lực thì không có thành công.	7274	\N	1
 18196	かれの はなしが ほんとう と すれば、けいかくを みなおす ひつようが ある。	kare no hanashi ga hontou to sureba, keikaku o minaosu hitsuyou ga aru.	\N	Nếu lời anh ấy là thật thì cần xem lại kế hoạch.	7275	\N	0
 18197	いま しゅっぱつする と すれば、ゆうがたには つく。	ima shuppatsu suru to sureba, yuugata ni wa tsuku.	\N	Nếu xuất phát bây giờ thì chiều tối sẽ đến.	7275	\N	1
 18198	せんもんか と いえども、まちがえる ことは ある。	senmonka to iedomo, machigaeru koto wa aru.	\N	Dù là chuyên gia cũng có lúc sai.	7276	\N	0
@@ -9573,8 +8781,6 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 18353	この ばしょを しられたが さいご、にげられない。	kono basho o shirareta ga saigo, nigerarenai.	\N	Một khi bị biết chỗ này thì không trốn được.	7353	\N	1
 18354	かんがえ ように よっては、しっぱいも いい けいけんだ。	kangae you ni yotte wa, shippai mo ii keiken da.	\N	Tùy cách nghĩ, thất bại cũng là kinh nghiệm tốt.	7354	\N	0
 18355	この ことばは とり ように よっては しつれいに きこえる。	kono kotoba wa tori you ni yotte wa shitsurei ni kikoeru.	\N	Tùy cách hiểu, câu này nghe có vẻ vô lễ.	7354	\N	1
-18356	あいじょう なくしては、こそだては できない。	aijou nakushite wa, kosodate wa dekinai.	\N	Không có tình yêu thì không thể nuôi dạy con.	7355	\N	0
-18357	どりょく なくしては、せいこうは ない。	doryoku nakushite wa, seikou wa nai.	\N	Không có nỗ lực thì không có thành công.	7355	\N	1
 18358	かれの はなしが ほんとう と すれば、けいかくを みなおす ひつようが ある。	kare no hanashi ga hontou to sureba, keikaku o minaosu hitsuyou ga aru.	\N	Nếu lời anh ấy là thật thì cần xem lại kế hoạch.	7356	\N	0
 18359	いま しゅっぱつする と すれば、ゆうがたには つく。	ima shuppatsu suru to sureba, yuugata ni wa tsuku.	\N	Nếu xuất phát bây giờ thì chiều tối sẽ đến.	7356	\N	1
 18360	せんもんか と いえども、まちがえる ことは ある。	senmonka to iedomo, machigaeru koto wa aru.	\N	Dù là chuyên gia cũng có lúc sai.	7357	\N	0
@@ -9678,6 +8884,555 @@ COPY public."Example" (id, jp, romaji, en, vi, "grammarId", "audioUrl", "sortOrd
 18461	はなしあいは まとまらず、けんかわかれに おわった。	hanashiai wa matomarazu, kenkawakare ni owatta.	\N	Bàn bạc không đi đến đâu, kết cục chia tay trong cãi vã.	7407	\N	1
 18462	だいがくきょうじゅ とも あろう ひとが、そんな まちがいを するとは。	daigaku kyouju tomo arou hito ga, sonna machigai o suru to wa.	\N	Một giáo sư đại học mà lại mắc lỗi như vậy.	7408	\N	0
 18463	けいさつかん とも あろう ものが はんざいを おかすなんて。	keisatsukan tomo arou mono ga hanzai o okasu nante.	\N	Là cảnh sát mà lại phạm tội.	7408	\N	1
+18902	わたしは マイク・ミラーです。	Watashi wa Maiku Mirā desu.	\N	Tôi là Mike Miller.	7624	\N	0
+18903	サントスさんは ブラジル人です。	Santosu-san wa Burajiru-jin desu.	\N	Anh Santos là người Brazil.	7624	\N	1
+18904	サントスさんは 学生じゃ ありません。	Santosu-san wa gakusei ja arimasen.	\N	Anh Santos không phải là sinh viên.	7625	\N	0
+18905	わたしは 先生では ありません。	Watashi wa sensei de wa arimasen.	\N	Tôi không phải là giáo viên.	7625	\N	1
+18906	ミラーさんは アメリカ人ですか。…はい、アメリカ人です。	Mirā-san wa Amerika-jin desu ka. … Hai, Amerika-jin desu.	\N	Anh Miller là người Mỹ phải không? … Vâng, tôi là người Mỹ.	7626	\N	0
+18907	あの 方は どなたですか。…ワットさんです。	Ano kata wa donata desu ka. … Watto-san desu.	\N	Vị kia là ai vậy? … Là anh Watt.	7626	\N	1
+18908	ミラーさんは 会社員です。グプタさんも 会社員です。	Mirā-san wa kaishain desu. Guputa-san mo kaishain desu.	\N	Anh Miller là nhân viên công ty. Anh Gupta cũng là nhân viên công ty.	7627	\N	0
+18909	わたしも 学生です。	Watashi mo gakusei desu.	\N	Tôi cũng là sinh viên.	7627	\N	1
+18910	ミラーさんは IMCの 社員です。	Mirā-san wa Ai-emu-shī no shain desu.	\N	Anh Miller là nhân viên công ty IMC.	7628	\N	0
+18911	わたしは さくら大学の 学生です。	Watashi wa Sakura Daigaku no gakusei desu.	\N	Tôi là sinh viên Đại học Sakura.	7628	\N	1
+18912	あの 方は 木村さんです。	Ano kata wa Kimura-san desu.	\N	Vị kia là chị Kimura.	7629	\N	0
+18913	テレサちゃんは 何歳ですか。…9歳です。	Teresa-chan wa nan-sai desu ka. … Kyū-sai desu.	\N	Bé Teresa mấy tuổi? … 9 tuổi.	7629	\N	1
+18914	これは 辞書です。	Kore wa jisho desu.	\N	Đây là cuốn từ điển.	7630	\N	0
+18915	それは わたしの 傘です。	Sore wa watashi no kasa desu.	\N	Đó là cái ô của tôi.	7630	\N	1
+18916	この 本は わたしのです。	Kono hon wa watashi no desu.	\N	Quyển sách này là của tôi.	7631	\N	0
+18917	あの 方は どなたですか。	Ano kata wa donata desu ka.	\N	Vị kia là ai vậy?	7631	\N	1
+18918	それは テレホンカードですか。…はい、そうです。	Sore wa terehon kādo desu ka. … Hai, sō desu.	\N	Đó là thẻ điện thoại phải không? … Vâng, đúng vậy.	7632	\N	0
+18919	これは ボールペンですか。…いいえ、ちがいます。シャープペンシルです。	Kore wa bōrupen desu ka. … Iie, chigaimasu. Shāpu penshiru desu.	\N	Đây là bút bi phải không? … Không, không phải. Là bút chì kim.	7632	\N	1
+18920	これは 「9」ですか、「7」ですか。…「9」です。	Kore wa "kyū" desu ka, "nana" desu ka. … "Kyū" desu.	\N	Đây là số 9 hay số 7? … Là số 9.	7633	\N	0
+18921	これは コンピューターの 本です。	Kore wa konpyūtā no hon desu.	\N	Đây là sách về máy tính.	7634	\N	0
+18922	あれは だれの かばんですか。…佐藤さんのです。	Are wa dare no kaban desu ka. … Satō-san no desu.	\N	Kia là cặp của ai? … Của chị Sato.	7634	\N	1
+18923	この 傘は あなたのですか。…いいえ、シュミットさんのです。…そうですか。	Kono kasa wa anata no desu ka. … Iie, Shumitto-san no desu. … Sō desu ka.	\N	Cái ô này là của bạn à? … Không, của anh Schmidt. … Thế à.	7635	\N	0
+18924	ここは 食堂です。	Koko wa shokudō desu.	\N	Đây là nhà ăn.	7636	\N	0
+18925	エレベーターは あそこです。	Erebētā wa asoko desu.	\N	Thang máy ở đằng kia.	7636	\N	1
+18926	トイレは どこですか。…あそこです。	Toire wa doko desu ka. … Asoko desu.	\N	Nhà vệ sinh ở đâu? … Ở đằng kia.	7637	\N	0
+18927	電話は どちらですか。…2階です。	Denwa wa dochira desu ka. … Ni-kai desu.	\N	Điện thoại ở đâu ạ? … Ở tầng 2.	7637	\N	1
+18928	お国は どちらですか。…アメリカです。	O-kuni wa dochira desu ka. … Amerika desu.	\N	Anh đến từ nước nào ạ? … Từ Mỹ.	7638	\N	0
+18929	会社は どちらですか。…IMCです。	Kaisha wa dochira desu ka. … Ai-emu-shī desu.	\N	Anh làm ở công ty nào ạ? … Công ty IMC.	7638	\N	1
+18930	これは どこの 時計ですか。…日本の 時計です。	Kore wa doko no tokei desu ka. … Nihon no tokei desu.	\N	Đây là đồng hồ của nước nào? … Đồng hồ Nhật.	7639	\N	0
+18931	それは どこの コンピューターですか。…パワー電気の コンピューターです。	Sore wa doko no konpyūtā desu ka. … Pawā Denki no konpyūtā desu.	\N	Đó là máy tính của hãng nào? … Máy tính của hãng Power Denki.	7639	\N	1
+18932	この ネクタイは いくらですか。…1,500円です。	Kono nekutai wa ikura desu ka. … Sen-gohyaku-en desu.	\N	Cái cà vạt này bao nhiêu tiền? … 1.500 yên.	7640	\N	0
+18933	すみません、これは いくらですか。…3,800円です。	Sumimasen, kore wa ikura desu ka. … Sanzen-happyaku-en desu.	\N	Xin lỗi, cái này giá bao nhiêu? … 3.800 yên.	7640	\N	1
+18934	今 何時ですか。…7時10分です。	Ima nan-ji desu ka. … Shichi-ji juppun desu.	\N	Bây giờ là mấy giờ? … 7 giờ 10 phút.	7641	\N	0
+18935	ニューヨークは 今 午前4時です。	Nyūyōku wa ima gozen yo-ji desu.	\N	Ở New York bây giờ là 4 giờ sáng.	7641	\N	1
+18936	毎朝 6時に 起きます。	Maiasa roku-ji ni okimasu.	\N	Sáng nào tôi cũng dậy lúc 6 giờ.	7642	\N	0
+18937	きのう 勉強しませんでした。	Kinō benkyō shimasen deshita.	\N	Hôm qua tôi đã không học.	7642	\N	1
+18938	6時半に 起きます。	Roku-ji han ni okimasu.	\N	Tôi dậy lúc 6 rưỡi.	7643	\N	0
+18939	日曜日に 休みます。	Nichiyōbi ni yasumimasu.	\N	Chủ nhật tôi nghỉ.	7643	\N	1
+18940	9時から 5時まで 働きます。	Ku-ji kara go-ji made hatarakimasu.	\N	Tôi làm việc từ 9 giờ đến 5 giờ.	7644	\N	0
+18941	銀行は 9時から 3時までです。	Ginkō wa ku-ji kara san-ji made desu.	\N	Ngân hàng mở cửa từ 9 giờ đến 3 giờ.	7644	\N	1
+18942	銀行の 休みは 土曜日と 日曜日です。	Ginkō no yasumi wa doyōbi to nichiyōbi desu.	\N	Ngân hàng nghỉ thứ Bảy và Chủ nhật.	7645	\N	0
+18943	毎日 10時まで 勉強します。…大変ですね。	Mainichi jū-ji made benkyō shimasu. … Taihen desu ne.	\N	Ngày nào tôi cũng học đến 10 giờ. … Vất vả nhỉ.	7646	\N	0
+18944	京都へ 行きます。	Kyōto e ikimasu.	\N	Tôi đi Kyoto.	7647	\N	0
+18945	きのう うちへ 帰りませんでした。	Kinō uchi e kaerimasen deshita.	\N	Hôm qua tôi đã không về nhà.	7647	\N	1
+18946	きのう どこも 行きませんでした。	Kinō doko mo ikimasen deshita.	\N	Hôm qua tôi không đi đâu cả.	7648	\N	0
+18947	電車で 行きます。	Densha de ikimasu.	\N	Tôi đi bằng tàu điện.	7649	\N	0
+18948	駅から 歩いて 帰りました。	Eki kara aruite kaerimashita.	\N	Tôi đã đi bộ từ ga về.	7649	\N	1
+18949	家族と 日本へ 来ました。	Kazoku to Nihon e kimashita.	\N	Tôi đã đến Nhật cùng gia đình.	7650	\N	0
+18950	一人で 東京へ 行きます。	Hitori de Tōkyō e ikimasu.	\N	Tôi đi Tokyo một mình.	7650	\N	1
+18951	いつ 日本へ 来ましたか。…3月25日に 来ました。	Itsu Nihon e kimashita ka. … San-gatsu nijūgo-nichi ni kimashita.	\N	Bạn đến Nhật khi nào? … Tôi đến ngày 25 tháng 3.	7651	\N	0
+18952	この 電車は 甲子園へ 行きますか。…いいえ、行きません。次の 「普通」ですよ。	Kono densha wa Kōshien e ikimasu ka. … Iie, ikimasen. Tsugi no "futsū" desu yo.	\N	Tàu này có đi Koshien không? … Không đâu. Chuyến tàu thường tiếp theo cơ.	7652	\N	0
+18953	ジュースを 飲みます。	Jūsu o nomimasu.	\N	Tôi uống nước hoa quả.	7653	\N	0
+18954	毎朝 新聞を 読みます。	Maiasa shinbun o yomimasu.	\N	Sáng nào tôi cũng đọc báo.	7653	\N	1
+18955	サッカーを します。	Sakkā o shimasu.	\N	Tôi chơi bóng đá.	7654	\N	0
+18956	友達と パーティーを します。	Tomodachi to pātī o shimasu.	\N	Tôi tổ chức tiệc với bạn bè.	7654	\N	1
+18957	日曜日 何を しますか。…京都へ 行きます。	Nichiyōbi nani o shimasu ka. … Kyōto e ikimasu.	\N	Chủ nhật bạn làm gì? … Tôi đi Kyoto.	7655	\N	0
+18958	けさ 何も 食べませんでした。	Kesa nani mo tabemasen deshita.	\N	Sáng nay tôi không ăn gì cả.	7655	\N	1
+18959	駅で 新聞を 買います。	Eki de shinbun o kaimasu.	\N	Tôi mua báo ở nhà ga.	7656	\N	0
+18960	どこで その かばんを 買いましたか。…デパートで 買いました。	Doko de sono kaban o kaimashita ka. … Depāto de kaimashita.	\N	Bạn mua cái cặp đó ở đâu? … Tôi mua ở cửa hàng bách hóa.	7656	\N	1
+18961	いっしょに 京都へ 行きませんか。…ええ、いいですね。	Issho ni Kyōto e ikimasen ka. … Ē, ii desu ne.	\N	Cùng đi Kyoto không? … Ừ, hay đấy.	7657	\N	0
+18962	ちょっと 休みましょう。	Chotto yasumimashō.	\N	Nghỉ một chút nào.	7658	\N	0
+18963	ロビーで 会いましょう。	Robī de aimashō.	\N	Gặp nhau ở sảnh nhé.	7658	\N	1
+18964	はしで 食べます。	Hashi de tabemasu.	\N	Tôi ăn bằng đũa.	7659	\N	0
+18965	日本語で レポートを 書きます。	Nihongo de repōto o kakimasu.	\N	Tôi viết báo cáo bằng tiếng Nhật.	7659	\N	1
+18966	「ありがとう」は 英語で 何ですか。…「Thank you」です。	"Arigatō" wa Eigo de nan desu ka. … "Thank you" desu.	\N	"Arigatou" tiếng Anh là gì? … Là "Thank you".	7660	\N	0
+18967	木村さんに 花を あげました。	Kimura-san ni hana o agemashita.	\N	Tôi đã tặng hoa cho chị Kimura.	7661	\N	0
+18968	イーさんに 本を 貸しました。	Ī-san ni hon o kashimashita.	\N	Tôi đã cho anh Lee mượn sách.	7661	\N	1
+18969	木村さんは 山田さんに 花を もらいました。	Kimura-san wa Yamada-san ni hana o moraimashita.	\N	Chị Kimura đã nhận hoa từ anh Yamada.	7662	\N	0
+18970	カリナさんに CDを 借りました。	Karina-san ni shī-dī o karimashita.	\N	Tôi đã mượn đĩa CD của chị Karina.	7662	\N	1
+18971	もう 荷物を 送りましたか。…はい、もう 送りました。	Mō nimotsu o okurimashita ka. … Hai, mō okurimashita.	\N	Bạn đã gửi hành lý chưa? … Rồi, tôi gửi rồi.	7663	\N	0
+18972	もう 昼ごはんを 食べましたか。…いいえ、まだです。	Mō hirugohan o tabemashita ka. … Iie, mada desu.	\N	Bạn ăn trưa chưa? … Chưa.	7663	\N	1
+18973	ワット先生は 親切です。	Watto-sensei wa shinsetsu desu.	\N	Thầy Watt rất tử tế.	7664	\N	0
+18974	富士山は 高いです。	Fujisan wa takai desu.	\N	Núi Phú Sĩ cao.	7664	\N	1
+18975	この 本は おもしろくないです。	Kono hon wa omoshirokunai desu.	\N	Quyển sách này không hay.	7664	\N	2
+18976	ワット先生は 親切な 先生です。	Watto-sensei wa shinsetsu na sensei desu.	\N	Thầy Watt là giáo viên tử tế.	7665	\N	0
+18977	富士山は 高い 山です。	Fujisan wa takai yama desu.	\N	Núi Phú Sĩ là ngọn núi cao.	7665	\N	1
+18978	北京は とても 寒いです。	Pekin wa totemo samui desu.	\N	Bắc Kinh rất lạnh.	7666	\N	0
+18979	この 映画は あまり おもしろくないです。	Kono eiga wa amari omoshirokunai desu.	\N	Bộ phim này không hay lắm.	7666	\N	1
+18980	日本の 生活は どうですか。…楽しいです。	Nihon no seikatsu wa dō desu ka. … Tanoshii desu.	\N	Cuộc sống ở Nhật thế nào? … Vui lắm.	7667	\N	0
+18981	奈良は どんな 町ですか。…古い 町です。	Nara wa donna machi desu ka. … Furui machi desu.	\N	Nara là thành phố thế nào? … Là thành phố cổ.	7667	\N	1
+18982	日本の 食べ物は おいしいですが、高いです。	Nihon no tabemono wa oishii desu ga, takai desu.	\N	Đồ ăn Nhật ngon nhưng đắt.	7668	\N	0
+18983	ミラーさんの 傘は どれですか。…あの 青い 傘です。	Mirā-san no kasa wa dore desu ka. … Ano aoi kasa desu.	\N	Ô của anh Miller là cái nào? … Là cái ô màu xanh kia.	7669	\N	0
+18984	わたしは 車が あります。	Watashi wa kuruma ga arimasu.	\N	Tôi có ô tô.	7670	\N	0
+18985	わたしは 日本語が わかります。	Watashi wa Nihongo ga wakarimasu.	\N	Tôi hiểu tiếng Nhật.	7670	\N	1
+18986	わたしは イタリア料理が 好きです。	Watashi wa Itaria ryōri ga suki desu.	\N	Tôi thích món Ý.	7671	\N	0
+18987	マリアさんは ダンスが 上手です。	Maria-san wa dansu ga jōzu desu.	\N	Chị Maria nhảy giỏi.	7671	\N	1
+18988	どんな スポーツが 好きですか。…サッカーが 好きです。	Donna supōtsu ga suki desu ka. … Sakkā ga suki desu.	\N	Bạn thích môn thể thao nào? … Tôi thích bóng đá.	7672	\N	0
+18989	英語が よく わかります。	Eigo ga yoku wakarimasu.	\N	Tôi hiểu tiếng Anh rõ.	7673	\N	0
+18990	韓国語が 全然 わかりません。	Kankokugo ga zenzen wakarimasen.	\N	Tôi hoàn toàn không hiểu tiếng Hàn.	7673	\N	1
+18991	お金が たくさん あります。	Okane ga takusan arimasu.	\N	Tôi có nhiều tiền.	7673	\N	2
+18992	時間が ありませんから、新聞を 読みません。	Jikan ga arimasen kara, shinbun o yomimasen.	\N	Vì không có thời gian nên tôi không đọc báo.	7674	\N	0
+18993	どうして 朝 新聞を 読みませんか。…時間が ありませんから。	Dōshite asa shinbun o yomimasen ka. … Jikan ga arimasen kara.	\N	Tại sao buổi sáng bạn không đọc báo? … Vì không có thời gian.	7675	\N	0
+18994	どうして きのう 早く 帰りましたか。…用事が ありましたから。	Dōshite kinō hayaku kaerimashita ka. … Yōji ga arimashita kara.	\N	Tại sao hôm qua bạn về sớm? … Vì tôi có việc bận.	7675	\N	1
+18995	コンピューターが あります。	Konpyūtā ga arimasu.	\N	Có máy vi tính.	7676	\N	0
+18996	男の 人が います。	Otoko no hito ga imasu.	\N	Có người đàn ông.	7676	\N	1
+18997	わたしの 部屋に 机が あります。	Watashi no heya ni tsukue ga arimasu.	\N	Trong phòng tôi có cái bàn.	7677	\N	0
+18998	公園に 子どもが います。	Kōen ni kodomo ga imasu.	\N	Trong công viên có trẻ con.	7677	\N	1
+18999	東京ディズニーランドは 千葉県に あります。	Tōkyō Dizunīrando wa Chiba-ken ni arimasu.	\N	Tokyo Disneyland ở tỉnh Chiba.	7678	\N	0
+19000	ミラーさんは 事務所に います。	Mirā-san wa jimusho ni imasu.	\N	Anh Miller ở văn phòng.	7678	\N	1
+19001	机の 上に 写真が あります。	Tsukue no ue ni shashin ga arimasu.	\N	Trên bàn có bức ảnh.	7679	\N	0
+19002	郵便局は 銀行の となりです。	Yūbinkyoku wa ginkō no tonari desu.	\N	Bưu điện ở bên cạnh ngân hàng.	7679	\N	1
+19003	箱の 中に 手紙や 写真が あります。	Hako no naka ni tegami ya shashin ga arimasu.	\N	Trong hộp có thư, ảnh…	7680	\N	0
+19004	冷蔵庫に 卵や 牛乳などが あります。	Reizōko ni tamago ya gyūnyū nado ga arimasu.	\N	Trong tủ lạnh có trứng, sữa v.v.	7680	\N	1
+19006	外国人の 学生が 2人 います。	Gaikokujin no gakusei ga futari imasu.	\N	Có 2 sinh viên nước ngoài.	7681	\N	1
+19007	封筒を 3枚 ください。	Fūtō o san-mai kudasai.	\N	Cho tôi 3 cái phong bì.	7681	\N	2
+19008	1か月に 2回 映画を 見ます。	Ikkagetsu ni ni-kai eiga o mimasu.	\N	Một tháng tôi xem phim 2 lần.	7682	\N	0
+19009	1週間に 3回 テニスを します。	Isshūkan ni san-kai tenisu o shimasu.	\N	Một tuần tôi chơi tennis 3 lần.	7682	\N	1
+19010	東京から 大阪まで 新幹線で どのくらい かかりますか。…2時間半 かかります。	Tōkyō kara Ōsaka made Shinkansen de dono kurai kakarimasu ka. … Ni-jikan han kakarimasu.	\N	Từ Tokyo đến Osaka bằng Shinkansen mất bao lâu? … Mất 2 tiếng rưỡi.	7683	\N	0
+19011	学校に 先生が 30人ぐらい います。	Gakkō ni sensei ga sanjū-nin gurai imasu.	\N	Ở trường có khoảng 30 giáo viên.	7683	\N	1
+19012	休みは 日曜日だけです。	Yasumi wa nichiyōbi dake desu.	\N	Ngày nghỉ chỉ có Chủ nhật.	7684	\N	0
+19013	パワー電気に 外国人の 社員が 1人だけ います。	Pawā Denki ni gaikokujin no shain ga hitori dake imasu.	\N	Ở công ty Power Denki chỉ có 1 nhân viên người nước ngoài.	7684	\N	1
+19014	きのうは 雨でした。	Kinō wa ame deshita.	\N	Hôm qua trời mưa.	7685	\N	0
+19015	試験は 簡単じゃ ありませんでした。	Shiken wa kantan ja arimasen deshita.	\N	Bài thi không dễ.	7685	\N	1
+19016	きのうは 暑かったです。	Kinō wa atsukatta desu.	\N	Hôm qua trời nóng.	7686	\N	0
+19017	パーティーは あまり 楽しくなかったです。	Pātī wa amari tanoshikunakatta desu.	\N	Bữa tiệc không vui lắm.	7686	\N	1
+19018	この 車は あの 車より 大きいです。	Kono kuruma wa ano kuruma yori ōkii desu.	\N	Chiếc xe này to hơn chiếc xe kia.	7687	\N	0
+19019	東京は 大阪より 人が 多いです。	Tōkyō wa Ōsaka yori hito ga ōi desu.	\N	Tokyo đông người hơn Osaka.	7687	\N	1
+19020	サッカーと 野球と どちらが おもしろいですか。…サッカーの ほうが おもしろいです。	Sakkā to yakyū to dochira ga omoshiroi desu ka. … Sakkā no hō ga omoshiroi desu.	\N	Bóng đá và bóng chày, môn nào thú vị hơn? … Bóng đá thú vị hơn.	7688	\N	0
+19021	日本料理［の 中］で 何が いちばん おいしいですか。…てんぷらが いちばん おいしいです。	Nihon ryōri [no naka] de nani ga ichiban oishii desu ka. … Tenpura ga ichiban oishii desu.	\N	Trong các món Nhật, món nào ngon nhất? … Tempura ngon nhất.	7689	\N	0
+19022	1年で いつが いちばん 寒いですか。…2月が いちばん 寒いです。	Ichinen de itsu ga ichiban samui desu ka. … Ni-gatsu ga ichiban samui desu.	\N	Trong một năm, khi nào lạnh nhất? … Tháng 2 lạnh nhất.	7689	\N	1
+19023	わたしは 友達が ほしいです。	Watashi wa tomodachi ga hoshii desu.	\N	Tôi muốn có bạn.	7690	\N	0
+19024	今 何が いちばん ほしいですか。…車が ほしいです。	Ima nani ga ichiban hoshii desu ka. … Kuruma ga hoshii desu.	\N	Bây giờ bạn muốn có gì nhất? … Tôi muốn có ô tô.	7690	\N	1
+19025	わたしは 沖縄へ 行きたいです。	Watashi wa Okinawa e ikitai desu.	\N	Tôi muốn đi Okinawa.	7691	\N	0
+19026	おなかが 痛いですから、何も 食べたくないです。	Onaka ga itai desu kara, nani mo tabetakunai desu.	\N	Vì đau bụng nên tôi không muốn ăn gì cả.	7691	\N	1
+19027	神戸へ インド料理を 食べに 行きます。	Kōbe e Indo ryōri o tabe ni ikimasu.	\N	Tôi đi Kobe để ăn món Ấn Độ.	7692	\N	0
+19028	京都へ 花見に 行きます。	Kyōto e hanami ni ikimasu.	\N	Tôi đi Kyoto để ngắm hoa.	7692	\N	1
+19029	冬休みは どこか［へ］ 行きましたか。…はい、北海道へ スキーに 行きました。	Fuyuyasumi wa dokoka [e] ikimashita ka. … Hai, Hokkaidō e sukī ni ikimashita.	\N	Kỳ nghỉ đông bạn có đi đâu không? … Có, tôi đi Hokkaido trượt tuyết.	7693	\N	0
+19030	のどが かわきましたから、何か 飲みたいです。	Nodo ga kawakimashita kara, nanika nomitai desu.	\N	Vì khát nên tôi muốn uống gì đó.	7693	\N	1
+19031	書きます → 書いて、飲みます → 飲んで、待ちます → 待って	Kakimasu → kaite, nomimasu → nonde, machimasu → matte	\N	viết, uống, đợi (thể て)	7694	\N	0
+19032	食べます → 食べて、します → して、来ます → 来て	Tabemasu → tabete, shimasu → shite, kimasu → kite	\N	ăn, làm, đến (thể て)	7694	\N	1
+19033	すみませんが、この 漢字の 読み方を 教えて ください。	Sumimasen ga, kono kanji no yomikata o oshiete kudasai.	\N	Xin lỗi, hãy chỉ cho tôi cách đọc chữ Hán này.	7695	\N	0
+19034	ここに 住所と 名前を 書いて ください。	Koko ni jūsho to namae o kaite kudasai.	\N	Hãy viết địa chỉ và tên vào đây.	7695	\N	1
+19035	ミラーさんは 今 電話を かけて います。	Mirā-san wa ima denwa o kakete imasu.	\N	Anh Miller bây giờ đang gọi điện thoại.	7696	\N	0
+19036	今 雨が 降って いますか。…はい、降って います。	Ima ame ga futte imasu ka. … Hai, futte imasu.	\N	Bây giờ trời có đang mưa không? … Có, đang mưa.	7696	\N	1
+19037	暑いですね。窓を 開けましょうか。…すみません。お願いします。	Atsui desu ne. Mado o akemashō ka. … Sumimasen. Onegai shimasu.	\N	Nóng nhỉ. Để tôi mở cửa sổ nhé? … Cảm ơn. Nhờ anh.	7697	\N	0
+19038	傘を 貸しましょうか。	Kasa o kashimashō ka.	\N	Tôi cho bạn mượn ô nhé?	7697	\N	1
+19039	写真を 撮っても いいですか。	Shashin o tottemo ii desu ka.	\N	Tôi chụp ảnh có được không?	7698	\N	0
+19040	この 本を 借りても いいですか。…ええ、いいですよ。どうぞ。	Kono hon o karitemo ii desu ka. … Ē, ii desu yo. Dōzo.	\N	Tôi mượn quyển sách này được không? … Ừ, được chứ. Cứ tự nhiên.	7698	\N	1
+19041	ここで たばこを 吸っては いけません。	Koko de tabako o sutte wa ikemasen.	\N	Không được hút thuốc ở đây.	7699	\N	0
+19042	先生、ここで 遊んでも いいですか。…いいえ、いけません。	Sensei, koko de asondemo ii desu ka. … Iie, ikemasen.	\N	Thầy ơi, chơi ở đây được không ạ? … Không, không được.	7699	\N	1
+19043	わたしは 結婚して います。	Watashi wa kekkon shite imasu.	\N	Tôi đã kết hôn.	7700	\N	0
+19044	マリアさんは 大阪に 住んで います。	Maria-san wa Ōsaka ni sunde imasu.	\N	Chị Maria sống ở Osaka.	7700	\N	1
+19045	田中さんの 電話番号を 知って いますか。…いいえ、知りません。	Tanaka-san no denwa bangō o shitte imasu ka. … Iie, shirimasen.	\N	Bạn có biết số điện thoại của anh Tanaka không? … Không, tôi không biết.	7700	\N	2
+19046	IMCは コンピューターソフトを 作って います。	Ai-emu-shī wa konpyūtā sofuto o tsukutte imasu.	\N	Công ty IMC sản xuất phần mềm máy tính.	7701	\N	0
+19047	妹は 大学で 勉強して います。	Imōto wa daigaku de benkyō shite imasu.	\N	Em gái tôi đang học đại học.	7701	\N	1
+19048	朝 ジョギングを して、シャワーを 浴びて、会社へ 行きます。	Asa jogingu o shite, shawā o abite, kaisha e ikimasu.	\N	Buổi sáng tôi chạy bộ, tắm rồi đi làm.	7702	\N	0
+19049	神戸へ 行って、映画を 見て、お茶を 飲みました。	Kōbe e itte, eiga o mite, ocha o nomimashita.	\N	Tôi đã đi Kobe, xem phim rồi uống trà.	7702	\N	1
+19050	ミラーさんは 若くて、元気です。	Mirā-san wa wakakute, genki desu.	\N	Anh Miller trẻ và khỏe mạnh.	7703	\N	0
+19051	奈良は 静かで、きれいな 町です。	Nara wa shizuka de, kirei na machi desu.	\N	Nara là thành phố yên tĩnh và đẹp.	7703	\N	1
+19052	カリナさんは インドネシア人で、富士大学の 留学生です。	Karina-san wa Indoneshia-jin de, Fuji Daigaku no ryūgakusei desu.	\N	Chị Karina là người Indonesia, là du học sinh Đại học Fuji.	7703	\N	2
+19053	仕事が 終わって から、泳ぎに 行きます。	Shigoto ga owatte kara, oyogi ni ikimasu.	\N	Sau khi xong việc, tôi đi bơi.	7704	\N	0
+19054	毎晩 シャワーを 浴びて から、寝ます。	Maiban shawā o abite kara, nemasu.	\N	Tối nào tôi cũng tắm xong rồi mới ngủ.	7704	\N	1
+19055	大阪は 食べ物が おいしいです。	Ōsaka wa tabemono ga oishii desu.	\N	Osaka đồ ăn ngon.	7705	\N	0
+19056	マリアさんは 髪が 長いです。	Maria-san wa kami ga nagai desu.	\N	Chị Maria tóc dài.	7705	\N	1
+19057	大学まで どうやって 行きますか。…京都駅から 16番の バスに 乗って、大学前で 降ります。	Daigaku made dōyatte ikimasu ka. … Kyōto-eki kara jūroku-ban no basu ni notte, Daigaku-mae de orimasu.	\N	Đến trường đại học đi bằng cách nào? … Từ ga Kyoto đi xe buýt số 16, xuống ở bến Daigaku-mae.	7706	\N	0
+19058	ミラーさんは どの 人ですか。…あの 背が 高くて、髪が 黒い 人です。	Mirā-san wa dono hito desu ka. … Ano se ga takakute, kami ga kuroi hito desu.	\N	Anh Miller là người nào? … Là người cao, tóc đen kia.	7707	\N	0
+19059	行きます → 行かない、食べます → 食べない、します → しない	Ikimasu → ikanai, tabemasu → tabenai, shimasu → shinai	\N	đi, ăn, làm (thể ない)	7708	\N	0
+19060	ここで 写真を 撮らないで ください。	Koko de shashin o toranaide kudasai.	\N	Xin đừng chụp ảnh ở đây.	7709	\N	0
+19061	わたしは 元気ですから、心配しないで ください。	Watashi wa genki desu kara, shinpai shinaide kudasai.	\N	Tôi khỏe nên xin đừng lo lắng.	7709	\N	1
+19062	薬を 飲まなければ なりません。	Kusuri o nomanakereba narimasen.	\N	Tôi phải uống thuốc.	7710	\N	0
+19063	毎日 日本語を 勉強しなければ なりません。	Mainichi Nihongo o benkyō shinakereba narimasen.	\N	Hằng ngày tôi phải học tiếng Nhật.	7710	\N	1
+19064	あした 来なくても いいです。	Ashita konakutemo ii desu.	\N	Ngày mai không đến cũng được.	7711	\N	0
+19065	名前を 書かなくても いいです。	Namae o kakanakutemo ii desu.	\N	Không cần viết tên cũng được.	7711	\N	1
+19066	荷物は ここに 置かないで ください。	Nimotsu wa koko ni okanaide kudasai.	\N	Hành lý thì xin đừng để ở đây.	7712	\N	0
+19067	昼ごはんは 会社の 食堂で 食べます。	Hirugohan wa kaisha no shokudō de tabemasu.	\N	Bữa trưa thì tôi ăn ở nhà ăn công ty.	7712	\N	1
+19068	会議は 5時までに 終わります。	Kaigi wa go-ji made ni owarimasu.	\N	Cuộc họp sẽ kết thúc trước 5 giờ.	7713	\N	0
+19069	土曜日までに 本を 返さなければ なりません。	Doyōbi made ni hon o kaesanakereba narimasen.	\N	Tôi phải trả sách trước thứ Bảy.	7713	\N	1
+19070	書きます → 書く、見ます → 見る、来ます → 来る	Kakimasu → kaku, mimasu → miru, kimasu → kuru	\N	viết, xem, đến (thể từ điển)	7714	\N	0
+19071	ミラーさんは 漢字を 読む ことが できます。	Mirā-san wa kanji o yomu koto ga dekimasu.	\N	Anh Miller có thể đọc chữ Hán.	7715	\N	0
+19072	カードで 払う ことが できます。	Kādo de harau koto ga dekimasu.	\N	Có thể trả bằng thẻ.	7715	\N	1
+19073	ミラーさんは 日本語が できます。	Mirā-san wa Nihongo ga dekimasu.	\N	Anh Miller biết tiếng Nhật.	7715	\N	2
+19074	わたしの 趣味は 音楽です。	Watashi no shumi wa ongaku desu.	\N	Sở thích của tôi là âm nhạc.	7716	\N	0
+19075	わたしの 趣味は 音楽を 聞く ことです。	Watashi no shumi wa ongaku o kiku koto desu.	\N	Sở thích của tôi là nghe nhạc.	7716	\N	1
+19076	寝る まえに、本を 読みます。	Neru mae ni, hon o yomimasu.	\N	Trước khi ngủ tôi đọc sách.	7717	\N	0
+19077	食事の まえに、手を 洗います。	Shokuji no mae ni, te o araimasu.	\N	Trước bữa ăn tôi rửa tay.	7717	\N	1
+19078	田中さんは 1時間まえに 出かけました。	Tanaka-san wa ichi-jikan mae ni dekakemashita.	\N	Anh Tanaka đã ra ngoài cách đây 1 tiếng.	7717	\N	2
+19079	日本では なかなか 馬を 見る ことが できません。	Nihon de wa nakanaka uma o miru koto ga dekimasen.	\N	Ở Nhật khó mà nhìn thấy ngựa.	7718	\N	0
+19080	ぜひ 北海道へ 行きたいです。	Zehi Hokkaidō e ikitai desu.	\N	Tôi rất muốn đi Hokkaido.	7719	\N	0
+19081	ぜひ 遊びに 来て ください。	Zehi asobi ni kite kudasai.	\N	Nhất định hãy đến chơi nhé.	7719	\N	1
+19082	書いて → 書いた、飲んで → 飲んだ、来て → 来た	Kaite → kaita, nonde → nonda, kite → kita	\N	viết, uống, đến (thể た)	7720	\N	0
+19083	馬に 乗った ことが あります。	Uma ni notta koto ga arimasu.	\N	Tôi đã từng cưỡi ngựa.	7721	\N	0
+19084	北海道へ 行った ことが ありますか。…いいえ、一度も ありません。	Hokkaidō e itta koto ga arimasu ka. … Iie, ichido mo arimasen.	\N	Bạn đã từng đi Hokkaido chưa? … Chưa, chưa lần nào.	7721	\N	1
+19085	日曜日は テニスを したり、映画を 見たり します。	Nichiyōbi wa tenisu o shitari, eiga o mitari shimasu.	\N	Chủ nhật tôi chơi tennis, xem phim v.v.	7722	\N	0
+19086	夏休みは 泳いだり、山に 登ったり しました。	Natsuyasumi wa oyoidari, yama ni nobottari shimashita.	\N	Kỳ nghỉ hè tôi đã bơi, leo núi v.v.	7722	\N	1
+19087	寒く なりました。	Samuku narimashita.	\N	Trời đã trở lạnh.	7723	\N	0
+19088	元気に なりました。	Genki ni narimashita.	\N	Tôi đã khỏe lại.	7723	\N	1
+19093	コーヒー、飲む？…うん、飲む。	Kōhī, nomu? … Un, nomu.	\N	Uống cà phê không? … Ừ, uống.	7725	\N	0
+19094	あした ひま？…ううん、ひまじゃ ない。	Ashita hima? … Uun, hima ja nai.	\N	Mai rảnh không? … Không, không rảnh.	7725	\N	1
+19095	その カレーライス、おいしい？…うん、辛いけど、おいしい。	Sono karē raisu, oishii? … Un, karai kedo, oishii.	\N	Cơm cà ri đó ngon không? … Ừ, cay nhưng ngon.	7726	\N	0
+19096	あした 雨が 降ると 思います。	Ashita ame ga furu to omoimasu.	\N	Tôi nghĩ ngày mai trời sẽ mưa.	7727	\N	0
+19097	ミラーさんは もう 帰ったと 思います。	Mirā-san wa mō kaetta to omoimasu.	\N	Tôi nghĩ anh Miller đã về rồi.	7727	\N	1
+19098	日本は 物価が 高いと 思います。	Nihon wa bukka ga takai to omoimasu.	\N	Tôi nghĩ vật giá ở Nhật cao.	7727	\N	2
+19099	新しい 空港に ついて どう 思いますか。…きれいですが、ちょっと 交通が 不便だと 思います。	Atarashii kūkō ni tsuite dō omoimasu ka. … Kirei desu ga, chotto kōtsū ga fuben da to omoimasu.	\N	Bạn nghĩ thế nào về sân bay mới? … Đẹp nhưng tôi nghĩ giao thông hơi bất tiện.	7728	\N	0
+19100	寝る まえに、「お休みなさい」と 言います。	Neru mae ni, "Oyasuminasai" to iimasu.	\N	Trước khi ngủ, người ta nói "Oyasuminasai".	7729	\N	0
+19101	ミラーさんは 来週 東京へ 出張すると 言いました。	Mirā-san wa raishū Tōkyō e shutchō suru to iimashita.	\N	Anh Miller nói tuần sau sẽ đi công tác Tokyo.	7729	\N	1
+19102	あした パーティーに 行くでしょう？…ええ、行きます。	Ashita pātī ni iku deshō? … Ē, ikimasu.	\N	Mai bạn đi dự tiệc chứ? … Vâng, tôi đi.	7730	\N	0
+19103	北海道は 寒かったでしょう？…いいえ、そんなに 寒くなかったです。	Hokkaidō wa samukatta deshō? … Iie, sonna ni samukunakatta desu.	\N	Hokkaido lạnh lắm phải không? … Không, không lạnh lắm.	7730	\N	1
+19104	東京で 日本と ブラジルの サッカーの 試合が あります。	Tōkyō de Nihon to Burajiru no sakkā no shiai ga arimasu.	\N	Ở Tokyo có trận bóng đá giữa Nhật Bản và Brazil.	7731	\N	0
+19105	これは ミラーさんが 住んで いる うちです。	Kore wa Mirā-san ga sunde iru uchi desu.	\N	Đây là ngôi nhà anh Miller đang sống.	7732	\N	0
+19106	京都へ 行かない 人は ここに 集まって ください。	Kyōto e ikanai hito wa koko ni atsumatte kudasai.	\N	Những ai không đi Kyoto hãy tập trung ở đây.	7732	\N	1
+19107	あの 眼鏡を かけて いる 人は だれですか。	Ano megane o kakete iru hito wa dare desu ka.	\N	Người đeo kính kia là ai vậy?	7732	\N	2
+19108	これは ミラーさんが 作った ケーキです。	Kore wa Mirā-san ga tsukutta kēki desu.	\N	Đây là cái bánh anh Miller làm.	7733	\N	0
+19109	わたしは カリナさんが かいた 絵が 好きです。	Watashi wa Karina-san ga kaita e ga suki desu.	\N	Tôi thích bức tranh chị Karina vẽ.	7733	\N	1
+19110	わたしは 朝ごはんを 食べる 時間が ありません。	Watashi wa asagohan o taberu jikan ga arimasen.	\N	Tôi không có thời gian ăn sáng.	7734	\N	0
+19111	きょうは 友達と 映画を 見る 約束が あります。	Kyō wa tomodachi to eiga o miru yakusoku ga arimasu.	\N	Hôm nay tôi có hẹn đi xem phim với bạn.	7734	\N	1
+19112	図書館で 本を 借りる とき、カードが 要ります。	Toshokan de hon o kariru toki, kādo ga irimasu.	\N	Khi mượn sách ở thư viện thì cần thẻ.	7735	\N	0
+19113	暇な とき、うちへ 遊びに 来ませんか。	Hima na toki, uchi e asobi ni kimasen ka.	\N	Khi rảnh, bạn đến nhà tôi chơi không?	7735	\N	1
+19114	子どもの とき、よく 川で 泳ぎました。	Kodomo no toki, yoku kawa de oyogimashita.	\N	Hồi nhỏ tôi hay bơi ở sông.	7735	\N	2
+19115	国へ 帰る とき、かばんを 買いました。	Kuni e kaeru toki, kaban o kaimashita.	\N	Khi chuẩn bị về nước, tôi đã mua cặp (trước khi về).	7736	\N	0
+19116	国へ 帰った とき、かばんを 買いました。	Kuni e kaetta toki, kaban o kaimashita.	\N	Khi về đến nước, tôi đã mua cặp (ở quê nhà).	7736	\N	1
+19117	この ボタンを 押すと、お釣りが 出ます。	Kono botan o osu to, otsuri ga demasu.	\N	Hễ ấn nút này thì tiền thừa sẽ ra.	7737	\N	0
+19118	これを 回すと、音が 大きく なります。	Kore o mawasu to, oto ga ōkiku narimasu.	\N	Vặn cái này thì âm thanh to lên.	7737	\N	1
+19119	右へ 曲がると、郵便局が あります。	Migi e magaru to, yūbinkyoku ga arimasu.	\N	Rẽ phải thì có bưu điện.	7737	\N	2
+19120	公園を 散歩します。	Kōen o sanpo shimasu.	\N	Tôi đi dạo trong công viên.	7738	\N	0
+19121	道を 渡ります。	Michi o watarimasu.	\N	Tôi băng qua đường.	7738	\N	1
+19122	交差点を 右へ 曲がります。	Kōsaten o migi e magarimasu.	\N	Rẽ phải ở ngã tư.	7738	\N	2
+19123	佐藤さんは わたしに クリスマスカードを くれました。	Satō-san wa watashi ni kurisumasu kādo o kuremashita.	\N	Chị Sato đã gửi cho tôi thiệp Giáng sinh.	7739	\N	0
+19124	母が この セーターを くれました。	Haha ga kono sētā o kuremashita.	\N	Mẹ đã cho tôi cái áo len này.	7739	\N	1
+19125	わたしは 木村さんに 本を 貸して あげました。	Watashi wa Kimura-san ni hon o kashite agemashita.	\N	Tôi đã cho chị Kimura mượn sách.	7740	\N	0
+19126	妹に 写真を 見せて あげました。	Imōto ni shashin o misete agemashita.	\N	Tôi đã cho em gái xem ảnh.	7740	\N	1
+19127	わたしは 山田さんに 図書館の 電話番号を 教えて もらいました。	Watashi wa Yamada-san ni toshokan no denwa bangō o oshiete moraimashita.	\N	Tôi được anh Yamada cho biết số điện thoại thư viện.	7741	\N	0
+19128	友達に 引っ越しを 手伝って もらいました。	Tomodachi ni hikkoshi o tetsudatte moraimashita.	\N	Tôi được bạn giúp chuyển nhà.	7741	\N	1
+19129	母は ［わたしに］ セーターを 送って くれました。	Haha wa [watashi ni] sētā o okutte kuremashita.	\N	Mẹ đã gửi cho tôi cái áo len.	7742	\N	0
+19130	佐藤さんが 駅まで 車で 送って くれました。	Satō-san ga eki made kuruma de okutte kuremashita.	\N	Chị Sato đã đưa tôi ra ga bằng ô tô.	7742	\N	1
+19131	お金が あったら、旅行します。	Okane ga attara, ryokō shimasu.	\N	Nếu có tiền tôi sẽ đi du lịch.	7743	\N	0
+19132	時間が なかったら、テレビを 見ません。	Jikan ga nakattara, terebi o mimasen.	\N	Nếu không có thời gian thì tôi không xem tivi.	7743	\N	1
+19133	雨だったら、出かけません。	Ame dattara, dekakemasen.	\N	Nếu trời mưa thì tôi không ra ngoài.	7743	\N	2
+19134	10時に なったら、出かけましょう。	Jū-ji ni nattara, dekakemashō.	\N	Đến 10 giờ thì ta ra ngoài nhé.	7744	\N	0
+19135	うちへ 帰ったら、すぐ シャワーを 浴びます。	Uchi e kaettara, sugu shawā o abimasu.	\N	Về đến nhà là tôi tắm ngay.	7744	\N	1
+19136	雨が 降っても、洗濯します。	Ame ga futtemo, sentaku shimasu.	\N	Dù trời mưa tôi vẫn giặt đồ.	7745	\N	0
+19137	安くても、わたしは グループ旅行が 嫌いです。	Yasukutemo, watashi wa gurūpu ryokō ga kirai desu.	\N	Dù rẻ, tôi vẫn ghét du lịch theo đoàn.	7745	\N	1
+19138	日曜日でも、働きます。	Nichiyōbi demo, hatarakimasu.	\N	Dù là Chủ nhật tôi vẫn làm việc.	7745	\N	2
+19139	もし 1億円 あったら、いろいろな 国を 旅行したいです。	Moshi ichioku-en attara, iroiro na kuni o ryokō shitai desu.	\N	Nếu có 100 triệu yên, tôi muốn du lịch nhiều nước.	7746	\N	0
+19140	いくら 考えても、わかりません。	Ikura kangaetemo, wakarimasen.	\N	Nghĩ bao nhiêu cũng không hiểu.	7746	\N	1
+19141	渡辺さんは 時々 大阪弁を 使いますね。大阪に 住んで いたんですか。…ええ、15歳まで 大阪に 住んで いました。	Watanabe-san wa tokidoki Ōsaka-ben o tsukaimasu ne. Ōsaka ni sunde itan desu ka. … Ē, jūgo-sai made Ōsaka ni sunde imashita.	\N	Chị Watanabe thỉnh thoảng dùng tiếng Osaka nhỉ. Chị từng sống ở Osaka à? … Vâng, tôi sống ở Osaka đến năm 15 tuổi.	7747	\N	0
+19142	どうして 遅れたんですか。…バスが 来なかったんです。	Dōshite okuretan desu ka. … Basu ga konakattan desu.	\N	Sao bạn đến muộn vậy? … Vì xe buýt không đến.	7747	\N	1
+19143	日本語で 手紙を 書いたんですが、ちょっと 見て いただけませんか。	Nihongo de tegami o kaitan desu ga, chotto mite itadakemasen ka.	\N	Tôi đã viết thư bằng tiếng Nhật, anh xem giúp một chút được không ạ?	7748	\N	0
+19144	図書館へ 行きたいんですが、地図を 書いて いただけませんか。	Toshokan e ikitain desu ga, chizu o kaite itadakemasen ka.	\N	Tôi muốn đến thư viện, anh vẽ giúp tôi bản đồ được không ạ?	7748	\N	1
+19145	日本語が 上手に なりたいんですが、どう したら いいですか。	Nihongo ga jōzu ni naritain desu ga, dō shitara ii desu ka.	\N	Tôi muốn giỏi tiếng Nhật, nên làm thế nào thì được?	7749	\N	0
+19146	ごみを 出したいんですが、どこに 出したら いいですか。	Gomi o dashitain desu ga, doko ni dashitara ii desu ka.	\N	Tôi muốn đổ rác, đổ ở đâu thì được?	7749	\N	1
+19147	わたしは 日本語が 少し 話せます。	Watashi wa Nihongo ga sukoshi hanasemasu.	\N	Tôi nói được một ít tiếng Nhật.	7750	\N	0
+19148	1人で 着物が 着られますか。	Hitori de kimono ga kiraremasu ka.	\N	Bạn có thể tự mặc kimono không?	7750	\N	1
+19149	新幹線から 富士山が 見えます。	Shinkansen kara Fujisan ga miemasu.	\N	Từ tàu Shinkansen nhìn thấy núi Phú Sĩ.	7751	\N	0
+19150	ラジオの 音が 聞こえます。	Rajio no oto ga kikoemasu.	\N	Nghe thấy tiếng radio.	7751	\N	1
+19151	新宿で 今 黒沢の 映画が 見られます。	Shinjuku de ima Kurosawa no eiga ga miraremasu.	\N	Ở Shinjuku bây giờ có thể xem phim của Kurosawa.	7751	\N	2
+19152	駅の 前に 大きい スーパーが できました。	Eki no mae ni ōkii sūpā ga dekimashita.	\N	Trước nhà ga đã mọc lên một siêu thị lớn.	7752	\N	0
+19153	時計の 修理は いつ できますか。	Tokei no shūri wa itsu dekimasu ka.	\N	Khi nào sửa xong đồng hồ ạ?	7752	\N	1
+19154	ローマ字しか 書けません。	Rōmaji shika kakemasen.	\N	Tôi chỉ viết được chữ La-tinh.	7753	\N	0
+19155	財布に 500円しか ありません。	Saifu ni gohyaku-en shika arimasen.	\N	Trong ví chỉ có 500 yên.	7753	\N	1
+19156	ワインは 飲みますが、ビールは 飲みません。	Wain wa nomimasu ga, bīru wa nomimasen.	\N	Rượu vang thì tôi uống nhưng bia thì không.	7754	\N	0
+19157	きのうは 山が 見えましたが、きょうは 見えません。	Kinō wa yama ga miemashita ga, kyō wa miemasen.	\N	Hôm qua thì nhìn thấy núi nhưng hôm nay thì không.	7754	\N	1
+19158	音楽を 聞きながら 食事します。	Ongaku o kikinagara shokuji shimasu.	\N	Tôi vừa nghe nhạc vừa ăn.	7755	\N	0
+19159	働きながら 日本語を 勉強して います。	Hatarakinagara Nihongo o benkyō shite imasu.	\N	Tôi vừa đi làm vừa học tiếng Nhật.	7755	\N	1
+19160	毎朝 ジョギングを して います。	Maiasa jogingu o shite imasu.	\N	Sáng nào tôi cũng chạy bộ.	7756	\N	0
+19161	子どもの とき、毎晩 8時に 寝て いました。	Kodomo no toki, maiban hachi-ji ni nete imashita.	\N	Hồi nhỏ, tối nào tôi cũng ngủ lúc 8 giờ.	7756	\N	1
+19162	鈴木さんは ピアノも 弾けるし、歌も 歌えるし、ダンスも できます。	Suzuki-san wa piano mo hikeru shi, uta mo utaeru shi, dansu mo dekimasu.	\N	Anh Suzuki vừa chơi được piano, vừa hát được, lại còn nhảy được.	7757	\N	0
+19163	この 店は 安いし、おいしいし、よく 来ます。	Kono mise wa yasui shi, oishii shi, yoku kimasu.	\N	Quán này vừa rẻ lại ngon nên tôi hay đến.	7757	\N	1
+19164	この レストランは 値段も 安いし、味も いいんです。…それで 人が 多いんですね。	Kono resutoran wa nedan mo yasui shi, aji mo iin desu. … Sorede hito ga ōin desu ne.	\N	Nhà hàng này giá rẻ, vị lại ngon. … Vì vậy mà đông khách nhỉ.	7758	\N	0
+19165	窓が 割れて います。	Mado ga warete imasu.	\N	Cửa sổ đang bị vỡ.	7759	\N	0
+19166	電気が ついて います。	Denki ga tsuite imasu.	\N	Đèn đang bật.	7759	\N	1
+19167	この 時計は 壊れて います。	Kono tokei wa kowarete imasu.	\N	Cái đồng hồ này bị hỏng.	7759	\N	2
+19168	シュミットさんが 持って 来た ワインは みんなで 飲んで しまいました。	Shumitto-san ga motte kita wain wa minna de nonde shimaimashita.	\N	Chai rượu anh Schmidt mang đến thì mọi người đã uống hết rồi.	7760	\N	0
+19169	電車に 傘を 忘れて しまいました。	Densha ni kasa o wasurete shimaimashita.	\N	Tôi lỡ để quên ô trên tàu điện mất rồi.	7760	\N	1
+19170	昼ごはんまでに レポートを 書いて しまいます。	Hirugohan made ni repōto o kaite shimaimasu.	\N	Trước bữa trưa tôi sẽ viết xong báo cáo.	7760	\N	2
+19171	机の 上に メモが 置いて あります。	Tsukue no ue ni memo ga oite arimasu.	\N	Trên bàn có để sẵn mẩu ghi chú.	7761	\N	0
+19172	カレンダーに 今月の 予定が 書いて あります。	Karendā ni kongetsu no yotei ga kaite arimasu.	\N	Kế hoạch tháng này được ghi trên lịch.	7761	\N	1
+19173	メモは どこですか。…［メモは］ 机の 上に 置いて あります。	Memo wa doko desu ka. … [Memo wa] tsukue no ue ni oite arimasu.	\N	Mẩu ghi chú ở đâu? … Được để trên bàn.	7762	\N	0
+19174	旅行の まえに、切符を 買って おきます。	Ryokō no mae ni, kippu o katte okimasu.	\N	Trước chuyến du lịch, tôi mua vé sẵn.	7763	\N	0
+19175	はさみを 使ったら、元の 所に 戻して おいて ください。	Hasami o tsukattara, moto no tokoro ni modoshite oite kudasai.	\N	Dùng kéo xong thì hãy để lại chỗ cũ.	7763	\N	1
+19176	あした 会議が ありますから、いすは この ままに して おいて ください。	Ashita kaigi ga arimasu kara, isu wa kono mama ni shite oite kudasai.	\N	Mai có họp nên hãy cứ để ghế nguyên như thế này.	7763	\N	2
+19177	まだ 雨が 降って います。	Mada ame ga futte imasu.	\N	Trời vẫn còn đang mưa.	7764	\N	0
+19178	道具を 片づけましょうか。…まだ 使って いますから、その ままに して おいて ください。	Dōgu o katazukemashō ka. … Mada tsukatte imasu kara, sono mama ni shite oite kudasai.	\N	Tôi dọn dụng cụ nhé? … Tôi vẫn đang dùng nên cứ để nguyên đó.	7764	\N	1
+19179	ちょっと 休もうか。	Chotto yasumō ka.	\N	Nghỉ một chút nhé?	7765	\N	0
+19180	手伝おうか。	Tetsudaō ka.	\N	Để tớ giúp nhé?	7765	\N	1
+19181	週末は 海へ 行こうと 思って います。	Shūmatsu wa umi e ikō to omotte imasu.	\N	Cuối tuần tôi định đi biển.	7766	\N	0
+19182	今から 銀行へ 行こうと 思います。	Ima kara ginkō e ikō to omoimasu.	\N	Bây giờ tôi định đi ngân hàng.	7766	\N	1
+19183	国へ 帰っても、柔道を 続ける つもりです。	Kuni e kaettemo, jūdō o tsuzukeru tsumori desu.	\N	Dù về nước tôi vẫn định tiếp tục học judo.	7767	\N	0
+19184	あしたからは たばこを 吸わない つもりです。	Ashita kara wa tabako o suwanai tsumori desu.	\N	Từ mai tôi định không hút thuốc nữa.	7767	\N	1
+19185	7月の 終わりに ドイツへ 出張する 予定です。	Shichi-gatsu no owari ni Doitsu e shutchō suru yotei desu.	\N	Theo kế hoạch cuối tháng 7 tôi sẽ đi công tác Đức.	7768	\N	0
+19186	旅行は 1週間ぐらいの 予定です。	Ryokō wa isshūkan gurai no yotei desu.	\N	Chuyến du lịch dự kiến khoảng 1 tuần.	7768	\N	1
+19187	銀行は まだ 開いて いません。	Ginkō wa mada aite imasen.	\N	Ngân hàng vẫn chưa mở cửa.	7769	\N	0
+19188	レポートは もう 書きましたか。…いいえ、まだ 書いて いません。	Repōto wa mō kakimashita ka. … Iie, mada kaite imasen.	\N	Bạn viết báo cáo chưa? … Chưa, tôi vẫn chưa viết.	7769	\N	1
+19189	毎日 運動した ほうが いいです。	Mainichi undō shita hō ga ii desu.	\N	Nên vận động mỗi ngày.	7770	\N	0
+19190	熱が あるんです。…じゃ、おふろに 入らない ほうが いいですよ。	Netsu ga arun desu. … Ja, ofuro ni hairanai hō ga ii desu yo.	\N	Tôi bị sốt. … Vậy thì không nên tắm bồn đâu.	7770	\N	1
+19191	あしたは 雨が 降るでしょう。	Ashita wa ame ga furu deshō.	\N	Ngày mai có lẽ trời mưa.	7771	\N	0
+19192	タワポンさんは 合格するでしょうか。…きっと 合格するでしょう。	Tawapon-san wa gōkaku suru deshō ka. … Kitto gōkaku suru deshō.	\N	Anh Thawaphon liệu có đỗ không? … Chắc chắn sẽ đỗ thôi.	7771	\N	1
+19193	約束の 時間に 間に合わないかもしれません。	Yakusoku no jikan ni maniawanai kamo shiremasen.	\N	Có lẽ tôi không kịp giờ hẹn.	7772	\N	0
+19194	午後から 雪が 降るかもしれません。	Gogo kara yuki ga furu kamo shiremasen.	\N	Có thể từ chiều tuyết sẽ rơi.	7772	\N	1
+19195	駅まで 30分で 行けますか。	Eki made sanjuppun de ikemasu ka.	\N	Đến ga trong vòng 30 phút có được không?	7773	\N	0
+19196	3万円で ビデオが 買えますか。	Sanman-en de bideo ga kaemasu ka.	\N	Với 30.000 yên có mua được máy video không?	7773	\N	1
+19197	急げ。	Isoge.	\N	Nhanh lên!	7774	\N	0
+19198	頑張れ。	Ganbare.	\N	Cố lên!	7774	\N	1
+19199	触るな。	Sawaru na.	\N	Không được chạm vào!	7774	\N	2
+19200	あの 漢字は 何と 読むんですか。…「きんえん」と 読みます。	Ano kanji wa nan to yomun desu ka. … "Kin'en" to yomimasu.	\N	Chữ Hán kia đọc là gì vậy? … Đọc là "kin'en".	7775	\N	0
+19201	あそこに 「止まれ」と 書いて あります。	Asoko ni "Tomare" to kaite arimasu.	\N	Ở đằng kia có viết là "Dừng lại".	7775	\N	1
+19202	「立入禁止」は 入るな と いう 意味です。	"Tachiiri kinshi" wa hairu na to iu imi desu.	\N	"Tachiiri kinshi" có nghĩa là cấm vào.	7776	\N	0
+19203	この マークは どういう 意味ですか。…洗濯機で 洗えると いう 意味です。	Kono māku wa dōiu imi desu ka. … Sentakuki de araeru to iu imi desu.	\N	Ký hiệu này có nghĩa là gì? … Có nghĩa là có thể giặt bằng máy giặt.	7776	\N	1
+19204	田中さんは 「あした 休みます」と 言って いました。	Tanaka-san wa "Ashita yasumimasu" to itte imashita.	\N	Anh Tanaka đã nói là "Mai tôi nghỉ".	7777	\N	0
+19205	田中さんは あした 休むと 言って いました。	Tanaka-san wa ashita yasumu to itte imashita.	\N	Anh Tanaka nói là mai anh ấy nghỉ.	7777	\N	1
+19206	ワンさんに 「あとで 電話を ください」と 伝えて いただけませんか。	Wan-san ni "Ato de denwa o kudasai" to tsutaete itadakemasen ka.	\N	Anh nhắn giúp anh Wang là "Lát nữa gọi điện cho tôi" được không ạ?	7778	\N	0
+19207	すみませんが、渡辺さんに あしたの パーティーは 6時からだと 伝えて いただけませんか。	Sumimasen ga, Watanabe-san ni ashita no pātī wa roku-ji kara da to tsutaete itadakemasen ka.	\N	Xin lỗi, anh nhắn giúp chị Watanabe là bữa tiệc ngày mai bắt đầu từ 6 giờ được không ạ?	7778	\N	1
+19208	わたしが やった とおりに、やって ください。	Watashi ga yatta tōri ni, yatte kudasai.	\N	Hãy làm đúng như tôi đã làm.	7779	\N	0
+19209	線の とおりに、紙を 切って ください。	Sen no tōri ni, kami o kitte kudasai.	\N	Hãy cắt giấy theo đường kẻ.	7779	\N	1
+19210	新しいのを 買った あとで、なくした 時計が 見つかりました。	Atarashii no o katta ato de, nakushita tokei ga mitsukarimashita.	\N	Sau khi mua cái mới thì lại tìm thấy cái đồng hồ đã mất.	7780	\N	0
+19211	仕事の あとで、飲みに 行きませんか。	Shigoto no ato de, nomi ni ikimasen ka.	\N	Sau giờ làm, đi uống không?	7780	\N	1
+19212	しょうゆを つけて 食べます。	Shōyu o tsukete tabemasu.	\N	Chấm xì dầu rồi ăn.	7781	\N	0
+19213	しょうゆを つけないで 食べます。	Shōyu o tsukenaide tabemasu.	\N	Ăn mà không chấm xì dầu.	7781	\N	1
+19214	日曜日は どこも 行かないで、うちで ゆっくり 休みます。	Nichiyōbi wa doko mo ikanaide, uchi de yukkuri yasumimasu.	\N	Chủ nhật tôi không đi đâu mà nghỉ ngơi thong thả ở nhà.	7782	\N	0
+19215	ボタンを 押せば、窓が 開きます。	Botan o oseba, mado ga akimasu.	\N	Nếu ấn nút thì cửa sổ mở.	7783	\N	0
+19216	天気が よければ、向こうに 島が 見えます。	Tenki ga yokereba, mukō ni shima ga miemasu.	\N	Nếu trời đẹp thì nhìn thấy hòn đảo phía bên kia.	7783	\N	1
+19217	安ければ、買います。	Yasukereba, kaimasu.	\N	Nếu rẻ thì tôi mua.	7783	\N	2
+19218	温泉に 行きたいんですが、どこか いい 所 ありませんか。…温泉なら、白馬が いいですよ。	Onsen ni ikitain desu ga, dokoka ii tokoro arimasen ka. … Onsen nara, Hakuba ga ii desu yo.	\N	Tôi muốn đi suối nước nóng, có chỗ nào hay không? … Suối nước nóng thì Hakuba hay đấy.	7784	\N	0
+19219	本を 借りたいんですが、どう すれば いいですか。	Hon o karitain desu ga, dō sureba ii desu ka.	\N	Tôi muốn mượn sách, nên làm thế nào?	7785	\N	0
+19220	どこで 切符を 買えば いいですか。	Doko de kippu o kaeba ii desu ka.	\N	Mua vé ở đâu thì được?	7785	\N	1
+19221	パソコンは 使えば 使うほど、便利に なります。	Pasokon wa tsukaeba tsukau hodo, benri ni narimasu.	\N	Máy tính càng dùng càng thấy tiện.	7786	\N	0
+19222	野菜は 新しければ 新しいほど おいしいです。	Yasai wa atarashikereba atarashii hodo oishii desu.	\N	Rau càng tươi càng ngon.	7786	\N	1
+19223	速く 泳げる ように、毎日 練習して います。	Hayaku oyogeru yō ni, mainichi renshū shite imasu.	\N	Tôi luyện tập hằng ngày để có thể bơi nhanh.	7787	\N	0
+19224	忘れない ように、メモして ください。	Wasurenai yō ni, memo shite kudasai.	\N	Hãy ghi chú lại để không quên.	7787	\N	1
+19225	毎日 練習すれば、泳げる ように なります。	Mainichi renshū sureba, oyogeru yō ni narimasu.	\N	Nếu luyện tập hằng ngày thì sẽ bơi được.	7788	\N	0
+19226	やっと 自転車に 乗れる ように なりました。	Yatto jitensha ni noreru yō ni narimashita.	\N	Cuối cùng tôi cũng đã đi được xe đạp.	7788	\N	1
+19227	毎日 運動して、何でも 食べる ように して います。	Mainichi undō shite, nandemo taberu yō ni shite imasu.	\N	Tôi cố gắng vận động hằng ngày và ăn mọi thứ.	7789	\N	0
+19228	遅れない ように して ください。	Okurenai yō ni shite kudasai.	\N	Hãy cố gắng đừng đến muộn.	7789	\N	1
+19229	わたしは 先生に 褒められました。	Watashi wa sensei ni homeraremashita.	\N	Tôi được thầy khen.	7790	\N	0
+19230	わたしは 母に 買い物を 頼まれました。	Watashi wa haha ni kaimono o tanomaremashita.	\N	Tôi bị mẹ nhờ đi mua đồ.	7790	\N	1
+19231	わたしは 弟に パソコンを 壊されました。	Watashi wa otōto ni pasokon o kowasaremashita.	\N	Tôi bị em trai làm hỏng máy tính.	7791	\N	0
+19232	わたしは 犬に 手を かまれました。	Watashi wa inu ni te o kamaremashita.	\N	Tôi bị chó cắn vào tay.	7791	\N	1
+19233	大阪で 展覧会が 開かれました。	Ōsaka de tenrankai ga hirakaremashita.	\N	Ở Osaka đã diễn ra một cuộc triển lãm.	7792	\N	0
+19234	この お寺は 600年前に 建てられました。	Kono otera wa roppyaku-nen mae ni tateraremashita.	\N	Ngôi chùa này được xây cách đây 600 năm.	7792	\N	1
+19235	「源氏物語」は 紫式部に よって 書かれました。	"Genji Monogatari" wa Murasaki Shikibu ni yotte kakaremashita.	\N	"Truyện Genji" được viết bởi Murasaki Shikibu.	7793	\N	0
+19236	電話は ベルに よって 発明されました。	Denwa wa Beru ni yotte hatsumei saremashita.	\N	Điện thoại được Bell phát minh.	7793	\N	1
+19237	ビールは 麦から 造られます。	Bīru wa mugi kara tsukuraremasu.	\N	Bia được làm từ lúa mạch.	7794	\N	0
+19238	昔 日本の 家は 木で 造られました。	Mukashi Nihon no ie wa ki de tsukuraremashita.	\N	Ngày xưa nhà ở Nhật được làm bằng gỗ.	7794	\N	1
+19239	テニスを するのは おもしろいです。	Tenisu o suru no wa omoshiroi desu.	\N	Chơi tennis thì thú vị.	7795	\N	0
+19240	1人で 夜 遅く 歩くのは 危ないです。	Hitori de yoru osoku aruku no wa abunai desu.	\N	Đi bộ một mình vào đêm khuya thì nguy hiểm.	7795	\N	1
+19241	わたしは 花を 育てるのが 好きです。	Watashi wa hana o sodateru no ga suki desu.	\N	Tôi thích trồng hoa.	7796	\N	0
+19242	東京の 人は 歩くのが 速いです。	Tōkyō no hito wa aruku no ga hayai desu.	\N	Người Tokyo đi bộ nhanh.	7796	\N	1
+19243	鍵を かけるのを 忘れました。	Kagi o kakeru no o wasuremashita.	\N	Tôi quên khóa cửa.	7797	\N	0
+19244	牛乳を 買うのを 忘れました。	Gyūnyū o kau no o wasuremashita.	\N	Tôi quên mua sữa.	7797	\N	1
+19245	鈴木さんが 来月 結婚するのを 知って いますか。…いいえ、知りませんでした。	Suzuki-san ga raigetsu kekkon suru no o shitte imasu ka. … Iie, shirimasen deshita.	\N	Bạn có biết anh Suzuki tháng sau kết hôn không? … Không, tôi không biết.	7798	\N	0
+19246	わたしが 生まれたのは 北海道の 小さい 町です。	Watashi ga umareta no wa Hokkaidō no chiisai machi desu.	\N	Nơi tôi sinh ra là một thị trấn nhỏ ở Hokkaido.	7799	\N	0
+19247	1年で いちばん 忙しいのは 12月です。	Ichinen de ichiban isogashii no wa jūni-gatsu desu.	\N	Thời điểm bận nhất trong năm là tháng 12.	7799	\N	1
+19248	ニュースを 聞いて、びっくりしました。	Nyūsu o kiite, bikkuri shimashita.	\N	Nghe tin tức, tôi đã giật mình.	7800	\N	0
+19249	家族に 会えなくて、寂しいです。	Kazoku ni aenakute, sabishii desu.	\N	Không gặp được gia đình nên tôi buồn.	7800	\N	1
+19250	話が 複雑で、よく わかりませんでした。	Hanashi ga fukuzatsu de, yoku wakarimasen deshita.	\N	Câu chuyện phức tạp nên tôi không hiểu rõ.	7800	\N	2
+19251	地震で ビルが 倒れました。	Jishin de biru ga taoremashita.	\N	Tòa nhà bị đổ do động đất.	7801	\N	0
+19252	病気で 会社を 休みました。	Byōki de kaisha o yasumimashita.	\N	Tôi nghỉ làm vì ốm.	7801	\N	1
+19253	日本語が わからないので、英語で 話して いただけませんか。	Nihongo ga wakaranai node, Eigo de hanashite itadakemasen ka.	\N	Vì tôi không hiểu tiếng Nhật nên anh nói bằng tiếng Anh được không ạ?	7802	\N	0
+15454	そんなことは起こり得ない。	Sonna koto wa okorienai.	\N	Chuyện như thế không thể xảy ra.	5904	\N	0
+19254	用事が あるので、お先に 失礼します。	Yōji ga aru node, osaki ni shitsurei shimasu.	\N	Vì có việc bận nên tôi xin phép về trước.	7802	\N	1
+19255	JL107便は 何時に 着くか、調べて ください。	Jei-eru hyaku-nana-bin wa nan-ji ni tsuku ka, shirabete kudasai.	\N	Hãy tra xem chuyến bay JL107 mấy giờ đến.	7803	\N	0
+19256	結婚の お祝いは 何が いいか、話して います。	Kekkon no oiwai wa nani ga ii ka, hanashite imasu.	\N	Chúng tôi đang bàn xem quà cưới nên tặng gì.	7803	\N	1
+19257	忘年会に 出席するか どうか、20日までに 返事を ください。	Bōnenkai ni shusseki suru ka dō ka, hatsuka made ni henji o kudasai.	\N	Hãy trả lời trước ngày 20 xem có dự tiệc cuối năm hay không.	7804	\N	0
+19258	その 話は 本当か どうか、わかりません。	Sono hanashi wa hontō ka dō ka, wakarimasen.	\N	Tôi không biết câu chuyện đó có thật hay không.	7804	\N	1
+19259	もう 一度 考えて みます。	Mō ichido kangaete mimasu.	\N	Tôi sẽ thử suy nghĩ lại một lần nữa.	7805	\N	0
+19260	この ズボンを はいて みても いいですか。	Kono zubon o haite mitemo ii desu ka.	\N	Tôi mặc thử cái quần này được không?	7805	\N	1
+19261	山の 高さは どうやって 測るか、知って いますか。	Yama no takasa wa dōyatte hakaru ka, shitte imasu ka.	\N	Bạn có biết đo chiều cao của núi bằng cách nào không?	7806	\N	0
+19262	新しい 橋の 長さは 3,911メートルです。	Atarashii hashi no nagasa wa sanzen-kyūhyaku-jūichi mētoru desu.	\N	Chiều dài cây cầu mới là 3.911 mét.	7806	\N	1
+19263	わたしは 社長に お土産を いただきました。	Watashi wa shachō ni omiyage o itadakimashita.	\N	Tôi đã nhận quà từ giám đốc.	7807	\N	0
+19264	社長が わたしに お土産を くださいました。	Shachō ga watashi ni omiyage o kudasaimashita.	\N	Giám đốc đã cho tôi quà.	7807	\N	1
+19265	わたしは 花に 水を やりました。	Watashi wa hana ni mizu o yarimashita.	\N	Tôi đã tưới nước cho hoa.	7807	\N	2
+19266	わたしは 課長に 手紙の 間違いを 直して いただきました。	Watashi wa kachō ni tegami no machigai o naoshite itadakimashita.	\N	Tôi được trưởng phòng sửa giúp lỗi trong thư.	7808	\N	0
+19267	部長の 奥さんは ［わたしに］ お茶を 教えて くださいました。	Buchō no okusan wa [watashi ni] ocha o oshiete kudasaimashita.	\N	Vợ của trưởng phòng đã dạy trà đạo cho tôi.	7809	\N	0
+19268	わたしは 息子に 紙飛行機を 作って やりました。	Watashi wa musuko ni kamihikōki o tsukutte yarimashita.	\N	Tôi đã làm máy bay giấy cho con trai.	7810	\N	0
+19269	わたしは 犬を 散歩に 連れて 行って やりました。	Watashi wa inu o sanpo ni tsurete itte yarimashita.	\N	Tôi đã dắt chó đi dạo.	7810	\N	1
+19270	コンサートの チケットを 予約して くださいませんか。	Konsāto no chiketto o yoyaku shite kudasaimasen ka.	\N	Anh có thể đặt giúp tôi vé buổi hòa nhạc được không ạ?	7811	\N	0
+19271	自分の 店を 持つ ために、貯金して います。	Jibun no mise o motsu tame ni, chokin shite imasu.	\N	Tôi đang tiết kiệm để có cửa hàng riêng.	7812	\N	0
+19272	健康の ために、毎朝 走って います。	Kenkō no tame ni, maiasa hashitte imasu.	\N	Vì sức khỏe, sáng nào tôi cũng chạy bộ.	7812	\N	1
+19273	家族の ために、うちを 建てます。	Kazoku no tame ni, uchi o tatemasu.	\N	Tôi xây nhà vì gia đình.	7812	\N	2
+19274	この はさみは 花を 切るのに 使います。	Kono hasami wa hana o kiru no ni tsukaimasu.	\N	Cái kéo này dùng để cắt hoa.	7813	\N	0
+19275	この かばんは 大きくて、旅行に 便利です。	Kono kaban wa ōkikute, ryokō ni benri desu.	\N	Cái túi này to nên tiện cho việc đi du lịch.	7813	\N	1
+19276	電話番号を 調べるのに 時間が かかりました。	Denwa bangō o shiraberu no ni jikan ga kakarimashita.	\N	Tôi mất thời gian để tra số điện thoại.	7813	\N	2
+19277	今にも 雨が 降りそうです。	Imanimo ame ga furisō desu.	\N	Trời như sắp mưa đến nơi.	7814	\N	0
+19278	もうすぐ 桜が 咲きそうです。	Mōsugu sakura ga sakisō desu.	\N	Hoa anh đào sắp nở rồi.	7814	\N	1
+19279	これから 寒く なりそうです。	Korekara samuku narisō desu.	\N	Từ giờ có vẻ trời sẽ lạnh.	7814	\N	2
+19280	この 料理は 辛そうです。	Kono ryōri wa karasō desu.	\N	Món này trông có vẻ cay.	7815	\N	0
+19281	彼女は 頭が よさそうです。	Kanojo wa atama ga yosasō desu.	\N	Cô ấy trông có vẻ thông minh.	7815	\N	1
+19282	ミラーさんは うれしそうです。	Mirā-san wa ureshisō desu.	\N	Anh Miller trông có vẻ vui.	7815	\N	2
+19283	ちょっと たばこを 買って 来ます。	Chotto tabako o katte kimasu.	\N	Tôi đi mua thuốc lá một chút rồi về.	7816	\N	0
+19284	スーパーで 牛乳を 買って 来ます。	Sūpā de gyūnyū o katte kimasu.	\N	Tôi đi siêu thị mua sữa rồi về.	7816	\N	1
+19285	台所から コップを 取って 来ます。	Daidokoro kara koppu o totte kimasu.	\N	Tôi vào bếp lấy cái cốc.	7816	\N	2
+19286	ゆうべ お酒を 飲みすぎました。	Yūbe osake o nomisugimashita.	\N	Tối qua tôi uống rượu quá nhiều.	7817	\N	0
+19287	この セーターは 大きすぎます。	Kono sētā wa ōkisugimasu.	\N	Cái áo len này to quá.	7817	\N	1
+19288	この 問題は 簡単すぎます。	Kono mondai wa kantansugimasu.	\N	Câu hỏi này dễ quá.	7817	\N	2
+19289	この パソコンは 使いやすいです。	Kono pasokon wa tsukaiyasui desu.	\N	Máy tính này dễ sử dụng.	7818	\N	0
+19290	東京は 住みにくいです。	Tōkyō wa suminikui desu.	\N	Tokyo khó sống.	7818	\N	1
+19291	白い シャツは 汚れやすいです。	Shiroi shatsu wa yogoreyasui desu.	\N	Áo sơ mi trắng dễ bẩn.	7818	\N	2
+19292	音を 大きく します。	Oto o ōkiku shimasu.	\N	Tôi vặn to âm thanh.	7819	\N	0
+19293	部屋を きれいに します。	Heya o kirei ni shimasu.	\N	Tôi dọn phòng sạch sẽ.	7819	\N	1
+19294	髪を 短く しました。	Kami o mijikaku shimashita.	\N	Tôi đã cắt tóc ngắn.	7819	\N	2
+19295	部屋は シングルに しますか、ツインに しますか。	Heya wa shinguru ni shimasu ka, tsuin ni shimasu ka.	\N	Quý khách chọn phòng đơn hay phòng đôi?	7820	\N	0
+19296	会議は あしたに します。	Kaigi wa ashita ni shimasu.	\N	Cuộc họp quyết định để ngày mai.	7820	\N	1
+19297	会議に 間に合わない 場合は、連絡して ください。	Kaigi ni maniawanai baai wa, renraku shite kudasai.	\N	Trường hợp không kịp cuộc họp thì hãy liên lạc.	7821	\N	0
+19298	火事の 場合は、エレベーターを 使わないで ください。	Kaji no baai wa, erebētā o tsukawanaide kudasai.	\N	Trong trường hợp hỏa hoạn, xin đừng dùng thang máy.	7821	\N	1
+19299	領収書が 必要な 場合は、言って ください。	Ryōshūsho ga hitsuyō na baai wa, itte kudasai.	\N	Trường hợp cần hóa đơn thì xin hãy nói.	7821	\N	2
+19300	約束を したのに、彼女は 来ませんでした。	Yakusoku o shita noni, kanojo wa kimasen deshita.	\N	Đã hẹn rồi vậy mà cô ấy không đến.	7822	\N	0
+19301	きょうは 日曜日なのに、働かなければ なりません。	Kyō wa nichiyōbi na noni, hatarakanakereba narimasen.	\N	Hôm nay là Chủ nhật vậy mà tôi phải làm việc.	7822	\N	1
+19302	これから 昼ごはんを 食べる ところです。	Korekara hirugohan o taberu tokoro desu.	\N	Tôi sắp ăn trưa.	7823	\N	0
+19303	今 故障の 原因を 調べて いる ところです。	Ima koshō no gen'in o shirabete iru tokoro desu.	\N	Bây giờ tôi đang tìm nguyên nhân hỏng hóc.	7823	\N	1
+19304	たった今 バスが 出た ところです。	Tatta ima basu ga deta tokoro desu.	\N	Xe buýt vừa mới chạy.	7823	\N	2
+19305	木村さんは 先月 この 会社に 入った ばかりです。	Kimura-san wa sengetsu kono kaisha ni haitta bakari desu.	\N	Chị Kimura mới vào công ty này tháng trước.	7824	\N	0
+19306	この 時計は 買った ばかりなのに、もう 壊れて しまいました。	Kono tokei wa katta bakari na noni, mō kowarete shimaimashita.	\N	Cái đồng hồ này vừa mới mua vậy mà đã hỏng mất rồi.	7824	\N	1
+19307	ミラーさんは きょう 来る はずです。きのう 電話が ありましたから。	Mirā-san wa kyō kuru hazu desu. Kinō denwa ga arimashita kara.	\N	Anh Miller chắc chắn hôm nay sẽ đến. Vì hôm qua anh ấy đã gọi điện.	7825	\N	0
+19308	彼は 3年間 日本に いたから、日本語が 上手な はずです。	Kare wa sannenkan Nihon ni ita kara, Nihongo ga jōzu na hazu desu.	\N	Anh ấy đã ở Nhật 3 năm nên chắc chắn giỏi tiếng Nhật.	7825	\N	1
+19309	天気予報に よると、あしたは 寒く なるそうです。	Tenki yohō ni yoru to, ashita wa samuku naru sō desu.	\N	Theo dự báo thời tiết, nghe nói mai trời sẽ lạnh.	7826	\N	0
+19310	クララさんは 子どもの とき、フランスに 住んで いたそうです。	Kurara-san wa kodomo no toki, Furansu ni sunde ita sō desu.	\N	Nghe nói hồi nhỏ chị Klara sống ở Pháp.	7826	\N	1
+19311	人が 大勢 集まって いますね。…事故のようですね。パトカーと 救急車が 来て いますよ。	Hito ga ōzei atsumatte imasu ne. … Jiko no yō desu ne. Patokā to kyūkyūsha ga kite imasu yo.	\N	Nhiều người tụ tập nhỉ. … Hình như là tai nạn. Xe cảnh sát và xe cứu thương đang đến kìa.	7827	\N	0
+19312	隣の 部屋に だれか いる ようです。	Tonari no heya ni dareka iru yō desu.	\N	Hình như có ai đó ở phòng bên cạnh.	7827	\N	1
+19313	にぎやかな 声が しますね。	Nigiyaka na koe ga shimasu ne.	\N	Có tiếng ồn ào nhỉ.	7828	\N	0
+19314	この 料理は 変な 味が します。	Kono ryōri wa hen na aji ga shimasu.	\N	Món này có vị lạ.	7828	\N	1
+19315	いい においが します。	Ii nioi ga shimasu.	\N	Có mùi thơm.	7828	\N	2
+19316	部長は ミラーさんを アメリカへ 出張させます。	Buchō wa Mirā-san o Amerika e shutchō sasemasu.	\N	Trưởng phòng cho anh Miller đi công tác Mỹ.	7829	\N	0
+19317	わたしは 娘を 自由に 遊ばせました。	Watashi wa musume o jiyū ni asobasemashita.	\N	Tôi cho con gái chơi tự do.	7829	\N	1
+19318	母は 子どもに 野菜を 食べさせました。	Haha wa kodomo ni yasai o tabesasemashita.	\N	Mẹ bắt con ăn rau.	7830	\N	0
+19319	先生は 学生に 作文を 書かせました。	Sensei wa gakusei ni sakubun o kakasemashita.	\N	Thầy giáo bắt học sinh viết bài văn.	7830	\N	1
+19320	気分が 悪いので、早く 帰らせて いただけませんか。	Kibun ga warui node, hayaku kaerasete itadakemasen ka.	\N	Vì tôi thấy không khỏe nên cho phép tôi về sớm được không ạ?	7831	\N	0
+19321	この 資料を コピーさせて いただけませんか。	Kono shiryō o kopī sasete itadakemasen ka.	\N	Cho phép tôi photo tài liệu này được không ạ?	7831	\N	1
+19322	中村さんは 7時に 来られます。	Nakamura-san wa shichi-ji ni koraremasu.	\N	Ông Nakamura sẽ đến lúc 7 giờ.	7832	\N	0
+19323	社長は もう 帰られました。	Shachō wa mō kaeraremashita.	\N	Giám đốc đã về rồi ạ.	7832	\N	1
+19324	社長は もう お帰りに なりました。	Shachō wa mō okaeri ni narimashita.	\N	Giám đốc đã về rồi ạ.	7833	\N	0
+19325	先生は この 本を お読みに なりましたか。	Sensei wa kono hon o oyomi ni narimashita ka.	\N	Thầy đã đọc cuốn sách này chưa ạ?	7833	\N	1
+19326	社長は どちらに いらっしゃいますか。	Shachō wa dochira ni irasshaimasu ka.	\N	Giám đốc đang ở đâu ạ?	7834	\N	0
+19327	先生は 何を 召し上がりますか。	Sensei wa nani o meshiagarimasu ka.	\N	Thầy dùng món gì ạ?	7834	\N	1
+19328	この 写真を ご覧に なりましたか。	Kono shashin o goran ni narimashita ka.	\N	Ngài đã xem bức ảnh này chưa ạ?	7834	\N	2
+19329	どうぞ お入り ください。	Dōzo ohairi kudasai.	\N	Xin mời vào.	7835	\N	0
+19330	少々 お待ち ください。	Shōshō omachi kudasai.	\N	Xin vui lòng chờ một chút.	7835	\N	1
+19331	こちらに ご記入 ください。	Kochira ni gokinyū kudasai.	\N	Xin vui lòng điền vào đây.	7835	\N	2
+19332	重そうですね。お持ちしましょうか。	Omosō desu ne. Omochi shimashō ka.	\N	Trông nặng nhỉ. Để tôi xách giúp nhé?	7836	\N	0
+19333	わたしが 社長に スケジュールを ご連絡します。	Watashi ga shachō ni sukejūru o gorenraku shimasu.	\N	Tôi sẽ thông báo lịch trình cho giám đốc.	7836	\N	1
+19334	江戸東京博物館へ ご案内します。	Edo-Tōkyō Hakubutsukan e goannai shimasu.	\N	Tôi xin dẫn quý vị đến Bảo tàng Edo-Tokyo.	7836	\N	2
+19335	あした 3時に 参ります。	Ashita san-ji ni mairimasu.	\N	Ngày mai tôi sẽ đến lúc 3 giờ.	7837	\N	0
+19336	ミラーと 申します。	Mirā to mōshimasu.	\N	Tôi tên là Miller.	7837	\N	1
+19337	家族の 写真を 拝見しました。	Kazoku no shashin o haiken shimashita.	\N	Tôi đã xem ảnh gia đình ngài.	7837	\N	2
+19338	電話は 階段の 横に ございます。	Denwa wa kaidan no yoko ni gozaimasu.	\N	Điện thoại ở bên cạnh cầu thang ạ.	7838	\N	0
+19339	こちらは IMCの 松本で ございます。	Kochira wa Ai-emu-shī no Matsumoto de gozaimasu.	\N	Tôi là Matsumoto của công ty IMC ạ.	7838	\N	1
+15455	誰にでも間違いはあり得る。	Dare ni demo machigai wa ariuru.	\N	Ai cũng có thể mắc lỗi.	5904	\N	1
+15546	冗談はさておき、本題に入りましょう。	Jōdan wa sateoki, hondai ni hairimashō.	\N	Đùa vậy đủ rồi, ta vào vấn đề chính nào.	5950	\N	0
+15547	結果はさておき、よく頑張ったと思う。	Kekka wa sateoki, yoku ganbatta to omou.	\N	Kết quả tạm gác lại, tôi thấy cậu đã rất cố gắng.	5950	\N	1
+15559	彼が社長に就いてから、経営方針が変わった。	Kare ga shachō ni tsuite kara, keiei hōshin ga kawatta.	\N	Kể từ khi anh ấy lên chức giám đốc, phương châm kinh doanh đã thay đổi.	5956	\N	1
+15566	企業は即戦力を求めている。	Kigyō wa sokusenryoku o motomete iru.	\N	Doanh nghiệp đang tìm người có thể làm ngay.	5960	\N	0
+15585	天気予報によれば、明日は雨が降るそうだ。	Tenki yohō ni yoreba, ashita wa ame ga furu sō da.	\N	Theo dự báo thời tiết, nghe nói mai trời sẽ mưa.	5969	\N	1
+15589	その行為は国民の安全を危険にさらした。	Sono kōi wa kokumin no anzen o kiken ni sarashita.	\N	Hành vi đó đặt an toàn của dân vào nguy hiểm.	5971	\N	1
+15600	環境問題について論じ合った。	Kankyō mondai ni tsuite ronjiatta.	\N	Chúng tôi đã bàn luận về vấn đề môi trường.	5977	\N	0
+15610	容疑者は裁判にかけられた。	Yōgisha wa saiban ni kakerareta.	\N	Nghi phạm đã bị đưa ra xét xử.	5982	\N	0
+15611	両社は特許を裁判で争った。	Ryōsha wa tokkyo o saiban de arasotta.	\N	Hai công ty đã tranh tụng về bằng sáng chế tại tòa.	5982	\N	1
+15613	科学的方法で仮説を証明する。	Kagakuteki hōhō de kasetsu o shōmei suru.	\N	Chứng minh giả thuyết bằng phương pháp khoa học.	5983	\N	1
+15625	彼の話し方は特徴的だ。	Kare no hanashikata wa tokuchōteki da.	\N	Cách nói chuyện của anh ấy rất đặc trưng.	5989	\N	1
+15626	彼の役職は部長に相当する。	Kare no yakushoku wa buchō ni sōtō suru.	\N	Chức vụ của anh ấy tương đương trưởng phòng.	5990	\N	0
+15627	日本の高校3年生は、ベトナムの12年生に相当する。	Nihon no kōkō sannensei wa, Betonamu no jūni-nensei ni sōtō suru.	\N	Học sinh năm 3 cấp ba ở Nhật tương đương lớp 12 ở Việt Nam.	5990	\N	1
+15628	見え方は人によって異なる。	Miekata wa hito ni yotte kotonaru.	\N	Cách nhìn khác nhau tùy người.	5991	\N	0
+15629	制度は国により異なる。	Seido wa kuni ni yori kotonaru.	\N	Thể chế khác nhau tùy quốc gia.	5991	\N	1
+15633	改めてお礼を申し上げます。	Aratamete orei o mōshiagemasu.	\N	Xin được một lần nữa cảm ơn.	5993	\N	1
+15636	二人には共通の趣味がある。	Futari ni wa kyōtsū no shumi ga aru.	\N	Hai người có chung sở thích.	5995	\N	0
+15638	台風のため、出発の延期を余儀なくされた。	Taifū no tame, shuppatsu no enki o yoginaku sareta.	\N	Vì bão nên buộc phải hoãn khởi hành.	5996	\N	0
+15645	必要に迫られて、英語を勉強し始めた。	Hitsuyō ni semararete, eigo o benkyō shihajimeta.	\N	Bị nhu cầu thúc ép nên tôi bắt đầu học tiếng Anh.	5999	\N	1
+15646	この本は日本の魅力を余すところなく伝えている。	Kono hon wa Nihon no miryoku o amasu tokoro naku tsutaete iru.	\N	Cuốn sách này truyền tải trọn vẹn sức hấp dẫn của Nhật Bản.	6000	\N	0
+15647	彼は持てる力を余すところなく発揮した。	Kare wa moteru chikara o amasu tokoro naku hakki shita.	\N	Anh ấy đã phát huy trọn vẹn sức lực của mình.	6000	\N	1
+15650	この地域は医療資源に乏しい。	Kono chiiki wa iryō shigen ni toboshii.	\N	Vùng này thiếu nguồn lực y tế.	6002	\N	0
+15651	彼の説明は具体性に乏しかった。	Kare no setsumei wa gutaisei ni toboshikatta.	\N	Lời giải thích của anh ấy thiếu tính cụ thể.	6002	\N	1
+15653	試験時間を10分余して解き終えた。	Shiken jikan o juppun amashite tokioeta.	\N	Tôi làm xong bài thi mà còn dư 10 phút.	6003	\N	1
+15658	現状を踏まえて、計画を修正した。	Genjō o fumaete, keikaku o shūsei shita.	\N	Căn cứ hiện trạng, đã sửa kế hoạch.	6006	\N	0
+15660	成長を前提に、人員を増やす。	Seichō o zentei ni, jin'in o fuyasu.	\N	Lấy tăng trưởng làm tiền đề, tăng nhân sự.	6007	\N	0
+15666	彼の表情から、不安を推察した。	Kare no hyōjō kara, fuan o suisatsu shita.	\N	Từ biểu cảm anh ấy, tôi suy đoán sự lo lắng.	6010	\N	0
+15667	背景には政治的理由が推察される。	Haikei ni wa seijiteki riyū ga suisatsu sareru.	\N	Có thể suy đoán phía sau là lý do chính trị.	6010	\N	1
+15674	彼は無関心を装った。	Kare wa mukanshin o yosootta.	\N	Anh ấy giả vờ không quan tâm.	6014	\N	0
+15675	平静を装って、話を続けた。	Heisei o yosootte, hanashi o tsuzuketa.	\N	Giả vờ bình tĩnh, tôi tiếp tục câu chuyện.	6014	\N	1
+15678	危険を顧みず、前進した。	Kiken o kaerimizu, zenshin shita.	\N	Bất chấp nguy hiểm, họ tiến lên phía trước.	6016	\N	0
+15682	従来の方法とは異なるアプローチ。	Jūrai no hōhō to wa kotonaru apurōchi.	\N	Cách tiếp cận khác với phương pháp truyền thống.	6018	\N	0
+15689	改革以後、状況が改善した。	Kaikaku igo, jōkyō ga kaizen shita.	\N	Sau cải cách, tình hình được cải thiện.	6021	\N	1
+15703	新しい証拠が判決を覆した。	Atarashii shōko ga hanketsu o kutsugaeshita.	\N	Bằng chứng mới đã lật ngược phán quyết.	6028	\N	1
+15706	彼は現地の文化に溶け込んだ。	Kare wa genchi no bunka ni tokekonda.	\N	Anh ấy hòa nhập văn hóa địa phương.	6030	\N	0
+15713	都市が急速に膨張している。	Toshi ga kyūsoku ni bōchō shite iru.	\N	Đô thị đang phình to nhanh chóng.	6033	\N	1
+15776	きれいに書いてください。	Kirei ni kaite kudasai.	\N	Hãy viết cho đẹp.	6065	\N	0
+15796	天気予報によると、明日は雨だそうです。	Tenki yohō ni yoru to, ashita wa ame da sō desu.	\N	Theo dự báo thời tiết, nghe nói mai trời mưa.	6075	\N	0
+15797	新聞によると、昨日大きな地震があったそうです。	Shinbun ni yoru to, kinō ōkina jishin ga atta sō desu.	\N	Theo báo, hôm qua đã có một trận động đất lớn.	6075	\N	1
+15910	急に雨が降り出した。	Kyū ni ame ga furidashita.	\N	Đột nhiên trời bắt đầu mưa.	6132	\N	0
+15919	一人では運び切れない。	Hitori de wa hakobikirenai.	\N	Một mình thì không chở hết được.	6136	\N	1
+15931	日本の歴史について調べています。	Nihon no rekishi ni tsuite shirabete imasu.	\N	Tôi đang tìm hiểu về lịch sử Nhật Bản.	6142	\N	1
+15951	話している最中に、電話が鳴った。	Hanashite iru saichū ni, denwa ga natta.	\N	Đang nói chuyện giữa chừng thì điện thoại reo.	6152	\N	1
+15974	もっと時間があればいいのに。	Motto jikan ga areba ii noni.	\N	Giá mà có thêm thời gian thì tốt.	6164	\N	0
+15975	雨が降らなければいいのに。	Ame ga furanakereba ii noni.	\N	Giá mà trời đừng mưa thì tốt.	6164	\N	1
+15976	だって、忙しいんだもの。	Datte, isogashii n da mono.	\N	Thì tại bận mà.	6165	\N	0
+15977	子供だもの、仕方ない。	Kodomo da mono, shikata nai.	\N	Nó còn là trẻ con mà, đành chịu thôi.	6165	\N	1
+15978	子供は元気なものだ。	Kodomo wa genki na mono da.	\N	Trẻ con thì vốn hiếu động mà.	6166	\N	0
+15982	そんなこと、信じるものか。	Sonna koto, shinjiru mono ka.	\N	Chuyện đó ai mà tin chứ.	6168	\N	0
+15983	負けるもんか。	Makeru mon ka.	\N	Tôi không đời nào chịu thua đâu.	6168	\N	1
+15986	どれほど嬉しかったことか。	Dore hodo ureshikatta koto ka.	\N	Tôi đã vui biết bao!	6170	\N	0
+15987	何度困ったことか。	Nando komatta koto ka.	\N	Không biết đã bao nhiêu lần khổ sở!	6170	\N	1
+15990	謝ったからといって許されたことにはならない。	Ayamatta kara to itte yurusareta koto ni wa naranai.	\N	Xin lỗi rồi không có nghĩa là đã được tha thứ.	6172	\N	0
+15991	書いただけで完成したことにはならない。	Kaita dake de kansei shita koto ni wa naranai.	\N	Chỉ viết ra thôi không có nghĩa là đã hoàn thành.	6172	\N	1
+15994	そんな高いものは買えるわけがない。	Sonna takai mono wa kaeru wake ga nai.	\N	Đồ đắt như thế thì làm sao mà mua nổi.	6174	\N	0
+16004	都市化が進む一方で、過疎化も進んでいる。	Toshika ga susumu ippō de, kasoka mo susunde iru.	\N	Đô thị hóa tiến triển, mặt khác tình trạng nông thôn thưa dân cũng gia tăng.	6179	\N	0
+16009	海外に行く際には、保険に入ってください。	Kaigai ni iku sai ni wa, hoken ni haitte kudasai.	\N	Khi đi nước ngoài hãy mua bảo hiểm.	6181	\N	1
+16010	忘れないうちに書き留めておこう。	Wasurenai uchi ni kakitomete okō.	\N	Hãy ghi lại trước khi quên.	6182	\N	0
+16018	想像し得る範囲内だ。	Sōzō shiuru han'inai da.	\N	Trong phạm vi có thể tưởng tượng.	6186	\N	0
+16019	そんなことは起こり得ない。	Sonna koto wa okorienai.	\N	Chuyện đó không thể xảy ra.	6186	\N	1
+16020	そのご提案はお受けしかねます。	Sono goteian wa oukeshikanemasu.	\N	Khó mà chấp nhận đề xuất đó.	6187	\N	0
+16028	彼は最後まで戦い抜いた。	Kare wa saigo made tatakainuita.	\N	Anh ấy chiến đấu đến cùng.	6191	\N	0
+16031	二人は顔を見合わせて笑った。	Futari wa kao o miawasete waratta.	\N	Hai người nhìn nhau rồi cười.	6192	\N	1
+16034	最後まで走り通した。	Saigo made hashiritōshita.	\N	Chạy suốt đến cuối.	6194	\N	0
+16035	彼は言い通すタイプだ。	Kare wa iitōsu taipu da.	\N	Anh ấy kiểu cứ khăng khăng nói cho bằng được.	6194	\N	1
+16036	資源を使い尽くしてしまった。	Shigen o tsukaitsukushite shimatta.	\N	Tài nguyên đã bị dùng cạn kiệt.	6195	\N	0
+16037	この気持ちは言葉では言い尽くせない。	Kono kimochi wa kotoba de wa iitsukusenai.	\N	Cảm xúc này không thể nói hết bằng lời.	6195	\N	1
+16042	そんなの勝つに決まってる。	Sonna no katsu ni kimatteru.	\N	Thế thì chắc chắn thắng rồi.	6198	\N	0
+16046	やってみないものでもない。	Yatte minai mono demo nai.	\N	Cũng không phải là không thử.	6200	\N	0
+16047	彼なら解決できないものでもない。	Kare nara kaiketsu dekinai mono demo nai.	\N	Nếu là anh ấy thì không phải là không giải quyết được.	6200	\N	1
+16050	弟はゲームばかりして、ついには学校を休む始末だ。	Otōto wa gēmu bakari shite, tsui ni wa gakkō o yasumu shimatsu da.	\N	Em trai suốt ngày chơi game, rốt cuộc đến mức nghỉ cả học.	6202	\N	0
+16051	彼は飲みすぎて、道で寝てしまう始末だった。	Kare wa nomisugite, michi de nete shimau shimatsu datta.	\N	Anh ta uống quá nhiều, đến nỗi ngủ luôn ngoài đường.	6202	\N	1
+16057	細部に至るまで配慮されている。	Saibu ni itaru made hairyo sarete iru.	\N	Được chăm chút đến từng chi tiết.	6205	\N	1
+16078	その光景には驚きを禁じ得ない。	Sono kōkei ni wa odoroki o kinjienai.	\N	Không thể không ngạc nhiên trước cảnh đó.	6216	\N	0
+16100	その態度は失礼極まりない。	Sono taido wa shitsurei kiwamarinai.	\N	Thái độ đó cực kỳ thất lễ.	6227	\N	0
+16101	危険極まりない行為だ。	Kiken kiwamarinai kōi da.	\N	Hành vi cực kỳ nguy hiểm.	6227	\N	1
+16103	期待外れで残念な限りだ。	Kitai hazure de zannen na kagiri da.	\N	Không như mong đợi, thật tiếc vô cùng.	6228	\N	1
+16106	彼は遅刻ばかりして、ついには無断で欠勤する始末だ。	Kare wa chikoku bakari shite, tsui ni wa mudan de kekkin suru shimatsu da.	\N	Anh ta toàn đi muộn, rốt cuộc còn nghỉ làm không xin phép.	6230	\N	0
+16107	息子は勉強もせず、親に嘘までつく始末だ。	Musuko wa benkyō mo sezu, oya ni uso made tsuku shimatsu da.	\N	Con trai chẳng học hành, đến nỗi còn nói dối cả bố mẹ.	6230	\N	1
+16113	彼はチームにとって欠くべからざる存在だ。	Kare wa chīmu ni totte kakubekarazaru sonzai da.	\N	Anh ấy là người không thể thiếu đối với đội.	6233	\N	1
+16116	尋常ならざる事態が発生した。	Jinjō narazaru jitai ga hassei shita.	\N	Đã xảy ra một tình huống bất thường.	6235	\N	0
+16117	それは容易ならざる問題だ。	Sore wa yōi narazaru mondai da.	\N	Đó là một vấn đề không hề đơn giản.	6235	\N	1
+16127	彼の安否が心配でならない。	Kare no anpi ga shinpai de naranai.	\N	Tôi lo cho sự an nguy của anh ấy không yên.	6240	\N	1
+16139	引っ越してからというもの、会えなくなった。	Hikkoshite kara to iu mono, aenaku natta.	\N	Kể từ khi chuyển nhà, chúng tôi không gặp được nhau nữa.	6246	\N	1
+16141	事故に遭って以来、慎重になった。	Jiko ni atte irai, shinchō ni natta.	\N	Kể từ tai nạn trở nên thận trọng.	6247	\N	1
+16148	そんなに働いては、体を壊しますよ。	Sonna ni hataraite wa, karada o kowashimasu yo.	\N	Làm việc kiểu đó thì sẽ hỏng người đấy.	6251	\N	0
+16150	いつまでも悲しんではいられない。	Itsumade mo kanashinde wa irarenai.	\N	Không thể cứ buồn mãi được.	6252	\N	0
+16151	これ以上待ってはいられない。	Kore ijō matte wa irarenai.	\N	Không thể chờ thêm được nữa.	6252	\N	1
+16154	借金してまで買う必要はない。	Shakkin shite made kau hitsuyō wa nai.	\N	Không cần đến mức phải vay nợ để mua.	6254	\N	0
+16155	嘘をついてまで守りたいものはない。	Uso o tsuite made mamoritai mono wa nai.	\N	Không có gì đáng để phải nói dối mà giữ lấy.	6254	\N	1
+16156	徹夜してでも、明日までに終わらせたい。	Tetsuya shite demo, ashita made ni owarasetai.	\N	Dù phải thức trắng đêm, tôi cũng muốn xong trước ngày mai.	6255	\N	0
+16157	借金してでも、この夢を実現させたい。	Shakkin shite demo, kono yume o jitsugen sasetai.	\N	Dù phải vay nợ, tôi cũng muốn thực hiện ước mơ này.	6255	\N	1
+16158	待っていては始まらない。	Matte ite wa hajimaranai.	\N	Chỉ ngồi chờ thì chẳng giải quyết được gì.	6256	\N	0
+16159	言うだけでは始まらない。	Iu dake dewa hajimaranai.	\N	Chỉ nói suông thì chẳng đi đến đâu.	6256	\N	1
+16164	早めに予約するに越したことはない。	Hayame ni yoyaku suru ni koshita koto wa nai.	\N	Đặt chỗ sớm vẫn là tốt nhất.	6259	\N	0
+16165	健康に越したことはない。	Kenkō ni koshita koto wa nai.	\N	Không gì bằng sức khỏe.	6259	\N	1
+16174	彼の勝利に相違ない。	Kare no shōri ni sōi nai.	\N	Đó chắc chắn là chiến thắng của anh ấy.	6264	\N	0
+16180	彼女は75歳にして、初めてパソコンを習い始めた。	Kanojo wa nanajūgo-sai ni shite, hajimete pasokon o naraihajimeta.	\N	Ở tuổi 75, bà ấy lần đầu tiên bắt đầu học máy tính.	6267	\N	0
+16181	彼は医者にして作家でもある。	Kare wa isha ni shite sakka demo aru.	\N	Ông ấy vừa là bác sĩ vừa là nhà văn.	6267	\N	1
+16182	経験者にして初めて分かる苦労だ。	Keikensha ni shite hajimete wakaru kurō da.	\N	Đó là nỗi vất vả chỉ người từng trải mới hiểu.	6268	\N	0
+16183	一流の職人にして初めて作れる作品だ。	Ichiryū no shokunin ni shite hajimete tsukureru sakuhin da.	\N	Đây là tác phẩm chỉ nghệ nhân hàng đầu mới làm ra được.	6268	\N	1
+16188	社長にしたところで、この問題は解決できないだろう。	Shachō ni shita tokoro de, kono mondai wa kaiketsu dekinai darō.	\N	Ngay cả giám đốc thì chắc cũng không giải quyết được vấn đề này.	6271	\N	0
+16189	私にしたところで、詳しいことは知らない。	Watashi ni shita tokoro de, kuwashii koto wa shiranai.	\N	Ngay cả tôi cũng không biết chi tiết.	6271	\N	1
+16192	調べたところが、新しい事実が判明した。	Shirabeta tokoro ga, atarashii jijitsu ga hanmei shita.	\N	Điều tra thì phát hiện ra sự thật mới.	6273	\N	0
+16193	急いで駅まで走ったところが、電車はもう出た後だった。	Isoide eki made hashitta tokoro ga, densha wa mō deta ato datta.	\N	Vội chạy ra ga thì tàu đã chạy mất rồi.	6273	\N	1
+16542	この えは ピカソに よって かかれました。	kono e wa pikaso ni yotte kakaremashita.	\N	Bức tranh này được vẽ bởi Picasso.	6448	\N	0
+16680	この えは ピカソに よって かかれました。	kono e wa pikaso ni yotte kakaremashita.	\N	Bức tranh này được vẽ bởi Picasso.	6517	\N	0
+16818	この えは ピカソに よって かかれました。	kono e wa pikaso ni yotte kakaremashita.	\N	Bức tranh này được vẽ bởi Picasso.	6586	\N	0
+17002	さいきん にほんの ドラマが わかる ように なった。	saikin nihon no dorama ga wakaru you ni natta.	\N	Gần đây tôi đã hiểu được phim truyền hình Nhật.	6678	\N	0
+17182	さいきん にほんの ドラマが わかる ように なった。	saikin nihon no dorama ga wakaru you ni natta.	\N	Gần đây tôi đã hiểu được phim truyền hình Nhật.	6768	\N	0
+17362	さいきん にほんの ドラマが わかる ように なった。	saikin nihon no dorama ga wakaru you ni natta.	\N	Gần đây tôi đã hiểu được phim truyền hình Nhật.	6858	\N	0
+17550	きょうは すずしい と いうより さむい。	kyou wa suzushii to iu yori samui.	\N	Hôm nay không phải mát mà phải nói là lạnh.	6952	\N	0
+17736	きょうは すずしい と いうより さむい。	kyou wa suzushii to iu yori samui.	\N	Hôm nay không phải mát mà phải nói là lạnh.	7045	\N	0
+17922	きょうは すずしい と いうより さむい。	kyou wa suzushii to iu yori samui.	\N	Hôm nay không phải mát mà phải nói là lạnh.	7138	\N	0
 \.
 
 
@@ -72716,55 +72471,6 @@ vocab-search-all-lessons	? "Tra t? tr?n m?i b?i" ? trang T? v?ng	t	{}	2026-10-03
 --
 
 COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt", "updatedAt", "jlptLevel", "formalityLevel", "sortOrder") FROM stdin;
-6036	N は N です	A là B	Cấu trúc cơ bản nhất để giới thiệu danh từ.	690	2026-09-02 09:13:27.944	2026-09-02 09:13:27.944	N5	polite	0
-6037	N は N じゃありません	A không phải là B	\N	690	2026-09-02 09:13:27.962	2026-09-02 09:13:27.962	N5	polite	1
-6039	V(ます) + ましょう	hãy cùng ~	\N	690	2026-09-02 09:13:27.978	2026-09-02 09:13:27.978	N5	polite	3
-6040	V(ます) + ませんか	~ cùng không?	Mời rủ lịch sự.	690	2026-09-02 09:13:27.988	2026-09-02 09:13:27.988	N5	polite	4
-6041	V(て) + ください	hãy ~ (yêu cầu)	\N	690	2026-09-02 09:13:27.998	2026-09-02 09:13:27.998	N5	polite	5
-6042	V(て) + います	đang ~	\N	690	2026-09-02 09:13:28.007	2026-09-02 09:13:28.007	N5	polite	6
-6044	V(て) + もいいですか	tôi ~ được không?	\N	691	2026-09-02 09:13:28.035	2026-09-02 09:13:28.035	N5	polite	0
-6045	V(て) + はいけません	không được ~	\N	691	2026-09-02 09:13:28.045	2026-09-02 09:13:28.045	N5	polite	1
-6046	V(ない) + でください	đừng ~	\N	691	2026-09-02 09:13:28.055	2026-09-02 09:13:28.055	N5	polite	2
-6047	V(たい) + です	muốn ~	\N	691	2026-09-02 09:13:28.064	2026-09-02 09:13:28.064	N5	polite	3
-6048	V(ます) + たい + んです	muốn ~ (giải thích)	\N	691	2026-09-02 09:13:28.074	2026-09-02 09:13:28.074	N5	polite	4
-5310	N は ～月(がつ) ～日(にち)です。N là ngày ~ tháng ~. Nói năm, sau đó đến tháng và cuối cùng là ngày. Một	1. N は ～月(がつ) ～日(にち)です。N là ngày ~ tháng ~. Nói năm, sau đó đến tháng và cuối cùng là ngày. Một số câu hỏi thường dùng: N は いつ/ 何月(なんがつ) / 何日(なんにち)ですか。 N là bao giờ / tháng mấy / mùng mấy?	Cách dùng: いつ (bao giờ, khi nào) có thể dùng thay thế cho các từ để hỏi có nghĩa tương tự như : なんじ、なんがつ、なんにち	5	2026-06-25 11:24:12.115	2026-09-02 08:54:27.502	N5	\N	0
-5323	だれ に（から）Vますか。～ từ ai?		Cách dùng:\n\n– N1 chỉ xuất xứ của thứ hoặc vật mà chủ hành động nhận được/vay mượn được/học được;\n\n– N2 chỉ thứ hoặc vật mà chủ hành động nhận được/vay mượn được/ học được.\n\n– Dùng trợ từ から thay cho にkhi N1 không phải là người mà là một cơ quan/tổ chức	7	2026-06-25 11:24:12.971	2026-09-02 08:54:27.515	N5	\N	0
-5335	どうして＋Sentence か。	Tại sao ~	Cách dùng:\n\n– どうして là từ để hỏi lý do.\n\n– から được đặt sau câu chỉ nguyên nhân để nối 2 câu có mối quan hệ nhân quả.	9	2026-06-25 11:24:13.872	2026-09-02 08:54:27.529	N5	\N	0
-6049	V(辞書形) + ことができます	có thể ~	\N	691	2026-09-02 09:13:28.082	2026-09-02 09:13:28.082	N5	polite	5
-6050	V(辞書形) + 必要があります	cần phải ~	\N	691	2026-09-02 09:13:28.087	2026-09-02 09:13:28.087	N5	formal	6
-6051	V(なければ) + なりません	phải ~	\N	691	2026-09-02 09:13:28.093	2026-09-02 09:13:28.093	N5	formal	7
-6052	V(なくても) + いい	không ~ cũng được	\N	692	2026-09-02 09:13:28.105	2026-09-02 09:13:28.105	N5	neutral	0
-6053	A(い) + く / A(な) + に + なります	trở nên ~	\N	692	2026-09-02 09:13:28.111	2026-09-02 09:13:28.111	N5	polite	1
-6054	V(辞書形) + 前に	trước khi ~	\N	692	2026-09-02 09:13:28.118	2026-09-02 09:13:28.118	N5	neutral	2
-6055	V(た) + 後で	sau khi ~	\N	692	2026-09-02 09:13:28.123	2026-09-02 09:13:28.123	N5	neutral	3
-5459	Ngữ pháp V て来ます (Cách diễn đạt đi đâu đó, làm gì đó rồi quay lại)		\N	43	2026-06-25 11:24:28.074	2026-09-26 05:08:19.88	N4	\N	0
-5432	Thể điều kiện tiếng Nhật là 条件形（じょうけんけい)	Tính từ đuôi i: Bỏ い thêm ければ.	+ Tính từ đuôi na bỏ な thêm なら + Danh từ thêm なら (cũng có ならば nhưng なら được dùng nhiều hơn) * Tính từ đuôi i: Chuyển sang thể phủ định (～くない) và chia như 1 tính từ đuôi –i * Tính từ đuôi na+ danh từ: Chuyển sang thể phủ định (～ではない／～じゃない) và chia như 1 tính từ đuôi –i Nếu…, nếu như… (giống ~と、~たら)	35	2026-06-25 11:24:24.742	2026-09-26 05:08:20.122	N4	\N	0
-5452	Ngữ pháp V て みます。		Cách dùng: Trong mẫu câu này động từ đứng trước みます chia ở thể て. Vì みます nguyên thủy là một động từ nên cũng chia như các động từ khác.\n\n日本の お酒を飲んでみたいです。\n\nTôi muốn uống thử rượu của Nhật\n\nちょっとこの店に 入ってみよう。\n\nChúng ta hãy thử vào quán này một chút đi.\n\nこのズボンに 入ってみても いいですか。\n\nTôi có thể mặc thử chiếc quần này không?\n\nA い -&gt; A さ\n\nTa có thể biến một tính từ đuôi い sang danh từ trừu tượng miêu tả tính chất, trạng thái bằng cách đổi đuôi い thành さ.	40	2026-06-25 11:24:26.882	2026-09-26 05:08:20.379	N4	\N	0
-5370	N (tân ngữ) は		• Cách dùng:\n\n– Đưa tân ngữ lên làm chủ đề nhằm nhấn mạnh ý muốn diễn tả\n\n– Trợ từ を của tân ngữ được thay bằng は.	17	2026-06-25 11:24:17.215	2026-09-26 05:08:20.551	N5	\N	0
-5380	Vたり、Vたり　します。lúc thì… lúc thì… và…		• Cách dùng:\n\n– Dùng để liệt kê một vài hành động đại diện trong số nhiều hành động mà chủ thể thực hiện mà không theo thứ tự thời gian, không cần biết cái nào xảy ra trước, cái nào xảy ra sau.\n\n– Khác với cấu trúc: V１て、V2 て…V ます dùng để liệt kê hành động theo thứ tự thời gian\n\n– Không tự nhiên khi dùng để liệt kê những hành động mang tính chất hàng ngày của con người như ngủ dậy, ăn cơm hay đi ngủ…\n\n– Thì của mẫu câu được biểu thị ở cuối câu.	19	2026-06-25 11:24:18.034	2026-09-26 05:08:20.59	N5	\N	0
-5385	Cách xác nhận thông tin nào đó với mong muốn người nghe tán đồng với ý kiến của mình	muốn người nghe tán đồng với ý kiến của mình	Cách dùng: dùng khi kỳ vọng rằng người nghe cũng biết hoặc có sự hiểu biết về chuyện mình nói và mong muốn người nghe sẽ tán thành ý kiến của mình. でしょう được đọc lên giọng giống như 1 câu hỏi để xác nhận sự đồng tình của người nghe.	21	2026-06-25 11:24:18.826	2026-09-26 05:08:20.635	N5	\N	0
-6043	V(て) + から	sau khi ~ rồi ~	\N	690	2026-09-02 09:13:28.018	2026-09-02 09:13:28.018	N5	neutral	7
-6056	V(辞書形) + 時	khi ~	\N	692	2026-09-02 09:13:28.129	2026-09-02 09:13:28.129	N5	neutral	4
-6057	V(た) + り、V(た) + りする	vừa ~ vừa ~	\N	692	2026-09-02 09:13:28.134	2026-09-02 09:13:28.134	N5	neutral	5
-6058	V(辞書形) + のが + 好き	thích việc ~	\N	692	2026-09-02 09:13:28.139	2026-09-02 09:13:28.139	N5	neutral	6
-6059	V(辞書形) + のは + A(い/な) + です	~ thì ~	\N	692	2026-09-02 09:13:28.145	2026-09-02 09:13:28.145	N5	neutral	7
-6060	N + が + 好き / 嫌い	thích / ghét ~	\N	693	2026-09-02 09:13:28.154	2026-09-02 09:13:28.154	N5	neutral	0
-6061	N + が + 上手 / 下手	giỏi / kém ~	\N	693	2026-09-02 09:13:28.158	2026-09-02 09:13:28.158	N5	neutral	1
-6062	N + が + 欲しい	muốn có ~	\N	693	2026-09-02 09:13:28.161	2026-09-02 09:13:28.161	N5	neutral	2
-6063	N + があります / いません	có / không có ~	\N	693	2026-09-02 09:13:28.168	2026-09-02 09:13:28.168	N5	polite	3
-6064	N + が + います / いません	có / không có (sinh vật)	\N	693	2026-09-02 09:13:28.174	2026-09-02 09:13:28.174	N5	polite	4
-6065	A(い) + く / A(な) + に + V	một cách ~	\N	693	2026-09-02 09:13:28.178	2026-09-02 09:13:28.178	N5	neutral	5
-6066	A(い) + くない / A(な) + じゃない	không ~	\N	693	2026-09-02 09:13:28.183	2026-09-02 09:13:28.183	N5	neutral	6
-6067	A(い) + かった / A(な) + だった	đã ~ (quá khứ)	\N	693	2026-09-02 09:13:28.188	2026-09-02 09:13:28.188	N5	neutral	7
-6068	N + で (phương tiện / địa điểm)	bằng ~ / tại ~	\N	694	2026-09-02 09:13:28.197	2026-09-02 09:13:28.197	N5	neutral	0
-6069	N + から N + まで	từ ~ đến ~	\N	694	2026-09-02 09:13:28.202	2026-09-02 09:13:28.202	N5	neutral	1
-6070	N + ぐらい / くらい	khoảng ~	\N	694	2026-09-02 09:13:28.207	2026-09-02 09:13:28.207	N5	neutral	2
-6071	N + しか + V(否定)	chỉ ~ (nhấn mạnh ít)	\N	694	2026-09-02 09:13:28.212	2026-09-02 09:13:28.212	N5	neutral	3
-6072	N + だけ	chỉ ~	\N	694	2026-09-02 09:13:28.217	2026-09-02 09:13:28.217	N5	neutral	4
-6073	N + など	v.v., ~ và những thứ tương tự	\N	694	2026-09-02 09:13:28.222	2026-09-02 09:13:28.222	N5	neutral	5
-6074	N + について	về ~	\N	694	2026-09-02 09:13:28.226	2026-09-02 09:13:28.226	N5	neutral	6
-5425	Ngữ pháp と言いました		“Câu văn” (Thể thường) と 言っていました\n\n（電話で） 田中さん：１０時に 本社に 来てください。\n\n☞　田中さんは １０時に 本社に 来てくれ と 言っていました。\n\nAnh Tanaka nói là: hãy đến trụ sở công ty lúc 10 giờ\n\n田中さん: 明日 休みます。\n\n☞ 田中さんは 明日休むと 言っていました。\n\nAnh Tanaka nói là ngày mai anh ấy nghỉ.\n\nPhân biệt: 「~と言いました」và 「~と言っていました」\n\nKhác: 「~と言いました」đặt trọng tâm vào việc ai nói, vào chủ thể của câu nói đó. Trong khi đó, 「~と言っていました」đặt trọng tâm vào việc truyền đạt lại nội dung câu nói.	33	2026-06-25 11:24:23.913	2026-09-26 05:08:20.061	N4	\N	0
-5431	Ngữ pháp Ｖ１ないで、Ｖ２ (CHỌN 1 TRONG 2)		① 日曜日 どこも 行きません。\n\n② 家で ゆっくり 休みます。\n\n① + ② 日曜日 どこも 行かないで、家で ゆっくり 休みます。\n\nChủ nhật tôi sẽ nghỉ thong thả ở nhà mà không đi đâu cả.\n\n① 今晩 家へ 帰りません。\n\n② 友だちの家に とまります。\n\n① + ② 今晩家へ 帰らないで、友だちの家に とまります。\n\nTối nay tôi không về nhà, mà ở lại nhà bạn.	34	2026-06-25 11:24:24.354	2026-09-26 05:08:20.091	N4	\N	0
 5956	N + に就く / N + に就いて	nhậm chức ~, đảm nhận ~	Dùng với chức danh, vị trí công việc. 「〜について」 là về chủ đề, khác nghĩa.	599	2026-09-02 08:54:27.763	2026-09-02 08:54:27.763	N2	formal	0
 5957	N + に配属される	được phân công về ~	\N	599	2026-09-02 08:54:27.783	2026-09-02 08:54:27.783	N2	formal	1
 5958	N + に委ねる / N + に委ねられる	giao phó cho ~, ủy thác cho ~	\N	599	2026-09-02 08:54:27.792	2026-09-02 08:54:27.792	N2	formal	2
@@ -72778,20 +72484,13 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 5966	N + を減らす / N + が減る	giảm ~	\N	600	2026-09-02 08:54:27.855	2026-09-02 08:54:27.855	N2	neutral	2
 5967	N + を加える / N + に加えて	cộng thêm ~; ngoài ~ còn ~	\N	600	2026-09-02 08:54:27.864	2026-09-02 08:54:27.864	N2	formal	3
 5968	N + に占める / N + の割合を占める	chiếm ~ (tỷ lệ)	\N	600	2026-09-02 08:54:27.874	2026-09-02 08:54:27.874	N2	formal	4
-5969	N + を統計する / N + によると	thống kê ~; theo ~	\N	600	2026-09-02 08:54:27.883	2026-09-02 08:54:27.883	N2	formal	5
-5970	N + のもとで / N + の下で	dưới sự ~; trong hoàn cảnh ~	\N	600	2026-09-02 08:54:27.891	2026-09-02 08:54:27.891	N2	formal	6
 5971	N + を危険にさらす	đặt ~ vào nguy hiểm	\N	600	2026-09-02 08:54:27.895	2026-09-02 08:54:27.895	N2	formal	7
 5972	N + を宣伝する / N + が宣伝される	quảng bá ~, tuyên truyền ~	\N	601	2026-09-02 08:54:27.901	2026-09-02 08:54:27.901	N2	neutral	0
-5470	Kính ngữ tiếng Nhật là 尊敬語(そんけいご)	1) Dùng tiền tố 「お」 và「ご」 (viết chữ Hán đều là 御 (NGỰ) Tiền tố 「お」 và「ご」 được sử dụng rất nhiều trong câu kính ngữ.	Cách dùng: Về hình thức, động từ thể hiện kính ngữ kiểu này có cách chia giống hệt động từ dạng bị động. Hầu hết tất cả các động từ đều có thể áp dụng được trừ động từ dạng khả năng (可能形) và một số động từ như: できます、わかります、いります 社長は さっき 出おかけられました。 Giám đốc đã đi ra ngoài lúc nãy rồi ạ. お酒をやめられたんですか。 Anh đã bỏ rượu rồi ạ? いつ ベトナムに来られましたか。 Ngài đến Việt Nam lúc nào thế ạ? 会長は 今アメリカへ 出 張されています。 Chủ tịch đang đi công tác Mỹ おＶます になります – Không áp dụng với động từ nhóm 3 và động từ 1 âm tiết như: 見ます、 寝ます、います… 社長は お帰りに なりました。 Giám đốc đã về rồi ạ. 新聞を お読みに なりますか。 Ngài/Bạn có đọc báo không ạ? 部長は 加藤さんを お呼びに なりました。 Trưởng phòng đã gọi chị Kato A: 今晩何時に 山本さんに お会いに なりますか。 Tối nay mấy giờ ngài sẽ gặp chị Yamamoto? B: ６時１５分過ぎに 会います。 Tôi sẽ gặp lúc 6 giờ 15 ( ６時１５分過ぎに お会いになります。（×） ) Ở cấp độ đơn vị danh từ, ngoài những kính ngữ đặc biệt đã liệt kê ở trên, có thể dung tiếp đầu ngữ「お」 và「ご」 để tạo thành kính ngữ. Tuy nhiên, cũng có danh từ không thể ghép 「お」 hay「ご」 .	49	2026-06-25 11:24:30.575	2026-09-26 05:08:20.255	N4	\N	0
 5952	V/N + にかたくない	không khó để ~ (tưởng tượng/suy đoán)	Thành ngữ cố định, hầu như chỉ dùng với 想像/察する: 「想像にかたくない」.	598	2026-08-29 06:53:03.935	2026-08-29 06:53:03.935	N1	formal	6
 5953	V(た/ている) + 手前	đã trót ~ (trước mặt người khác) nên đành phải ~	Vì thể diện / vì đã nói/làm gì đó trước mặt người khác nên buộc phải hành xử cho nhất quán.	598	2026-08-29 06:53:03.942	2026-08-29 06:53:03.942	N1	written	7
 5954	V(た) + ら + それまでだ / V(ば) + それまでだ	nếu ~ thì coi như hết, thế là xong	Nhấn mạnh: một khi điều đó xảy ra thì mọi nỗ lực trở nên vô nghĩa.	598	2026-08-29 06:53:03.951	2026-08-29 06:53:03.951	N1	spoken	8
-5451	Ngữ pháp かどうか		Cách dùng: Giống như trường hợp của ～か、～、 mệnh đề trước かどうか\n\n(1) リーさんは 来ますか ＋ 分かりません。\n\nÔng Lee có đến không? + không biết\n\n→ リーさんは 来るかどうか、分かりません。\n\nKhông biết ông Lee có đến không.\n\n(2) まちがいが ありませんか ＋ しらべてください。\n\nCó lỗi sai không? + hãy kiểm tra\n\n→ まちがいが ないかどうか、しらべてください。\n\nHãy kiểm tra xem có lỗi sai không.\n\nA かどうかcó nghĩa là “là A, hay không phải là A”. Ví dụ (1) có nghĩa là “Ông Lee có thể đến và có thể không”\n\n* Lưu ý: Trong ví dụ 2, người ta không dùng “まちがいが あるかどうか” mà dùng “ まちがいが ないかどうか” vì người nói hy vọng rằng không có sự nhầm lẫn nào.	40	2026-06-25 11:24:26.874	2026-09-26 05:08:20.379	N4	\N	0
 6011	N + を見据える / N + を見据えて	nhìn về phía ~; hướng tới ~ (tương lai)	\N	605	2026-09-02 08:54:28.128	2026-09-02 08:54:28.128	N1	formal	7
 6012	N + を尊ぶ / N + を尊ぶ文化	tôn trọng ~	\N	606	2026-09-02 08:54:28.135	2026-09-02 08:54:28.135	N1	formal	0
-6013	N + を誠意をもって	với thành ý ~	\N	606	2026-09-02 08:54:28.138	2026-09-02 08:54:28.138	N1	formal	1
-5308	N (chỉ thời gian) に＋ V ます	làm gì vào lúc nào	• Cách dùng: để chỉ thời điểm tiến hành một hành động. nếu thời gian không biểu hiện bằng những con số thì không thêm に. sau danh từ là các thứ trong tuần ta có thể có に hay không đều được.	4	2026-06-25 11:24:11.726	2026-09-02 08:54:27.494	N5	\N	0
-5309	～から～まで	Từ ~ đến ~	• Cách dùng: cách nói khoảng thời gian, trợ từ から biểu thị điểm bắt đầu của thời gian hay nơi chốn, trợ từ まで biểu thị điểm kết thúc của thời gian hay nơi chốn (2 trợ từ không nhất thiết đi cùng nhau)	4	2026-06-25 11:24:11.731	2026-09-02 08:54:27.494	N5	\N	0
 5973	N + を公表する / N + が公表される	công bố ~	\N	601	2026-09-02 08:54:27.905	2026-09-02 08:54:27.905	N2	formal	1
 5974	N + を掲載する / N + に掲載される	đăng tải ~ (báo, web)	\N	601	2026-09-02 08:54:27.91	2026-09-02 08:54:27.91	N2	formal	2
 5975	N + を漏らす / N + が漏れる	tiết lộ ~; (tin) bị lộ	\N	601	2026-09-02 08:54:27.914	2026-09-02 08:54:27.914	N2	neutral	3
@@ -72801,25 +72500,19 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 5979	N + と称される / N + と呼ばれる	được gọi là ~	\N	601	2026-09-02 08:54:27.932	2026-09-02 08:54:27.932	N2	formal	7
 5980	N + に違反する / N + に反する	vi phạm ~, trái với ~	\N	602	2026-09-02 08:54:27.94	2026-09-02 08:54:27.94	N2	formal	0
 5981	N + を訴える / N + を起訴する	kiện ~; truy tố ~	\N	602	2026-09-02 08:54:27.951	2026-09-02 08:54:27.951	N2	formal	1
-5982	N + を裁判する / N + で裁判される	xét xử ~	\N	602	2026-09-02 08:54:27.967	2026-09-02 08:54:27.967	N2	formal	2
 5983	N + を証明する / N + が証明される	chứng minh ~	\N	602	2026-09-02 08:54:27.973	2026-09-02 08:54:27.973	N2	formal	3
 5984	N + を弁護する	biện hộ cho ~	\N	602	2026-09-02 08:54:27.978	2026-09-02 08:54:27.978	N2	formal	4
 5985	N + を補償する / N + に対して賠償する	bồi thường ~	\N	602	2026-09-02 08:54:27.987	2026-09-02 08:54:27.987	N2	formal	5
 5986	N + には限界がある	~ có giới hạn	\N	602	2026-09-02 08:54:27.993	2026-09-02 08:54:27.993	N2	neutral	6
-5987	N + を契約する / N + と契約する	ký hợp đồng ~	\N	602	2026-09-02 08:54:28.001	2026-09-02 08:54:28.001	N2	formal	7
 5988	N + に分類される / N + に区分される	được phân loại vào ~	\N	603	2026-09-02 08:54:28.018	2026-09-02 08:54:28.018	N2	formal	0
 5989	N + の特徴として / N + が特徴的だ	đặc trưng của ~ là ~	\N	603	2026-09-02 08:54:28.027	2026-09-02 08:54:28.027	N2	formal	1
 5990	N + に相当する	tương đương với ~	\N	603	2026-09-02 08:54:28.032	2026-09-02 08:54:28.032	N2	formal	2
 5991	N + によって異なる / N + により異なる	khác nhau tùy theo ~	\N	603	2026-09-02 08:54:28.036	2026-09-02 08:54:28.036	N2	formal	3
 5992	N + を整理する / N + が整理される	sắp xếp ~, chỉnh lý ~	\N	603	2026-09-02 08:54:28.042	2026-09-02 08:54:28.042	N2	neutral	4
-5993	N + を改める / N + を改めて	cải cách ~; một lần nữa ~	\N	603	2026-09-02 08:54:28.046	2026-09-02 08:54:28.046	N2	formal	5
 5994	N + の構造 / N + 構造で	cấu trúc của ~	\N	603	2026-09-02 08:54:28.051	2026-09-02 08:54:28.051	N2	formal	6
-5995	N + を共通とする / N + が共通している	có chung ~	\N	603	2026-09-02 08:54:28.055	2026-09-02 08:54:28.055	N2	formal	7
 5996	N + を余儀なくされる	bị buộc phải ~ (vì hoàn cảnh)	\N	604	2026-09-02 08:54:28.063	2026-09-02 08:54:28.063	N1	formal	0
 5997	N + に足る / N + に足りる	đáng ~, xứng đáng ~	\N	604	2026-09-02 08:54:28.067	2026-09-02 08:54:28.067	N1	written	1
 5998	N + をもってしても	dù có ~ cũng (không đủ)	\N	604	2026-09-02 08:54:28.072	2026-09-02 08:54:28.072	N1	formal	2
-5999	N + に迫る / N + が迫る	ép buộc ~; (thời hạn) cận kề	\N	604	2026-09-02 08:54:28.077	2026-09-02 08:54:28.077	N1	formal	3
-6000	N + を余すところなく	không chừa một ~ nào, triệt để	\N	604	2026-09-02 08:54:28.083	2026-09-02 08:54:28.083	N1	formal	4
 6001	N + に充てる / N + に充当する	dành ~ cho ~, dùng ~ cho ~	\N	604	2026-09-02 08:54:28.087	2026-09-02 08:54:28.087	N1	formal	5
 6002	N + に乏しい / N + が乏しい	thiếu ~, kém ~	\N	604	2026-09-02 08:54:28.091	2026-09-02 08:54:28.091	N1	formal	6
 6003	N + を余す	dư ra ~, còn thừa ~	\N	604	2026-09-02 08:54:28.094	2026-09-02 08:54:28.094	N1	formal	7
@@ -72835,77 +72528,21 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 6016	N + を顧みず / N + を顧みない	không màng ~, bất chấp ~	\N	606	2026-09-02 08:54:28.149	2026-09-02 08:54:28.149	N1	written	4
 6017	N + に同調する / N + に同調しない	đồng điệu với ~	\N	606	2026-09-02 08:54:28.153	2026-09-02 08:54:28.153	N1	formal	5
 6018	N + を異にする / N + とは異なる	khác với ~	\N	606	2026-09-02 08:54:28.157	2026-09-02 08:54:28.157	N1	formal	6
-6019	N + を以て	bằng ~; coi ~ là ~ (văn viết)	\N	606	2026-09-02 08:54:28.161	2026-09-02 08:54:28.161	N1	formal	7
 6020	N + を経て / N + を経た	trải qua ~ (thời gian/quá trình)	\N	607	2026-09-02 08:54:28.166	2026-09-02 08:54:28.166	N1	formal	0
 6021	N + 以来 / N + 以後	kể từ ~	\N	607	2026-09-02 08:54:28.17	2026-09-02 08:54:28.17	N1	formal	1
-6022	N + 末に / N + 末	cuối cùng sau ~ thì ~	\N	607	2026-09-02 08:54:28.173	2026-09-02 08:54:28.173	N1	formal	2
-6075	N + によると	theo ~	\N	694	2026-09-02 09:13:28.233	2026-09-02 09:13:28.233	N5	neutral	7
-5322	だれにVますか。	Làm ~ cho ai?	Cách dùng: に là trợ từ chỉ hướng đến của hành động “cho ai” .\n\nVới động từ あげます, N1 không được dùng là わたし	7	2026-06-25 11:24:12.964	2026-09-02 08:54:27.515	N5	\N	0
 6023	N + に先立ち / N + に先立って	trước khi ~ (chuẩn bị trang trọng)	\N	607	2026-09-02 08:54:28.177	2026-09-02 08:54:28.177	N1	formal	3
 6024	N + を機に / N + を機として	lấy ~ làm dịp	\N	607	2026-09-02 08:54:28.18	2026-09-02 08:54:28.18	N1	formal	4
-6025	N + に即時 / N + 即時に	ngay lập tức ~	\N	607	2026-09-02 08:54:28.183	2026-09-02 08:54:28.183	N1	formal	5
 6026	N + の根底にある / N + が根底にある	nằm ở gốc rễ ~	\N	607	2026-09-02 08:54:28.186	2026-09-02 08:54:28.186	N1	formal	6
-6027	N + をもってして / N + もってして	ngay cả ~ cũng (không đủ/không thể)	\N	607	2026-09-02 08:54:28.189	2026-09-02 08:54:28.189	N1	formal	7
-6028	N + を覆す / N + が覆される	lật đổ ~; che phủ ~	\N	608	2026-09-02 08:54:28.195	2026-09-02 08:54:28.195	N1	formal	0
 6029	N + に浸る / N + に浸って	ngâm mình trong ~; đắm chìm ~	\N	608	2026-09-02 08:54:28.198	2026-09-02 08:54:28.198	N1	written	1
 6030	N + に溶け込む / N + に溶け込んで	hòa nhập vào ~	\N	608	2026-09-02 08:54:28.202	2026-09-02 08:54:28.202	N1	neutral	2
 6031	N + を純化する / N + が純化される	tinh luyện ~, làm tinh khiết ~	\N	608	2026-09-02 08:54:28.205	2026-09-02 08:54:28.205	N1	formal	3
-6032	N + に乏しい / N + 乏しい	khan hiếm ~, thiếu ~	\N	608	2026-09-02 08:54:28.208	2026-09-02 08:54:28.208	N1	formal	4
-6076	V(辞書形) + という + N	N mang tên / được gọi là ~	\N	695	2026-09-02 09:13:28.243	2026-09-02 09:13:28.243	N5	neutral	0
 6033	N + を膨張させる / N + が膨張する	làm phình to ~; ~ phồng lên	\N	608	2026-09-02 08:54:28.212	2026-09-02 08:54:28.212	N1	formal	5
 6034	N + を緻密に / 緻密なN	tỉ mỉ ~, chặt chẽ ~	\N	608	2026-09-02 08:54:28.215	2026-09-02 08:54:28.215	N1	formal	6
-6035	N + をもって終わる / N + もって終わり	kết thúc bằng ~	\N	608	2026-09-02 08:54:28.219	2026-09-02 08:54:28.219	N1	formal	7
-6077	V(普通形) + と思います	tôi nghĩ rằng ~	\N	695	2026-09-02 09:13:28.249	2026-09-02 09:13:28.249	N5	polite	1
-6078	V(普通形) + と言いました	đã nói rằng ~	\N	695	2026-09-02 09:13:28.257	2026-09-02 09:13:28.257	N5	neutral	2
-6079	V(普通形) + そうです (nghe nói)	nghe nói là ~	\N	695	2026-09-02 09:13:28.267	2026-09-02 09:13:28.267	N5	polite	3
-6080	V(ます) + そうです (nhìn thấy)	trông có vẻ sắp ~	\N	695	2026-09-02 09:13:28.28	2026-09-02 09:13:28.28	N5	polite	4
-6081	V(普通形) + らしい	hình như ~ (suy đoán)	\N	695	2026-09-02 09:13:28.29	2026-09-02 09:13:28.29	N5	neutral	5
-6082	V(普通形) + ようだ / みたいだ	dường như ~	\N	695	2026-09-02 09:13:28.299	2026-09-02 09:13:28.299	N5	neutral	6
-6083	V(ば) + ～	nếu ~ thì ~	\N	695	2026-09-02 09:13:28.309	2026-09-02 09:13:28.309	N5	neutral	7
-6084	V(て) + も	dù ~ cũng ~	\N	696	2026-09-02 09:13:28.324	2026-09-02 09:13:28.324	N5	neutral	0
-6087	V(て) + みる	thử ~	\N	696	2026-09-02 09:13:28.352	2026-09-02 09:13:28.352	N5	neutral	3
-6088	V(て) + あげる / くれる / もらう	cho / được cho	\N	696	2026-09-02 09:13:28.358	2026-09-02 09:13:28.358	N5	neutral	4
-6089	V(意向形) + と思っています	định ~	\N	696	2026-09-02 09:13:28.368	2026-09-02 09:13:28.368	N5	polite	5
-6090	V(辞書形) + ことにします	quyết định ~	\N	696	2026-09-02 09:13:28.376	2026-09-02 09:13:28.376	N5	polite	6
-6091	V(辞書形) + ことがあります	đôi khi ~	\N	696	2026-09-02 09:13:28.385	2026-09-02 09:13:28.385	N5	polite	7
-6092	V(辞書形) + ほうがいい	nên ~	\N	697	2026-09-02 09:13:28.398	2026-09-02 09:13:28.398	N5	neutral	0
-6093	V(辞書形) + つもりです	dự định ~	\N	697	2026-09-02 09:13:28.403	2026-09-02 09:13:28.403	N5	polite	1
-6094	V(辞書形) + やすい / にくい	dễ / khó ~	\N	697	2026-09-02 09:13:28.407	2026-09-02 09:13:28.407	N5	neutral	2
-6095	V(ます) + ながら	vừa ~ vừa ~	\N	697	2026-09-02 09:13:28.412	2026-09-02 09:13:28.412	N5	neutral	3
-6096	V(辞書形) + ために	để ~ (mục đích)	\N	697	2026-09-02 09:13:28.417	2026-09-02 09:13:28.417	N5	neutral	4
-6097	V(普通形) + かどうか	liệu có ~ hay không	\N	697	2026-09-02 09:13:28.422	2026-09-02 09:13:28.422	N5	neutral	5
-6098	お/ご + N + する (kính ngữ cơ bản)	kính ngữ với hành động	\N	697	2026-09-02 09:13:28.427	2026-09-02 09:13:28.427	N5	formal	6
-6099	N + を + V(他動詞)	tân ngữ + động từ	\N	697	2026-09-02 09:13:28.433	2026-09-02 09:13:28.433	N5	neutral	7
-6100	V(可能形)	có thể ~ (thể khả năng)	\N	698	2026-09-02 09:13:28.441	2026-09-02 09:13:28.441	N4	neutral	0
-6101	V(受身)	bị ~ / được ~	\N	698	2026-09-02 09:13:28.445	2026-09-02 09:13:28.445	N4	neutral	1
-6102	V(使役)	bắt / cho phép ai ~	\N	698	2026-09-02 09:13:28.45	2026-09-02 09:13:28.45	N4	neutral	2
-6103	V(使役受身)	bị bắt ~	\N	698	2026-09-02 09:13:28.455	2026-09-02 09:13:28.455	N4	neutral	3
-6104	V(て) + いる (trạng thái kết quả)	đang ở trạng thái ~	\N	698	2026-09-02 09:13:28.459	2026-09-02 09:13:28.459	N4	neutral	4
-6106	V(て) + くる / いく	dần ~ / tiếp tục ~	\N	698	2026-09-02 09:13:28.469	2026-09-02 09:13:28.469	N4	neutral	6
-6107	V(て) + しまう (tiếc nuối)	lỡ ~ mất	\N	698	2026-09-02 09:13:28.473	2026-09-02 09:13:28.473	N4	neutral	7
-6108	V(て) + おく (chuẩn bị)	làm sẵn ~	\N	698	2026-09-02 09:13:28.476	2026-09-02 09:13:28.476	N4	neutral	8
-6109	V(て) + みる (thử)	thử ~ xem	\N	699	2026-09-02 09:13:28.488	2026-09-02 09:13:28.488	N4	neutral	0
-6110	V(て) + ください (yêu cầu liên tục)	hãy ~ (nhờ vả)	\N	699	2026-09-02 09:13:28.491	2026-09-02 09:13:28.491	N4	polite	1
-6111	V(ない) + ほうがいい	không nên ~	\N	699	2026-09-02 09:13:28.496	2026-09-02 09:13:28.496	N4	neutral	2
-6112	V(た) + ことがある	đã từng ~	\N	699	2026-09-02 09:13:28.502	2026-09-02 09:13:28.502	N4	neutral	3
-6113	V(た) + ば + よかった	đáng lẽ nên ~	\N	699	2026-09-02 09:13:28.508	2026-09-02 09:13:28.508	N4	neutral	4
-6114	V(た) + ところ	vừa mới ~ xong	\N	699	2026-09-02 09:13:28.513	2026-09-02 09:13:28.513	N4	neutral	5
-6115	V(る) + ところ	sắp ~	\N	699	2026-09-02 09:13:28.518	2026-09-02 09:13:28.518	N4	neutral	6
-6116	V(ている) + ところ	đang ~ (ngay lúc này)	\N	699	2026-09-02 09:13:28.523	2026-09-02 09:13:28.523	N4	neutral	7
-6117	V(辞書形) + はずだ	chắc hẳn ~	\N	699	2026-09-02 09:13:28.527	2026-09-02 09:13:28.527	N4	neutral	8
-6118	V(辞書形) + べきだ	nên ~ (moral)	\N	700	2026-09-02 09:13:28.537	2026-09-02 09:13:28.537	N4	formal	0
-6119	V(辞書形) + かもしれない	có thể ~	\N	700	2026-09-02 09:13:28.543	2026-09-02 09:13:28.543	N4	neutral	1
-6120	V(辞書形) + わけではない	không hẳn là ~	\N	700	2026-09-02 09:13:28.55	2026-09-02 09:13:28.55	N4	neutral	2
-6121	V(辞書形) + わけがない	không thể nào ~	\N	700	2026-09-02 09:13:28.557	2026-09-02 09:13:28.557	N4	neutral	3
-6122	V(普通形) + ので / から	vì ~ nên ~	\N	700	2026-09-02 09:13:28.564	2026-09-02 09:13:28.564	N4	neutral	4
-5297	ここ・そこ・あそこ は N ( địa điểm ) です	Chỗ này/đó/kia là N	Cách dùng: – ここ・そこ・あそこ là các đại danh từ chỉ nơi chốn – ここ chỉ chỗ của người nói. (Trong phạm vi của người nói) そこ là chỗ của người nghe. (Trong phạm vi của người nghe) あそこ chỉ nơi xa cả hai người.	3	2026-06-25 11:24:11.296	2026-09-02 08:54:27.486	N5	\N	0
-6123	V(普通形) + のに	mặc dù ~ mà ~	\N	700	2026-09-02 09:13:28.572	2026-09-02 09:13:28.572	N4	neutral	5
 5812	V(từ điển/ない) + ように	để (làm được), sao cho ~	Diễn tả mục đích với động từ chỉ trạng thái/khả năng (không chủ ý): できる, わかる, 聞こえる, hoặc thể phủ định. So với 「ために」 (mục đích có chủ ý).	552	2026-08-29 06:52:54.065	2026-08-29 06:52:54.065	N3	neutral	0
 5813	V(từ điển) + ようにする / ようになる	cố gắng làm ~ (thói quen) / trở nên ~ (thay đổi)	「ようにする」: nỗ lực duy trì một thói quen. 「ようになる」: sự thay đổi dần dần về trạng thái hoặc khả năng.	552	2026-08-29 06:52:54.079	2026-08-29 06:52:54.079	N3	neutral	1
 5814	N + のために / V(từ điển) + ために	vì, để (mục đích có chủ ý)	Chủ ngữ hai vế giống nhau và hành động có chủ đích. Khác 「ように」 ở chỗ động từ là động từ ý chí.	552	2026-08-29 06:52:54.085	2026-08-29 06:52:54.085	N3	neutral	2
 5815	V(た) + おかげで / N + のおかげで	nhờ có ~ (kết quả tốt)	Chỉ nguyên nhân dẫn đến kết quả tích cực, mang sắc thái biết ơn. Trái nghĩa: 「せいで」 (kết quả xấu).	552	2026-08-29 06:52:54.091	2026-08-29 06:52:54.091	N3	neutral	3
 5816	V(thể thường) + せいで / N + のせいで	tại vì ~ (kết quả xấu), do lỗi của ~	Quy trách nhiệm cho nguyên nhân gây hậu quả xấu. 「せいか」 = "có lẽ do ~" (không chắc chắn).	552	2026-08-29 06:52:54.099	2026-08-29 06:52:54.099	N3	neutral	4
-6124	V(普通形) + けれど / けど	tuy ~ nhưng ~	\N	700	2026-09-02 09:13:28.581	2026-09-02 09:13:28.581	N4	neutral	6
 5817	V/A/N(thể thường) + ば + ～ほど	càng ~ thì càng ~	Động từ: 〜ば〜ほど. Tính từ -i: 〜ければ〜いほど. Tính từ -na / danh từ: 〜なら（であれば）〜なほど.	552	2026-08-29 06:52:54.106	2026-08-29 06:52:54.106	N3	neutral	5
 5818	V(た) + ら + ～た (bất ngờ)	khi ~ thì (phát hiện ra) ~	Dùng khi làm việc gì đó rồi phát hiện một sự thật bất ngờ, ngoài dự đoán. Vế sau ở thì quá khứ.	552	2026-08-29 06:52:54.116	2026-08-29 06:52:54.116	N3	neutral	6
 5819	N + によって / により	tùy theo ~; do ~ (bị động); bằng ~	Nhiều nghĩa: (1) tùy vào 〜によって違う; (2) chỉ tác nhân trong câu bị động; (3) phương tiện/nguyên nhân. 「による N」 khi bổ nghĩa danh từ.	552	2026-08-29 06:52:54.123	2026-08-29 06:52:54.123	N3	written	7
@@ -72924,9 +72561,7 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 5832	V(た) + まま / N + のまま	để nguyên trạng thái ~ mà ~	Một trạng thái được giữ nguyên trong khi hành động khác diễn ra (thường là bất thường).	553	2026-08-29 06:52:54.789	2026-08-29 06:52:54.789	N3	neutral	8
 5833	V(từ điển) + につれて / にしたがって	càng ~ thì càng ~ (biến đổi song song)	Hai sự việc biến đổi cùng chiều theo thời gian. Dùng với danh từ chỉ sự biến hóa: 時間, 成長.	553	2026-08-29 06:52:54.799	2026-08-29 06:52:54.799	N3	written	9
 5834	N + として	với tư cách là ~, coi như là ~	Chỉ tư cách, vai trò, danh nghĩa. 「〜としては」 nhấn mạnh, 「〜としても」 kết hợp giả định.	553	2026-08-29 06:52:54.805	2026-08-29 06:52:54.805	N3	written	10
-6128	V(普通形) + ても	dù ~ cũng ~	\N	701	2026-09-02 09:13:28.628	2026-09-02 09:13:28.628	N4	neutral	2
 5835	V(bị động) — られる / れる	bị / được ~	Nhóm I: あ段 + れる. Nhóm II: 〜られる. する→される, くる→こられる. Có bị động trực tiếp, gián tiếp (thiệt hại), và bị động sự vật.	554	2026-08-29 06:52:55.371	2026-08-29 06:52:55.371	N3	neutral	0
-6125	V(普通形) + し	vì ~ và ~	\N	700	2026-09-02 09:13:28.59	2026-09-02 09:13:28.59	N4	neutral	7
 5836	V(sai khiến) — させる / せる	bắt / cho phép ~ làm ~	Nhóm I: あ段 + せる. Nhóm II: 〜させる. Người bị sai khiến đánh dấu bằng を (tự động từ) hoặc に (tha động từ).	554	2026-08-29 06:52:55.385	2026-08-29 06:52:55.385	N3	neutral	1
 5837	V(sai khiến bị động) — させられる / せられる	bị bắt phải ~ (miễn cưỡng)	Nhóm I có thể rút gọn 〜される (trừ đuôi す). Diễn tả bị ép làm điều không muốn.	554	2026-08-29 06:52:55.398	2026-08-29 06:52:55.398	N3	neutral	2
 5838	お + V(ます bỏ) + になる / ご + N + になる	tôn kính ngữ (hành động của người trên)	Kính ngữ dạng chung. Một số động từ có dạng riêng: いらっしゃる, おっしゃる,召し上がる, ご覧になる, なさる.	554	2026-08-29 06:52:55.409	2026-08-29 06:52:55.409	N3	formal	3
@@ -72951,11 +72586,9 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 5857	V/A/N(thể thường) + ば + ～のに / たら + ～のに	giá mà ~ thì đã ~ (tiếc nuối)	Giả định trái thực tế kèm cảm xúc tiếc. Vế sau thường bỏ lửng: 「〜ばよかった(のに)」.	589	2026-08-29 06:52:56.981	2026-08-29 06:52:56.981	N3	spoken	2
 5858	N + くらい / ぐらい	khoảng ~; đến mức ~	Chỉ mức độ ước lượng, hoặc mức độ tối thiểu/thấp ("chỉ chừng đó thôi").	589	2026-08-29 06:52:56.992	2026-08-29 06:52:56.992	N3	neutral	3
 5859	N + ほど / V(từ điển) + ほど	đến mức ~; không ~ bằng ~	「〜ほど〜ない」: so sánh, "A không bằng B". Cũng chỉ mức độ cao: 「泣きたいほど」.	589	2026-08-29 06:52:57.001	2026-08-29 06:52:57.001	N3	neutral	4
-5860	N/V(từ điển) + にすぎない → ôn; V(た/ている) + ばかり + だ	toàn là ~, cứ ~ suốt	「〜てばかりいる」: chỉ làm mỗi việc đó (chê trách). 「〜たばかり」 (vừa mới) đã học ở Bài 1.	589	2026-08-29 06:52:57.015	2026-08-29 06:52:57.015	N3	spoken	5
 5861	V(ます bỏ) + ながら (đối lập)	tuy ~ nhưng ~	Ngoài nghĩa "vừa…vừa", 「ながら(も)」 còn chỉ sự đối lập. 「残念ながら」, 「知っていながら」.	589	2026-08-29 06:52:57.035	2026-08-29 06:52:57.035	N3	written	6
 6512	V て くれます	(ai đó) làm V cho tôi	\N	16164	2026-09-26 06:22:23.054	2026-09-26 06:22:23.054	N4	\N	2
 5862	V/A/N(thể thường) + みたいに / みたいな N	như là ~, giống ~	Bản hội thoại của 「〜のように / のような」. So sánh, ví von.	589	2026-08-29 06:52:57.056	2026-08-29 06:52:57.056	N3	spoken	7
-5863	V(từ điển/ない) + ようにも + V(khả năng ない)	dù muốn ~ cũng không ~ được	Muốn làm nhưng hoàn cảnh không cho phép. 「行こうにも行けない」.	589	2026-08-29 06:52:57.068	2026-08-29 06:52:57.068	N3	written	8
 5864	N + からいうと / からみると / からいえば	xét về mặt ~, từ góc độ ~	Nêu góc nhìn/tiêu chí để đánh giá. Gần với 「〜にとって」 nhưng thiên về "đứng ở lập trường đó mà nói".	589	2026-08-29 06:52:57.082	2026-08-29 06:52:57.082	N3	neutral	9
 5865	V(た) + り + V(た) + り + する	nào là ~ nào là ~ (liệt kê hành động)	Ôn tập N4 nhưng hay ra ở N3: liệt kê không đầy đủ các hành động. Cũng dùng cho trạng thái đối lập (泣いたり笑ったり).	589	2026-08-29 06:52:57.095	2026-08-29 06:52:57.095	N3	neutral	10
 5866	V(た/từ điển) + とたん(に)	ngay khoảnh khắc ~ thì (bất ngờ)	Ngay lập tức xảy ra việc thứ hai, thường ngoài ý muốn. Vế sau ở quá khứ, không dùng cho ý chí/mệnh lệnh.	556	2026-08-29 06:52:57.796	2026-08-29 06:52:57.796	N2	written	0
@@ -72971,14 +72604,12 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 5876	N + に基づいて / に基づく N	dựa trên, căn cứ vào ~	Lấy điều gì làm cơ sở/nền tảng để thực hiện. Trang trọng, văn viết.	557	2026-08-29 06:52:58.56	2026-08-29 06:52:58.56	N2	written	0
 5877	N + に応じて / に応じた N	tùy theo, tương ứng với ~	Thay đổi linh hoạt cho phù hợp với điều kiện/tình huống.	557	2026-08-29 06:52:58.574	2026-08-29 06:52:58.574	N2	written	1
 5878	N + にとって(は)	đối với ~ (mà nói)	Nêu lập trường để đánh giá điều gì đó. Vế sau thường là tính từ đánh giá (大切, 難しい).	557	2026-08-29 06:52:58.585	2026-08-29 06:52:58.585	N2	neutral	2
-5879	N + において / N + にかけては	về mặt ~, xét về ~ thì (giỏi nhất)	「〜にかけては」 dùng để khen ai đó xuất sắc trong một lĩnh vực.	557	2026-08-29 06:52:58.596	2026-08-29 06:52:58.596	N2	neutral	3
 5880	N + に対して / に対する N	đối với ~, hướng về ~; trái lại	Chỉ đối tượng của thái độ/hành động. Cũng dùng để đối chiếu hai vế tương phản.	557	2026-08-29 06:52:58.608	2026-08-29 06:52:58.608	N2	written	4
 5881	N + をめぐって / をめぐる N	xoay quanh, liên quan đến ~ (tranh luận)	Chủ đề của tranh cãi, thảo luận, xung đột.	557	2026-08-29 06:52:58.62	2026-08-29 06:52:58.62	N2	written	5
 5882	N + につけ(て) / V(từ điển) + につけ	mỗi khi ~ là lại ~ (cảm xúc tự nhiên)	Một kích thích luôn khơi dậy một cảm xúc/suy nghĩ. Hay đi với 見る, 聞く, 考える.	557	2026-08-29 06:52:58.632	2026-08-29 06:52:58.632	N2	written	6
 5883	N + からすると / からすれば / からいって	xét từ ~, dựa vào ~ mà nói	Nêu căn cứ để phán đoán/đánh giá. 「〜からして」 = ngay cả ~ (nêu ví dụ cực đoan).	557	2026-08-29 06:52:58.643	2026-08-29 06:52:58.643	N2	neutral	7
 5884	N + につき	do ~ (lý do, trang trọng); mỗi ~	Thường thấy trên biển thông báo. Nghĩa thứ hai: đơn giá "mỗi đơn vị".	557	2026-08-29 06:52:58.655	2026-08-29 06:52:58.655	N2	formal	8
 5885	N + のもとで / のもとに	dưới sự ~, trong điều kiện ~	Dưới sự chỉ đạo, ảnh hưởng, điều kiện của ai/cái gì.	557	2026-08-29 06:52:58.666	2026-08-29 06:52:58.666	N2	written	9
-5886	V(từ điển/ない) + ざるを得ない	buộc phải ~, không thể không ~	する → せざるを得ない. Bị hoàn cảnh ép buộc, dù không muốn. Trang trọng, văn viết.	558	2026-08-29 06:52:59.424	2026-08-29 06:52:59.424	N2	written	0
 5887	V(từ điển) + よりほかない / ほかはない	chỉ còn cách ~, không còn cách nào khác	Chỉ có một lựa chọn duy nhất. Tương đương 「〜しかない」 nhưng trang trọng hơn.	558	2026-08-29 06:52:59.431	2026-08-29 06:52:59.431	N2	written	1
 5888	V(ない) + ことには	nếu không ~ thì (không thể ~)	Điều kiện tiên quyết. Vế sau luôn mang nghĩa phủ định.	558	2026-08-29 06:52:59.441	2026-08-29 06:52:59.441	N2	neutral	2
 5889	V/A/N(thể thường) + どころか	nói gì đến ~, chứ đừng nói ~; trái lại còn ~	Phủ định mạnh kỳ vọng, thực tế còn ngược lại hoặc kém xa.	558	2026-08-29 06:52:59.452	2026-08-29 06:52:59.452	N2	neutral	3
@@ -72986,7 +72617,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 5891	V/A/N(thể thường) + に違いない	chắc chắn là ~, nhất định ~	Người nói tin chắc dựa trên căn cứ. Trang trọng hơn 「はずだ」. Rất chắc: 「に決まっている」 (hội thoại).	558	2026-08-29 06:52:59.48	2026-08-29 06:52:59.48	N2	written	5
 5892	N + にすぎない	chẳng qua chỉ là ~	Đánh giá thấp, coi nhẹ mức độ/tầm quan trọng của sự việc.	558	2026-08-29 06:52:59.493	2026-08-29 06:52:59.493	N2	written	6
 5893	N + にほかならない	chính là ~, không gì khác ngoài ~	Khẳng định mạnh mẽ rằng đó chính xác là điều gì đó.	558	2026-08-29 06:52:59.506	2026-08-29 06:52:59.506	N2	written	7
-5894	V(からある) / N + からの + N	tận, những ~ (nhấn mạnh số lượng lớn)	「〜からある」 (khối lượng/kích thước), 「〜からする」 (giá tiền), 「〜からいる」 (số người).	558	2026-08-29 06:52:59.518	2026-08-29 06:52:59.518	N2	written	8
 5895	V/A/N(thể thường) + と言っても	tuy nói là ~ nhưng (không nhiều như tưởng)	Đính chính lại kỳ vọng của người nghe sau khi nêu một điều gì đó.	558	2026-08-29 06:52:59.531	2026-08-29 06:52:59.531	N2	neutral	9
 5896	V/A/N(thể thường) + からには /以上(は)	đã ~ thì (đương nhiên phải ~)	Nêu tiền đề rồi rút ra kết luận về nghĩa vụ/quyết tâm. Vế sau: べきだ, なければならない, つもりだ.	559	2026-08-29 06:53:00.318	2026-08-29 06:53:00.318	N2	written	0
 5897	V(た) + ところで	cho dù ~ đi nữa cũng (vô ích)	Giả định nhượng bộ, vế sau luôn tiêu cực/vô nghĩa. Thường có 「今さら」, 「いくら」.	559	2026-08-29 06:53:00.332	2026-08-29 06:53:00.332	N2	written	1
@@ -73005,13 +72635,11 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 5910	V(từ điển/ない) + ことなく	mà không ~, không hề ~	Bản văn viết của 「〜ないで」. Nhấn mạnh một việc hoàn toàn không xảy ra.	594	2026-08-29 06:53:01.243	2026-08-29 06:53:01.243	N2	written	4
 5911	V(た) + 結果 / N + の結果	kết quả của việc ~ là ~	Nêu kết cục sau một quá trình. Trung tính, hay dùng trong báo cáo.	594	2026-08-29 06:53:01.255	2026-08-29 06:53:01.255	N2	written	5
 5912	V(た) + あまり(に) / N + のあまり	vì quá ~ nên ~	Cảm xúc/trạng thái quá mức dẫn đến hệ quả (thường bất thường). Hay đi với 心配, 緊張, 驚き, うれしさ.	594	2026-08-29 06:53:01.274	2026-08-29 06:53:01.274	N2	written	6
-5913	V(từ điển/ない) + より(ほか)ない → ôn; V(ます bỏ) + ようがない	không có cách nào để ~	Không có phương tiện/cách thức để thực hiện. 「連絡しようがない」, 「どうしようもない」.	594	2026-08-29 06:53:01.282	2026-08-29 06:53:01.282	N2	neutral	7
 5914	V(ます bỏ) + かける / かけの N	đang ~ dở, làm ~ chừng	Hành động bắt đầu nhưng chưa xong. 読みかけの本, 食べかけ, 言いかけて やめる.	594	2026-08-29 06:53:01.29	2026-08-29 06:53:01.29	N2	neutral	8
 5915	V/A/N(thể thường) + ものだ	vốn dĩ ~, thường thì ~ (chân lý/hồi tưởng/cảm thán)	Nhiều sắc thái: chân lý chung, hồi tưởng 「〜たものだ」, cảm thán, lời khuyên 「〜ものではない」.	594	2026-08-29 06:53:01.298	2026-08-29 06:53:01.298	N2	neutral	9
 5916	N + をもって	bằng ~; kể từ ~ (mốc thời gian trang trọng)	Nghĩa 1: phương tiện/tiêu chuẩn (身をもって). Nghĩa 2: mốc thời gian trong thông báo chính thức.	560	2026-08-29 06:53:01.788	2026-08-29 06:53:01.788	N1	formal	0
 5917	N + をよそに	bất chấp ~, phớt lờ ~	Hành động phớt lờ mối lo ngại/kỳ vọng/phản đối của người xung quanh. Sắc thái phê phán.	560	2026-08-29 06:53:01.797	2026-08-29 06:53:01.797	N1	written	1
 5918	N + をおいて(ほかに~ない)	ngoài ~ ra thì không còn ~	Khẳng định đối tượng là duy nhất, không có lựa chọn thay thế.	560	2026-08-29 06:53:01.805	2026-08-29 06:53:01.805	N1	written	2
-5919	N + たる(もの) / V + たる	là ~ thì (phải có tư cách xứng đáng)	Nhấn mạnh trách nhiệm/phẩm chất đi kèm với một địa vị. Cổ, trang trọng.	560	2026-08-29 06:53:01.827	2026-08-29 06:53:01.827	N1	formal	3
 5920	N + ならでは(の)	chỉ có ~ mới có được (đặc trưng riêng)	Khen ngợi nét độc đáo mà chỉ đối tượng đó mới làm/có được.	560	2026-08-29 06:53:01.838	2026-08-29 06:53:01.838	N1	written	4
 5921	V(ます bỏ) + っこない	làm gì có chuyện ~, không đời nào ~	Phủ định khả năng, khẩu ngữ mạnh. Tương đương 「〜わけがない / 〜はずがない」.	560	2026-08-29 06:53:01.847	2026-08-29 06:53:01.847	N1	spoken	5
 5922	V/A/N(thể thường) + といったらない / といったらありはしない	~ vô cùng, không thể tả nổi ~	Cảm thán mức độ cực đại (tốt hoặc xấu). Khẩu ngữ: 〜ったらない.	560	2026-08-29 06:53:01.856	2026-08-29 06:53:01.856	N1	spoken	6
@@ -73019,8 +72647,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7337	〜折（に）	vào dịp, khi … (trang trọng)	\N	16404	2026-09-26 12:15:21.446	2026-09-26 12:15:21.446	N1	\N	2
 5923	V(た) + が最後 / V(たら) + 最後	một khi đã ~ thì (chắc chắn hậu quả xấu)	Nếu làm việc đó thì nhất định sẽ dẫn đến kết cục tồi tệ, không cứu vãn.	560	2026-08-29 06:53:01.864	2026-08-29 06:53:01.864	N1	written	7
 5924	N + ずくめ	toàn là ~, chỗ nào cũng ~	Toàn bộ đều là cùng một thứ. いいことずくめ, 黒ずくめ, 記録ずくめ.	560	2026-08-29 06:53:01.872	2026-08-29 06:53:01.872	N1	written	8
-6126	V(普通形) + なら	nếu là ~ thì ~	\N	701	2026-09-02 09:13:28.607	2026-09-02 09:13:28.607	N4	neutral	0
-6127	V(普通形) + たら	nếu / khi ~ thì ~	\N	701	2026-09-02 09:13:28.619	2026-09-02 09:13:28.619	N4	neutral	1
 5925	V(ます bỏ) + そびれる	lỡ mất cơ hội ~, định làm mà không làm được	「〜そびれる」: định làm nhưng lỡ dịp/không làm được. Hay gặp: 言いそびれる, 食べそびれる, 聞きそびれる, 寝そびれる.	560	2026-08-29 06:53:01.883	2026-08-29 06:53:01.883	N1	neutral	9
 5926	V(た/từ điển) + が早いか	vừa ~ là lập tức ~	Gần như đồng thời, việc sau xảy ra ngay tức khắc. Văn viết, tương tự 「〜なり」, 「〜そばから」.	561	2026-08-29 06:53:02.649	2026-08-29 06:53:02.649	N1	written	0
 5927	V(từ điển) + そばから	vừa ~ xong lại ~ ngay (lặp đi lặp lại)	Việc vừa làm xong thì tình trạng cũ tái diễn ngay, thường gây bực bội.	561	2026-08-29 06:53:02.663	2026-08-29 06:53:02.663	N1	written	1
@@ -73046,153 +72672,9 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 5947	N + にとどまらず	không dừng lại ở ~ mà còn lan sang ~	Phạm vi ảnh hưởng vượt ra ngoài mức ban đầu. Trang trọng.	598	2026-08-29 06:53:03.896	2026-08-29 06:53:03.896	N1	written	1
 5948	N + をものともせず(に)	bất chấp ~, không hề nao núng trước ~	Vượt qua khó khăn/trở ngại lớn một cách dũng cảm. Đánh giá tích cực.	598	2026-08-29 06:53:03.906	2026-08-29 06:53:03.906	N1	written	2
 5949	N + いかんによらず / N + を問わず	bất kể ~, không phân biệt ~	「〜を問わず」 phổ biến hơn (経験を問わず, 年齢・性別を問わず). 「〜いかんによらず」 trang trọng, hành chính.	598	2026-08-29 06:53:03.912	2026-08-29 06:53:03.912	N1	formal	3
-5950	N + をよそに → ôn; N + はさておき	khoan bàn tới ~, gác ~ sang một bên	Tạm gác chủ đề này để nói sang chuyện khác (quan trọng/cấp bách hơn).	598	2026-08-29 06:53:03.919	2026-08-29 06:53:03.919	N1	neutral	4
 5951	V(ます bỏ) + っぷり / V(ます bỏ) + ぶり	cách ~, dáng vẻ ~	Chỉ phong thái, cách thức làm việc gì. 飲みっぷり, 話しぶり, 仕事ぶり. 「N ぶり」 còn nghĩa "sau bao lâu".	598	2026-08-29 06:53:03.927	2026-08-29 06:53:03.927	N1	spoken	5
 6514	V て いただけませんか	anh/chị có thể làm V giúp tôi được không? (lịch sự)	\N	16164	2026-09-26 06:22:23.068	2026-09-26 06:22:23.068	N4	\N	4
 5955	V/A/N(thể thường) + ずにはいられない / ないではいられない	không thể không ~, cầm lòng không đặng	Cảm xúc/thôi thúc mạnh khiến không kìm được hành động. する→せずにはいられない.	598	2026-08-29 06:53:03.959	2026-08-29 06:53:03.959	N1	written	9
-6129	V(普通形) + ば + いい	chỉ cần ~ là được	\N	701	2026-09-02 09:13:28.636	2026-09-02 09:13:28.636	N4	neutral	3
-6130	V(普通形) + ば + よかった	nếu ~ thì tốt rồi	\N	701	2026-09-02 09:13:28.643	2026-09-02 09:13:28.643	N4	neutral	4
-6131	A(い) + すぎる / V(ます) + すぎる	quá ~	\N	701	2026-09-02 09:13:28.651	2026-09-02 09:13:28.651	N4	neutral	5
-6132	V(辞書形) + 出す	bắt đầu đột ngột ~	\N	701	2026-09-02 09:13:28.659	2026-09-02 09:13:28.659	N4	neutral	6
-6133	V(ます) + 続ける	tiếp tục ~	\N	701	2026-09-02 09:13:28.666	2026-09-02 09:13:28.666	N4	neutral	7
-6134	V(ます) + 直す	làm lại ~	\N	702	2026-09-02 09:13:28.677	2026-09-02 09:13:28.677	N4	neutral	0
-6135	V(ます) + 切る	làm hết ~	\N	702	2026-09-02 09:13:28.685	2026-09-02 09:13:28.685	N4	neutral	1
-6136	V(ます) + 切れない	không thể ~ hết	\N	702	2026-09-02 09:13:28.693	2026-09-02 09:13:28.693	N4	neutral	2
-6138	N + に対して	đối với ~	\N	702	2026-09-02 09:13:28.712	2026-09-02 09:13:28.712	N4	formal	4
-6139	N + にとって	đối với ~ (quan điểm)	\N	702	2026-09-02 09:13:28.723	2026-09-02 09:13:28.723	N4	neutral	5
-6141	N + によって (tác giả)	bởi ~	\N	702	2026-09-02 09:13:28.744	2026-09-02 09:13:28.744	N4	formal	7
-6142	N + について (chủ đề)	về ~	\N	703	2026-09-02 09:13:28.762	2026-09-02 09:13:28.762	N4	neutral	0
-6143	N + に関して	liên quan đến ~	\N	703	2026-09-02 09:13:28.773	2026-09-02 09:13:28.773	N4	formal	1
-6144	N + の代わりに	thay vì ~	\N	703	2026-09-02 09:13:28.782	2026-09-02 09:13:28.782	N4	neutral	2
-6145	N + 次第	ngay khi ~	\N	703	2026-09-02 09:13:28.791	2026-09-02 09:13:28.791	N4	formal	3
-6146	V(ます) + 方	cách ~	\N	703	2026-09-02 09:13:28.797	2026-09-02 09:13:28.797	N4	neutral	4
-6147	V(ます) + やすい / にくい	dễ / khó ~	\N	703	2026-09-02 09:13:28.805	2026-09-02 09:13:28.805	N4	neutral	5
-6148	V(ます) + たがる	muốn ~ (của người khác)	\N	703	2026-09-02 09:13:28.815	2026-09-02 09:13:28.815	N4	neutral	6
-6149	V(ます) + そうにない	không có vẻ sẽ ~	\N	703	2026-09-02 09:13:28.826	2026-09-02 09:13:28.826	N4	neutral	7
-6150	V(ます) + っぱなし	để nguyên ~	\N	704	2026-09-02 09:13:28.843	2026-09-02 09:13:28.843	N4	spoken	0
-6151	V(ます) + まくる	làm ~ liên tục (slang)	\N	704	2026-09-02 09:13:28.854	2026-09-02 09:13:28.854	N4	spoken	1
-6152	V(辞書形) + 最中に	ngay lúc đang ~	\N	704	2026-09-02 09:13:28.866	2026-09-02 09:13:28.866	N4	neutral	2
-6153	V(辞書形) + うちに	trong lúc ~	\N	704	2026-09-02 09:13:28.875	2026-09-02 09:13:28.875	N4	neutral	3
-6154	V(辞書形) + あいだに	trong lúc ~ thì ~	\N	704	2026-09-02 09:13:28.882	2026-09-02 09:13:28.882	N4	neutral	4
-6155	V(辞書形) + おかげで	nhờ ~ (tích cực)	\N	704	2026-09-02 09:13:28.887	2026-09-02 09:13:28.887	N4	neutral	5
-6156	V(辞書形) + せいで	tại vì ~ (tiêu cực)	\N	704	2026-09-02 09:13:28.893	2026-09-02 09:13:28.893	N4	neutral	6
-6157	V(辞書形) + くせに	mà lại ~ (trách móc)	\N	704	2026-09-02 09:13:28.9	2026-09-02 09:13:28.9	N4	spoken	7
-6158	V(普通形) + ように	để ~ (kết quả không chủ ý)	\N	705	2026-09-02 09:13:28.912	2026-09-02 09:13:28.912	N3	neutral	0
-6159	V(普通形) + ようにする / ようになる	cố gắng ~ / trở nên ~	\N	705	2026-09-02 09:13:28.919	2026-09-02 09:13:28.919	N3	neutral	1
-6160	V(普通形) + ために	để ~ (mục đích có chủ ý)	\N	705	2026-09-02 09:13:28.925	2026-09-02 09:13:28.925	N3	neutral	2
-6161	V(た) + おかげで	nhờ ~ (kết quả tốt)	\N	705	2026-09-02 09:13:28.931	2026-09-02 09:13:28.931	N3	neutral	3
-6162	V(普通形) + せいで	tại vì ~ (kết quả xấu)	\N	705	2026-09-02 09:13:28.936	2026-09-02 09:13:28.936	N3	neutral	4
-6163	V/A/N(普通形) + ば + ～ほど	càng ~ càng ~	\N	705	2026-09-02 09:13:28.942	2026-09-02 09:13:28.942	N3	neutral	5
-6164	V(普通形) + ば + いいのに	đáng lẽ ~ thì tốt	\N	705	2026-09-02 09:13:28.948	2026-09-02 09:13:28.948	N3	neutral	6
-6165	V(普通形) + もの / もん	vì ~ (biện minh)	\N	705	2026-09-02 09:13:28.954	2026-09-02 09:13:28.954	N3	spoken	7
-6166	V(普通形) + ものだ	đương nhiên ~; thói quen xưa	\N	706	2026-09-02 09:13:28.966	2026-09-02 09:13:28.966	N3	neutral	0
-6167	V(普通形) + ものではない	không nên ~	\N	706	2026-09-02 09:13:28.976	2026-09-02 09:13:28.976	N3	formal	1
-6168	V(普通形) + ものか / もんか	quyết không ~	\N	706	2026-09-02 09:13:28.983	2026-09-02 09:13:28.983	N3	spoken	2
-6169	V(普通形) + ことだ	nên ~ (lời khuyên)	\N	706	2026-09-02 09:13:28.989	2026-09-02 09:13:28.989	N3	neutral	3
-6170	V(普通形) + ことか	biết bao ~!	\N	706	2026-09-02 09:13:28.995	2026-09-02 09:13:28.995	N3	neutral	4
-6171	V(普通形) + ことはない	không cần ~	\N	706	2026-09-02 09:13:29.002	2026-09-02 09:13:29.002	N3	neutral	5
-6172	V(普通形) + ことにはならない	chưa chắc đã ~	\N	706	2026-09-02 09:13:29.008	2026-09-02 09:13:29.008	N3	formal	6
-6173	V(普通形) + わけだ	hèn chi ~; tất nhiên ~	\N	706	2026-09-02 09:13:29.014	2026-09-02 09:13:29.014	N3	neutral	7
-6174	V(普通形) + わけがない	không thể ~	\N	707	2026-09-02 09:13:29.029	2026-09-02 09:13:29.029	N3	neutral	0
-6175	V(普通形) + わけにはいかない	không thể ~ (ràng buộc)	\N	707	2026-09-02 09:13:29.04	2026-09-02 09:13:29.04	N3	neutral	1
-6176	V(普通形) + わけではない	không hẳn ~	\N	707	2026-09-02 09:13:29.051	2026-09-02 09:13:29.051	N3	neutral	2
-6177	V(普通形) + とは限らない	chưa chắc ~	\N	707	2026-09-02 09:13:29.062	2026-09-02 09:13:29.062	N3	neutral	3
-6178	V(普通形) + 一方だ	càng ngày càng ~	\N	707	2026-09-02 09:13:29.074	2026-09-02 09:13:29.074	N3	formal	4
-6179	V(普通形) + 一方で	một mặt ~ mặt khác ~	\N	707	2026-09-02 09:13:29.085	2026-09-02 09:13:29.085	N3	formal	5
-6180	V(普通形) + 最中に	ngay giữa lúc ~	\N	707	2026-09-02 09:13:29.096	2026-09-02 09:13:29.096	N3	neutral	6
-6181	V(普通形) + 際に	khi ~ (trang trọng)	\N	707	2026-09-02 09:13:29.107	2026-09-02 09:13:29.107	N3	formal	7
-6182	V(普通形) + うちに	trong khi còn ~	\N	708	2026-09-02 09:13:29.125	2026-09-02 09:13:29.125	N3	neutral	0
-6183	V(普通形) + たびに	mỗi lần ~	\N	708	2026-09-02 09:13:29.136	2026-09-02 09:13:29.136	N3	neutral	1
-6184	V(普通形) + かけ	đang ~ dở	\N	708	2026-09-02 09:13:29.147	2026-09-02 09:13:29.147	N3	neutral	2
-6185	V(普通形) + っこない	không thể ~	\N	708	2026-09-02 09:13:29.158	2026-09-02 09:13:29.158	N3	spoken	3
-6186	V(普通形) + 得る / 得ない	có thể / không thể ~	\N	708	2026-09-02 09:13:29.17	2026-09-02 09:13:29.17	N3	formal	4
-6187	V(普通形) + かねる	khó ~; không thể ~ (lịch sự từ chối)	\N	708	2026-09-02 09:13:29.182	2026-09-02 09:13:29.182	N3	formal	5
-6188	V(普通形) + かねない	có thể ~ (xấu)	\N	708	2026-09-02 09:13:29.193	2026-09-02 09:13:29.193	N3	formal	6
-6189	V(普通形) + きる / きれない	làm hết ~ / không thể hết ~	\N	708	2026-09-02 09:13:29.204	2026-09-02 09:13:29.204	N3	neutral	7
-6190	V(普通形) + 切れない	không thể ~ hết	\N	709	2026-09-02 09:13:29.223	2026-09-02 09:13:29.223	N3	neutral	0
-6191	V(普通形) + 抜く	làm ~ hết mình	\N	709	2026-09-02 09:13:29.234	2026-09-02 09:13:29.234	N3	neutral	1
-6192	V(普通形) + 合う	~ lẫn nhau	\N	709	2026-09-02 09:13:29.245	2026-09-02 09:13:29.245	N3	neutral	2
-6193	V(普通形) + 直す	làm lại ~	\N	709	2026-09-02 09:13:29.256	2026-09-02 09:13:29.256	N3	neutral	3
-6194	V(普通形) + 通す	làm ~ suốt	\N	709	2026-09-02 09:13:29.267	2026-09-02 09:13:29.267	N3	neutral	4
-6195	V(普通形) + 尽くす	dốc hết ~	\N	709	2026-09-02 09:13:29.276	2026-09-02 09:13:29.276	N3	formal	5
-6196	V(普通形) + 始める	bắt đầu ~	\N	709	2026-09-02 09:13:29.284	2026-09-02 09:13:29.284	N3	neutral	6
-6197	V(普通形) + に違いない	chắc chắn ~	\N	710	2026-09-02 09:13:29.299	2026-09-02 09:13:29.299	N2	neutral	0
-6198	V(普通形) + に決まっている	chắc chắn ~ (tự tin)	\N	710	2026-09-02 09:13:29.305	2026-09-02 09:13:29.305	N2	spoken	1
-6199	V(普通形) + とも限らない	chưa chắc ~	\N	710	2026-09-02 09:13:29.317	2026-09-02 09:13:29.317	N2	formal	2
-6200	V(普通形) + ないものでもない	không phải là không ~	\N	710	2026-09-02 09:13:29.323	2026-09-02 09:13:29.323	N2	formal	3
-6202	V(普通形) + 始末だ	cuối cùng lại ~ (tiêu cực)	\N	711	2026-09-02 09:13:29.338	2026-09-02 09:13:29.338	N2	formal	1
-6203	V(普通形) + ただ～するだけ	chỉ ~ thôi (hạn chế)	\N	711	2026-09-02 09:13:29.346	2026-09-02 09:13:29.346	N2	neutral	2
-6204	V(普通形) + に至る	đến mức ~; dẫn đến ~	\N	712	2026-09-02 09:13:29.357	2026-09-02 09:13:29.357	N1	formal	0
-6205	V(普通形) + に至るまで	cho đến cả ~	\N	712	2026-09-02 09:13:29.365	2026-09-02 09:13:29.365	N1	formal	1
-6206	V(普通形) + に至って	mãi đến khi ~ thì ~	\N	712	2026-09-02 09:13:29.37	2026-09-02 09:13:29.37	N1	formal	2
-6207	V(普通形) + に先立ち	trước khi ~	\N	712	2026-09-02 09:13:29.376	2026-09-02 09:13:29.376	N1	formal	3
-6208	V(普通形) + に際して	nhân dịp ~	\N	712	2026-09-02 09:13:29.383	2026-09-02 09:13:29.383	N1	formal	4
-6209	V(普通形) + に即して	theo ~; phù hợp với ~	\N	712	2026-09-02 09:13:29.387	2026-09-02 09:13:29.387	N1	formal	5
-6210	V(普通形) + に沿って	theo ~; dọc theo ~	\N	712	2026-09-02 09:13:29.393	2026-09-02 09:13:29.393	N1	formal	6
-6211	V(普通形) + に基づいて	dựa trên ~	\N	712	2026-09-02 09:13:29.399	2026-09-02 09:13:29.399	N1	formal	7
-6212	V(普通形) + に伴って	cùng với ~; kèm theo ~	\N	713	2026-09-02 09:13:29.409	2026-09-02 09:13:29.409	N1	formal	0
-6213	V(普通形) + に即した	phù hợp với ~	\N	713	2026-09-02 09:13:29.415	2026-09-02 09:13:29.415	N1	formal	1
-6214	V(普通形) + をもって	bằng ~; coi như ~	\N	713	2026-09-02 09:13:29.419	2026-09-02 09:13:29.419	N1	formal	2
-6215	V(普通形) + を以て	bằng ~ (văn viết)	\N	713	2026-09-02 09:13:29.424	2026-09-02 09:13:29.424	N1	formal	3
-6216	V(普通形) + を禁じ得ない	không thể không ~	\N	713	2026-09-02 09:13:29.432	2026-09-02 09:13:29.432	N1	formal	4
-6217	V(普通形) + を余儀なくされる	bị buộc phải ~	\N	713	2026-09-02 09:13:29.44	2026-09-02 09:13:29.44	N1	formal	5
-6218	V(普通形) + をよそに	bất chấp ~	\N	713	2026-09-02 09:13:29.451	2026-09-02 09:13:29.451	N1	formal	6
-6219	V(普通形) + をおいて	ngoài ~ ra không có	\N	713	2026-09-02 09:13:29.462	2026-09-02 09:13:29.462	N1	formal	7
-6220	V(普通形) + を皮切りに	bắt đầu từ ~	\N	714	2026-09-02 09:13:29.481	2026-09-02 09:13:29.481	N1	formal	0
-6221	V(普通形) + を機に	lấy ~ làm cơ hội	\N	714	2026-09-02 09:13:29.491	2026-09-02 09:13:29.491	N1	formal	1
-6222	V(普通形) + を契機に	lấy ~ làm dịp	\N	714	2026-09-02 09:13:29.503	2026-09-02 09:13:29.503	N1	formal	2
-6223	V(普通形) + を踏まえて	dựa trên ~; cân nhắc ~	\N	714	2026-09-02 09:13:29.514	2026-09-02 09:13:29.514	N1	formal	3
-6224	V(普通形) + を顧みず	không màng ~	\N	714	2026-09-02 09:13:29.526	2026-09-02 09:13:29.526	N1	formal	4
-6225	V(普通形) + をものともせず	coi ~ như không	\N	714	2026-09-02 09:13:29.538	2026-09-02 09:13:29.538	N1	formal	5
-6226	V(普通形) + をものとせず	không coi ~ là vấn đề	\N	714	2026-09-02 09:13:29.548	2026-09-02 09:13:29.548	N1	formal	6
-6227	V(普通形) + 極まりない	cực kỳ ~	\N	714	2026-09-02 09:13:29.562	2026-09-02 09:13:29.562	N1	formal	7
-6228	V(普通形) + 限りだ	cảm thấy ~ vô cùng	\N	715	2026-09-02 09:13:29.583	2026-09-02 09:13:29.583	N1	formal	0
-6230	V(普通形) + 始末である	rốt cuộc ~ (trang trọng)	\N	715	2026-09-02 09:13:29.606	2026-09-02 09:13:29.606	N1	formal	2
-6231	V(普通形) + べからず	không được ~ (cấm)	\N	715	2026-09-02 09:13:29.616	2026-09-02 09:13:29.616	N1	formal	3
-6232	V(普通形) + べく	để ~ (văn viết)	\N	715	2026-09-02 09:13:29.627	2026-09-02 09:13:29.627	N1	formal	4
-6233	V(普通形) + べからざる	không thể ~ được	\N	715	2026-09-02 09:13:29.638	2026-09-02 09:13:29.638	N1	formal	5
-6234	V(普通形) + まじき	không nên ~; không đáng ~	\N	715	2026-09-02 09:13:29.648	2026-09-02 09:13:29.648	N1	formal	6
-6235	V(普通形) + ならざる	không thể không ~	\N	715	2026-09-02 09:13:29.659	2026-09-02 09:13:29.659	N1	formal	7
-6236	V(普通形) + ざるを得ない	không thể không ~	\N	716	2026-09-02 09:13:29.677	2026-09-02 09:13:29.677	N1	formal	0
-6237	V(普通形) + ないではいられない	không thể không ~	\N	716	2026-09-02 09:13:29.688	2026-09-02 09:13:29.688	N1	neutral	1
-6238	V(普通形) + ずにはいられない	không thể không ~ (văn)	\N	716	2026-09-02 09:13:29.697	2026-09-02 09:13:29.697	N1	formal	2
-6239	V(普通形) + てたまらない	rất ~; ~ không chịu nổi	\N	716	2026-09-02 09:13:29.708	2026-09-02 09:13:29.708	N1	neutral	3
-6240	V(普通形) + てならない	rất ~ (cảm xúc)	\N	716	2026-09-02 09:13:29.718	2026-09-02 09:13:29.718	N1	formal	4
-6241	V(普通形) + て仕方がない	rất ~; ~ vô cùng	\N	716	2026-09-02 09:13:29.729	2026-09-02 09:13:29.729	N1	neutral	5
-6242	V(普通形) + て当然だ	đương nhiên ~	\N	716	2026-09-02 09:13:29.741	2026-09-02 09:13:29.741	N1	formal	6
-6243	V(普通形) + て当然である	đương nhiên phải ~	\N	716	2026-09-02 09:13:29.751	2026-09-02 09:13:29.751	N1	formal	7
-6244	V(普通形) + て当然の	đương nhiên ~	\N	717	2026-09-02 09:13:29.769	2026-09-02 09:13:29.769	N1	formal	0
-6245	V(普通形) + て当然を得ない	không thể cho là đương nhiên	\N	717	2026-09-02 09:13:29.781	2026-09-02 09:13:29.781	N1	formal	1
-6246	V(普通形) + てからというもの	kể từ khi ~ thì ~	\N	717	2026-09-02 09:13:29.793	2026-09-02 09:13:29.793	N1	neutral	2
-6247	V(普通形) + て以来	kể từ khi ~	\N	717	2026-09-02 09:13:29.804	2026-09-02 09:13:29.804	N1	formal	3
-6248	V(普通形) + てからでないと	phải ~ trước thì mới ~	\N	717	2026-09-02 09:13:29.815	2026-09-02 09:13:29.815	N1	formal	4
-6249	V(普通形) + てからこそ	chính vì đã ~ nên ~	\N	717	2026-09-02 09:13:29.825	2026-09-02 09:13:29.825	N1	formal	5
-6250	V(普通形) + てこそ	chỉ khi ~ thì mới ~	\N	717	2026-09-02 09:13:29.836	2026-09-02 09:13:29.836	N1	formal	6
-6251	V(普通形) + ては	nếu ~ thì (phản ứng tiêu cực)	\N	717	2026-09-02 09:13:29.846	2026-09-02 09:13:29.846	N1	neutral	7
-6252	V(普通形) + てはいられない	không thể cứ ~ mãi	\N	718	2026-09-02 09:13:29.864	2026-09-02 09:13:29.864	N1	formal	0
-6253	V(普通形) + てはならない	không được ~	\N	718	2026-09-02 09:13:29.875	2026-09-02 09:13:29.875	N1	formal	1
-6254	V(普通形) + てまで	ngay cả ~ cũng ~	\N	718	2026-09-02 09:13:29.883	2026-09-02 09:13:29.883	N1	neutral	2
-6255	V(普通形) + てでも	dù phải ~ cũng ~	\N	718	2026-09-02 09:13:29.891	2026-09-02 09:13:29.891	N1	neutral	3
-6256	V(普通形) + ては始まらない	chỉ ~ thì không đủ	\N	718	2026-09-02 09:13:29.896	2026-09-02 09:13:29.896	N1	formal	4
-6257	V(普通形) + て済むことではない	không phải ~ là xong	\N	718	2026-09-02 09:13:29.902	2026-09-02 09:13:29.902	N1	formal	5
-6258	V(普通形) + て済む	~ là đủ; chỉ cần ~	\N	718	2026-09-02 09:13:29.913	2026-09-02 09:13:29.913	N1	neutral	6
-6259	V(普通形) + に越したことはない	không gì hơn ~	\N	718	2026-09-02 09:13:29.919	2026-09-02 09:13:29.919	N1	neutral	7
-6260	V(普通形) + にほかならない	không gì khác ngoài ~	\N	719	2026-09-02 09:13:29.933	2026-09-02 09:13:29.933	N1	formal	0
-6261	V(普通形) + に他ならない	chính là ~	\N	719	2026-09-02 09:13:29.939	2026-09-02 09:13:29.939	N1	formal	1
-6262	V(普通形) + にすぎない	chỉ là ~ thôi	\N	719	2026-09-02 09:13:29.943	2026-09-02 09:13:29.943	N1	formal	2
-6263	V(普通形) + に過ぎない	chỉ dừng ở mức ~	\N	719	2026-09-02 09:13:29.948	2026-09-02 09:13:29.948	N1	formal	3
-6264	V(普通形) + に相違ない	chắc chắn là ~	\N	719	2026-09-02 09:13:29.953	2026-09-02 09:13:29.953	N1	formal	4
-6267	V(普通形) + にして	ở mức ~; với tư cách ~	\N	720	2026-09-02 09:13:29.98	2026-09-02 09:13:29.98	N1	formal	0
-6268	V(普通形) + にして初めて	chỉ khi ~ mới ~	\N	720	2026-09-02 09:13:29.985	2026-09-02 09:13:29.985	N1	formal	1
-6269	V(普通形) + にしても	dù ~ cũng ~	\N	720	2026-09-02 09:13:29.989	2026-09-02 09:13:29.989	N1	neutral	2
-6270	V(普通形) + にせよ / にしろ	dù ~ cũng ~	\N	720	2026-09-02 09:13:29.993	2026-09-02 09:13:29.993	N1	formal	3
-6271	V(普通形) + にしたところで	dù có ~ cũng vô ích	\N	720	2026-09-02 09:13:30	2026-09-02 09:13:30	N1	neutral	4
-6272	V(普通形) + たところで	dù ~ cũng ~	\N	720	2026-09-02 09:13:30.004	2026-09-02 09:13:30.004	N1	neutral	5
-6273	V(普通形) + たところが	đã ~ nhưng ~	\N	720	2026-09-02 09:13:30.009	2026-09-02 09:13:30.009	N1	formal	6
-5401	もし ＆ いくら		• Cách dùng:\n\n– もし được sử dụng trong mẫu câu ~たら、bao hàm ý nhấn mạnh về giả thuyết của người nói.\n\n– いくら được sử dụng trong mẫu câu ~ても（～でも）, nhấn mạnh về mức độ điều kiện.	25	2026-06-25 11:24:20.517	2026-09-26 05:08:19.663	N5	\N	0
-5406	Bài 27	Động từ thể khả năng	Cách dùng: giống như cách dùng của「Vることができます」. Trong câu, trợ từ [を] được chuyển thành [が], Các trợ từ khác vẫn giữ nguyên. 漢字が読めます。 Kanji ga yomemasu. Tôi có thể đọc được hán tự. 漢字を読むことができます。 Kanji wo yomu koto ga dekimasu. Tôi có thể đọc được hán tự. 日本料理が作れます。 Nihon ryōri ga tsukuremasu. Tôi có thể làm các món ăn Nhật. 銀行(ぎんこう)で お金(かね)が 換(かえ)えられます。 Ginkō de okane ga kaeraremasu. Có thể đổi tiền ở ngân hàng. ここに車がとめられます。 Koko ni kuruma ga tome raremasu. Ở đây có thể đỗ xe. II. Ngữ pháp 1.Ở bài 27 này là cách nói biểu thị khả năng có thể làm được cái gì đấy hay không của mình hoặc của người khác bằng cách sử dụng thể khả năng ở trên. **Lưu ý rằng trợ từ của thể khả năng luôn luôn là が Ví dụ: -私は日本語で手紙が書けます わたしはにほんごでてがみがかけます Tôi có thể viết thư được bằng tiếng Nhật -私はラメンが１０っぱい食べられます わたしはらめんがじゅっぱいたべられます Tôi có thể ăn được 10 bát Ramen (Mì)	27	2026-06-25 11:24:21.341	2026-09-26 05:08:19.732	N4	\N	0
-5458	Ngữ pháp Ａ／Ｎａそうです		この 料理は おいしそうです。\n\nMón ăn này có vẻ ngon.\n\n彼女は 忙しそうです。\n\nCô ấy có vẻ bận.\n\n彼は 暇そうです。\n\nAnh ấy có vẻ rảnh rỗi.\n\nあのケーキは おいしくなさそうです。\n\nCái bánh kia có vẻ không ngon.\n\n・Không áp dụng cách nói này đối với những tính từ thể hiện trạng thái quá rõ ràng, nhìn thấy ngay bên ngoài…, ví dụ như: 「赤い、きれい、有名、かわいい」\n\n× このりんごは 赤そうです。\n\nQuả táo này có vẻ đỏ. (sai vì bề ngoài là màu đỏ)\n\n○ このすいかは 中が 赤そうです。\n\nQuả dưa hấu này bên trong có vẻ đỏ.\n\n(Đúng vì từ bên ngoài không biết được, chỉ phán đoán)\n\n・Đối với các tính từ thể hiện tình cảm hoặc cảm giác của con người như「うれしい、さびしい、かなしい、      いたい、気分が悪い、気分がいい」, vì chúng ta không thể diễn đạt, miêu tả một cách trực tiếp cảm giác, tình cảm, tâm trạng của người khác mà chỉ có thể suy đoán nên phải dùng「~そうです」	43	2026-06-25 11:24:28.065	2026-09-26 05:08:19.88	N4	\N	0
-5463	Cấu trúc Ngữ pháp 場合 (ばあい)	Cách dùng: dùng để diễn đạt ý giả định về một tình huống nào đó (ý nghĩa gần giống với mẫu câu 「～たら」 ) nhưng thường chỉ	Cách dùng: dùng để diễn đạt ý giả định về một tình huống nào đó (ý nghĩa gần giống với mẫu câu 「～たら」 ) nhưng thường chỉ dùng trong những tình huống không hay, không mong đợi hoặc những điều hiếm khi xảy ra. Hành động ở vế sau thể hiện điều cần phải làm trong trường hợp đó hoặc kết quả do tình huống đó đem lại. Bản thân「場合」(ばあい) là một danh từ nên nó kết hợp với các loại từ khác (động từ, tính từ, danh từ) theo đúng các quy tắc đã học. 時間に遅れた 場合は、 教室に 入れません。 Trong trường hợp đến muộn giờ thì sẽ không vào lớp học được. 雨が降った 場合は、 学校を 休みます。 Tôi sẽ nghỉ học nếu trời mưa. 会議に間に合わない 場合は、 連絡してください。 Trong trường hợp không kịp giờ họp, hãy liên lạc nhé! 参加できない 場合は、 私に 言ってください。 Trường hợp không thể tham gia, hãy nói với tôi. Chú ý: trên thực tế, cũng có mẫu câu 「Ｖdict.場合は」 nhưng tính giả định của mẫu câu này không mạnh bằng 「Ｖた場合は」 và trong giáo trình này chỉ dùng mẫu câu 「Ｖた場合は」 ファックスの調子が 悪い 場合は、どうしたらいいですか。 Tôi nên làm thế nào trong trường hợp máy fax gặp trục trặc? Chú ý: ・Khi muốn nhấn mạnh, có thể thêm cụm từ 「万一」 hoặc「万が一」 (vạn nhất) vào phía đầu của vế có 「～場合は」 ・Giáo trình này không đề cập đến cách kết hợp với các dạng: quá khứ phủ định của động từ, quá khứ hay phủ định của tính từ, danh từ	45	2026-06-25 11:24:28.927	2026-09-26 05:08:19.924	N4	\N	0
 6515	V て くださいませんか	xin anh/chị làm V giúp được không?	\N	16164	2026-09-26 06:22:23.076	2026-09-26 06:22:23.076	N4	\N	5
 6516	Thể bị động（V れる／V られる）	bị / được V	Nhóm 1: う→あれる (よむ→よまれる); nhóm 2: る→られる; する→される, くる→こられる.	16165	2026-09-26 06:22:23.156	2026-09-26 06:22:23.156	N4	\N	0
 6517	N は（người）に よって V られます	N được tạo ra / làm bởi …	\N	16165	2026-09-26 06:22:23.167	2026-09-26 06:22:23.167	N4	\N	1
@@ -73201,12 +72683,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 6520	Kính ngữ お V に なります	(người trên) làm V — tôn kính ngữ	\N	16165	2026-09-26 06:22:23.21	2026-09-26 06:22:23.21	N4	\N	4
 6521	Khiêm nhường ngữ お V します	tôi xin làm V (cho người trên)	\N	16165	2026-09-26 06:22:23.219	2026-09-26 06:22:23.219	N4	\N	5
 7338	〜ところを	trong lúc … (mà lại làm phiền)	\N	16404	2026-09-26 12:15:21.454	2026-09-26 12:15:21.454	N1	\N	3
-5464	Cấu trúc ngữ pháp のに		Cách dùng: dùng khi muốn diễn đạt việc không đạt được kết quả như mong đợi trong 1 tình huống nào đó. Điểm khác biệt cần lưu ý ở mẫu câu này (so với cách nói cùng ý nghĩa như 「～が」 hay「～ても」 )là nó bao hàm những tình cảm, cảm giác mạnh mẽ của người nói như sự bất mãn, không ngờ…\n\nダイエットしているのに、 太ってしまいました。\n\nTôi đã ăn kiêng thế mà vẫn bị béo.\n\n約束をしたのに、 彼女は 来ませんでした。\n\nHẹn rồi vậy mà cô ấy không đến.\n\nボタンを押したのに、コピーできません。\n\nTôi đã ấn nút rồi thế mà vẫn không thể copy.\n\n古くて、 狭いのに、 家賃は 高いです。\n\nNhà vừa cổ lại hẹp thế mà tiền nhà lại đắt đỏ\n\n今日は日曜日なのに、 働かなければなりません。\n\nHôm nay là chủ nhật mà tôi vẫn phải làm việc.\n\nこのレストランは有名なのに、おいしくないです。\n\nNhà hàng này nổi tiếng thế mà chẳng ngon\n\nSự khác nhau giữa「～のに」 và「～が/～ても」\n\n① 私の部屋は 狭いですが、きれいです。（８課）\n\nPhòng của tôi hẹp nhưng mà đẹp.\n\n② 明日 雨が 降っても、出かけます。（２５課）\n\nNgày mai, dù trời có mưa chăng nữa, tôi vẫn đi ra ngoài.\n\n③ 約束したのに、どうして 来なかったんですか。\n\nĐã hứa rồi mà sao bạn lại không đến vậy?\n\n「～のに」 có ý nghĩa hoàn toàn ngược với「～ので」\n\n一生懸命 勉強したので、１００点を もらった。\n\n一生懸命 勉強したのに、５０点しか もらえなかった。\n\nChú ý phân biệt giữa mẫu câu chỉ mục đích「～（の）に」 (bài 42) và mẫu câu diễn đạt nghịch lý「～のに」 của bài này.	45	2026-06-25 11:24:28.934	2026-09-26 05:08:19.924	N4	\N	0
-5465	Ngữ pháp với ~ところです (các mẫu câu với cụm từ ところです)	Trước đây, ở bài 8 ta đã học từ 「ところ」với ý nghĩa là nơi, chỗ (chỉ vị trí, địa điểm).	Cách dùng: Dùng để diễn tả ý nói một hành động sắp sửa, chuẩn bị diễn ra và nhấn mạnh vào thời điểm trước khi diễn ra hành động đó. Mẫu câu này thường đi kèm với các cụm từ chỉ thời điểm như: 「これから、」、 「(ちょうど)今から」	46	2026-06-25 11:24:29.333	2026-09-26 05:08:19.953	N4	\N	0
-5430	Phân biệt sự khác nhau giữa 「～たあとで」 và 「～てから」		Khi muốn nhấn mạnh vào tuần tự hành\n\nđộng thì có thể dùng được\n\n○部屋に入るときは必ずノックしたあとで入ってください\n\n(khi vào phòng thì nhất định gõ cửa xong hãy vào)\n\nDiễn tả tuần tự\n\ncác hành động:\n\nA được làm trước\n\nvà B được làm\n\nsau\n○結婚してから、運転免許を取った。(sau khi cưới, tôi đã lấy được bằng lái xe)\n○結婚したあとで、運転免許を取った。(sau khi cưới, tôi đã lấy được bằng lái xe)\n\nDiễn tả thời gian\n○日本へ来てから3年になる。(sau khi sang Nhật đã được 3 năm rồi)\n×日本へ来たあとで3年になる。(sau khi sang Nhật đã được 3 năm rồi)	34	2026-06-25 11:24:24.347	2026-09-26 05:08:20.091	N4	\N	0
-5446	Khác với ~から mà chúng ta đã học ở bài 9, mẫu câu này có nhiều hạn chế.	◈ Tính từ, động từ biểu hiện cảm xúc: びっくりする、安心する、困る、さびしい、残念だ… ニュースを聞いて、 びっくりしました。	Tôi đã ngạc nhiên khi nghe tin. 暑くて、寝られませんでした。 Không thể ngủ được vì trời nóng. ◈ わからない và thể phủ định của động từ khả năng: いけない、のめない、食べられない… 土曜日は 都合が悪くて、いけません。 Tôi không thể đi được vì thứ 7 bận rồi. 話が複雑で、あまりわかりませんでした。 Tôi không hiểu lắm vì câu chuyện phức tạp. じこがあって、バスが 遅れてしまいました。 Vì có tai nạn nên xe buýt đã đến muộn. 授業に遅れて、先生にしかられました。 Vì đến muộn giờ học nên tôi bị thầy giáo mắng. 1.2 Ở mẫu câu này, mệnh đề sau không thể là sự biểu hiện hàm chứa chủ ý (ý hướng, mệnh lệnh, rủ rê, yêu cầu). Khi mệnh đề sau có nội dung bao hàm chủ ý thì mệnh đề trước không sử dụng thể て、 thay vào đó dùng thể văn から. あぶないですから、きかいに触らないで ください。 （ ○ ） Vì nguy hiểm, xin đừng sờ vào máy. あぶなくて、きかいに 触らないで ください。 （ × ） あした 会議が ありますから、今日 準備しなければ なりません。（○） Vì ngày mai có cuộc họp nên hôm nay phải chuẩn bị. あした 会議が あって、今日 準備しなければなりません。（×）	39	2026-06-25 11:24:26.456	2026-09-26 05:08:20.212	N4	\N	0
-5448	Ngữ pháp ～ので		Cách dùng: ～ので đi tiếp ngay sau danh từ, động từ, tính ở chia ở thể thường\n\n3.3 ~ので đi theo thể thông thường như đã trình bày ở trên, khi muốn biểu hiện một cách lịch sự, lễ phép hơn thì đặt nó đứng sau thể lịch sự:\n\nレポートを 書かなければなりませんので、今日は はやく 帰ります。\n\n(=レポートを 書かなければならないので、今日は はやく 帰ります。)\n\nVì phải viết báo cáo, nên hôm nay tôi sẽ về sớm	39	2026-06-25 11:24:26.465	2026-09-26 05:08:20.212	N4	\N	0
-5356	V（thể ます）しょうか。đề nghị được làm giúp ai đó việc gì		Cách dùng: người nói ngỏ ý làm gì đó giúp cho người nghe.	14	2026-06-25 11:24:15.896	2026-09-26 05:08:20.502	N5	\N	0
 6284	N1 は N2 です	N1 là N2	Câu khẳng định lịch sự cơ bản. は (đọc "wa") đánh dấu chủ đề.	16080	2026-09-26 06:05:15.005	2026-09-26 06:05:15.005	N5	\N	0
 6285	N1 は N2 じゃありません／ではありません	N1 không phải là N2	Phủ định của です. じゃ dùng trong hội thoại, では trang trọng hơn.	16080	2026-09-26 06:05:15.029	2026-09-26 06:05:15.029	N5	\N	1
 6286	〜ですか	câu hỏi có / không	Thêm か cuối câu để hỏi. Trả lời: はい、そうです／いいえ、ちがいます.	16081	2026-09-26 06:05:15.197	2026-09-26 06:05:15.197	N5	\N	0
@@ -73253,13 +72729,7 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 6327	V ては いけません	không được làm V (cấm)	\N	16104	2026-09-26 06:05:19.032	2026-09-26 06:05:19.032	N5	\N	1
 6328	N を ください	cho tôi N	\N	16105	2026-09-26 06:05:19.189	2026-09-26 06:05:19.189	N5	\N	0
 6329	V なければ なりません	phải làm V	\N	16105	2026-09-26 06:05:19.21	2026-09-26 06:05:19.21	N5	\N	1
-3679	Các từ chỉ thị	Cái N này/đó/kia	Cách dùng: – この、その、あの là các từ chỉ thị bổ nghĩa cho danh từ. Về tương quan khoảng cách thì giống với これ、それ、あれ nhưng khác về cách sử dụng vì luôn phải có danh từ đi liền đằng sau.\n\n– “このN” dùng để chỉ vật hoặc người ở gần người nói, xa người nghe.\n\n– “そのN” dùng để chỉ vật hay người ở gần người nghe, xa người nói.\n\n– “あのN” dùng để chỉ vật hay người ở xa cả hai người.\n\nChú ý: なん là từ để hỏi dùng cho vật, だれ là từ để hỏi dùng cho người. これ/それ/あれ は N です\n\nChú ý: Khi một vật ở gần cả hai người thì cả hai người đều có thể dùng これ hay この	2	2026-06-25 10:52:56.362	2026-09-02 08:54:27.48	N5	\N	0
-3680	そうです/そうではありません	Đúng vậy/Không phải thế	Cách dùng: – そう được sử dụng để trả lời câu hỏi nghi vấn mà tận cùng là danh từ. – Trong câu khẳng định dùng: はい、そうです。 Trong câu phủ định dùng: いいえ、そうでは(じゃ)ありません。 Chú ý: Trong trường hợp câu nghi vấn mà tận cùng là động từ hay tính từ thì không sử dụng そうです hay そうではありません để trả lời.	2	2026-06-25 10:52:56.394	2026-09-02 08:54:27.48	N5	\N	0
-3681	N1 ですか、N2 ですか	N1 hay là N2?	Chú ý: Khi trả lời câu hỏi này không dùng はいhay いいえ	2	2026-06-25 10:52:56.398	2026-09-02 08:54:27.48	N5	\N	0
-3682	N1の N2 (tiếp)	N2 của N1	Cách dùng: Ở bài trước, N1 là một tổ chức mà N2 thuộc vào đó. Ở bài này trợ từ の có ý nghĩa chỉ sự sở hữu. N2 thuộc sở hữu của N1\n\nChú ý: – N2 đôi khi được lược bỏ khi đã được nhắc đến trước đó hay đã rõ nghĩa. – Khi N2 là một từ chỉ người thì không được bỏ.	2	2026-06-25 10:52:56.401	2026-09-02 08:54:27.48	N5	\N	0
 6522	いらっしゃいます／めしあがります／ごらんに なります	kính ngữ đặc biệt: ở/đi/đến · ăn/uống · xem	\N	16165	2026-09-26 06:22:23.227	2026-09-26 06:22:23.227	N4	\N	6
-3672	N1 は N2 です	N1 là N2	Cách dùng : – Danh từ đứng trước は là chủ đề hoặc chủ ngữ trong câu.\n\n– です được sử dụng cuối câu khẳng định, biểu lộ sự lịch sự đối với người nghe.\n\n– Đứng trước です là một danh từ hoặc tính từ.\n\nChú ý: は khi là trợ từ được đọc là wa, không phải ha	1	2026-06-25 10:52:56.099	2026-09-02 08:54:27.473	N5	\N	0
-3683	そうですか	Ra vậy	Cách dùng: Sử dụng khi người nói nhận được thông tin mới và thể hiện rằng đã hiểu về nó.	2	2026-06-25 10:52:56.41	2026-09-02 08:54:27.48	N5	\N	0
 6330	V なくても いいです	không cần làm V cũng được	\N	16106	2026-09-26 06:05:19.388	2026-09-26 06:05:19.388	N5	\N	0
 6331	〜じ〜ふん に V	làm V vào lúc … giờ … phút	に đi với thời điểm cụ thể (giờ, ngày, tháng); không dùng với きょう, あした, まいにち…	16106	2026-09-26 06:05:19.396	2026-09-26 06:05:19.396	N5	\N	1
 6332	N1 から N2 まで	từ N1 đến N2	Dùng cho cả thời gian và địa điểm.	16107	2026-09-26 06:05:19.54	2026-09-26 06:05:19.54	N5	\N	0
@@ -73273,13 +72743,7 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 6340	〜から、〜	vì … nên …	から đứng sau vế lý do.	16112	2026-09-26 06:05:20.447	2026-09-26 06:05:20.447	N5	\N	0
 6341	〜が、〜	… nhưng …	\N	16112	2026-09-26 06:05:20.458	2026-09-26 06:05:20.458	N5	\N	1
 6342	どうして〜か／〜からです	tại sao …? / là vì …	\N	16113	2026-09-26 06:05:20.594	2026-09-26 06:05:20.594	N5	\N	0
-3673	N1 は N2 ではありません。	N1 không phải là N2	Cách dùng: – ではありません là dạng phủ định của です. – Trong hội thoại người ta có thể dùng じゃありません thay cho ではありません\n\nChú ý : では đọc là dewa	1	2026-06-25 10:52:56.107	2026-09-02 08:54:27.473	N5	\N	0
 6343	そして／それから	và / sau đó	\N	16113	2026-09-26 06:05:20.604	2026-09-26 06:05:20.604	N5	\N	1
-3674	S + か	1) Câu hỏi nghi vấn (câu hỏi Có Không)	1) Câu hỏi nghi vấn (câu hỏi Có Không)\n\n2) Câu hỏi có từ để hỏi\n\nCách dùng: – Để tạo một câu hỏi chỉ cần thêm か vào cuối câu. – Câu trả lời cho loại câu hỏi này luôn phải có はい (vâng, đúng) hoặc いいえ (không, không phải ). Nếu giản lược đi bị xem là thất lễ.\n\nChú ý: Khi nói thì lên giọng ở trợ từ か	1	2026-06-25 10:52:56.111	2026-09-02 08:54:27.473	N5	\N	0
-3675	N も	N cũng	\N	1	2026-06-25 10:52:56.127	2026-09-02 08:54:27.473	N5	\N	0
-3676	N1 の N2	N2 của N1, N2 thuộc về N1	\N	1	2026-06-25 10:52:56.133	2026-09-02 08:54:27.473	N5	\N	0
-3677	~さん	Cách dùng: – Trong tiếng Nhật sử dụng chữ さん đứng ngay sau tên của người nghe hoặc người thứ 3 để bày tỏ sự kính trọng đối với người đó. – Chữ さん không bao giờ	Cách dùng: – Trong tiếng Nhật sử dụng chữ さん đứng ngay sau tên của người nghe hoặc người thứ 3 để bày tỏ sự kính trọng đối với người đó. – Chữ さん không bao giờ sử dụng sau tên của chính mình.\n\nChú ý: Khi trao đổi trực tiếp thì người Nhật ít sử dụng あなた khi đã biết tên của người nghe, mà sẽ dùng tên để gọi. Ngoài ra, ở Nhật khi gọi một người nào đó thì gọi nguyên cả tên và họ hoặc chỉ cần gọi họ là đủ. Chỉ gọi tên trong những trường hợp bạn bè quen thân hay người thân trong gia đình.	1	2026-06-25 10:52:56.137	2026-09-02 08:54:27.473	N5	\N	0
-3678	~さい	~ tuổi (hậu tố chỉ tuổi)	Đứng sau số để chỉ tuổi. Viết bằng kanji là 歳.\n\nChú ý: Khi hỏi tuổi trang trọng dùng おいくつですか.	1	2026-06-25 10:52:56.142	2026-09-02 08:54:27.473	N5	\N	0
 6344	でも／しかし	nhưng / tuy nhiên (đầu câu)	\N	16114	2026-09-26 06:05:20.75	2026-09-26 06:05:20.75	N5	\N	0
 6345	〜と おもいます	tôi nghĩ là …	Đứng sau thể thường.	16114	2026-09-26 06:05:20.759	2026-09-26 06:05:20.759	N5	\N	1
 6346	〜と いいます	nói rằng … / tên là …	\N	16115	2026-09-26 06:05:20.896	2026-09-26 06:05:20.896	N5	\N	0
@@ -73287,9 +72751,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 6348	N1 は N2 じゃありません／ではありません	N1 không phải là N2	Phủ định của です. じゃ dùng trong hội thoại, では trang trọng hơn.	16116	2026-09-26 06:05:21.076	2026-09-26 06:05:21.076	N5	\N	1
 6349	〜ですか	câu hỏi có / không	Thêm か cuối câu để hỏi. Trả lời: はい、そうです／いいえ、ちがいます.	16116	2026-09-26 06:05:21.087	2026-09-26 06:05:21.087	N5	\N	2
 6350	N も	N cũng	Thay cho は／が／を khi muốn nói "cũng vậy".	16116	2026-09-26 06:05:21.098	2026-09-26 06:05:21.098	N5	\N	3
-5298	N (địa điểm) は どこ ですか.	N ở đâu?	[N (địa điểm) は] ここ・そこ・あそこです。[N] ở chỗ này/đó/kia/.	3	2026-06-25 11:24:11.301	2026-09-02 08:54:27.486	N5	\N	0
-5299	こちら・そちら・あちら・どちら (đại danh từ chỉ phương hướng)		• Cách dùng: Nghĩa và cách dùng giống với ここ・そこ・あそこ・どこ.	3	2026-06-25 11:24:11.304	2026-09-02 08:54:27.486	N5	\N	0
-5300	（お）国はどちらですか。		Okuni wa dochira desuka.\n\nĐất nước của bạn là ở đâu?\n\n…ベトナムです。\n\nBetonamu desu.\n\nViệt Nam.	3	2026-06-25 11:24:11.308	2026-09-02 08:54:27.486	N5	\N	0
 6351	N1 の N2	N2 của N1 / N2 thuộc N1	Nối hai danh từ: sở hữu, xuất xứ, nội dung.	16116	2026-09-26 06:05:21.107	2026-09-26 06:05:21.107	N5	\N	4
 6352	これ／それ／あれ・この／その／あの N	cái này / cái đó / cái kia	これ・それ・あれ đứng một mình; この・その・あの phải đi kèm danh từ.	16116	2026-09-26 06:05:21.117	2026-09-26 06:05:21.117	N5	\N	5
 6353	N を V	làm V với / vào N (tân ngữ)	を (đọc "o") đánh dấu tân ngữ trực tiếp của động từ.	16116	2026-09-26 06:05:21.126	2026-09-26 06:05:21.126	N5	\N	6
@@ -73350,7 +72811,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 6407	でも／しかし	nhưng / tuy nhiên (đầu câu)	\N	16123	2026-09-26 06:05:26.253	2026-09-26 06:05:26.253	N5	\N	4
 6408	〜と おもいます	tôi nghĩ là …	Đứng sau thể thường.	16123	2026-09-26 06:05:26.26	2026-09-26 06:05:26.26	N5	\N	5
 6409	〜と いいます	nói rằng … / tên là …	\N	16123	2026-09-26 06:05:26.267	2026-09-26 06:05:26.267	N5	\N	6
-5301	あなたのかいしゃは どちらですか。		Anata no kaisha wa dochira desuka.\n\nCông ty của bạn là công ty nào?\n\n…. ABC です。…. Là công ty ABC	3	2026-06-25 11:24:11.311	2026-09-02 08:54:27.486	N5	\N	0
 6410	Thể thông thường（普通形）	cách nói thân mật / dùng trong mệnh đề	V る／V ない／V た／V なかった; A い; A な・N だ. Dùng với bạn bè và trước các mẫu như と思う, でしょう.	16124	2026-09-26 06:22:16.993	2026-09-26 06:22:16.993	N4	\N	0
 6411	V た ほうが いい	nên làm V	Phủ định: V ない ほうが いい (không nên).	16124	2026-09-26 06:22:17.04	2026-09-26 06:22:17.04	N4	\N	1
 6412	V（thể thông thường）N	mệnh đề bổ nghĩa cho danh từ	Chủ ngữ trong mệnh đề dùng が (hoặc の).	16125	2026-09-26 06:22:17.192	2026-09-26 06:22:17.192	N4	\N	0
@@ -73547,7 +73007,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 6614	V た とき／V る とき	khi … (quan hệ thời gian trước/sau)	V る とき: lúc hành động chưa xong; V た とき: sau khi đã xong.	16192	2026-09-26 06:22:31.249	2026-09-26 06:22:31.249	N4	\N	2
 6615	V ながら（hai hành động song song）	vừa … vừa … (hai việc cùng lúc lâu dài)	\N	16192	2026-09-26 06:22:31.259	2026-09-26 06:22:31.259	N4	\N	3
 6616	V ば いいです	chỉ cần V là được	\N	16192	2026-09-26 06:22:31.271	2026-09-26 06:22:31.271	N4	\N	4
-5355	今何をしていますか。	Bây giờ bạn đang làm gì vậy?	Cách dùng: dùng để diễn tả một hành động đang diễn ra tại thời điểm nói.	14	2026-06-25 11:24:15.891	2026-09-26 05:08:20.502	N5	\N	0
 6617	〜せいで／〜せいだ	tại vì … (nguyên nhân xấu)	\N	16193	2026-09-26 12:14:57.064	2026-09-26 12:14:57.064	N3	\N	0
 6618	〜おかげで／〜おかげだ	nhờ có … (nguyên nhân tốt)	\N	16193	2026-09-26 12:14:57.08	2026-09-26 12:14:57.08	N3	\N	1
 6619	〜によって（nguyên nhân）	do …, vì … (văn viết)	\N	16193	2026-09-26 12:14:57.085	2026-09-26 12:14:57.085	N3	\N	2
@@ -73802,7 +73261,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 6868	〜と いわれて いる	người ta nói rằng …	\N	16264	2026-09-26 12:15:04.543	2026-09-26 12:15:04.543	N3	\N	3
 6869	〜ように いう／〜ように たのむ	bảo / nhờ (ai) làm …	\N	16264	2026-09-26 12:15:04.547	2026-09-26 12:15:04.547	N3	\N	4
 6870	〜みたいな／〜みたいに	giống như … (ví von, khẩu ngữ)	\N	16264	2026-09-26 12:15:04.55	2026-09-26 12:15:04.55	N3	\N	5
-5357	Bài 15	• Ví dụ: このほんを借りてもいいですか。	Kono hon o karite mo īdesu ka. Tôi có thể mượn quyển sách này được không. ええ、いいですよ。 Ee, īdesu yo. Vâng, được すみません、ちょっと、、、今つかっています。 Sumimasen, chotto,,, ima tsukatte imasu. Xin lỗi, để tôi xem … bây giờ, tôi đang dùng nó. あなたはテレビをつけてもいいです。 Anata wa terebi wo tsukete mo īdesu. Bạn có thể bật tivi lên.	15	2026-06-25 11:24:16.277	2026-09-26 05:08:20.519	N5	\N	0
 6871	〜かのように	như thể là …	\N	16264	2026-09-26 12:15:04.555	2026-09-26 12:15:04.555	N3	\N	6
 6872	まるで〜ようだ	cứ như là …	\N	16265	2026-09-26 12:15:04.695	2026-09-26 12:15:04.695	N3	\N	0
 6873	〜ふりを する	giả vờ …	\N	16265	2026-09-26 12:15:04.698	2026-09-26 12:15:04.698	N3	\N	1
@@ -73875,13 +73333,7 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 6940	〜かねる	khó mà …, không thể (lịch sự)	\N	16287	2026-09-26 12:15:06.711	2026-09-26 12:15:06.711	N2	\N	1
 6941	〜がたい	khó mà … (tâm lý)	\N	16287	2026-09-26 12:15:06.714	2026-09-26 12:15:06.714	N2	\N	2
 6942	〜得る／〜得ない	có thể / không thể xảy ra	\N	16288	2026-09-26 12:15:06.772	2026-09-26 12:15:06.772	N2	\N	0
-5302	これ・それ・あれ は N1 の N2 です。	Cái này/cái kia/cái đó là N2 của N1	Cách dùng: chỉ xuất xứ của một sản phẩm.	3	2026-06-25 11:24:11.315	2026-09-02 08:54:27.486	N5	\N	0
-5303	N は いくらですか。	N bao nhiêu tiền?	\N	3	2026-06-25 11:24:11.319	2026-09-02 08:54:27.486	N5	\N	0
 7340	〜ならでは	chỉ riêng … mới có	\N	16404	2026-09-26 12:15:21.469	2026-09-26 12:15:21.469	N1	\N	5
-5304	今なんじですか	Bây giờ là mấy giờ? …～ 時 ～ 分 で: Bây giờ là ~ giờ ~ phút	Cách dùng: – じ đặt sau số đếm, dùng chỉ giờ. – ふん（ぷん）đặt sau số đếm, dùng chỉ phút.	4	2026-06-25 11:24:11.709	2026-09-02 08:54:27.494	N5	\N	0
-5305	N (danh từ chỉ ngày) は 何曜(なんよう)日(び)ですか。	N là thứ mấy?	N (danh từ chỉ ngày) は ～曜日 です : N là thứ ~.	4	2026-06-25 11:24:11.714	2026-09-02 08:54:27.494	N5	\N	0
-5306	Vます	Động từ dạng ます	• Cách dùng: động từ biểu thị thái độ lịch sự với người nghe, thể hiện một hành động ở thì hiện tại hoặc tương lai.	4	2026-06-25 11:24:11.718	2026-09-02 08:54:27.494	N5	\N	0
-5307	V ます／ V ません／ V ました / Vませんでした。	Chia thì của động từ	• Cách dùng:\n\nQuá khứ : Khẳng định : ました\n\nPhủ định: ませんでした\n\nHiện tại: Khẳng định: ます\n\nPhủ định: ません	4	2026-06-25 11:24:11.723	2026-09-02 08:54:27.494	N5	\N	0
 6943	〜にほかならない	chính là, không gì khác ngoài …	\N	16288	2026-09-26 12:15:06.775	2026-09-26 12:15:06.775	N2	\N	1
 6944	〜というものではない	không phải cứ … là được	\N	16289	2026-09-26 12:15:06.843	2026-09-26 12:15:06.843	N2	\N	0
 6945	〜ものの	mặc dù … nhưng	\N	16289	2026-09-26 12:15:06.848	2026-09-26 12:15:06.848	N2	\N	1
@@ -73922,7 +73374,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 6980	〜際（に）	khi, nhân dịp … (trang trọng)	\N	16303	2026-09-26 12:15:07.799	2026-09-26 12:15:07.799	N2	\N	0
 6981	〜に際して	nhân dịp, khi bắt đầu …	\N	16303	2026-09-26 12:15:07.804	2026-09-26 12:15:07.804	N2	\N	1
 6982	〜次第（ngay khi）	ngay sau khi … thì	\N	16303	2026-09-26 12:15:07.809	2026-09-26 12:15:07.809	N2	\N	2
-5311	N (Danh từ chỉ địa điểm) へ いきます/ きます/ かえります	Đi/Đến/Về đâu đó (địa điểm N)	Cách dùng: Trợ từ も + thể phủ định của động từ: dùng để phủ định tất cả những gì trong phạm vi mà từ để hỏi どこ đưa ra. Có thể dùngも hoặc để cả へも đều được, nhưng dùng へも thì ý nghĩa phủ định sẽ mạnh hơn.	5	2026-06-25 11:24:12.119	2026-09-02 08:54:27.502	N5	\N	0
 6983	〜かと思うと／〜かと思ったら	vừa mới … thì đã (bất ngờ)	\N	16303	2026-09-26 12:15:07.812	2026-09-26 12:15:07.812	N2	\N	3
 6984	〜につれて	cùng với … thì dần dần	\N	16303	2026-09-26 12:15:07.816	2026-09-26 12:15:07.816	N2	\N	4
 6985	〜に従って	theo …, cùng với … (biến đổi / làm theo)	\N	16303	2026-09-26 12:15:07.819	2026-09-26 12:15:07.819	N2	\N	5
@@ -73942,17 +73393,7 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 6999	〜を通じて／〜を通して	thông qua …; suốt …	\N	16305	2026-09-26 12:15:07.916	2026-09-26 12:15:07.916	N2	\N	7
 7000	〜に関して	liên quan đến … (trang trọng)	\N	16305	2026-09-26 12:15:07.919	2026-09-26 12:15:07.919	N2	\N	8
 7001	〜をきっかけに	nhân cơ hội …, từ việc …	\N	16305	2026-09-26 12:15:07.924	2026-09-26 12:15:07.924	N2	\N	9
-5312	〔～へ〕 なんで ～ (động từ) か。Đi/đến đâu bằng phương tiện gì?		~ で いきます/ きます / かえります : Đi/ đến/ về bằng phương tiện ~	5	2026-06-25 11:24:12.125	2026-09-02 08:54:27.502	N5	\N	0
 7002	〜にかけては	về mặt … thì (giỏi nhất)	\N	16306	2026-09-26 12:15:07.963	2026-09-26 12:15:07.963	N2	\N	0
-5313	だれと ～ V ますか。	Bạn đã làm gì với ai?	Cách dùng:\n\n– trợ từ とcó ý nghĩa xác định đối tượng cùng tham gia hành động, có thể dịch tiếng Việt là “cùng, với, cùng với”.\n\n– Nếu làm gì đó “một mình” thì dùng từ ひとりで và không có と	5	2026-06-25 11:24:12.131	2026-09-02 08:54:27.502	N5	\N	0
-5314	なにを Vますか。Bạn làm cái gì (ăn gì, uống gì, đọc gì…)? Hoặc なにを しますか。Bạn làm cái gì vậy? (câu hỏi chung	1. なにを Vますか。Bạn làm cái gì (ăn gì, uống gì, đọc gì…)? Hoặc なにを しますか。Bạn làm cái gì vậy? (câu hỏi chung cho tất cả các động từ) N をVます。	Cách dùng: N là đối tượng của hành động, V là tha động từ (ngoại động từ), を là trợ từ (chỉ đối tượng tác động của hành động)	6	2026-06-25 11:24:12.521	2026-09-02 08:54:27.511	N5	\N	0
-5315	なにもV ません	Không làm gì cả	• Cách dùng: trợ từ も đi sau từ để hỏi và đi cùng với thể phủ định để phủ\n\nđịnh hoàn toàn mọi đối tượng trong phạm vi từ để hỏi.	6	2026-06-25 11:24:12.529	2026-09-02 08:54:27.511	N5	\N	0
-5316	どこで V ますか。	Bạn đã/ sẽ làm gì ở đâu?	N1 で N2 を V ます: Làm ~ ở/tại N1.	6	2026-06-25 11:24:12.536	2026-09-02 08:54:27.511	N5	\N	0
-5317	いっしょにV ませんか。	Cùng làm ~ nhé!	Cách dùng: Đây không phải là câu phủ định, mà là câu mang ý mời mọc, rủ rê người khác cùng làm việc gì đó với mình.	6	2026-06-25 11:24:12.543	2026-09-02 08:54:27.511	N5	\N	0
-5318	V ましょう	Cùng làm ~ nhé!	• Cách dùng: Là một lời để nghị cùng làm với mình nhưng trên cơ sở đã biết người kia sẽ đồng ý, mang tính chất hô hào mọi người cùng làm	6	2026-06-25 11:24:12.549	2026-09-02 08:54:27.511	N5	\N	0
-5319	なん／なに (何)		• なん:\n\n– Khi 何 đứng trước một từ bắt đầu bằng “d, n hay t” :\n\n何ですか。Nan desuka. Cái gì vậy?\n\n– Khi đứng sau 何 là các từ chỉ cách đếm: 何さい, 何ようび, 何にち …\n\n• なに: Các trường hợp khác\n\n何をのみますか。\n\nNani wo nomimasuka.\n\nBạn uống gì?	6	2026-06-25 11:24:12.556	2026-09-02 08:54:27.511	N5	\N	0
-5320	なんで Vますか。Làm ~ bằng gì? N で V ます。	Làm ~ bằng N	Cách dùng: N: Danh từ chỉ phương tiện, công cụ, で: trợ tự chỉ phương tiện, phương thức, phương pháp thực hiện hành động (cả phương tiện ngôn ngữ).	7	2026-06-25 11:24:12.949	2026-09-02 08:54:27.515	N5	\N	0
-5321	(Từ/Câu) は ～語で 何ですか。“Từ/Câu” trong tiếng~ là gì?	là gì?	• Cách dùng: dùng để hỏi cách nói một từ hoặc câu bằng một thứ tiếng nào đó. Khi viết, từ/câu được hỏi thường để trong dấu 「 」(dấu ngoặc kép trong tiếng Nhật)	7	2026-06-25 11:24:12.956	2026-09-02 08:54:27.515	N5	\N	0
 7003	〜に限らず	không chỉ riêng …	\N	16307	2026-09-26 12:15:07.971	2026-09-26 12:15:07.971	N2	\N	0
 7004	〜に限り	chỉ riêng … (ưu đãi)	\N	16307	2026-09-26 12:15:07.974	2026-09-26 12:15:07.974	N2	\N	1
 7005	〜限り（は）	chừng nào còn …	\N	16307	2026-09-26 12:15:07.977	2026-09-26 12:15:07.977	N2	\N	2
@@ -73966,7 +73407,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7013	〜だけ（あって）	quả đúng là … (xứng đáng)	\N	16308	2026-09-26 12:15:08.04	2026-09-26 12:15:08.04	N2	\N	0
 7014	〜からには／〜以上（は）	một khi đã … thì	\N	16309	2026-09-26 12:15:08.049	2026-09-26 12:15:08.049	N2	\N	0
 7015	〜だけに	chính vì … nên càng	\N	16309	2026-09-26 12:15:08.052	2026-09-26 12:15:08.052	N2	\N	1
-5324	もう V ましたか？Bạn đã … rồi à?	Bạn đã … rồi à?	Cách dùng:\n\nもう＋V ました：đã …rồi\n\nまだ：vẫn/chưa, chỉ một hành động hay trạng thái chưa xảy ra, chưa hoàn thành ở thời điểm nói.	7	2026-06-25 11:24:12.978	2026-09-02 08:54:27.515	N5	\N	0
 7016	〜ものだから	vì … (biện minh)	\N	16309	2026-09-26 12:15:08.055	2026-09-26 12:15:08.055	N2	\N	2
 7017	〜あまり	vì quá … nên	\N	16309	2026-09-26 12:15:08.058	2026-09-26 12:15:08.058	N2	\N	3
 7018	〜ことだから	vì là … (tính cách quen thuộc) nên chắc	\N	16309	2026-09-26 12:15:08.061	2026-09-26 12:15:08.061	N2	\N	4
@@ -73979,10 +73419,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7025	〜にすぎない	chỉ là … mà thôi	\N	16311	2026-09-26 12:15:08.135	2026-09-26 12:15:08.135	N2	\N	0
 7026	〜に決まっている	chắc chắn là … (chủ quan)	\N	16311	2026-09-26 12:15:08.139	2026-09-26 12:15:08.139	N2	\N	1
 7341	〜にとどまらず	không chỉ dừng lại ở …	\N	16404	2026-09-26 12:15:21.477	2026-09-26 12:15:21.477	N1	\N	6
-5325	Tính từ	• Tính từ đuôi い: Có đuôi tận cùng là い : 小(ちい)さい(nhỏ)、大(おお)きい(to)、熱(あつ)い(nóng)… • Tính từ đuôi な :	1. Tính từ: • Tính từ đuôi い: Có đuôi tận cùng là い : 小(ちい)さい(nhỏ)、大(おお)きい(to)、熱(あつ)い(nóng)… • Tính từ đuôi な : Có đuôi tận cùng là な : ハンサム（な） (đẹp trai)、しんせつ（な）(tốt bụng)、 … • Chú ý: – Đuôi なcó lúc xuất hiện có lúc không xuất hiện trong từ và câu. – Một số từ dễ nhầm với tình từ đuôi い: きれい（な）(đẹp, sạch)、 きらい（な）(ghét, không thích)	8	2026-06-25 11:24:13.398	2026-09-02 08:54:27.52	N5	\N	0
-5332	N が あります / わかります	Có/ hiểu N N が すきです / きらいです/ じょうずです / へたです: Thích/ ghét, không thích/ giỏi/	Cách dùng: – Trợ từ đi với các động từ あります／わかります là が. – Động từ あります chỉ sự sở hữu chỉ dùng với đồ vật, không dùng cho người và động vật. – Một số tính từ như すき、きらい、じょうず、へた… cũng sử dụng trợ từ が	9	2026-06-25 11:24:13.849	2026-09-02 08:54:27.529	N5	\N	0
-5333	どんな N		• Cách dùng: どんな được sử dụng để yêu cầu người nghe lựa chọn 1 thứ trong nhóm mà danh sách sau どんな đưa ra.	9	2026-06-25 11:24:13.856	2026-09-02 08:54:27.529	N5	\N	0
-5334	よく／だいたい／たくさん／少し／あまり／全然		• Cách dùng:\n\n– Đây là các phó từ đặt trước động từ/ tính từ để chỉ mức độ của chúng.\n\n– Các phó từ あまり、ぜんぜん thường sử dụng với thể phủ định.	9	2026-06-25 11:24:13.864	2026-09-02 08:54:27.529	N5	\N	0
 7027	〜に相違ない	chắc chắn là … (văn viết)	\N	16311	2026-09-26 12:15:08.142	2026-09-26 12:15:08.142	N2	\N	2
 7028	〜ものか／〜もんか	làm gì có chuyện … (phủ định mạnh)	\N	16311	2026-09-26 12:15:08.145	2026-09-26 12:15:08.145	N2	\N	3
 7029	〜っこない	không thể nào … (khẩu ngữ)	\N	16311	2026-09-26 12:15:08.148	2026-09-26 12:15:08.148	N2	\N	4
@@ -73990,12 +73426,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7031	〜ざるを得ない	buộc phải …	\N	16311	2026-09-26 12:15:08.155	2026-09-26 12:15:08.155	N2	\N	6
 7032	〜かねない	có thể (gây ra điều xấu)	\N	16311	2026-09-26 12:15:08.158	2026-09-26 12:15:08.158	N2	\N	7
 7033	〜かねる	khó mà …, không thể (lịch sự)	\N	16311	2026-09-26 12:15:08.162	2026-09-26 12:15:08.162	N2	\N	8
-5326	Các mẫu câu với tính từ		Cách dùng:\n\n– どう là từ để hỏi cho tính chất, cảm tưởng về vật, sự vật, người; hỏi trực tiếp vào tính chất của danh từ (không có danh từ đằng sau)\n\n– tính từ đuôi い thì giữ nguyên い\n\n– tính từ đuôi な thì sẽ không có な	8	2026-06-25 11:24:13.404	2026-09-02 08:54:27.52	N5	\N	0
-5327	N1 は どんな N2 ですか。	N1 là N2 như thế nào?	Cách dùng:\n\n– どんなlà nghi vấn từ để hỏi về cảm tưởng, tính chất, tình trạng của người hay vật; hỏi 1 danh từ nào có tính chất gì (phải có danh từ đi sau)\n\n– Tính từ được đặt trước danh từ để bổ nghĩa cho danh từ đó\n\n– Tính từ đuôi な giữ nguyên な\n\n– Tính từ đuôi い thì giữ nguyên い	8	2026-06-25 11:24:13.411	2026-09-02 08:54:27.52	N5	\N	0
-5328	あまり＋．．．phủ định của tính từ	Không ~ lắm / Không ~ mấy	• Cách dùng: あまり đứng trước tính từ dạng phủ định thể hiện sự phủ định một phần.	8	2026-06-25 11:24:13.416	2026-09-02 08:54:27.52	N5	\N	0
-5329	Sentence1 が、Sentence2	S1 nhưng mà S2	• Cách dùng: Trợ từ が có nghĩa là “nhưng”, dùng để nối 2 mệnh đề có ý nghĩa tương phản nhau.	8	2026-06-25 11:24:13.42	2026-09-02 08:54:27.52	N5	\N	0
-5330	Sentence1。そして Sentence2	S1. Và S2	• Cách dùng: そして là liên từ có nghĩa là “và”, dùng để nối 2 câu có nội dung tương đồng. そして khác vớiと(とdùng để nối 2 danh từ).	8	2026-06-25 11:24:13.425	2026-09-02 08:54:27.52	N5	\N	0
-5331	N はどれですか。	N là cái nào?	• Cách dùng: どれ： là từ để hỏi có nghía là “cái nào”, dùng để yêu cầu người nghe chọn một trong số những cái đưa ra (từ 2 thứ trở lên).	8	2026-06-25 11:24:13.43	2026-09-02 08:54:27.52	N5	\N	0
 7034	〜がたい	khó mà … (tâm lý)	\N	16311	2026-09-26 12:15:08.165	2026-09-26 12:15:08.165	N2	\N	9
 7035	〜得る／〜得ない	có thể / không thể xảy ra	\N	16312	2026-09-26 12:15:08.206	2026-09-26 12:15:08.206	N2	\N	0
 7036	〜にほかならない	chính là, không gì khác ngoài …	\N	16312	2026-09-26 12:15:08.21	2026-09-26 12:15:08.21	N2	\N	1
@@ -74008,14 +73438,7 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7043	〜に反して	trái với …	\N	16313	2026-09-26 12:15:08.247	2026-09-26 12:15:08.247	N2	\N	5
 7044	〜どころか	nói gì đến …, trái lại còn	\N	16313	2026-09-26 12:15:08.25	2026-09-26 12:15:08.25	N2	\N	6
 7045	〜というより	nói là … thì đúng hơn	\N	16313	2026-09-26 12:15:08.254	2026-09-26 12:15:08.254	N2	\N	7
-5336	N が あります／います	Có N	Cách dùng: – あります sử dụng khi N là đồ vật – います sử dụng khi N là người và động vật	10	2026-06-25 11:24:14.271	2026-09-02 08:54:27.534	N5	\N	0
-5341	Số đếm	• Các trợ từ số đếm: Là những từ được đặt sau số để đếm các đồ vật, người… – 人 (にん): dùng đếm người (đặc biệt đếm 1, 2 n	• Các trợ từ số đếm: Là những từ được đặt sau số để đếm các đồ vật, người… – 人 (にん): dùng đếm người (đặc biệt đếm 1, 2 người dùng ひとり, ふたり) – 番 (ばん): dùng để đếm số thứ tự – 枚 (まい ): dùng để đếm vật mỏng (tem, áo sơmi, …) – 台 (だい) : dùng để đếm máy móc, xe – 冊 (さつ): dùng để đếm sách vở – 着 (ちゃく): dùng để đếm quần áo – 個 (こ): dùng để đếm vật nhỏ – 足(そく): dùng để đếm giầy, tất – 軒 (けん): dùng để đếm nhà – 階 (かい、がい): dùng để đếm tầng của một căn nhà – 本 (ほん、ぼん、ぽん) : dùng để đếm vật thon dài – 杯 (はい、ばい、ぱい) : dùng cho đồ uống – 匹 (ひき、びき、ぴき) : dùng đếm con vật kích thước nhỏ – 回 (かい) : dùng đếm số lần. • Các từ để hỏi cho số đếm – いくつ là từ dùng để hỏi cho đồ vật đếm bằng ～つ – Các cách đếm khác dùng なん＋trợ từ số đếm.	11	2026-06-25 11:24:14.698	2026-09-26 05:08:20.419	N5	\N	0
 7342	〜をもって	bằng …; vào lúc … (trang trọng)	\N	16405	2026-09-26 12:15:21.821	2026-09-26 12:15:21.821	N1	\N	0
-5342	どのくらい V ますか。	Làm ~ bao lâu?	Cách dùng:\n\n– どのくらい là từ để hỏi cho khoảng thời gian\n\n– くらい・ぐらい đứng sau từ chỉ số lượng, có nghĩa là “khoảng”	11	2026-06-25 11:24:14.705	2026-09-26 05:08:20.419	N5	\N	0
-5343	Bài 12	Thì quá khứ	• Quá khứ: – Khẳng định: N/ Na でした。 – Phủ định: N/ Na じゃ（では）ありませんでした。	12	2026-06-25 11:24:15.085	2026-09-26 05:08:20.445	N5	\N	0
-5344	Các thì của câu kết thúc bằng tính từ đuôi		• Hiện tại:\n\n– Khẳng định: Aいです。\n\n– Phủ định: A (bỏ い) くないです。\n\n• Quá khứ:\n\n– Khẳng định: A (bỏ い) かったです。\n\n– Phủ định: A (bỏ い) くなかったです。	12	2026-06-25 11:24:15.089	2026-09-26 05:08:20.445	N5	\N	0
-5345	N1はN2よりです：N1 ~ hơn N2		• Cách dùng: Mẫu câu so sánh hơn, kém. N1 được so sánh với N2	12	2026-06-25 11:24:15.093	2026-09-26 05:08:20.445	N5	\N	0
-5358	V ては いけません。	Không được làm ~	• Cách dùng: sử dụng khi muốn nói ý không được phép làm gì.	15	2026-06-25 11:24:16.281	2026-09-26 05:08:20.519	N5	\N	0
 7046	〜たところで	dù có … thì cũng (vô ích)	\N	16313	2026-09-26 12:15:08.257	2026-09-26 12:15:08.257	N2	\N	8
 7047	〜にしても／〜にしろ〜にしろ	dù là … đi nữa / dù … hay …	\N	16313	2026-09-26 12:15:08.26	2026-09-26 12:15:08.26	N2	\N	9
 7048	〜ながら（も）（N2・văn viết）	mặc dù … (thừa nhận nhưng)	\N	16314	2026-09-26 12:15:08.303	2026-09-26 12:15:08.303	N2	\N	0
@@ -74031,10 +73454,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7058	〜なんて／〜なんか	cái chuyện … (ngạc nhiên, coi nhẹ)	\N	16315	2026-09-26 12:15:08.346	2026-09-26 12:15:08.346	N2	\N	8
 7059	〜くらいなら	nếu phải … thì thà	\N	16315	2026-09-26 12:15:08.349	2026-09-26 12:15:08.349	N2	\N	9
 7060	ぜひ〜たい／なんとしても	nhất định (bằng mọi giá)	\N	16316	2026-09-26 12:15:08.387	2026-09-26 12:15:08.387	N2	\N	0
-5337	N1 (địa điểm) に なにが ありますか / いますか。Ở N1 có cái gì/ con gì?		Cách dùng: dùng để miêu tả một sự thật. N1 là địa điểm tồn tại của N2 và được xác định bằng trợ từ に.	10	2026-06-25 11:24:14.277	2026-09-02 08:54:27.534	N5	\N	0
-5338	N1 は N2 (địa điểm) に あります／います	N1 ở N2	• Cách dùng: chỉ nơi tồn tại ở người hay vật	10	2026-06-25 11:24:14.283	2026-09-02 08:54:27.534	N5	\N	0
-5339	N1 (vật, người, địa điểm) の N2 (danh từ chỉ vị trí)	thể hiện tương quan vị trí：うえ、まえ、となり、ちかく。。。	\N	10	2026-06-25 11:24:14.29	2026-09-02 08:54:27.534	N5	\N	0
-5340	N1 や N2	N1 và N2	• Cách dùng:\n\n– や dùng để nối các danh từ\n\n– と dùng để liệt kê toàn bộ, や chỉ liệt kê mang tính chất tượng trưng.	10	2026-06-25 11:24:14.296	2026-09-02 08:54:27.534	N5	\N	0
 7061	〜だらけ	đầy, toàn là (không tốt)	\N	16317	2026-09-26 12:15:08.397	2026-09-26 12:15:08.397	N2	\N	0
 7062	〜ずくめ	toàn là … (tốt / màu sắc)	\N	16317	2026-09-26 12:15:08.401	2026-09-26 12:15:08.401	N2	\N	1
 7063	〜げ	có vẻ … (dáng vẻ)	\N	16317	2026-09-26 12:15:08.406	2026-09-26 12:15:08.406	N2	\N	2
@@ -74047,16 +73466,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7070	〜ばかりになっている	chỉ còn chờ …	\N	16317	2026-09-26 12:15:08.45	2026-09-26 12:15:08.45	N2	\N	9
 7071	〜ことなく	không hề …	\N	16318	2026-09-26 12:15:08.538	2026-09-26 12:15:08.538	N2	\N	0
 7072	〜ほどだ（N2・mức độ cực đoan）	đến mức …	\N	16318	2026-09-26 12:15:08.542	2026-09-26 12:15:08.542	N2	\N	1
-5346	N1 と N2 と どちらが Adj ですか。	N1 và N2 cái nào ~ hơn?	Cách dùng: từ để hỏi どちら được dùng khi muốn so sánh giữa 2 vật hay người.	12	2026-06-25 11:24:15.098	2026-09-26 05:08:20.445	N5	\N	0
-5347	N1 [のなか] で なに／どこ／だれ／いつ が いちばん Adj ですか。	Trong phạm vi N1 thì cái gì/ nơi nào/ ai/ khi nào thì Adj nhất?	N2 が いちばん Adj です。N2 ~ nhất.	12	2026-06-25 11:24:15.102	2026-09-26 05:08:20.445	N5	\N	0
-5348	何(なに)が ほしいですか。Bạn mong muốn, muốn có cái gì? （私は）N が ほしいです。(Tôi) muốn/ muốn có/ mong có N	Bạn mong muốn, muốn có cái gì? （私は）N が ほしいです。(Tôi) muốn/ muốn có/ mong có N	Cách dùng: ほしい là tính từ đuôi いdùng để nói về ước muốn của người nói, không sử dụng để nói về mong muốn của người thứ ba.	13	2026-06-25 11:24:15.474	2026-09-26 05:08:20.471	N5	\N	0
-5349	何をしたいですかBạn muốn làm gì?	Bạn muốn làm gì?	Cách dùng:\n\n– Thể hiện mong muốn làm việc gì đó của người nói, không sử dụng để nói về mong muốn của người thứ ba.\n\n– Vたい được coi như một tính từ đuôi いnên cách biến đổi sang thể phủ định hay quá khứ đều giống với tính từ đuôi い	13	2026-06-25 11:24:15.478	2026-09-26 05:08:20.471	N5	\N	0
-5350	N1 (địa điểm) へなにをしにいきますか。	Bạn đi đến N1 để làm gì?	Cách dùng:\n\n– Đây là mẫu câu sử dụng để nói về mục đích đi đến/ về đâu đó để thực hiện hành động nào đó.\n\n– Động từ chỉ mục đích để thể ます, danh từ chỉ mục đích là những danh động từ.	13	2026-06-25 11:24:15.482	2026-09-26 05:08:20.471	N5	\N	0
-5411	Vています	diễn tả trạng thái phát sinh do kết quả của động tác hoặc hành động được biểu thị bởi	Cách dùng: Biểu thị trạng thái của đồ vật, khi miêu tả nguyên về trạng thái hiện ra trước mắt mình thì động từ hoặc chủ thể của trạng thái được biểu thị bằng trợ từ が.	29	2026-06-25 11:24:22.184	2026-09-26 05:08:19.773	N4	\N	0
-5351	Đâu đó / cái gì đó		• Cách dùng:\n\n– どこか được dùng như một danh từ chỉ địa điểm, nghĩa là “chỗ nào đó, nơi nào đó”.\n\n– なにか được dùng như một danh từ chỉ đồ vật, sự việc; nghĩa là “cái gì đó”\n\n– Cả 2 từ khi đứng trước các động từ đi với các trợ từ へ、が、を thì các trợ từ này có thể được lược bỏ. Các trợ từ khác vẫn giữ nguyên	13	2026-06-25 11:24:15.485	2026-09-26 05:08:20.471	N5	\N	0
-5352	Các nhóm của động từ Động từ trong tiếng Nhật được chia làm 3 nhóm theo cách chia sang các thể		Các nhóm của động từ Động từ trong tiếng Nhật được chia làm 3 nhóm theo cách chia sang các thể của chúng. (1) Nhóm 1 Bao gồm các động từ đứng trước đuôi ます là các chữ cái thuộc hàng “i” Ví dụ : かきます のみます (2) Nhóm 2 Hầu hết các động từ thuộc nhóm này có dạng đứng trước đuôi ます là các chữ cái thuộc hàng “e”. Ví dụ: たべます みせます Tuy nhiên cũng có một số động từ đứng trước đuôi ます là các chữ cái thuộc hàng “i” Ví dụ: みます おきます (3) Nhóm 3 Bao gồm 2 động từ: します(làm) きます(đến)	14	2026-06-25 11:24:15.874	2026-09-26 05:08:20.502	N5	\N	0
-5353	Thể て của động từ		Các động từ kết thúc bằng て、で được gọi là thể て. Cách chia của thể て phụ thuộc vào các nhóm động từ.\n\n(1) Nhóm 1:\n\n• Vきます－＞ Vいて ( かきます -&gt; かいて: viết)\n\nVぎます－＞ Vいで (いそぎます -&gt; いそいで: vội)\n\n• Vみ/び/に ます – &gt; Vんで	14	2026-06-25 11:24:15.88	2026-09-26 05:08:20.502	N5	\N	0
-5354	V て + ください。	Hãy làm ~, Vui lòng làm ~	• Cách dùng: dùng khi yêu cầu, nhờ ai đó làm gì một cách lịch sự.	14	2026-06-25 11:24:15.886	2026-09-26 05:08:20.502	N5	\N	0
 7073	〜際（に）	khi, nhân dịp … (trang trọng)	\N	16331	2026-09-26 12:15:10.564	2026-09-26 12:15:10.564	N2	\N	0
 7074	〜に際して	nhân dịp, khi bắt đầu …	\N	16331	2026-09-26 12:15:10.573	2026-09-26 12:15:10.573	N2	\N	1
 7075	〜次第（ngay khi）	ngay sau khi … thì	\N	16331	2026-09-26 12:15:10.581	2026-09-26 12:15:10.581	N2	\N	2
@@ -74089,17 +73498,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7102	〜を問わず	không kể, bất kể …	\N	16334	2026-09-26 12:15:11.523	2026-09-26 12:15:11.523	N2	\N	5
 7103	〜にかかわらず	bất chấp, không liên quan đến …	\N	16334	2026-09-26 12:15:11.53	2026-09-26 12:15:11.53	N2	\N	6
 7104	〜もかまわず	không để ý đến …	\N	16335	2026-09-26 12:15:11.811	2026-09-26 12:15:11.811	N2	\N	0
-5359	V ています。		Cách dùng: Một số động từ luôn chia ở thể tiếp diễn mặc dù hành động đã thực hiện trong quá khứ: 知(し)っています、住(す)んでいます、結婚(けっこん)しています、持(も)っています	15	2026-06-25 11:24:16.286	2026-09-26 05:08:20.519	N5	\N	0
-5360	Bài 16	• Ví dụ: 昨日、散歩して、ごはんをたべて、しんぶんをよみました。	Kinō, sanposhite, gohan wo tabete, shinbun o yomimashita。 Hôm qua, tôi đi bộ, rồi ăn cơm, sau đó đọc báo. あしたレストランでたべて、うちへかえって、べんきょうします。 Ashita resutoran de tabete, uchi e kaette, benkyō shimasu. Ngày mai, tôi ăn ở nhà hàng, rồi về nhà, sau đó sẽ học bài.	16	2026-06-25 11:24:16.689	2026-09-26 05:08:20.535	N5	\N	0
-5361	V１てから、V2 ます。	Sau khi làm V1 thì làm V2	• Cách dùng:\n\n– Diễn tả sự liên tiếp của hành động nhưng nhấn mạnh hành động thứ nhất kết thúc rối mới đến hành động 2.\n\n– Thì của cả câu được quyết định ở cuối câu.	16	2026-06-25 11:24:16.697	2026-09-26 05:08:20.535	N5	\N	0
-5362	N1 は N2 が Adj です。		• Cách dùng: Dùng để miêu tả cụ thể một thành phần, một bộ phận của 1 vật hoặc người	16	2026-06-25 11:24:16.703	2026-09-26 05:08:20.535	N5	\N	0
-5363	Cách nối 2 hay nhiều tính từ với nhau, 2 hay nhiều danh từ với nhau		• Cách dùng:\n\n– Khi nối 2 hay nhiều tính từ của cùng 1 chủ thể, với danh từ có thể là nối 2 câu có chủ ngữ khác nhau\n\n– Aい(bỏ い) + くて, ~\n\n– Na + で, ~\n\n– N + で, ~\n\n– Cách nối đó có nghĩa là “ và ” vì vậy không sử dụng để nối 2 câu có ý nghĩa trái ngược.\n\n– Thì của cả câu được chia ở câu đứng sau.	16	2026-06-25 11:24:16.71	2026-09-26 05:08:20.535	N5	\N	0
-5364	どうやって：Làm thế nào?		• Cách dùng:\n\n– Là từ để hỏi cho cách làm, phương thức làm một việc nào đó và có nghĩa là “ Làm thế nào”\n\n– Thường trả lời bằng mẫu câu: V１て、V2 て…V ます。	16	2026-06-25 11:24:16.716	2026-09-26 05:08:20.535	N5	\N	0
-5365	どの N	Là ~ nào?	Cách dùng:\n\n– どの là từ để hỏi cho các từ この、その、あの\n\n– Câu trả lời thường miêu tả cụ thể về vật, hoặc người đó.	16	2026-06-25 11:24:16.722	2026-09-26 05:08:20.535	N5	\N	0
-5366	Bài 17	Động từ thể ない	Ví dụ: あい－ます → あわ－ない かき－ます → かか－ない いそぎ－ます → いそが－ない はなし－ます → はなさ－ない まち－ます → また－ない あそび－ます → あそば－ない よみ－ます → よま－ない とり－ます → とら－ない • Nhóm II: bỏ [-ます] thêm ない Ví dụ: たべ－ます → たべ－ない み－ます → み－ない • Nhóm III: し－ます→ し－ない き－ます → こ－ない	17	2026-06-25 11:24:17.182	2026-09-26 05:08:20.551	N5	\N	0
-5367	V ないで ください	Không được làm gì…	• Cách dùng: khi muốn khuyên hay yêu cầu ai không làm gì việc gì đó.	17	2026-06-25 11:24:17.188	2026-09-26 05:08:20.551	N5	\N	0
-5368	V なければ なりません	phải…, bắt buộc phải…	• Cách dùng: biểu thị một việc coi như nghĩa vụ phải làm, bất chấp ý hướng của người làm.	17	2026-06-25 11:24:17.196	2026-09-26 05:08:20.551	N5	\N	0
-5369	V なくても いいです	không cần … cũng được	• Cách dùng: biểu thị sự không cần thiết của hành vi mà động từ diễn tả.	17	2026-06-25 11:24:17.205	2026-09-26 05:08:20.551	N5	\N	0
 7105	〜はさておき	tạm để … sang bên, trước hết	\N	16335	2026-09-26 12:15:11.818	2026-09-26 12:15:11.818	N2	\N	1
 7106	〜だけ（あって）	quả đúng là … (xứng đáng)	\N	16335	2026-09-26 12:15:11.826	2026-09-26 12:15:11.826	N2	\N	2
 7107	〜からには／〜以上（は）	một khi đã … thì	\N	16335	2026-09-26 12:15:11.835	2026-09-26 12:15:11.835	N2	\N	3
@@ -74133,17 +73531,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7135	〜一方（で）	mặt khác, trong khi …	\N	16339	2026-09-26 12:15:12.593	2026-09-26 12:15:12.593	N2	\N	0
 7136	〜に反して	trái với …	\N	16339	2026-09-26 12:15:12.596	2026-09-26 12:15:12.596	N2	\N	1
 7137	〜どころか	nói gì đến …, trái lại còn	\N	16339	2026-09-26 12:15:12.599	2026-09-26 12:15:12.599	N2	\N	2
-5392	N が Adj／V		• Cách dùng: biểu thị một tình trạng hay quang cảnh như nó vốn có.	23	2026-06-25 11:24:19.634	2026-09-26 05:08:19.616	N5	\N	0
-5393	Động từ di chuyển		Cách dùng: dùng để chỉ địa điểm, vị trí nơi mà 1 người hay 1 vật nào đó đi qua.	23	2026-06-25 11:24:19.639	2026-09-26 05:08:19.616	N5	\N	0
-5371	N (thời gian)までに V	chậm nhất, trễ nhất, trước (thời điểm)	• Cách dùng: chỉ rõ thời gian cuối mà một hành động hay một công việc phải được tiến hành.\n\n• Phân biệt までに với trợ từ まで và trợ từ に:\n\n– まで：chỉ thời điểm chấm dứt một hành động\n\n– に：chỉ thời điểm mà một hành động diễn ra.\n\n– までに: chỉ thời điểm chậm nhất hành động phải được tiến hành.	17	2026-06-25 11:24:17.221	2026-09-26 05:08:20.551	N5	\N	0
-5372	(1) Nhóm 1	Là các động từ có kết thúc bởi các âm sau:	(2) Nhóm 2: Là các động từ có dạng [-e る] [-i る] • Cách chuyển sang thể từ điển: bỏ ます thêm る • Ví dụ : Ví dụ: たべます ← たべる (ăn) みます ← みる (xem) Trừ một số động từ đặc biệt: かえります ← かえる (trở về) しります ← しる (biết) (3) Nhóm 3: Bao gồm 2 động từ: します → する きます → くる	18	2026-06-25 11:24:17.603	2026-09-26 05:08:20.568	N5	\N	0
-5373	N / Vること + ができます。	Có thể làm…, biết làm…	• Cách dùng:\n\n– Danh từ được sử dụng phải có tính động tác (tức là những danh từ có thể ghép với し ます để trở thành động từ có nghĩa tương ứng)\n\n– Danh từ chỉ về những khả năng như 日本語、ピアノ、スキー cũng có thể sử dụng.\n\n– Phải thêm こと sau động từ thể nguyên mẫu để biến thành một nhóm danh từ\n\n– Động từ できます có 2 nghĩa là năng lực, khả năng	18	2026-06-25 11:24:17.607	2026-09-26 05:08:20.568	N5	\N	0
-5374	あなたの趣味は何ですか。	Sở thích của bạn là gì	Cách dùng: dùng danh từ và danh từ hóa để nói về sở thích	18	2026-06-25 11:24:17.613	2026-09-26 05:08:20.568	N5	\N	0
-5375	Vる / Nの /Từ chỉ thời gian + まえに、V2	Làm V2 trước…, trước khi làm …	• Cách dùng:\n\n– Danh từ biểu thị hành động\n\n– Động từ: V1 luôn ở thể từ điển, V2 thể tùy ý.	18	2026-06-25 11:24:17.618	2026-09-26 05:08:20.568	N5	\N	0
-5376	なかなか + V phủ định	mãi mà không…	\N	18	2026-06-25 11:24:17.621	2026-09-26 05:08:20.568	N5	\N	0
-5377	ぜひ	Nhất định, rất	• Cách dùng:\n\n– Biểu thị sự hy vọng hay yêu cầu\n\n– Thường đi với các dạng câu ほしいです、V たいです、V てください với ý nghĩa nhấn mạnh sự biểu thị.	18	2026-06-25 11:24:17.626	2026-09-26 05:08:20.568	N5	\N	0
-5378	Bài 19	Động từ thể た	\N	19	2026-06-25 11:24:18.018	2026-09-26 05:08:20.59	N5	\N	0
-5379	V たことが ありますか。	đã từng (làm)…	Cách dùng: nói về một kinh nghiệm đã gặp, đã từng trải qua trong quá khứ. Diễn tả việc không thường xuyên xảy ra.	19	2026-06-25 11:24:18.026	2026-09-26 05:08:20.59	N5	\N	0
 7138	〜というより	nói là … thì đúng hơn	\N	16339	2026-09-26 12:15:12.603	2026-09-26 12:15:12.603	N2	\N	3
 7139	〜たところで	dù có … thì cũng (vô ích)	\N	16339	2026-09-26 12:15:12.606	2026-09-26 12:15:12.606	N2	\N	4
 7140	〜にしても／〜にしろ〜にしろ	dù là … đi nữa / dù … hay …	\N	16339	2026-09-26 12:15:12.609	2026-09-26 12:15:12.609	N2	\N	5
@@ -74180,10 +73567,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7171	〜に至って（は）	đến khi … thì (mới)	\N	16345	2026-09-26 12:15:13.569	2026-09-26 12:15:13.569	N1	\N	0
 7172	〜を限りに	kể từ … là thôi / lần cuối	\N	16345	2026-09-26 12:15:13.572	2026-09-26 12:15:13.572	N1	\N	1
 7173	〜てこのかた	suốt từ khi … đến nay	\N	16346	2026-09-26 12:15:13.666	2026-09-26 12:15:13.666	N1	\N	0
-5381	になります：trở nên (được)		Cách dùng: chỉ sự thay đổi một tình trạng hay một điều kiện.	19	2026-06-25 11:24:18.041	2026-09-26 05:08:20.59	N5	\N	0
-5382	Khi đổi những câu được nối với nhau bằng から hay が、けど (thường sử dụng trong hội thoại) thành thể văn thông thường thì tất cả các từ lịch sự trong câu phải được đổi sang thể thông thường.	→ 日本の食べ物は おいしいが、高い。 * Cách dùng: – bỏ trợ từ chỉ sự nghi vấn là か ở cuối câu, thay vào đó đọc cao giọng chữ ở cuối câu để biểu thị sự nghi vấn. Ví dụ: 1) コーヒーを 飲む? ( ) …うん、飲む( ) Chú ý: cũng có những câu nghi vấn ở thể văn thông thường mà không bỏ chữ か ở sau như: 飲むか、見たか…, nhưng chỉ được sử dụng giới hạn trong phạm vi nam giới khi người trên hỏi người dưới hoặc những người quá thân nhau (như cha hỏi con trai) – Đối với câu nghi vấn danh từ hay tính từ thì chữ だ thể thông thường của です được giản lược. Ví dụ: 今晩 暇? …うん、暇(だよ) …ううん、暇ではない。 …ううん、暇じゃない。 Khi đàm thoại thường dùng じゃない – Trợ từ trong câu nghi vấn ở thể văn thông văn cũng thường được lược bỏ Ví dụ: 1)ご飯「を」食べる? 2)明日京都「へ」行かない? 3)このりんご「は」おいしいですね。 4)そこに はさみ「が」ある? – Trong thể thông thường, chữ い trong mẫu câu V ている cũng thường được lược bỏ Ví dụ 1)辞書、持って「い」る? …うん、持って「い」る。 …ううん、持って「い」ない。	Cách dùng: – bỏ trợ từ chỉ sự nghi vấn là か ở cuối câu, thay vào đó đọc cao giọng chữ ở cuối câu để biểu thị sự nghi vấn.	20	2026-06-25 11:24:18.418	2026-09-26 05:08:20.609	N5	\N	0
-5383	Cách thể hiện suy nghĩ, quan điểm cá nhân • Cấu trúc	Vる / Vない / Vた ＋ とおもいます。 Aい +	Cách dùng: thể hiện sự phỏng đoán, ý kiến chủ quan của cá nhân về 1 vấn đề, sự việc nào đó.	21	2026-06-25 11:24:18.809	2026-09-26 05:08:20.635	N5	\N	0
-5384	Cách trích dẫn trực tiếp hoặc gián tiếp 1 câu nói, 1 ý kiến mà ai đó đã đưa ra		Cách dùng:\n\n– Trích dẫn trực tiếp: nhắc lại chính xác nội dung câu nói: để nội dung đó trong ngoặc kép 「 」.	21	2026-06-25 11:24:18.818	2026-09-26 05:08:20.635	N5	\N	0
 7174	〜にあって	trong (hoàn cảnh) …	\N	16346	2026-09-26 12:15:13.669	2026-09-26 12:15:13.669	N1	\N	1
 7175	〜折（に）	vào dịp, khi … (trang trọng)	\N	16347	2026-09-26 12:15:13.726	2026-09-26 12:15:13.726	N1	\N	0
 7176	〜ところを	trong lúc … (mà lại làm phiền)	\N	16347	2026-09-26 12:15:13.732	2026-09-26 12:15:13.732	N1	\N	1
@@ -74203,7 +73586,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7190	〜ならいざしらず	nếu là … thì còn được, chứ …	\N	16353	2026-09-26 12:15:14.192	2026-09-26 12:15:14.192	N1	\N	1
 7191	〜たら最後／〜たが最後	một khi đã … thì (không cứu vãn)	\N	16354	2026-09-26 12:15:14.245	2026-09-26 12:15:14.245	N1	\N	0
 7192	〜ようによっては	tùy cách … mà	\N	16354	2026-09-26 12:15:14.248	2026-09-26 12:15:14.248	N1	\N	1
-7193	〜なくしては	nếu không có … thì không thể	\N	16355	2026-09-26 12:15:14.296	2026-09-26 12:15:14.296	N1	\N	0
 7194	〜とすれば（N1・suy luận）	nếu cho rằng … thì	\N	16355	2026-09-26 12:15:14.3	2026-09-26 12:15:14.3	N1	\N	1
 7195	〜といえども	dù là … đi nữa	\N	16355	2026-09-26 12:15:14.303	2026-09-26 12:15:14.303	N1	\N	2
 7196	〜とはいえ	tuy nói là … nhưng	\N	16356	2026-09-26 12:15:14.386	2026-09-26 12:15:14.386	N1	\N	0
@@ -74225,12 +73607,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7212	〜といったらない	… không kể xiết	\N	16363	2026-09-26 12:15:15.408	2026-09-26 12:15:15.408	N1	\N	1
 7213	〜だに	chỉ cần … thôi đã; ngay cả …	\N	16363	2026-09-26 12:15:15.414	2026-09-26 12:15:15.414	N1	\N	2
 7214	〜だけましだ	còn may là … (so với tệ hơn)	\N	16364	2026-09-26 12:15:15.551	2026-09-26 12:15:15.551	N1	\N	0
-5387	Vる / Vない / Vた + N	日本へ 行った人 / 行かなかった人 : Nihon e itta hito/ ikanakatta hito Người đã đi Nhật / Người đã không đi Nhật これは ミラーさんが 住(す)んでいる家(うち)です。	Kore wa mirā-san ga jū (su)nde iru ie (uchi)desu Đây là ngôi nhà ông Miller đang ở. (Định ngữ là vị ngữ). ミラーさんが 住(す)んでいる家(うち)は 古(ふる)いです。 Mirā-san ga jū (su)nde iru ie (uchi) wa ko (furu) idesu Ngôi nhà ông Milller đang ở thật là cũ. (Định ngữ là chủ ngữ). ミラーさんが 住(す)んでいる家(うち)を 買(か)いました。 Mirā-san ga jū (su)nde iru ie (uchi) o-kai (ka) imashita Tôi đã mua căn nhà mà ông Miller đang ở. (Định ngữ là tân ngữ). あのめがねをかけている人は山田さんです。 Ano megane wo kaketeiru hito wa Yamada-san desu. Người đang đeo kính đó là anh Yamada. 私は広い部屋あるうちがほしいです。 Watashi wa hiroi heya aru uchi ga hoshīdesu. Tôi muốn ngôi nhà mà có phòng rộng. 私は朝ご飯を食べる時間がありません。 Watashi wa asa gohan wo taberu jikan ga arimasen. Tôi không có thời gian ăn sáng.	22	2026-06-25 11:24:19.227	2026-09-26 05:08:19.587	N5	\N	0
-5388	N が		• Cách dùng: Khi câu dùng động từ bổ nghĩa cho 1 danh từ (tạo ra định ngữ) thì chủ ngữ (chủ thể của hành động) trong câu bổ nghĩa đó được xác định bởi trợ từ が	22	2026-06-25 11:24:19.235	2026-09-26 05:08:19.587	N5	\N	0
-5389	～とき、～Khi ~, lúc ~ • Cấu trúc	Vる / Vない + とき Aい + とき Na + な + とき N	Cách dùng: – Nối 2 mệnh đề của câu. – Biểu thị thời điểm mà trạng thái, động tác hay hiện tượng được diễn đạt ở mệnh đề sau diễn ra. – Thời của tính từ, danh từ bổ nghĩa cho không phụ thuộc vào thời của câu chính.	23	2026-06-25 11:24:19.619	2026-09-26 05:08:19.616	N5	\N	0
-5390	Vる / Vた + とき		• Cách dùng:\n\n– Vる + とき = Vる+　前に: hành động ở vế sau được hoàn thành trước hành trong thuộc mệnh đề とき.\n\n– Vた + とき = Vた+　後で: hành động ở vế sau được hoàn thành sau hành động trong mệnh đề とき.	23	2026-06-25 11:24:19.625	2026-09-26 05:08:19.616	N5	\N	0
-5391	Vる / Vない + と	~ Là ~ / ~ thì ~	• Cách dùng:\n\n– とnối 2 mệnh đề của câu\n\n– Biểu thị một kết quả tất yếu của một hành động nào đó.\n\n– Không sử dụng để biểu hiện một ý hướng, một hy vọng, rủ rê hay một sự nhờ vả.	23	2026-06-25 11:24:19.629	2026-09-26 05:08:19.616	N5	\N	0
-5386	N1 (địa điểm)で N2 があります。 Ở N1 được tổ chức, diễn ra N2		• Cách dùng: khi N2 là các sự kiện như bữa tiệc, buổi hòa nhạc, ngày hội, vụ tai nạn hay thảm họa… thì lúc đó あります có nghĩa là được tổ chức, diễn ra.	21	2026-06-25 11:24:18.834	2026-09-26 05:08:20.635	N5	\N	0
 7215	〜べからず／〜べからざる	không được … (cấm, văn viết)	\N	16364	2026-09-26 12:15:15.558	2026-09-26 12:15:15.558	N1	\N	1
 7216	〜まじき	không được phép (với tư cách …)	\N	16365	2026-09-26 12:15:15.655	2026-09-26 12:15:15.655	N1	\N	0
 7217	〜までだ／〜までのことだ	chỉ còn cách … / chỉ là … mà thôi	\N	16365	2026-09-26 12:15:15.661	2026-09-26 12:15:15.661	N1	\N	1
@@ -74269,16 +73645,7 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7250	〜そばから	vừa … xong thì lại (lặp lại)	\N	16379	2026-09-26 12:15:17.152	2026-09-26 12:15:17.152	N1	\N	3
 7251	〜を皮切りに	bắt đầu từ …, khởi đầu là …	\N	16379	2026-09-26 12:15:17.16	2026-09-26 12:15:17.16	N1	\N	4
 7252	〜に至って（は）	đến khi … thì (mới)	\N	16379	2026-09-26 12:15:17.168	2026-09-26 12:15:17.168	N1	\N	5
-5394	N をくれます	tặng, cho (người nói)	Cách dùng: ý nghĩa giống với あげます. Tuy nhiên: – あげます: thể hiện việc người nói tặng cho ai, người nào đó tặng cho người khác. – くれます: thể hiện việc ai đó tặng, cho người nói hoặc người thân trong gia đình người nói.	24	2026-06-25 11:24:20.035	2026-09-26 05:08:19.639	N5	\N	0
-5395	Vてあげます	(làm cái gì) cho ai	• Cách dùng:\n\n– Ai đó làm cho người khác một việc với ý nghĩa thiện chí, lòng tốt, thân thiện.\n\n– Chủ ngữ là người thực hiện hành động.	24	2026-06-25 11:24:20.043	2026-09-26 05:08:19.639	N5	\N	0
-5396	Vてもらいます	nhận (việc gì) từ ai; được ai đó làm gì cho.	• Cách dùng:\n\n– Biểu thị lòng biết ơn của người được nhận hành vi giúp đỡ.\n\n– Chủ ngữ là người nhận.	24	2026-06-25 11:24:20.049	2026-09-26 05:08:19.639	N5	\N	0
-5397	V てくれます	ai làm cho cái gì	• Cách dùng:\n\n– Thể hiện sự cảm tạ của người nhận hành vi giúp đỡ giống như ～てもらいます.\n\n– Trong mẫu ～てもらいます chủ ngữ là người nhận.\n\n– Trong mẫu ～てくれます, chủ ngữ là người thực hiện hành động.\n\n– Người nhận thường là người nói nên 私に (chỉ người nhận) thường được lược bỏ.	24	2026-06-25 11:24:20.056	2026-09-26 05:08:19.639	N5	\N	0
-5412	Vてしまいます	(làm gì) hết/ xong rồi; (làm gì) mất rồi (nuối tiếc)	Cách dùng: dùng để nhấn mạnh sự hoàn thành thật sự của hành động, đứng trước nó thường là các trạng từ như もう、ぜんぶ.	29	2026-06-25 11:24:22.193	2026-09-26 05:08:19.773	N4	\N	0
-5442	Ngữ pháp V る＋ のが ＋ A です。		(Câu tính từ với trợ từ が)	38	2026-06-25 11:24:26.037	2026-09-26 05:08:20.186	N4	\N	0
 7332	〜を皮切りに	bắt đầu từ …, khởi đầu là …	\N	16403	2026-09-26 12:15:21.039	2026-09-26 12:15:21.039	N1	\N	4
-5398	Bài 25	• Ví dụ: お金が あったら、旅行します。	Okane ga attara, ryokōshimasu. Nếu có tiền tôi sẽ đi du lịch. 時間が なかったら、テレビを 見)ません。 Jikan ga nakattara, terebi wo mi masen. Nếu không có thời gian tôi sẽ không xem ti vi. 安かったら、パソコンを 買いたいです。 Yasukattara, pasokon wo kaitaidesu. Nếu rẻ tôi muốn mua 1 cái máy tính cá nhân. 暇だったら、手伝ってください。 Himadattara, tetsudatte kudasai. Nếu rỗi thì giúp tôi một tay nhé. いい天気だったら、散歩しませんか。 Ī tenki dattara, sanposhimasen ka. Nếu thời tiết đẹp thì bạn có đi bộ cùng tôi không?	25	2026-06-25 11:24:20.502	2026-09-26 05:08:19.663	N5	\N	0
-5399	V た＋ら	sau khi ~	• Cách dùng:\n\n– Biểu thị một động tác hay một hành vi nào đó sẽ được làm hoặc 1 tình huống sẽ xẩy ra khi 1 sự việc nào đó mà được cho là chắc chắn sẽ xảy ra trong tương lai được hoàn thành hoặc đạt được.\n\n– Thì của mệnh đề chính luôn ở thời hiện tại.	25	2026-06-25 11:24:20.507	2026-09-26 05:08:19.663	N5	\N	0
-5400	Điều kiện ngược		Cách dùng: dùng khi một hành động nào đó trong một hoàn cảnh nhất định đáng ra phải làm nhưng lại không làm, một việc nào đó đáng ra phải xảy ra nhưng lại không xảy ra, hoặc một kết quả trái với quan niệm thông thường của mọi người.	25	2026-06-25 11:24:20.512	2026-09-26 05:08:19.663	N5	\N	0
 7253	〜を限りに	kể từ … là thôi / lần cuối	\N	16379	2026-09-26 12:15:17.176	2026-09-26 12:15:17.176	N1	\N	6
 7254	〜てこのかた	suốt từ khi … đến nay	\N	16379	2026-09-26 12:15:17.187	2026-09-26 12:15:17.187	N1	\N	7
 7255	〜にあって	trong (hoàn cảnh) …	\N	16379	2026-09-26 12:15:17.196	2026-09-26 12:15:17.196	N1	\N	8
@@ -74300,7 +73667,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7271	〜ならいざしらず	nếu là … thì còn được, chứ …	\N	16382	2026-09-26 12:15:17.535	2026-09-26 12:15:17.535	N1	\N	3
 7272	〜たら最後／〜たが最後	một khi đã … thì (không cứu vãn)	\N	16382	2026-09-26 12:15:17.548	2026-09-26 12:15:17.548	N1	\N	4
 7273	〜ようによっては	tùy cách … mà	\N	16382	2026-09-26 12:15:17.556	2026-09-26 12:15:17.556	N1	\N	5
-7274	〜なくしては	nếu không có … thì không thể	\N	16382	2026-09-26 12:15:17.563	2026-09-26 12:15:17.563	N1	\N	6
 7275	〜とすれば（N1・suy luận）	nếu cho rằng … thì	\N	16382	2026-09-26 12:15:17.572	2026-09-26 12:15:17.572	N1	\N	7
 7276	〜といえども	dù là … đi nữa	\N	16383	2026-09-26 12:15:17.627	2026-09-26 12:15:17.627	N1	\N	0
 7277	〜とはいえ	tuy nói là … nhưng	\N	16383	2026-09-26 12:15:17.633	2026-09-26 12:15:17.633	N1	\N	1
@@ -74317,12 +73683,7 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7288	〜までもない	không cần phải … (đến mức)	\N	16384	2026-09-26 12:15:17.775	2026-09-26 12:15:17.775	N1	\N	3
 7289	〜にかたくない	không khó để … (tưởng tượng)	\N	16384	2026-09-26 12:15:17.784	2026-09-26 12:15:17.784	N1	\N	4
 7290	〜にたえない／〜にたえる	không đáng / không chịu nổi … ; đáng để …	\N	16384	2026-09-26 12:15:17.793	2026-09-26 12:15:17.793	N1	\N	5
-5403	Vる / Vない / Vた＋んです。 Aい ＋んです。 Na / N ＋んです。 • Ý nghĩa	nhấn mạnh ý muốn nói, muốn hỏi;	Cách dùng: 1.1. Trong câu hỏi「～んですか。」 1.1.1. Dùng trong trường hợp xác nhận lại thông tin xem có đúng như cái mà mình đang nhìn thấy hoặc đang suy đoán không.	26	2026-06-25 11:24:20.93	2026-09-26 05:08:19.693	N4	\N	0
-5404	Mẫu câu V1んですが、V2(Thể て)いただけませんか？。		Người nói muốn làm V1, và nhờ người nghe làm V2 giúp mình (V2 là hướng để giải quyết V1)\n\nBắt đầu chủ đề của câu chuyện rồi tiếp đến là đưa ra lời yêu cầu,xin phép, hỏi ý kiến.\n\n+日本語で手紙を書いたんですが、ちょっと教えていただけませんか？\n\nにほんごでてがみをかいたんですが、ちょっとおしえていただけませんか？\n\nTôi muốn viết thư bằng tiếng Nhật,bạn có thể dạy tôi một chút đươc không?\n\n+東京へ行きたいんですが、地図を書いていただけませんか？\n\nとうきょうへいきたいんですが、ちずをかいていただけませんか？\n\nTôi muốn đi đến Tokyo, bạn có thể vẽ giúp tôi bản đồ được không?	26	2026-06-25 11:24:20.936	2026-09-26 05:08:19.693	N4	\N	0
 7333	〜に至って（は）	đến khi … thì (mới)	\N	16403	2026-09-26 12:15:21.046	2026-09-26 12:15:21.046	N1	\N	5
-5405	Mẫu câu V1んですが、V2たらいいですか？		、どうしたらいいですか？\n\nNgười nói muốn làm V1 và hỏi người nghe là nếu làm V2 thì có tốt không? hoặc làm thế nào thì tốt\n\n+日本語が上手になりたいんですが、どうしたらいいですか？\n\nにほんごがじょうずになりたいんですか、どうしたらいいですか？\n\nVì là tôi muốn trở nên giỏi tiếng Nhật,làm thế nào thì tốt ạ?\n\n+電話番号がわからないんですが、どうやって調べたらいいですか？\n\nでんわばんごうがわからないんですが、どうやってしらべたらいいですか？\n\nVì là tôi không biết số điện thoại, làm thế nào để tra được ạ?\n\n* Chú ý: Không được dùng ～んです để diễn tả sự thật đơn thuần như ví dụ sau đây:\n\n私は ミラーなんです。	26	2026-06-25 11:24:20.942	2026-09-26 05:08:19.693	N4	\N	0
-5407	Mẫu câu		~~~しか　Vません\n\nChỉ có mỗi~~~\n\nMẫu câu này có nghĩa tương đương với だけ\n\n-	27	2026-06-25 11:24:21.35	2026-09-26 05:08:19.732	N4	\N	0
-5408	V1 (bỏ ます) + ながら、 V２	vừa làm ~ vừa làm ~	Cách dùng: diễn tả 2 hành động xảy ra đồng thời vào cùng một thời điểm. Trong đó, hành động thứ 2 là hành động chính, được nhấn mạnh hơn.	28	2026-06-25 11:24:21.777	2026-09-26 05:08:19.753	N4	\N	0
 7291	〜に足る	đủ để …, đáng …	\N	16384	2026-09-26 12:15:17.801	2026-09-26 12:15:17.801	N1	\N	6
 7292	〜てやまない	luôn luôn … (tha thiết)	\N	16384	2026-09-26 12:15:17.813	2026-09-26 12:15:17.813	N1	\N	7
 7293	〜といったらない	… không kể xiết	\N	16384	2026-09-26 12:15:17.823	2026-09-26 12:15:17.823	N1	\N	8
@@ -74364,8 +73725,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7329	〜が早いか	vừa mới … là đã	\N	16403	2026-09-26 12:15:21.019	2026-09-26 12:15:21.019	N1	\N	1
 7330	〜なり	vừa … liền (hành động bất ngờ)	\N	16403	2026-09-26 12:15:21.026	2026-09-26 12:15:21.026	N1	\N	2
 7331	〜そばから	vừa … xong thì lại (lặp lại)	\N	16403	2026-09-26 12:15:21.033	2026-09-26 12:15:21.033	N1	\N	3
-5409	～んですが、～		Cách dùng: dùng để yêu cầu, nhờ ai đó làm gì giúp mình nhưng có ý nghĩa yêu cầu, nhờ vả lịch sự hơn Vてください rất nhiều.	28	2026-06-25 11:24:21.784	2026-09-26 05:08:19.753	N4	\N	0
-5410	Thể thường し、Thể thường し、～	vừa thế này, lại thế kia nữa; vì thế này, và vì thế này nên …	Cách dùng: し được dùng để liệt kê các nội dung khác nhau của một đề tài hoặc trình bày nhiều hơn một nguyên nhân, lý do (có thể nhiều hơn 2, nhưng thường chỉ liệt kê 2)\n\n• Chú ý: trong mẫu câu này, ta dùng trợ từ「も 」 để thay thế cho trợ từ「が」hay「を」với hàm ý nhấn mạnh vào các lý do đưa ra.\n\n3.1. ～し、～し、（それに）～: vừa … vừa… hơn nữa\n\n• Cách dùng: có thể dùng mẫu câu này để miêu tả những nội dung khác nhau của một đề tài.	28	2026-06-25 11:24:21.791	2026-09-26 05:08:19.753	N4	\N	0
 7334	〜を限りに	kể từ … là thôi / lần cuối	\N	16403	2026-09-26 12:15:21.053	2026-09-26 12:15:21.053	N1	\N	6
 7335	〜てこのかた	suốt từ khi … đến nay	\N	16404	2026-09-26 12:15:21.427	2026-09-26 12:15:21.427	N1	\N	0
 7336	〜にあって	trong (hoàn cảnh) …	\N	16404	2026-09-26 12:15:21.437	2026-09-26 12:15:21.437	N1	\N	1
@@ -74381,7 +73740,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7352	〜ならいざしらず	nếu là … thì còn được, chứ …	\N	16406	2026-09-26 12:15:22.156	2026-09-26 12:15:22.156	N1	\N	3
 7353	〜たら最後／〜たが最後	một khi đã … thì (không cứu vãn)	\N	16406	2026-09-26 12:15:22.163	2026-09-26 12:15:22.163	N1	\N	4
 7354	〜ようによっては	tùy cách … mà	\N	16406	2026-09-26 12:15:22.169	2026-09-26 12:15:22.169	N1	\N	5
-7355	〜なくしては	nếu không có … thì không thể	\N	16407	2026-09-26 12:15:22.463	2026-09-26 12:15:22.463	N1	\N	0
 7356	〜とすれば（N1・suy luận）	nếu cho rằng … thì	\N	16407	2026-09-26 12:15:22.468	2026-09-26 12:15:22.468	N1	\N	1
 7357	〜といえども	dù là … đi nữa	\N	16407	2026-09-26 12:15:22.472	2026-09-26 12:15:22.472	N1	\N	2
 7358	〜とはいえ	tuy nói là … nhưng	\N	16407	2026-09-26 12:15:22.476	2026-09-26 12:15:22.476	N1	\N	3
@@ -74405,14 +73763,6 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7376	〜だけましだ	còn may là … (so với tệ hơn)	\N	16410	2026-09-26 12:15:23.421	2026-09-26 12:15:23.421	N1	\N	0
 7377	〜べからず／〜べからざる	không được … (cấm, văn viết)	\N	16410	2026-09-26 12:15:23.429	2026-09-26 12:15:23.429	N1	\N	1
 7378	〜まじき	không được phép (với tư cách …)	\N	16410	2026-09-26 12:15:23.437	2026-09-26 12:15:23.437	N1	\N	2
-5413	Vてあります：(diễn tả trạng thái, kết quả hành động với tha động từ) • Ý nghĩa	Mẫu câu「～てあります」dùng để diễn tả trạng	Cách dùng: 1.1. N １ に N２ が V てあります: ở đâu có … cái gì • Cách dùng: Thể hiện trạng thái của đồ vật sau khi xảy ra 1 việc gì đó và hiện giờ (thời điểm nói) kết quả của việc đó vẫn còn tồn tại và người nói nhìn thấy được. Trong đó, đặt trọng tâm ý muốn nói ở hành động và mục đích thực hiện hành động đó.	30	2026-06-25 11:24:22.6	2026-09-26 05:08:19.792	N4	\N	0
-5414	Vておきます		Cách dùng: Diễn tả 1 hành động cần làm trước để chuẩn bị cho 1 hành động khác xảy ra.	30	2026-06-25 11:24:22.609	2026-09-26 05:08:19.792	N4	\N	0
-5415	Chia thể ý chí động từ nhóm 2	bỏ る thêm よう	Cách dùng: dùng để biểu lộ dự định, ý muốn làm một chuyện gì cho người nghe biết.	31	2026-06-25 11:24:23.048	2026-09-26 05:08:19.815	N4	\N	0
-5416	毎日運動した ほうが いいです。	＊ Sự khác nhau giữa ～た ほうが いい và ～たらいい： 日本のお寺が 見たいんですが……。	Tôi muốn đi thăm chùa của Nhật. …じゃ、 京都へ 行ったら いいですよ。 Vậy thì đi Kyoto được đấy. Ví dụ diễn tả tình huống mà là một lời gợi ý đơn giản được đưa ra. Trong những trường hợp này, ～たら いい được sử dụng. ～た ほうが いい chỉ so sánh và lựa chọn 2 vật.	32	2026-06-25 11:24:23.47	2026-09-26 05:08:20.029	N4	\N	0
-5417	Mẫu ngữ pháp でしょう		Cách dùng: biểu thị suy luận của người nói căn cứ vào một số thông tin nào đó. Nó thường được sử dụng chung với phó từ như たぶん (có lẽ) hay きっと(nhất định). Khi sử dụng câu hỏi, người nói muốn biết suy luận của người nghe.	32	2026-06-25 11:24:23.477	2026-09-26 05:08:20.029	N4	\N	0
-5418	Mẫu ngữ pháp かもしれません		Nếu でしょう diễn đạt sự việc có thể xảy ra ở mức 70 – 80% thì mẫu câu này chỉ áp dụng cho những hành động mà khả năng xảy ra tương đối thấp, chỉ khoảng 50%.	32	2026-06-25 11:24:23.485	2026-09-26 05:08:20.029	N4	\N	0
-5419	Cách sử dụng trợ từ で		Cách dùng: で được thêm sau số từ để chỉ giới hạn giá / thời gian / số lượng… cần thiết cho một tình huống, hành động hay sự kiện được tiến hành.	32	2026-06-25 11:24:23.492	2026-09-26 05:08:20.029	N4	\N	0
-5420	Thể mệnh lệnh tiếng Nhật là	Thể cấm đoán tiếng Nhật là 禁止形 (きんしけい) 1. Cách chia động từ thể mệnh lệnh. (命令形) Nhóm 2: bỏ る thêm ろ (động từ dạng –masu thì bỏ -masu và thêm –ro)	Thể cấm đoán tiếng Nhật là 禁止形 (きんしけい) 1. Cách chia động từ thể mệnh lệnh. (命令形) Nhóm 2: bỏ る thêm ろ (động từ dạng –masu thì bỏ -masu và thêm –ro)	33	2026-06-25 11:24:23.888	2026-09-26 05:08:20.061	N4	\N	0
 7379	〜までだ／〜までのことだ	chỉ còn cách … / chỉ là … mà thôi	\N	16410	2026-09-26 12:15:23.441	2026-09-26 12:15:23.441	N1	\N	3
 7380	〜ばそれまでだ	nếu … thì cũng hết (vô nghĩa)	\N	16410	2026-09-26 12:15:23.445	2026-09-26 12:15:23.445	N1	\N	4
 7381	〜を禁じ得ない	không kìm được …	\N	16410	2026-09-26 12:15:23.449	2026-09-26 12:15:23.449	N1	\N	5
@@ -74443,43 +73793,373 @@ COPY public."Grammar" (id, pattern, meaning, explanation, "lessonId", "createdAt
 7406	〜に至る／〜に至るまで	đi đến …; đến tận …	\N	16414	2026-09-26 12:15:24.579	2026-09-26 12:15:24.579	N1	\N	3
 7407	〜に終わる	kết thúc bằng … (kết cục không như ý)	\N	16414	2026-09-26 12:15:24.585	2026-09-26 12:15:24.585	N1	\N	4
 7408	〜ともあろう	người như … mà lại	\N	16414	2026-09-26 12:15:24.59	2026-09-26 12:15:24.59	N1	\N	5
-5421	Cách chia động từ thể cấm đoán (禁止形)		Động từ thể từ điển + な (động từ dạng – masu thì phải chuyển về dạng từ điển và thêm –na)	33	2026-06-25 11:24:23.894	2026-09-26 05:08:20.061	N4	\N	0
-5422	Trong thể văn mệnh lệnh, ngoài cách dùng thể mệnh lệnh, thì “ V ます＋なさい” cũng được dùng.	Nó được dùng trong trường hợp bố mẹ nói với con cái, thầy cô giáo với học sinh. Tuy nhiên sắc thái của nó nhẹ nhàng hơn thể mệnh lệnh.	Vì vậy, phụ nữ thường dùng mẫu câu này thay thế cho thể mệnh lệnh….Tuy nhiên, ta không sử dụng mẫu câu này với bề trên.	33	2026-06-25 11:24:23.898	2026-09-26 05:08:20.061	N4	\N	0
-5423	Mẫu ngữ pháp Ｖて＋くれ		Cách dùng: ～てくれ là thể thông thường của ~てください, mẫu câu biểu hiện sự nhờ cậy, yêu cầu lịch sự. Mẫu câu này thể hiện ý mệnh lệnh, cấm đoán nhưng nhẹ nhàng hơn nhiều và không bao hàm ý áp đặt, ép buộc.	33	2026-06-25 11:24:23.904	2026-09-26 05:08:20.061	N4	\N	0
-5424	Ngữ pháp という		Cách dùng: Mẫu câu này được dùng để định nghĩa từ được biểu diễn bởi “X” (という bắt nguồn từ といいます)\n\n1)  “ありがとう” は “Cám ơn” という 意味です。\n\n“Arigatou” có nghĩa là “Cám ơn”.\n\n2)  A:あの漢字は どいう 意味ですか。(Chữ Hán kia có nghĩa là gì?)\n\nB:使うな という 意味です。 (Nó có nghĩa là “không được dùng”.)	33	2026-06-25 11:24:23.908	2026-09-26 05:08:20.061	N4	\N	0
-5426	Ngữ pháp とおりに	① 私が やったとおりに、やってください。	Hãy làm giống hệt tôi làm. ② 私が 言ったとおりに、書いてください。 Hãy viết theo đúng những gì tôi nói. ③ 見たとおりに、話してください。 Hãy kể đúng những gì anh thấy. ④ 線のとおりに、 紙を 切ってください。 Hãy cắt giấy theo đường. ⑤ 説明書のとおりに、 組み立てます。 Lắp ráp theo như sách hướng dẫn.	34	2026-06-25 11:24:24.324	2026-09-26 05:08:20.091	N4	\N	0
-5427	Ngữ pháp あとで		Cách dùng: dùng để diễn tả tuần tự của các hành động. Tùy từng loại từ mà cách kết hợp sẽ khác nhau: (+) với động từ thì chia ở dạng –ta ; (+) với danh từ thì có の; (+) với số từ thì ghép trực tiếp\n\n① 新しいのを 買ったあとで、 なくした時計が みつかりました。\n\nSau khi mua đồng hồ mới, tôi đã tìm thấy chiếc đồng hồ cũ.\n\n② 仕事のあとで、 飲みに 行きませんか。\n\nSau khi làm việc xong, mình đi uống cà phê nhé.\n\n③ 2週 間あとで、国へ 帰ります。\n\n2 tuần sau, tôi sẽ về nước	34	2026-06-25 11:24:24.33	2026-09-26 05:08:20.091	N4	\N	0
-5428	Với mẫu câu này, ở vế 「～たあとで」 động tư luôn chia ở thể ～た, không bị ảnh hưởng của thời điểm diễn ra		☞ あした 勉強したあとで、見物に 行きます。\n\n☞ きのう 勉強したあとで、見物に 行きました。	34	2026-06-25 11:24:24.335	2026-09-26 05:08:20.091	N4	\N	0
-5429	Tổng hợp các cách kết hợp của 「まえに」、「あとで」、「から」		\N	34	2026-06-25 11:24:24.341	2026-09-26 05:08:20.091	N4	\N	0
-5433	Ngữ pháp ように、～	Cách dùng: Khi biểu hiện một hành động nào đó có mục đích ta dùng ように.	Mệnh đề 1 chỉ mục đích, mệnh đề 2 chỉ hành động có chủ ý để đạt được mục đích ở mệnh đề 1 đưa ra.	36	2026-06-25 11:24:25.158	2026-09-26 05:08:20.142	N4	\N	0
-5434	Ngữ pháp るようになる		V るように なりました。	36	2026-06-25 11:24:25.165	2026-09-26 05:08:20.142	N4	\N	0
-5435	Ngữ pháp ようにしてください		1) 必ず 時間を 守るように して ください。\n\nHãy làm thế nào để chắc chắn giữ được thời gian.\n\n2) この スイッチに 絶対に 触らないように して ください。\n\nHãy làm thế nào để tuyệt đối không chạm vào công tắc này.	36	2026-06-25 11:24:25.173	2026-09-26 05:08:20.142	N4	\N	0
-5436	Cách sử dụng trạng từ かなり		\N	36	2026-06-25 11:24:25.181	2026-09-26 05:08:20.142	N4	\N	0
-5437	Động từ thể Ukemi (受身)	Nhóm II: Thêm られ.	1. Mẫu 1: N1(người)は N2(người)に+ Ukemi	37	2026-06-25 11:24:25.609	2026-09-26 05:08:20.164	N4	\N	0
-5438	Mẫu 2	N1(người)は N2(người) に N3(vật)を+ Ukemi	Chủ động: どろぼうは (わたしの) お金を 取りました。  Kẻ trộm lấy tiền của tôi.\n\nBị động:    私は どろぼうに お金を 取られました。       Tôi bị kẻ trộm lấy tiền.\n\nChú ý: Trong mẫu câu này, người làm hành động biểu thị bằng trợ từ に, người nhận sự quấy rầy hay làm phiền bởi hành động đó biểu thị bằng trợ từ は , vật nhận hành động biểu thị bằng trợ từ を.	37	2026-06-25 11:24:25.615	2026-09-26 05:08:20.164	N4	\N	0
-5439	Mẫu 3	N は + Ukemi。	\N	37	2026-06-25 11:24:25.62	2026-09-26 05:08:20.164	N4	\N	0
-5440	Cách sử dụng trợ từ に		Trợ từ に biểu hiện tỷ lệ:	37	2026-06-25 11:24:25.625	2026-09-26 05:08:20.164	N4	\N	0
-5441	Cách đổi từ động từ thành danh từ bằng trợ từ の	Cách dùng: Thêm trợ từ の sau động từ ở thể thông thường thì có thể danh từ hóa câu hay nhóm từ có chứa động từ đó.	Câu hay nhóm từ được danh từ hóa có thể làm chủ ngữ hoặc tân ngữ. 1. Ngữ pháp V る＋ のは ＋ A です。 (Câu tính từ với trợ từ は) Đã học (ở bài 8) サッカーは おもしろいです。 Bóng đá thì thú vị. Bài này học cách nói cụ thể là “xem bóng đá thì thú vị” hay “chơi bóng đá thì thú vị” サッカーを するの は おもしろいです。 Chơi bóng đá thì thú vị. サッカーを 見るの は おもしろいです。 Xem bóng đá thì thú vị. Các tính từ thường được sử dụng trong mẫu câu này gồm: たのしい、おもしろい、むずかしい、やさしい、はずかしい、きもちが いい、きけん［な］、 たいへん［な］ …	38	2026-06-25 11:24:26.032	2026-09-26 05:08:20.186	N4	\N	0
-5443	Ngữ pháp V る＋ のを ＋ わすれました。		(Câu động từ)	38	2026-06-25 11:24:26.044	2026-09-26 05:08:20.186	N4	\N	0
-5444	Trợ từ の và こと		Giống như trợ từ の, trợ từ こと mà chúng ta đã học ở bài 18, 19 cũng được sử dụng như là một cách để danh từ hóa động từ. Chú ý nhiều mẫu câu trong đó こと được sử dụng nhưng の thì không．	38	2026-06-25 11:24:26.052	2026-09-26 05:08:20.186	N4	\N	0
-5445	Cách sử dụng いき và かえり		Thể ます của một số động từ có thể được sử dụng làm danh từ.\n\n(1) 行きは 道がこんでいましたが、帰りは すいています。\n\nLúc đi thì đường đông nhưng lúc về thì vắng.\n\n(2) 会社の帰りに 買い物に 行きました。\n\nTrên đường từ công ty về nhà tôi đã đi mua đồ.\n\nKhi thể ます của động từ được sử dụng làm danh từ thì nó không biểu thị hành động của nó, いき và かえり trong ví dụ (1) chỉ có ý là “lúc đi”, “lúc về”, かえり trong ví dụ (2) có ý là trên đường về.	38	2026-06-25 11:24:26.059	2026-09-26 05:08:20.186	N4	\N	0
-5447	Ngữ pháp N で		2.1 Trợ từ で nhiều khi chỉ nguyên nhân, trong trường hợp này danh từ được sử dụng thường là các từ có đủ sức gây nên một kết quả nào đó như: じこ(tai nạn), じしん (động đất), かじ (hỏa hoạn)…	39	2026-06-25 11:24:26.461	2026-09-26 05:08:20.212	N4	\N	0
-5449	Phân biệt 気持ちがいい và 気分がいい		\N	39	2026-06-25 11:24:26.469	2026-09-26 05:08:20.212	N4	\N	0
-5450	Trợ từ nghi vấn ～か	1.1 Trợ từ ～か là trợ từ nghi vấn đã học thường được đặt cuối câu nghi vấn: A : 会議は 何時に 終わりますか。	Mấy giờ thì cuộc họp kết thúc B : 分かりません。 Tôi không biết. (1) A+B = 会議は 何時に 終わりますか ＋ 分かりません。 Mấy giờ thì cuộc họp kết thúc？ + không biết → 会議は 何時に 終わるか、分かりません。 Không biết mấy giờ thì cuộc họp kết thúc. (2) どうしたら いいですか ＋ 考えてください。 Nên làm thế nào thì tốt? + hãy suy nghĩ → どうしたら いいか、考えてください。 Hãy suy nghĩ xem nên làm thế nào thì tốt. (3) 神戸は どんな町ですか ＋ しりません。 Kobe là thành phố như thế nào ? + không biết → 神戸は どんな町か、しりません。 Không biết Kobe là thành phố như thế nào. Các ví dụ trên là câu hỏi với từ để hỏi được sử dụng như một thành phần trong câu. 1.3 Chú ý sự khác nhau giữa なにか trong ví dụ (1), (1’) và どこか trong ví dụ (2),(2’) sau: (1) はこの中身は なにか、調べてください。 Hãy kiểm tra xem trong hộp có cái gì. (1’) のどがかわきましたから、 なにか 飲みたいですね。 Vì khát nước nên muốn uống cái gì đó quá nhỉ (2) おてあらいは どこか、 わかりません。 Không biết nhà vệ sinh ở đâu. (2’) 今日は いい天気ですね。 どこか 行きますか。 Hôm nay trời đẹp quá. Bạn có đi đâu đó không?	40	2026-06-25 11:24:26.865	2026-09-26 05:08:20.379	N4	\N	0
-5453	Ở bài 7 và bài 24, chúng ta đã học về các biểu hiện cho và nhận đồ vật hay một hành động qua việc sử dụng 3 động từ「あげます、もらいます、くれます」 .	* Quan hệ Trong (ウチ) – Ngoài （ソト） 1.	Cách dùng: 「いただきます」 là khiêm nhường ngữ được dùng thay cho「もらいます」 với hàm ý thể hiện sự khiêm tốn, nhún nhường của người nhận đối với người cho khi người nói nhận gì đó từ người có tuổi tác, địa vị xã hội cao hơn mình (trừ người trong gia đình), người không thân quen lắm hoặc khi muốn thể hiện sự tôn trọng đối với người cho mình. Chú ý: chủ thể của động từ này luôn luôn là 「わたし」 (tôi) もらいます 上の人に 友達に (かぞく、父、母など) 下の人に	41	2026-06-25 11:24:27.263	2026-09-26 05:08:19.56	N4	\N	0
-5454	Ngữ pháp ～は（が）Ｎを くださいます.		Cách dùng: 「くださいます」 là tôn kính ngữ được dùng thay cho「くれます」 với hàm ý thể hiện sự tôn trọng của người nhận khi người cho là người có tuổi tác, địa vị xã hội cao hơn mình (trừ người trong gia đình), hay người không thân quen lắm..\n\nChú ý:\n\n– Chủ thể của động từ này luôn là đại từ nhân xưng ngôi thứ 2 hoặc ngôi thứ 3, không bao giờ là 「わたし」(tôi)\n\n– Thể từ điển của 「くださいます」 là「くださる」 , và chuyển sang thể -TE là「くださって」\n\n友達は\n\n(かぞく、父、母など)\n\n下の人は\nくださいます\n\nくれます\nわたしに	41	2026-06-25 11:24:27.268	2026-09-26 05:08:19.56	N4	\N	0
-5455	Ngữ pháp ～に Ｎを やります.		Cách dùng: 「やります」 được dùng thay cho「あげます」 trong trường hợp đối tượng nhận hành động có địa vị thấp hơn, ít tuổi hơn (em trai, em gái, con cái trong gia đình), động vật, thực vật …\n\nやります\n上の人に\n\n友達に (かぞく、父、母など)\n\n下の人に・ 犬 / 猫 / 花に	41	2026-06-25 11:24:27.273	2026-09-26 05:08:19.56	N4	\N	0
-5456	Ngữ pháp ～ために (cách thể hiện mục đích)	Cách dùng: Đây là mẫu câu biểu hiện mục đích.	Mệnh đề trước đi với ために là mệnh đề biểu hiện mục đích, mệnh đề sau biểu hiện hành vi có ý chí để thực hiện mục đích ấy. 1.1 mẫu câu V1るために、 V2 Động từ đi trước ｢ために｣ là động từ thể từ điển và là những động từ mang tính ý chí thể hiện 1 mục đích nào đó. らいねん 世界旅行を するために、 今お金を ためています。 Bây giờ tôi đang tiết kiệm tiền để năm sau đi du lịch. 漢字を 勉 強するために、 辞書を 買いました。 Tôi đã mua từ điển để học chữ Hán 1/ Phân biệt「～ように」 (bài 36) với「～ために」 – Cả「～ように」 và「～ために」 đều đi với động từ ở thể từ điển. (Người ta không hay dùng dạng 「V ないために」 )。 Ở mệnh đề trước – mệnh đề thể hiện mục đích của mẫu câu 「～ように」 có thể sử dụng cả động từ không có tính ý chí. – Động từ có tính ý chí là động từ thể hiện những động tác, hành động mà ý chí của con người có thể điều khiển được.. VD: たべる(ăn), のむ (uống), いく (đi), つくる (tạo ra), ねる (ngủ)…. + Sự vận động, trạng thái của những vật vô tri, vô giác: ある(có), 壊れる (bị vỡ), 雨が降る (mưa rơi), 風が吹く (gió thổi), 水が出る (nước chảy)… + Các hiện tượng sinh lý của con người:痛む(đau), 病気になる (bị ốm), 老いる(già) , 若返る(trẻ lại), 目が覚める(tỉnh dậy)… + Các hiện tượng tâm lý của con người : 困る(khó khăn) , 飽きる (mệt mỏi), できる (có thể)… và các động từ ở thể khả năng.	42	2026-06-25 11:24:27.662	2026-09-26 05:08:19.845	N4	\N	0
-5457	Ví dụ	Hoa sakura sắp nở. これから 寒くなりそうです。 Trời sắp lạnh. 今にも 荷物が 落ちそうです。 Hành lý sắp rơi. 煙が 少なくなりました。 火事は 消えそうです。 Khói ít đi rồi. Cơn hỏa hoạn sắp tắt.	もうすぐ 桜が 咲きそうです。 Hoa sakura sắp nở. これから 寒くなりそうです。 Trời sắp lạnh. 今にも 荷物が 落ちそうです。 Hành lý sắp rơi. 煙が 少なくなりました。 火事は 消えそうです。 Khói ít đi rồi. Cơn hỏa hoạn sắp tắt.	43	2026-06-25 11:24:28.056	2026-09-26 05:08:19.88	N4	\N	0
-5460	Ngữ pháp すぎます	Ｖ、Ａ、Ｎａ＋すぎます Cấu trúc すぎます: Ví dụ : 昨日の晩お酒を 飲みすぎました。	Tối qua, tôi đã uống quá nhiều rượu. お土産を 買いすぎました。 Tôi đã mua quá nhiều quà lưu niệm. 寿司を 食べすぎました。 Tôi đã ăn quá nhiều Sushi. このシャツは 大きすぎます。 Cái áo sơ mi này quá to. この本は 複雑すぎます。 Cuốn sách này quá phức tạp. Chú ý: 「すぎます」 là động từ nhóm 2: 「すぎる、すぎて」 食べすぎて、おなかが 痛いです。 Vì tôi ăn nhiều quá nên bị đau bụng. 試験の問題は 複雑すぎて、 何も わかりませんでした。 Bài thi khó quá nên chả hiểu gì cả. いくら好きでも、 飲みすぎると、 体に悪いですよ。 Dù có thích rượu mấy đi chăng nữa nhưng nếu uống nhiều quá cũng có hại cho sức khỏe.	44	2026-06-25 11:24:28.484	2026-09-26 05:08:19.901	N4	\N	0
-5461	Ngữ pháp やすい／にくい		Cách dùng: Trong bài 19, chúng ta đã học cách tạo phó từ với động từ「～なります」 với ý nghĩa “một cái gì đó chuyển sang trạng thái khác (trở nên, trở thành 1 cách tự nhiên)”\n\nCòn trong bài này, chúng ta học cách tạo phó từ với động từ「～します」 với ý nghĩa “làm thay đổi một cái gì đó sang một trạng thái khác (làm cho ~ trở thanh hoàn toàn do ý chí)”.	44	2026-06-25 11:24:28.491	2026-09-26 05:08:19.901	N4	\N	0
-5462	Ngữ pháp Ｎに します		会議は 明日に します。 Để đến mai họp (quyết định dời buổi học sang ngày mai)\n\n晩ご飯は 寿司に します。 Bữa tối tôi chọn sushi (chọn món sushi để ăn)\n\nホテルは どこに しますか。 Bạn chọn khách sạn nào?\n\n… ハノイホテルに します。 Tôi chọn khách sạn Hà nội.	44	2026-06-25 11:24:28.498	2026-09-26 05:08:19.901	N4	\N	0
-5466	Ngữ pháp ばかり		Cấu trúc: V た ばかりです (cách thể hiện ý nói: hành động vừa xẩy ra)	46	2026-06-25 11:24:29.341	2026-09-26 05:08:19.953	N4	\N	0
-5467	Trong ngữ pháp minnano nihongo bài 47 học về mẫu ngữ pháp そう, nghe thì có vẻ giống như ngữ pháp そう ở bài 43, nhưng câu trúc và ý nghĩa thì khác nhau đó nhé.	Ngữ pháp そう ở bài 43 là động từ bỏ masu thêm そう, ý nghĩa là hình như, có vẻ, mang tính phỏng đoán Ngữ pháp そう ở bài 47 là động từ từ điển Vる thêm そう、 mang ý nghĩa nghe nói, hình như 1.	Cách dùng: Dùng để truyền đạt những thông tin mà mình nghe thấy ở đâu đó đến người thứ 3 và không có nhận định của bạn. Để nhấn mạnh thêm sự chắc chắn của thông tin, có thể dẫn thêm nguồn gốc của thông tin đó với cụm từ 「～によると」	47	2026-06-25 11:24:29.738	2026-09-26 05:08:20.001	N4	\N	0
-5468	Ngữ pháp ようです		① 彼は きょう とても いそがしいようです。\n\nHôm nay hình như anh ấy rất bận rộn.\n\n② きのう この道で 交通事故が 起こったようです。\n\nHôm qua hình như đã xẩy ra tại nạn trên đường này.\n\n③ 部屋に 泥棒が 入ったようです。\n\nHình như trộm đã vào phòng.\n\n④ 田中さんは とても 病気のようです。\n\nHình như anh Tanaka ốm nặng.\n\n⑤ 先生は きょう ひまなようです。\n\nHôm nay hình như thầy giáo rảnh.	47	2026-06-25 11:24:29.746	2026-09-26 05:08:20.001	N4	\N	0
-5469	Nhóm I	chuyển đuôi 「u」sang a +せる	Cách dùng: Biến đổi tự động từ sang thể 「使役(しえき)」 để tạo ra 1 động từ mới mang nghĩa sai khiến, mệnh lệnh yêu cầu ai đó làm gì. Trong phạm vi bài này dùng chủ yếu các tự động từ sau: 行く、来る、帰る、通う、 出 張する、 出席する、遊ぶ. Trong kiểu câu này, người thực hiện hành động, động tác sẽ đi với trợ từ 「を」。 – Kiểu câu này còn được gọi tên là kiểu câu 「を-使役文」(câu sai khiến với trợ từ を)	48	2026-06-25 11:24:30.136	2026-09-26 05:08:20.238	N4	\N	0
-5471	Với những danh từ chưa bao hàm ý kính trọng thì có thể thêm 「さん（さま）」 để tăng thêm ý lịch sự	để tăng thêm ý lịch sự	客→お客さん（さま） 二人→お二人さん（さま）\n\n医者→お医者さん（さま） 花屋→（お）花屋さん\n\nVí dụ trường hợp người A nói chuyện với người B về người C là người trên thuộc quan hệ trong của người A sẽ như sau:\n\n（１） Trường hợp B (Giám đốc) là người ngoài:\n\n○ A：（わたしの）父は 明日 大阪へ 行きます／参ります（５０課）\n\n× A：（わたしの）お父さんは 明日 大阪へ いらっしゃいます。\n\n（２） Trường hợp B (anh trai của A) là người trong:\n\n○ A：お父さんは 明日 大阪へ いらっしゃる／行く。（行きます。）\n\n× A：父は 明日 大阪へ 行きます／参ります。 （５０課）\n\nCũng giống như Danh từ, có thể thêm tiền tố 「お」 và「ご」 để tạo thành kính ngữ. Tuy nhiên,\n\ncũng có trường hợp không dùng được. Vd: ×おいい ×おおいしい	49	2026-06-25 11:24:30.586	2026-09-26 05:08:20.255	N4	\N	0
-5472	Khiêm nhường ngữ tiếng Nhật là 謙譲語(けんじょうご)	Cách cấu tạo: V ます お V します Động từ nhóm 1: 持ちます → お持ちします Động từ nhóm 2: 調べます → お調しらべします 案内します → ご案内します 邪魔します → お邪魔します (1) 私は 毎日新聞を 読みます。	（×） お読みします (2) A：いつ おくにへ おかえりに なりますか。 B: らいしゅう かえります。 （×） おかえりします ☞ Không dùng trong trường hợp người được nhắc tới trong câu chuyện là người thuộc nhóm mình kể cả người bề trên 父を 駅まで お送りしました。（×） 父を 駅まで 送りました。（○） ☞ Không sử dụng những động từ có 1 âm tiết ví dụ như:来ます、 見ます、います 来ます → ✖ おきします 〇まいります 見ます → ✖ おみします 〇はいけんします います → ✖ おいします 〇おります Cách danh động từ (động từ nhóm 3 có dạng「N します」 thường là những từ gốc Hán nên sẽ ghép 「ご」 và tạo thành 「ごN します」 . (nhưng không áp dụng với các động từ như 「勉強します、 実習します、 結婚します」 ) 電話します → お電話します 約束します → お約束します 電話は 階段の 横に ございます。 Điện thoại có ở bên cạnh cầu thang ạ. ＊ ～で ございます はい、 IMC で ございます。 Vâng, IMC xin nghe. …パワー電気の シュッミトですが、 ミラーさん、お願いします。 Tôi là Summit người của công ty điện lực Power, tôi xin gặp anh Miler. ＊ よろしいでしょうか お飲み物は 何が よろしいでしょうか。 Ngài sẽ dùng đồ uống gì ạ? コーヒーを お願いします。 Cho tôi cà phê.	50	2026-06-25 11:24:30.994	2026-09-26 05:08:20.272	N4	\N	0
+7624	N1 は N2 です	N1 là N2	は (đọc là wa) đánh dấu chủ đề của câu; です đặt cuối câu khẳng định, thể hiện sự lịch sự.	1	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7625	N1 は N2 じゃ（では） ありません	N1 không phải là N2	Phủ định của です. じゃ ありません dùng trong hội thoại, では ありません trang trọng hơn.	1	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7626	S ＋ か	câu hỏi (có / không)	Thêm か vào cuối câu và lên giọng để tạo câu hỏi. Trả lời: はい、そうです／いいえ、ちがいます.	1	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7627	N も	N cũng	も thay cho は khi thông tin giống với điều vừa được nói đến.	1	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7628	N1 の N2	N2 thuộc N1	の nối hai danh từ. Ở bài này N1 là tổ chức, nhóm mà N2 trực thuộc.	1	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7629	～さん	anh / chị / ông / bà ~	Gắn sau tên người khác để thể hiện sự tôn trọng. Không dùng cho tên của chính mình. Với trẻ nhỏ dùng ～ちゃん.	1	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	5
+7630	これ／それ／あれ	cái này / cái đó / cái kia	Đại từ chỉ định, đứng một mình như danh từ. これ: gần người nói; それ: gần người nghe; あれ: xa cả hai.	2	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7631	この／その／あの ＋ N	N này / N đó / N kia	Luôn đi kèm danh từ phía sau, không đứng một mình.	2	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7632	そうです／ちがいます	đúng vậy / không phải	Trả lời câu hỏi có / không với câu danh từ.	2	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7633	S1 か、S2 か	S1 hay là S2?	Câu hỏi lựa chọn; trả lời bằng chính lựa chọn, không dùng はい／いいえ.	2	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7634	N1 の N2（nội dung / sở hữu）	N2 về N1 / N2 của N1	の chỉ nội dung hoặc sở hữu. Có thể lược N2 khi đã rõ: これは わたしのです.	2	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7635	そうですか	Thế à / Ra vậy	Đáp lại khi nhận được thông tin mới, đọc xuống giọng.	2	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	5
+7636	ここ／そこ／あそこ は N（địa điểm）です	chỗ này / đó / kia là N	Đại từ chỉ nơi chốn, cùng quy tắc khoảng cách với これ／それ／あれ.	3	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7637	N は どこですか	N ở đâu?	Hỏi vị trí. Cách hỏi lịch sự hơn: どちらですか.	3	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7638	こちら／そちら／あちら／どちら	phía này / đó / kia / nào (lịch sự)	Cách nói lịch sự của ここ／そこ／あそこ／どこ; cũng dùng để hỏi đất nước, công ty, trường của người nghe.	3	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7639	どこの N	N của nước nào / hãng nào	Hỏi xuất xứ, nơi sản xuất của đồ vật.	3	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7640	N は いくらですか	N giá bao nhiêu?	Hỏi giá tiền.	3	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7641	今 ～時～分です	bây giờ là ~ giờ ~ phút	時 (じ) chỉ giờ, 分 (ふん／ぷん) chỉ phút. Hỏi: 今 何時ですか.	4	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7642	V ます／V ません／V ました／V ませんでした	chia thì của động từ thể lịch sự	ます: hiện tại, tương lai, thói quen; ません: phủ định; ました: quá khứ; ませんでした: phủ định quá khứ.	4	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7643	N（thời gian）に V	làm V vào lúc N	に đi với thời điểm có con số (giờ, ngày, tháng, năm) và thứ trong tuần; không dùng với きょう, あした, 毎日…	4	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7644	N1 から N2 まで	từ N1 đến N2	Dùng cho cả thời gian và địa điểm; có thể dùng riêng から hoặc まで.	4	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7645	N1 と N2	N1 và N2	と nối hai danh từ (liệt kê đầy đủ).	4	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7646	～ね	~ nhỉ (mong người nghe đồng cảm)	Đặt cuối câu khi người nói muốn người nghe đồng tình hoặc xác nhận.	4	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	5
+7647	N（địa điểm）へ 行きます／来ます／帰ります	đi / đến / về N	へ (đọc là e) chỉ hướng di chuyển.	5	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7648	どこ［へ］も 行きません	không đi đâu cả	Từ để hỏi + も + động từ phủ định = phủ định hoàn toàn.	5	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7649	N（phương tiện）で 行きます	đi bằng N	で chỉ phương tiện di chuyển. Đi bộ: 歩いて 行きます (không dùng で).	5	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7650	N（người / động vật）と V	làm V cùng với N	と chỉ đối tượng cùng thực hiện hành động. Một mình: ひとりで.	5	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7651	いつ	khi nào	Từ để hỏi thời gian; không đi kèm に.	5	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7652	～よ	~ đấy (cho biết điều người nghe chưa biết)	Đặt cuối câu để truyền đạt thông tin mới hoặc nhấn mạnh ý kiến của người nói.	5	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	5
+7653	N を V（tha động từ）	làm V (tác động lên N)	を (đọc là o) đánh dấu tân ngữ trực tiếp.	6	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7654	N を します	làm / chơi N	します đi với nhiều danh từ chỉ hoạt động: サッカー, 宿題, パーティー…	6	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7655	何を しますか	làm gì?	Hỏi về hoạt động. 何も ＋ phủ định = không ~ gì cả.	6	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7656	N（địa điểm）で V	làm V ở N	で chỉ nơi diễn ra hành động.	6	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7657	V ませんか	cùng V không? (mời, rủ)	Lời mời lịch sự, tôn trọng ý muốn của người nghe.	6	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7658	V ましょう	cùng V nào	Đề nghị tích cực, hoặc hưởng ứng lời mời.	6	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	5
+7659	N（công cụ / phương tiện）で V	làm V bằng N	で chỉ công cụ, phương tiện, ngôn ngữ.	7	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7660	「từ / câu」は ～語で 何ですか	~ trong tiếng ~ là gì?	Hỏi cách nói một từ hoặc câu bằng ngôn ngữ khác.	7	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7661	N1（người）に N2 を あげます	tặng / cho N1 cái N2	Cùng mẫu với 貸します, 教えます, 送ります, 電話を かけます.	7	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7662	N1（người）に N2 を もらいます	nhận N2 từ N1	Có thể thay に bằng から. Cùng mẫu với 借ります, 習います.	7	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7663	もう V ました	đã V rồi	Hỏi việc đã hoàn thành chưa. Trả lời phủ định: いいえ、まだです.	7	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7664	N は なA［な］です／いA です	N thì (tính từ)	Tính từ な bỏ な rồi thêm です; tính từ い giữ nguyên + です. Phủ định: なA じゃ ありません; いA bỏ い + くないです (いい → よくないです).	8	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7665	なA な N／いA N	tính từ bổ nghĩa cho danh từ	Tính từ な giữ な khi đứng trước danh từ; tính từ い đứng trực tiếp trước danh từ.	8	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7666	とても／あまり	rất / không ~ lắm	とても đi với khẳng định; あまり luôn đi với phủ định.	8	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7667	N は どうですか／N1 は どんな N2 ですか	N thế nào? / N1 là N2 như thế nào?	どう hỏi cảm nhận; どんな đứng trước danh từ để hỏi tính chất.	8	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7668	S1 が、S2	S1 nhưng S2	が nối hai mệnh đề có ý nghĩa tương phản.	8	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7669	どれ	cái nào (trong ba thứ trở lên)	Yêu cầu người nghe chọn một trong nhiều thứ.	8	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	5
+7670	N が あります／わかります	có / hiểu N	Đối tượng của あります (sở hữu) và わかります dùng が.	9	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7671	N が 好きです／嫌いです／上手です／下手です	thích / ghét / giỏi / kém N	Đối tượng của tính từ chỉ sở thích, năng lực dùng が.	9	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7672	どんな N	N gì / loại N nào	Hỏi để người nghe nêu cụ thể một thứ trong nhóm.	9	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7673	よく／だいたい／たくさん／少し／あまり／全然	phó từ chỉ mức độ, số lượng	Đặt trước động từ. あまり và 全然 luôn đi với phủ định.	9	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7674	～から、～	vì ~ nên ~	から đứng sau vế chỉ lý do.	9	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7675	どうして ～か	tại sao ~?	Hỏi lý do; câu trả lời kết thúc bằng ～から.	9	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	5
+7676	N が あります／います	có N	あります dùng cho đồ vật, cây cối; います dùng cho người, động vật.	10	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7677	N1（địa điểm）に N2 が あります／います	ở N1 có N2	に chỉ nơi tồn tại.	10	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7678	N1 は N2（địa điểm）に あります／います	N1 ở N2	Nói vị trí của người, vật đã được nhắc đến. Có thể nói gọn: N1 は N2 です.	10	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7679	N1 の 上／下／前／後ろ／中／となり…	vị trí so với N1	Danh từ chỉ vị trí đứng sau の.	10	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7680	N1 や N2（など）	N1, N2… (liệt kê tiêu biểu)	と liệt kê đầy đủ; や chỉ nêu vài ví dụ tiêu biểu, thường kèm など.	10	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7681	Số đếm: ～つ／～人／～台／～枚／～回	trợ từ đếm	Đặt sau số: つ (đồ vật chung, đến 10), 人 (người: ひとり, ふたり), 台 (máy móc, xe), 枚 (vật mỏng), 回 (số lần).	11	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7682	Khoảng thời gian ＋ に ～回	~ lần trong (khoảng thời gian)	Diễn tả tần suất.	11	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7683	どのくらい ～か／～ぐらい	mất bao lâu? / khoảng ~	どのくらい hỏi khoảng thời gian, số lượng; ぐらい／くらい đứng sau số lượng nghĩa là "khoảng".	11	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7684	だけ	chỉ	Đứng sau danh từ, số lượng để giới hạn.	11	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7685	N／なA でした／じゃ ありませんでした	quá khứ của câu danh từ, tính từ な	Khẳng định: でした; phủ định: じゃ（では） ありませんでした.	12	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7686	いA → ～かったです／～くなかったです	quá khứ của tính từ い	Bỏ い thêm かったです; phủ định: くなかったです. いい → よかったです.	12	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7687	N1 は N2 より A です	N1 A hơn N2	より đánh dấu đối tượng được so sánh.	12	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7688	N1 と N2 と どちらが A ですか／N1 の ほうが A です	N1 và N2, cái nào A hơn?	Hỏi so sánh giữa hai thứ; trả lời bằng ～の ほうが.	12	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7689	N1［の 中］で 何／どこ／だれ／いつ が いちばん A ですか	trong N1, cái gì / ở đâu / ai / khi nào A nhất?	So sánh nhất trong một phạm vi.	12	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7690	N が ほしいです	muốn có N	Chỉ dùng cho mong muốn của người nói, hoặc để hỏi người nghe.	13	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7691	V（ます bỏ）たいです	muốn làm V	Đối tượng có thể dùng を hoặc が. Phủ định: たくないです.	13	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7692	N（địa điểm）へ V（ます bỏ）／N に 行きます	đi đến N để làm V	Chỉ mục đích của việc đi / đến / về.	13	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7693	どこか／何か	đâu đó / cái gì đó	Có thể lược へ, を phía sau.	13	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7694	Thể て của động từ	cách chia thể て	Nhóm I: い・ち・り → って; み・び・に → んで; き → いて (ngoại lệ 行きます → 行って); ぎ → いで; し → して. Nhóm II: bỏ ます + て. Nhóm III: して, 来て.	14	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7695	V て ください	hãy V / xin vui lòng V	Yêu cầu, nhờ vả, chỉ dẫn một cách lịch sự.	14	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7696	V て います（đang diễn ra）	đang V	Hành động đang diễn ra tại thời điểm nói.	14	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7697	V（ます bỏ）ましょうか	để tôi V giúp nhé?	Người nói đề nghị làm giúp người nghe.	14	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7698	V て も いいですか	V có được không? (xin phép)	Trả lời: ええ、いいですよ／すみません、ちょっと…	15	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7699	V て は いけません	không được V	Biểu thị sự cấm đoán.	15	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7700	V て います（trạng thái kết quả）	đã V và trạng thái vẫn còn	Dùng với 結婚します, 持ちます, 住みます, 知ります… Phủ định của 知って います là 知りません.	15	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7701	V て います（nghề nghiệp, công việc thường xuyên）	làm V (thường xuyên, lâu dài)	Diễn tả nghề nghiệp, hoạt động diễn ra lặp lại trong thời gian dài.	15	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7702	V て、V て、～	V1 rồi V2 rồi ~ (trình tự)	Nối các hành động theo thứ tự; thì của cả câu do động từ cuối quyết định.	16	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7703	いA（～くて）／なA・N（～で）、～	nối tính từ, danh từ	Tính từ い: bỏ い + くて; tính từ な và danh từ: + で.	16	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7704	V1 て から、V2	sau khi V1 thì V2	Nhấn mạnh V2 diễn ra sau khi V1 kết thúc.	16	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7705	N1 は N2 が A です	N1 thì N2 (bộ phận, đặc điểm) A	Miêu tả một đặc điểm của chủ đề N1.	16	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7706	どうやって	bằng cách nào / làm thế nào	Hỏi cách thức, đường đi.	16	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7707	どの N	N nào	Đứng trước danh từ để hỏi chọn một trong nhiều thứ.	16	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	5
+7708	Thể ない của động từ	cách chia thể ない	Nhóm I: đổi âm cuối hàng い sang hàng あ + ない (書きます → 書かない; 買います → 買わない). Nhóm II: bỏ ます + ない. Nhóm III: しない, 来ない.	17	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7709	V ないで ください	xin đừng V	Yêu cầu hoặc khuyên người khác không làm gì.	17	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7710	V なければ なりません	phải V	Diễn tả nghĩa vụ, việc bắt buộc phải làm.	17	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7711	V なくても いいです	không V cũng được	Diễn tả việc không cần thiết phải làm.	17	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7712	N（tân ngữ）は	đưa tân ngữ lên làm chủ đề	Thay を bằng は và đưa tân ngữ lên đầu câu để nhấn mạnh nó như chủ đề.	17	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7713	N（thời gian）までに V	V trước N (hạn chót)	までに chỉ thời hạn cuối cùng; khác まで (liên tục cho đến).	17	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	5
+7714	Thể từ điển của động từ	dạng nguyên thể	Nhóm I: đổi âm cuối hàng い sang hàng う (書きます → 書く). Nhóm II: bỏ ます + る. Nhóm III: する, 来る.	18	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7715	N／V る こと が できます	có thể V / biết N	Diễn tả năng lực hoặc khả năng do hoàn cảnh cho phép.	18	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7716	わたしの 趣味は N／V る こと です	sở thích của tôi là ~	Dùng danh từ hoặc V る こと để nói cụ thể về sở thích.	18	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7717	V1 る／N の／khoảng thời gian ＋ まえに、V2	trước khi V1 thì V2	V1 luôn ở thể từ điển dù V2 ở quá khứ.	18	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7718	なかなか ＋ phủ định	mãi mà không ~ / không dễ ~	Diễn tả việc khó thực hiện, không như mong đợi.	18	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7719	ぜひ	nhất định, rất (mong muốn)	Đi với ～たいです, ～て ください để nhấn mạnh mong muốn, lời mời.	18	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	5
+7720	Thể た của động từ	cách chia thể た	Chia giống thể て, chỉ đổi て → た, で → だ.	19	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7721	V た ことが あります	đã từng V	Nói về kinh nghiệm trong quá khứ.	19	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7722	V たり、V たり します	nào là V1, nào là V2	Liệt kê vài hành động tiêu biểu trong nhiều hành động.	19	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7723	いA（～く）／なA・N（～に） なります	trở nên ~	Diễn tả sự thay đổi trạng thái.	19	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7724	Thể thông thường（普通体）	cách nói thân mật	V thể từ điển / ない / た / なかった; いA; なA・N ＋ だ. Dùng với bạn thân, gia đình.	20	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7725	Câu hỏi ở thể thông thường	bỏ か, lên giọng cuối câu	Câu hỏi danh từ, tính từ な thường bỏ だ. Trả lời: うん (có), ううん (không).	20	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7726	～けど	~ nhưng (thân mật)	Dạng thân mật của が (nhưng) trong hội thoại.	20	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7727	Thể thông thường ＋ と 思います	tôi nghĩ là ~	Diễn tả phỏng đoán hoặc ý kiến của người nói.	21	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7728	N に ついて どう 思いますか	bạn nghĩ thế nào về N?	Hỏi ý kiến của người nghe.	21	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7729	「câu」／thể thông thường ＋ と 言います	nói rằng ~	Trích dẫn trực tiếp bằng 「」 hoặc gián tiếp bằng thể thông thường.	21	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7730	Thể thông thường ＋ でしょう？	~ phải không? (xác nhận)	Lên giọng ở cuối để mong người nghe đồng tình. なA, N bỏ だ.	21	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7731	N1（địa điểm）で N2（sự kiện）が あります	ở N1 diễn ra N2	あります ở đây nghĩa là tổ chức, diễn ra (tiệc, trận đấu, lễ hội…).	21	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	4
+7732	Mệnh đề bổ nghĩa cho danh từ	V／A（thể thông thường）＋ N	Mệnh đề đặt trước danh từ để bổ nghĩa, động từ ở thể thông thường.	22	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7733	N が V ＋ N（chủ ngữ trong mệnh đề）	chủ ngữ của mệnh đề bổ nghĩa dùng が	Trong mệnh đề bổ nghĩa cho danh từ, chủ ngữ được đánh dấu bằng が (không dùng は).	22	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7734	V る 時間／約束／用事	thời gian để V / hẹn V / việc phải V	Động từ thể từ điển bổ nghĩa cho 時間, 約束, 用事.	22	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7735	～とき、～	khi ~	V る／V ない／いA／なA な／N の ＋ とき.	23	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7736	V る とき／V た とき	khi (chưa xong) / khi (đã xong)	V る とき: hành động ở vế sau xảy ra trước khi V hoàn tất; V た とき: sau khi V đã hoàn tất.	23	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7737	V る ＋ と、～	hễ V thì ~ (kết quả tất yếu)	Vế sau là kết quả tự nhiên; không dùng ý chí, mệnh lệnh, nhờ vả.	23	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7738	N（địa điểm）を V（di chuyển）	đi qua / đi trong N	を chỉ nơi đi qua với động từ di chuyển: 渡ります, 歩きます, 曲がります, 散歩します.	23	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7739	くれます	(ai đó) cho tôi	Người nhận là người nói hoặc người thuộc nhóm của người nói.	24	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7740	V て あげます	làm V cho (người khác)	Thể hiện thiện ý. Tránh dùng trực tiếp với người trên vì có thể bị coi là kể ơn.	24	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7741	V て もらいます	được (ai đó) V cho	Người nhận hành động là chủ ngữ, thể hiện lòng biết ơn.	24	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7742	V て くれます	(ai đó) V cho tôi	Người làm hành động là chủ ngữ, người nhận là người nói.	24	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7743	Thể thông thường quá khứ ＋ ら、～	nếu ~ thì ~	Giả định điều kiện: V た ＋ ら, いA かったら, なA・N だったら.	25	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	0
+7744	V たら、～（sau khi）	khi V xong thì ~	Dùng cho việc chắc chắn sẽ xảy ra; vế sau diễn ra sau khi V hoàn tất.	25	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	1
+7745	V て／いA くて／なA・N で ＋ も	dù ~ cũng ~	Điều kiện ngược: kết quả không như dự đoán từ vế trước.	25	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	2
+7746	もし／いくら	nếu như / dù bao nhiêu đi nữa	もし nhấn mạnh giả định trong câu ～たら; いくら nhấn mạnh mức độ trong câu ～ても.	25	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N5	\N	3
+7747	Thể thông thường ＋ んです	giải thích / hỏi lý do (nhấn mạnh)	V, いA thể thông thường ＋ んです; なA・N ＋ なんです. Dùng để xác nhận điều nghe/thấy, hỏi nguyên nhân hoặc giải thích lý do.	26	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7748	～んですが、V て いただけませんか	~ nên phiền anh/chị V giúp được không ạ?	Nêu hoàn cảnh bằng ～んですが rồi nhờ vả lịch sự.	26	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7749	～んですが、từ để hỏi ＋ V たら いいですか	~ vậy nên làm thế nào thì được?	Nêu hoàn cảnh rồi xin lời khuyên.	26	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7750	Động từ thể khả năng	có thể V	Nhóm I: đổi âm cuối hàng い sang hàng え ＋ る (書く → 書ける). Nhóm II: ＋ られる (食べる → 食べられる). する → できる, 来る → 来られる. Tân ngữ thường chuyển を → が.	27	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7751	見えます／聞こえます	nhìn thấy / nghe thấy (tự nhiên)	Đối tượng tự lọt vào mắt, tai; khác 見られます／聞けます (có điều kiện để xem, nghe).	27	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7752	できます（hoàn thành, xuất hiện）	được làm xong / mọc lên	できます còn có nghĩa là được xây dựng, hoàn thành.	27	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7753	N しか ＋ phủ định	chỉ (nhấn mạnh ít)	しか luôn đi với động từ phủ định, mang sắc thái "ít, không đủ".	27	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7754	N は（đối chiếu）	nhấn mạnh sự tương phản	は dùng để đối chiếu hai sự việc.	27	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	4
+7755	V1（ます bỏ）ながら V2	vừa V1 vừa V2	V2 là hành động chính. Cũng dùng cho hai việc song song trong thời gian dài.	28	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7756	V て います（thói quen）	thường xuyên V	Diễn tả hành động lặp lại thành thói quen. Thói quen trong quá khứ: V て いました.	28	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7757	Thể thông thường ＋ し、～	vừa ~ lại vừa ~ / vì ~ và vì ~	Liệt kê nhiều đặc điểm hoặc nhiều lý do.	28	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7758	それで	vì vậy, vì thế	Liên từ nối kết quả với lý do vừa nêu.	28	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7759	V て います（trạng thái kết quả, tự động từ）	~ đang ở trạng thái…	Miêu tả trạng thái trước mắt là kết quả của một sự thay đổi.	29	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7760	V て しまいました／しまいます	đã V xong hết / lỡ V mất	Nhấn mạnh sự hoàn tất của hành động, hoặc sự tiếc nuối khi lỡ làm.	29	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7761	N1 に N2 が V て あります	N2 đã được V sẵn ở N1	Tha động từ ＋ て あります: trạng thái là kết quả của hành động có chủ đích do ai đó làm.	30	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7762	N2 は N1 に V て あります	N2 thì được V ở N1	Đưa N2 lên làm chủ đề để nói vị trí của nó.	30	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7763	V て おきます	V sẵn / V trước để chuẩn bị; cứ để nguyên	Làm trước để chuẩn bị, làm để xử lý xong, hoặc giữ nguyên trạng thái.	30	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7764	まだ ＋ khẳng định	vẫn còn	まだ đi với câu khẳng định nghĩa là trạng thái vẫn tiếp diễn.	30	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7765	Thể ý chí（V よう／V おう）	cùng V nào (thân mật)	Nhóm I: đổi âm cuối hàng い sang hàng お ＋ う (行く → 行こう). Nhóm II: ＋ よう. する → しよう, 来る → 来よう. Là dạng thân mật của ～ましょう.	31	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7766	V よう と 思って います	định V	Diễn tả ý định đã có từ trước và vẫn đang giữ.	31	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7767	V る／V ない つもりです	dự định V / không V	Ý định chắc chắn hơn ～ようと 思って います.	31	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7768	V る／N の 予定です	theo kế hoạch sẽ ~	Nói về kế hoạch, lịch trình đã định.	31	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7769	まだ V て いません	vẫn chưa V	Việc lẽ ra đã xảy ra hoặc đã làm nhưng chưa thực hiện.	31	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	4
+7770	V た／V ない ほうが いいです	nên / không nên V	Đưa ra lời khuyên.	32	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7771	Thể thông thường ＋ でしょう	chắc là ~ (dự đoán)	なA, N bỏ だ. Thường đi với たぶん, きっと.	32	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7772	Thể thông thường ＋ かもしれません	có lẽ ~ (khả năng thấp hơn でしょう)	Diễn tả khả năng có thể xảy ra. なA, N bỏ だ.	32	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7773	Số lượng ＋ で	trong vòng / với (mức giới hạn)	で chỉ giới hạn về thời gian, tiền bạc, số lượng.	32	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7774	Thể mệnh lệnh／thể cấm chỉ	hãy V! / cấm V!	Mệnh lệnh: nhóm I đổi âm cuối hàng い sang hàng え (行け); nhóm II ＋ ろ (食べろ); しろ, 来い. Cấm chỉ: thể từ điển ＋ な. Dùng khi ra lệnh gấp, cổ vũ, biển báo.	33	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7775	X と 読みます／X と 書いて あります	đọc là X / có viết là X	と đánh dấu nội dung được đọc hoặc được viết.	33	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7776	X は Y と いう 意味です	X có nghĩa là Y	Giải thích ý nghĩa của từ, ký hiệu.	33	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7777	「S」／thể thông thường ＋ と 言って いました	(ai đó) đã nói là ~ (truyền lời)	Truyền đạt lại lời của người thứ ba.	33	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7778	Thể thông thường ＋ と 伝えて いただけませんか	nhắn giúp là ~ được không ạ?	Nhờ người khác chuyển lời một cách lịch sự.	33	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	4
+7779	V1 た／N の とおりに、V2	V2 đúng như V1 / theo N	Làm theo đúng như đã thấy, đã nghe, đã chỉ dẫn.	34	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7780	V1 た／N の あとで、V2	sau khi V1 / sau N thì V2	V1 luôn ở thể た.	34	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7781	V1 て／V1 ないで V2	V2 trong trạng thái (không) V1	Diễn tả cách thức, trạng thái đi kèm hành động chính.	34	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7782	V1 ないで、V2	không V1 mà V2 (thay vào đó)	Chọn làm V2 thay vì V1.	34	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7783	Thể điều kiện ば	nếu ~ thì ~	Nhóm I: đổi âm cuối hàng い sang hàng え ＋ ば (行けば). Nhóm II: ＋ れば. すれば, 来れば. いA: bỏ い ＋ ければ. なA, N: ～なら.	35	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7784	N なら、～	nếu là N thì ~	Lấy điều người nghe vừa nói làm chủ đề rồi đưa ra thông tin, lời khuyên.	35	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7785	Từ để hỏi ＋ V ば いいですか	nên làm ~ thì được?	Xin chỉ dẫn, lời khuyên.	35	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7786	～ば ～ほど	càng ~ càng ~	Lặp lại cùng một từ: V ば V る ほど; いA ければ いA ほど.	35	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7787	V1 る／V1 ない ように、V2	V2 để (đạt được trạng thái) V1	V1 là động từ không chủ ý (thể khả năng, 見える, わかる…) hoặc thể ない.	36	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7788	V る ように なります	trở nên có thể V / bắt đầu V	Diễn tả sự thay đổi dần về năng lực hoặc thói quen.	36	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7789	V る／V ない ように します	cố gắng V / cố gắng không V	Nỗ lực duy trì thói quen. ～ように して ください: hãy cố gắng ~.	36	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7790	N1（người）は N2 に V られます	N1 bị / được N2 V (bị động trực tiếp)	Chia bị động: nhóm I đổi âm cuối hàng い sang hàng あ ＋ れる (呼ぶ → 呼ばれる); nhóm II ＋ られる; される, 来られる.	37	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7791	N1 は N2 に N3 を V られます	N1 bị N2 V (đồ vật, bộ phận của N1)	Bị động gián tiếp, thường mang nghĩa bị thiệt hại.	37	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7792	N（vật / sự kiện）が／は V られます	N được V (không nêu người làm)	Dùng khi không cần hoặc không thể nêu chủ thể hành động.	37	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7793	N1 は N2（người）に よって V られます	N1 được (tạo ra) bởi N2	Dùng với động từ sáng tạo, phát minh: 書く, 発明する, 発見する, 設計する…	37	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7794	N から／N で つくられます	được làm từ / bằng N	から: nguyên liệu đã biến đổi, khó nhận ra; で: chất liệu còn nhìn thấy được.	37	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	4
+7795	V る の は A です	việc V thì A	の danh từ hóa động từ để làm chủ đề.	38	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7796	V る の が A です	thích / giỏi / nhanh… (việc) V	A là các tính từ chỉ sở thích, năng lực: 好き, 嫌い, 上手, 下手, 速い, 遅い…	38	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7797	V る の を 忘れました	quên (làm) V	の danh từ hóa hành động làm tân ngữ của 忘れる.	38	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7798	Thể thông thường ＋ の を 知って いますか	bạn có biết (việc) ~ không?	Hỏi người nghe có biết một sự việc không. Nếu chưa biết: 知りませんでした.	38	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7799	Thể thông thường ＋ の は N です	cái / điều ~ là N (nhấn mạnh)	Đưa thông tin muốn nhấn mạnh xuống cuối câu.	38	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	4
+7800	V て／V なくて／いA くて／なA で、～（nguyên nhân）	vì ~ nên ~	Vế sau thường là cảm xúc (びっくりする, 安心する, 困る…) hoặc trạng thái, khả năng; không dùng ý chí, mệnh lệnh.	39	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7801	N で（nguyên nhân）	do N	N là sự kiện, hiện tượng: 事故, 地震, 病気, 火事…	39	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7802	Thể thông thường ＋ ので、～	vì ~ nên ~ (khách quan, lịch sự)	なA, N ＋ なので. Mềm mỏng hơn から, hay dùng khi xin phép, giải thích.	39	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7803	Từ để hỏi ＋ thể thông thường ＋ か、～	(lồng câu hỏi có từ để hỏi vào câu)	なA, N bỏ だ.	40	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7804	Thể thông thường ＋ か どうか、～	có ~ hay không	Lồng câu hỏi có / không vào câu. なA, N bỏ だ.	40	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7805	V て みます	thử V	Làm thử để biết kết quả.	40	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7806	いA（～い）→ ～さ	danh từ hóa tính từ い	Bỏ い thêm さ để chỉ mức độ: 高さ, 長さ, 重さ, 大きさ…	40	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7807	いただきます／くださいます／やります	nhận (khiêm nhường) / cho (tôn kính) / cho (người dưới)	いただきます là khiêm nhường của もらいます; くださいます là tôn kính của くれます; やります dùng khi cho người dưới, động vật, cây cối.	41	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7808	V て いただきます	được (người trên) V cho	Khiêm nhường của ～て もらいます.	41	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7809	V て くださいます	(người trên) V cho tôi	Tôn kính của ～て くれます.	41	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7810	V て やります	V cho (người dưới, động vật)	Dùng với người có vị trí thấp hơn, con cái, động vật.	41	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7811	V て くださいませんか	xin anh/chị V giúp được không ạ?	Nhờ vả lịch sự hơn ～て ください.	41	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	4
+7812	V る／N の ＋ ために、～	để ~ / vì ~ (mục đích có chủ ý)	Động từ trước ために là động từ ý chí (khác ように). N の ために còn nghĩa "vì lợi ích của N".	42	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7813	V る の／N ＋ に 使います／便利です／かかります	dùng để / tiện cho / mất (thời gian, tiền) để ~	の に／N に chỉ mục đích, công dụng.	42	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7814	V（ます bỏ）そうです	có vẻ sắp V	Phán đoán điều sắp xảy ra dựa trên quan sát.	43	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7815	いA（bỏ い）／なA ＋ そうです	trông có vẻ ~	いい → よさそう, ない → なさそう. Không dùng với tính từ nhìn là biết ngay (きれい, 赤い…).	43	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7816	V て 来ます	đi V rồi quay lại	Đi đến đâu đó làm việc gì rồi trở về chỗ cũ.	43	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7817	V（ます bỏ）／いA（bỏ い）／なA ＋ すぎます	quá ~	Diễn tả mức độ vượt quá, thường mang nghĩa không tốt.	44	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7818	V（ます bỏ）＋ やすいです／にくいです	dễ V / khó V	Chia như tính từ い.	44	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7819	N を いA（～く）／なA（～に）／N に します	làm cho N trở nên ~	Tác động có chủ ý để thay đổi trạng thái (khác ～なります là tự thay đổi).	44	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7820	N に します（chọn, quyết định）	chọn N / quyết định N	Diễn tả sự lựa chọn, quyết định.	44	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7821	～場合は、～	trong trường hợp ~ thì ~	V る／V ない／V た, いA, なA な, N の ＋ 場合は. Hay dùng trong hướng dẫn, quy định.	45	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7822	Thể thông thường ＋ のに、～	vậy mà ~ / mặc dù ~ (trái kỳ vọng)	Thể hiện sự bất ngờ, bất mãn. なA, N ＋ なのに.	45	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7823	V る／V て いる／V た ＋ ところです	sắp / đang / vừa mới V	Nhấn mạnh thời điểm của hành động: ngay trước, đang giữa chừng, hoặc vừa kết thúc.	46	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7824	V た ばかりです	vừa mới V (theo cảm nhận)	Người nói cảm thấy thời gian trôi qua chưa lâu, dù thực tế có thể đã khá lâu.	46	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7825	Thể thông thường ＋ はずです	chắc chắn là ~ (theo căn cứ)	Phán đoán chắc chắn dựa trên căn cứ. なA な／N の ＋ はずです.	46	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7826	Thể thông thường ＋ そうです（truyền đạt）	nghe nói ~	Truyền lại thông tin nghe được; nguồn tin: ～に よると. なA, N ＋ だそうです.	47	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7827	Thể thông thường ＋ ようです	hình như ~ (phán đoán qua quan sát)	Phán đoán dựa trên tình huống, cảm nhận. なA な／N の ＋ ようです.	47	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7828	声／音／におい／味 が します	nghe thấy tiếng / ngửi thấy mùi / có vị	Diễn tả cảm nhận bằng giác quan.	47	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7829	N（người）を V（tự động từ）させます	bắt / cho N làm V	Chia sai khiến: nhóm I đổi âm cuối hàng い sang hàng あ ＋ せる (行く → 行かせる); nhóm II ＋ させる; させる, 来させる. Với tự động từ, người làm dùng を.	48	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7830	N1（người）に N2 を V（tha động từ）させます	bắt / cho N1 làm V (với N2)	Với tha động từ, người làm dùng に, tân ngữ vẫn dùng を.	48	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7831	V させて いただけませんか	xin cho phép tôi V được không ạ?	Xin phép một cách rất lịch sự.	48	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7832	V れます／V られます（tôn kính）	(người trên) làm V	Tôn kính ngữ có hình thức giống thể bị động.	49	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7833	お V（ます bỏ）に なります	(người trên) làm V	Không dùng với động từ chỉ có một âm tiết trước ます (見ます, います) và động từ dạng N ＋ します.	49	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7834	Động từ tôn kính đặc biệt	いらっしゃいます／召し上がります／おっしゃいます／ご覧に なります／なさいます	いらっしゃいます (いる・行く・来る), 召し上がります (食べる・飲む), おっしゃいます (言う), ご覧に なります (見る), なさいます (する), ご存じです (知って いる).	49	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+7835	お V（ます bỏ）／ご N ＋ ください	xin mời ~ (tôn kính của ～て ください)	Lời mời, yêu cầu rất lịch sự.	49	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	3
+7836	お V（ます bỏ）します／ご N します	tôi xin làm V (khiêm nhường)	Hạ thấp hành động của mình khi hành động đó liên quan đến người trên.	50	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	0
+7837	Động từ khiêm nhường đặc biệt	参ります／おります／申します／いたします／拝見します／伺います	参ります (行く・来る), おります (いる), 申します (言う), いたします (する), いただきます (食べる・もらう), 拝見します (見る), 伺います (聞く・訪ねる), 存じます (知る).	50	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	1
+7838	～で ございます／～ございます	là / có (cách nói lịch sự trang trọng)	ございます là dạng lịch sự của あります; で ございます là dạng lịch sự của です.	50	2026-10-05 14:43:05.185	2026-10-05 14:43:05.185	N4	\N	2
+5860	V(て) + ばかりいる / N + ばかり	toàn là ~, cứ ~ suốt	「〜てばかりいる」: chỉ làm mỗi việc đó (chê trách). 「〜たばかり」 (vừa mới) đã học ở Bài 1.	589	2026-08-29 06:52:57.015	2026-10-05 14:43:05.185	N3	spoken	5
+5863	V(意向形) + にも + V(可能形・ない)	dù muốn ~ cũng không ~ được	Muốn làm nhưng hoàn cảnh không cho phép. 「行こうにも行けない」.	589	2026-08-29 06:52:57.068	2026-10-05 14:43:05.185	N3	written	8
+5879	N + にかけては	về mặt ~, xét về ~ thì (giỏi nhất)	「〜にかけては」 dùng để khen ai đó xuất sắc trong một lĩnh vực.	557	2026-08-29 06:52:58.596	2026-10-05 14:43:05.185	N2	neutral	3
+5886	V(ない) + ざるを得ない	buộc phải ~, không thể không ~	する → せざるを得ない. Bị hoàn cảnh ép buộc, dù không muốn. Trang trọng, văn viết.	558	2026-08-29 06:52:59.424	2026-10-05 14:43:05.185	N2	written	0
+5894	Số lượng + からある / からする / からの + N	tận, những ~ (nhấn mạnh số lượng lớn)	「〜からある」 (khối lượng/kích thước), 「〜からする」 (giá tiền), 「〜からいる」 (số người).	558	2026-08-29 06:52:59.518	2026-10-05 14:43:05.185	N2	written	8
+5913	V(ます bỏ) + ようがない	không có cách nào để ~	Không có phương tiện/cách thức để thực hiện. 「連絡しようがない」, 「どうしようもない」.	594	2026-08-29 06:53:01.282	2026-10-05 14:43:05.185	N2	neutral	7
+5919	N + たる(もの)	là ~ thì (phải có tư cách xứng đáng)	Nhấn mạnh trách nhiệm/phẩm chất đi kèm với một địa vị. Cổ, trang trọng.	560	2026-08-29 06:53:01.827	2026-10-05 14:43:05.185	N1	formal	3
+5950	N + はさておき	khoan bàn tới ~, gác ~ sang một bên	Tạm gác chủ đề này để nói sang chuyện khác (quan trọng/cấp bách hơn).	598	2026-08-29 06:53:03.919	2026-10-05 14:43:05.185	N1	neutral	4
+5969	N + によると / N + によれば	theo ~ (nguồn thông tin)	\N	600	2026-09-02 08:54:27.883	2026-10-05 14:43:05.185	N2	formal	5
+5982	N + を裁判で争う / N + が裁判にかけられる	tranh tụng ~ tại tòa; ~ bị đưa ra xét xử	\N	602	2026-09-02 08:54:27.967	2026-10-05 14:43:05.185	N2	formal	2
+5987	N + と契約する / 契約を結ぶ	ký hợp đồng ~	\N	602	2026-09-02 08:54:28.001	2026-10-05 14:43:05.185	N2	formal	7
+5993	N + を改める / N + を改めて	sửa đổi ~; (改めて) một lần nữa	\N	603	2026-09-02 08:54:28.046	2026-10-05 14:43:05.185	N2	formal	5
+5995	N + が共通している / 共通の + N	có chung ~	\N	603	2026-09-02 08:54:28.055	2026-10-05 14:43:05.185	N2	formal	7
+5999	N + に迫られる / N + が迫る	bị ~ thúc ép; (thời hạn) cận kề	\N	604	2026-09-02 08:54:28.077	2026-10-05 14:43:05.185	N1	formal	3
+6000	余すところなく + V	trọn vẹn, không bỏ sót chỗ nào	\N	604	2026-09-02 08:54:28.083	2026-10-05 14:43:05.185	N1	formal	4
+6013	誠意をもって + V	bằng thành ý, một cách chân thành	\N	606	2026-09-02 08:54:28.138	2026-10-05 14:43:05.185	N1	formal	1
+6022	V(た) + 末に / N + の末(に)	cuối cùng sau ~ thì ~	\N	607	2026-09-02 08:54:28.173	2026-10-05 14:43:05.185	N1	formal	2
+6025	即時に + V / 即時の + N	ngay lập tức, tức thì	\N	607	2026-09-02 08:54:28.183	2026-10-05 14:43:05.185	N1	formal	5
+6028	N + を覆す / N + が覆される	lật đổ ~, lật ngược ~	\N	608	2026-09-02 08:54:28.195	2026-10-05 14:43:05.185	N1	formal	0
+6092	V(た) + ほうがいい	nên ~	\N	692	2026-09-02 09:13:28.398	2026-10-05 14:43:05.185	N5	neutral	5
+6164	V(ば) + いいのに	giá mà ~ thì tốt	\N	705	2026-09-02 09:13:28.948	2026-10-05 14:43:05.185	N3	neutral	6
+6165	V/A/N(普通形) + もの / もん	vì ~ mà (biện minh, thân mật)	\N	705	2026-09-02 09:13:28.954	2026-10-05 14:43:05.185	N3	spoken	7
+6166	V/A/N(普通形) + ものだ	đương nhiên ~; thói quen xưa	\N	706	2026-09-02 09:13:28.966	2026-10-05 14:43:05.185	N3	neutral	0
+6167	V(辞書形) + ものではない	không nên ~	\N	706	2026-09-02 09:13:28.976	2026-10-05 14:43:05.185	N3	formal	1
+6168	V(辞書形) + ものか / もんか	quyết không ~, làm gì có chuyện ~	\N	706	2026-09-02 09:13:28.983	2026-10-05 14:43:05.185	N3	spoken	2
+6169	V(辞書形 / ない) + ことだ	nên ~ (lời khuyên)	\N	706	2026-09-02 09:13:28.989	2026-10-05 14:43:05.185	N3	neutral	3
+6170	Từ để hỏi + V/A(普通形) + ことか	biết bao ~!	\N	706	2026-09-02 09:13:28.995	2026-10-05 14:43:05.185	N3	neutral	4
+6171	V(辞書形) + ことはない	không cần ~	\N	706	2026-09-02 09:13:29.002	2026-10-05 14:43:05.185	N3	neutral	5
+6172	V(た) + ことにはならない	không có nghĩa là ~	\N	706	2026-09-02 09:13:29.008	2026-10-05 14:43:05.185	N3	formal	6
+6174	V/A/N(普通形) + わけがない	không thể ~	\N	707	2026-09-02 09:13:29.029	2026-10-05 14:43:05.185	N3	neutral	0
+6176	V/A/N(普通形) + わけではない	không hẳn ~	\N	707	2026-09-02 09:13:29.051	2026-10-05 14:43:05.185	N3	neutral	2
+6177	V/A/N(普通形) + とは限らない	chưa chắc ~	\N	707	2026-09-02 09:13:29.062	2026-10-05 14:43:05.185	N3	neutral	3
+6179	V/A(普通形) + 一方(で)	một mặt ~ mặt khác ~	\N	707	2026-09-02 09:13:29.085	2026-10-05 14:43:05.185	N3	formal	5
+6180	V(ている) + 最中に / N + の最中に	ngay giữa lúc ~	\N	707	2026-09-02 09:13:29.096	2026-10-05 14:43:05.185	N3	neutral	6
+6181	V(辞書形 / た) + 際に / N + の際に	khi ~ (trang trọng)	\N	707	2026-09-02 09:13:29.107	2026-10-05 14:43:05.185	N3	formal	7
+6182	V(辞書形 / ない / ている) / A + うちに	trong khi còn ~	\N	708	2026-09-02 09:13:29.125	2026-10-05 14:43:05.185	N3	neutral	0
+6183	V(辞書形) + たびに / N + のたびに	mỗi lần ~	\N	708	2026-09-02 09:13:29.136	2026-10-05 14:43:05.185	N3	neutral	1
+6184	V(ます bỏ) + かけ(の N)	đang ~ dở	\N	708	2026-09-02 09:13:29.147	2026-10-05 14:43:05.185	N3	neutral	2
+6185	V(ます bỏ) + っこない	không thể ~	\N	708	2026-09-02 09:13:29.158	2026-10-05 14:43:05.185	N3	spoken	3
+6186	V(ます bỏ) + 得る / 得ない	có thể / không thể ~	\N	708	2026-09-02 09:13:29.17	2026-10-05 14:43:05.185	N3	formal	4
+6187	V(ます bỏ) + かねる	khó ~; không thể ~ (lịch sự từ chối)	\N	708	2026-09-02 09:13:29.182	2026-10-05 14:43:05.185	N3	formal	5
+6188	V(ます bỏ) + かねない	có thể ~ (xấu)	\N	708	2026-09-02 09:13:29.193	2026-10-05 14:43:05.185	N3	formal	6
+6189	V(ます bỏ) + きる / きれない	làm hết ~ / không thể hết ~	\N	708	2026-09-02 09:13:29.204	2026-10-05 14:43:05.185	N3	neutral	7
+6191	V(ます bỏ) + 抜く	làm ~ hết mình	\N	709	2026-09-02 09:13:29.234	2026-10-05 14:43:05.185	N3	neutral	1
+6192	V(ます bỏ) + 合う	~ lẫn nhau	\N	709	2026-09-02 09:13:29.245	2026-10-05 14:43:05.185	N3	neutral	2
+6193	V(ます bỏ) + 直す	làm lại ~	\N	709	2026-09-02 09:13:29.256	2026-10-05 14:43:05.185	N3	neutral	3
+6194	V(ます bỏ) + 通す	làm ~ suốt	\N	709	2026-09-02 09:13:29.267	2026-10-05 14:43:05.185	N3	neutral	4
+6195	V(ます bỏ) + 尽くす	~ hết, ~ cạn kiệt	\N	709	2026-09-02 09:13:29.276	2026-10-05 14:43:05.185	N3	formal	5
+6196	V(ます bỏ) + 始める	bắt đầu ~	\N	709	2026-09-02 09:13:29.284	2026-10-05 14:43:05.185	N3	neutral	6
+6198	V/A/N(普通形) + に決まっている	chắc chắn ~ (tự tin)	\N	710	2026-09-02 09:13:29.305	2026-10-05 14:43:05.185	N2	spoken	1
+6199	V/A/N(普通形) + とも限らない	cũng chưa chắc là ~ (vẫn có khả năng)	\N	710	2026-09-02 09:13:29.317	2026-10-05 14:43:05.185	N2	formal	2
+6200	V(ない) + ものでもない	không phải là không ~	\N	710	2026-09-02 09:13:29.323	2026-10-05 14:43:05.185	N2	formal	3
+6202	V(辞書形) + 始末だ	cuối cùng lại ~ (tiêu cực)	\N	711	2026-09-02 09:13:29.338	2026-10-05 14:43:05.185	N2	formal	1
+6203	V(普通形) + だけでは ~ ない	chỉ ~ thôi thì không ~	\N	711	2026-09-02 09:13:29.346	2026-10-05 14:43:05.185	N2	neutral	2
+6205	N + に至るまで	cho đến cả ~	\N	712	2026-09-02 09:13:29.365	2026-10-05 14:43:05.185	N1	formal	1
+6208	N + に際して / V(辞書形) + に際して	nhân dịp ~	\N	712	2026-09-02 09:13:29.383	2026-10-05 14:43:05.185	N1	formal	4
+6210	N + に沿って	theo ~; dọc theo ~	\N	712	2026-09-02 09:13:29.393	2026-10-05 14:43:05.185	N1	formal	6
+6212	N + に伴って / V(辞書形) + のに伴って	cùng với ~; kèm theo ~	\N	713	2026-09-02 09:13:29.409	2026-10-05 14:43:05.185	N1	formal	0
+6216	N + を禁じ得ない	không thể không ~	\N	713	2026-09-02 09:13:29.432	2026-10-05 14:43:05.185	N1	formal	4
+6220	N + を皮切りに	bắt đầu từ ~	\N	714	2026-09-02 09:13:29.481	2026-10-05 14:43:05.185	N1	formal	0
+6222	N + を契機に	lấy ~ làm dịp	\N	714	2026-09-02 09:13:29.503	2026-10-05 14:43:05.185	N1	formal	2
+6227	Na-A / N + 極まりない	cực kỳ ~	\N	714	2026-09-02 09:13:29.562	2026-10-05 14:43:05.185	N1	formal	7
+6228	A(い) / A(な) + 限りだ	cảm thấy ~ vô cùng	\N	715	2026-09-02 09:13:29.583	2026-10-05 14:43:05.185	N1	formal	0
+6230	V(辞書形) + 始末だ	rốt cuộc (đến mức tệ hại) ~	\N	715	2026-09-02 09:13:29.606	2026-10-05 14:43:05.185	N1	formal	2
+6231	V(辞書形) + べからず	không được ~ (cấm)	\N	715	2026-09-02 09:13:29.616	2026-10-05 14:43:05.185	N1	formal	3
+6232	V(辞書形) + べく	để ~ (văn viết)	\N	715	2026-09-02 09:13:29.627	2026-10-05 14:43:05.185	N1	formal	4
+6233	V(辞書形) + べからざる + N	không thể ~ được	\N	715	2026-09-02 09:13:29.638	2026-10-05 14:43:05.185	N1	formal	5
+6235	N + ならざる + N	không phải là ~, không hề ~ (văn cổ, = でない)	\N	715	2026-09-02 09:13:29.659	2026-10-05 14:43:05.185	N1	formal	7
+6236	V(ない) + ざるを得ない	không thể không ~	\N	716	2026-09-02 09:13:29.677	2026-10-05 14:43:05.185	N1	formal	0
+6239	V(たくて) / A(くて) + たまらない	rất ~; ~ không chịu nổi	\N	716	2026-09-02 09:13:29.708	2026-10-05 14:43:05.185	N1	neutral	3
+6240	V(て) / A(くて) / Na(で) + ならない	rất ~ (cảm xúc)	\N	716	2026-09-02 09:13:29.718	2026-10-05 14:43:05.185	N1	formal	4
+6241	V(て) / A(くて) + 仕方がない	rất ~; ~ vô cùng	\N	716	2026-09-02 09:13:29.729	2026-10-05 14:43:05.185	N1	neutral	5
+6242	V(て) + 当然だ	~ là đương nhiên	\N	716	2026-09-02 09:13:29.741	2026-10-05 14:43:05.185	N1	formal	6
+6246	V(て) + からというもの	kể từ khi ~ thì ~	\N	717	2026-09-02 09:13:29.793	2026-10-05 14:43:05.185	N1	neutral	2
+6247	V(て) + 以来	kể từ khi ~	\N	717	2026-09-02 09:13:29.804	2026-10-05 14:43:05.185	N1	formal	3
+6248	V(て) + からでないと	phải ~ trước thì mới ~	\N	717	2026-09-02 09:13:29.815	2026-10-05 14:43:05.185	N1	formal	4
+6250	V(て) + こそ	chỉ khi ~ thì mới ~	\N	717	2026-09-02 09:13:29.836	2026-10-05 14:43:05.185	N1	formal	6
+6251	V(て) + は	nếu cứ ~ thì (kết quả xấu)	\N	717	2026-09-02 09:13:29.846	2026-10-05 14:43:05.185	N1	neutral	7
+6252	V(て) + はいられない	không thể cứ ~ mãi	\N	718	2026-09-02 09:13:29.864	2026-10-05 14:43:05.185	N1	formal	0
+6253	V(て) + はならない	không được ~	\N	718	2026-09-02 09:13:29.875	2026-10-05 14:43:05.185	N1	formal	1
+6254	V(て) + まで	đến mức phải ~	\N	718	2026-09-02 09:13:29.883	2026-10-05 14:43:05.185	N1	neutral	2
+6255	V(て) + でも	dù phải ~ cũng ~	\N	718	2026-09-02 09:13:29.891	2026-10-05 14:43:05.185	N1	neutral	3
+6256	V(て) + は始まらない	chỉ ~ thì chẳng giải quyết được gì	\N	718	2026-09-02 09:13:29.896	2026-10-05 14:43:05.185	N1	formal	4
+6257	V(て) + 済むことではない	không phải ~ là xong	\N	718	2026-09-02 09:13:29.902	2026-10-05 14:43:05.185	N1	formal	5
+6258	V(て) / V(ば) + 済む	chỉ cần ~ là xong	\N	718	2026-09-02 09:13:29.913	2026-10-05 14:43:05.185	N1	neutral	6
+6259	V(辞書形) / N + に越したことはない	~ là tốt nhất	\N	718	2026-09-02 09:13:29.919	2026-10-05 14:43:05.185	N1	neutral	7
+6260	N + にほかならない	không gì khác ngoài ~	\N	719	2026-09-02 09:13:29.933	2026-10-05 14:43:05.185	N1	formal	0
+6262	N / V(普通形) + にすぎない	chỉ là ~ thôi	\N	719	2026-09-02 09:13:29.943	2026-10-05 14:43:05.185	N1	formal	2
+6264	V/A/N(普通形) + に相違ない	chắc chắn là ~	\N	719	2026-09-02 09:13:29.953	2026-10-05 14:43:05.185	N1	formal	4
+6267	N + にして	ở (mức, tuổi) ~; vừa là ~ vừa là ~	\N	720	2026-09-02 09:13:29.98	2026-10-05 14:43:05.185	N1	formal	0
+6268	N + にして初めて	chỉ khi ~ mới ~	\N	720	2026-09-02 09:13:29.985	2026-10-05 14:43:05.185	N1	formal	1
+6270	V/A/N(普通形) + にせよ / にしろ / にしても	dù ~ cũng ~	\N	720	2026-09-02 09:13:29.993	2026-10-05 14:43:05.185	N1	formal	3
+6271	N + にしたところで	ngay cả ~ thì cũng ~	\N	720	2026-09-02 09:13:30	2026-10-05 14:43:05.185	N1	neutral	4
+6273	V(た) + ところが	đã ~ thì (kết quả ngoài dự đoán)	\N	720	2026-09-02 09:13:30.009	2026-10-05 14:43:05.185	N1	formal	6
+6048	V(ます bỏ) + たいんです	muốn ~ (giải thích)	\N	690	2026-09-02 09:13:28.074	2026-10-05 14:43:05.185	N5	polite	0
+6050	V(辞書形) + 必要があります	cần phải ~	\N	690	2026-09-02 09:13:28.087	2026-09-02 09:13:28.087	N5	formal	1
+6055	V(た) + 後で	sau khi ~	\N	690	2026-09-02 09:13:28.123	2026-09-02 09:13:28.123	N5	neutral	2
+6058	V(辞書形) + のが + 好き	thích việc ~	\N	690	2026-09-02 09:13:28.139	2026-09-02 09:13:28.139	N5	neutral	3
+6059	V(辞書形) + のは + A(い/な) + です	~ thì ~	\N	690	2026-09-02 09:13:28.145	2026-09-02 09:13:28.145	N5	neutral	4
+6065	A(い) → く / A(な) → に + V	(làm V) một cách ~	\N	690	2026-09-02 09:13:28.178	2026-10-05 14:43:05.185	N5	neutral	5
+6071	N + しか + V(否定)	chỉ ~ (nhấn mạnh ít)	\N	690	2026-09-02 09:13:28.212	2026-09-02 09:13:28.212	N5	neutral	6
+6074	N + について	về ~	\N	691	2026-09-02 09:13:28.226	2026-09-02 09:13:28.226	N5	neutral	0
+6075	N + によると	theo ~	\N	691	2026-09-02 09:13:28.233	2026-09-02 09:13:28.233	N5	neutral	1
+6076	N + という + N	N mang tên / được gọi là ~	\N	691	2026-09-02 09:13:28.243	2026-10-05 14:43:05.185	N5	neutral	2
+6079	V(普通形) + そうです (nghe nói)	nghe nói là ~	\N	691	2026-09-02 09:13:28.267	2026-09-02 09:13:28.267	N5	polite	3
+6080	V(ます bỏ) + そうです (nhìn thấy)	trông có vẻ sắp ~	\N	691	2026-09-02 09:13:28.28	2026-10-05 14:43:05.185	N5	polite	4
+6081	V(普通形) + らしい	hình như ~ (suy đoán)	\N	691	2026-09-02 09:13:28.29	2026-09-02 09:13:28.29	N5	neutral	5
+6082	V(普通形) + ようだ / みたいだ	dường như ~	\N	691	2026-09-02 09:13:28.299	2026-09-02 09:13:28.299	N5	neutral	6
+6083	V(ば) + ～	nếu ~ thì ~	\N	692	2026-09-02 09:13:28.309	2026-09-02 09:13:28.309	N5	neutral	0
+6087	V(て) + みる	thử ~	\N	692	2026-09-02 09:13:28.352	2026-09-02 09:13:28.352	N5	neutral	1
+6089	V(意向形) + と思っています	định ~	\N	692	2026-09-02 09:13:28.368	2026-09-02 09:13:28.368	N5	polite	2
+6090	V(辞書形) + ことにします	quyết định ~	\N	692	2026-09-02 09:13:28.376	2026-09-02 09:13:28.376	N5	polite	3
+6091	V(辞書形) + ことがあります	đôi khi ~	\N	692	2026-09-02 09:13:28.385	2026-09-02 09:13:28.385	N5	polite	4
+6093	V(辞書形) + つもりです	dự định ~	\N	693	2026-09-02 09:13:28.403	2026-09-02 09:13:28.403	N5	polite	0
+6094	V(ます bỏ) + やすい / にくい	dễ / khó ~	\N	693	2026-09-02 09:13:28.407	2026-10-05 14:43:05.185	N5	neutral	1
+6095	V(ます bỏ) + ながら	vừa ~ vừa ~	\N	693	2026-09-02 09:13:28.412	2026-10-05 14:43:05.185	N5	neutral	2
+6096	V(辞書形) / N + の + ために	để ~ (mục đích)	\N	693	2026-09-02 09:13:28.417	2026-10-05 14:43:05.185	N5	neutral	3
+6097	V(普通形) + かどうか	liệu có ~ hay không	\N	693	2026-09-02 09:13:28.422	2026-09-02 09:13:28.422	N5	neutral	4
+6098	お + V(ます bỏ) + になる	(người trên) làm ~ — tôn kính ngữ	\N	693	2026-09-02 09:13:28.427	2026-10-05 14:43:05.185	N5	formal	5
+6103	V(使役受身)	bị bắt ~	\N	698	2026-09-02 09:13:28.455	2026-09-02 09:13:28.455	N4	neutral	0
+6106	V(て) + くる / いく	dần ~ / tiếp tục ~	\N	698	2026-09-02 09:13:28.469	2026-09-02 09:13:28.469	N4	neutral	1
+6110	V(て) + ください	hãy ~ (nhờ vả, yêu cầu)	\N	698	2026-09-02 09:13:28.491	2026-10-05 14:43:05.185	N4	polite	2
+6112	V(た) + ことがある	đã từng ~	\N	698	2026-09-02 09:13:28.502	2026-09-02 09:13:28.502	N4	neutral	3
+6113	V(ば) + よかった	giá mà ~ thì tốt rồi (hối tiếc)	\N	698	2026-09-02 09:13:28.508	2026-10-05 14:43:05.185	N4	neutral	4
+6118	V(辞書形) + べきだ	nên ~ (về mặt đạo lý)	\N	698	2026-09-02 09:13:28.537	2026-10-05 14:43:05.185	N4	formal	5
+6120	V/A/N(普通形) + わけではない	không hẳn là ~	\N	698	2026-09-02 09:13:28.55	2026-10-05 14:43:05.185	N4	neutral	6
+6121	V/A/N(普通形) + わけがない	không thể nào ~	\N	699	2026-09-02 09:13:28.557	2026-10-05 14:43:05.185	N4	neutral	0
+6124	V/A/N(普通形) + けれど / けど	tuy ~ nhưng ~	\N	699	2026-09-02 09:13:28.581	2026-10-05 14:43:05.185	N4	neutral	1
+6127	V(た) + ら	nếu / khi ~ thì ~	\N	699	2026-09-02 09:13:28.619	2026-10-05 14:43:05.185	N4	neutral	2
+6128	V(て) + も	dù ~ cũng ~	\N	699	2026-09-02 09:13:28.628	2026-10-05 14:43:05.185	N4	neutral	3
+6132	V(ます bỏ) + 出す	bắt đầu đột ngột ~	\N	699	2026-09-02 09:13:28.659	2026-10-05 14:43:05.185	N4	neutral	4
+6133	V(ます bỏ) + 続ける	tiếp tục ~	\N	699	2026-09-02 09:13:28.666	2026-10-05 14:43:05.185	N4	neutral	5
+6134	V(ます bỏ) + 直す	làm lại ~	\N	699	2026-09-02 09:13:28.677	2026-10-05 14:43:05.185	N4	neutral	6
+6135	V(ます bỏ) + 切る	làm hết ~	\N	700	2026-09-02 09:13:28.685	2026-10-05 14:43:05.185	N4	neutral	0
+6136	V(ます bỏ) + 切れない	không thể ~ hết	\N	700	2026-09-02 09:13:28.693	2026-10-05 14:43:05.185	N4	neutral	1
+6138	N + に対して	đối với ~	\N	700	2026-09-02 09:13:28.712	2026-09-02 09:13:28.712	N4	formal	2
+6139	N + にとって	đối với ~ (quan điểm)	\N	700	2026-09-02 09:13:28.723	2026-09-02 09:13:28.723	N4	neutral	3
+6142	N + について (chủ đề)	về ~	\N	700	2026-09-02 09:13:28.762	2026-09-02 09:13:28.762	N4	neutral	4
+6143	N + に関して	liên quan đến ~	\N	700	2026-09-02 09:13:28.773	2026-09-02 09:13:28.773	N4	formal	5
+6144	N + の代わりに	thay vì ~	\N	700	2026-09-02 09:13:28.782	2026-09-02 09:13:28.782	N4	neutral	6
+6145	V(ます bỏ) / N + 次第	ngay khi ~	\N	701	2026-09-02 09:13:28.791	2026-10-05 14:43:05.185	N4	formal	0
+6146	V(ます bỏ) + 方	cách ~	\N	701	2026-09-02 09:13:28.797	2026-10-05 14:43:05.185	N4	neutral	1
+6148	V(ます bỏ) + たがる	muốn ~ (của người khác)	\N	701	2026-09-02 09:13:28.815	2026-10-05 14:43:05.185	N4	neutral	2
+6149	V(ます bỏ) + そうにない	không có vẻ sẽ ~	\N	701	2026-09-02 09:13:28.826	2026-10-05 14:43:05.185	N4	neutral	3
+6150	V(ます bỏ) + っぱなし	để nguyên ~	\N	701	2026-09-02 09:13:28.843	2026-10-05 14:43:05.185	N4	spoken	4
+6151	V(ます bỏ) + まくる	làm ~ liên tục (slang)	\N	701	2026-09-02 09:13:28.854	2026-10-05 14:43:05.185	N4	spoken	5
+6152	V(ている) + 最中に / N + の最中に	ngay lúc đang ~	\N	702	2026-09-02 09:13:28.866	2026-10-05 14:43:05.185	N4	neutral	0
+6153	A(い) / V(ている・ない) + うちに	trong lúc ~	\N	702	2026-09-02 09:13:28.875	2026-10-05 14:43:05.185	N4	neutral	1
+6154	V(ている) + あいだに / N + の間に	trong lúc ~ thì ~	\N	702	2026-09-02 09:13:28.882	2026-10-05 14:43:05.185	N4	neutral	2
+6155	V(た) / N + の + おかげで	nhờ ~ (tích cực)	\N	702	2026-09-02 09:13:28.887	2026-10-05 14:43:05.185	N4	neutral	3
+6156	V(た) / N + の + せいで	tại vì ~ (tiêu cực)	\N	702	2026-09-02 09:13:28.893	2026-10-05 14:43:05.185	N4	neutral	4
+6157	V/A(普通形) / N + の + くせに	mà lại ~ (trách móc)	\N	702	2026-09-02 09:13:28.9	2026-10-05 14:43:05.185	N4	spoken	5
 \.
 
 
@@ -81979,7 +81659,6 @@ COPY public."Lesson" (id, "lessonNumber", title, "createdAt", "updatedAt", descr
 658	213	N4 · Từ vựng bổ sung (bài 213)	2026-09-02 09:00:17.979	2026-09-27 16:55:45.135	\N	N4	\N	2130	\N
 659	214	N4 · Từ vựng bổ sung (bài 214)	2026-09-02 09:00:18.016	2026-09-27 16:55:45.138	\N	N4	\N	2140	\N
 717	520	N1 · Ngữ pháp bổ sung (bài 6)	2026-09-02 09:13:29.76	2026-09-27 16:55:45.044	\N	N1	\N	5200	\N
-697	109	N5 · Ngữ pháp bổ sung (bài 8)	2026-09-02 09:13:28.393	2026-09-27 16:55:44.972	\N	N5	\N	1090	\N
 719	522	N1 · Ngữ pháp bổ sung (bài 8)	2026-09-02 09:13:29.925	2026-09-27 16:55:45.051	\N	N1	\N	5220	\N
 2320	524	N1 · Từ vựng bổ sung (bài 524)	2026-09-12 14:06:59.052	2026-09-27 16:55:45.31	\N	N1	\N	5240	\N
 2321	525	N1 · Từ vựng bổ sung (bài 525)	2026-09-12 14:06:59.119	2026-09-27 16:55:45.313	\N	N1	\N	5250	\N
@@ -82001,18 +81680,13 @@ COPY public."Lesson" (id, "lessonNumber", title, "createdAt", "updatedAt", descr
 691	103	N5 · Ngữ pháp bổ sung (bài 2)	2026-09-02 09:13:28.028	2026-09-27 16:55:44.941	\N	N5	\N	1030	\N
 692	104	N5 · Ngữ pháp bổ sung (bài 3)	2026-09-02 09:13:28.1	2026-09-27 16:55:44.946	\N	N5	\N	1040	\N
 693	105	N5 · Ngữ pháp bổ sung (bài 4)	2026-09-02 09:13:28.151	2026-09-27 16:55:44.951	\N	N5	\N	1050	\N
-694	106	N5 · Ngữ pháp bổ sung (bài 5)	2026-09-02 09:13:28.193	2026-09-27 16:55:44.956	\N	N5	\N	1060	\N
-695	107	N5 · Ngữ pháp bổ sung (bài 6)	2026-09-02 09:13:28.239	2026-09-27 16:55:44.961	\N	N5	\N	1070	\N
-696	108	N5 · Ngữ pháp bổ sung (bài 7)	2026-09-02 09:13:28.318	2026-09-27 16:55:44.966	\N	N5	\N	1080	\N
 698	112	N4 · Ngữ pháp bổ sung (bài 1)	2026-09-02 09:13:28.438	2026-09-27 16:55:44.977	\N	N4	\N	1120	\N
 699	113	N4 · Ngữ pháp bổ sung (bài 2)	2026-09-02 09:13:28.484	2026-09-27 16:55:44.981	\N	N4	\N	1130	\N
 700	114	N4 · Ngữ pháp bổ sung (bài 3)	2026-09-02 09:13:28.533	2026-09-27 16:55:44.986	\N	N4	\N	1140	\N
 701	115	N4 · Ngữ pháp bổ sung (bài 4)	2026-09-02 09:13:28.6	2026-09-27 16:55:44.99	\N	N4	\N	1150	\N
 702	116	N4 · Ngữ pháp bổ sung (bài 5)	2026-09-02 09:13:28.672	2026-09-27 16:55:44.993	\N	N4	\N	1160	\N
 3951	730	N2 · Từ vựng bổ sung (bài 730)	2026-09-13 00:29:23.809	2026-09-27 16:55:45.711	\N	N2	\N	7300	\N
-703	117	N4 · Ngữ pháp bổ sung (bài 6)	2026-09-02 09:13:28.754	2026-09-27 16:55:44.997	\N	N4	\N	1170	\N
 3952	731	N2 · Từ vựng bổ sung (bài 731)	2026-09-13 00:29:23.852	2026-09-27 16:55:45.714	\N	N2	\N	7310	\N
-704	118	N4 · Ngữ pháp bổ sung (bài 7)	2026-09-02 09:13:28.836	2026-09-27 16:55:45.001	\N	N4	\N	1180	\N
 706	313	N3 · Ngữ pháp bổ sung (bài 2)	2026-09-02 09:13:28.96	2026-09-27 16:55:45.468	\N	N3	\N	3130	\N
 708	315	N3 · Ngữ pháp bổ sung (bài 4)	2026-09-02 09:13:29.117	2026-09-27 16:55:45.474	\N	N3	\N	3150	\N
 2310	317	N3 · Từ vựng bổ sung (bài 317)	2026-09-12 14:06:58.458	2026-09-27 16:55:45.48	\N	N3	\N	3170	\N
@@ -84521,7 +84195,22 @@ cmuldmt4i0005o101115vqe39	$2b$12$36KzKwP39eBCbk0hDXtGJO2wd7jvQF98bSsTvhUeKXBMxiJ
 cmulcl4q00001o101iwrspgx9	$2b$12$DZ.JGqXMb62y6vfwi/PTEeQ2YzqLV4tYbuaouyfoXLmIH3RnOEQ3G	1	2026-10-05 14:33:31.175	t	2026-09-28 14:33:31.177
 cmuldp6sm0007o101m37vy4q5	$2b$12$/t7QYsi5C3/L/JRHoi74qeFtr0P8PQ/mZmtqgp4qvdpNBUEMkhLVe	1	2026-10-05 15:04:40.101	f	2026-09-28 15:04:40.102
 cmutva43s0001mg01dj3ohel5	$2b$12$pBuxtWONfGhA9REWRZK2fOzl8cZyOC3z.YzBWjmHPX09tt1YuqEE.	1	2026-10-11 13:38:59.256	t	2026-10-04 13:38:59.264
-cmutvuwbw0003mg01kbp2az4l	$2b$12$Fu8.ccRSqa5w4M257/wE0uj/sis1vo/ydFQG6EpsiJBp3bCQLuyhC	1	2026-10-11 13:55:08.956	f	2026-10-04 13:55:08.965
+cmutvuwbw0003mg01kbp2az4l	$2b$12$Fu8.ccRSqa5w4M257/wE0uj/sis1vo/ydFQG6EpsiJBp3bCQLuyhC	1	2026-10-11 13:55:08.956	t	2026-10-04 13:55:08.965
+cmutx8ksz0005mg016vwnzohq	$2b$12$XgfbRIN6MmsIvZJjaNGqdOxPRn8TCJ0b/euOOVk2O1rrLhoLwEoq.	1	2026-10-11 14:33:46.812	t	2026-10-04 14:33:46.816
+cmuty3b6u0001s301y96zdocr	$2b$12$/IrD/Yl5fNSsimRCVzuRfeXgbDoOJKEqmhw7RoVF7aojs8npQr2Fm	1	2026-10-11 14:57:40.703	t	2026-10-04 14:57:40.707
+cmuu0kfze0003s3019byf4lm6	$2b$12$ZIl/cL12BHZgzwH8QAxqJ.yk5KbU9w8XfGmuaybmFRrG34ByLup8S	1	2026-10-11 16:06:59.298	t	2026-10-04 16:06:59.301
+cmuukws5b0001s301tylkepea	$2b$12$FjaAOKB9Cqds4tDhPlDM0OBd8elo8rDTrNEC8riyp/4AoUC8/8klO	1	2026-10-12 01:36:27.261	t	2026-10-05 01:36:27.263
+cmuuo8dfp0003s301hz8bcj2s	$2b$12$OUappyEjbTa9wa3lIcLC.uA/ihwPhejA0uMTfc9ZFw15/1LxGrMTa	1	2026-10-12 03:09:26.867	t	2026-10-05 03:09:26.908
+cmuupcb090005s301yults5av	$2b$12$uw6NhwoB2/rBBQL.EnaYEuXTWIl8EYM494kXWA.p0IlhMv4/fA2tK	1	2026-10-12 03:40:30.002	t	2026-10-05 03:40:30.006
+cmuuqsqaj0007s301i58pfv1b	$2b$12$.kLPuuKX4kJwufd5saBJj.CkWheAjxTilVvZM6H5WTYOVSWFCVPPS	1	2026-10-12 04:21:15.917	t	2026-10-05 04:21:15.927
+cmuurda290009s301t7h4d70x	$2b$12$9SVGZWTYAWd7BSAD6oGtmO59XODRSY.y5BHFoyzZdr0PI/g5mmnHi	1	2026-10-12 04:37:14.666	t	2026-10-05 04:37:14.67
+cmuutd8r4000bs301b3wrisw8	$2b$12$TT8aJSPA/pIUt6.dqF9/Au4tvJBF3FsKNhxM7eCorTHcAan4JtKG.	1	2026-10-12 05:33:12.201	t	2026-10-05 05:33:12.206
+cmuuuentb000ds3018cdzynby	$2b$12$7mjj6FQc.Fooj.YDX8fSaOUtvu4vRtWGfNdM9YhfhtazftiThzWzK	1	2026-10-12 06:02:17.957	t	2026-10-05 06:02:17.975
+cmuuvx1ft0001s301d1k8nz6g	$2b$12$pP9lUTztN6j4lGYsv6FI7ecUERvSVN441z9bwabUB7PaOp5WBvAaG	1	2026-10-12 06:44:34.703	t	2026-10-05 06:44:34.707
+cmuv7nzbh0001qk01dzhee47j	$2b$12$V6Jx1yTsRwRJPRQTDTlOJOWZyZkWcIspyr7mE3F45bKQQv.5e2oZy	1	2026-10-12 12:13:27.803	t	2026-10-05 12:13:27.806
+cmuv9npju0001qk01gmcrqw8f	$2b$12$2pZMOoabTHMIENgjAGaPEukhzmDtZTve2EnYqRag7Q7NytaZi1oY.	1	2026-10-12 13:09:14.388	t	2026-10-05 13:09:14.392
+cmuvbmssb0003qk01bivtb9oe	$2b$12$VrqRAv1BQhwiVaNPPtkVq.2zO/ot13fImYrIP6tHBob8Lz./etb8.	1	2026-10-12 14:04:31.16	t	2026-10-05 14:04:31.162
+cmuvcsaai0005qk01fzgdzvdb	$2b$12$yZ0rvy6ALhzIp8vEL7kvE.M99brlbLLbSOv5RKNDQGm1V3jCZYeHa	1	2026-10-12 14:36:46.736	f	2026-10-05 14:36:46.741
 \.
 
 
@@ -103005,7 +102694,7 @@ SELECT pg_catalog.setval('public."CountryRegion_id_seq"', 6, true);
 -- Name: DailyActivity_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
 --
 
-SELECT pg_catalog.setval('public."DailyActivity_id_seq"', 66, true);
+SELECT pg_catalog.setval('public."DailyActivity_id_seq"', 73, true);
 
 
 --
@@ -103103,7 +102792,7 @@ SELECT pg_catalog.setval('public."ExamSectionResult_id_seq"', 52, true);
 -- Name: Example_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
 --
 
-SELECT pg_catalog.setval('public."Example_id_seq"', 18463, true);
+SELECT pg_catalog.setval('public."Example_id_seq"', 19339, true);
 
 
 --
@@ -103124,7 +102813,7 @@ SELECT pg_catalog.setval('public."Exercise_id_seq"', 23244, true);
 -- Name: Grammar_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nihongo
 --
 
-SELECT pg_catalog.setval('public."Grammar_id_seq"', 7408, true);
+SELECT pg_catalog.setval('public."Grammar_id_seq"', 7838, true);
 
 
 --
@@ -106203,5 +105892,5 @@ ALTER TABLE ONLY public."Vocabulary"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict lRCpXmL0RCRnB3SUmqcEHswuSrYsLDdVCsWSIXCHTWc5e65rhFxHVggAwezcHvu
+\unrestrict t7psEhHJqs36Sbw5vqxjL1iSncv2chl0cpbfvOLMie3P5VHSd8YE9Jw8jvjn1ya
 
