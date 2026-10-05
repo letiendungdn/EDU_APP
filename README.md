@@ -1,6 +1,6 @@
-# EDU APP — Language Coaching Platform
+# EDU APP Nihongo
 
-Nền tảng học ngôn ngữ kết hợp coaching marketplace: học tiếng Nhật (nihongo-web) và tiếng Anh (english-web), cho phép learner mua subscription, đặt lịch học 1-on-1 với coach, chat real-time và thanh toán qua Stripe.
+Nền tảng học tiếng Nhật (nihongo-web) kết hợp coaching marketplace: learner mua subscription, đặt lịch học 1-on-1 với coach, chat real-time và thanh toán qua Stripe. App tiếng Anh nằm ở repo `edu-app-english`.
 
 ## Tech Stack
 

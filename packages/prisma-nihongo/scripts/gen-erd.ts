@@ -101,44 +101,12 @@ const NIHONGO_DOMAINS: Domain[] = [
   },
 ];
 
-const ENGLISH_DOMAINS: Domain[] = [
-  {
-    id: 'vocab-grammar',
-    title: 'Từ vựng & ngữ pháp',
-    note: 'Chủ đề từ vựng (CEFR A1–C2), bài ngữ pháp kèm ví dụ và bài tập.',
-    models: [
-      'VocabTopic', 'Vocabulary', 'GrammarTopic', 'GrammarLesson', 'GrammarExample', 'GrammarExercise', 'GrammarExOption',
-    ],
-  },
-  {
-    id: 'reading-listening',
-    title: 'Đọc & nghe',
-    note: 'Bài đọc, bài nghe và câu hỏi trắc nghiệm.',
-    models: ['ReadingPassage', 'ReadingQuestion', 'ReadingOption', 'ListeningTrack', 'ListeningQuestion', 'ListeningOption'],
-  },
-  {
-    id: 'user-progress',
-    title: 'Người dùng & tiến độ',
-    note: 'Tài khoản, SRS, lượt làm bài (userId null = khách), phiên học, streak, nhật ký, mục tiêu ngày.',
-    models: [
-      'User', 'SrsCard', 'ReadingAttempt', 'ListeningAttempt', 'DictationAttempt',
-      'StudySession', 'StudyStreak', 'DailyNote', 'DailyGoal', 'DailyGoalItem',
-    ],
-  },
-];
-
 const DBS: DbConfig[] = [
   {
     name: 'nihongo',
     schema: 'packages/prisma-nihongo/schema.prisma',
     out: 'docs/db-erd.md',
     domains: NIHONGO_DOMAINS,
-  },
-  {
-    name: 'english_learning',
-    schema: 'packages/prisma-english/schema.prisma',
-    out: 'docs/db-erd-english.md',
-    domains: ENGLISH_DOMAINS,
   },
 ];
 

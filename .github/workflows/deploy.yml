@@ -40,8 +40,6 @@ jobs:
             dockerfile: services/exam-service/Dockerfile
           - name: nihongo-web
             dockerfile: apps/nihongo-web/Dockerfile
-          - name: english-web
-            dockerfile: apps/english-web/Dockerfile
           - name: migrator
             dockerfile: packages/prisma-nihongo/Dockerfile.migrate
     steps:
@@ -138,7 +136,7 @@ jobs:
 
       - name: Wait for rollouts (rollback on failure)
         run: |
-          for d in api-gateway content-service exam-service nihongo-web english-web; do
+          for d in api-gateway content-service exam-service nihongo-web; do
             if ! kubectl rollout status "deployment/$d" -n edu-app --timeout=300s; then
               echo "::error::Rollout $d thất bại — rollback"
               kubectl rollout undo "deployment/$d" -n edu-app

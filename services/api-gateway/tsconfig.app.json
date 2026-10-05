@@ -8,17 +8,13 @@
     "../../packages/nest-common/src/**/*",
     "../../packages/nest-contracts/src/**/*",
     "../../packages/nest-prisma/src/**/*",
-    "../payment-service/src/**/*",
-    "../english-service/src/**/*",
-    "../../packages/nest-prisma-english/src/**/*"
+    "../payment-service/src/**/*"
   ],
   "exclude": [
     "**/*.spec.ts",
     "../../packages/nest-common/**/*.spec.ts",
     "../../packages/nest-contracts/**/*.spec.ts",
     "../../packages/nest-prisma/**/*.spec.ts",
-    "../../packages/nest-prisma-english/**/*.spec.ts",
-    "../payment-service/**/*.spec.ts",
-    "../english-service/**/*.spec.ts"
+    "../payment-service/**/*.spec.ts"
   ]
 }

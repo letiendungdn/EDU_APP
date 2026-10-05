@@ -126,15 +126,3 @@ jobs:
       - run: npm run build -w @edu/nihongo-web
         env:
           API_URL: http://localhost:3000
-
-  english-web:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-          cache-dependency-path: package-lock.json
-      - run: npm ci
-      - run: npm run lint -w @edu/english-web

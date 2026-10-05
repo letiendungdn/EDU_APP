@@ -102,25 +102,6 @@ services:
       timeout: 5s
       retries: 10
 
-  postgres-english:
-    profiles: [english]
-    image: postgres:16-alpine
-    container_name: edu-postgres-english
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: english
-      POSTGRES_PASSWORD: ${ENGLISH_POSTGRES_PASSWORD:-english}
-      POSTGRES_DB: english_learning
-    ports:
-      - '5434:5432'
-    volumes:
-      - postgres_english_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U english -d english_learning']
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
   postgres-keycloak:
     image: postgres:16-alpine
     container_name: edu-postgres-keycloak
@@ -231,7 +212,7 @@ services:
       KEYCLOAK_URL: ${KEYCLOAK_URL:-http://keycloak:8080}
       KEYCLOAK_ISSUER: ${KEYCLOAK_ISSUER:-http://auth.localhost:8080/realms/edu-app}
       KEYCLOAK_REALM: ${KEYCLOAK_REALM:-edu-app}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080,http://nihongo.localhost:8080,http://nihongo-angular.localhost:8080,http://auth.localhost:8080,http://english.localhost:8080,http://localhost:5173,http://localhost:5174,http://localhost:3001}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080,http://nihongo.localhost:8080,http://auth.localhost:8080,http://localhost:5173}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@nihongo.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
@@ -252,8 +233,6 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET:-edu-app-dev}
-      ENGLISH_ENABLED: ${ENGLISH_ENABLED:-false}
-      ENGLISH_DATABASE_URL: ${ENGLISH_DATABASE_URL:-postgresql://english:${ENGLISH_POSTGRES_PASSWORD:-english}@postgres-english:5432/english_learning}
       LIVEKIT_URL: ${LIVEKIT_URL:-http://livekit:7880}
       LIVEKIT_PUBLIC_URL: ${LIVEKIT_PUBLIC_URL:-ws://localhost:7880}
       LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-devkey}
@@ -320,42 +299,8 @@ services:
       - '5173:5173'
     environment:
       API_URL: http://api-gateway:3000
-      ENGLISH_APP_INTERNAL_URL: http://english-web:3001
-      ENGLISH_APP_PUBLIC_URL: ${ENGLISH_APP_PUBLIC_URL:-http://english.localhost:8080}
     volumes:
       - ./apps/nihongo-web/public/media/book-audio:/app/apps/nihongo-web/public/media/book-audio
-    depends_on:
-      - api-gateway
-
-  nihongo-angular:
-    build:
-      context: .
-      dockerfile: apps/nihongo-angular/Dockerfile
-      args:
-        GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
-        STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-}
-        KEYCLOAK_URL: ${NEXT_PUBLIC_KEYCLOAK_URL:-http://auth.localhost:8080}
-        KEYCLOAK_REALM: ${NEXT_PUBLIC_KEYCLOAK_REALM:-edu-app}
-        KEYCLOAK_CLIENT_ID: ${NEXT_PUBLIC_KEYCLOAK_ANGULAR_CLIENT_ID:-nihongo-angular}
-    container_name: edu-nihongo-angular
-    restart: unless-stopped
-    ports:
-      - '5174:80'
-    depends_on:
-      - api-gateway
-
-  english-web:
-    profiles: [english]
-    build:
-      context: .
-      dockerfile: apps/english-web/Dockerfile
-    container_name: edu-english-web
-    restart: unless-stopped
-    ports:
-      - '3001:3001'
-    environment:
-      API_URL: http://api-gateway:3000
-      NEXT_PUBLIC_NIHONGO_APP_URL: ${NEXT_PUBLIC_NIHONGO_APP_URL:-http://nihongo.localhost:8080}
     depends_on:
       - api-gateway
 
@@ -370,7 +315,6 @@ services:
     depends_on:
       - api-gateway
       - nihongo-web
-      - nihongo-angular
       - keycloak
 
   jaeger:
@@ -440,7 +384,6 @@ volumes:
   postgres_nihongo_data:
     external: true
     name: nihongo-app_postgres_data
-  postgres_english_data:
   postgres_keycloak_data:
   mongodb_data:
   grafana_data:

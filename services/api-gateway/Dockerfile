@@ -27,7 +27,6 @@ RUN rm -rf node_modules/@prisma/client \
         dist/apps/api-gateway/packages/nest-contracts \
         dist/apps/api-gateway/packages \
     && ln -sfn /app/packages/prisma-nihongo/generated/client node_modules/@prisma/client \
-    && ln -sfn /app/packages/prisma-english dist/apps/api-gateway/packages/prisma-english \
     && ln -sfn /app/packages/nest-contracts/proto dist/apps/api-gateway/packages/nest-contracts/proto
 USER node
 CMD ["node", "dist/apps/api-gateway/services/api-gateway/src/main.js"]
