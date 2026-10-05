@@ -18,7 +18,6 @@ OIDC IdP cho EDU APP. Web login qua Keycloak (PKCE) → API Gateway đổi acces
 | Client ID | Redirect |
 |-----------|----------|
 | `nihongo-web` | `http://nihongo.localhost:8080/*` |
-| `nihongo-angular` | `http://nihongo-angular.localhost:8080/*` |
 | `nihongo-mobile` | `nihongo://auth/callback`, `com.edu.nihongo:/oauth2redirect`, `com.edu.nihongo_app:/oauth2redirect`, `com.edu.nihongo.ios:/oauth2redirect` |
 
 Mobile apps (Flutter / Android / iOS / Expo) dùng client `nihongo-mobile`, rồi `POST /api/auth/oidc` như web.
@@ -58,7 +57,7 @@ Email/password + Google vẫn dùng được (Dev login trên trang `/login`).
 Trình duyệt thường resolve `*.localhost` → `127.0.0.1`. Nếu không mở được, thêm vào `C:\Windows\System32\drivers\etc\hosts`:
 
 ```
-127.0.0.1 auth.localhost nihongo.localhost nihongo-angular.localhost
+127.0.0.1 auth.localhost nihongo.localhost
 ```
 
 ## Env
@@ -80,7 +79,7 @@ KEYCLOAK_REALM=edu-app
 ```bash
 docker compose up -d postgres-keycloak keycloak
 # rồi rebuild nginx nếu cần
-docker compose up -d --build nginx api-gateway nihongo-web nihongo-angular
+docker compose up -d --build nginx api-gateway nihongo-web
 ```
 
 Realm import: `infra/keycloak/realm-edu-app.json` (chỉ import lần đầu khi volume Keycloak trống).

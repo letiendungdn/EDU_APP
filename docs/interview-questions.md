@@ -116,9 +116,9 @@ Mỗi câu trả lời đều dựa vào **code thực trong project**. Không t
 
 ## System Design
 
-**Q18: Tại sao project dùng 2 DB riêng cho nihongo và english?**
+**Q18: Tại sao app tiếng Anh dùng DB riêng (và nay tách hẳn sang repo `edu-app-english`)?**
 
-> Schema conflict: nihongo.User có `stripeCustomerId`, english.User không có. Rollout independence: team nihongo migrate schema không ảnh hưởng english. Scale independence: nihongo có content lớn hơn nhiều (vocab, grammar, kanji, JLPT data) — có thể scale PostgreSQL riêng. Auth riêng biệt: nihongo dùng JWT Bearer + Google OAuth, english dùng JWT Cookie với `aud:english` claim — nếu 1 DB sẽ phức tạp. Trade-off: không SSO, không cross-query, user phải đăng ký 2 account.
+> Schema conflict: nihongo.User có `stripeCustomerId`, english.User không có. Rollout independence: team nihongo migrate schema không ảnh hưởng english. Scale independence: nihongo có content lớn hơn nhiều (vocab, grammar, kanji, JLPT data) — có thể scale PostgreSQL riêng. Auth riêng biệt: nihongo dùng JWT Bearer + Google OAuth, english dùng JWT Cookie với `aud:english` claim — nếu 1 DB sẽ phức tạp. Trade-off: không SSO, không cross-query, user phải đăng ký 2 account. Bước tiếp theo của chính lập luận này: app tiếng Anh đã được tách sang repo riêng (10/2026) — repo này chỉ còn sản phẩm tiếng Nhật.
 
 ---
 

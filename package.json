@@ -2,7 +2,7 @@
   "name": "edu-app-nihongo",
   "version": "0.1.0",
   "private": true,
-  "description": "Monorepo học tiếng Nhật — micro frontends + microservices",
+  "description": "Monorepo EDU APP Nihongo — Next.js web, app mobile và NestJS microservices",
   "workspaces": [
     "apps/*",
     "services",

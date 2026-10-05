@@ -30,7 +30,6 @@ export type { AuditLogDocument } from './audit/audit-log.schema';
 export { RedisModule, REDIS_CLIENT } from './redis/redis.module';
 export { RateLimit } from './rate-limit/rate-limit.decorator';
 export { SlidingWindowRateLimitGuard } from './rate-limit/sliding-window.guard';
-export { isEnglishEnabled } from './config/english-enabled';
 export { MailModule } from './mail/mail.module';
 export { MailService } from './mail/mail.service';
 export { MAIL_PORT, MAIL_TEMPLATE_STORE } from './mail/mail.port';

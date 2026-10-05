@@ -12,7 +12,7 @@ Senior không hỏi "Dùng công nghệ gì?" — hỏi:
 
 ## 2. Phân tích các quyết định thiết kế trong project
 
-### Tại sao 2 DB riêng (nihongo vs english_learning)?
+### Tại sao app tiếng Anh dùng DB riêng (nihongo vs english_learning)?
 
 ```
 Option A: 1 DB chung
@@ -29,9 +29,10 @@ Option B: 2 DB riêng (đã chọn)
   ❌ Không cross-query (không JOIN nihongo.User với english.User)
 
 → Quyết định đúng vì 2 app thực sự độc lập về domain
+→ 10/2026 đi tiếp một bước: app tiếng Anh tách hẳn sang repo `edu-app-english`; repo này chỉ còn DB `nihongo`
 ```
 
-### Tại sao gRPC cho content/exam nhưng in-process cho english/payment?
+### Tại sao gRPC cho content/exam nhưng in-process cho payment?
 
 ```
 gRPC (content-service, exam-service):
@@ -40,7 +41,7 @@ gRPC (content-service, exam-service):
   → Có thể deploy nhiều instance, load balance
   → Tốc độ: binary protocol (Protobuf) nhanh hơn JSON
 
-In-process modules (english-service, payment-service):
+In-process modules (payment-service):
   → Logic đơn giản hơn, ít data hơn
   → Không cần scale riêng
   → Không có network overhead

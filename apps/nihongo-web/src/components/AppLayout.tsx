@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import AuthHeader from '@/components/AuthHeader';
 import TextbookNavItems from '@/components/TextbookNavItems';
-import EnglishAppSwitcher from '@/components/EnglishAppSwitcher';
 import PageBannerControl from '@/components/PageBannerControl';
 import { useTheme } from '@/lib/theme';
 import { bannerBackgroundStyle } from '@/utils/pageBanner';
@@ -352,10 +351,9 @@ export default function MainLayout({ children }: { children: ReactNode }) {
           })}
         </nav>
 
-        {/* Bottom: theme toggle + app switcher + auth */}
+        {/* Bottom: theme toggle + auth */}
         <div className="app-sidebar__bottom">
           <ThemeToggle />
-          <EnglishAppSwitcher />
           <AuthHeader />
         </div>
       </aside>

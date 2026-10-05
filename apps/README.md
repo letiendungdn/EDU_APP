@@ -1,32 +1,26 @@
-# Micro Frontends
+# Apps
 
-Frontend apps độc lập, deploy riêng, liên kết qua nav switcher.
+Frontend web và các app mobile của EDU APP Nihongo. App tiếng Anh nằm ở repo riêng `edu-app-english`.
 
 | App | Folder | Port | Stack |
 |-----|--------|------|-------|
 | **nihongo-web** | `nihongo-web/` | 5173 | Next.js — học tiếng Nhật |
-| **nihongo-angular** | `nihongo-angular/` | 5174 | Angular 19 — gần parity web |
-| **english-web** | `english-web/` | 3001 | Next.js — học tiếng Anh *(Compose profile `english`)* |
 
 ## Chạy dev
 
 ```bash
 npm run dev:nihongo-web       # :5173
-npm run dev:nihongo-angular   # :5174
-npm run dev:english-web       # :3001
 ```
 
-Hướng dẫn đầy đủ: [docs/run-local.md](../docs/run-local.md) · Lộ trình Angular: [docs/roadmap-angular.md](../docs/roadmap-angular.md) · Lộ trình ReactJS: [docs/roadmap-reactjs.md](../docs/roadmap-reactjs.md)
+Hướng dẫn đầy đủ: [docs/run-local.md](../docs/run-local.md) · Lộ trình ReactJS: [docs/roadmap-reactjs.md](../docs/roadmap-reactjs.md)
 
-## Cross-link
+## Docker
 
-- `nihongo-web`: `NEXT_PUBLIC_ENGLISH_APP_URL=http://localhost:3001`
-- `english-web`: `NEXT_PUBLIC_NIHONGO_APP_URL=http://localhost:5173`
-- Docker: `nihongo.localhost` / `nihongo-angular.localhost` / `english.localhost` qua nginx `:8080` — [docs/docker.md](../docs/docker.md)
+- `nihongo.localhost` (hoặc `localhost`) qua nginx `:8080` — [docs/docker.md](../docs/docker.md)
 
 ## Shared packages
 
-- `@edu/vocab-images` — OpenMoji picture dictionary (Next + Angular)
+- `@edu/vocab-images` — OpenMoji picture dictionary
 
 ## App mobile
 

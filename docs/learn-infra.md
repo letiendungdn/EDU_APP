@@ -17,7 +17,7 @@
 | `nginx/` | Reverse proxy — cổng vào duy nhất `:8080`, chia request theo `Host` | luôn chạy (compose) |
 | `postgres/` | Seed nội dung học (`nihongo-content-seed.sql`), script export, script sửa dữ liệu `fix-*.sql` | máy mới, sau khi sửa nội dung |
 | `backups/` | Script `pg_dump` + bản dump đầy đủ (gồm user, payment) | trước khi làm việc nguy hiểm, chuyển máy |
-| `keycloak/` | Realm `edu-app` (client `nihongo-web`, `nihongo-angular`, `nihongo-mobile`; role `user`/`teacher`/`admin`) | import khi Keycloak khởi động |
+| `keycloak/` | Realm `edu-app` (client `nihongo-web`, `nihongo-mobile`; role `user`/`teacher`/`admin`) | import khi Keycloak khởi động |
 | `prometheus/` | Scrape `api-gateway:3000/metrics` mỗi 15s + luật cảnh báo `alerts.yml` | observability |
 | `alertmanager/` | Gửi cảnh báo → Mailpit (dev) hoặc SMTP Brevo (thật) | observability |
 | `grafana/` | Datasource + dashboard `api-gateway.json` provision sẵn | observability |
@@ -47,13 +47,13 @@ Tạo ra máy/DB cloud: terraform/
                     ┌───────────┐
                     │   nginx   │  edu-nginx
                     └─────┬─────┘
-        /api, /health     │      /            /realms…            Host: auth.localhost
-          ┌───────────────┼──────────────┬──────────────┬──────────────────┐
-          ▼               ▼              ▼              ▼
-   ┌─────────────┐  ┌───────────┐  ┌──────────────┐  ┌──────────┐
-   │ api-gateway │  │nihongo-web│  │nihongo-angular│ │ keycloak │──► postgres-keycloak
-   │  NestJS:3000│  │ Next:5173 │  │  nginx:80    │  │  :8080   │
-   └──────┬──────┘  └───────────┘  └──────────────┘  └──────────┘
+        /api, /health     │      /          /realms… hoặc Host: auth.localhost
+          ┌───────────────┼──────────────┬──────────────────┐
+          ▼               ▼              ▼
+   ┌─────────────┐  ┌───────────┐  ┌──────────┐
+   │ api-gateway │  │nihongo-web│  │ keycloak │──► postgres-keycloak
+   │  NestJS:3000│  │ Next:5173 │  │  :8080   │
+   └──────┬──────┘  └───────────┘  └──────────┘
           │ gRPC                 Prisma ┌──────────────────┐
           ├──────► content-service:50051 ─────────►│ postgres-nihongo │ (volume external
           ├──────► exam-service:50052    ─────────►│   DB nihongo     │  postgres_nihongo_data)
@@ -78,7 +78,7 @@ Luồng một request `GET /api/reference/textbooks`:
 |----------|---------|---------|
 | **8080** | nginx | **cửa chính**: app, API, Keycloak qua `auth.localhost:8080` |
 | 3000 | api-gateway | gọi thẳng, bỏ qua nginx — dùng để khoanh vùng lỗi (mục 4) |
-| 5173 / 5174 | nihongo-web / nihongo-angular | frontend chạy thẳng |
+| 5173 | nihongo-web | frontend chạy thẳng |
 | 8081 | keycloak | admin console |
 | 5433 | postgres-nihongo | `psql -h localhost -p 5433 -U nihongo nihongo` |
 | 5435 | postgres-keycloak | |
@@ -90,8 +90,6 @@ Luồng một request `GET /api/reference/textbooks`:
 | 7880–7881, 50100–50200/udp | livekit | WebRTC |
 
 Redis **không** mở cổng ra máy — chỉ container trong mạng compose gọi được.
-
-Profile `english` (`docker compose --profile english up -d`) thêm `postgres-english` (5434) và `english-web` (3001).
 
 ---
 
@@ -205,14 +203,12 @@ docker restart edu-gateway                                      # khi DB đã "r
 
 ## 5. Nginx: chia theo Host và mẹo `resolver`
 
-[`infra/nginx/nginx.conf`](../infra/nginx/nginx.conf) có 4 `server` block, chọn theo header `Host`:
+[`infra/nginx/nginx.conf`](../infra/nginx/nginx.conf) có 2 `server` block, chọn theo header `Host`:
 
 | Host | `/api/`, `/health` | `/` |
 |------|--------------------|-----|
 | `nihongo.localhost`, `localhost`, `10.0.2.2` | api-gateway:3000 | nihongo-web:5173 (+ `/realms` → Keycloak cho emulator Android) |
-| `nihongo-angular.localhost` | api-gateway:3000 | nihongo-angular:80 |
 | `auth.localhost` | — | keycloak:8080 |
-| `english.localhost` | — | english-web:3001 |
 
 Mẹo quan trọng:
 

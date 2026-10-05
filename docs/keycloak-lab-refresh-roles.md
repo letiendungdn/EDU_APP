@@ -7,7 +7,7 @@ Tiếp theo [lab 30′](./keycloak-lab-30m.md). Stack: gateway local JWT + cooki
 | Phần | Hành vi |
 |------|---------|
 | `POST /api/auth/refresh` | Cookie HttpOnly `refresh_token` → access JWT mới (15′) |
-| Web / Angular `api-client` | 401 → gọi refresh một lần → retry |
+| Web `api-client` | 401 → gọi refresh một lần → retry |
 | Logout | `POST /api/auth/logout` + Keycloak `signoutRedirect` (`id_token_hint`) |
 | Role map | `admin` → `ADMIN`, `teacher` → `TEACHER`, else `USER` |
 | Mapper | Client scope `edu-app-roles` → claim `app_roles` (id + access token) |
@@ -42,7 +42,7 @@ docker compose up -d postgres-keycloak keycloak
    - Token Claim Name: `app_roles`
    - Add to ID token / access token / userinfo: On
    - Multivalued: On
-4. Gắn scope `edu-app-roles` vào Default Client Scopes của `nihongo-web`, `nihongo-angular`, `nihongo-mobile`
+4. Gắn scope `edu-app-roles` vào Default Client Scopes của `nihongo-web`, `nihongo-mobile`
 
 ## Checklist thử (15′)
 
@@ -63,5 +63,5 @@ docker compose up -d postgres-keycloak keycloak
 ## Rebuild sau khi pull code
 
 ```bash
-docker compose up -d --build api-gateway nihongo-web nihongo-angular
+docker compose up -d --build api-gateway nihongo-web
 ```

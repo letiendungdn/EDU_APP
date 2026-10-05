@@ -15,7 +15,7 @@ Nền tảng học tiếng Nhật (nihongo-web) kết hợp coaching marketplace
 | Payments | Stripe (Subscriptions + Connect payout) |
 | Events | Kafka (confluent-cp 7.6) |
 | File Storage | AWS S3 (pre-signed URL upload) |
-| Auth | JWT Bearer (nihongo) + JWT cookie `aud:english` (english) + Google OAuth |
+| Auth | JWT Bearer + Keycloak OIDC + Google OAuth |
 | Container | Docker Compose, Kubernetes (Helm) |
 | CI/CD | GitHub Actions |
 
@@ -27,15 +27,14 @@ Nền tảng học tiếng Nhật (nihongo-web) kết hợp coaching marketplace
                     ┌─────────────▼─────────────┐
                     │          Nginx             │
                     │    (reverse proxy / SSL)   │
-                    └──────┬──────────┬─────────┘
-                           │          │
-              ┌────────────▼──┐   ┌───▼──────────────┐
-              │  nihongo-web  │   │   english-web     │
-              │  Next.js:5173 │   │  Next.js :3001    │
-              └───────┬───────┘   └─────────┬─────────┘
-                      │ rewrite /api/*       │ rewrite /api/* → /api/english/*
-                      └──────────┬────────────┘
-                                 ▼
+                    └─────────────┬─────────────┘
+                                  │
+                         ┌────────▼───────┐
+                         │  nihongo-web   │
+                         │  Next.js :5173 │
+                         └────────┬───────┘
+                                  │ rewrite /api/*
+                                  ▼
                     ┌────────────────────────────┐
                     │        api-gateway          │
                     │        NestJS :3000         │
@@ -44,8 +43,8 @@ Nền tảng học tiếng Nhật (nihongo-web) kết hợp coaching marketplace
                     └──┬─────────────┬───────────┘
                        │ gRPC        │ in-process modules
            ┌───────────▼──┐    ┌─────▼──────────────────────────────┐
-           │ content-svc  │    │ english-service  (/api/english/*)   │
-           │   :50051     │    │ payment-service  (Stripe/marketplace)│
+           │ content-svc  │    │ payment-service  (Stripe/marketplace)│
+           │   :50051     │    │                                     │
            │ exam-svc     │    │ realtime-module  (Socket.io gateway) │
            │   :50052     │    └─────────────────────────────────────┘
            └──────────────┘
@@ -54,7 +53,7 @@ Nền tảng học tiếng Nhật (nihongo-web) kết hợp coaching marketplace
     │                      Data Layer                          │
     │  PostgreSQL :5433   │  MongoDB :27017   │  Redis :6379   │
     │  nihongo            │  nihongo_audit    │  cache         │
-    │  english_learning   │  (TTL 90 ngày)    │  rate-limit    │
+    │                     │  (TTL 90 ngày)    │  rate-limit    │
     │                     │                   │  presence      │
     └──────────────────────────────────────────────────────────┘
 
@@ -74,31 +73,26 @@ Nền tảng học tiếng Nhật (nihongo-web) kết hợp coaching marketplace
 ## Cấu trúc thư mục
 
 ```
-edu_app/
+edu-app-nihongo/
 ├── apps/
-│   ├── nihongo-web/           # Next.js — học tiếng Nhật (:5173)
-│   └── english-web/           # Next.js — học tiếng Anh (:3001)
+│   └── nihongo-web/           # Next.js — học tiếng Nhật (:5173)
 ├── services/
 │   ├── api-gateway/           # HTTP :3000 + Socket.io /realtime
 │   │   └── src/realtime/      # RealtimeGateway, NotificationService, ChatService
 │   ├── content-service/       # gRPC :50051 (vocab, grammar, lesson)
 │   ├── exam-service/          # gRPC :50052 (mock exam, SRS, progress)
-│   ├── english-service/       # /api/english/* → english_learning DB
 │   └── payment-service/       # Stripe subscription + booking + payout
 ├── packages/
 │   ├── nest-common/           # Guards, interceptors, audit, rate-limit
 │   ├── nest-contracts/        # gRPC DTOs, Kafka topic constants
 │   ├── nest-prisma/           # PrismaModule (nihongo)
-│   ├── nest-prisma-english/   # EnglishPrismaModule (english_learning)
-│   ├── prisma-nihongo/        # Schema + migrations (DB nihongo)
-│   └── prisma-english/        # Schema + seed (DB english_learning)
+│   └── prisma-nihongo/        # Schema + migrations (DB nihongo)
 ├── infra/                     # K8s, Helm, Nginx, k6, backups
 │   └── backups/               # backup.ps1 + SQL dumps (restore DB)
 ├── docs/
 │   ├── system-design.md       # Kiến trúc chi tiết, request flows
 │   ├── db-design.md           # Thiết kế DB, schema reference, backup
 │   ├── db-erd.md              # Sơ đồ ER Mermaid DB nihongo (tự sinh)
-│   ├── db-erd-english.md      # Sơ đồ ER Mermaid DB english_learning (tự sinh)
 │   ├── run-local.md           # Hướng dẫn chạy local
 │   ├── google-oauth-setup.md  # Cấu hình Google Sign-In
 │   ├── cursor-everfit-prep.md # Cursor prompt: Payment + Marketplace
@@ -123,7 +117,8 @@ docker compose up -d postgres redis mongodb kafka zookeeper
 npm run prisma:generate
 
 # Restore DB có sẵn trong repo (khuyên dùng)
-Get-Content infra\backups\nihongo_20261003_214703.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+docker cp infra\backups\nihongo_20261004_211325.sql edu-postgres-nihongo:/tmp/restore.sql
+docker exec edu-postgres-nihongo psql -U nihongo -d nihongo -f /tmp/restore.sql
 
 # Hoặc DB trống: migrate + seed — xem docs/run-local.md
 ```
@@ -137,7 +132,6 @@ npm run dev:gateway      # http://localhost:3000  — Swagger /api/docs
 npm run dev:content      # gRPC :50051
 npm run dev:exam         # gRPC :50052
 npm run dev:nihongo-web  # http://localhost:5173
-npm run dev:english-web  # http://localhost:3001
 ```
 
 Stripe webhook (khi test thanh toán): `npm run stripe:listen`
@@ -174,7 +168,8 @@ Swagger UI: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
 **Restore từ backup** (nhanh nhất — file trong `infra/backups/`):
 
 ```powershell
-Get-Content infra\backups\nihongo_20261003_214703.sql | docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+docker cp infra\backups\nihongo_20261004_211325.sql edu-postgres-nihongo:/tmp/restore.sql
+docker exec edu-postgres-nihongo psql -U nihongo -d nihongo -f /tmp/restore.sql
 ```
 
 **Hoặc DB trống** — migrate + seed:
@@ -184,8 +179,6 @@ docker compose up -d postgres
 npm run prisma:generate
 npm run migrate:deploy -w @edu/prisma-nihongo
 npm run seed -w @edu/prisma-nihongo
-npm run db:push -w @edu/prisma-english
-npm run seed -w @edu/prisma-english
 ```
 
 Nội dung học (vocab, kanji, grammar): `infra/postgres/nihongo-content-seed.sql` — xem [infra/postgres/README.md](infra/postgres/README.md).
@@ -205,18 +198,16 @@ Dump vào `infra/backups/` — xem [infra/backups/README.md](infra/backups/READM
 npm run db:erd
 ```
 
-Đọc schema Prisma của cả 2 DB → ghi lại [docs/db-erd.md](docs/db-erd.md) (nihongo) và [docs/db-erd-english.md](docs/db-erd-english.md)
-(english_learning), Mermaid chia theo phân hệ. Mô hình khái niệm cho báo cáo: mục B.3 trong
+Đọc schema Prisma của DB nihongo → ghi lại [docs/db-erd.md](docs/db-erd.md), Mermaid chia theo phân hệ. Mô hình khái niệm cho báo cáo: mục B.3 trong
 [docs/bao-cao-phan-tich-thiet-ke.md](docs/bao-cao-phan-tich-thiet-ke.md).
 **Chạy lại mỗi khi đổi schema** (sau khi thêm migration). Bảng mới chưa xếp phân hệ sẽ bị cảnh báo và vào mục "Khác" —
-thêm tên bảng vào `NIHONGO_DOMAINS` / `ENGLISH_DOMAINS` trong `packages/prisma-nihongo/scripts/gen-erd.ts`.
+thêm tên bảng vào `NIHONGO_DOMAINS` trong `packages/prisma-nihongo/scripts/gen-erd.ts`.
 
 ## Environment Variables
 
 **`services/.env`**:
 ```env
 DATABASE_URL=postgresql://nihongo:nihongo@localhost:5433/nihongo
-ENGLISH_DATABASE_URL=postgresql://nihongo:nihongo@localhost:5433/english_learning
 MONGODB_URL=mongodb://localhost:27017/nihongo_audit
 KAFKA_BROKERS=localhost:9092
 REDIS_URL=redis://localhost:6379
@@ -233,7 +224,6 @@ AWS_S3_BUCKET=edu-app-dev
 ```env
 API_URL=http://localhost:3000
 NEXT_PUBLIC_API_URL=http://localhost:3000
-NEXT_PUBLIC_ENGLISH_APP_URL=http://localhost:3001
 NEXT_PUBLIC_GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ```
@@ -254,7 +244,6 @@ npm test -- --coverage -w @edu/nihongo-services
 | [docs/system-design.md](docs/system-design.md) | Kiến trúc, request flows, auth |
 | [docs/db-design.md](docs/db-design.md) | Thiết kế DB, schema reference, backup |
 | [docs/db-erd.md](docs/db-erd.md) | Sơ đồ ER đầy đủ DB nihongo (Mermaid, 8 phân hệ) — tự sinh, đừng sửa tay |
-| [docs/db-erd-english.md](docs/db-erd-english.md) | Sơ đồ ER đầy đủ DB english_learning — tự sinh, đừng sửa tay |
 | [docs/run-local.md](docs/run-local.md) | Hướng dẫn chạy local từng bước |
 | [docs/docker.md](docs/docker.md) | Full stack Docker (~14 container) |
 | [docs/learn-docker.md](docs/learn-docker.md) | Học Docker trên stack EDU APP |
@@ -271,7 +260,6 @@ npm test -- --coverage -w @edu/nihongo-services
 | [docs/learn-localstack.md](docs/learn-localstack.md) | Học LocalStack: giả lập S3/SQS/SES, nối luồng upload presigned URL |
 | [docs/learn-aws.md](docs/learn-aws.md) | Học AWS: S3 (đang dùng), ECS Fargate, RDS, SQS/SNS, VPC, IAM role, chi phí |
 | [docs/learn-google-cloud.md](docs/learn-google-cloud.md) | Học Google Cloud: chuyển stack sang Cloud Run, Cloud SQL, GCS, Pub/Sub, GKE |
-| [docs/roadmap-angular.md](docs/roadmap-angular.md) | Lộ trình học Angular |
 | [docs/roadmap-reactjs.md](docs/roadmap-reactjs.md) | Lộ trình học ReactJS/Next |
 | [docs/learn-edu-app.md](docs/learn-edu-app.md) | Lộ trình 10 tuần học và làm chủ codebase |
 | [docs/google-oauth-setup.md](docs/google-oauth-setup.md) | Cấu hình Google Sign-In |

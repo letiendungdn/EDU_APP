@@ -701,7 +701,6 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 | Android       | [learn-android-kotlin.md](./learn-android-kotlin.md) · [roadmap-android.md](./roadmap-android.md) |
 | Flutter       | [roadmap-flutter.md](./roadmap-flutter.md)                                                        |
 | Swift         | [roadmap-swift.md](./roadmap-swift.md)                                                            |
-| Angular (web) | [roadmap-angular.md](./roadmap-angular.md)                                                        |
 | ReactJS (web) | [roadmap-reactjs.md](./roadmap-reactjs.md)                                                        |
 | Senior mobile | [learn-mobile-senior.md](./learn-mobile-senior.md)                                                |
 
@@ -744,7 +743,7 @@ Dành cho người chọn **hướng Mobile** sau Tuần 1–5 (hoặc sau Tuầ
 4. [db-design.md](./db-design.md)
 5. [keycloak-setup.md](./keycloak-setup.md)
 6. [run-mobile.md](./run-mobile.md) ← chạy 4 app mobile + unit test
-7. Roadmap stack đã chọn: [roadmap-react-native.md](./roadmap-react-native.md) / [roadmap-android.md](./roadmap-android.md) / [roadmap-flutter.md](./roadmap-flutter.md) / [roadmap-swift.md](./roadmap-swift.md) / [roadmap-angular.md](./roadmap-angular.md) / [roadmap-reactjs.md](./roadmap-reactjs.md)
+7. Roadmap stack đã chọn: [roadmap-react-native.md](./roadmap-react-native.md) / [roadmap-android.md](./roadmap-android.md) / [roadmap-flutter.md](./roadmap-flutter.md) / [roadmap-swift.md](./roadmap-swift.md) / [roadmap-reactjs.md](./roadmap-reactjs.md)
 8. [canvas-tools.md](./canvas-tools.md) ← Canvas Tools + Japan Map (tùy chọn, sau Tuần 6)
 9. [learn-testing.md](./learn-testing.md)
 10. [learn-kafka.md](./learn-kafka.md)

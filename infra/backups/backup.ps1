@@ -1,4 +1,4 @@
-# Backup PostgreSQL — nihongo và english_learning trên 2 container riêng
+# Backup PostgreSQL — DB nihongo (container edu-postgres-nihongo)
 # Usage: powershell -File infra/backups/backup.ps1
 
 $ErrorActionPreference = "Stop"
@@ -6,8 +6,7 @@ $outDir = $PSScriptRoot
 $ts = Get-Date -Format "yyyyMMdd_HHmmss"
 
 $dumps = @(
-    @{ Container = "edu-postgres-nihongo"; User = "nihongo"; Db = "nihongo" },
-    @{ Container = "edu-postgres-english"; User = "english"; Db = "english_learning" }
+    @{ Container = "edu-postgres-nihongo"; User = "nihongo"; Db = "nihongo" }
 )
 
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null

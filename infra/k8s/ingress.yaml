@@ -38,14 +38,3 @@ spec:
                 name: nihongo-web
                 port:
                   number: 5173
-    # english.example.com — BFF + frontend (API nội bộ /api/*)
-    - host: english.example.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: english-web
-                port:
-                  number: 3001

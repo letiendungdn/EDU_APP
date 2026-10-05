@@ -284,7 +284,7 @@ exam-service ──(EventBus in-process)──► ExamSubmittedHandler
 
 **Q22: Sao không GraphQL federation ở gateway?**
 
-> Client hiện tại (Next.js, Angular, mobile) tiêu thụ REST đơn giản, không có nhu cầu
+> Client hiện tại (Next.js, mobile) tiêu thụ REST đơn giản, không có nhu cầu
 > query lồng nhiều nguồn trong 1 request. GraphQL thêm tầng schema + resolver + phòng
 > N+1 mà chưa đổi lại lợi ích tương xứng. Gateway kiểu **BFF REST** là đủ.
 

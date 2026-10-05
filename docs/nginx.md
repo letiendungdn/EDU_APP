@@ -12,7 +12,7 @@ Container: `docker-compose.yml` → service `nginx` (`${NGINX_HTTP_PORT:-8080}:8
 | Việc | Giải thích |
 |------|------------|
 | **Một cổng vào** | Host chỉ mở `8080` → container port `80`. Không bind cổng 80 host (tránh conflict). |
-| **Route theo domain** | `nihongo.localhost` / `localhost` → app Nhật; `auth.localhost` → Keycloak; `english.localhost` → app Anh; `nihongo-angular.localhost` → Angular. |
+| **Route theo domain** | `nihongo.localhost` / `localhost` → app Nhật; `auth.localhost` → Keycloak. |
 | **Route theo path** | `/api/*`, `/health` → `api-gateway:3000`; `/` → frontend tương ứng. |
 | **Ẩn service nội bộ** | `nihongo-web`, `keycloak`, … không cần publish hết ra host; nginx gọi qua Docker network. |
 | **Hỗ trợ mobile emulator** | Host `10.0.2.2` cũng vào server Nihongo — emulator Android gọi `http://10.0.2.2:8080` để tới API + Keycloak. |
@@ -30,18 +30,10 @@ Browser / Emulator
         ├── Host: auth.localhost
         │         └──► keycloak:8080
         │
-        ├── Host: nihongo.localhost | localhost | 10.0.2.2
-        │         ├── /api/*, /health  → api-gateway:3000
-        │         ├── /realms|resources|js… → keycloak (cho emulator, không cần DNS auth.localhost)
-        │         └── /                → nihongo-web:5173
-        │
-        ├── Host: nihongo-angular.localhost
-        │         ├── /api/*, /health  → api-gateway:3000
-        │         ├── /media/          → nihongo-web:5173
-        │         └── /                → nihongo-angular:80
-        │
-        └── Host: english.localhost
-                  └── /                → english-web:3001  (profile `english`)
+        └── Host: nihongo.localhost | localhost | 10.0.2.2
+                  ├── /api/*, /health  → api-gateway:3000
+                  ├── /realms|resources|js… → keycloak (cho emulator, không cần DNS auth.localhost)
+                  └── /                → nihongo-web:5173
 ```
 
 ---
@@ -54,8 +46,6 @@ Browser / Emulator
 | API qua nginx | http://localhost:8080/api/... |
 | Health | http://localhost:8080/health |
 | Keycloak | http://auth.localhost:8080 |
-| English web | http://english.localhost:8080 *(cần profile `english`)* |
-| Angular | http://nihongo-angular.localhost:8080 |
 
 Vẫn có thể gọi gateway thẳng: http://localhost:3000/api/... (dev local không qua nginx).
 

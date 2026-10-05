@@ -5,7 +5,7 @@
 | Mục | Nội dung |
 |-----|----------|
 | **Tên hệ thống** | EDU APP (Nihongo Learning + Coaching) |
-| **Phạm vi** | Web (nihongo-web, english-web), Mobile (Expo / Android / Flutter / iOS), Backend NestJS |
+| **Phạm vi** | Web (nihongo-web), Mobile (Expo / Android / Flutter / iOS), Backend NestJS |
 | **Phương pháp** | Phân tích theo **hai hướng**: Cấu trúc (SSADM-style) và Hướng đối tượng (UML) |
 | **Tài liệu kỹ thuật** | [system-design.md](./system-design.md), [db-design.md](./db-design.md), [analysis-design.md](./analysis-design.md) |
 
@@ -267,7 +267,7 @@ flowchart LR
 ## B.3. Mô hình thực thể–kết hợp (ERD — Entity Relationship Diagram)
 
 > Các sơ đồ dưới đây là **mô hình khái niệm** (rút gọn, chỉ thực thể & thuộc tính chính). Sơ đồ vật lý đầy đủ — mọi bảng, cột, khóa —
-> được sinh tự động từ Prisma schema: [db-erd.md](./db-erd.md) (nihongo, 107 bảng) và [db-erd-english.md](./db-erd-english.md) (english_learning).
+> được sinh tự động từ Prisma schema: [db-erd.md](./db-erd.md) (nihongo, 107 bảng).
 
 ### B.3.1. ERD tổng quan (lõi nghiệp vụ)
 
@@ -1166,7 +1166,7 @@ Phần này phục vụ **bảo vệ đồ án / phỏng vấn** dựa trên bá
 | E21 | Actor nào host livestream? | TEACHER (ADMIN cũng có thể tùy policy) |
 | E22 | Kafka topic ví dụ trong app? | `edu.exam.submitted`, `edu.payment.succeeded`, `edu.vocab.reviewed` |
 | E23 | SM-2 `mastered` khi nào? | `interval >= 21` ngày |
-| E24 | English và Nihongo chung DB không? | Không — `postgres-nihongo` vs `postgres-english` |
+| E24 | App tiếng Anh dùng chung DB với Nihongo không? | Không — app tiếng Anh ở repo riêng `edu-app-english`, DB riêng |
 | E25 | Rate limit login dùng gì? | Redis sliding window / Throttler trên auth |
 | E26 | File upload lưu trực tiếp DB? | Không — S3 presigned URL |
 | E27 | DFD kho D3 là gì? | Progress: SrsCard, ExamResult, streak… |

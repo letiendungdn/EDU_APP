@@ -13,7 +13,7 @@ data:
   CONTENT_GRPC_URL: content-service:50051
   EXAM_GRPC_URL: exam-service:50052
   JWT_EXPIRES_IN: 7d
-  ALLOWED_ORIGINS: "https://nihongo.example.com,https://english.example.com"
+  ALLOWED_ORIGINS: "https://nihongo.example.com"
   ADMIN_EMAIL: admin@nihongo.local
 
   # gRPC workers
@@ -24,10 +24,6 @@ data:
 
   # nihongo-web
   API_URL: http://api-gateway:3000
-  NEXT_PUBLIC_ENGLISH_APP_URL: https://english.example.com
-
-  # english-web
-  NEXT_PUBLIC_NIHONGO_APP_URL: https://nihongo.example.com
 
   # postgres (non-secret)
   POSTGRES_USER: nihongo
@@ -35,4 +31,3 @@ data:
 
   # Ingress hostnames — cập nhật theo domain thực tế
   INGRESS_HOST_NIHONGO: nihongo.example.com
-  INGRESS_HOST_ENGLISH: english.example.com

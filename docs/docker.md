@@ -33,7 +33,7 @@ Script hiện tại:
 
 ```text
 docker compose up -d postgres-nihongo redis mongodb zookeeper kafka
-  content-service exam-service api-gateway nihongo-web nihongo-angular nginx
+  content-service exam-service api-gateway nihongo-web nginx
 ```
 
 Compose **tự kéo thêm** các dependency của `api-gateway` / `nginx`:
@@ -41,7 +41,7 @@ Compose **tự kéo thêm** các dependency của `api-gateway` / `nginx`:
 - `postgres-keycloak` → `keycloak`
 - `livekit`
 
-### Container cần chạy (~14)
+### Container cần chạy (~13)
 
 | # | Service Compose | Tên container | Port host | Vì sao cần |
 | --- | --- | --- | --- | --- |
@@ -57,8 +57,7 @@ Compose **tự kéo thêm** các dependency của `api-gateway` / `nginx`:
 | 10 | `exam-service` | `edu-exam` | gRPC 50052 | Mock JLPT, quiz |
 | 11 | `api-gateway` | `edu-gateway` | **3000** | REST API, auth, Swagger |
 | 12 | `nihongo-web` | `edu-nihongo-web` | qua nginx | Frontend Next.js |
-| 13 | `nihongo-angular` | `edu-nihongo-angular` | qua nginx | Frontend Angular |
-| 14 | `nginx` | `edu-nginx` | **8080** | Cổng vào duy nhất |
+| 13 | `nginx` | `edu-nginx` | **8080** | Cổng vào duy nhất |
 
 Kiểm tra nhanh:
 
@@ -70,8 +69,6 @@ docker ps --filter "name=edu-" --format "table {{.Names}}\t{{.Status}}\t{{.Ports
 
 | Service | Tên container | Ghi chú |
 | --- | --- | --- |
-| `postgres-english` | `edu-postgres-english` | Profile `english` |
-| `english-web` | `edu-english-web` | Profile `english` |
 | `signaling-service` | `edu-signaling` | Video call WebRTC (port **3002**) — bật riêng |
 | `jaeger` / `prometheus` / `grafana` | `edu-jaeger`… | Monitoring — bật riêng |
 
@@ -80,7 +77,6 @@ docker ps --filter "name=edu-" --format "table {{.Names}}\t{{.Status}}\t{{.Ports
 | Mục | URL |
 | --- | --- |
 | Nihongo Next | [http://localhost:8080](http://localhost:8080) |
-| Nihongo Angular | [http://nihongo-angular.localhost:8080](http://nihongo-angular.localhost:8080) |
 | Keycloak | [http://auth.localhost:8080](http://auth.localhost:8080) |
 | API / Swagger | [http://localhost:3000/api/docs](http://localhost:3000/api/docs) |
 | API qua nginx | [http://localhost:8080/api/…](http://localhost:8080/api/) |
@@ -111,8 +107,6 @@ flowchart TB
 
   subgraph apps [Frontend]
     NW["nihongo-web"]
-    NA["nihongo-angular"]
-    EW["english-web\n(profile english)"]
   end
 
   subgraph auth [Auth]
@@ -130,7 +124,6 @@ flowchart TB
 
   subgraph infra [Hạ tầng]
     PG[(postgres-nihongo :5433)]
-    PGE[(postgres-english :5434)]
     RD[(redis)]
     MG[(mongodb)]
     KF[(kafka)]
@@ -146,13 +139,9 @@ flowchart TB
   Browser --> Nginx
   Mobile --> Nginx
   Nginx --> NW
-  Nginx --> NA
-  Nginx --> EW
   Nginx --> KC
   Nginx -->|"/api/*"| GW
   NW --> GW
-  NA --> GW
-  EW --> GW
   GW --> CS
   GW --> ES
   GW --> PG
@@ -180,7 +169,6 @@ flowchart TB
 | Container | Tên Docker | Port host | Vai trò |
 | --- | --- | --- | --- |
 | **postgres-nihongo** | `edu-postgres-nihongo` | **5433** → 5432 | DB `nihongo`. Volume **external** `nihongo-app_postgres_data`. |
-| **postgres-english** | `edu-postgres-english` | **5434** → 5432 | Profile `english`. Volume `postgres_english_data`. |
 | **postgres-keycloak** | `edu-postgres-keycloak` | — | DB riêng Keycloak. Volume `postgres_keycloak_data`. |
 | **redis** | `edu-redis` | 6379 | Cache, session, rate-limit, signaling. |
 | **mongodb** | `edu-mongodb` | 27017 | Audit DB `nihongo_audit`. Gateway phụ thuộc khi chạy Docker. |
@@ -208,8 +196,6 @@ flowchart TB
 | Container | Tên Docker | Port host | Vai trò |
 | --- | --- | --- | --- |
 | **nihongo-web** | `edu-nihongo-web` | qua nginx | Next.js học tiếng Nhật. |
-| **nihongo-angular** | `edu-nihongo-angular` | qua nginx | Angular client (`nihongo-angular.localhost`). |
-| **english-web** | `edu-english-web` | qua nginx | Profile `english`. |
 | **nginx** | `edu-nginx` | **8080** → 80 | Reverse proxy theo host/path. Chi tiết: [nginx.md](./nginx.md). |
 
 ### Monitoring (tùy chọn)
@@ -227,8 +213,6 @@ flowchart TB
 | Mục | URL |
 | --- | --- |
 | Nihongo (nginx) | [http://localhost:8080](http://localhost:8080) |
-| Nihongo Angular | [http://nihongo-angular.localhost:8080](http://nihongo-angular.localhost:8080) |
-| English | [http://english.localhost:8080](http://english.localhost:8080) *(profile `english`)* |
 | Keycloak | [http://auth.localhost:8080](http://auth.localhost:8080) |
 | API / Swagger | [http://localhost:3000/api/docs](http://localhost:3000/api/docs) |
 | API qua nginx | [http://localhost:8080/api/…](http://localhost:8080/api/) |
@@ -237,12 +221,11 @@ flowchart TB
 | Signaling | [http://localhost:3002](http://localhost:3002) |
 | Grafana | [http://localhost:4000](http://localhost:4000) |
 | Postgres Nihongo | `localhost:5433`, user/pass `nihongo`, DB `nihongo` |
-| Postgres English | `localhost:5434`, user/pass `english`, DB `english_learning` |
 
-**hosts file** (khuyên dùng cho Keycloak / Angular):
+**hosts file** (khuyên dùng cho Keycloak):
 
 ```
-127.0.0.1 nihongo.localhost english.localhost auth.localhost nihongo-angular.localhost
+127.0.0.1 nihongo.localhost auth.localhost
 ```
 
 Android emulator: `10.0.2.2:8080` → nginx (API + path Keycloak). iOS simulator: thường `localhost:3000` hoặc gateway trực tiếp — xem [run-mobile.md](./run-mobile.md).
@@ -259,16 +242,13 @@ npm run docker:up:infra
 # = postgres-nihongo redis mongodb zookeeper kafka
 # (chưa Keycloak/LiveKit — hybrid local thường chạy thêm khi cần OIDC/live)
 
-# Infra + Postgres English
-npm run docker:up:infra:full
-
 # Stack học tiếng Nhật (Docker full app)
 npm run docker:up:nihongo
 # kéo thêm keycloak + livekit qua depends_on
 
-# Toàn bộ + english-web
-npm run docker:up:build   # --profile english --build
-npm run docker:up         # --profile english (không rebuild)
+# Toàn bộ service trong compose
+npm run docker:up:build   # build lại image rồi up
+npm run docker:up         # không rebuild
 
 npm run docker:down
 ```
@@ -281,7 +261,6 @@ npm run docker:down
 | **+ Keycloak (hybrid)** | thêm `postgres-keycloak keycloak` (và hosts `auth.localhost`) |
 | **+ LiveKit (hybrid)** | thêm `livekit` |
 | **Học Nihongo Docker full** | `npm run docker:up:nihongo` |
-| **+ Tiếng Anh** | `.env`: `ENGLISH_ENABLED=true` + `docker compose --profile english up -d` |
 | **+ Video call** | thêm `signaling-service` (+ `NEXT_PUBLIC_SIGNALING_URL` khi **build** `nihongo-web`) |
 | **+ Monitoring** | thêm `jaeger prometheus grafana` |
 | **Không tắt exam/kafka** | Gateway health cần `exam` + Kafka healthy |
@@ -298,7 +277,7 @@ docker volume create nihongo-app_postgres_data
 
 # Stack Nihongo (Compose tự start keycloak + livekit)
 docker compose up -d postgres-nihongo redis mongodb zookeeper kafka `
-  content-service exam-service api-gateway nihongo-web nihongo-angular nginx
+  content-service exam-service api-gateway nihongo-web nginx
 
 docker compose ps
 docker compose logs -f api-gateway
@@ -313,9 +292,6 @@ docker compose down -v
 ```powershell
 docker compose build nihongo-web
 docker compose up -d nihongo-web nginx
-
-# Angular
-npm run docker:build:nihongo-angular
 ```
 
 Sau khi đổi `NEXT_PUBLIC_*` / Keycloak public URL, cần **rebuild** frontend vì biến bake lúc build.
@@ -328,7 +304,6 @@ Copy `.env.docker.example` → `.env` ở thư mục gốc:
 
 ```env
 POSTGRES_PASSWORD=nihongo
-ENGLISH_ENABLED=false
 JWT_SECRET=doi-trong-production
 NGINX_HTTP_PORT=8080
 ADMIN_EMAIL=admin@nihongo.local
@@ -356,8 +331,8 @@ Snapshot trong repo (cập nhật gần nhất):
 npm run db:backup
 
 # Restore Nihongo
-Get-Content infra\backups\nihongo_20261003_214703.sql |
-  docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+docker cp infra\backups\nihongo_20261004_211325.sql edu-postgres-nihongo:/tmp/restore.sql
+docker exec edu-postgres-nihongo psql -U nihongo -d nihongo -f /tmp/restore.sql
 ```
 
 Chi tiết: [infra/backups/README.md](../infra/backups/README.md).
@@ -391,8 +366,8 @@ docker volume create nihongo-app_postgres_data
 npm run docker:up:nihongo
 
 # Đợi postgres healthy rồi restore
-Get-Content infra\backups\nihongo_20261003_214703.sql |
-  docker exec -i edu-postgres-nihongo psql -U nihongo nihongo
+docker cp infra\backups\nihongo_20261004_211325.sql edu-postgres-nihongo:/tmp/restore.sql
+docker exec edu-postgres-nihongo psql -U nihongo -d nihongo -f /tmp/restore.sql
 ```
 
 **Media (KanjiVG, OpenMoji)** nằm trong image `nihongo-web` nếu build sau `media:sync`. Nếu thiếu `apps/nihongo-web/public/media`:
@@ -414,7 +389,7 @@ docker compose build
 
 docker save -o edu-images.tar `
   edu-app-api-gateway edu-app-content-service edu-app-exam-service `
-  edu-app-nihongo-web edu-app-nihongo-angular edu-app-nginx `
+  edu-app-nihongo-web edu-app-nginx `
   edu-app-signaling-service
 
 # Gửi edu-images.tar + repo (compose, infra/, .env) + SQL backup
@@ -430,7 +405,7 @@ copy .env.docker.example .env
 docker volume create nihongo-app_postgres_data
 
 docker compose up -d postgres-nihongo redis mongodb zookeeper kafka `
-  content-service exam-service api-gateway nihongo-web nihongo-angular nginx
+  content-service exam-service api-gateway nihongo-web nginx
 # keycloak + livekit kéo theo depends_on
 
 # Restore SQL như Cách 1
@@ -507,5 +482,4 @@ docker run --rm -v nihongo-app_postgres_data:/data -v ${PWD}:/backup alpine `
 | [mongodb.md](./mongodb.md) | Audit MongoDB |
 | [infra/backups/README.md](../infra/backups/README.md) | Backup / restore SQL |
 | [system-design.md](./system-design.md) | Kiến trúc tổng thể |
-| [roadmap-angular.md](./roadmap-angular.md) | Lộ trình học Angular (`nihongo-angular`) |
 | `.env.docker.example` | Biến môi trường Compose |

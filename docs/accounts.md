@@ -30,7 +30,6 @@ Login qua nút Keycloak trên `/login` (web + mobile đều dùng được):
 | DB | Host (từ máy host) | User / Password | Database |
 |----|--------------------|-----------------|----------|
 | PostgreSQL Nihongo | `localhost:5433` | `nihongo` / `nihongo` | `nihongo` |
-| PostgreSQL English | `localhost:5434` | `english` / `english` | `english_learning` |
 | PostgreSQL Keycloak | `localhost:5435` | `keycloak` / `keycloak` | `keycloak` |
 | MongoDB (audit log) | `localhost:27017` | *không auth* | `nihongo_audit` |
 | Redis | `localhost:6379` | *không auth* | — |
@@ -62,7 +61,7 @@ Tất cả default đọc từ `.env` (root, cho Docker) — xem `.env.docker.ex
 ```bash
 ADMIN_EMAIL / ADMIN_PASSWORD          # admin app
 KEYCLOAK_ADMIN / KEYCLOAK_ADMIN_PASSWORD
-POSTGRES_PASSWORD / ENGLISH_POSTGRES_PASSWORD / KEYCLOAK_DB_PASSWORD
+POSTGRES_PASSWORD / KEYCLOAK_DB_PASSWORD
 ```
 
 ## Tài liệu liên quan

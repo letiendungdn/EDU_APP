@@ -9,15 +9,13 @@
 Một nền tảng học tiếng Nhật full-stack theo kiến trúc **Monorepo + Microservices**.
 
 ```
-edu_app/
+edu-app-nihongo/
 ├── apps/
-│   ├── nihongo-web/          # Next.js 15 (App Router) — người dùng cuối
-│   └── english-web/          # Ứng dụng học tiếng Anh (riêng)
+│   └── nihongo-web/          # Next.js 15 (App Router) — người dùng cuối
 ├── services/
 │   ├── api-gateway/          # NestJS — HTTP vào → gRPC ra
 │   ├── exam-service/         # NestJS — SRS, quiz, mock exam
 │   ├── content-service/      # NestJS — bài học, từ vựng
-│   ├── english-service/      # NestJS — phần tiếng Anh
 │   └── signaling-service/    # WebSocket — call video/audio
 └── packages/
     ├── nest-contracts/        # DTOs + message patterns (shared)

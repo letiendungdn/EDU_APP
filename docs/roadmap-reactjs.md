@@ -1,24 +1,22 @@
-# Lộ trình ReactJS — `apps/nihongo-web` + `apps/english-web`
+# Lộ trình ReactJS — `apps/nihongo-web`
 
 > **Lộ trình học** (React 19 + Next.js + TanStack Query), không phải bảng status feature.  
-> App thật: `nihongo-web` (Next 15, port **5173**) và `english-web` (Next 16, port **3001**).  
-> Chạy: [run-local.md](./run-local.md) · Docker: [docker.md](./docker.md) · Angular tương đương: [roadmap-angular.md](./roadmap-angular.md) · Mobile RN: [roadmap-react-native.md](./roadmap-react-native.md).
+> App thật: `nihongo-web` (Next 15, port **5173**).  
+> Chạy: [run-local.md](./run-local.md) · Docker: [docker.md](./docker.md) · Mobile RN: [roadmap-react-native.md](./roadmap-react-native.md).
 
 ---
 
 ## Mục tiêu sau lộ trình
 
-Đọc / sửa được 2 app Next trong monorepo: component + hooks, React Query data layer, auth context (JWT + Google + Keycloak OIDC), Stripe Elements checkout, chat REST poll, test Vitest + Testing Library, Storybook.
+Đọc / sửa được app Next trong monorepo: component + hooks, React Query data layer, auth context (JWT + Google + Keycloak OIDC), Stripe Elements checkout, chat REST poll, test Vitest + Testing Library, Storybook.
 
 | Công cụ trong repo | App | Ghi chú |
 |--------------------|-----|---------|
-| React **19** + Next.js 15/16 | cả hai | App Router |
-| `@tanstack/react-query` v5 | cả hai | Data fetching + poll chat 5–8s |
+| React **19** + Next.js 15 | nihongo-web | App Router |
+| `@tanstack/react-query` v5 | nihongo-web | Data fetching + poll chat 5–8s |
 | `@tanstack/react-virtual` | nihongo-web | List dài (vocab) |
 | `@react-oauth/google` + `oidc-client-ts` | nihongo-web | Google + Keycloak |
 | `@stripe/react-stripe-js` | nihongo-web | Elements checkout |
-| `zustand` | english-web | State nhẹ |
-| Tailwind 4 | english-web | nihongo-web dùng CSS file thường |
 | `socket.io-client` | nihongo-web | Video call 1-1 (signaling :3002) |
 | `recharts`, `fabric`, `hanzi-writer`, `mapbox-gl` | nihongo-web | Chart / whiteboard / stroke order / bản đồ |
 | Vitest + Testing Library + Storybook | nihongo-web | `npm run test` / `npm run storybook` |
@@ -114,7 +112,6 @@ Giai đoạn 1 ở trên **không đủ** nếu chỉ nhớ 4 hook. Phỏng vấ
 | `useQuery` / `useMutation` / `useQueryClient` | `@tanstack/react-query` | Data layer chính — giai đoạn 3 |
 | `useVirtualizer` | `@tanstack/react-virtual` | List dài (vocab) |
 | `useStripe` / Elements hooks | `@stripe/react-stripe-js` | Checkout |
-| Zustand selectors | `zustand` (english-web) | State ngoài Context |
 
 ### D. Bài tập hooks (làm đủ 3)
 
@@ -220,12 +217,12 @@ Học bằng cách đọc feature thật:
 | Admin | `views/admin/`, `components/AdminShell.tsx` | RBAC UI |
 | Analytics | `recharts` views | Chart |
 
-**State:** repo dùng Context + React Query (nihongo-web) và Zustand (english-web) — **không Redux**. So sánh được 2 cách là đủ; chỉ học Redux Toolkit nếu job yêu cầu.
+**State:** repo dùng Context + React Query — **không Redux**, không Zustand. Chỉ học Redux Toolkit / Zustand nếu job yêu cầu.
 
 **Bài tập (chọn 2):**
 
 1. Thêm filter lesson vào một list view (reuse pattern `useVocab`).
-2. Thêm một store Zustand nhỏ trong english-web (vd. UI preference).
+2. Gom một UI preference (vd. thu gọn sidebar) vào Context riêng thay vì prop drilling.
 3. Virtual hóa một list dài bằng `@tanstack/react-virtual` (xem chỗ đã dùng).
 
 ---
@@ -278,8 +275,7 @@ npm run docker:up:nihongo   # → http://localhost:8080
 5. `src/components/AppLayout.tsx` + một view: `views/SrsView.tsx`
 6. `src/hooks/useVideoCall.ts` (hooks nâng cao) hoặc `useDailyListeningSession.ts`
 7. `src/hooks/__tests__/useVocab.test.tsx`
-8. `apps/english-web` — so sánh Zustand + Tailwind
-9. [system-design.md](./system-design.md) — thin client + gateway
+8. [system-design.md](./system-design.md) — thin client + gateway
 
 ---
 
@@ -300,8 +296,7 @@ npm run docker:up:nihongo   # → http://localhost:8080
 
 | File | Nội dung |
 |------|----------|
-| [run-local.md](./run-local.md) | `dev:nihongo-web` :5173, `dev:english-web` :3001 |
-| [roadmap-angular.md](./roadmap-angular.md) | App Angular song song (:5174) |
+| [run-local.md](./run-local.md) | `dev:nihongo-web` :5173 |
 | [roadmap-react-native.md](./roadmap-react-native.md) | React Native (Expo mobile) |
 | [system-design.md](./system-design.md) | Thin client, gateway, auth |
 | [cursor-chat.md](./cursor-chat.md) | Chat REST + poll |

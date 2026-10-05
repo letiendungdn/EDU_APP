@@ -57,7 +57,6 @@ Quan sát:
 | Client | Dùng cho | Redirect URI quan trọng |
 |--------|----------|-------------------------|
 | `nihongo-web` | React | `http://nihongo.localhost:8080/*` |
-| `nihongo-angular` | Angular | `http://nihongo-angular.localhost:8080/*` |
 | `nihongo-mobile` | Flutter / Android / iOS / Expo | `nihongo://…`, `com.edu.nihongo…` |
 
 Với mỗi client, kiểm tra:

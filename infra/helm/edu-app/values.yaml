@@ -20,7 +20,6 @@ replicaCount:
   contentService: 1
   examService: 1
   nihongoWeb: 1
-  englishWeb: 1
   redis: 1
 
 postgres:
@@ -44,25 +43,21 @@ config:
   CONTENT_GRPC_URL: content-service:50051
   EXAM_GRPC_URL: exam-service:50052
   JWT_EXPIRES_IN: 7d
-  ALLOWED_ORIGINS: "https://nihongo.example.com,https://english.example.com"
+  ALLOWED_ORIGINS: "https://nihongo.example.com"
   ADMIN_EMAIL: admin@nihongo.local
   CONTENT_GRPC_PORT: "50051"
   EXAM_GRPC_PORT: "50052"
   REDIS_URL: redis://redis:6379
   KAFKA_BROKERS: kafka:9092
   API_URL: http://api-gateway:3000
-  NEXT_PUBLIC_ENGLISH_APP_URL: https://english.example.com
-  NEXT_PUBLIC_NIHONGO_APP_URL: https://nihongo.example.com
   POSTGRES_USER: nihongo
   POSTGRES_DB: nihongo
   INGRESS_HOST_NIHONGO: nihongo.example.com
-  INGRESS_HOST_ENGLISH: english.example.com
 
 # PLACEHOLDER — override via --set-file or external secrets in production
 secrets:
   POSTGRES_PASSWORD: change-me-in-production
   DATABASE_URL_NIHONGO: postgresql://nihongo:change-me-in-production@postgres:5432/nihongo
-  DATABASE_URL_ENGLISH: postgresql://nihongo:change-me-in-production@postgres:5432/english_learning
   JWT_SECRET: change-me-in-production
   ADMIN_PASSWORD: change-me-in-production
 
@@ -75,7 +70,6 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
   hosts:
     nihongo: nihongo.example.com
-    english: english.example.com
 
 hpa:
   apiGateway:
@@ -95,9 +89,6 @@ resources:
     requests: { cpu: 100m, memory: 128Mi }
     limits: { cpu: 500m, memory: 512Mi }
   nihongoWeb:
-    requests: { cpu: 100m, memory: 256Mi }
-    limits: { cpu: 500m, memory: 512Mi }
-  englishWeb:
     requests: { cpu: 100m, memory: 256Mi }
     limits: { cpu: 500m, memory: 512Mi }
   redis:

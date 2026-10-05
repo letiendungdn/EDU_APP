@@ -13,9 +13,6 @@ npm run docker:up:infra
 
 # Full nihongo (có thêm API + web)
 npm run docker:up:nihongo
-
-# English DB (port 5434) — cần profile
-docker compose --profile english up -d postgres-english
 ```
 
 Kiểm tra port đang mở:
@@ -33,14 +30,13 @@ docker ps --format "table {{.Names}}\t{{.Ports}}"
 | Dịch vụ | Container | Host | User / Password | Database / ghi chú |
 |---------|-----------|------|-----------------|--------------------|
 | PostgreSQL **Nihongo** | `edu-postgres-nihongo` | `localhost:5433` | `nihongo` / `nihongo` | `nihongo` — app chính |
-| PostgreSQL **English** | `edu-postgres-english` | `localhost:5434` | `english` / `english` | `english_learning` (profile `english`) |
 | PostgreSQL **Keycloak** | `edu-postgres-keycloak` | `localhost:5435` | `keycloak` / `keycloak` | `keycloak` |
 | Redis | `edu-redis` | `localhost:6379` | *(không auth)* | cache, session, rate-limit |
 | MongoDB | `edu-mongodb` | `localhost:27017` | *(không auth)* | `nihongo_audit` |
 | Kafka | `edu-kafka` | `localhost:9092` | — | bootstrap brokers |
 | Zookeeper | `edu-zookeeper` | `localhost:2181` | — | Kafka ZK |
 
-Password Postgres đọc từ `.env` (`POSTGRES_PASSWORD`, `ENGLISH_POSTGRES_PASSWORD`, `KEYCLOAK_DB_PASSWORD`). Mặc định như bảng trên nếu không đổi.
+Password Postgres đọc từ `.env` (`POSTGRES_PASSWORD`, `KEYCLOAK_DB_PASSWORD`). Mặc định như bảng trên nếu không đổi.
 
 ### App & tooling
 
@@ -49,8 +45,6 @@ Password Postgres đọc từ `.env` (`POSTGRES_PASSWORD`, `ENGLISH_POSTGRES_PAS
 | Nginx (entry) | `http://localhost:8080` | App qua reverse proxy |
 | API Gateway | `http://localhost:3000` | Swagger: `/api/docs` |
 | nihongo-web (trực tiếp) | `http://localhost:5173` | Bỏ qua nginx |
-| nihongo-angular (trực tiếp) | `http://localhost:5174` | |
-| english-web | `http://localhost:3001` | Profile `english` |
 | Signaling (WebRTC) | `http://localhost:3002` | |
 | Keycloak (trực tiếp) | `http://localhost:8081` | Admin: `admin` / `admin`. Production-like: `http://auth.localhost:8080` qua nginx |
 | LiveKit | `ws://localhost:7880` | |
@@ -81,15 +75,6 @@ Tài khoản app: [accounts.md](./accounts.md).
 | Connection | Password | `nihongo` |
 
 Bật **Save password**.
-
-### Server English (nếu đã `up` profile english)
-
-| Field | Giá trị |
-|-------|---------|
-| Host | `localhost` |
-| Port | `5434` |
-| Maintenance database | `english_learning` |
-| Username / Password | `english` / `english` |
 
 ### Server Keycloak
 
@@ -178,9 +163,6 @@ UI gợi ý (không có sẵn trong compose): [Redpanda Console](https://github.
 # Postgres Nihongo
 postgresql://nihongo:nihongo@localhost:5433/nihongo
 
-# Postgres English
-postgresql://english:english@localhost:5434/english_learning
-
 # Postgres Keycloak
 postgresql://keycloak:keycloak@localhost:5435/keycloak
 
@@ -203,7 +185,6 @@ localhost:9092
 | pgAdmin `connection refused` | `docker ps` xem `edu-postgres-nihongo` Up; port **5433** không bị app khác chiếm |
 | Sai port 5432 | Host map là **5433** (Nihongo), không phải 5432 |
 | Redis Insight timeout | Container `edu-redis` chưa chạy → `docker compose up -d redis` |
-| English DB không thấy | Chưa bật profile: `docker compose --profile english up -d postgres-english` |
 | Đổi password trong `.env` nhưng tool cũ | Dùng password mới; hoặc restart container sau khi sửa `.env` |
 
 ---

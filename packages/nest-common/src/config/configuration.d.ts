@@ -3,9 +3,6 @@ declare const _default: () => {
     database: {
         url: string | undefined;
     };
-    englishDatabase: {
-        url: string;
-    };
     redis: {
         url: string;
     };

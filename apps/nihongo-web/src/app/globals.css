@@ -912,7 +912,6 @@ textarea::placeholder { color: var(--text-muted); }
   gap: 0.25rem;
 }
 
-.app-switcher,
 .theme-toggle {
   display: flex;
   align-items: center;
@@ -929,7 +928,6 @@ textarea::placeholder { color: var(--text-muted); }
   width: 100%;
   text-align: left;
 }
-.app-switcher:hover,
 .theme-toggle:hover {
   background: rgba(255 255 255 / 0.06);
   color: rgba(255 255 255 / 0.9);
@@ -1071,7 +1069,6 @@ textarea::placeholder { color: var(--text-muted); }
   .app-sidebar.collapsed .app-sidebar__brand,
   .app-sidebar.collapsed .nav-item__label,
   .app-sidebar.collapsed .theme-toggle__label,
-  .app-sidebar.collapsed .app-switcher__label,
   .app-sidebar.collapsed .auth-user-name,
   .app-sidebar.collapsed .auth-header .btn,
   .app-sidebar.collapsed .nav-group__toggle {
@@ -1088,8 +1085,7 @@ textarea::placeholder { color: var(--text-muted); }
     border-top: 1px solid rgba(255 255 255 / 0.06);
   }
   .app-sidebar.collapsed .nav-item,
-  .app-sidebar.collapsed .theme-toggle,
-  .app-sidebar.collapsed .app-switcher {
+  .app-sidebar.collapsed .theme-toggle {
     justify-content: center;
     padding-left: 0.35rem;
     padding-right: 0.35rem;

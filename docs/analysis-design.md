@@ -312,7 +312,6 @@ usecaseDiagram
 flowchart TB
   subgraph Clients
     WEB[nihongo-web<br/>Next.js]
-    EN[english-web]
     MOB[Mobile<br/>Expo · Android · Flutter · iOS]
   end
 
@@ -327,13 +326,13 @@ flowchart TB
   end
 
   subgraph Data
-    PG[(PostgreSQL<br/>nihongo / english)]
+    PG[(PostgreSQL<br/>nihongo)]
     MG[(MongoDB<br/>audit_logs)]
     RD[(Redis<br/>cache · rate-limit · session)]
     KF[[Kafka]]
   end
 
-  WEB & EN & MOB --> NGX
+  WEB & MOB --> NGX
   NGX --> WEB
   NGX --> GW
   NGX --> KC[(Keycloak)]

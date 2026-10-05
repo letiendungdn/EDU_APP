@@ -1,8 +1,8 @@
-# System Design — EDU APP
+# System Design — EDU APP Nihongo
 
 ## 1. Kiến trúc tổng thể
 
-Frontend là **thin client** (Next.js, Angular, mobile). Không Route Handler gọi DB trực tiếp — mọi API đi qua `api-gateway`. Edge Docker: **nginx :8080** (web + Keycloak + `/api`).
+Frontend là **thin client** (Next.js, mobile). Không Route Handler gọi DB trực tiếp — mọi API đi qua `api-gateway`. Edge Docker: **nginx :8080** (web + Keycloak + `/api`).
 
 ```
                               Internet / Emulator (10.0.2.2)
@@ -10,15 +10,14 @@ Frontend là **thin client** (Next.js, Angular, mobile). Không Route Handler g�
                     ┌─────────────▼──────────────┐
                     │     Nginx :8080 (Docker)    │
                     │  host/path → web|auth|api   │
-                    └──────┬───────┬──────┬───────┘
-                           │       │      │
-              ┌────────────▼──┐ ┌──▼───┐ ┌▼──────────────┐
-              │  nihongo-web  │ │angular│ │ english-web   │
-              │  Next.js      │ │ :5174 │ │ Next (profile)│
-              └───────┬───────┘ └──┬───┘ └──────┬────────┘
-                      │            │             │
-                      └────────────┼─────────────┘
-                                   ▼
+                    └─────────────┬──────────────┘
+                                  │
+                         ┌────────▼───────┐
+                         │  nihongo-web   │
+                         │  Next.js       │
+                         └────────┬───────┘
+                                  │
+                                  ▼
                     ┌────────────────────────────┐
                     │        api-gateway :3000     │
                     │  REST + Swagger /api/docs    │
@@ -27,14 +26,14 @@ Frontend là **thin client** (Next.js, Angular, mobile). Không Route Handler g�
                        │ gRPC     │          │
            ┌───────────▼──┐  ┌────▼────┐ ┌───▼──────────┐
            │ content :50051│  │exam:50052│ │ in-process:  │
-           │ exam :50052   │  │          │ │ payment, EN, │
+           │ exam :50052   │  │          │ │ payment,     │
            └───────────────┘  └──────────┘ │ chat REST    │
                                            └──────────────┘
 
    Auth: Keycloak (realm edu-app) ←→ postgres-keycloak
    Live: LiveKit :7880 (livestream) │ Signaling :3002 (1-1 WebRTC, tùy chọn)
 
-   Data: PostgreSQL nihongo :5433 │ english_learning :5434
+   Data: PostgreSQL nihongo :5433
          MongoDB audit :27017 │ Redis :6379 │ Kafka
    External: Stripe │ Brevo │ AWS S3 │ Google OAuth
 ```
@@ -52,10 +51,8 @@ Entry point HTTP. Chat hỗ trợ/community là REST (không Socket.io gateway c
 
 | Trách nhiệm | Chi tiết |
 |-------------|----------|
-| Auth (nihongo) | JWT Bearer + refresh + Google OAuth + **Keycloak OIDC** |
-| Auth (english) | JWT `aud: english` + HttpOnly cookie `token` |
+| Auth | JWT Bearer + refresh + Google OAuth + **Keycloak OIDC** |
 | gRPC dispatch | → content-service, exam-service |
-| English API | `english-service` in-process → `english_learning` |
 | Payment | Stripe, marketplace, webhook |
 | Live | LiveKit token / session (`/api/live/*`) |
 | Upload | S3 pre-signed URL |
@@ -83,18 +80,6 @@ Entry point HTTP. Chat hỗ trợ/community là REST (không Socket.io gateway c
 | `POST /api/upload/presigned-url` | AWS S3 |
 | `POST /api/webhooks/stripe` | Idempotent webhook |
 
-#### Route map — English (`/api/english/*`)
-
-| Route | Mô tả |
-|-------|--------|
-| `POST /api/english/auth/login` | Login, set HttpOnly cookie |
-| `GET /api/english/vocab` | Từ vựng + SRS map |
-| `GET/POST /api/english/vocab/review` | SRS review queue |
-| `GET /api/english/grammar/:id` | Grammar + lessons |
-| `GET/POST /api/english/reading/:id/submit` | Đọc hiểu |
-| `GET/POST /api/english/listening/:id/submit` | Nghe |
-| `GET /api/english/analytics` | Thống kê học tập |
-
 ### content-service (gRPC :50051)
 
 Nội dung tiếng Nhật: Lesson, Vocabulary, Grammar, Kanji, Kana, JLPT, Reading, Listening.
@@ -102,10 +87,6 @@ Nội dung tiếng Nhật: Lesson, Vocabulary, Grammar, Kanji, Kana, JLPT, Readi
 ### exam-service (gRPC :50052)
 
 Mock exam JLPT, SRS, progress, study streak.
-
-### english-service (in-process)
-
-Logic học tiếng Anh → `english_learning` qua `EnglishPrismaService`.
 
 ### payment-service (in-process)
 
@@ -117,7 +98,7 @@ Support / community / notifications — **REST + poll**, không Socket.io chat g
 
 ### keycloak
 
-OIDC IdP (`realm edu-app`). Public URL: `http://auth.localhost:8080`. Clients: `nihongo-web`, `nihongo-mobile`, `nihongo-angular`, …
+OIDC IdP (`realm edu-app`). Public URL: `http://auth.localhost:8080`. Clients: `nihongo-web`, `nihongo-mobile`.
 
 ### livekit
 
@@ -132,8 +113,6 @@ WebSocket WebRTC **1-1 call** (tùy chọn) — khác livestream LiveKit.
 | App | Stack | Ghi chú |
 |-----|-------|---------|
 | `nihongo-web` | Next.js | App chính. Canvas Tools (`/tools`, `/kanji-practice`, `/whiteboard`, `/worksheet`, `/japan-map`); Admin (`/admin/*`). |
-| `nihongo-angular` | Angular 19 | Feature gần parity web |
-| `english-web` | Next.js | Profile `english` |
 | 4 mobile | Expo / Android / Flutter / iOS | [mobile-tech-stacks.md](./mobile-tech-stacks.md) |
 
 ---
@@ -215,15 +194,15 @@ POST /api/auth/refresh → rotate refresh token
 
 ## 4. Authentication Design
 
-| | nihongo-web / Angular / mobile | english-web |
-|---|---|---|
-| Token | Bearer access_token | HttpOnly cookie `token` |
-| JWT `aud` | (không có) / OIDC từ Keycloak | `"english"` |
-| Refresh | Rotation (DB) | Re-login (30d JWT) |
-| Guard | JwtAuthGuard (+ OIDC verify) | EnglishAuthGuard |
-| User DB | `nihongo.User` | `english_learning.User` |
-| Google OAuth | Có | Không |
-| Keycloak OIDC | Có (`oidc-client-ts` trên Angular/web) | Không |
+| | nihongo-web / mobile |
+|---|---|
+| Token | Bearer access_token |
+| JWT `aud` | (không có) / OIDC từ Keycloak |
+| Refresh | Rotation (DB) |
+| Guard | JwtAuthGuard (+ OIDC verify) |
+| User DB | `nihongo.User` |
+| Google OAuth | Có |
+| Keycloak OIDC | Có (`oidc-client-ts` trên web) |
 
 ---
 
@@ -255,7 +234,6 @@ POST /api/auth/register  → 3 req / 3600s
 |------|-----|-------|
 | Nihongo vocab by lesson | 5 phút | Redis |
 | Coach search | 1 phút | Redis |
-| English vocab | Không | — |
 
 ---
 
@@ -272,7 +250,7 @@ POST /api/auth/register  → 3 req / 3600s
 
 ## 9. Infrastructure
 
-Docker Compose (Nihongo full ≈14 container): `postgres-nihongo`, `postgres-keycloak`, `keycloak`, `redis`, `mongodb`, `kafka`, `zookeeper`, `livekit`, `api-gateway`, `content-service`, `exam-service`, `nihongo-web`, `nihongo-angular`, `nginx`. Profile `english`: thêm `postgres-english` + `english-web`. Chi tiết: [docker.md](./docker.md).
+Docker Compose (Nihongo full ≈13 container): `postgres-nihongo`, `postgres-keycloak`, `keycloak`, `redis`, `mongodb`, `kafka`, `zookeeper`, `livekit`, `api-gateway`, `content-service`, `exam-service`, `nihongo-web`, `nginx`. Chi tiết: [docker.md](./docker.md).
 
 Kubernetes: `infra/k8s/`, `infra/helm/edu-app/`
 
@@ -284,9 +262,8 @@ CI/CD: `.github/workflows/`
 
 | | Nhận xét |
 |---|---|
-| ✅ Unified gateway | Web + Angular + mobile qua 1 entry (nginx/API) |
-| ✅ DB tách biệt | nihongo vs english_learning, user độc lập |
-| ✅ gRPC + in-process | Microservices nihongo; English/payment in-process |
+| ✅ Unified gateway | Web + mobile qua 1 entry (nginx/API) |
+| ✅ gRPC + in-process | Microservices content/exam; payment in-process |
 | ✅ Stripe + Connect | Subscription + coach payout |
 | ✅ LiveKit + Keycloak | Livestream SFU + OIDC IdP |
 | ✅ REST chat | Support + community, polling nhẹ |
@@ -295,4 +272,3 @@ CI/CD: `.github/workflows/`
 | ✅ Chat hỗ trợ file/image | Presign S3 upload → `fileUrl`/`fileType` trong `SupportMessage`, `LearnerChatMessage`, `ChatMessage` |
 | ✅ Realtime chat | SSE (`/api/support/stream`, `/api/community/rooms/:id/stream`) — poll fallback 30s |
 | ✅ Coaching session chat | `GET/POST /api/marketplace/sessions/:id/messages` + `SessionChatPanel` floating button |
-| ✅ SSO nihongo ↔ english | `POST /api/english/auth/token-exchange` — trao đổi nihongo JWT lấy English JWT theo email |

@@ -1,6 +1,5 @@
 /**
- * Sinh sơ đồ ER (Mermaid) từ schema Prisma của từng DB:
- *   nihongo → docs/db-erd.md · english_learning → docs/db-erd-english.md
+ * Sinh sơ đồ ER (Mermaid) từ schema Prisma của DB nihongo → docs/db-erd.md
  *   npm run db:erd            (ở root; = npm run erd -w @edu/prisma-nihongo)
  * Mỗi phân hệ một sơ đồ; bảng thuộc phân hệ khác chỉ hiện tên (không kèm cột).
  */

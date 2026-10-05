@@ -106,7 +106,6 @@ jobs:
           STRIPE_SECRET_KEY: sk_test_ci
           GEMINI_API_KEY: test-key
           MONGODB_ENABLED: "off"
-          ENGLISH_ENABLED: "false"
           CONTENT_GRPC_URL: localhost:50051
           EXAM_GRPC_URL: localhost:50052
       - run: npm run build:all -w @edu/nihongo-services

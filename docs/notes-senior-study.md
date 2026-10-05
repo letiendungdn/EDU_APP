@@ -55,7 +55,7 @@
 
 | Flow | Chỗ code | Việc làm |
 |------|----------|----------|
-| Auth refresh | `services/api-gateway/src/auth/` · `apps/nihongo-web/src/contexts/AuthContext.tsx` · Angular: `apps/nihongo-angular/src/app/core/http/api-client.ts` (`refreshInFlight`) | Access hết hạn → 401 → `POST /api/auth/refresh` → retry 1 lần. 2 request song song chỉ **1** refresh. |
+| Auth refresh | `services/api-gateway/src/auth/` · `apps/nihongo-web/src/contexts/AuthContext.tsx` · `apps/nihongo-web/src/lib/api-client.ts` (`refreshInFlight`) | Access hết hạn → 401 → `POST /api/auth/refresh` → retry 1 lần. 2 request song song chỉ **1** refresh. |
 | Stripe webhook | `services/payment-service/src/webhook/` · test sẵn: `webhook.service.spec.ts` · docs: [learn-stripe-idempotency.md](./learn-stripe-idempotency.md) | Gửi cùng `event.id` (`evt_…`) 2 lần → chỉ 1 `WebhookEvent` PROCESSED, không double charge. |
 | Booking race | `services/payment-service/src/booking/booking.service.ts` · mẫu test: [learn-testing.md](./learn-testing.md) | 2 learner cùng `coachId` + `scheduledAt` → 1 fulfill + 1 reject `Conflict`. |
 
@@ -689,8 +689,8 @@ A: URL tạm thời có TTL do server cấp, cho phép client upload thẳng lê
 
 # PHẦN 3 — WEB FRONTEND SENIOR (song song)
 
-> Repo có: `nihongo-web` (Next.js 14, App Router), `english-web` (Next.js), `nihongo-angular` (Angular 19).  
-> Học từ code thật trong 3 app này — không cần dự án mới.
+> Repo có: `nihongo-web` (Next.js 15, App Router).  
+> Học từ code thật trong app này — không cần dự án mới.
 
 ## 3.1 React Query patterns đúng cách
 
@@ -805,11 +805,10 @@ export default function Page() {
 
 ## 3.4 Angular 19 — Signals + standalone
 
-**Đang dùng trong repo:** `apps/nihongo-angular/`
+> App Angular (`apps/nihongo-angular`) đã gỡ khỏi repo (10/2026) — mục này giữ làm kiến thức chung.
 
 ```typescript
 // Angular 19 Signals — thay NgRx cho state đơn giản
-// apps/nihongo-angular/src/app/features/vocab/vocab.component.ts
 @Component({ standalone: true, ... })
 export class VocabComponent {
   private vocabService = inject(VocabService);
@@ -861,8 +860,6 @@ const vocabList = toSignal(
 
 **Đang có trong repo:**
 - nihongo-web: `AuthContext` + Bearer token + refresh rotation
-- english-web: HttpOnly cookie
-- SSO: `token-exchange` + `set-cookie` flow
 
 **Kiến thức cần nắm:**
 ```typescript
@@ -883,8 +880,8 @@ async function getValidToken() {
 
 **Q phỏng vấn:**
 - "CSRF với HttpOnly cookie xử lý sao?" → SameSite=Strict hoặc CSRF token header
-- "Refresh token rotation — nếu cả 2 request cùng refresh thì sao?" → mutex / `refreshInFlight` pattern trên Angular `api-client.ts`
-- "SSO cross-domain cookie vấn đề gì?" → phải gọi set-cookie từ đúng domain (đang làm với `/api/english/auth/set-cookie`)
+- "Refresh token rotation — nếu cả 2 request cùng refresh thì sao?" → mutex / `refreshInFlight` pattern trong `apps/nihongo-web/src/lib/api-client.ts`
+- "SSO cross-domain cookie vấn đề gì?" → phải gọi set-cookie từ đúng domain
 
 ---
 
@@ -894,7 +891,6 @@ async function getValidToken() {
 - [ ] 1 page chuyển sang Server Component fetch
 - [ ] Verify `refetchInterval` hợp lý (chat = 30s fallback, notifications = 60s?)
 - [ ] Lighthouse ≥ 80 performance cho `/vocab` page
-- [ ] Angular: convert 1 component sang Signals + `@if`/`@for`
 - [ ] Kiểm tra refresh token race condition — có `refreshInFlight` guard chưa?
 
 ---
@@ -956,6 +952,5 @@ async function getValidToken() {
 | [system-design.md](./system-design.md) | Kiến trúc + Kafka topics |
 | [db-design.md](./db-design.md) | Schema + `WebhookEvent` |
 | [docker.md](./docker.md) | Containers / Jaeger |
-| [roadmap-angular.md](./roadmap-angular.md) | Angular roadmap chi tiết |
 | [roadmap-reactjs.md](./roadmap-reactjs.md) | React/Next.js roadmap chi tiết |
 | [roadmap-flutter.md](./roadmap-flutter.md) | Flutter roadmap chi tiết |

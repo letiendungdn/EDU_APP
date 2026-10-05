@@ -1,14 +1,13 @@
-# Database Design — EDU APP
+# Database Design — EDU APP Nihongo
 
 ## Tổng quan
 
 | DB | Engine | Port | Dùng bởi |
 |----|--------|------|----------|
 | `nihongo` | PostgreSQL 16 (`edu-postgres-nihongo`) | 5433 | api-gateway, content-service, exam-service |
-| `english_learning` | PostgreSQL 16 (`edu-postgres-english`) | 5434 | api-gateway (`english-service` → `EnglishPrismaService`) |
 | `nihongo_audit` | MongoDB 7 | 27017 | api-gateway (`AuditInterceptor`) |
 
-PostgreSQL: hai DBs dùng chung một instance, credentials `nihongo:nihongo`.
+PostgreSQL: DB `nihongo`, credentials `nihongo:nihongo`.
 MongoDB: TTL index 90 ngày trên audit_logs — tự dọn sạch, không cần cron.
 
 ---
@@ -335,77 +334,6 @@ Seed dữ liệu: `seed.ts` gọi lần lượt các seed con (`seed:textbooks`,
 
 ---
 
-## DB english_learning
-
-### Sơ đồ quan hệ
-
-Sơ đồ ER đầy đủ (23 bảng, 3 phân hệ, kèm cột/khóa): **[db-erd-english.md](db-erd-english.md)** — tự sinh cùng lệnh `npm run db:erd`.
-
-Tổng quan (mũi tên: bảng cha → bảng con, quan hệ 1–n):
-
-```mermaid
-flowchart LR
-  subgraph CONTENT[Từ vựng & ngữ pháp]
-    VocabTopic --> Vocabulary
-    GrammarTopic --> GrammarLesson --> GrammarExample & GrammarExercise
-    GrammarExercise --> GrammarExOption
-  end
-  subgraph SKILLS[Đọc & nghe]
-    ReadingPassage --> ReadingQuestion --> ReadingOption
-    ListeningTrack --> ListeningQuestion --> ListeningOption
-  end
-  subgraph USER[Người dùng & tiến độ]
-    User --> SrsCard & StudySession & StudyStreak & DailyNote & DailyGoal
-    DailyGoal --> DailyGoalItem
-  end
-  ReadingPassage --> ReadingAttempt
-  ListeningTrack --> ListeningAttempt
-  Vocabulary --> DictationAttempt
-  User -. "userId null = khách" .-> ReadingAttempt & ListeningAttempt & DictationAttempt
-```
-
-- `SrsCard` không có FK tới nội dung — đa hình qua `contentType` (VOCABULARY/GRAMMAR) + `contentId`.
-
-### Điểm khác biệt so với nihongo DB
-
-| Khía cạnh | nihongo | english |
-|-----------|---------|---------|
-| Level system | JlptLevel (N5–N1) | EnglishLevel (A1–C2) |
-| API access | api-gateway → gRPC | api-gateway → english-service |
-| Auth | JWT Bearer (`nihongo.User`) | JWT cookie `aud:english` (`english_learning.User`) |
-| Payment / marketplace | Có | Chưa (chỉ học tập) |
-| Role | USER / TEACHER / ADMIN | USER / ADMIN |
-| Grammar examples | Bảng `Example` | Bảng `GrammarExample` |
-| SRS content types | VOCABULARY / GRAMMAR / KANJI | VOCABULARY / GRAMMAR |
-| Listening tracking | ListeningLog (thời gian) | ListeningAttempt (câu hỏi) |
-| Prisma package | `packages/prisma-nihongo` | `packages/prisma-english` |
-
-### Enums (english DB)
-
-```
-Role:         USER | ADMIN
-EnglishLevel: A1 | A2 | B1 | B2 | C1 | C2
-PartOfSpeech: noun | verb | adjective | adverb | preposition |
-              conjunction | pronoun | interjection | phrase | phrasal_verb
-ContentType:  VOCABULARY | GRAMMAR
-```
-
-### Schema & migrations
-
-Schema: `packages/prisma-english/schema.prisma`  
-NestJS client: `packages/nest-prisma-english` → `EnglishPrismaService`  
-Env: `ENGLISH_DATABASE_URL`
-
-| Lệnh | Mô tả |
-|------|--------|
-| `npm run db:push -w @edu/prisma-english` | Sync schema → DB (dev) |
-| `npm run seed -w @edu/prisma-english` | Seed dữ liệu mẫu |
-| `npm run generate -w @edu/prisma-english` | Generate Prisma Client |
-
-`english-web` **không** còn Prisma client runtime — chỉ UI, gọi API qua gateway.
-
----
-
 ## DB nihongo_audit (MongoDB)
 
 ```javascript
@@ -505,12 +433,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -File infra/backups/backup.ps1
 bash infra/backups/backup.sh
 ```
 
-Script dump vào [`infra/backups/`](../infra/backups/). Snapshot `nihongo_*.sql` / `nihongo_schema_*.sql` **được commit** trong repo (restore nhanh). `english_learning_*.sql` chỉ tạo khi container English đang chạy — hiện có thể chưa có file trong repo.
+Script dump vào [`infra/backups/`](../infra/backups/). Snapshot `nihongo_*.sql` / `nihongo_schema_*.sql` **được commit** trong repo (restore nhanh).
 
 | File | Nội dung |
 |------|----------|
 | `nihongo_YYYYMMDD_HHMMSS.sql` | Full data + schema |
-| `english_learning_YYYYMMDD_HHMMSS.sql` | Full data + schema *(tùy chọn)* |
 | `nihongo_schema_YYYYMMDD_HHMMSS.sql` | Schema only |
 
 Chi tiết: [`infra/backups/README.md`](../infra/backups/README.md)
@@ -522,9 +449,4 @@ Chi tiết: [`infra/backups/README.md`](../infra/backups/README.md)
 docker compose up -d postgres-nihongo
 npm run migrate:deploy -w @edu/prisma-nihongo
 npm run generate -w @edu/prisma-nihongo
-
-# English DB
-npm run db:push -w @edu/prisma-english
-npm run seed -w @edu/prisma-english
-npm run generate -w @edu/prisma-english
 ```

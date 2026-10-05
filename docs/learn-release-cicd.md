@@ -7,10 +7,10 @@
 > **Cập nhật 2026-09-29 — cả 4 lỗ hổng ở mục 2 đã sửa** trong [`deploy.yml`](../.github/workflows/deploy.yml):
 > deploy chỉ chạy khi CI xanh (`workflow_run`) và build đúng commit đó; image gắn tag `:<sha>` ngay khi apply; image
 > `migrator` ([`Dockerfile.migrate`](../packages/prisma-nihongo/Dockerfile.migrate)) chạy Job migrate **trước** khi đổi code
-> ([`prisma-migrate.job.yaml`](../infra/k8s/jobs/prisma-migrate.job.yaml)); bỏ `replicas` cho api-gateway; chờ rollout cả 5
+> ([`prisma-migrate.job.yaml`](../infra/k8s/jobs/prisma-migrate.job.yaml)); bỏ `replicas` cho api-gateway; chờ rollout cả 4
 > Deployment, lỗi thì `rollout undo`; smoke test `/health/ready`; SSH fallback kiểm tra `/health` (trước đây `/api/health` luôn 404).
 > Workflow qua `actionlint`.
-> - **Branch protection** `main` (bật qua GitHub API): PR phải qua 4 check `security`, `backend`, `nihongo-web`, `english-web`;
+> - **Branch protection** `main` (bật qua GitHub API): PR phải qua 3 check `security`, `backend`, `nihongo-web`;
 >   cấm force push / xoá nhánh; admin vẫn push thẳng được.
 > - **Feature flag** (mục 4): bảng `FeatureFlag`, `GET /api/feature-flags`, admin `PATCH /api/admin/feature-flags/:key`,
 >   hook web `useFeatureFlag` — ô "Tra từ trên mọi bài" đã chạy sau cờ `vocab-search-all-lessons`.
@@ -21,8 +21,7 @@
 ```
 push / PR ──▶ ci.yml
                ├─ backend : npm ci → prisma generate → migrate deploy (DB CI) → lint → test+coverage → e2e → build
-               ├─ nihongo-web : lint → test → build
-               └─ english-web : …
+               └─ nihongo-web : lint → test → build
 
 push main ──▶ deploy.yml
                ├─ build-and-push (matrix 5 image) → ghcr.io/…/<service>:latest và :<git sha>
@@ -66,10 +65,10 @@ pod cũ vẫn chạy code cũ (chỉ pod nào tình cờ bị restart mới kéo
 # deploy job — dùng tag bất biến vừa build
 - name: Roll out exact version
   run: |
-    for svc in api-gateway content-service exam-service nihongo-web english-web; do
+    for svc in api-gateway content-service exam-service nihongo-web; do
       kubectl set image deployment/$svc $svc=${{ env.IMAGE_PREFIX }}/$svc:${{ github.sha }} -n edu-app
     done
-    for svc in api-gateway content-service exam-service nihongo-web english-web; do
+    for svc in api-gateway content-service exam-service nihongo-web; do
       kubectl rollout status deployment/$svc -n edu-app --timeout=300s
     done
 ```
