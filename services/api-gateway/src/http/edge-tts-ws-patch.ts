@@ -36,7 +36,7 @@ function useEdgeTtsWebSocket(): void {
     paths: [],
     parent: null,
     path: "",
-  } as NodeJS.Module;
+  } as unknown as NodeJS.Module;
 }
 
 useEdgeTtsWebSocket();
