@@ -26,5 +26,5 @@ class KeycloakConfig {
       '$authority/.well-known/openid-configuration';
 
   /// Flutter Android/iOS AppAuth redirect.
-  static const redirectUrl = 'com.edu.nihongo_app:/oauth2redirect';
+  static const redirectUrl = 'com.edu.nihongoapp:/oauth2redirect';
 }

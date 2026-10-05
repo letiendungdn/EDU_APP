@@ -107,7 +107,7 @@
       "redirectUris": [
         "nihongo://auth/callback",
         "com.edu.nihongo:/oauth2redirect",
-        "com.edu.nihongo_app:/oauth2redirect",
+        "com.edu.nihongoapp:/oauth2redirect",
         "com.edu.nihongo.ios:/oauth2redirect"
       ],
       "webOrigins": ["+"],

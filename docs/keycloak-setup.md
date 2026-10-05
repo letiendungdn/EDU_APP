@@ -18,7 +18,7 @@ OIDC IdP cho EDU APP. Web login qua Keycloak (PKCE) → API Gateway đổi acces
 | Client ID | Redirect |
 |-----------|----------|
 | `nihongo-web` | `http://nihongo.localhost:8080/*` |
-| `nihongo-mobile` | `nihongo://auth/callback`, `com.edu.nihongo:/oauth2redirect`, `com.edu.nihongo_app:/oauth2redirect`, `com.edu.nihongo.ios:/oauth2redirect` |
+| `nihongo-mobile` | `nihongo://auth/callback`, `com.edu.nihongo:/oauth2redirect`, `com.edu.nihongoapp:/oauth2redirect`, `com.edu.nihongo.ios:/oauth2redirect` |
 
 Mobile apps (Flutter / Android / iOS / Expo) dùng client `nihongo-mobile`, rồi `POST /api/auth/oidc` như web.
 
@@ -26,7 +26,7 @@ Mobile apps (Flutter / Android / iOS / Expo) dùng client `nihongo-mobile`, rồ
 |-----|----------|--------------------------------|
 | Expo (`nihongo-mobile`) | `nihongo://auth/callback` | `http://10.0.2.2:8080` (Android) |
 | Android native | `com.edu.nihongo:/oauth2redirect` | `http://10.0.2.2:8080` |
-| Flutter | `com.edu.nihongo_app:/oauth2redirect` | `http://10.0.2.2:8080` |
+| Flutter | `com.edu.nihongoapp:/oauth2redirect` | `http://10.0.2.2:8080` |
 | iOS | `com.edu.nihongo.ios:/oauth2redirect` | `http://localhost:8080` (simulator) |
 
 > Realm chỉ import lần đầu. Nếu thiếu client / role / mapper mới, tạo thủ công trong Admin Console hoặc xóa volume Keycloak rồi import lại (xem [lab #1](./keycloak-lab-refresh-roles.md)).
