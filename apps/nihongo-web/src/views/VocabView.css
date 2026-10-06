@@ -786,6 +786,24 @@
   line-height: 1.45;
 }
 
+.flashcard-col-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.flashcard-col-actions .btn-audio--card {
+  margin-top: 0;
+}
+
+.ks-open-btn.ks-open-btn--card {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  font-size: 1.2rem;
+}
+
 .btn-audio--card {
   position: static;
   opacity: 1;

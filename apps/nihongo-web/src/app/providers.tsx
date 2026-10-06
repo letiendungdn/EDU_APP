@@ -4,6 +4,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { KanjiStructureProvider } from '@/contexts/KanjiStructureContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import SelectionTranslate from '@/components/SelectionTranslate';
 import { ThemeProvider } from '@/lib/theme';
@@ -31,8 +32,10 @@ export default function Providers({ children }: { children: ReactNode }) {
         <WebVitals />
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            {children}
-            <SelectionTranslate />
+            <KanjiStructureProvider>
+              {children}
+              <SelectionTranslate />
+            </KanjiStructureProvider>
           </AuthProvider>
         </QueryClientProvider>
       </ErrorBoundary>

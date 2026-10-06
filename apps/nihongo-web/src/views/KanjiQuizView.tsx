@@ -12,6 +12,7 @@ import {
   useVocabulariesQuery,
 } from '../hooks/queries';
 import { playAudio } from '../utils/speech';
+import KanjiStructureButton from '../components/KanjiStructureButton';
 import {
   buildKanjiQuiz,
   toKanjiQuizSource,
@@ -504,7 +505,8 @@ export default function KanjiQuizView() {
 
             {result && (
               <div className={`feedback ${result}`}>
-                {result === 'correct' ? 'Đúng rồi!' : `Sai rồi. Đáp án: ${current.answer}`}
+                {result === 'correct' ? 'Đúng rồi!' : `Sai rồi. Đáp án: ${current.answer}`}{' '}
+                <KanjiStructureButton text={`${current.prompt} ${current.answer}`} withLabel />
               </div>
             )}
 

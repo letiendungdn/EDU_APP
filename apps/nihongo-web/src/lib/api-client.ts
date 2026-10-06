@@ -4,6 +4,12 @@ import { ApiError } from '../types/api';
 const API_BASE = '/api';
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 400;
+/**
+ * 502/503 khi gateway đang khởi động (vd. vừa bật lại Docker): nginx trả 503 + Retry-After.
+ * Chờ tối đa ~90 giây thay vì báo lỗi sau vài trăm ms.
+ */
+const STARTUP_MAX_WAITS = 30;
+const STARTUP_DEFAULT_WAIT_MS = 3000;
 const TOKEN_EVENT = 'nihongo-auth-token';
 
 export type RequestOptions = RequestInit & {
@@ -24,6 +30,13 @@ interface ApiErrorEnvelope {
   success: false;
   error?: { code?: string; message?: string };
   message?: string | string[];
+}
+
+function startupWaitMs(res: Response): number {
+  const seconds = Number(res.headers.get('Retry-After'));
+  return Number.isFinite(seconds) && seconds > 0
+    ? Math.min(seconds * 1000, 10_000)
+    : STARTUP_DEFAULT_WAIT_MS;
 }
 
 function sleep(ms: number) {
@@ -111,6 +124,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   }
 
   let lastError: unknown;
+  let startupWaits = 0;
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
     try {
@@ -138,6 +152,14 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
               retries: 0,
             });
           }
+        }
+
+        // Gateway chưa sẵn sàng: chờ theo Retry-After, không tính vào số lần thử thường.
+        if ((res.status === 502 || res.status === 503) && retries > 0 && startupWaits < STARTUP_MAX_WAITS) {
+          startupWaits += 1;
+          await sleep(startupWaitMs(res));
+          attempt -= 1;
+          continue;
         }
 
         if (res.status >= 500 && attempt < retries) {

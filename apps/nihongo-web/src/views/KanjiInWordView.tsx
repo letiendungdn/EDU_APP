@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useKanjiByJlptQuery } from '../hooks/queries';
 import { collectKanjiWords, readingChoices } from '../utils/kanjiInWord';
 import { playAudio } from '../utils/speech';
+import KanjiStructureButton from '../components/KanjiStructureButton';
 import './DrillView.css';
 
 export default function KanjiInWordView() {
@@ -94,9 +95,12 @@ export default function KanjiInWordView() {
               })}
             </div>
             {picked && (
-              <button type="button" className="btn btn-outline btn-sm" style={{ marginTop: 12 }} onClick={() => playAudio(answer)}>
-                Nghe
-              </button>
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center', marginTop: 12 }}>
+                <button type="button" className="btn btn-outline btn-sm" onClick={() => playAudio(answer)}>
+                  Nghe
+                </button>
+                <KanjiStructureButton text={current.word} char={current.character} withLabel />
+              </div>
             )}
           </div>
           <button type="button" className="btn btn-nav" onClick={next}>Câu tiếp</button>

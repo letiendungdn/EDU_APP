@@ -11,6 +11,7 @@ import {
   useKanjiSearchQuery,
 } from '../hooks/queries';
 import StrokeOrder from '../components/StrokeOrder';
+import KanjiStructureButton from '../components/KanjiStructureButton';
 import KanjiVocabSidepanel from '../components/KanjiVocabSidepanel';
 import { toLocalImageUrl } from '@edu/vocab-images';
 import { getKanjiReadingGroups, getKanjiSpeakItems } from '../utils/kanjiSpeak';
@@ -262,6 +263,7 @@ export default function KanjiView({ initialLessonNumber }: { initialLessonNumber
                   {currentKanji.hanViet && (
                     <span className="vocab-romaji">{currentKanji.hanViet}</span>
                   )}
+                  <KanjiStructureButton text={currentKanji.character} withLabel />
                   <div
                     className="flashcard-stroke-block kanji-flashcard-stroke"
                     onClick={(e) => e.stopPropagation()}
@@ -312,6 +314,7 @@ export default function KanjiView({ initialLessonNumber }: { initialLessonNumber
                   {currentKanji.mnemonicVi && (
                     <p className="kanji-mnemonic">{currentKanji.mnemonicVi}</p>
                   )}
+                  <KanjiStructureButton text={currentKanji.character} withLabel />
                   <div
                     className="flashcard-stroke-block kanji-flashcard-stroke kanji-flashcard-stroke--back"
                     onClick={(e) => e.stopPropagation()}

@@ -14,6 +14,7 @@ import { useAuth } from '../hooks/useAuth';
 import type { Vocabulary } from '../types/api';
 import { uploadContentImage } from '../utils/vocabImageUpload';
 import ImageLightbox from './ImageLightbox';
+import KanjiStructureButton from './KanjiStructureButton';
 
 type Draft = {
   kanji: string;
@@ -504,6 +505,7 @@ export default function VocabWordList({
           ) : null}
         </button>
         <div className="vocab-admin-row-actions">
+          <KanjiStructureButton text={vocab.kanji} />
           <button
             type="button"
             className={`vocab-copy-row-btn${copiedId === vocab.id ? ' vocab-copy-row-btn--copied' : ''}`}

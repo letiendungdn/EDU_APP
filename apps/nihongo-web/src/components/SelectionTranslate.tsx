@@ -19,7 +19,7 @@ export default function SelectionTranslate() {
 
   useEffect(() => {
     function onMouseUp(e: MouseEvent) {
-      if ((e.target as Element)?.closest?.('.translation-card, .tc-stroke-modal-backdrop')) return;
+      if ((e.target as Element)?.closest?.('.translation-card, .tc-stroke-modal-backdrop, .ks-modal-backdrop')) return;
 
       setTimeout(() => {
         const active = document.activeElement;
@@ -44,7 +44,7 @@ export default function SelectionTranslate() {
     }
 
     function onMouseDown(e: MouseEvent) {
-      if (!(e.target as Element)?.closest?.('.translation-card, .tc-stroke-modal-backdrop')) {
+      if (!(e.target as Element)?.closest?.('.translation-card, .tc-stroke-modal-backdrop, .ks-modal-backdrop')) {
         setSel(null);
       }
     }

@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import type { Canvas, PencilBrush } from 'fabric';
+import KanjiStructureButton from '../components/KanjiStructureButton';
 
 const STROKE_WIDTHS = [4, 8, 16, 24];
 const COLORS = ['#111111', '#ef4444', '#3b82f6', '#16a34a', '#f97316'];
@@ -129,6 +130,7 @@ export default function KanjiPracticeView() {
           style={{ width: 64, fontSize: 24, textAlign: 'center', border: '1px solid #ccc', borderRadius: 6, padding: '4px 8px' }}
         />
         <button onClick={handleApplyKanji} style={actionBtn('#ef4444')}>Chọn</button>
+        <KanjiStructureButton text={kanji} withLabel />
         <span style={{ color: '#888', fontSize: 13 }}>hoặc chọn nhanh:</span>
         {PRESET_KANJI.map((k) => (
           <button

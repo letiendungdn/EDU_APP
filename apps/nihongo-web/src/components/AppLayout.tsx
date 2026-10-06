@@ -25,6 +25,7 @@ const NAV_GROUPS = [
       { href: '/kanji',     icon: '漢',  label: 'Kanji' },
       { href: '/kanji/mindmap', icon: '🗺', label: 'Sơ đồ kanji' },
       { href: '/kanji/list', icon: '表', label: 'Bảng Kanji JLPT' },
+      { href: '/kanji/structure', icon: '構', label: 'Cấu tạo Kanji' },
       { href: '/strokes',   icon: '筆',  label: 'Tra nét viết' },
       { href: '/counters',  icon: '①',  label: 'Đếm số' },
       { href: '/suffixes',     icon: '語',  label: 'Hậu tố' },

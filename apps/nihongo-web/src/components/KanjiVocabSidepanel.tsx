@@ -11,6 +11,7 @@ import {
 import { queryKeys } from '../hooks/queries';
 import { useAuth } from '../hooks/useAuth';
 import type { KanjiVocabItem } from '../types/api';
+import KanjiStructureButton from './KanjiStructureButton';
 
 type Props = {
   kanjiEntryId: number;
@@ -344,6 +345,7 @@ export default function KanjiVocabSidepanel({
                   <span className="japanese-text">{v.word}</span>
                   <span className="kanji-vocab-reading">（{v.reading}）</span>
                   <span className="kanji-vocab-meaning">— {v.meaningVi}</span>
+                  <KanjiStructureButton text={v.word} className="ks-open-btn--sm" />
                   {canEdit && (
                     <div className="kanji-vocab-admin-actions">
                       <button type="button" title="Sửa" disabled={busy} onClick={() => startEdit(v)}>

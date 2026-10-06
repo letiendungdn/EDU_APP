@@ -18,6 +18,7 @@ import {
   hasOptionalBracketParts,
 } from '../utils/japanese';
 import FlashcardJapaneseText from '../components/FlashcardJapaneseText';
+import KanjiStructureButton from '../components/KanjiStructureButton';
 import { getVocabExamples } from '../utils/vocabPatternExample';
 import { logActivity } from '../api';
 import './VocabView.css';
@@ -489,14 +490,17 @@ export default function VocabView({
                       <div className="flashcard-text-col flashcard-text-col--kanji">
                         <span className="flashcard-char-label">Kanji</span>
                         <FlashcardJapaneseText text={currentVocab.kanji} className="vocab-kanji japanese-text" />
-                        <button
-                          type="button"
-                          className="btn-audio btn-audio--card"
-                          onClick={handlePronounce}
-                          title="Nghe phát âm"
-                        >
-                          🔊
-                        </button>
+                        <div className="flashcard-col-actions">
+                          <button
+                            type="button"
+                            className="btn-audio btn-audio--card"
+                            onClick={handlePronounce}
+                            title="Nghe phát âm"
+                          >
+                            🔊
+                          </button>
+                          <KanjiStructureButton text={currentVocab.kanji} className="ks-open-btn--card" />
+                        </div>
                       </div>
                     ) : null}
                     <div className="flashcard-text-col flashcard-text-col--kana">
@@ -541,6 +545,7 @@ export default function VocabView({
                           >
                             🔊
                           </button>
+                          <KanjiStructureButton text={example.ja} className="ks-open-btn--sm" />
                         </div>
                         <span className="vocab-pattern-example-ja japanese-text">{example.ja}</span>
                         {example.kana && example.kana !== example.ja ? (
@@ -578,6 +583,7 @@ export default function VocabView({
                     onCharClick={handleStrokeCharClick}
                   />
                   <div className="flashcard-back-meta">
+                    <KanjiStructureButton text={currentVocab.kanji} withLabel />
                     <FlashcardJapaneseText
                       text={currentVocab.kana}
                       className="vocab-kana japanese-text"
@@ -601,6 +607,7 @@ export default function VocabView({
                           >
                             🔊
                           </button>
+                          <KanjiStructureButton text={example.ja} className="ks-open-btn--sm" />
                         </div>
                         <span className="vocab-pattern-example-ja japanese-text">{example.ja}</span>
                         {example.kana && example.kana !== example.ja ? (

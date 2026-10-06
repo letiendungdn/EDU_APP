@@ -19,6 +19,7 @@ import { useAuth } from '../hooks/useAuth';
 import { playAudio } from '../utils/speech';
 import { getKanjiSpeakItems } from '../utils/kanjiSpeak';
 import StrokeOrder from '../components/StrokeOrder';
+import KanjiStructureButton from '../components/KanjiStructureButton';
 import type {
   CreateKanjiEntryInput,
   KanjiEntry,
@@ -201,6 +202,7 @@ function KanjiPopup({
             {entry.lesson?.lessonNumber != null && (
               <span className="kanji-popup-lesson">Bài {entry.lesson.lessonNumber}</span>
             )}
+            <KanjiStructureButton text={entry.character} withLabel />
           </div>
         </div>
 
@@ -766,6 +768,7 @@ export default function KanjiListView({
                 >
                   Nghe đọc
                 </button>
+                <KanjiStructureButton text={selectedEntry.character} withLabel />
                 {canEdit && (
                   <>
                     <button

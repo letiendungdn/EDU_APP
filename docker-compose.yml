@@ -237,6 +237,14 @@ services:
       LIVEKIT_PUBLIC_URL: ${LIVEKIT_PUBLIC_URL:-ws://localhost:7880}
       LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-devkey}
       LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-devsecret}
+    # /health/live không gọi DB/service khác — chỉ báo process Nest đã nghe cổng 3000.
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO /dev/null http://127.0.0.1:3000/health/live || exit 1']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 90s
+      start_interval: 3s
     depends_on:
       postgres-nihongo:
         condition: service_healthy
@@ -301,6 +309,13 @@ services:
       API_URL: http://api-gateway:3000
     volumes:
       - ./apps/nihongo-web/public/media/book-audio:/app/apps/nihongo-web/public/media/book-audio
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO /dev/null http://127.0.0.1:5173/ || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+      start_interval: 3s
     depends_on:
       - api-gateway
 
@@ -312,10 +327,15 @@ services:
     restart: unless-stopped
     ports:
       - '${NGINX_HTTP_PORT:-8080}:80'
+    # Chỉ có tác dụng với `docker compose up`. Khi Docker Desktop tự bật lại container
+    # (restart: unless-stopped) thì không theo thứ tự này — nginx.conf xử lý khoảng chờ đó.
     depends_on:
-      - api-gateway
-      - nihongo-web
-      - keycloak
+      api-gateway:
+        condition: service_healthy
+      nihongo-web:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
 
   jaeger:
     image: jaegertracing/all-in-one:1.57

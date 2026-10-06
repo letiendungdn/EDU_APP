@@ -6,6 +6,7 @@ import { apiRequest } from '@/lib/api-client';
 import { playAudio, stopAudio } from '@/utils/speech';
 import { getStrokeText } from '@/utils/japanese';
 import StrokeOrder from './StrokeOrder';
+import KanjiStructureButton from './KanjiStructureButton';
 import './TranslationCard.css';
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -311,7 +312,10 @@ export default function TranslationCard({ text, anchorX, anchorY, onClose }: Pro
 
           {jaStrokeText && (
             <div className="tc-stroke">
-              <p className="tc-stroke-label">Cách vẽ · nhấn chữ để phóng to</p>
+              <div className="tc-stroke-head">
+                <p className="tc-stroke-label">Cách vẽ · nhấn chữ để phóng to</p>
+                <KanjiStructureButton text={result.ja.text} withLabel className="ks-open-btn--sm" />
+              </div>
               <StrokeOrder
                 text={result.ja.text}
                 width={strokeSize}
