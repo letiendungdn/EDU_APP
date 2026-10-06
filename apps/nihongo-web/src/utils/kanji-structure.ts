@@ -25,6 +25,36 @@ export function isKanji(char: string): boolean {
   return /\p{Script=Han}/u.test(char);
 }
 
+/** Mã nội bộ KanjiVG/CHISE (vd. CDP-8BC4), không phải một chữ để hiển thị. */
+export function isCodedElement(value: string): boolean {
+  return /^[A-Z][A-Z0-9]*-/.test(value);
+}
+
+/**
+ * Chữ dùng để vẽ một nút. Mã không có Unicode được thay bằng các thành phần con
+ * (CDP-8BC4 trong 原 là 白 trên 小).
+ */
+export function componentParts(node: KanjiNode): string[] {
+  const raw = node.e ?? '';
+  if (raw && !isCodedElement(raw)) return [raw];
+  if (node.o && !isCodedElement(node.o)) return [node.o];
+  return meaningfulChildren(node).flatMap(componentParts);
+}
+
+export function componentLabel(node: KanjiNode): string {
+  const parts = componentParts(node);
+  return parts.length > 0 ? parts.join('+') : '';
+}
+
+/** Nhãn khi chỉ có chuỗi element (ô “chữ có thành phần …”), không có cả nút cây. */
+const CODED_ELEMENT_LABEL: Record<string, string> = {
+  'CDP-8BC4': '白+小',
+};
+
+export function displayElement(key: string): string {
+  return CODED_ELEMENT_LABEL[key] ?? (isCodedElement(key) ? '' : key);
+}
+
 const ATTRS: Record<string, keyof KanjiNode> = {
   'kvg:element': 'e',
   'kvg:original': 'o',

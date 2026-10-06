@@ -2,6 +2,9 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   buildReverseIndex,
+  componentLabel,
+  componentParts,
+  displayElement,
   focusGroupIds,
   kanjiLayout,
   meaningfulChildren,
@@ -33,6 +36,15 @@ describe('kanji-structure', () => {
     const root = parseKanjiVgTree(svg('04e3b'))!;
     const part1 = root.c!.find((c) => c.e === '亠')!;
     expect(focusGroupIds(root, part1)).toEqual(['g1', 'g4']);
+  });
+
+  it('mã CHISE trong 原 hiện thành 白 trên 小, không in CDP-8BC4', () => {
+    const root = parseKanjiVgTree(svg('0539f'))!;
+    const inner = meaningfulChildren(root).find((c) => c.e === 'CDP-8BC4')!;
+    expect(componentParts(inner)).toEqual(['白', '小']);
+    expect(componentLabel(inner)).toBe('白+小');
+    expect(displayElement('CDP-8BC4')).toBe('白+小');
+    expect(componentLabel(meaningfulChildren(root)[0]!)).toBe('厂');
   });
 
   it('tra ngược thành phần → các chữ chứa nó', () => {

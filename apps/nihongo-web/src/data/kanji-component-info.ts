@@ -14,6 +14,11 @@ export interface KanjiComponentInfo {
 }
 
 export const KANJI_COMPONENT_INFO: Record<string, KanjiComponentInfo> = {
+  // KanjiVG ghi mã CHISE khi thành phần không có chữ Unicode riêng.
+  'CDP-8BC4': {
+    hv: 'Bạch trên Tiểu',
+    vi: '白 ở trên, 小 ở dưới — phần trong của 原 (厂 che bên ngoài)',
+  },
   // ── Nét & bộ cơ bản
   '一': { hv: 'Nhất', vi: 'một, nét ngang', jp: 'いち' },
   '丨': { hv: 'Cổn', vi: 'nét sổ thẳng', jp: 'ぼう' },

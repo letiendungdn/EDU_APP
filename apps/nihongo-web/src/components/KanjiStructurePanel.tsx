@@ -14,6 +14,9 @@ import {
   focusGroupIds,
   isKanji,
   kanjiLayout,
+  componentLabel,
+  componentParts,
+  displayElement,
   meaningfulChildren,
   parseKanjiVgTree,
   type KanjiComponentIndex,
@@ -105,6 +108,21 @@ function componentKey(node: KanjiNode): string {
   return node.e ?? node.o ?? '';
 }
 
+/** Chữ hiện trên nút. Mã CHISE (CDP-…) thay bằng các thành phần con, ví dụ 白 trên 小. */
+function NodeChar({ node }: { node: KanjiNode }) {
+  const parts = componentParts(node);
+  if (parts.length > 1) {
+    return (
+      <span className="ks-node-char ks-node-char--parts japanese-text" title={componentLabel(node)}>
+        {parts.map((part, i) => (
+          <span key={`${part}-${i}`}>{part}</span>
+        ))}
+      </span>
+    );
+  }
+  return <span className="ks-node-char japanese-text">{parts[0] ?? componentLabel(node)}</span>;
+}
+
 function describe(char: string, entries: EntryMap): { title: string; meaning: string } | null {
   const info: KanjiComponentInfo | undefined = KANJI_COMPONENT_INFO[char];
   if (info) {
@@ -174,7 +192,7 @@ function ComponentTree({
               onBlur={() => onFocus(null)}
               tabIndex={0}
             >
-              <span className="ks-node-char japanese-text">{key}</span>
+              <NodeChar node={node} />
               <div className="ks-node-body">
                 <div className="ks-node-badges">
                   {pos && (
@@ -205,7 +223,7 @@ function ComponentTree({
                   className={`ks-link-btn${browsing === key ? ' is-active' : ''}`}
                   onClick={() => onBrowse(key)}
                 >
-                  Chữ khác có <span className="japanese-text">{key}</span> →
+                  Chữ khác có <span className="japanese-text">{componentLabel(node) || key}</span> →
                 </button>
               </div>
             </div>
@@ -372,7 +390,7 @@ export default function KanjiStructurePanel({ char, onPickChar }: KanjiStructure
                       onMouseLeave={() => setFocus(null)}
                       onClick={() => setBrowse(componentKey(n))}
                     >
-                      {componentKey(n)}
+                      {componentLabel(n)}
                     </button>
                   </span>
                 ))}
@@ -420,7 +438,7 @@ export default function KanjiStructurePanel({ char, onPickChar }: KanjiStructure
               <div>
                 <dt>Bộ thủ</dt>
                 <dd>
-                  <span className="japanese-text">{componentKey(radical)}</span>
+                  <span className="japanese-text">{componentLabel(radical)}</span>
                   {radicalInfo && ` — ${radicalInfo.title.replace(/^Bộ /, '')}`}
                 </dd>
               </div>
@@ -428,8 +446,8 @@ export default function KanjiStructurePanel({ char, onPickChar }: KanjiStructure
           </dl>
           {phonetic && radical && componentKey(phonetic) !== componentKey(radical) && (
             <p className="ks-note">
-              <strong>Chữ hình thanh:</strong> phần <span className="japanese-text">{componentKey(radical)}</span>{' '}
-              gợi ý nghĩa, phần <span className="japanese-text">{componentKey(phonetic)}</span> gợi âm đọc (On).
+              <strong>Chữ hình thanh:</strong> phần <span className="japanese-text">{componentLabel(radical)}</span>{' '}
+              gợi ý nghĩa, phần <span className="japanese-text">{componentLabel(phonetic)}</span> gợi âm đọc (On).
               Các chữ cùng phần gợi âm thường đọc giống hoặc gần giống nhau.
             </p>
           )}
@@ -467,7 +485,7 @@ export default function KanjiStructurePanel({ char, onPickChar }: KanjiStructure
         <section className="ks-section glass-panel">
           <div className="ks-section-head">
             <h3 className="ks-section-title">
-              Chữ có thành phần <span className="japanese-text">{browse}</span>
+              Chữ có thành phần <span className="japanese-text">{displayElement(browse)}</span>
               <span className="ks-count"> · {browseList.length} chữ</span>
             </h3>
             <button type="button" className="ks-link-btn" onClick={() => setBrowse(null)}>
