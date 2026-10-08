@@ -5,12 +5,14 @@
   "description": "Monorepo EDU APP Nihongo — Next.js web, app mobile và NestJS microservices",
   "workspaces": [
     "apps/*",
+    "!apps/nihongo-desktop",
     "services",
     "services/signaling-service",
     "packages/*"
   ],
   "scripts": {
     "dev:nihongo-web": "npm run dev -w @edu/nihongo-web",
+    "dev:desktop": "apps/nihongo-desktop/start.sh",
     "dev:gateway": "npm run start:dev -w @edu/nihongo-services",
     "dev:content": "npm run start:content -w @edu/nihongo-services",
     "dev:exam": "npm run start:exam -w @edu/nihongo-services",

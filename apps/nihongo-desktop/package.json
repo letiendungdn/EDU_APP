@@ -1,0 +1,14 @@
+{
+  "name": "@edu/nihongo-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cửa sổ desktop Nihongo. Electron mở web app đang chạy tại localhost:8080.",
+  "main": "src/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^37.2.0"
+  }
+}

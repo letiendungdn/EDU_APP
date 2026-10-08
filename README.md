@@ -247,6 +247,7 @@ npm test -- --coverage -w @edu/nihongo-services
 | [docs/run-local.md](docs/run-local.md) | Hướng dẫn chạy local từng bước |
 | [docs/docker.md](docs/docker.md) | Full stack Docker (~14 container) |
 | [docs/learn-docker.md](docs/learn-docker.md) | Học Docker trên stack EDU APP |
+| [docs/learn-electron.md](docs/learn-electron.md) | Học Electron trên `apps/nihongo-desktop`: main, preload, IPC |
 | [docs/learn-observability.md](docs/learn-observability.md) | Log / metric / trace, RED, SLO, alert, health check — soát Prometheus/Jaeger của project |
 | [docs/learn-security-backend.md](docs/learn-security-backend.md) | OWASP API Top 10 trên code api-gateway: IDOR, JWT, CORS, rate limit, injection |
 | [docs/learn-reliability-patterns.md](docs/learn-reliability-patterns.md) | Outbox, timeout, retry, idempotent consumer, circuit breaker, saga — luồng nộp bài → Kafka |
