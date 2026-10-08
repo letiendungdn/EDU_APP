@@ -36,8 +36,8 @@ enum GeminiAPI {
 
         let (data, _) = try await URLSession.shared.data(for: request)
 
-        let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
-        let raw = (((json??["candidates"] as? [[String: Any]])?.first?["content"] as? [String: Any])?["parts"] as? [[String: Any]])?.first?["text"] as? String ?? ""
+        let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
+        let raw = (((json?["candidates"] as? [[String: Any]])?.first?["content"] as? [String: Any])?["parts"] as? [[String: Any]])?.first?["text"] as? String ?? ""
 
         let cleaned = stripFence(raw)
         let parsed = (try? JSONSerialization.jsonObject(with: Data(cleaned.utf8))) as? [String: Any] ?? [:]

@@ -26,6 +26,7 @@ android {
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = maxOf(flutter.minSdkVersion, 23)
         targetSdk = flutter.targetSdkVersion
+        manifestPlaceholders["appAuthRedirectScheme"] = "com.edu.nihongoapp"
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

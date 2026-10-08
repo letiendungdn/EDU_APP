@@ -24,7 +24,10 @@ targets:
     settings:
       base:
         SWIFT_VERSION: "5.9"
+        PRODUCT_NAME: NihongoEDU
         PRODUCT_BUNDLE_IDENTIFIER: com.edu.nihongo.ios
+        "EXCLUDED_ARCHS[sdk=iphonesimulator*]": x86_64
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks"
         MARKETING_VERSION: "1.0.0"
         CURRENT_PROJECT_VERSION: "1"
         INFOPLIST_FILE: NihongoEDU/Info.plist
@@ -34,6 +37,7 @@ targets:
       configs:
         Debug:
           DEBUG_INFORMATION_FORMAT: dwarf
+          ONLY_ACTIVE_ARCH: YES
         Release:
           DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
           SWIFT_OPTIMIZATION_LEVEL: "-O"
@@ -48,6 +52,7 @@ targets:
       - target: NihongoEDU
     settings:
       base:
+        PRODUCT_NAME: NihongoEDUTests
         PRODUCT_BUNDLE_IDENTIFIER: com.edu.nihongo.ios.tests
         GENERATE_INFOPLIST_FILE: YES
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/NihongoEDU.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NihongoEDU"

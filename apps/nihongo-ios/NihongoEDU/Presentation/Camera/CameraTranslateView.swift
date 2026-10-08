@@ -199,11 +199,10 @@ extension CameraTranslateViewModel: AVCaptureVideoDataOutputSampleBufferDelegate
         from connection: AVCaptureConnection
     ) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        // Retain buffer for async OCR — copy by keeping CVPixelBuffer alive until Task finishes.
-        CVPixelBufferRetain(pixelBuffer)
+        let retained = Unmanaged.passRetained(pixelBuffer)
         Task { @MainActor in
-            defer { CVPixelBufferRelease(pixelBuffer) }
-            self.handleFrame(pixelBuffer)
+            let buffer = retained.takeRetainedValue()
+            self.handleFrame(buffer)
         }
     }
 }

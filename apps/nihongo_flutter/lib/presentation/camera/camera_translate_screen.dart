@@ -1,14 +1,8 @@
-import 'dart:async';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../native/native_perf_channel.dart';
-import '../../providers.dart';
-import '../../utils/camera_image_converter.dart';
 import '../../utils/overlay_mapper.dart';
 
 class CameraTranslateScreen extends ConsumerStatefulWidget {
@@ -22,15 +16,10 @@ class CameraTranslateScreen extends ConsumerStatefulWidget {
 class _CameraTranslateScreenState extends ConsumerState<CameraTranslateScreen>
     with WidgetsBindingObserver {
   CameraController? _controller;
-  TextRecognizer? _recognizer;
   bool _initializing = true;
   String? _error;
-  bool _processing = false;
-  DateTime _lastProcessed = DateTime.fromMillisecondsSinceEpoch(0);
   List<OverlayLabel> _labels = [];
-  Size _imageSize = Size.zero;
   bool _paused = false;
-  int _scanIntervalMs = 900;
 
   @override
   void initState() {
@@ -44,7 +33,6 @@ class _CameraTranslateScreenState extends ConsumerState<CameraTranslateScreen>
     WidgetsBinding.instance.removeObserver(this);
     _stopStream();
     _controller?.dispose();
-    _recognizer?.close();
     super.dispose();
   }
 
@@ -71,15 +59,11 @@ class _CameraTranslateScreenState extends ConsumerState<CameraTranslateScreen>
     }
 
     try {
-      _scanIntervalMs = await NativePerfChannel.suggestedScanIntervalMs();
-
       final cameras = await availableCameras();
       final back = cameras.firstWhere(
         (c) => c.lensDirection == CameraLensDirection.back,
         orElse: () => cameras.first,
       );
-
-      _recognizer = TextRecognizer(script: TextRecognitionScript.japanese);
 
       final controller = CameraController(
         back,
@@ -125,80 +109,9 @@ class _CameraTranslateScreenState extends ConsumerState<CameraTranslateScreen>
     } catch (_) {}
   }
 
-  Future<void> _onCameraFrame(CameraImage image) async {
-    if (_processing || _paused) return;
-
-    final now = DateTime.now();
-    if (now.difference(_lastProcessed).inMilliseconds < _scanIntervalMs) return;
-
-    final controller = _controller;
-    final recognizer = _recognizer;
-    if (controller == null || recognizer == null) return;
-
-    _processing = true;
-    _lastProcessed = now;
-
-    try {
-      final input = await cameraImageToInputImageAsync(
-        image,
-        controller.description,
-      );
-      if (input == null) return;
-
-      _imageSize = Size(image.width.toDouble(), image.height.toDouble());
-
-      final result = await recognizer.processImage(input);
-      final lines = result.blocks
-          .expand((b) => b.lines)
-          .where((l) => l.text.trim().isNotEmpty)
-          .take(8)
-          .toList();
-
-      if (lines.isEmpty) {
-        if (mounted) setState(() => _labels = []);
-        return;
-      }
-
-      final api = ref.read(translateApiProvider);
-      final previewSize = controller.value.previewSize;
-      if (previewSize == null) return;
-
-      final sensorOrientation = controller.description.sensorOrientation;
-      final labels = <OverlayLabel>[];
-
-      for (final line in lines) {
-        final box = line.boundingBox;
-        if (box.width < 8 || box.height < 8) continue;
-
-        String translated;
-        try {
-          translated = await api.translateJapanese(line.text);
-        } catch (_) {
-          translated = line.text;
-        }
-
-        final rect = mapImageRectToPreview(
-          imageRect: box,
-          imageSize: _imageSize,
-          previewSize: Size(previewSize.height, previewSize.width),
-          sensorOrientation: sensorOrientation,
-        );
-
-        labels.add(
-          OverlayLabel(
-            rect: rect,
-            original: line.text,
-            translated: translated,
-          ),
-        );
-      }
-
-      if (mounted) setState(() => _labels = labels);
-    } catch (_) {
-      // Bỏ qua frame lỗi — stream tiếp tục
-    } finally {
-      _processing = false;
-    }
+  Future<void> _onCameraFrame(CameraImage _) async {
+    // Google ML Kit excludes the arm64 iOS simulator, so on-device OCR
+    // cannot be linked into this iOS 27 simulator build.
   }
 
   void _togglePause() {
@@ -262,7 +175,7 @@ class _CameraTranslateScreenState extends ConsumerState<CameraTranslateScreen>
             child: Text(
               _paused
                   ? 'Đã tạm dừng'
-                  : 'Hướng camera vào chữ tiếng Nhật — dịch hiện trên khung hình (cần mạng).',
+                  : 'Camera xem trước. Nhận chữ trên máy không chạy trên simulator iOS 27.',
               style: const TextStyle(color: Colors.white70, fontSize: 13),
               textAlign: TextAlign.center,
             ),
